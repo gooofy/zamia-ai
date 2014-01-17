@@ -1,5 +1,8 @@
+Audio Model
+===========
+
 Record Audio, Create Dictionary Entries, Review + Transcribe
-============================================================
+------------------------------------------------------------
 
 record:
 
@@ -29,48 +32,47 @@ transcribe, rate:
 
 
 Compute Model
-=============
+-------------
 
     ./audio-gen-model.py
 
-[guenter@dagobert speech]$ ./audio-gen-model.py
+    [guenter@dagobert speech]$ ./audio-gen-model.py
+    
+    Step 1 - Preparation
+    
+    Loading dict...
+    30222 words found in dictionary.
+    
+    Step 2 - Collect Prompts, generate words.mlf, convert audio
+    
+    ...
+    
+    Step 10 - Making Tied-State Triphones
+    
+    cd /home/ai/voxforge/de/work ; HDMan -A -D -T 1 -b sp -n fulllist -g ./input_files/global.ded dict-tri dict.txt > logs/Step10_HDMan.log
+    making hmm13
+    cd /home/ai/voxforge/de/work ; HHEd -A -D -T 1 -H hmm12/macros -H hmm12/hmmdefs -M hmm13 tree.hed triphones1 > logs/Step10_HHed_hmm13.log
+    making hmm14
+    cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm13/macros -H hmm13/hmmdefs -M hmm14 tiedlist > logs/Step10_HERest_hmm14.log
+    making hmm15
+    cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm14/macros -H hmm14/hmmdefs -M hmm15 tiedlist > logs/Step11_HERest_hmm15.log
+    
+    *** completed ***
 
-Step 1 - Preparation
-
-Loading dict...
-30222 words found in dictionary.
-
-Step 2 - Collect Prompts, generate words.mlf, convert audio
-
-...
-
-Step 10 - Making Tied-State Triphones
-
-cd /home/ai/voxforge/de/work ; HDMan -A -D -T 1 -b sp -n fulllist -g ./input_files/global.ded dict-tri dict.txt > logs/Step10_HDMan.log
-making hmm13
-cd /home/ai/voxforge/de/work ; HHEd -A -D -T 1 -H hmm12/macros -H hmm12/hmmdefs -M hmm13 tree.hed triphones1 > logs/Step10_HHed_hmm13.log
-making hmm14
-cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm13/macros -H hmm13/hmmdefs -M hmm14 tiedlist > logs/Step10_HERest_hmm14.log
-making hmm15
-cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm14/macros -H hmm14/hmmdefs -M hmm15 tiedlist > logs/Step11_HERest_hmm15.log
-
-*** completed ***
-
-Final model copied to: /home/ai/voxforge/de/work/acoustic_model_files
-
+    Final model copied to: /home/ai/voxforge/de/work/acoustic_model_files
 
 collect final model:
 
-cp /home/ai/voxforge/de/work/acoustic_model_files/* /home/guenter/projects/ai/speech/output/acoustic_model_files
+    cp /home/ai/voxforge/de/work/acoustic_model_files/* /home/guenter/projects/ai/speech/output/acoustic_model_files
+    ...
+    cp /home/ai/voxforge/de/work/dict.txt /home/guenter/projects/ai/speech/output/
 
 
-...
-
-cp /home/ai/voxforge/de/work/dict.txt /home/guenter/projects/ai/speech/output/
-
+Language Models
+===============
 
 SRILM Language Model Generation
-===============================
+-------------------------------
 
 workdir: /home/ai/voxforge/de/lm
 
@@ -132,10 +134,8 @@ if fail:
     cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
 
 
-
-
 MITLM Language Model Generation
-===============================
+-------------------------------
 
 workdir: /home/ai/voxforge/de/lm
 

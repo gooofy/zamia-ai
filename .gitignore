@@ -5,3 +5,5 @@ syntax: glob
 *.pyc
 old
 test
+output
+prompts

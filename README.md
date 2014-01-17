@@ -172,26 +172,28 @@ if fail:
 Grammar Generation:
 ===================
 
-edit grammar/starter.grammar
-     grammar/starter.voca
+edit 
 
-cd grammar
-[guenter@dagobert grammar]$ mkdfa.pl starter
-starter.grammar has 3 rules
-starter.voca    has 8 categories and 8 words
----
-Now parsing grammar file
-Now modifying grammar to minimize states[-1]
-Now parsing vocabulary file
-Now making nondeterministic finite automaton[11/11]
-Now making deterministic finite automaton[11/11] 
-Now making triplet list[11/11]
-8 categories, 11 nodes, 11 arcs
--> minimized: 9 nodes, 9 arcs
----
-generated: starter.dfa starter.term starter.dict
+    grammar/starter.grammar
+    grammar/starter.voca
 
+compute
 
+    cd grammar
+    [guenter@dagobert grammar]$ mkdfa.pl starter
+    starter.grammar has 3 rules
+    starter.voca    has 8 categories and 8 words
+    ---
+    Now parsing grammar file
+    Now modifying grammar to minimize states[-1]
+    Now parsing vocabulary file
+    Now making nondeterministic finite automaton[11/11]
+    Now making deterministic finite automaton[11/11] 
+    Now making triplet list[11/11]
+    8 categories, 11 nodes, 11 arcs
+    -> minimized: 9 nodes, 9 arcs
+    ---
+    generated: starter.dfa starter.term starter.dict
 
 
 Running Julius

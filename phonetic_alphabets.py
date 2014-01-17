@@ -1,0 +1,441 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
+import sys
+import xml.sax
+import re
+import random
+import unittest
+
+#
+# big phoneme table
+#
+# entries:
+# ( IPA, XSAMPA, MARY )
+#
+
+MAX_PHONEME_LENGTH = 2
+
+big_phoneme_table = [
+
+        #
+        # stop
+        #
+
+        ( u'p' , 'p' , 'p' ),
+        ( u'b' , 'b' , 'b' ),
+        ( u't' , 't' , 't' ),
+        ( u'd' , 'd' , 'd' ),
+        ( u'k' , 'k' , 'k' ),
+        ( u'g' , 'g' , 'g' ),
+        ( u'ʔ' , '?' , '?' ),
+
+        #
+        # 2 consonants
+        #
+
+        ( u'pf' , 'pf' , 'pf' ),
+        ( u'ts' , 'ts' , 'ts' ),
+        ( u'tʃ' , 'tS' , 'tS' ),
+        ( u'dʒ' , 'dZ' , 'dZ' ),
+
+        #
+        # fricative
+        #
+
+        ( u'f' , 'f' , 'f' ),
+        ( u'v' , 'v' , 'v' ),
+        ( u'θ' , 'T' , 'T' ),
+        ( u'ð' , 'D' , 'D' ),
+        ( u's' , 's' , 's' ),
+        ( u'z' , 'z' , 'z' ),
+        ( u'ʃ' , 'S' , 'S' ),
+        ( u'ʒ' , 'Z' , 'Z' ),
+        ( u'ç' , 'C' , 'C' ),
+        ( u'j' , 'j' , 'j' ),
+        ( u'x' , 'x' , 'x' ),
+        ( u'ʁ' , 'R' , 'R' ),
+        ( u'h' , 'h' , 'h' ),
+
+        #
+        # nasal
+        #
+
+        ( u'm' , 'm' , 'm' ),
+        ( u'n' , 'n' , 'n' ),
+        ( u'ɳ' , 'N' , 'N' ),
+
+        #
+        # liquid
+        #
+
+        ( u'l' , 'l' , 'l' ),
+        ( u'r' , 'r' , 'r' ),
+
+        #
+        # glide
+        #
+
+        ( u'w' , 'w' , 'w' ),
+        # see above ( u'j' , 'j' , 'j' ),
+
+        #
+        # vowels: monophongs
+        #
+
+        # front
+        ( u'i' , 'i' , 'i' ),
+        ( u'ɪ' , 'I' , 'I' ),
+        ( u'y' , 'y' , 'y' ),
+        ( u'ʏ' , 'Y' , 'Y' ),
+        ( u'e' , 'e' , 'e' ),
+        ( u'ø' , '2' , '2' ),
+        ( u'œ' , '9' , '9' ),
+        ( u'ɛ' , 'E' , 'E' ),
+        ( u'æ' , '{' , '{' ),
+        ( u'a' , 'a' , 'a' ),
+
+        # central
+        ( u'ʌ' , 'V' , 'V' ),
+        ( u'ə' , '@' , '@' ),
+        ( u'ɐ' , '6' , '6' ),
+        ( u'ɜ' , '3' , 'r=' ),
+
+        # back
+        ( u'u' , 'u' , 'u' ),
+        ( u'ʊ' , 'U' , 'U' ),
+        ( u'o' , 'o' , 'o' ),
+        ( u'ɔ' , 'O' , 'O' ),
+        ( u'ɑ' , 'A' , 'A' ),
+
+        # diphtongs
+
+        ( u'aɪ' , 'aI' , 'aI' ),
+        ( u'ɔɪ' , 'OI' , 'OI' ),
+        ( u'aʊ' , 'aU' , 'aU' ),
+        ( u'ɔʏ' , 'OY' , 'OY' ),
+
+        #
+        # misc
+        #
+        ( u'ː' , ':' , ':' ),
+        ( u'-' , '-' , '-' ),
+        ( u'\'' , '\'' , '\'' ),
+    ]
+
+IPA_normalization = {
+        u':' : u'ː',
+        u'?' : u'ʔ',
+        u'\u02c8' : u'\'',
+        u'\u032f' : None,
+        u'\u0329' : None,
+        u'\u02cc' : None,
+    }
+
+XSAMPA_normalization = {
+    ' ': None,
+    '~': None,
+    ',': None,
+    }
+
+def _normalize (s, norm_table):
+
+    buf = ""
+
+    for c in s:
+
+        if c in norm_table:
+            
+            x = norm_table[c]
+            if x:
+                buf += x
+        else:
+            buf += c
+
+    return buf
+
+def _translate (graph, s, f_idx, t_idx):
+
+    buf = ""
+    i = 0
+    l = len(s)
+
+    while i < l:
+
+        found = False
+
+        for pl in range(MAX_PHONEME_LENGTH, 0, -1):
+
+            if i + pl > l:
+                continue
+
+            substr = s[i : i+pl ]
+
+            #print u"i: %s, pl: %d, substr: '%s'" % (i, pl, substr)
+
+            for pe in big_phoneme_table:
+                p_f = pe[f_idx]
+                p_t = pe[t_idx]
+
+                if substr == p_f:
+                    buf += p_t
+                    i += pl
+                    found = True
+                    break
+
+            if found:
+                break
+
+        if not found:
+
+            p = s[i]
+            
+            msg = (u"_translate: %s: %s Phoneme not found: %s (%d)" % (graph, s, p, ord(p))).encode('UTF8')
+
+            raise Exception (msg)
+
+    return buf
+
+def ipa2xsampa (graph, ipas):
+    ipas = _normalize (ipas,  IPA_normalization)
+    return _translate (graph, ipas, 0, 1)
+
+def ipa2mary (graph, ipas):
+    ipas = _normalize (ipas,  IPA_normalization)
+    return _translate (graph, ipas, 0, 2)
+
+def xsampa2ipa (graph, xs):
+    xs = _normalize (xs,  XSAMPA_normalization)
+    return _translate (graph, xs, 1, 0)
+
+def mary2ipa (graph, ms):
+    ms = _normalize (ms,  XSAMPA_normalization)
+    return _translate (graph, ms, 2, 0)
+
+#
+# X-ARPABET is my own creation - similar to arpabet plus
+# some of my own creating for those phones defined in
+#
+# http://www.dev.voxforge.org/projects/de/wiki/PhoneSet
+#
+# uses only latin alpha chars
+#
+
+xs2xa_table = [
+
+    #
+    # stop
+    #
+
+    ('p'  , 'P'),
+    ('b'  , 'B'),
+    ('t'  , 'T'),
+    ('d'  , 'D'),
+    ('k'  , 'K'),
+    ('g'  , 'G'),
+    ('?'  , 'Q'),
+
+    #
+    # 2 consonants
+    #
+
+    ('pf'  , 'PF'),
+    ('ts'  , 'TS'),
+    ('tS'  , 'CH'),
+    ('dZ'  , 'JH'),
+
+    #
+    # fricative
+    #
+
+    ('f'  , 'F'),
+    ('v'  , 'V'),
+    ('T'  , 'TH'),
+    ('D'  , 'DH'),
+    ('s'  , 'S'),
+    ('z'  , 'Z'),
+    ('S'  , 'SH'),
+    ('Z'  , 'ZH'),
+    ('C'  , 'CC'),
+    ('j'  , 'Y'),
+    ('x'  , 'X'),
+    ('R'  , 'RR'),
+    ('h'  , 'HH'),
+
+    #
+    # nasal
+    #
+
+    ('m'  , 'M'),
+    ('n'  , 'N'),
+    ('N'  , 'NG'),
+
+    #
+    # liquid
+    #
+
+    ('l'  , 'L'),
+    ('r'  , 'R'),
+
+    #
+    # glide
+    #
+
+    ('w'  , 'W'),
+
+    #
+    # vowels, monophongs
+    #
+
+    # front
+    ('i'  , 'IY'),
+    ('i:' , 'IIH'),
+    ('I'  , 'IH'),
+    ('y'  , 'UE'),
+    ('y:' , 'YYH'),
+    ('Y'  , 'YY'),
+    ('e'  , 'EE'),
+    ('e:' , 'EEH'),
+    ('2'  , 'OH'),
+    ('2:' , 'OHH'),
+    ('9'  , 'OE'),
+    ('E'  , 'EH'),
+    ('E:' , 'EHH'),
+    ('{'  , 'AE'),
+    ('a'  , 'AH'),
+    ('a:' , 'AAH'),
+
+    # central
+    ('V'  , 'VV'),
+    ('@'  , 'AX'),
+    ('6'  , 'EX'),
+    ('3'  , 'AOR'),
+
+    # back
+    ('u'  , 'UH'),
+    ('u:' , 'UUH'),
+    ('U'  , 'UU'),
+    ('o'  , 'AO'),
+    ('o:' , 'OOH'),
+    ('O'  , 'OO'),
+    ('A'  , 'AA'),
+
+    # diphtongs
+    ('aI'  , 'AY'),
+    ('OI'  , 'OI'),
+    ('aU'  , 'AW'),
+    ('OY'  , 'OY'),
+    ]
+
+XARPABET_normalization = {
+    '-': None,
+    '\'': None,
+    }
+
+def xsampa2xarpabet (graph, s):
+    s = _normalize (s,  XARPABET_normalization)
+
+    buf = ""
+    i = 0
+    l = len(s)
+
+    while i < l:
+
+        found = False
+
+        for pl in range(MAX_PHONEME_LENGTH, 0, -1):
+
+            if i + pl > l:
+                continue
+
+            substr = s[i : i+pl ]
+
+            #print u"i: %s, pl: %d, substr: '%s'" % (i, pl, substr)
+
+            for pe in xs2xa_table:
+                p_f = pe[0]
+                p_t = pe[1]
+
+                if substr == p_f:
+                    if len(buf)>0:
+                        buf += ' '
+                    buf += p_t
+                    i += pl
+                    found = True
+                    break
+
+            if found:
+                break
+
+        if not found:
+
+            p = s[i]
+
+            msg = u"xsampa2xarpabet: %s: %s Phoneme not found: %s (%d) %s" % (graph, s, p, ord(p), s[i:])
+
+            raise Exception (msg.encode('UTF8'))
+
+    return buf
+
+class TestPhoneticAlphabets (unittest.TestCase):
+
+    def setUp(self):
+        self.seq = range(10)
+
+    def test_ipa(self):
+
+        res = ipa2xsampa ("EISENBAHN", u"ˈaɪ̯zən̩ˌbaːn")
+        #print "res: %s" % res
+        self.assertEqual (res, "'aIz@nba:n")
+
+        res = ipa2xsampa ("DIPHTONGTEST", u"aɪɔɪaʊɜ'")
+        #print "res: %s" % res
+        self.assertEqual (res, "aIOIaU3'")
+
+        res = ipa2mary ("EISENBAHN", u"ˈaɪ̯zən̩ˌbaːn")
+        #print "res: %s" % res
+        self.assertEqual (res, "'aIz@nba:n")
+
+        res = ipa2mary ("DIPHTONGTEST", u"aɪɔɪaʊɜ'")
+        #print "res: %s" % res
+        self.assertEqual (res, "aIOIaUr='")
+
+    def test_xarpa(self):
+
+        res = xsampa2xarpabet ("JAHRHUNDERTE", "ja:6-'hUn-d6-t@")
+        #print "res: %s" % res
+        self.assertEqual (res, "Y AAH EX HH UU N D EX T AX")
+
+        res = xsampa2xarpabet ("ABGESCHRIEBEN", "'ap-g@-SRi:-b@n")
+        #print "res: %s" % res
+        self.assertEqual (res, "AH P G AX SH RR IIH B AX N")
+
+        res = xsampa2xarpabet ("ZUGEGRIFFEN", "'tsu:-g@-gRI-f@n")
+        #print "res: %s" % res
+        self.assertEqual (res, "TS UUH G AX G RR IH F AX N")
+
+        res = xsampa2xarpabet ("AUSLEGUNG", "'aU-sle:-gUN")
+        #print "res: %s" % res
+        self.assertEqual (res, "AW S L EEH G UU NG")
+
+    def test_xarpa_unique(self):
+
+        # all xarpa transcriptions have to be unique
+
+        uniq_xs = set()
+        uniq_xa = set()
+
+        for entry in xs2xa_table:
+            xs = entry[0]
+            xa = entry[1]
+            self.assertFalse (xa in uniq_xa)
+            uniq_xa.add(xa)
+            self.assertFalse (xs in uniq_xs)
+            uniq_xs.add(xs)
+        
+
+
+if __name__ == "__main__":
+
+    unittest.main()
+

@@ -163,12 +163,12 @@ $(document).ready(function(){
 
             var wentry = cur_ts[i];
 
-            var ps = wentry['pronounciations'];
-            for (var j = 0; j<ps.length; j++) {
-                var p = ps[j];
+            //var ps = wentry['pronounciations'];
+            //for (var j = 0; j<ps.length; j++) {
+            //    var p = ps[j];
                 data['transcript'].push( { 'pid': $('input[name=wt' + i + ']:checked').val(),
                                            'wid': wentry['wid'] } );
-            }
+            //}
         }
 
         console.log ("savebutton data: ", data);

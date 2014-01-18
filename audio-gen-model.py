@@ -12,23 +12,6 @@ import psycopg2
 from gutils import detect_latin1
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
-def word2label (word):
-
-    if word[0].isdigit():
-        return "#" + word
-
-    return word
-
-# transform phonemes so they're proper labels
-# \ -> \\
-# prepend phonemes starting with digits
-def phoneme2label (ph):
-
-    if ph[0].isdigit():
-        return 'n'+ph.replace ('\\', '\\\\')
-
-    return ph.replace ('\\', '\\\\')
-
 # simple wrapper around os.system, will 
 # - cd to workdir first
 # - print out command to stdout
@@ -64,7 +47,6 @@ db_pass   = config.get("speech", "dbpass")
 audiodir  = config.get("speech", "audiodir")
 mfccdir   = config.get("speech", "mfccdir")
 workdir   = config.get("speech", "workdir")
-minqual   = config.get("speech", "minqual")
 
 #
 # connect to db
@@ -101,53 +83,15 @@ os.system ("mkdir %s/hmm15" % workdir)
 os.system ("mkdir %s/logs" % workdir)
 os.system ('cp -a input_files %s' % workdir)
 
-#
-# load dictionary from db
-#
-
-
-print "Loading dict..."
-
-srcdict = {}
-
-cur.execute ("SELECT phonemes, grapheme_id, id FROM pronounciations")
-
-rows = cur.fetchall()
-for row in rows:
-
-    ipa = row[0].decode('UTF8')
-    gid = row[1]
-    pid = row[2]
-
-    cur.execute ("SELECT grapheme FROM graphemes WHERE id=%s", (gid,))
-
-    row2 = cur.fetchone()
-    if not row2:
-        continue
-
-    word = row2[0].decode('UTF8')
-
-    xs = ipa2xsampa(word, ipa)
-    xa = xsampa2xarpabet(word, xs)
-
-    ph = xa + " sp"
-
-    if not word in srcdict:
-        srcdict[word] = [ ph ]
-    else:
-        srcdict[word].append(ph)
-
-print "%d words found in dictionary." % len(srcdict)
-
 print
-print "Step 2 - Collect Prompts, generate words.mlf, convert audio"
+print "Step 2 - Collect Prompts, generate words.mlf, train.scp"
 print
 
 #
 # prompts
 #
 
-wlist = set()
+plist = set()
 
 mlff = open ('%s/words.mlf' % workdir,'w')
 
@@ -156,44 +100,23 @@ mlff.write ('#!MLF!#\n')
 #codetrainscp = open ('%s/codetrain.scp' % workdir, 'w')
 trainscp = open ('%s/train.scp' % workdir, 'w')
 
-cur.execute ("SELECT filename, transcript FROM audio WHERE quality >= %s ORDER BY quality DESC", (minqual,))
+cur.execute ("SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2", )
 
 rows = cur.fetchall()
 for row in rows:
 
-    cfn = row[0]
-    transcript = row[1].decode('UTF8')
-
-    words = re.split ('\s+', transcript)
-
-    #
-    # we will only use those prompts for our model that contain only words from our dictionary
-    #
-
-    badprompt = False
-    for word in words:
-        w = re.sub(r"[,.?\-! ;:]", '', word.rstrip()).upper()
-        if len(w) == 0:
-            continue
-
-        if not w in srcdict:
-            print "   Skipping prompt %s because word is not in dict: %s" % (cfn, w)
-            badprompt = True
-            break
-
-    if badprompt:
-        continue
+    sid = row[0]
+    cfn = row[1]
 
     mlff.write ('"*/%s.lab"\n' % (cfn))
-    #trainscp.write ("mfcc/%s.mfc\n" % (cfn))
     trainscp.write ("%s/%s.mfc\n" % (mfccdir, cfn))
 
-    for word in words:
-
-        w = re.sub(r"[,.?\-! ;:]", '', word.rstrip()).upper()
-        if len(w) > 0:
-            wlist.add(w)
-            mlff.write ("%s\n" % word2label(w).encode ('utf-8'))
+    cur.execute ("SELECT pid FROM transcripts WHERE sid=%s ORDER BY id ASC" % (sid,))
+    rows2 = cur.fetchall()
+    for row2 in rows2:
+        pid = row2[0]
+        mlff.write ("P%07d\n" % pid)
+        plist.add(pid)
 
     mlff.write ('.\n')
 
@@ -204,17 +127,7 @@ trainscp.close()
 print
 print "%s/words.mlf written." % workdir
 print "%s/train.scp written." % workdir
-print "Got %d words." % len(wlist)
-
-#wlist_fn = "%s/wlist" % workdir
-#
-#outf = open (wlist_fn, 'w')
-#
-#for grapheme in sorted (wlist):
-#   outf.write ("%s\n" % grapheme.encode('utf-8'))
-#
-#outf.close()
-
+print "Got %d words." % len(plist)
 
 print
 print "Step 3 - Pronunciation Dictionnary"
@@ -222,29 +135,38 @@ print
 
 dict = {}
 
-for word in wlist:
-    ps = []
-    for p in srcdict[word]:
-        ps.append (p)
+for pid in plist:
 
-    dict[word] = ps
+    cur.execute ("SELECT phonemes,word FROM pronounciations,words WHERE pronounciations.id=%s AND pronounciations.wid=words.id", (pid,))
+    row = cur.fetchone()
+    if not row:
+        print "*** ERROR: missing pronounciation, pid=%d" % pid
+        sys.exit(1)
 
-dict ['SENT-START'] = [ 'sil' ]
-dict ['SENT-END'] = [ 'sil' ]
+    ipa = row[0].decode('UTF8')
+    word = row[1].decode('UTF8')
+
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
+
+    ph = xa + " sp"
+
+    dict['P%07d' % pid] = (word, ph)
+
+dict ['SENT-START'] = ( 'sil', 'sil' )
+dict ['SENT-END'] = ( 'sil', 'sil' )
 
 dict_fn = '%s/dict.txt' % workdir
 
 outf = open (dict_fn, 'w')
 
-for word in sorted (dict.iterkeys()):
+for pid in sorted (dict.iterkeys()):
 
-    ps = dict[word]
-    label = word2label (word)
+    dentry = dict[pid]
+    word = dentry[0]
+    ph = dentry[1]
 
-    prob = 1.0 / len(ps)
-
-    for p in ps:
-        outf.write ("%-20s [%s] %g %s\n" % (label.encode('utf-8'), word.encode('utf-8'), prob, p.encode('utf-8')))
+    outf.write ("%s [%s] 1.0 %s\n" % (pid, word.encode('utf-8'), ph.encode('utf-8')))
 
 outf.close()
 
@@ -256,14 +178,13 @@ print
 
 monophones = set()
 
-for word in dict:
+for pid in dict:
 
-    phss = dict[word]
+    phs = dict[pid][1]
 
-    for phs in phss:
-        for ph in phs.split(' '):
-            if len(ph) > 0:
-                monophones.add(ph)
+    for ph in phs.split(' '):
+        if len(ph) > 0:
+            monophones.add(ph)
 
 print "Got %d monophones." % len(monophones)
 
@@ -281,6 +202,8 @@ outf1.close()
 
 print "%s/monophones0 written." % workdir
 print "%s/monophones1 written." % workdir
+
+#sys.exit(0)
 
 print
 print "Step 5 - Creating Transcription Files"
@@ -385,7 +308,10 @@ print
 print "making hmm7"
 os.system ('cd %s ; cat dict.txt > dict1.txt' % (workdir))
 os.system ('cd %s ; echo "silence  []  sil" >> dict1.txt' % (workdir))
-systemlog ('HVite -A -D -T 1 -l \'*\' -o SWT -b silence -C ./input_files/config -H hmm7/macros -H hmm7/hmmdefs -i aligned.mlf -m -t 250.0 150.0 1000.0 -y lab -a -I words.mlf -S train.scp dict1.txt monophones1', 'Step8_HVite.log')
+#
+# forced alignment happens here - adjusted beam width upper limit to 1500 to accomodate longer submissions
+#
+systemlog ('HVite -A -D -T 1 -l \'*\' -o SWT -b silence -C ./input_files/config -H hmm7/macros -H hmm7/hmmdefs -i aligned.mlf -m -t 250.0 150.0 1500.0 -y lab -a -I words.mlf -S train.scp dict1.txt monophones1', 'Step8_HVite.log')
 
 #print "***Please review the following HVite output***:"
 #os.system ('cat %s/logs/Step8_HVite.log' % workdir)

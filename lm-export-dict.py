@@ -23,8 +23,6 @@ db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
-minqual   = config.getint("speech", "minqual")
-
 workdir   = config.get("speech", "lmworkdir")
 
 #
@@ -41,56 +39,41 @@ cur = conn.cursor()
 # generate dict (all words from prompts we have pronounciations for)
 #
 
-dict = {}
+outf_wlist = open ('%s/wlist.txt' % workdir, 'w')
+outf_julius = open ('%s/dict-julius.txt' % workdir, 'w')
+
+outf_julius.write ("<s> [<s>] sil\n</s> [</s>] sil\n") 
 
 print 
 print "Fetching dict entries for transcript words from db..."
 
-cur.execute ("SELECT transcript FROM audio WHERE quality >= %s ORDER BY QUALITY DESC", (minqual,))
+cur.execute ("SELECT DISTINCT word,phonemes FROM submissions,transcripts,words,pronounciations WHERE transcripts.sid=submissions.id AND transcripts.wid=words.id AND transcripts.pid = pronounciations.id AND reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2 ORDER BY word ASC", )
 
 rows = cur.fetchall()
+cnt = 1
 for row in rows:
 
-    transcript = row[0].decode('UTF8')
+    word = row[0].decode ('UTF8')
+    ipa  = row[1].decode ('UTF8')
 
-    l = compress_ws(transcript.rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' ')).lstrip(' ')
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
 
-    words = l.split(' ')
+    outf_wlist.write (("%s\n" % word).encode('UTF8'))
+    outf_julius.write (("%d\t[%s]\t%s\n" % (cnt, word, xa)).encode('UTF8'))
 
-    for word in words:
-
-        if word in dict:
-            continue
-
-        cur.execute ("SELECT id FROM graphemes WHERE grapheme=%s", (word,))
-
-        row = cur.fetchone()
-        if not row:
-            print "*** WARNING: word '%s' not found in lexicon." % word
-            continue
-
-        gid = row[0]
-
-        cur.execute ("SELECT phonemes FROM pronounciations WHERE grapheme_id=%s", (gid,))
-
-        row = cur.fetchone()
-        if not row:
-            print "*** ERROR: word '%s' has no pronounciation in lexicon." % word
-            sys.exit(2)
-
-        ipa = row[0].decode('UTF8')
-
-        xs = ipa2xsampa(word, ipa)
-        xa = xsampa2xarpabet(word, xs)
-
-        dict[word] = xa
-
-        if len(dict) % 1000 == 0:
-            print "   %d entries..." % len(dict)
+    cnt += 1
 
 print
-print "Found %d entries." % len(dict)
+print "Found %d entries." % cnt
 print 
+
+outf_wlist.close()
+outf_julius.close()
+
+print "%s/wlist.txt written." % workdir
+print "%s/dict-julius.txt written." % workdir
+print
 
 
 #
@@ -119,26 +102,3 @@ print
 #print
 #print "Final dict has %d entries." % len(dict)
 #print
-
-outf_wlist = open ('%s/wlist.txt' % workdir, 'w')
-outf_julius = open ('%s/dict-julius.txt' % workdir, 'w')
-
-outf_julius.write ("<s> [<s>] sil\n</s> [</s>] sil\n") 
-
-cnt = 1
-for word in dict:
-
-    xa = dict[word]
-
-    outf_wlist.write (("%s\n" % word).encode('UTF8'))
-    outf_julius.write (("%d\t[%s]\t%s\n" % (cnt, word, xa)).encode('UTF8'))
-
-    cnt += 1
-
-outf_wlist.close()
-outf_julius.close()
-
-print "%s/wlist.txt written." % workdir
-print "%s/dict-julius.txt written." % workdir
-print
-

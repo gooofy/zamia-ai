@@ -61,12 +61,22 @@ Compute Model
 
     Final model copied to: /home/ai/voxforge/de/work/acoustic_model_files
 
+export dictionary:
+
+    [guenter@dagobert speech]$ ./lm-export-dict.py 
+
+    Fetching dict entries for transcript words from db...
+
+    Found 2070 entries.
+
+    /home/ai/voxforge/de/lm/wlist.txt written.
+    /home/ai/voxforge/de/lm/dict-julius.txt written.
+
 collect final model:
 
     cp /home/ai/voxforge/de/work/acoustic_model_files/* /home/guenter/projects/ai/speech/output/acoustic_model_files
-    ...
     cp /home/ai/voxforge/de/work/dict.txt /home/guenter/projects/ai/speech/output/
-
+    cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
 
 Language Models
 ===============

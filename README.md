@@ -105,13 +105,13 @@ Export dictionary, generate wordlist:
 
 Generate corpus:
 
-    ./lm-europarl.py
+    #./lm-europarl.py
     ./lm-prompts.py 
 
 Generate reverse corpus:
 
-    ~/projects/ai/speech/lm-reverse.pl conversation_starters.sent >conversation_starters.rev
-    ~/projects/ai/speech/lm-reverse.pl europarl.sent >europarl.rev
+    #~/projects/ai/speech/lm-reverse.pl conversation_starters.sent >conversation_starters.rev
+    #~/projects/ai/speech/lm-reverse.pl europarl.sent >europarl.rev
     ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
 
 Train forward 2-gram in ARPA format:

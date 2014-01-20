@@ -60,7 +60,8 @@ for row in rows:
     xa = xsampa2xarpabet(word, xs)
 
     outf_wlist.write (("%s\n" % word).encode('UTF8'))
-    outf_julius.write (("%d\t[%s]\t%s\n" % (cnt, word, xa)).encode('UTF8'))
+    #outf_julius.write (("%d\t[%s]\t%s\n" % (cnt, word, xa)).encode('UTF8'))
+    outf_julius.write (("%s\t[%s]\t%s\n" % (word, word, xa)).encode('UTF8'))
 
     cnt += 1
 

@@ -25,7 +25,6 @@ db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
 workdir   = config.get("speech", "lmworkdir")
-minqual   = config.getint("speech", "minqual")
 
 #
 # connect to db
@@ -41,9 +40,10 @@ cur = conn.cursor()
 # collect prompts from DB
 #
 
-outf = open ('%s/prompts.sent' % workdir, 'w')
+fn = '%s/prompts.sent' % workdir
+outf = open (fn, 'w')
 
-cur.execute ("SELECT transcript FROM audio WHERE quality >= %s ORDER BY QUALITY DESC", (minqual,))
+cur.execute ("SELECT prompt FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
 
 rows = cur.fetchall()
 for row in rows:
@@ -53,5 +53,11 @@ for row in rows:
     l = compress_ws(transcript.rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' ')).lstrip(' ')
 
     outf.write (('%s\n' % l).encode('UTF8') )
+
+outf.close()
+
+print "%s written." % fn
+print
+
 
 

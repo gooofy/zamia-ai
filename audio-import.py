@@ -95,13 +95,20 @@ for submission in os.listdir (audiodir):
 
                 print "%-20s: converting %s => %s" % (cfn, flacfilename, '/tmp/foo.wav')
                 os.system ("flac -s -f -d '%s' -o /tmp/foo.wav" % flacfilename)
-                print "%-20s: converting %s => %s" % (cfn, '/tmp/foo.wav', mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config /tmp/foo.wav '%s'" % mfccfilename)
+                print "%-20s: converting /tmp/foo.wav => /tmp/foo1.wav (16kHz mono)" % (cfn)
+                os.system ("sox /tmp/foo.wav -r 16000 -c 1 /tmp/foo1.wav")
+                print "%-20s: converting %s => %s" % (cfn, '/tmp/foo1.wav', mfccfilename)
+                os.system ("HCopy -T 0 -C input_files/wav_config /tmp/foo1.wav '%s'" % mfccfilename)
+                os.system ("rm /tmp/foo.wav")
+                os.system ("rm /tmp/foo1.wav")
             
             else:
 
-                print "%-20s: converting %s => %s" % (cfn, wavfilename, mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config '%s' '%s'" % (wavfilename, mfccfilename))
+                print "%-20s: converting %s => /tmp/foo.wav (16kHz mono)" % (cfn, wavfilename)
+                os.system ("sox '%s' -r 16000 -c 1 /tmp/foo.wav" % (wavfilename))
+                print "%-20s: converting /tmp/foo.wav => %s" % (cfn, mfccfilename)
+                os.system ("HCopy -T 0 -C input_files/wav_config /tmp/foo.wav '%s'" % (mfccfilename))
+                os.system ("rm /tmp/foo.wav")
 
         # db entry
 

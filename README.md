@@ -1,3 +1,10 @@
+Links
+=====
+
+Data / Exports: http://goofy.zamia.org/voxforge/
+
+Code: https://github.com/gooofy/voxforge
+
 Audio Model
 ===========
 

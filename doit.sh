@@ -39,11 +39,19 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 ./eval-model.py >output/eval-model.log
 
 #
-# db dump
+# export data, db dump
 #
 
 pg_dump -U lexicon lexicon_de >output/db.sql
+gzip output/db.sql
 
+cp README.md output/readme.txt
 
+./audio-export-csv.py >output/audio-transcripts.csv
 
+#
+# upload
+#
+
+rsync -avP --delete output/ goofy:/var/www/html/voxforge/de
 

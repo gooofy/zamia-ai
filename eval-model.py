@@ -51,6 +51,7 @@ outf = open (outfn, 'w')
 
 prompts = {}
 
+filecount = 0
 rows = cur.fetchall()
 for row in rows:
 
@@ -63,6 +64,7 @@ for row in rows:
     prompts[mfcfn] = prompt
 
     outf.write ('%s\n' % mfcfn)
+    filecount += 1
 
 outf.close()
 
@@ -93,15 +95,17 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
 
     logf.write(line)
 
-    m = mfcrex.match(line)
+    l = line.decode ('UTF8')
+
+    m = mfcrex.match(l)
     if m:
         mfcfn = m.group(1)
         pe    = prompts[mfcfn]
 
-    m = rex.match(line)
+    m = rex.match(l)
     if m:
 
-        print mfcfn
+        print "%5d/%5d: %s" % (cnt, filecount, mfcfn)
         pr = m.group(1)
 
         print pe

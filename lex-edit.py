@@ -122,16 +122,18 @@ def store_entry (entry):
 
     cur = conn.cursor()
 
-    if entry['id'] > 0:
-        cur.execute ("DELETE FROM pronounciations WHERE wid=%s", (entry['id'], ))
-    else:
+    if entry['id'] == 0:
         cur.execute ("INSERT INTO words (word, occurences) VALUES (%s, 1) RETURNING id", (entry['word'],))
         entry['id'] = cur.fetchone()[0]
 
-
     for ph in entry['phonemes']:
-        cur.execute ("INSERT INTO pronounciations (phonemes, probability, points, wid) VALUES (%s,%s,%s,%s)", 
-                     (ph['phonemes'], ph['probability'], ph['points'], entry['id']))
+
+        if ph['id'] == 0:
+            cur.execute ("INSERT INTO pronounciations (phonemes, probability, points, wid) VALUES (%s,%s,%s,%s)", 
+                         (ph['phonemes'], ph['probability'], ph['points'], entry['id']))
+        else:
+            cur.execute ("UPDATE pronounciations SET phonemes=%s, probability=%s, points=%s WHERE id=%s", 
+                         (ph['phonemes'], ph['probability'], ph['points'], ph['id']))
 
     conn.commit()
 

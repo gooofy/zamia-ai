@@ -40,10 +40,12 @@ cur.execute ("SELECT cfn,reviewed,noiselevel,truncated,audiolevel,pcn,id,numsamp
 
 reviewed_num_samples = 0
 reviewed_num_files   = 0
-good_num_samples = 0
-good_num_files   = 0
-total_num_samples = 0
-total_num_files   = 0
+good_num_samples     = 0
+good_num_files       = 0
+total_num_samples    = 0
+total_num_files      = 0
+
+samples_per_user     = {}
 
 rows = cur.fetchall()
 for row in rows:
@@ -57,6 +59,8 @@ for row in rows:
     sid         = row[6]
     num_samples = row[7]
 
+    login       = cfn.split('-')[0]
+
     total_num_samples += num_samples
     total_num_files   += 1
 
@@ -67,11 +71,24 @@ for row in rows:
         if noiselevel < 2 and not truncated and audiolevel<2 and pcn<2:
             good_num_samples += num_samples
             good_num_files   += 1
+
+            if login in samples_per_user:
+                samples_per_user[login] += num_samples
+            else:
+                samples_per_user[login] = num_samples
             
 
 print
 print "STATS: total    %6d files, total    length: %8.2fmin" % (total_num_files, total_num_samples / (60 * 100.0))
 print "STATS: reviewed %6d files, reviewed length: %8.2fmin" % (reviewed_num_files, reviewed_num_samples / (60 * 100.0))
 print "STATS: good     %6d files, good     length: %8.2fmin" % (good_num_files, good_num_samples / (60 * 100.0))
+print
+print "good contributions per user: "
+print
+
+for login in samples_per_user:
+    samples = samples_per_user[login]
+    print "%-25s : %8.2fmin" % (login, samples / (60*100.0))
+
 print
 

@@ -8,4 +8,5 @@ test
 output
 prompts
 audio-find-errors.py
+audio-auto-transcribe.py
 files.txt

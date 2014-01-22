@@ -12,9 +12,9 @@ from os.path import expanduser
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
 #
-# export contents of our phonetic database to a dict file
+# export contents of our phonetic database to files
 #
-# 2013 by G. Bartsch. License: LGPLv3
+# 2013, 2014 by G. Bartsch. License: LGPLv3
 #
 
 #
@@ -39,100 +39,41 @@ conn_string = "host='%s' dbname='%s' user='%s' password='%s'" % (db_server, db_n
 conn = psycopg2.connect(conn_string)
 
 #
-# check for illegal entries
-#
-
-print "Checking entries ",
-sys.stdout.flush()
-
-cur = conn.cursor()
-cur.execute ("SELECT phonemes, grapheme_id, id FROM pronounciations")
-
-num_illegal = 0
-num_total = 0
-
-rows = cur.fetchall()
-for row in rows:
-
-    ipa = row[0].decode('UTF8')
-    gid = row[1]
-    pid = row[2]
-
-    cur.execute ("SELECT grapheme FROM graphemes WHERE id=%s", (gid,))
-
-    row2 = cur.fetchone()
-    if not row2:
-        continue
-
-    word = row2[0].decode('UTF8')
-    num_total += 1
-
-    if num_total % 250 == 0:
-        print '.',
-        sys.stdout.flush()
-
-    try:
-        xs = ipa2xsampa(word, ipa)
-    except:
-
-        print (u"while working on: %d %s %s" % (pid, word, ipa)).encode('UTF8')
-
-        print "catched error: %s" % sys.exc_info()[0]
-        
-        #cur.execute ("DELETE FROM pronounciations WHERE id=%s", (pid,))
-
-        #print "ENTRY DELETED."
-        print
-
-        num_illegal += 1
-
-conn.commit()
-
-print "done. %d entries total, %d illegal ones." % (num_total, num_illegal)
-
-if num_illegal > 0:
-    sys.exit(1)
-
-#
 # output translation table
 #
 
-#outf_julius = open ('output/dict-julius.txt', 'w')
+print
+print "Exporting dict..."
+print
+
 outf_ipa    = open ('output/dict-ipa.txt', 'w')
 outf_xsampa = open ('output/dict-xsampa.txt', 'w')
 
 count = 0
 
 cur = conn.cursor()
-cur.execute ("SELECT phonemes, grapheme_id, id FROM pronounciations")
+cur.execute ("SELECT word,phonemes FROM words,pronounciations WHERE words.id=pronounciations.wid ORDER BY word ASC")
 
 rows = cur.fetchall()
 for row in rows:
 
-    ipa = row[0].decode('UTF8')
-    gid = row[1]
-    pid = row[2]
-
-    cur.execute ("SELECT grapheme FROM graphemes WHERE id=%s", (gid,))
-
-    row2 = cur.fetchone()
-    if not row2:
-        continue
-
-    word = row2[0].decode('UTF8')
-
-    count += 1
-
-    print (u"%7d/%7d : %7d %s %s" % (count, num_total, pid, word, ipa)).encode('UTF8')
+    word = row[0].decode('UTF8')
+    ipa  = row[1].decode('UTF8')
 
     xs = ipa2xsampa(word, ipa)
     xa = xsampa2xarpabet(word, xs)
 
-#    outf_julius.write ( (u"%s\t[%s]\t%s\n" % (word, word, xa)).encode('UTF8') )
     outf_ipa.write ( (u"%s\t%s\n" % (word, ipa)).encode('UTF8') )
     outf_xsampa.write ( (u"%s\t%s\n" % (word, xa)).encode('UTF8') )
 
-#outf_julius.close()
+    count += 1
+
 outf_ipa.close()
 outf_xsampa.close()
+
+print 'output/dict-ipa.txt written.'
+print 'output/dict-xsampa.txt written.'
+print
+print "total: %d entries." % count
+print
 

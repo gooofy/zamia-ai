@@ -48,6 +48,7 @@ gzip output/db.sql
 cp README.md output/readme.txt
 
 ./audio-export-csv.py >output/audio-transcripts.csv
+./lex-export.py
 
 #
 # upload

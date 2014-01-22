@@ -61,10 +61,9 @@ for row in rows:
     ipa  = row[1].decode('UTF8')
 
     xs = ipa2xsampa(word, ipa)
-    xa = xsampa2xarpabet(word, xs)
 
     outf_ipa.write ( (u"%s\t%s\n" % (word, ipa)).encode('UTF8') )
-    outf_xsampa.write ( (u"%s\t%s\n" % (word, xa)).encode('UTF8') )
+    outf_xsampa.write ( (u"%s\t%s\n" % (word, xs)).encode('UTF8') )
 
     count += 1
 

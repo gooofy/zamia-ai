@@ -119,6 +119,8 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
             if pos < len(w2s):
                 if w1 != w2s[pos]:
                     werr += 1
+            else:
+                werr += 1
 
             pos += 1
 

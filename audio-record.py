@@ -86,7 +86,7 @@ recbuf = ctypes.create_string_buffer(REC_BUF_LEN)
 recbuf_len = 0
 
 # bytes to skip at beginning and end of recording (eliminiate keyboard clicks)
-TO_SKIP = 48000/10 * 2 # 1/10th of a second
+TO_SKIP = 48000/5 * 2 # 1/5th of a second
 
 # count lines
 

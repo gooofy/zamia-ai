@@ -14,6 +14,7 @@ mkdir output
 cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
 cp /home/ai/voxforge/de/work/dict.txt output/
 cp /home/ai/voxforge/de/lm/dict-julius.txt output/
+cp /home/ai/voxforge/de/work/logs/Step* output/
 
 ./audio-stats.py >output/audio-stats.log
 

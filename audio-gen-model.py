@@ -309,9 +309,9 @@ print "making hmm7"
 os.system ('cd %s ; cat dict.txt > dict1.txt' % (workdir))
 os.system ('cd %s ; echo "silence  []  sil" >> dict1.txt' % (workdir))
 #
-# forced alignment happens here - adjusted beam width upper limit to 1500 to accomodate longer submissions
+# forced alignment happens here - adjusted beam width upper limit to 1000 to accomodate longer submissions
 #
-systemlog ('HVite -A -D -T 1 -l \'*\' -o SWT -b silence -C ./input_files/config -H hmm7/macros -H hmm7/hmmdefs -i aligned.mlf -m -t 250.0 150.0 1500.0 -y lab -a -I words.mlf -S train.scp dict1.txt monophones1', 'Step8_HVite.log')
+systemlog ('HVite -A -D -T 1 -l \'*\' -o SWT -b silence -C ./input_files/config -H hmm7/macros -H hmm7/hmmdefs -i aligned.mlf -m -t 250.0 150.0 1000.0 -y lab -a -I words.mlf -S train.scp dict1.txt monophones1', 'Step8_HVite.log')
 
 #print "***Please review the following HVite output***:"
 #os.system ('cat %s/logs/Step8_HVite.log' % workdir)

@@ -12,12 +12,7 @@ import json
 import psycopg2
 from cgi import parse_qs, escape
 import pdb
-
-def run_command(command):
-    p = subprocess.Popen(command,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
-    return iter(p.stdout.readline, b'')
+from gutils import run_command, split_words
 
 def hurl_submissions (environ, start_response):
 
@@ -176,42 +171,39 @@ def hurl_submission_get_details (environ, start_response):
                   (parameters['id'][0],))
 
     # collect dictionary entries for all the words
-    
-    words = re.split ('\s+', res['prompt'])
+
+    words = split_words (res['prompt'])
     for word in words:
 
-        w = re.sub(r"[,.?\-! ;:]", '', word.rstrip()).upper()
-        if len(w) > 0:
+        wentry = { 'word': word, 'pronounciations': [] }
 
-            wentry = { 'word': w, 'pronounciations': [] }
+        # dict lookup
 
-            # dict lookup
+        cur.execute ('SELECT id FROM words WHERE word=%s', (word,))
+        row = cur.fetchone()
+        if row:
+            wentry['wid'] = row[0]
 
-            cur.execute ('SELECT id FROM words WHERE word=%s', (word,))
-            row = cur.fetchone()
-            if row:
-                wentry['wid'] = row[0]
+            selpid = 0
 
-                selpid = 0
+            cur.execute ('SELECT phonemes, id FROM pronounciations WHERE wid=%s', (wentry['wid'],))
+            rows = cur.fetchall()
+            for row in rows:
 
-                cur.execute ('SELECT phonemes, id FROM pronounciations WHERE wid=%s', (wentry['wid'],))
-                rows = cur.fetchall()
-                for row in rows:
+                pentry = { 'pid': row[1],
+                           'ipa': row[0].decode('UTF8') }
 
-                    pentry = { 'pid': row[1],
-                               'ipa': row[0].decode('UTF8') }
+                wentry['pronounciations'].append(pentry)
+                selpid = row[1]
 
-                    wentry['pronounciations'].append(pentry)
-                    selpid = row[1]
+            # matching pronounciation?
+            row = cur2.fetchone()
+            if row and row[0] == wentry['wid']:
+                wentry['selpid'] = row[1]
+            else:
+                wentry['selpid'] = selpid
 
-                # matching pronounciation?
-                row = cur2.fetchone()
-                if row and row[0] == wentry['wid']:
-                    wentry['selpid'] = row[1]
-                else:
-                    wentry['selpid'] = selpid
-
-            res['transcript'].append(wentry)
+        res['transcript'].append(wentry)
 
     cur2.close()
 

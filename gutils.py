@@ -69,6 +69,19 @@ def run_command(command):
                          stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
+def split_words (s):
+
+    res = []
+
+    words = re.split ('\s+', s)
+    for word in words:
+
+        w = re.sub(r"[,.?\-! ;:]", '', word.rstrip()).upper()
+        if len(w) > 0:
+            res.append (w)
+
+    return res
+
 
 class TestGUtils (unittest.TestCase):
 
@@ -81,6 +94,11 @@ class TestGUtils (unittest.TestCase):
 
     def test_ws(self):
         self.assertEqual (compress_ws('   ws   foo bar'), ' ws foo bar')
+
+#    def test_editdist(self):
+#        self.assert (SIE IST FÜR DIE LEISTUNG DANKBAR 
+#        SIE STRITTIG LEISTUNGEN DANK DORT 
+
 
 if __name__ == "__main__":
 

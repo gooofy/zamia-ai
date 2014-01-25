@@ -25,7 +25,7 @@ from os.path import expanduser
 import StringIO
 import psycopg2
 import ConfigParser
-from gutils import compress_ws, run_command
+from gutils import compress_ws, run_command, split_words, edit_distance
 
 
 #
@@ -125,28 +125,21 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
         print "%5d/%5d: %s" % (cnt, filecount, mfcfn)
         pr = m.group(1)
 
-        print pe
-        print pr
+        print "    expected: %s" % pe
+        print "    got     : %s" % pr
 
-        w1s = pe.split(' ')
-        w2s = pr.split(' ')
-        pos = 0
+        w1s = split_words(pe)
+        w2s = split_words(pr)
+
         words += len(w1s)
-        for w1 in w1s:
-            if pos < len(w2s):
-                if w1 != w2s[pos]:
-                    werr += 1
-            else:
-                werr += 1
+        n_errs = edit_distance(w1s, w2s)
 
-            pos += 1
+        werr += n_errs
 
-        print "%3d%% word errors" % (werr * 100 / words)
+        print "    +%2d word errors, total: %4d errors in %4d words => rate = %3d%%" % (n_errs, werr, words, werr * 100 / words)
         print
 
         cnt += 1
-
-
 
 logf.close()
 print "%s written." % logfn

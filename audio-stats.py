@@ -24,7 +24,7 @@ import os
 import StringIO
 import ConfigParser
 from os.path import expanduser
-from gutils import run_command
+from gutils import run_command, split_words
 import psycopg2
 
 #
@@ -53,7 +53,7 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
-cur.execute ("SELECT cfn,reviewed,noiselevel,truncated,audiolevel,pcn,id,numsamples FROM submissions")
+cur.execute ("SELECT cfn,reviewed,noiselevel,truncated,audiolevel,pcn,id,numsamples,prompt FROM submissions")
 
 reviewed_num_samples = 0
 reviewed_num_files   = 0
@@ -63,6 +63,7 @@ total_num_samples    = 0
 total_num_files      = 0
 
 samples_per_user     = {}
+words_per_user       = {}
 
 rows = cur.fetchall()
 for row in rows:
@@ -75,6 +76,8 @@ for row in rows:
     pcn         = row[5]
     sid         = row[6]
     num_samples = row[7]
+    prompt      = row[8]
+    num_words   = len(split_words(prompt))
 
     login       = cfn.split('-')[0]
 
@@ -93,7 +96,12 @@ for row in rows:
                 samples_per_user[login] += num_samples
             else:
                 samples_per_user[login] = num_samples
-            
+
+            if login in words_per_user:
+                words_per_user[login] += num_words
+            else:
+                words_per_user[login] = num_words
+           
 
 print
 print "STATS: total    %6d files, total    length: %8.2fmin" % (total_num_files, total_num_samples / (60 * 100.0))
@@ -105,7 +113,8 @@ print
 
 for login in samples_per_user:
     samples = samples_per_user[login]
-    print "%-25s : %8.2fmin" % (login, samples / (60*100.0))
+    words = words_per_user[login]
+    print "%-25s : %8.2fmin %5d words" % (login, samples / (60*100.0), words)
 
 print
 

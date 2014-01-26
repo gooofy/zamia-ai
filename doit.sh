@@ -25,8 +25,10 @@ cp /home/ai/voxforge/de/work/logs/Step* output/
 ./lm-prompts.py
 pushd /home/ai/voxforge/de/lm
 ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
-ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
-ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
+ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
+ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+#ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
+#ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
 mkbingram -nlr german.arpa -nrl german-rev.arpa german.bingram
 popd
 
@@ -37,7 +39,22 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 # eval
 #
 
-./eval-model.py >output/eval-model.log
+./eval-model.py >output/eval-lm.log
+
+#
+# grammar / dfa
+#
+
+./grammar-gen.py
+pushd output
+mkdfa.pl eval
+popd
+
+#
+# eval grammar
+#
+
+./eval-grammar.py >output/eval-grammar.log
 
 #
 # export data, db dump
@@ -55,5 +72,5 @@ cp README.md output/readme.txt
 # upload
 #
 
-rsync -avP --delete output/ goofy:/var/www/html/voxforge/de
+#rsync -avP --delete output/ goofy:/var/www/html/voxforge/de
 

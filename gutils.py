@@ -130,6 +130,8 @@ def edit_distance (s, t):
   
     return d[m][n]
 
+def kill_umlauts(s):
+    return s.replace(u'ß',u'SS').replace(u'Ü',u'UE').replace(u'Ö',u'OE').replace(u'Ä',u'AE').replace(u'§', 'PARAGRAPH').replace('%','PROZENT').replace('-','STRICH').replace("'",'')
 
 class TestGUtils (unittest.TestCase):
 

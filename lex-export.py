@@ -63,8 +63,8 @@ print
 print "Exporting dict..."
 print
 
-outf_ipa    = open ('output/dict-ipa.txt', 'w')
-outf_xsampa = open ('output/dict-xsampa.txt', 'w')
+outf_ipa    = open ('output/dict/dict-ipa.txt', 'w')
+outf_xsampa = open ('output/dict/dict-xsampa.txt', 'w')
 
 count = 0
 
@@ -87,8 +87,8 @@ for row in rows:
 outf_ipa.close()
 outf_xsampa.close()
 
-print 'output/dict-ipa.txt written.'
-print 'output/dict-xsampa.txt written.'
+print 'output/dict/dict-ipa.txt written.'
+print 'output/dict/dict-xsampa.txt written.'
 print
 print "total: %d entries." % count
 print

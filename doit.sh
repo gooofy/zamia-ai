@@ -3,6 +3,8 @@
 rm -rf output
 mkdir output
 mkdir output/logs
+mkdir output/dict
+mkdir output/lm
 
 #
 # audio model
@@ -13,11 +15,9 @@ mkdir output/logs
 ./lm-export-dict.py 
 
 cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
-cp /home/ai/voxforge/de/work/dict.txt output/
-cp /home/ai/voxforge/de/lm/dict-julius.txt output/
+cp /home/ai/voxforge/de/work/dict.txt output/dict
+cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
 cp /home/ai/voxforge/de/work/logs/Step* output/logs
-
-./audio-stats.py >output/audio-stats.txt
 
 # 
 # language model
@@ -33,8 +33,8 @@ ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscoun
 mkbingram -nlr german.arpa -nrl german-rev.arpa german.bingram
 popd
 
-cp /home/ai/voxforge/de/lm/german.bingram output/
-cp /home/ai/voxforge/de/lm/dict-julius.txt output/
+cp /home/ai/voxforge/de/lm/german.bingram output/lm
+cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 
 #
 # eval
@@ -46,20 +46,22 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 # grammar / dfa
 #
 
-./grammar-gen.py
-pushd output
-mkdfa.pl eval >logs/mkdfa.log
-popd
+#./grammar-gen.py
+#pushd output
+#mkdfa.pl eval >logs/mkdfa.log
+#popd
 
 #
 # eval grammar
 #
 
-./eval-grammar.py >output/logs/eval-grammar.log
+#./eval-grammar.py >output/logs/eval-grammar.log
 
 #
 # export data, db dump
 #
+
+./audio-stats.py >output/audio-stats.txt
 
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql

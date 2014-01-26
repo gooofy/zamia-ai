@@ -118,7 +118,7 @@ cur.execute ("UPDATE eval SET jsresp=NULL, jswerr=NULL")
 
 for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
                            '-h', 'output/acoustic_model_files/hmmdefs', '-hlist', 'output/acoustic_model_files/tiedlist',
-                           '-d', 'output/german.bingram', '-v', 'output/dict-julius.txt', '-fbank', '26', '-rawe'] ):
+                           '-d', 'output/lm/german.bingram', '-v', 'output/dict/dict-julius.txt', '-fbank', '26', '-rawe'] ):
 
     logf.write(line)
 

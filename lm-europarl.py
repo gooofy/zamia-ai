@@ -38,10 +38,14 @@ config.read("%s/%s" % (home_path, ".airc"))
 workdir   = config.get("speech", "lmworkdir")
 europarl  = config.get("speech", "europarl")
 
-outf = open ('%s/europarl.sent' % workdir, 'w')
+print
+print "Reading sentences from %s..." % europarl
+
+outfn = '%s/europarl.sent' % workdir
+outf = open (outfn, 'w')
 
 inf = open (europarl)
-
+count = 0
 for line in inf:
 
     l = compress_ws(line.decode('UTF8').rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' ')).lstrip(' ')
@@ -49,5 +53,14 @@ for line in inf:
     #outf.write (('<s> %s </s>\n' % l).encode('UTF8') )
     outf.write (('%s\n' % l).encode('UTF8') )
 
- 
+    count += 1
+    if count % 100000 == 0:
+        print "%7d sentences..." % count
+
+inf.close()
+outf.close()
+
+print
+print "%s written." % outfn
+print 
 

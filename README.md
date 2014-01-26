@@ -81,9 +81,10 @@ export dictionary:
 
 collect final model:
 
-    cp /home/ai/voxforge/de/work/acoustic_model_files/* /home/guenter/projects/ai/speech/output/acoustic_model_files
-    cp /home/ai/voxforge/de/work/dict.txt /home/guenter/projects/ai/speech/output/
-    cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
+    cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
+    cp /home/ai/voxforge/de/work/dict.txt output/dict
+    cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
+    cp /home/ai/voxforge/de/work/logs/Step* output/logs
 
 Language Models
 ===============
@@ -137,8 +138,8 @@ Combine the two ARPA N-grams and convert into binary format for Julius:
 
 collect results:
 
-    cp /home/ai/voxforge/de/lm/german.bingram /home/guenter/projects/ai/speech/output/
-    cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
+    cp /home/ai/voxforge/de/lm/german.bingram output/lm
+    cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 
 test julius:
 

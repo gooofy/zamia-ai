@@ -61,12 +61,13 @@ cur = conn.cursor()
 
 print "Writing list of all good mfc files..."
 
-cur.execute ("SELECT prompt,cfn FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
+cur.execute ("SELECT prompt,cfn,id FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
 
 outfn = '%s/mfcfiles.txt' % workdir
 outf = open (outfn, 'w')
 
 prompts = {}
+sids    = {}
 
 filecount = 0
 rows = cur.fetchall()
@@ -74,14 +75,21 @@ for row in rows:
 
     prompt = row[0].decode('UTF8')
     cfn    = row[1]
+    sid    = row[2]
 
     mfcfn = "%s/%s.mfc" % (mfccdir, cfn)
 
     #print "Running julius on %s, expect '%s' output" % (mfcfn, prompt)
     prompts[mfcfn] = prompt
+    sids[mfcfn]    = sid
 
     outf.write ('%s\n' % mfcfn)
     filecount += 1
+
+    cur.execute ('SELECT id FROM eval WHERE sid=%s', (sid,))
+    row = cur.fetchone()
+    if not row:
+        cur.execute ('INSERT INTO eval (sid) VALUES (%s)', (sid,))
 
 outf.close()
 
@@ -106,6 +114,8 @@ werr   = 0
 mfcfn  = ""
 pe     = ""
 
+cur.execute ("UPDATE eval SET jsresp=NULL, jswerr=NULL")
+
 for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
                            '-h', 'output/acoustic_model_files/hmmdefs', '-hlist', 'output/acoustic_model_files/tiedlist',
                            '-d', 'output/german.bingram', '-v', 'output/dict-julius.txt', '-fbank', '26', '-rawe'] ):
@@ -118,6 +128,7 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
     if m:
         mfcfn = m.group(1)
         pe    = prompts[mfcfn]
+        sid   = sids[mfcfn]
 
     m = rex.match(l)
     if m:
@@ -138,6 +149,11 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
 
         print "    +%2d word errors, total: %4d errors in %4d words => rate = %3d%%" % (n_errs, werr, words, werr * 100 / words)
         print
+
+        cur.execute ('UPDATE eval SET jsresp=%s, jswerr=%s WHERE sid=%s', (pr, n_errs, sid))
+
+        conn.commit()
+        cur = conn.cursor()
 
         cnt += 1
 

@@ -115,7 +115,7 @@ werr   = 0
 mfcfn  = ""
 pe     = ""
 
-cur.execute ("UPDATE eval SET jgresp=NULL, jgwerr=0")
+cur.execute ("UPDATE eval SET jgresp=NULL, jgwerr=NULL")
 
 for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
                            '-h', 'output/acoustic_model_files/hmmdefs', '-hlist', 'output/acoustic_model_files/tiedlist',

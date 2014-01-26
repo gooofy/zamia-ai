@@ -2,21 +2,22 @@
 
 rm -rf output
 mkdir output
+mkdir output/logs
 
 #
 # audio model
 #
 
-./audio-gen-model.py >output/genmodel.log
+./audio-gen-model.py >output/logs/genmodel.log
 
 ./lm-export-dict.py 
 
 cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
 cp /home/ai/voxforge/de/work/dict.txt output/
 cp /home/ai/voxforge/de/lm/dict-julius.txt output/
-cp /home/ai/voxforge/de/work/logs/Step* output/
+cp /home/ai/voxforge/de/work/logs/Step* output/logs
 
-./audio-stats.py >output/audio-stats.log
+./audio-stats.py >output/audio-stats.txt
 
 # 
 # language model
@@ -39,7 +40,7 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 # eval
 #
 
-./eval-model.py >output/eval-lm.log
+./eval-model.py >output/logs/eval-lm.log
 
 #
 # grammar / dfa
@@ -47,14 +48,14 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 
 ./grammar-gen.py
 pushd output
-mkdfa.pl eval
+mkdfa.pl eval >output/logs/mkdfa.log
 popd
 
 #
 # eval grammar
 #
 
-./eval-grammar.py >output/eval-grammar.log
+./eval-grammar.py >output/logs/eval-grammar.log
 
 #
 # export data, db dump

@@ -103,7 +103,7 @@ print
 
 print "Running julius..."
 
-logfn = "output/evalg.log"
+logfn = "output/logs/evalg.log"
 logf = open (logfn, 'w')
 
 mfcrex = re.compile (r"^input MFCC file: (.+)$")

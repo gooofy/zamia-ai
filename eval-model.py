@@ -106,7 +106,7 @@ logfn = "output/logs/eval.log"
 logf = open (logfn, 'w')
 
 mfcrex = re.compile (r"^input MFCC file: (.+)$")
-rex = re.compile (r"^wseq1: <s> ([^<]+)</s>$")
+rex = re.compile (r"^wseq1: <s> ([^<]*)</s>$")
 
 cnt    = 0
 words  = 0

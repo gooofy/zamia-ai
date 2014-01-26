@@ -53,7 +53,7 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
-cur.execute ("SELECT cfn,reviewed,noiselevel,truncated,audiolevel,pcn,id,numsamples,prompt FROM submissions")
+cur.execute ("SELECT cfn,reviewed,noiselevel,truncated,audiolevel,pcn,submissions.id,numsamples,prompt,jswerr FROM submissions,eval WHERE submissions.id=eval.sid")
 
 reviewed_num_samples = 0
 reviewed_num_files   = 0
@@ -64,6 +64,7 @@ total_num_files      = 0
 
 samples_per_user     = {}
 words_per_user       = {}
+werr_per_user        = {}
 
 rows = cur.fetchall()
 for row in rows:
@@ -78,6 +79,10 @@ for row in rows:
     num_samples = row[7]
     prompt      = row[8]
     num_words   = len(split_words(prompt))
+    if not row[9] is None:
+        num_werr    = row[9]
+    else:
+        num_werr    = num_words
 
     login       = cfn.split('-')[0]
 
@@ -101,20 +106,34 @@ for row in rows:
                 words_per_user[login] += num_words
             else:
                 words_per_user[login] = num_words
+
+            if login in werr_per_user:
+                werr_per_user[login] += num_werr
+            else:
+                werr_per_user[login] = num_werr
            
 
 print
-print "STATS: total    %6d files, total    length: %8.2fmin" % (total_num_files, total_num_samples / (60 * 100.0))
-print "STATS: reviewed %6d files, reviewed length: %8.2fmin" % (reviewed_num_files, reviewed_num_samples / (60 * 100.0))
+#print "STATS: total    %6d files, total    length: %8.2fmin" % (total_num_files, total_num_samples / (60 * 100.0))
+#print "STATS: reviewed %6d files, reviewed length: %8.2fmin" % (reviewed_num_files, reviewed_num_samples / (60 * 100.0))
 print "STATS: good     %6d files, good     length: %8.2fmin" % (good_num_files, good_num_samples / (60 * 100.0))
 print
 print "good contributions per user: "
 print
 
+total_words = 0
+total_werr  = 0
+
 for login in samples_per_user:
     samples = samples_per_user[login]
-    words = words_per_user[login]
-    print "%-25s : %8.2fmin %5d words" % (login, samples / (60*100.0), words)
+    words   = words_per_user[login]
+    werr    = werr_per_user[login]
+    print "%-25s : %8.2fmin %5d words %5d werrs (%5.1f%%)" % (login, samples / (60*100.0), words, werr, werr * 100.0 / words)
 
+    total_werr  += werr
+    total_words += words
+
+print
+print "Total: %d words, %d errors (%5.1f%%)" % (total_words, total_werr, total_werr * 100.0 / total_words)
 print
 

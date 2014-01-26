@@ -48,7 +48,7 @@ cp /home/ai/voxforge/de/lm/dict-julius.txt output/
 
 ./grammar-gen.py
 pushd output
-mkdfa.pl eval >output/logs/mkdfa.log
+mkdfa.pl eval >logs/mkdfa.log
 popd
 
 #

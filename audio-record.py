@@ -189,6 +189,9 @@ for line in fp:
 
         elif c == ord('n'):
 
+            if recbuf_len < 25:
+                continue
+
             wav_file = wave.open(fn, "w")
 
             num_frames = recbuf_len 

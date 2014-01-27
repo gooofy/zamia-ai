@@ -26,10 +26,16 @@ cp /home/ai/voxforge/de/work/logs/Step* output/logs
 ./lm-prompts.py
 pushd /home/ai/voxforge/de/lm
 ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
+
 ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
 ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+
+#ngram-count -order 2 -text prompts.sent -text europarl.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
+#ngram-count -order 4 -text prompts.rev -text europarl.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+
 #ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
 #ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
+
 mkbingram -nlr german.arpa -nrl german-rev.arpa german.bingram
 popd
 
@@ -62,6 +68,10 @@ cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 #
 
 ./audio-stats.py >output/audio-stats.txt
+
+DSTR=`date +%y%m%d%H%M`
+./audio-stats.py >priv/stats/audio-stats-$DSTR.txt
+
 
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql

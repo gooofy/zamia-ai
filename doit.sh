@@ -72,7 +72,6 @@ cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 DSTR=`date +%y%m%d%H%M`
 ./audio-stats.py >priv/stats/audio-stats-$DSTR.txt
 
-
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql
 
@@ -85,5 +84,5 @@ cp README.md output/readme.txt
 # upload
 #
 
-#rsync -avP --delete output/ goofy:/var/www/html/voxforge/de
+#rsync -avPz --delete output/ goofy:/var/www/html/voxforge/de
 

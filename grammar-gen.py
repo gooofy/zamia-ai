@@ -23,7 +23,7 @@ import psycopg2
 import ConfigParser
 from os.path import expanduser
 
-from gutils import detect_latin1, isgalnum, compress_ws, kill_umlauts
+from gutils import detect_latin1, isgalnum, compress_ws, kill_umlauts, split_words
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
 #
@@ -51,78 +51,75 @@ conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
 
 #
+# read sentences relevant for our eval grammar
+#
+
+print 
+print "reading grammar/eval.sent ..."
+
+inf = open ('grammar/eval.sent')
+
+outf_grammar = open ('output/grammar/eval.grammar', 'w')
+outf_grammar.write ("S : NS_B SENT NS_E\n") 
+
+prompts = []
+words = set()
+
+for line in inf:
+
+    p = compress_ws(line.decode('UTF8')).upper().rstrip()
+
+    prompts.append (p)
+
+    for word in split_words (p):
+        words.add(word)
+
+    outf_grammar.write ('SENT: %s\n' % kill_umlauts(p))
+
+inf.close()
+
+print "%d prompts, %d unique words" % (len(prompts), len(words))
+
+outf_grammar.close()
+
+print "output/grammar/eval.grammar written." 
+print
+
+#
 # generate dict (all words from prompts we have pronounciations for)
 #
 
-outf_voca = open ('output/eval.voca', 'w')
+outf_voca = open ('output/grammar/eval.voca', 'w')
 
 outf_voca.write ("% NS_B\n<s>        sil\n\n% NS_E\n</s>        sil\n\n") 
 
 print 
 print "Fetching dict entries for transcript words from db..."
 
-cur.execute ("SELECT DISTINCT word,phonemes FROM submissions,transcripts,words,pronounciations WHERE transcripts.sid=submissions.id AND transcripts.wid=words.id AND transcripts.pid = pronounciations.id AND reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2 ORDER BY word ASC", )
+for word in words:
 
-rows = cur.fetchall()
-cnt = 1
-words = set()
-for row in rows:
+    cur.execute ("SELECT phonemes FROM words,pronounciations WHERE words.id=pronounciations.wid AND words.word=%s ORDER BY word ASC", (word,))
 
-    word = kill_umlauts(row[0].decode ('UTF8'))
+    rows = cur.fetchall()
 
-    if word in words:
-        continue
-    words.add(word)
+    w = kill_umlauts(word)
+    outf_voca.write ('%% %s\n' % (w))
 
-    ipa  = row[1].decode ('UTF8')
+    for row in rows:
 
-    xs = ipa2xsampa(word, ipa)
-    xa = xsampa2xarpabet(word, xs)
+        ipa  = row[0].decode ('UTF8')
 
-    #print word.encode('UTF8')
+        xs = ipa2xsampa(word, ipa)
+        xa = xsampa2xarpabet(word, xs)
 
-    outf_voca.write ("%% %s\n%-25s %s\n\n" % (word, word,xa))
+        #print word.encode('UTF8')
 
-    cnt += 1
+        outf_voca.write ('%-25s %s\n' % (w, xa))
 
-print
-print "Found %d entries." % cnt
-print 
+    outf_voca.write ('\n')
 
 outf_voca.close()
 
-print "output/eval.voca written." 
+print "output/grammar/eval.voca written." 
 print
-
-#
-# prompts => grammar
-#
-
-outf_grammar = open ('output/eval.grammar', 'w')
-
-outf_grammar.write ("S : NS_B SENT NS_E\n") 
-
-cur.execute ("SELECT id FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
-
-rows = cur.fetchall()
-for row in rows:
-
-    id = row[0]
-
-    outf_grammar.write ('SENT: ')
-
-    cur.execute ("SELECT word FROM words, transcripts WHERE words.id=transcripts.wid AND transcripts.sid=%s ORDER BY transcripts.id ASC", (id,))
-    rows2 = cur.fetchall()
-    for row2 in rows2:
-        word = kill_umlauts(row2[0].decode ('UTF8'))
-
-        outf_grammar.write (('%s ' % word).encode('ISO-8859-1'))
-
-    outf_grammar.write ('\n')
-
-outf_grammar.close()
-
-print "output/eval.grammar written." 
-print
-
 

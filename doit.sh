@@ -5,6 +5,7 @@ mkdir output
 mkdir output/logs
 mkdir output/dict
 mkdir output/lm
+mkdir output/grammar
 
 #
 # audio model
@@ -52,10 +53,10 @@ cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 # grammar / dfa
 #
 
-#./grammar-gen.py
-#pushd output
-#mkdfa.pl eval >logs/mkdfa.log
-#popd
+./grammar-gen.py
+pushd output/grammar
+mkdfa.pl eval >../logs/mkdfa.log
+popd
 
 #
 # eval grammar

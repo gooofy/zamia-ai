@@ -56,6 +56,29 @@ conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
 
 #
+# read prompts we want to look for
+#
+
+promptfn = "grammar/eval.sent"
+print "Reading %s..." % promptfn
+
+evals = set()
+inf = open (promptfn)
+
+for line in inf:
+
+    l = line.decode('UTF8')
+
+    p = compress_ws(l).upper().rstrip()
+
+    evals.add (p)
+
+inf.close()
+
+print "%d prompts" % (len(evals))
+print
+
+#
 # write list of all good mfc files 
 #
 
@@ -73,9 +96,12 @@ filecount = 0
 rows = cur.fetchall()
 for row in rows:
 
-    prompt = row[0].decode('UTF8')
+    prompt = row[0].decode('UTF8').rstrip()
     cfn    = row[1]
     sid    = row[2]
+
+    if not prompt in evals:
+        continue
 
     mfcfn = "%s/%s.mfc" % (mfccdir, cfn)
 
@@ -93,7 +119,7 @@ for row in rows:
 
 outf.close()
 
-print "%s written." % outfn
+print "%s written. %d files." % (outfn, filecount)
 print
 
 #
@@ -107,7 +133,7 @@ logfn = "output/logs/evalg.log"
 logf = open (logfn, 'w')
 
 mfcrex = re.compile (r"^input MFCC file: (.+)$")
-rex = re.compile (r"^sentence1: <s> ([^<]+)</s>$")
+rex = re.compile (r"^sentence1: <s> ([^<]*)</s>$")
 
 cnt    = 0
 words  = 0
@@ -119,17 +145,29 @@ cur.execute ("UPDATE eval SET jgresp=NULL, jgwerr=NULL")
 
 for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
                            '-h', 'output/acoustic_model_files/hmmdefs', '-hlist', 'output/acoustic_model_files/tiedlist',
-                           '-dfa', 'output/eval.dfa', '-v', 'output/eval.dict' ] ):
+                           '-dfa', 'output/grammar/eval.dfa', '-v', 'output/grammar/eval.dict' ] ):
 
     logf.write(line)
 
-    l = line.decode ('UTF8')
+    l = line.decode ('UTF8').rstrip()
 
     m = mfcrex.match(l)
     if m:
         mfcfn = m.group(1)
         pe    = prompts[mfcfn]
         sid   = sids[mfcfn]
+
+    if l == '<search failed>':
+        print "    FAILED: %s" % pe
+        w1s    = split_words(pe)
+        words  += len(w1s)
+        n_errs = len(w1s)
+
+        werr += n_errs
+
+        print "    +%2d word errors, total: %4d errors in %4d words => rate = %3d%%" % (n_errs, werr, words, werr * 100 / words)
+        print
+        cnt    += 1
 
     m = rex.match(l)
     if m:

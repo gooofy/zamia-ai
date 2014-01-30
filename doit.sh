@@ -62,7 +62,7 @@ popd
 # eval grammar
 #
 
-#./eval-grammar.py >output/logs/eval-grammar.log
+./eval-grammar.py >output/logs/eval-grammar.log
 
 #
 # export data, db dump

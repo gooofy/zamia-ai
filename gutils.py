@@ -49,7 +49,7 @@ def detect_latin1 (fn):
 
 def compress_ws (s):
 
-        vc = False
+        vc = True
 
         res = ''
 

@@ -25,7 +25,7 @@ from os.path import expanduser
 import StringIO
 import psycopg2
 import ConfigParser
-from gutils import compress_ws
+from gutils import split_words
 
 #
 # load config, set up global variables
@@ -65,9 +65,13 @@ cur.execute ("SELECT prompt FROM submissions WHERE reviewed=true AND noiselevel<
 rows = cur.fetchall()
 for row in rows:
 
-    transcript = row[0].decode('UTF8')
+    transcript = row[0].decode('UTF8').upper()
 
-    l = compress_ws(transcript.rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' ')).lstrip(' ')
+    # split sentence into words and put it back together 
+    # again using single spaces so we get rid of all non-word
+    # characters in a uniform way 
+
+    l = ' '.join(split_words(transcript))
 
     outf.write (('%s\n' % l).encode('UTF8') )
 

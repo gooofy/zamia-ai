@@ -31,7 +31,7 @@ import pickle
 from os.path import expanduser
 import StringIO
 import ConfigParser
-from gutils import compress_ws
+from gutils import split_words, compress_ws
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
 
@@ -79,7 +79,12 @@ class ParoleParser(HTMLParser):
             sentences = sent_detector.tokenize(text, realign_boundaries=True)
             for sentence in sentences:
 
-                s = compress_ws(sentence.upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' '))
+                # split sentence into words and put it back together 
+                # again using single spaces so we get rid of all non-word
+                # characters in a uniform way 
+
+                s = ' '.join(split_words(sentence.upper()))
+
                 if len(s)<MIN_PAR_LEN:
                     continue
 

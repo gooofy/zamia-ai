@@ -24,7 +24,7 @@ import os
 from os.path import expanduser
 import StringIO
 import ConfigParser
-from gutils import compress_ws
+from gutils import split_words
 
 #
 # load config, set up global variables
@@ -48,9 +48,14 @@ inf = open (europarl)
 count = 0
 for line in inf:
 
-    l = compress_ws(line.decode('UTF8').rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?',' ')).lstrip(' ')
+    l = line.decode('UTF8').upper()
 
-    #outf.write (('<s> %s </s>\n' % l).encode('UTF8') )
+    # split sentence into words and put it back together 
+    # again using single spaces so we get rid of all non-word
+    # characters in a uniform way 
+
+    l = ' '.join(split_words(l))
+
     outf.write (('%s\n' % l).encode('UTF8') )
 
     count += 1

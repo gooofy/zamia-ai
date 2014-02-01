@@ -27,12 +27,13 @@ cp /home/ai/voxforge/de/work/logs/Step* output/logs
 ./lm-prompts.py
 pushd /home/ai/voxforge/de/lm
 ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
+#~/projects/ai/speech/lm-reverse.pl parole.sent >parole.rev
 
 ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
 ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
 
-#ngram-count -order 2 -text prompts.sent -text europarl.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
-#ngram-count -order 4 -text prompts.rev -text europarl.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+#ngram-count -order 2 -text prompts.sent -text europarl.sent -text parole.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
+#ngram-count -order 4 -text prompts.rev -text europarl.rev -text parole.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
 
 #ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
 #ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
@@ -42,6 +43,8 @@ popd
 
 cp /home/ai/voxforge/de/lm/german.bingram output/lm
 cp /home/ai/voxforge/de/lm/wlist.txt output/lm
+cp /home/ai/voxforge/de/lm/*.sent output/lm
+cp /home/ai/voxforge/de/lm/*.rev output/lm
 
 #
 # eval

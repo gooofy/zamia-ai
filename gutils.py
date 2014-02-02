@@ -86,7 +86,98 @@ def run_command(command):
                          stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
+# word replacement table
+wrt = { u'0'     : u'NULL',
+        u'1'     : u'EINS', 
+        u'10'    : u'ZEHN',
+        u'10%'   : u'ZEHN PROZENT',
+        u'100%'  : u'HUNDERT PROZENT',
+        u'1000'  : u'TAUSEND',
+        u'11'    : u'ELF',
+        u'12'    : u'ZWÖLF',
+        u'128'   : u'HUNDERTACHTUNDZWANZIG',
+        u'13'    : u'DREIZEHN',
+        u'132'   : u'HUNDERTZWEIUNDREIßIG',
+        u'137'   : u'HUNDERTSIEBENUNDDREIßIG',
+        u'14'    : u'VIERZEHN',
+        u'15'    : u'FÜNFZEHN',
+        u'16'    : u'SECHZEHN',
+        u'160'   : u'HUNDERTSECHZIG',
+        u'17'    : u'SIEBZEHN',
+        u'18'    : u'ACHZEHN',
+        u'186'   : u'HUNDERTSECHSUNDACHZIG',
+        u'19'    : u'NEUNZEHN',
+        u'1949'  : u'NEUNZEHNHUNDERTNEUNUNDVIERZIG',
+        u'1960ER': u'NEUNZEHNHUNDERTSECHZIGER',
+        u'1970ER': u'NEUNZEHNHUNDERTSIEBZIGER',
+        u'1970ERJAHREN': u'NEUNZEHNHUNDERTSIEBZIGER JAHREN',
+        u'1977'  : u'NEUNZEHNHUNDERTSIEBENUNDSIEBZIG',
+        u'1979'  : u'NEUNZEHNHUNDERTNEUNUNDSIEBZIG',
+        u'1980ER': u'NEUNZEHNHUNDERTACHZIGER',
+        u'1983'  : u'NEUNZEHNHUNDERTDREIUNDACHZIG',
+        u'1984'  : u'NEUNZEHNHUNDERTVIERUNDACHZIG',
+        u'1989'  : u'NEUNZEHNHUNDERTNEUNUNDACHZIG',
+        u'1990'  : u'NEUNZEHNHUNDERTNEUNZIG',
+        u'1990ER': u'NEUNZEHNHUNDERTNEUNZIGER',
+        u'1991'  : u'NEUNZEHNHUNDERTEINUNDNEUNZIG',
+        u'1993'  : u'NEUNZEHNHUNDERTDREIUNDNEUNZIG',
+        u'1998'  : u'NEUNZEHNHUNDERTACHTUNDNEUNZIG',
+        u'2'     : u'ZWEI', 
+        u'2%'    : u'ZWEI PROZENT', 
+        u'20'    : u'ZWANZIG',
+        u'200'   : u'ZWEIHUNDERT',
+        u'2000'  : u'ZWEITAUSEND',
+        u'20000' : u'ZWANZIGTAUSEND',
+        u'2002'  : u'ZWEITAUSENDZWEI',
+        u'2004'  : u'ZWEITAUSENDVIER',
+        u'2005'  : u'ZWEITAUSENDFÜNF',
+        u'204'   : u'ZWEIHUNDERTVIER',
+        u'21'    : u'EINUNDZWANZIG',
+        u'226'   : u'ZWEIHUNDERTSECHSUNDZWANZIG',
+        u'23'    : u'DREIUNDZWANZIG',
+        u'24'    : u'VIERUNDZWANZIG',
+        u'242'   : u'ZWEIHUNDERTZWEIUNDVIERZIG',
+        u'25'    : u'FÜNFUNDZWANZIG', 
+        u'250'   : u'ZWEIHUNDERTFÜNFZIG',
+        u'253'   : u'ZWEIHUNDERTDREIUNDFÜNFZIG',
+        u'254'   : u'ZWEIHUNDERTVIERUNDFÜNFZIG',
+        u'3'     : u'DREI', 
+        u'30'    : u'DREIßIG',
+        u'32'    : u'ZWEIUNDDREIßIG',
+        u'328'   : u'DREIHUNDERTACHTUNDZWANZIG',
+        u'35'    : u'FÜNFUNDDREIßIG',
+        u'4'     : u'VIER', 
+        u'40%'   : u'VIERZIG PROZENT', 
+        u'400'   : u'VIERHUNDERT', 
+        u'4096'  : u'VIERTAUSENDSECHSUNDNEUNZIG', 
+        u'418'   : u'VIERHUNDERTACHTZEHN', 
+        u'42'    : u'ZWEIUNDVIERZIG',
+        u'43'    : u'DREIUNDVIERZIG',
+        u'5'     : u'FÜNF', 
+        u'50'    : u'FÜNFZIG', 
+        u'500000': u'FÜNFHUNDERTTAUSEND', 
+        u'57'    : u'SIEBENUNDFÜNFZIG', 
+        u'6'     : u'SECHS', 
+        u'63'    : u'DREIUNDSECHZIG', 
+        u'7'     : u'SIEBEN',
+        u'75'    : u'FÜNFUNDSIEBZIG',
+        u'8'     : u'ACHT',
+        u'80'    : u'ACHTZIG',
+        u'80%'   : u'ACHTZIG PROZENT',
+        u'800'   : u'ACHTHUNDERT',
+        u'80ER'  : u'ACHTZIGER',
+        u'850'   : u'ACHTHUNDERTFÜNFZIG',
+        u'852'   : u'ACHTHUNDERTZWEIUNDFÜNFZIG',
+        u'9'     : u'NEUN',
+        u'90'    : u'NEUNZIG',
+        u'95'    : u'FÜNFUNDNEUNZIG',
+        u'99'    : u'NEUNUNDNEUNZIG',
+        u'100'   : u'HUNDERT',
+        u'§'     : u'PARAGRAPH' }
+
 def split_words (s):
+
+    global wrt
 
     res = []
 
@@ -95,6 +186,10 @@ def split_words (s):
 
         w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()=]", '', word.rstrip()).upper()
         if len(w) > 0:
+
+            if w in wrt:
+                w = wrt[w]
+
             res.append (w)
 
     return res

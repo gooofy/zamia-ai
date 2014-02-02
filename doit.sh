@@ -27,18 +27,18 @@ cp /home/ai/voxforge/de/work/logs/Step* output/logs
 ./lm-prompts.py
 pushd /home/ai/voxforge/de/lm
 ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
-# ~/projects/ai/speech/lm-reverse.pl parole.sent >parole.rev
+~/projects/ai/speech/lm-reverse.pl parole.sent >parole.rev
 # ~/projects/ai/speech/lm-reverse.pl europarl.sent >europarl.rev
 
-ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
-ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+ngram-count -order 2 -text prompts.sent -text parole.sent -unk -gt1min 1 -gt2min 2 -kndiscount1 -kndiscount2 -interpolate1 -interpolate2 -lm german.arpa -vocab wlist.txt
+ngram-count -order 4 -text prompts.rev -text parole.rev -unk -gt1min 1 -gt2min 2 -gt3min 2 -gt4min 2 -kndiscount1 -kndiscount2 -kndiscount3 -kndiscount4 -interpolate1 -interpolate2 -interpolate3 -interpolate4 -lm german-rev.arpa -vocab wlist.txt
 
+# ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
+# ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
+#
 # ngram-count -order 2 -text prompts.sent -text europarl.sent -text parole.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
 # ngram-count -order 4 -text prompts.rev -text europarl.rev -text parole.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
-
-# ngram-count -order 2 -text prompts.sent -text parole.sent -unk -gt1min 1 -gt2min 2 -gt3min 2 -gt4min 2 -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
-# ngram-count -order 4 -text prompts.rev -text parole.rev -unk -gt1min 1 -gt2min 2 -gt3min 2 -gt4min 2 -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt
-
+#
 # ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
 # ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
 

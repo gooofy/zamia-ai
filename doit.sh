@@ -72,8 +72,8 @@ popd
 
 cp /home/ai/voxforge/de/lm/german.bingram output/lm
 cp /home/ai/voxforge/de/lm/wlist.txt output/lm
-cp /home/ai/voxforge/de/lm/*.sent output/lm
-cp /home/ai/voxforge/de/lm/*.rev output/lm
+#cp /home/ai/voxforge/de/lm/*.sent output/lm
+#cp /home/ai/voxforge/de/lm/*.rev output/lm
 
 #
 # eval

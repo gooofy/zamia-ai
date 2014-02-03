@@ -167,6 +167,12 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
 
         print "    +%2d word errors, total: %4d errors in %4d words => rate = %3d%%" % (n_errs, werr, words, werr * 100 / words)
         print
+
+        cur.execute ('UPDATE eval SET jgresp=%s, jgwerr=%s WHERE sid=%s', ('', n_errs, sid))
+
+        conn.commit()
+        cur = conn.cursor()
+
         cnt    += 1
 
     m = rex.match(l)

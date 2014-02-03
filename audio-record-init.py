@@ -24,7 +24,7 @@ import os
 import StringIO
 import ConfigParser
 from os.path import expanduser
-from gutils import detect_latin1, isgalnum, compress_ws
+from gutils import detect_latin1, isgalnum, compress_ws, split_words
 import random
 import datetime
 
@@ -109,7 +109,7 @@ for line in open (promptsfile):
 
     outf_poriginal.write ('%s-%03d %s' % (prefix, cnt, line))
 
-    prompt = compress_ws(line.decode('UTF8').rstrip().upper().replace(',',' ').rstrip('.').replace('!', ' ').replace('"', ' ').replace('?', ' ')).lstrip(' ')
+    prompt = ' '.join(split_words(line.decode('UTF8').rstrip().upper()))
 
     #print "prompt: '%s'" % prompt
 

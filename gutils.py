@@ -240,6 +240,9 @@ class TestGUtils (unittest.TestCase):
     def test_ws(self):
         self.assertEqual (compress_ws('   ws   foo bar'), ' ws foo bar')
 
+    def test_split(self):
+        self.assertEqual (split_words(u"1 2 3 4"), ["EINS", "ZWEI", "DREI", "VIER"])
+
     def test_editdist(self):
         self.assertEqual (edit_distance(
                              split_words(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT'), 

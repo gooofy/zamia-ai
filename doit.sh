@@ -26,12 +26,37 @@ cp /home/ai/voxforge/de/work/logs/Step* output/logs
 
 ./lm-prompts.py
 pushd /home/ai/voxforge/de/lm
+
+rm -f *.rev
+rm -f *.arpa
+rm -f *.params
+rm -f *.bingram
+rm -f all.sent all.rev
+
 ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
 ~/projects/ai/speech/lm-reverse.pl parole.sent >parole.rev
 # ~/projects/ai/speech/lm-reverse.pl europarl.sent >europarl.rev
 
-ngram-count -order 2 -text prompts.sent -text parole.sent -unk -gt1min 1 -gt2min 2 -kndiscount1 -kndiscount2 -interpolate1 -interpolate2 -lm german.arpa -vocab wlist.txt
-ngram-count -order 4 -text prompts.rev -text parole.rev -unk -gt1min 1 -gt2min 2 -gt3min 2 -gt4min 2 -kndiscount1 -kndiscount2 -kndiscount3 -kndiscount4 -interpolate1 -interpolate2 -interpolate3 -interpolate4 -lm german-rev.arpa -vocab wlist.txt
+# merge
+cat prompts.sent parole.sent > all.sent
+cat prompts.rev parole.rev > all.rev
+
+# When using limited vocabularies it is recommended to compute the
+# discount coeffiecients on the unlimited vocabulary (at least for
+# the unigrams) and then apply them to the limited vocabulary
+# (otherwise the vocabulary truncation would produce badly skewed
+# counts frequencies at the low end that would break the GT algorithm.)
+
+rm -f gt*.params
+ngram-count -order 2 -text all.sent -unk -gt1 gt1.params -gt2 gt2.params 
+ngram-count -order 2 -text all.sent -unk  -gt1 gt1.params -gt2 gt2.params -lm german.arpa -vocab wlist.txt
+
+rm -f gt*.params
+ngram-count -order 4 -text all.rev -unk -gt1 gt1.params -gt2 gt2.params -gt3 gt3.params -gt4 gt4.params 
+ngram-count -order 4 -text all.rev -unk -gt1 gt1.params -gt2 gt2.params -gt3 gt3.params -gt4 gt4.params -lm german-rev.arpa -vocab wlist.txt
+
+#ngram-count -order 2 -text prompts.sent -text parole.sent -unk -gt1min 1 -gt2min 2 -kndiscount1 -kndiscount2 -interpolate1 -interpolate2 -lm german.arpa -vocab wlist.txt
+#ngram-count -order 4 -text prompts.rev -text parole.rev -unk -gt1min 1 -gt2min 2 -gt3min 2 -gt4min 2 -kndiscount1 -kndiscount2 -kndiscount3 -kndiscount4 -interpolate1 -interpolate2 -interpolate3 -interpolate4 -lm german-rev.arpa -vocab wlist.txt
 
 # ngram-count -order 2 -text prompts.sent -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german.arpa -vocab wlist.txt
 # ngram-count -order 4 -text prompts.rev -unk -kndiscount1 -kndiscount2 -kndiscount3 -lm german-rev.arpa -vocab wlist.txt

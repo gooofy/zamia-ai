@@ -107,16 +107,17 @@ outf_prompts   = open ('%s/etc/PROMPTS' % dir_path, 'w')
 
 for line in open (promptsfile):
 
-    outf_poriginal.write ('%s-%03d %s' % (prefix, cnt, line))
 
     prompt = ' '.join(split_words(line.decode('UTF8').rstrip().upper()))
 
     #print "prompt: '%s'" % prompt
 
-    outf_prompts.write ( ('%s/mfc/%s-%03d %s\n' % (dir_name, prefix, cnt, prompt)).encode('UTF8'))
+    outf_poriginal.write ( (u'%s-%03d %s\n' % (prefix, cnt, prompt)).encode('UTF8') )
+    outf_prompts.write ( (u'%s/mfc/%s-%03d %s\n' % (dir_name, prefix, cnt, prompt)).encode('UTF8') )
     
     cnt += 1
 
 
 outf_poriginal.close()
 outf_prompts.close()
+

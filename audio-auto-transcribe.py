@@ -36,6 +36,9 @@ parser.add_option ("-a", "--audiolevel", dest="audiolevel", type = "int", defaul
 parser.add_option ("-n", "--noiselevel", dest="noiselevel", type = "int", default=0,
            help="noise level: 0=low, 1=noticable, 2=high (default: 0)")
 
+parser.add_option ("-f", "--force", dest="force", action="store_true",
+           help="set review parameters even if transcript exists (default: false)")
+
 (options, args) = parser.parse_args()
 
 #print "Options: %s, args: %s" % (repr(options), repr(args))
@@ -49,6 +52,10 @@ login = args[0]
 truncated = False
 if options.truncated:
     truncated = True
+
+force = False
+if options.force:
+    force = True
 
 #
 # load config, set up global variables
@@ -85,6 +92,16 @@ for row in rows:
 
     cur.execute ('SELECT id FROM transcripts WHERE sid=%s', (sid,))
     if cur.fetchone():
+
+        print "SID %6d: %s already transcribed." % (sid, prompt)
+
+        if force:
+            print "setting review parameters anyway."
+            cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s WHERE id=%s', 
+                         (options.noiselevel, truncated, options.audiolevel, options.pronounciation, sid))
+            conn.commit()
+            cur = conn.cursor()
+
         continue
 
     print "SID %6d: %s" % (sid, prompt)

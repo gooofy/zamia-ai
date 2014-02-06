@@ -24,6 +24,7 @@ import os
 from os.path import expanduser
 import StringIO
 import ConfigParser
+from optparse import OptionParser
 import psycopg2
 
 from gutils import detect_latin1
@@ -46,6 +47,36 @@ def systemlog (cmd, logfile):
 print
 print "Step 1 - Preparation"
 print
+
+#
+# commandline
+#
+
+parser = OptionParser("usage: %prog [options] [prefix]")
+
+parser.add_option ("-p", "--pronounciation", dest="pronounciation", type = "int", default=1,
+           help="worst acceptable pronounciation: 0=clean, 1=accent, 2=dialect, 3=error (default: 1)")
+
+parser.add_option ("-a", "--audiolevel", dest="audiolevel", type = "int", default=1,
+           help="worst acceptable audio level: 0=good, 1=low, 2=very low, 3=distorted (default: 1)")
+
+parser.add_option ("-n", "--noiselevel", dest="noiselevel", type = "int", default=1,
+           help="worst acceptable noise level: 0=low, 1=noticable, 2=high (default: 1)")
+
+parser.add_option ("-c", "--continous", dest="continous", action="store_true",
+           help="accept non-continous submissions (default: accept only continous submissions)")
+
+(options, args) = parser.parse_args()
+
+#print "Options: %s, args: %s" % (repr(options), repr(args))
+
+prefix = ''
+if len(args) ==1:
+    prefix = args[0]
+
+continous = True
+if options.continous:
+    continous = False
 
 #
 # load config, set up global variables
@@ -108,7 +139,7 @@ print
 # prompts
 #
 
-plist = set()
+pidset = set()
 
 mlff = open ('%s/words.mlf' % workdir,'w')
 
@@ -117,7 +148,12 @@ mlff.write ('#!MLF!#\n')
 #codetrainscp = open ('%s/codetrain.scp' % workdir, 'w')
 trainscp = open ('%s/train.scp' % workdir, 'w')
 
-cur.execute ("SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2", )
+sql = "SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s"
+
+if continous:
+    sql += " AND continous=true"
+
+cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciation, prefix+"%") )
 
 rows = cur.fetchall()
 for row in rows:
@@ -133,7 +169,7 @@ for row in rows:
     for row2 in rows2:
         pid = row2[0]
         mlff.write ("P%07d\n" % pid)
-        plist.add(pid)
+        pidset.add(pid)
 
     mlff.write ('.\n')
 
@@ -144,7 +180,7 @@ trainscp.close()
 print
 print "%s/words.mlf written." % workdir
 print "%s/train.scp written." % workdir
-print "Got %d words." % len(plist)
+print "Got %d words." % len(pidset)
 
 print
 print "Step 3 - Pronunciation Dictionnary"
@@ -152,7 +188,7 @@ print
 
 dict = {}
 
-for pid in plist:
+for pid in pidset:
 
     cur.execute ("SELECT phonemes,word FROM pronounciations,words WHERE pronounciations.id=%s AND pronounciations.wid=words.id", (pid,))
     row = cur.fetchone()

@@ -25,8 +25,38 @@ from os.path import expanduser
 import StringIO
 import psycopg2
 import ConfigParser
+from optparse import OptionParser
 from gutils import compress_ws, run_command, split_words, edit_distance
 
+#
+# commandline
+#
+
+parser = OptionParser("usage: %prog [options] [prefix]")
+
+parser.add_option ("-p", "--pronounciation", dest="pronounciation", type = "int", default=1,
+           help="worst acceptable pronounciation: 0=clean, 1=accent, 2=dialect, 3=error (default: 1)")
+
+parser.add_option ("-a", "--audiolevel", dest="audiolevel", type = "int", default=1,
+           help="worst acceptable audio level: 0=good, 1=low, 2=very low, 3=distorted (default: 1)")
+
+parser.add_option ("-n", "--noiselevel", dest="noiselevel", type = "int", default=1,
+           help="worst acceptable noise level: 0=low, 1=noticable, 2=high (default: 1)")
+
+parser.add_option ("-c", "--continous", dest="continous", action="store_true",
+           help="accept non-continous submissions (default: accept only continous submissions)")
+
+(options, args) = parser.parse_args()
+
+#print "Options: %s, args: %s" % (repr(options), repr(args))
+
+prefix = ''
+if len(args) ==1:
+    prefix = args[0]
+
+continous = True
+if options.continous:
+    continous = False
 
 #
 # load config, set up global variables
@@ -60,8 +90,14 @@ cur = conn.cursor()
 #
 
 print "Writing list of all good mfc files..."
+sql = "SELECT prompt,cfn,id FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s"
 
-cur.execute ("SELECT prompt,cfn,id FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
+if continous:
+    sql += " AND continous=true"
+
+cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciation, prefix+"%") )
+
+#cur.execute ("SELECT prompt,cfn,id FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
 
 outfn = '%s/mfcfiles.txt' % workdir
 outf = open (outfn, 'w')

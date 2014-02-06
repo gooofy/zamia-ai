@@ -39,6 +39,9 @@ parser.add_option ("-n", "--noiselevel", dest="noiselevel", type = "int", defaul
 parser.add_option ("-f", "--force", dest="force", action="store_true",
            help="set review parameters even if transcript exists (default: false)")
 
+parser.add_option ("-c", "--continous", dest="continous", action="store_true",
+           help="set continous flag to false (default: true)")
+
 (options, args) = parser.parse_args()
 
 #print "Options: %s, args: %s" % (repr(options), repr(args))
@@ -56,6 +59,10 @@ if options.truncated:
 force = False
 if options.force:
     force = True
+
+continous = True
+if options.continous:
+    continous = False
 
 #
 # load config, set up global variables
@@ -97,8 +104,8 @@ for row in rows:
 
         if force:
             print "setting review parameters anyway."
-            cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s WHERE id=%s', 
-                         (options.noiselevel, truncated, options.audiolevel, options.pronounciation, sid))
+            cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s, continous=%s WHERE id=%s', 
+                         (options.noiselevel, truncated, options.audiolevel, options.pronounciation, continous, sid))
             conn.commit()
             cur = conn.cursor()
 
@@ -139,8 +146,8 @@ for row in rows:
         cur.execute ('INSERT INTO transcripts (sid,wid,pid) VALUES (%s, %s, %s)', 
                      (sid, wid, pid))
 
-    cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s WHERE id=%s', 
-                 (options.noiselevel, truncated, options.audiolevel, options.pronounciation, sid))
+    cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s, continous=%s WHERE id=%s', 
+                 (options.noiselevel, truncated, options.audiolevel, options.pronounciation, continous, sid))
     conn.commit()
     cur = conn.cursor()
 

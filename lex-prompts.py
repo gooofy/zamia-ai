@@ -20,7 +20,7 @@
 
 import re, sys, os
 import psycopg2
-from gutils import detect_latin1, isgalnum
+from gutils import detect_latin1, isgalnum, split_words
 import ConfigParser
 from os.path import expanduser
 
@@ -53,25 +53,16 @@ sys.stdout.flush()
 
 words = set()
 
-cur.execute ("SELECT prompt FROM audio") 
+cur.execute ("SELECT DISTINCT prompt FROM submissions") 
 rows = cur.fetchall()
 for row in rows:
 
     prompt = row[0].decode('UTF8')
 
-    ws = re.split ('\s+', prompt)
+    ws = split_words(prompt)
 
     for word in ws:
-
-        w = re.sub(r"[,.?\-! ;:]", '', word.lstrip().rstrip()).upper()
-        if len(w) > 0:
-            if not isgalnum(w):
-                #print "SKIPPING: %s" % w
-                continue
-
-            if not w in words:
-                #print "New word from prompts: %s" % w
-                words.add(w)
+        words.add(word)
 
 #print "done. %d unique words found." % len(words)
 

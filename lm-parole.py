@@ -172,6 +172,3 @@ print
 print "%s written." % outfn
 print 
 
-
-
-

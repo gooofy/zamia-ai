@@ -51,9 +51,9 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
-cur.execute ("SELECT id,dir,audiofn,cfn,noiselevel,truncated,audiolevel,pcn,comment,numsamples FROM submissions WHERE reviewed=TRUE")
+cur.execute ("SELECT id,dir,audiofn,cfn,noiselevel,truncated,audiolevel,pcn,continous,comment,numsamples FROM submissions WHERE reviewed=TRUE")
 
-print "id,dir,audiofn,cfn,noiselevel,truncated,audiolevel,pcn,comment,prompt,ipa,numsamples"
+print "id,dir,audiofn,cfn,noiselevel,truncated,audiolevel,pcn,continous,comment,prompt,ipa,numsamples"
 
 rows = cur.fetchall()
 for row in rows:
@@ -77,7 +77,7 @@ for row in rows:
             ipa += ' '
         ipa += row2[0]
 
-    print '%s,"%s","%s","%s",%s,%s,%s,%s,"%s","%s","%s",%s' % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], prompt, ipa, row[9])
+    print '%s,"%s","%s","%s",%s,%s,%s,%s,%s,"%s","%s","%s",%s' % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], prompt, ipa, row[10])
 
 
 

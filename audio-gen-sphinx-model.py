@@ -94,6 +94,7 @@ db_pass   = config.get("speech", "dbpass")
 
 w16dir    = config.get("speech", "16khzdir")
 workdir   = config.get("speech", "workdir")
+lmworkdir = config.get("speech", "lmworkdir")
 
 #
 # connect to db
@@ -117,7 +118,7 @@ systemlog ('sphinxtrain -t voxforge setup', 'sphinxtrain_setup.log')
 
 os.system ('cp input_files/sphinx_train.cfg %s/etc' % workdir)
 os.system ('cp input_files/voxforge.filler %s/etc' % workdir)
-os.system ('cp output/lm/voxforge.lm.DMP %s/etc' % workdir)
+os.system ('cp %s/voxforge.lm.DMP %s/etc' % (lmworkdir, workdir))
 
 
 print

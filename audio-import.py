@@ -46,6 +46,7 @@ db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
 audiodir  = config.get("speech", "audiodir")
+w16dir    = config.get("speech", "16khzdir")
 mfccdir   = config.get("speech", "mfccdir")
 
 #
@@ -97,6 +98,7 @@ for submission in os.listdir (audiodir):
         # convert audio if not done yet
 
         mfccfilename = "%s/%s.mfc" % (mfccdir, cfn)
+        w16filename = "%s/%s.wav" % (w16dir, cfn)
 
         if not os.path.isfile (mfccfilename):
 
@@ -112,20 +114,18 @@ for submission in os.listdir (audiodir):
 
                 print "%-20s: converting %s => %s" % (cfn, flacfilename, '/tmp/foo.wav')
                 os.system ("flac -s -f -d '%s' -o /tmp/foo.wav" % flacfilename)
-                print "%-20s: converting /tmp/foo.wav => /tmp/foo1.wav (16kHz mono)" % (cfn)
-                os.system ("sox /tmp/foo.wav -r 16000 -c 1 /tmp/foo1.wav")
-                print "%-20s: converting %s => %s" % (cfn, '/tmp/foo1.wav', mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config /tmp/foo1.wav '%s'" % mfccfilename)
+                print "%-20s: converting /tmp/foo.wav => %s (16kHz mono)" % (cfn, w16filename)
+                os.system ("sox /tmp/foo.wav -r 16000 -c 1 %s" % w16filename)
+                print "%-20s: converting %s => %s" % (cfn, w16filename, mfccfilename)
+                os.system ("HCopy -T 0 -C input_files/wav_config %s '%s'" % (w16filename, mfccfilename) )
                 os.system ("rm /tmp/foo.wav")
-                os.system ("rm /tmp/foo1.wav")
             
             else:
 
-                print "%-20s: converting %s => /tmp/foo.wav (16kHz mono)" % (cfn, wavfilename)
-                os.system ("sox '%s' -r 16000 -c 1 /tmp/foo.wav" % (wavfilename))
-                print "%-20s: converting /tmp/foo.wav => %s" % (cfn, mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config /tmp/foo.wav '%s'" % (mfccfilename))
-                os.system ("rm /tmp/foo.wav")
+                print "%-20s: converting %s => %s (16kHz mono)" % (cfn, wavfilename, w16filename)
+                os.system ("sox '%s' -r 16000 -c 1 %s" % (wavfilename, w16filename))
+                print "%-20s: converting %s => %s" % (cfn, w16filename, mfccfilename)
+                os.system ("HCopy -T 0 -C input_files/wav_config '%s' '%s'" % (w16filename, mfccfilename))
 
         # db entry
 

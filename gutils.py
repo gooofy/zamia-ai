@@ -95,10 +95,10 @@ wrt = { u'0'     : u'NULL',
         u'1000'  : u'TAUSEND',
         u'11'    : u'ELF',
         u'12'    : u'ZWÖLF',
-        u'1200'  : u'EINTAUSENDZWEIHUNDERT',
+        u'1200'  : u'ZWÖLFHUNDERT',
         u'128'   : u'HUNDERTACHTUNDZWANZIG',
         u'13'    : u'DREIZEHN',
-        u'132'   : u'HUNDERTZWEIUNDREIßIG',
+        u'132'   : u'HUNDERTZWEIUNDDREIßIG',
         u'137'   : u'HUNDERTSIEBENUNDDREIßIG',
         u'14'    : u'VIERZEHN',
         u'15'    : u'FÜNFZEHN',
@@ -106,10 +106,10 @@ wrt = { u'0'     : u'NULL',
         u'160'   : u'HUNDERTSECHZIG',
         u'17'    : u'SIEBZEHN',
         u'170'   : u'HUNDERTSIEBZIG',
-        u'1700'  : u'EINTAUSENDSIEBENHUNDERT',
+        u'1700'  : u'SIEBZEHNHUNDERT',
         u'18'    : u'ACHTZEHN',
-        u'1825'  : u'EINTAUSENDACHTHUNDERTFÜNFUNDZWANZIG',
-        u'186'   : u'HUNDERTSECHSUNDACHZIG',
+        u'1825'  : u'ACHTZEHNHUNDERTFÜNFUNDZWANZIG',
+        u'186'   : u'HUNDERTSECHSUNDACHTZIG',
         u'19'    : u'NEUNZEHN',
         u'1949'  : u'NEUNZEHNHUNDERTNEUNUNDVIERZIG',
         u'1960ER': u'NEUNZEHNHUNDERTSECHZIGER',
@@ -117,10 +117,10 @@ wrt = { u'0'     : u'NULL',
         u'1970ERJAHREN': u'NEUNZEHNHUNDERTSIEBZIGER JAHREN',
         u'1977'  : u'NEUNZEHNHUNDERTSIEBENUNDSIEBZIG',
         u'1979'  : u'NEUNZEHNHUNDERTNEUNUNDSIEBZIG',
-        u'1980ER': u'NEUNZEHNHUNDERTACHZIGER',
-        u'1983'  : u'NEUNZEHNHUNDERTDREIUNDACHZIG',
-        u'1984'  : u'NEUNZEHNHUNDERTVIERUNDACHZIG',
-        u'1989'  : u'NEUNZEHNHUNDERTNEUNUNDACHZIG',
+        u'1980ER': u'NEUNZEHNHUNDERTACHTZIGER',
+        u'1983'  : u'NEUNZEHNHUNDERTDREIUNDACHTZIG',
+        u'1984'  : u'NEUNZEHNHUNDERTVIERUNDACHTZIG',
+        u'1989'  : u'NEUNZEHNHUNDERTNEUNUNDACHTZIG',
         u'1990'  : u'NEUNZEHNHUNDERTNEUNZIG',
         u'1990ER': u'NEUNZEHNHUNDERTNEUNZIGER',
         u'1991'  : u'NEUNZEHNHUNDERTEINUNDNEUNZIG',
@@ -185,6 +185,43 @@ wrt = { u'0'     : u'NULL',
         u'99'    : u'NEUNUNDNEUNZIG',
         u'100'   : u'HUNDERT',
         u'§'     : u'PARAGRAPH' }
+
+# based on code from: http://www.python-forum.de/viewtopic.php?f=11&t=22543
+
+w1 = u"NULL EIN ZWEI DREI VIER FÜNF SECHS SIEBEN ACHT NEUN ZEHN ELF ZWÖLF DREIZEHN VIERZEHN FÜNFZEHN SECHZEHN SIEBZEHN ACHTZEHN NEUNZEHN".split()
+w2 = u"ZWANZIG DREIßIG VIERZIG FÜNFZIG SECHZIG SIEBZIG ACHTZIG NEUNZIG".split()
+ 
+def zahl_in_worten(n, s=True, z=False):
+    if n < 0: raise ValueError
+    if n == 0 and z: return ""
+    if n == 1 and s: return "EINS"
+    if n < 20: return w1[n]
+    if n < 100:
+        w = w2[(n - 20) // 10]
+        if n % 10:
+            w = w1[n % 10] + "UND" + w
+        return w
+    if n < 1000:
+        if n // 100 == 1:
+            return "HUNDERT" + zahl_in_worten(n % 100, z=True)
+        return w1[n // 100] + "HUNDERT" + zahl_in_worten(n % 100, z=True)
+    if n < 2000:
+        if n < 1100:
+            return  "TAUSEND" + zahl_in_worten(n % 1000, z=True)
+        return w1[n // 100] + "HUNDERT" + zahl_in_worten(n % 100, z=True)
+    if n < 1000000:
+        return zahl_in_worten(n // 1000, s=False) + "TAUSEND" + zahl_in_worten(n % 1000, z=True)
+    raise ValueError
+
+#
+# init number replacement dict
+#
+
+for i in range(10000):
+    u = unicode(i)
+    if not u in wrt:
+        wrt[u] = zahl_in_worten(i)
+
 
 def split_words (s):
 
@@ -254,6 +291,15 @@ class TestGUtils (unittest.TestCase):
     def test_split(self):
         self.assertEqual (split_words(u"1 2 3 4"), ["EINS", "ZWEI", "DREI", "VIER"])
 
+    def test_zahl_in_worten(self):
+
+        for i in range(10000):
+            u = unicode(i)
+            z = zahl_in_worten(i)
+            #print "%4d : %s" % (i, z)
+            if u in wrt:
+                self.assertEqual (z, wrt[u])
+
     def test_editdist(self):
         self.assertEqual (edit_distance(
                              split_words(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT'), 
@@ -288,7 +334,6 @@ class TestGUtils (unittest.TestCase):
         self.assertEqual (edit_distance(
                              split_words(u'SIE IST FÜR DIE LEISTUNG DANKBAR'), 
                              split_words(u'SIE STRITTIG LEISTUNG DANKBAR')), 3)
-
 
 if __name__ == "__main__":
 

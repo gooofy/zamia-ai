@@ -8,23 +8,22 @@ mkdir output/lm
 mkdir output/grammar
 
 #
-# audio model
+# dictionary
 #
-
-./audio-gen-model.py >output/logs/genmodel.log
 
 ./lm-export-dict.py 
 
-cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
-cp /home/ai/voxforge/de/work/dict.txt output/dict
+#cp /home/ai/voxforge/de/work/dict.txt output/dict
 cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
-cp /home/ai/voxforge/de/work/logs/Step* output/logs
 
 # 
 # language model
 #
 
 ./lm-prompts.py
+
+# SRILM
+
 pushd /home/ai/voxforge/de/lm
 
 rm -f *.rev
@@ -75,35 +74,70 @@ cp /home/ai/voxforge/de/lm/wlist.txt output/lm
 #cp /home/ai/voxforge/de/lm/*.sent output/lm
 #cp /home/ai/voxforge/de/lm/*.rev output/lm
 
+# CMUCLMTK
+
+pushd /home/ai/voxforge/de/lm
+
+sed 's/^/<s> /' all.sent | sed 's/$/ <\/s>/' >all.txt
+
+echo '</s>' > all.vocab
+echo '<s>' >> all.vocab
+cat wlist.txt >>all.vocab
+
+text2idngram -vocab all.vocab -idngram voxforge.idngram < all.txt
+idngram2lm -vocab_type 0 -idngram voxforge.idngram -vocab all.vocab -arpa voxforge.arpa
+sphinx_lm_convert -i voxforge.arpa -o voxforge.lm.DMP
+
+popd
+
+cp /home/ai/voxforge/de/lm/voxforge.lm.DMP output/lm
+
 #
-# eval
+# audio model
 #
 
-./eval-model.py >output/logs/eval-lm.log
+# sphinxtrain
+
+./audio-gen-sphinx-model.py 
+
+cp -r /home/ai/voxforge/de/work/model_parameters output/
+cp -r /home/ai/voxforge/de/work/etc output/
+cp /home/ai/voxforge/de/work/voxforge.html output/
+
+cp input_files/run-pocketsphinx.sh output
+
+# HTK
+
+#./audio-gen-model.py >output/logs/genmodel.log
+#
+#cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
+#cp /home/ai/voxforge/de/work/logs/Step* output/logs
+
+# eval julius
+
+#./eval-model.py >output/logs/eval-lm.log
 
 #
 # grammar / dfa
 #
 
-./grammar-gen.py
-pushd output/grammar
-mkdfa.pl eval >../logs/mkdfa.log
-popd
+#./grammar-gen.py
+#pushd output/grammar
+#mkdfa.pl eval >../logs/mkdfa.log
+#popd
 
-#
-# eval grammar
-#
+# eval grammar julius
 
-./eval-grammar.py >output/logs/eval-grammar.log
+#./eval-grammar.py >output/logs/eval-grammar.log
 
 #
 # export data, db dump
 #
 
-./audio-stats.py >output/audio-stats.txt
+#./audio-stats.py >output/audio-stats.txt
 
-DSTR=`date +%y%m%d%H%M`
-./audio-stats.py >priv/stats/audio-stats-$DSTR.txt
+#DSTR=`date +%y%m%d%H%M`
+#./audio-stats.py >priv/stats/audio-stats-$DSTR.txt
 
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql
@@ -117,5 +151,5 @@ cp README.md output/readme.txt
 # upload
 #
 
-#rsync -avPz --delete output/ goofy:/var/www/html/voxforge/de
+# rsync -avPz --delete --bwlimit=32 output/ goofy:/var/www/html/voxforge/de
 

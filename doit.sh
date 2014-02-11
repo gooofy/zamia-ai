@@ -112,6 +112,7 @@ mkdir "output/$AMNAME/model_parameters"
 cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_4000 "output/$AMNAME/model_parameters"
 cp -r /home/ai/voxforge/de/work/etc "output/$AMNAME"
 cp /home/ai/voxforge/de/work/voxforge.html "output/$AMNAME"
+cp /home/ai/voxforge/de/work/voxforge.html "output/"
 
 cp input_files/run-pocketsphinx.sh "output/$AMNAME"
 cp input_files/sphinx-model-README "output/$AMNAME/README"

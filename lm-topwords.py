@@ -50,9 +50,10 @@ db_pass   = config.get("speech", "dbpass")
 
 workdir   = config.get("speech", "lmworkdir")
 
-WORD_LIMIT       = 5000
+TOTAL_WORD_LIMIT = 15000 # total number of words in active dict when done
+TOPWORD_LIMIT    = 5000  # number of top-words we intend to cover by our prompts
 MIN_SENTENCE_LEN = 3
-MAX_SENTENCE_LEN = 8
+MAX_SENTENCE_LEN = 10
 PROMPT_LIMIT     = 100   # number of prompts per file generated
 
 SENTENCE_LIMIT   = 0 # debug purposes, 0 to disable
@@ -113,9 +114,6 @@ def collect_sentences(fn):
 
             score = 0
             for word in words:
-                if not word in words_all:
-                    score = 0
-                    break
                 if word in words_missing:
                     score += 1
    
@@ -170,19 +168,21 @@ count = 0
 for word in reversed(sorted(dict.iteritems(), key=lambda (k,v): (v,k))):
     #print word
 
+    if len(word) < 2:
+        continue
+
     topwords.add(word)
 
     outf.write ( ('%s\n' % word[0]).encode('UTF8') )
 
     count += 1
-    if count >= WORD_LIMIT:
+    if count >= TOPWORD_LIMIT:
         break
 
 print
 print "Computed top %d words." % count
 outf.close()
 print "%s written." % outfn
-
 
 #
 # compute set of words already covered by submissions
@@ -233,7 +233,7 @@ pcnt  = 0
 outfn = 'prompts/topwords-%03d' % pcnt
 outf = open (outfn, 'w')
 
-while len(words_missing) > 0:
+while len(words_all) < TOTAL_WORD_LIMIT:
 
     # look for sentence that may also cover other words:
     best_score = 0
@@ -241,12 +241,9 @@ while len(words_missing) > 0:
 
     for words in sentences:
 
-        if len(words) < MIN_SENTENCE_LEN or len(words) > MAX_SENTENCE_LEN:
-            continue
-
         score = 0
         for word in words:
-            if not word in words_all:
+            if len(word) < 2:
                 score = 0
                 break
             if word in words_missing:
@@ -258,12 +255,10 @@ while len(words_missing) > 0:
             best_score    = score
             best_sentence = words
 
-    if best_score < 1:
-        print
-        print "Failed to cover %d words." % len (words_missing)
-        print
+    if best_score == 0:
+        print "Failed to cover: %s" % repr (words_missing)
         break
-        
+
     outf.write ( ('%s\n' % ' '.join(best_sentence)).encode('UTF8') )
 
     count += 1
@@ -280,9 +275,12 @@ while len(words_missing) > 0:
     for word in best_sentence:
         if word in words_missing:
             words_missing.remove(word)
+        if not word in words_all:
+            print "   new word: %s" % word
         words_covered.add(word)
+        words_all.add(word)
 
-    print "Covered %d words, %d words still missing, %d prompts generated" % (best_score, len(words_missing), count)
+    print "Covered %d words, %4d words still missing, %4d prompts generated, dict size: %d" % (best_score, len(words_missing), count, len(words_all))
 
 print
 print "%d prompts to read." % count

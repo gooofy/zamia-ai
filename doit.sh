@@ -1,17 +1,19 @@
 #!/bin/bash
 
+MODELOPTS="-c"
+
 rm -rf output
 mkdir output
 mkdir output/dict
 #mkdir output/lm
-mkdir output/model_parameters
+#mkdir output/model_parameters
 #mkdir output/grammar
 
 #
 # dictionary
 #
 
-./lm-export-dict.py 
+./lm-export-dict.py $MODELOPTS
 
 #cp /home/ai/voxforge/de/work/dict.txt output/dict
 cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
@@ -98,7 +100,7 @@ popd
 
 # sphinxtrain
 
-./audio-gen-sphinx-model.py 
+./audio-gen-sphinx-model.py $MODELOPTS
 
 datum=`date +%Y%m%d`
 

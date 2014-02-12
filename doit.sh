@@ -156,6 +156,9 @@ rm -r "output/$AMNAME"
 #DSTR=`date +%y%m%d%H%M`
 #./audio-stats.py >priv/stats/audio-stats-$DSTR.txt
 
+DSTR=`date +%y%m%d%H%M`
+cp /home/ai/voxforge/de/work/voxforge.html priv/stats/voxforge-$DSTR.html
+
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql
 

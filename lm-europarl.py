@@ -48,7 +48,7 @@ inf = open (europarl)
 count = 0
 for line in inf:
 
-    l = line.decode('UTF8').upper()
+    l = line.decode('UTF8')
 
     # split sentence into words and put it back together 
     # again using single spaces so we get rid of all non-word

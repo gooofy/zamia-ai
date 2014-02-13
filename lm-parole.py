@@ -83,7 +83,7 @@ class ParoleParser(HTMLParser):
                 # again using single spaces so we get rid of all non-word
                 # characters in a uniform way 
 
-                s = ' '.join(split_words(sentence.upper()))
+                s = ' '.join(split_words(sentence))
 
                 if len(s)<MIN_PAR_LEN:
                     continue

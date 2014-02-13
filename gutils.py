@@ -184,7 +184,56 @@ wrt = { u'0'     : u'NULL',
         u'95'    : u'FÜNFUNDNEUNZIG',
         u'99'    : u'NEUNUNDNEUNZIG',
         u'100'   : u'HUNDERT',
-        u'§'     : u'PARAGRAPH' }
+        u'§'     : u'PARAGRAPH'}
+
+
+symb_abbrev_norm = [
+        (u'Abk.'    , u'ABKÜRZUNG '),
+        (u'Abk '    , u'ABKÜRZUNG '),
+        (u'Prof. '  , u'PROFESSOR '),
+        (u'Dipl. '  , u'DIPLOM '),
+        (u'Ing. '   , u'INGENIEUR '),
+        (u'Inf. '   , u'INFORMATIKER '),
+        (u'Inform. ', u'INFORMATIKER '),
+        (u'Tel.'    , u'TELEFON '),
+        (u'bzw.'    , u'BEZIEHUNGSWEISE '),
+        (u'bzw '    , u'BEZIEHUNGSWEISE '),
+        (u'bspw.'   , u'BEISPIELSWEISE '),
+        (u'bspw '   , u'BEISPIELSWEISE '),
+        (u'ca.'     , u'CIRCA '),
+        (u'ca '     , u'CIRCA '),
+        (u'd.h.'    , u'DAS HEIßT '),
+        (u'd. h.'   , u'DAS HEIßT '),
+        (u'Dr. '    , u'DOKTOR '),
+        (u'evtl. '  , u'EVENTUELL '),
+        (u'evtl '   , u'EVENTUELL '),
+        (u'geb. '   , u'GEBORENE '),
+        (u'ggf. '   , u'GEGEBENENFALLS '),
+        (u'ggf '    , u'GEGEBENENFALLS '),
+        (u's.a. '   , u'SIEHE AUCH '),
+        (u's. a. '  , u'SIEHE AUCH '),
+        (u's.o. '   , u'SIEHE OBEN '),
+        (u's. o. '  , u'SIEHE OBEN '),
+        (u's.u. '   , u'SIEHE UNTEN '),
+        (u's. u. '  , u'SIEHE UNTEN '),
+        (u'jr.'     , u'JUNIOR '),
+        (u'u.a. '   , u'UNTER ANDEREM '),
+        (u'u. a. '  , u'UNTER ANDEREM '),
+        (u'u.U. '   , u'UNTER UMSTÄNDEN '),
+        (u'u. U. '  , u'UNTER UMSTÄNDEN '),
+        (u'usw.'    , u'UND SO WEITER '),
+        (u'u.s.w.'  , u'UND SO WEITER '),
+        (u'u. s. w.', u'UND SO WEITER '),
+        (u'vgl.'    , u'VERGLEICHE '),
+        (u'vgl '    , u'VERGLEICHE '),
+        (u'z.B.'    , u'ZUM BEISPIEL '),
+        (u'z. B.'   , u'ZUM BEISPIEL '),
+        (u'z.T.'    , u'ZUM TEIL '),
+        (u'z. T.'   , u'ZUM TEIL '),
+        (u'z.Zt.'   , u'ZUR ZEIT '),
+        (u'z. Zt.'  , u'ZUR ZEIT ')
+    ]
+
 
 # based on code from: http://www.python-forum.de/viewtopic.php?f=11&t=22543
 
@@ -226,6 +275,12 @@ for i in range(10000):
 def split_words (s):
 
     global wrt
+
+    for san in symb_abbrev_norm:
+        srch = san[0]
+        repl = san[1]
+
+        s = s.replace (srch, repl)
 
     res = []
 
@@ -290,6 +345,7 @@ class TestGUtils (unittest.TestCase):
 
     def test_split(self):
         self.assertEqual (split_words(u"1 2 3 4"), ["EINS", "ZWEI", "DREI", "VIER"])
+        self.assertEqual (split_words(u"z.B. u. U. Prof. Dr. Dipl. Ing."), [u'ZUM', u'BEISPIEL', u'UNTER', u'UMST\xc4NDEN', u'PROFESSOR', u'DOKTOR', u'DIPLOM', u'ING'])
 
     def test_zahl_in_worten(self):
 

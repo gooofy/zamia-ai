@@ -40,7 +40,7 @@ def eval_model (col):
     
         cfn         = row[0]
         numsamples  = row[1]
-        prompt      = row[2]
+        prompt      = row[2].decode('UTF8')
         num_words   = len(split_words(prompt))
         num_werr    = row[3]
     
@@ -97,7 +97,7 @@ db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
-mfccdir   = config.get("speech", "mfccdir")
+audiodir  = config.get("speech", "audiodir")
 
 #
 # connect to db
@@ -136,7 +136,7 @@ for row in rows:
     noiselevel = row[1]
     truncated  = row[2]
     audiolevel = row[3]
-    prompt     = row[4]
+    prompt     = row[4].decode('UTF8')
     numsamples = row[5]
     pcn        = row[6]
 
@@ -170,11 +170,13 @@ print
 #
 
 print
-print "Evaluation: audio model: HTK all good submissions, engine: Julius, language model: SRILM prompts+parole"
-print "======================================================================================================="
+print "Evaluation: audio model: sphinxtrain all good submissions, engine: pocketsphinx, language model: CMUCLMTK prompts+parole"
+print "========================================================================================================================"
 print
 
-eval_model('jswerr')
+eval_model('pswerr')
+
+sys.exit(0)
 
 print
 print "Evaluation: audio model: HTK matching good submissions, engine: Julius, language model: 101 grammar"

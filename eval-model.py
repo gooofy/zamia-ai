@@ -28,6 +28,8 @@ import ConfigParser
 from optparse import OptionParser
 from gutils import compress_ws, run_command, split_words, edit_distance
 
+AUDIO_LIMIT = 0 # debug purposes, 0 to disable
+
 #
 # commandline
 #
@@ -73,7 +75,6 @@ db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
 workdir   = config.get("speech", "workdir")
-mfccdir   = config.get("speech", "mfccdir")
 
 #
 # connect to db
@@ -99,7 +100,7 @@ cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciatio
 
 #cur.execute ("SELECT prompt,cfn,id FROM submissions WHERE reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2")
 
-outfn = '%s/mfcfiles.txt' % workdir
+outfn = '%s/ps.ctl' % workdir
 outf = open (outfn, 'w')
 
 prompts = {}
@@ -113,14 +114,15 @@ for row in rows:
     cfn    = row[1]
     sid    = row[2]
 
-    mfcfn = "%s/%s.mfc" % (mfccdir, cfn)
+    #print "Running pocketsphinx on %s, expect '%s' output" % (mfcfn, prompt)
+    prompts[cfn] = prompt
+    sids[cfn]    = sid
 
-    #print "Running julius on %s, expect '%s' output" % (mfcfn, prompt)
-    prompts[mfcfn] = prompt
-    sids[mfcfn]    = sid
-
-    outf.write ('%s\n' % mfcfn)
+    outf.write ('%s\n' % cfn)
     filecount += 1
+
+    if AUDIO_LIMIT > 0 and filecount >= AUDIO_LIMIT:
+        break
 
     cur.execute ('SELECT id FROM eval WHERE sid=%s', (sid,))
     row = cur.fetchone()
@@ -129,20 +131,21 @@ for row in rows:
 
 outf.close()
 
-print "%s written." % outfn
+print "%s written (%d files to evaluate)." % (outfn, filecount)
 print
 
 #
-# run julius on all good submissions, check recognition quality
+# run pocketsphinx on all good submissions, check recognition quality
 #
 
-print "Running julius..."
+print "Running pocketsphinx..."
 
-logfn = "output/logs/eval.log"
-logf = open (logfn, 'w')
+hypfn = 'result/eval.hyp'
+segfn = 'result/eval.seg'
 
-mfcrex = re.compile (r"^input MFCC file: (.+)$")
-rex = re.compile (r"^wseq1: <s> ([^<]*)</s>$")
+os.system ('cd %s; pocketsphinx_batch -cepdir feat -cepext .mfc -ctl ps.ctl -hmm model_parameters/voxforge.cd_cont_4000 -lw 10 -feat 1s_c_d_dd -beam 1e-80 -wbeam 1e-40 -dict /home/ai/voxforge/de/work/etc/voxforge.dic -lm /home/ai/voxforge/de/work/etc/voxforge.lm.DMP -wip 0.2 -hyp %s -hypseg %s &>logs/eval.log' % (workdir, hypfn, segfn))
+
+hyprex = re.compile (r"^([^(]*)\((\S+)\s([+-][0-9]+)\)$")
 
 cnt    = 0
 words  = 0
@@ -150,27 +153,24 @@ werr   = 0
 mfcfn  = ""
 pe     = ""
 
-cur.execute ("UPDATE eval SET jsresp=NULL, jswerr=NULL")
+cur.execute ("UPDATE eval SET psresp=NULL, pswerr=NULL, psscore=NULL")
 
-for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
-                           '-h', 'output/acoustic_model_files/hmmdefs', '-hlist', 'output/acoustic_model_files/tiedlist',
-                           '-d', 'output/lm/german.bingram', '-v', 'output/dict/dict-julius.txt', '-fbank', '26', '-rawe'] ):
-
-    logf.write(line)
+hypf = open ('%s/%s' % (workdir, hypfn))
+for line in hypf:
 
     l = line.decode ('UTF8')
 
-    m = mfcrex.match(l)
-    if m:
-        mfcfn = m.group(1)
-        pe    = prompts[mfcfn]
-        sid   = sids[mfcfn]
-
-    m = rex.match(l)
+    m = hyprex.match (l)
     if m:
 
-        print "%5d/%5d: %s" % (cnt, filecount, mfcfn)
-        pr = m.group(1)
+        pr    = m.group(1)
+        cfn   = m.group(2)
+        score = int(m.group(3))
+
+        pe    = prompts[cfn]
+        sid   = sids[cfn]
+
+        print "%-25s Score: %d" % (cfn, score)
 
         print "    expected: %s" % pe
         print "    got     : %s" % pr
@@ -186,14 +186,13 @@ for line in run_command ( ['julius', '-input', 'mfcfile', '-filelist', outfn,
         print "    +%2d word errors, total: %4d errors in %4d words => rate = %3d%%" % (n_errs, werr, words, werr * 100 / words)
         print
 
-        cur.execute ('UPDATE eval SET jsresp=%s, jswerr=%s WHERE sid=%s', (pr, n_errs, sid))
+        cur.execute ('UPDATE eval SET psresp=%s, pswerr=%s, psscore=%s WHERE sid=%s', (pr, n_errs, score, sid))
 
         conn.commit()
         cur = conn.cursor()
 
         cnt += 1
 
-logf.close()
-print "%s written." % logfn
-print
+    else:
+        print "not matched: %s" % l
 

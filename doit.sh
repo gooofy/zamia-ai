@@ -111,6 +111,7 @@ mkdir "output/$AMNAME/model_parameters"
 
 cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_4000 "output/$AMNAME/model_parameters"
 cp -r /home/ai/voxforge/de/work/etc "output/$AMNAME"
+cp -r /home/ai/voxforge/de/work/result "output/$AMNAME"
 cp /home/ai/voxforge/de/work/voxforge.html "output/$AMNAME"
 cp /home/ai/voxforge/de/work/voxforge.html "output/"
 
@@ -123,16 +124,16 @@ popd
 
 rm -r "output/$AMNAME"
 
+# detailed eval using pocketsphinx
+
+./eval-model.py $MODELOPTS >output/eval-pocketsphinx.log
+
 # HTK
 
 #./audio-gen-model.py >output/logs/genmodel.log
 #
 #cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
 #cp /home/ai/voxforge/de/work/logs/Step* output/logs
-
-# eval julius
-
-#./eval-model.py >output/logs/eval-lm.log
 
 #
 # grammar / dfa
@@ -151,7 +152,7 @@ rm -r "output/$AMNAME"
 # export data, db dump
 #
 
-#./audio-stats.py >output/audio-stats.txt
+./audio-stats.py >output/audio-stats.txt
 
 #DSTR=`date +%y%m%d%H%M`
 #./audio-stats.py >priv/stats/audio-stats-$DSTR.txt

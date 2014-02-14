@@ -68,16 +68,21 @@ for row in rows:
 
 #print "STATS: %d words" % len(words)
 
-count = 0
+dict = set()
 
+cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid")
+for row in cur.fetchall():
+    dict.add (row[0].decode('UTF8'))
+
+count = 0
 for word in words:
 
-    cur.execute ("SELECT pronounciations.id FROM words,pronounciations WHERE words.word=%s AND words.id = pronounciations.wid", (word,)) 
-   
-    if not cur.fetchone():
-        print "%s " % word,
+    if not word in dict:
+
+        print "%s" % word,
         count += 1
 
         if count > 100:
             break
+
 

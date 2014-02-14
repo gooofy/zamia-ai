@@ -63,21 +63,29 @@ for row in rows:
     ws = split_words(prompt)
 
     for word in ws:
-
         words.add(word)
 
 print "done. %d unique words found." % len(words)
+print
+
+print "Loading dict from DB..."
+
+dict = set()
+
+cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid")
+for row in cur.fetchall():
+    dict.add (row[0].decode('UTF8'))
+
+print "%d entries." % len(dict)
+print 
 
 print "Looking up words in dictionary...",
 sys.stdout.flush() 
 
 count = 0
-
 for word in words:
 
-    cur.execute ("SELECT pronounciations.id FROM words,pronounciations WHERE words.word=%s AND words.id = pronounciations.wid", (word,)) 
-   
-    if not cur.fetchone():
+    if not word in dict:
         count += 1
 
 print "done"

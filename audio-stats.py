@@ -27,62 +27,6 @@ from os.path import expanduser
 from gutils import run_command, split_words
 import psycopg2
 
-def eval_model (col):
-
-    cur.execute ("SELECT cfn,numsamples,prompt,%s FROM submissions,eval WHERE submissions.id=eval.sid and %s IS NOT null" % (col, col))
-    
-    samples_per_user     = {}
-    words_per_user       = {}
-    werr_per_user        = {}
-    
-    rows = cur.fetchall()
-    for row in rows:
-    
-        cfn         = row[0]
-        numsamples  = row[1]
-        prompt      = row[2].decode('UTF8')
-        num_words   = len(split_words(prompt))
-        num_werr    = row[3]
-    
-        login       = cfn.split('-')[0]
-    
-        if login in samples_per_user:
-            samples_per_user[login] += numsamples
-        else:
-            samples_per_user[login] = numsamples
-    
-        if login in words_per_user:
-            words_per_user[login] += num_words
-        else:
-            words_per_user[login] = num_words
-    
-        if login in werr_per_user:
-            werr_per_user[login] += num_werr
-        else:
-            werr_per_user[login] = num_werr
-               
-    
-    print "results per user: "
-    print
-    
-    total_words = 0
-    total_werr  = 0
-    
-    for login in sorted(samples_per_user):
-        samples = samples_per_user[login]
-        words   = words_per_user[login]
-        werr    = werr_per_user[login]
-        print "%-25s : %8.2fmin %5d words %5d werrs (%5.1f%%)" % (login, samples / (60*100.0), words, werr, werr * 100.0 / words)
-    
-        total_werr  += werr
-        total_words += words
-    
-    print
-    print "Total: %d words, %d errors (%5.1f%%)" % (total_words, total_werr, total_werr * 100.0 / total_words)
-    print
-    
-
-
 #
 # load config, set up global variables
 #
@@ -97,7 +41,7 @@ db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
-audiodir  = config.get("speech", "audiodir")
+workdir   = config.get("speech", "workdir")
 
 #
 # connect to db
@@ -109,6 +53,45 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
+#
+# read .align file, collect word errors per user
+#
+
+alignfn = '%s/result/voxforge.align' % workdir
+alignf = open (alignfn)
+
+hyprex  = re.compile (r"^([^(]*)\(([^)]+)\)$")
+statrex = re.compile (r"^Words: (\d+) Correct: (\d+) ")
+
+werr_per_user       = {}
+eval_words_per_user = {}
+
+login               = ''
+for line in alignf:
+
+    m = hyprex.match (line)
+    if m:
+
+        parts = m.group(2).split('-')
+
+        login = parts[1]
+
+    m = statrex.match (line)
+    if m:
+        num_words   = int(m.group(1))
+        num_correct = int(m.group(2))
+        num_werr    = num_words - num_correct
+
+        if login in eval_words_per_user:
+            eval_words_per_user[login] += num_words
+        else:
+            eval_words_per_user[login] = num_words
+
+        if login in werr_per_user:
+            werr_per_user[login] += num_werr
+        else:
+            werr_per_user[login] = num_werr
+       
 #
 # total model size, active dict size
 #
@@ -128,7 +111,10 @@ total_num_files      = 0
 total_words          = set()
 good_words           = set()
 
-cur.execute ("SELECT reviewed,noiselevel,truncated,audiolevel,prompt,numsamples,pcn FROM submissions")
+samples_per_user     = {}
+words_per_user       = {}
+
+cur.execute ("SELECT reviewed,noiselevel,truncated,audiolevel,prompt,numsamples,pcn,cfn FROM submissions")
 rows = cur.fetchall()
 for row in rows:
 
@@ -139,13 +125,17 @@ for row in rows:
     prompt     = row[4].decode('UTF8')
     numsamples = row[5]
     pcn        = row[6]
+    cfn        = row[7]
 
     words = split_words(prompt)
     for word in words:
         total_words.add(word)
 
     total_numsamples += numsamples
-    total_num_files   += 1
+    total_num_files  += 1
+
+    num_words   = len(words)
+    login       = cfn.split('-')[0]
 
     if reviewed:
         reviewed_numsamples += numsamples
@@ -157,6 +147,16 @@ for row in rows:
             for word in words:
                 good_words.add(word)
 
+            if login in samples_per_user:
+                samples_per_user[login] += numsamples
+            else:
+                samples_per_user[login] = numsamples
+
+            if login in words_per_user:
+                words_per_user[login] += num_words
+            else:
+                words_per_user[login] = num_words
+    
 print
 print "total    %6d files, total    length: %8.2fmin" % (total_num_files, total_numsamples / (60 * 100.0))
 print "reviewed %6d files, reviewed length: %8.2fmin (%3d%% done)" % (reviewed_num_files, reviewed_numsamples / (60 * 100.0), reviewed_num_files * 100 / total_num_files)
@@ -165,23 +165,33 @@ print
 print "unique words in all submissions: %d, unique words in reviewed good submissions: %d" % (len(total_words), len(good_words))
 print
 
-#
-# evaluate statistical model
-#
-
-print
-print "Evaluation: audio model: sphinxtrain all good submissions, engine: pocketsphinx, language model: CMUCLMTK prompts+parole"
-print "========================================================================================================================"
+print "results per user: "
 print
 
-eval_model('pswerr')
+eval_words = 0
+eval_werr  = 0
 
-sys.exit(0)
+for login in sorted(samples_per_user):
+    samples = samples_per_user[login]
+    words   = words_per_user[login]
+    print "%-25s : %8.2fmin %5d words" % (login, samples / (60*100.0), words),
+
+    ulogin = login.upper()
+
+    if ulogin in werr_per_user:
+
+        words = eval_words_per_user[ulogin]
+        werr  = werr_per_user[ulogin]
+
+        eval_words += words
+        eval_werr  += werr
+
+        print "%4.1f%% werr" % (werr * 100.0 / words)
+    else:
+        print
+
 
 print
-print "Evaluation: audio model: HTK matching good submissions, engine: Julius, language model: 101 grammar"
-print "==================================================================================================="
+print "Total: test set has %d words %d errors => %5.1f%%" % (eval_words, eval_werr, eval_werr * 100.0 / eval_words)
 print
-
-eval_model('jgwerr')
 

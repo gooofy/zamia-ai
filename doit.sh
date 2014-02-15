@@ -126,7 +126,8 @@ rm -r "output/$AMNAME"
 
 # detailed eval using pocketsphinx
 
-./eval-model.py $MODELOPTS >output/eval-pocketsphinx.log
+# FIXME: takes way too long, train results on test set are sufficient for now
+# ./eval-model.py $MODELOPTS >output/eval-pocketsphinx.log
 
 # HTK
 
@@ -159,6 +160,7 @@ rm -r "output/$AMNAME"
 
 DSTR=`date +%y%m%d%H%M`
 cp /home/ai/voxforge/de/work/voxforge.html priv/stats/voxforge-$DSTR.html
+cp output/audio-stats.txt priv/stats/audio-stats-$DSTR.txt
 
 pg_dump -U lexicon lexicon_de >output/db.sql
 gzip output/db.sql

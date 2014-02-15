@@ -61,7 +61,7 @@ alignfn = '%s/result/voxforge.align' % workdir
 alignf = open (alignfn)
 
 hyprex  = re.compile (r"^([^(]*)\(([^)]+)\)$")
-statrex = re.compile (r"^Words: (\d+) Correct: (\d+) ")
+statrex = re.compile (r"^Words: (\d+) Correct: (\d+) Errors: (\d+) ")
 
 werr_per_user       = {}
 eval_words_per_user = {}
@@ -80,7 +80,7 @@ for line in alignf:
     if m:
         num_words   = int(m.group(1))
         num_correct = int(m.group(2))
-        num_werr    = num_words - num_correct
+        num_werr    = int(m.group(3))
 
         if login in eval_words_per_user:
             eval_words_per_user[login] += num_words
@@ -165,7 +165,7 @@ print
 print "unique words in all submissions: %d, unique words in reviewed good submissions: %d" % (len(total_words), len(good_words))
 print
 
-print "results per user: "
+print "Data per user: "
 print
 
 eval_words = 0
@@ -186,7 +186,7 @@ for login in sorted(samples_per_user):
         eval_words += words
         eval_werr  += werr
 
-        print "%4.1f%% werr" % (werr * 100.0 / words)
+        print "%5.1f%% ts werr" % (werr * 100.0 / words)
     else:
         print
 

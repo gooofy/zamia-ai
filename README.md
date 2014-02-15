@@ -5,6 +5,57 @@ Data / Exports: http://goofy.zamia.org/voxforge/
 
 Code: https://github.com/gooofy/voxforge
 
+Dictionary
+==========
+
+check dictionary for missing words from submissions:
+
+    [guenter@dagobert speech]$ ./lex-todo.py 
+    loading transcripts... done. 9891 unique words found.
+    Looking up words in dictionary... done
+
+    STATS: 32 of 9891 words have no entry yet => 99% done.
+
+add missing pronounciations:
+
+    ./lex-edit.py `./lex-prompts.py`
+
+export dictionary:
+
+    [guenter@dagobert speech]$ ./lm-export-dict.py -c
+
+    Fetching dict entries for transcript words from db...
+
+    Found 2070 entries.
+
+    /home/ai/voxforge/de/lm/wlist.txt written.
+    /home/ai/voxforge/de/lm/dict-julius.txt written.
+
+CMULMTK Language Model
+======================
+
+extract prompts from db:
+
+    ./lm-prompts.py
+
+prepare sentences, vocabulary:
+
+    pushd /home/ai/voxforge/de/lm
+
+    cat prompts.sent parole.sent > all.sent
+
+    sed 's/^/<s> /' all.sent | sed 's/$/ <\/s>/' >all.txt
+
+    echo '</s>' > all.vocab
+    echo '<s>' >> all.vocab
+    cat wlist.txt >>all.vocab
+
+generate model:
+
+    text2idngram -vocab all.vocab -idngram voxforge.idngram < all.txt
+    idngram2lm -vocab_type 0 -idngram voxforge.idngram -vocab all.vocab -arpa voxforge.arpa
+    sphinx_lm_convert -i voxforge.arpa -o voxforge.lm.DMP
+
 Audio Model
 ===========
 
@@ -20,26 +71,52 @@ import into db:
 
     ./audio-import.py
 
-check dictionary:
-
-    [guenter@dagobert speech]$ ./lex-todo.py 
-    loading transcripts... done. 9891 unique words found.
-    Looking up words in dictionary... done
-
-    STATS: 32 of 9891 words have no entry yet => 99% done.
-
-add missing pronounciations:
-
-    ./lex-edit.py `./lex-prompts.py`
-
 transcribe, rate:
 
     ./audio-transcribe.py 
     point web browser to: http://localhost:8000/
 
+export dictionary:
 
-Compute Model
--------------
+    ./lm-export-dict.py -c
+
+Compute Sphinx Model
+--------------------
+
+compute model:
+
+    ./audio-gen-sphinx-model.py -c
+
+collect results:
+
+    datum=`date +%Y%m%d`
+
+    AMNAME="voxforge-de-r$datum"
+
+    mkdir "output/$AMNAME"
+    mkdir "output/$AMNAME/model_parameters"
+
+    cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_4000 "output/$AMNAME/model_parameters"
+    cp -r /home/ai/voxforge/de/work/etc "output/$AMNAME"
+    cp -r /home/ai/voxforge/de/work/result "output/$AMNAME"
+    cp /home/ai/voxforge/de/work/voxforge.html "output/$AMNAME"
+    cp /home/ai/voxforge/de/work/voxforge.html "output/"
+
+    cp input_files/run-pocketsphinx.sh "output/$AMNAME"
+    cp input_files/sphinx-model-README "output/$AMNAME/README"
+
+    pushd output
+    tar cfvz "$AMNAME.tgz" $AMNAME
+    popd
+
+    rm -r "output/$AMNAME"
+
+produce stats overview text file:
+
+    ./audio-stats.py >output/audio-stats.txt
+
+Compute HTK Model (currently not used)
+--------------------------------------
 
     ./audio-gen-model.py
 
@@ -68,17 +145,6 @@ Compute Model
 
     Final model copied to: /home/ai/voxforge/de/work/acoustic_model_files
 
-export dictionary:
-
-    [guenter@dagobert speech]$ ./lm-export-dict.py 
-
-    Fetching dict entries for transcript words from db...
-
-    Found 2070 entries.
-
-    /home/ai/voxforge/de/lm/wlist.txt written.
-    /home/ai/voxforge/de/lm/dict-julius.txt written.
-
 collect final model:
 
     cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
@@ -86,8 +152,8 @@ collect final model:
     cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
     cp /home/ai/voxforge/de/work/logs/Step* output/logs
 
-Language Models
-===============
+SRILM / MITLM Language Models (currently not used)
+==================================================
 
 SRILM Language Model Generation
 -------------------------------

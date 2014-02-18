@@ -51,7 +51,7 @@ db_pass   = config.get("speech", "dbpass")
 workdir   = config.get("speech", "lmworkdir")
 
 TOTAL_WORD_LIMIT = 15000 # total number of words in active dict when done
-TOPWORD_LIMIT    = 5000  # number of top-words we intend to cover by our prompts
+TOPWORD_LIMIT    = 7000  # number of top-words we intend to cover by our prompts
 MIN_SENTENCE_LEN = 3
 MAX_SENTENCE_LEN = 10
 PROMPT_LIMIT     = 100   # number of prompts per file generated

@@ -184,6 +184,7 @@ wrt = { u'0'     : u'NULL',
         u'95'    : u'FÜNFUNDNEUNZIG',
         u'99'    : u'NEUNUNDNEUNZIG',
         u'100'   : u'HUNDERT',
+        u'DAß'   : u'DASS',
         u'§'     : u'PARAGRAPH'}
 
 
@@ -200,6 +201,7 @@ symb_abbrev_norm = [
         (u'bzw '    , u'BEZIEHUNGSWEISE '),
         (u'bspw.'   , u'BEISPIELSWEISE '),
         (u'bspw '   , u'BEISPIELSWEISE '),
+        (u'bzgl.'   , u'BEZÜGLICH '),
         (u'ca.'     , u'CIRCA '),
         (u'ca '     , u'CIRCA '),
         (u'd.h.'    , u'DAS HEIßT '),
@@ -210,10 +212,12 @@ symb_abbrev_norm = [
         (u'geb.'    , u'GEBORENE '),
         (u'ggf.'    , u'GEGEBENENFALLS '),
         (u'ggf '    , u'GEGEBENENFALLS '),
+        (u'kath.'   , u'KATHOLISCHE '),
         (u'Hrsg.'   , u'HERAUSGEBER '),
         (u'Mr.'     , u'MISTER '),
         (u'Mrs.'    , u'MISSES '),
         (u'Nr.'     , u'NUMMER '),
+        (u'Nrn.'    , u'NUMMERN '),
         (u's.a.'    , u'SIEHE AUCH '),
         (u's. a.'   , u'SIEHE AUCH '),
         (u's.o.'    , u'SIEHE OBEN '),
@@ -228,6 +232,7 @@ symb_abbrev_norm = [
         (u'usw.'    , u'UND SO WEITER '),
         (u'u.s.w.'  , u'UND SO WEITER '),
         (u'u. s. w.', u'UND SO WEITER '),
+        (u'v.a.'    , u'VOR ALLEM '),
         (u'vgl.'    , u'VERGLEICHE '),
         (u'vgl '    , u'VERGLEICHE '),
         (u'Wdh.'    , u'WIEDERHOLUNG '),
@@ -275,6 +280,9 @@ for i in range(10000):
     u = unicode(i)
     if not u in wrt:
         wrt[u] = zahl_in_worten(i)
+        wrt[u'0'+u] = zahl_in_worten(i)
+        wrt[u'00'+u] = zahl_in_worten(i)
+        wrt[u'000'+u] = zahl_in_worten(i)
 
 
 def split_words (s):

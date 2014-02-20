@@ -47,8 +47,11 @@ config.read("%s/%s" % (home_path, ".airc"))
 
 workdir   = config.get("speech", "lmworkdir")
 parole    = config.get("speech", "parole-de")
+sentences = config.get("speech", "sentences")
 
 MIN_PAR_LEN = 12
+
+SENT_PER_FILE   = 1000
 
 def collect_sentences (parent):
 
@@ -70,14 +73,27 @@ class ParoleParser(HTMLParser):
             self.buf = u""
 
     def handle_endtag(self, tag):
+    
+        global sentf, sentcnt, rawcnt, sentences
+
         if tag == 'p':
             self.in_par = False
             #print (u"PAR: %s" % self.buf).encode('UTF8')
 
             text = compress_ws(self.buf.replace('\n', ' '))
 
-            sentences = sent_detector.tokenize(text, realign_boundaries=True)
-            for sentence in sentences:
+            sentncs = sent_detector.tokenize(text, realign_boundaries=True)
+            for sentence in sentncs:
+
+                sentf.write((u"%s\n" % sentence).encode('UTF8'))
+                sentcnt += 1
+
+                if sentcnt >= SENT_PER_FILE:
+                    sentf.close()
+                    sentfn = '%s/raw/parole%04d.raw' % (sentences, rawcnt)
+                    rawcnt += 1
+                    sentf = open (sentfn, 'w')
+                    sentcnt = 0
 
                 # split sentence into words and put it back together 
                 # again using single spaces so we get rid of all non-word
@@ -164,11 +180,19 @@ with open('de_punkt.pickle', mode='rb') as f:
 outfn = '%s/parole.sent' % workdir
 outf = open (outfn, 'w')
 
+sentcnt = 0
+rawcnt = 0
+sentfn = '%s/raw/parole%04d.raw' % (sentences, rawcnt)
+rawcnt += 1
+sentf = open (sentfn, 'w')
+
 crawl_sgms (parole)
 
 outf.close()
+sentf.close()
 
 print
 print "%s written." % outfn
+print "%s written." % sentfn
 print 
 

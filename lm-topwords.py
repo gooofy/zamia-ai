@@ -259,7 +259,17 @@ while len(words_all) < TOTAL_WORD_LIMIT:
         print "Failed to cover: %s" % repr (words_missing)
         break
 
-    outf.write ( ('%s\n' % ' '.join(best_sentence)).encode('UTF8') )
+    for word in best_sentence:
+        if word in words_missing:
+            print "   covered : %s" % word
+            words_missing.remove(word)
+            outf.write ( ('%s ' % word).encode('UTF8'))
+        if not word in words_all:
+            print "   new word: %s" % word
+        words_covered.add(word)
+        words_all.add(word)
+
+    outf.write ( (' : %s\n' % ' '.join(best_sentence)).encode('UTF8') )
 
     count += 1
     if count % PROMPT_LIMIT == 0:
@@ -272,13 +282,6 @@ while len(words_all) < TOTAL_WORD_LIMIT:
         outfn = 'prompts/topwords-%03d' % pcnt
         outf = open (outfn, 'w')
 
-    for word in best_sentence:
-        if word in words_missing:
-            words_missing.remove(word)
-        if not word in words_all:
-            print "   new word: %s" % word
-        words_covered.add(word)
-        words_all.add(word)
 
     print "Covered %d words, %4d words still missing, %4d prompts generated, dict size: %d" % (best_score, len(words_missing), count, len(words_all))
 

@@ -280,10 +280,9 @@ for i in range(10000):
     u = unicode(i)
     if not u in wrt:
         wrt[u] = zahl_in_worten(i)
-        wrt[u'0'+u] = zahl_in_worten(i)
-        wrt[u'00'+u] = zahl_in_worten(i)
-        wrt[u'000'+u] = zahl_in_worten(i)
-
+    wrt[u'0'+u] = zahl_in_worten(i)
+    wrt[u'00'+u] = zahl_in_worten(i)
+    wrt[u'000'+u] = zahl_in_worten(i)
 
 def split_words (s):
 
@@ -358,14 +357,15 @@ class TestGUtils (unittest.TestCase):
 
     def test_split(self):
         self.assertEqual (split_words(u"1 2 3 4"), ["EINS", "ZWEI", "DREI", "VIER"])
-        self.assertEqual (split_words(u"z.B. u. U. Prof. Dr. Dipl. Ing."), [u'ZUM', u'BEISPIEL', u'UNTER', u'UMST\xc4NDEN', u'PROFESSOR', u'DOKTOR', u'DIPLOM', u'ING'])
+        self.assertEqual (split_words(u"00 01 02 03 04"), ["NULL", "EINS", "ZWEI", "DREI", "VIER"])
+        self.assertEqual (split_words(u"z.B. u. U. Prof. Dr. Dipl. Ing."), [u'ZUM', u'BEISPIEL', u'UNTER', u'UMST\xc4NDEN', u'PROFESSOR', u'DOKTOR', u'DIPLOM', u'INGENIEUR'])
 
     def test_zahl_in_worten(self):
 
         for i in range(10000):
             u = unicode(i)
             z = zahl_in_worten(i)
-            #print "%4d : %s" % (i, z)
+            #print "%4s : %s" % (u, z)
             if u in wrt:
                 self.assertEqual (z, wrt[u])
 

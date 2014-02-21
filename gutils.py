@@ -135,6 +135,8 @@ wrt = { u'0'     : u'NULL',
         u'2002'  : u'ZWEITAUSENDZWEI',
         u'2004'  : u'ZWEITAUSENDVIER',
         u'2005'  : u'ZWEITAUSENDFÜNF',
+        u'2150'  : u'ZWEITAUSENDEINHUNDERTFÜNFZIG',
+        u'2310'  : u'ZWEITAUSENDDREIHUNDERTZEHN',
         u'204'   : u'ZWEIHUNDERTVIER',
         u'21'    : u'EINUNDZWANZIG',
         u'226'   : u'ZWEIHUNDERTSECHSUNDZWANZIG',
@@ -236,6 +238,7 @@ symb_abbrev_norm = [
         (u'vgl.'    , u'VERGLEICHE '),
         (u'vgl '    , u'VERGLEICHE '),
         (u'Wdh.'    , u'WIEDERHOLUNG '),
+        (u'Ziff.'   , u'ZIFFER '),
         (u'z.B.'    , u'ZUM BEISPIEL '),
         (u'z. B.'   , u'ZUM BEISPIEL '),
         (u'z.T.'    , u'ZUM TEIL '),
@@ -262,6 +265,7 @@ def zahl_in_worten(n, s=True, z=False):
         return w
     if n < 1000:
         if n // 100 == 1:
+            if z: return "EINHUNDERT" + zahl_in_worten(n % 100, z=True)
             return "HUNDERT" + zahl_in_worten(n % 100, z=True)
         return w1[n // 100] + "HUNDERT" + zahl_in_worten(n % 100, z=True)
     if n < 2000:

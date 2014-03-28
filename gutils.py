@@ -187,6 +187,9 @@ wrt = { u'0'     : u'NULL',
         u'99'    : u'NEUNUNDNEUNZIG',
         u'100'   : u'HUNDERT',
         u'DAß'   : u'DASS',
+        u'HAß'   : u'HASS',
+        u'PHOTO' : u'FOTO',
+        u'TELEPHON': u'TELEFON',
         u'§'     : u'PARAGRAPH'}
 
 
@@ -217,6 +220,7 @@ symb_abbrev_norm = [
         (u'kath.'   , u'KATHOLISCHE '),
         (u'Hrsg.'   , u'HERAUSGEBER '),
         (u'Mr.'     , u'MISTER '),
+        (u'Mrd.'    , u'MILLIARDEN '),
         (u'Mrs.'    , u'MISSES '),
         (u'Nr.'     , u'NUMMER '),
         (u'Nrn.'    , u'NUMMERN '),
@@ -227,6 +231,7 @@ symb_abbrev_norm = [
         (u's.u.'    , u'SIEHE UNTEN '),
         (u's. u.'   , u'SIEHE UNTEN '),
         (u'jr.'     , u'JUNIOR '),
+        (u'Str.'    , u'STRASSE '),
         (u'u.a.'    , u'UNTER ANDEREM '),
         (u'u. a.'   , u'UNTER ANDEREM '),
         (u'u.U.'    , u'UNTER UMSTÄNDEN '),
@@ -303,13 +308,18 @@ def split_words (s):
     words = re.split ('\s+', s)
     for word in words:
 
-        w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()=]", '', word.rstrip()).upper()
+        w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()=']", '', word.rstrip()).upper()
         if len(w) > 0:
 
             if w in wrt:
                 w = wrt[w]
+        
+                words2 = re.split('\s+', w)
+                for w2 in words2:
+                    res.append(w2)
 
-            res.append (w)
+            else:
+                res.append (w)
 
     return res
 

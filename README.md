@@ -128,6 +128,32 @@ just a sample invocation for live audio from mic:
         -wip 0.2 \
         -agc none -varnorm no -cmn current
 
+Expanding the Dictionary
+------------------------
+
+The idea here is to generate lists of frequently used words (according to our
+text corpora) currently not covered by prompts and/or our dictionary.
+
+    ./lm-topwords.py 
+    Reading /home/ai/voxforge/de/lm/prompts.sent...
+      10000 sentences.   9700 unique words.
+      20000 sentences.  11765 unique words.
+    Reading /home/ai/voxforge/de/lm/parole.sent...
+      10000 sentences.  30165 unique words.
+    [...]
+    Got 602300 unique words from corpora.
+
+    Computed top 7000 words.
+    output/topwords.txt written.
+
+    Already covered by submissions: 12832 words.
+
+
+    Words not covered: 999
+    output/missingwords.txt written.
+
+now compose sentences using as many words as possible from output/missingwords and read them.
+
 Compute HTK Model (currently not used)
 --------------------------------------
 

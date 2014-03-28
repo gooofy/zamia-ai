@@ -197,6 +197,10 @@ for row in rows:
 
 print 
 print "Already covered by submissions: %d words." % len(words_covered)
+print
+
+missingfn = 'output/missingwords.txt'
+missingf = open (missingfn, 'w')
 
 words_missing = set()
 for entry in topwords:
@@ -205,8 +209,16 @@ for entry in topwords:
         #print "topword not covered yet: %s" % word
         words_missing.add(word)
 
+        missingf.write (("%s\n" % word).encode('utf-8'))
+
+missingf.close()
+
 print
 print "Words not covered: %d" % len(words_missing)
+print "%s written." % missingfn
+print
+
+sys.exit(0)
 
 words_all = words_covered | words_missing
 

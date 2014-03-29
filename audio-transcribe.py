@@ -57,7 +57,7 @@ def hurl_submissions (environ, start_response):
         elif col == 2:  
           sql += ' ORDER BY prompt ' + parameters['sSortDir_0'][0]
         elif col == 3:  
-          sql += ' ORDER BY reviewed ' + parameters['sSortDir_0'][0]
+          sql += ' ORDER BY reviewed,cfn ' + parameters['sSortDir_0'][0]
 
     # paging
 

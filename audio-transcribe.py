@@ -51,7 +51,7 @@ def hurl_submissions (environ, start_response):
 
     if 'iSortCol_0' in parameters:
         col = int(parameters['iSortCol_0'][0])
-        print "     sort column: %s" % repr(col)
+        #print "     sort column: %s" % repr(col)
         if col == 1:
           sql += ' ORDER BY cfn ' + parameters['sSortDir_0'][0]
         elif col == 2:  
@@ -93,17 +93,19 @@ def hurl_submissions (environ, start_response):
 
 def hurl_wav (environ, start_response):
 
+    global audiodir
+
     parameters = parse_qs(environ.get('QUERY_STRING', ''))
-    print "     parameters: %s" % repr(parameters)
+    #print "     parameters: %s" % repr(parameters)
 
     sql = 'SELECT dir, audiofn FROM submissions WHERE id=' + parameters['id'][0]
 
     cur.execute (sql)
     row = cur.fetchone()
 
-    wavfn = '/home/ai/voxforge/de/audio/' + row[0] + '/wav/' + row[1] + '.wav'
+    wavfn = audiodir + '/' + row[0] + '/wav/' + row[1] + '.wav'
 
-    print "Request for wav: %s" % wavfn
+    #print "Request for wav: %s" % wavfn
 
     len = os.path.getsize (wavfn)
 
@@ -120,7 +122,7 @@ def hurl_save (environ, start_response):
 
     parameters = parse_qs(environ.get('QUERY_STRING', ''))
     data = json.loads(parameters['data'][0])
-    print "     data: %s" % repr(data)
+    #print "     data: %s" % repr(data)
 
     cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, comment=%s, audiolevel=%s, pcn=%s WHERE id=%s',
                  (data['noiselevel'], data['truncated'], data['comment'], data['audiolevel'], data['pcn'], data['sid']))
@@ -147,10 +149,10 @@ def hurl_setprompt (environ, start_response):
 
     pd = parameters['data'][0]
 
-    print "     pd: %s" % repr(pd)
+    #print "     pd: %s" % repr(pd)
 
     data = json.loads(pd)
-    print "     sid: %s, prompt: %s" % (data['sid'], data['prompt'])
+    #print "     sid: %s, prompt: %s" % (data['sid'], data['prompt'])
 
     cur.execute ('UPDATE submissions SET prompt=%s WHERE id=%s',
                  (data['prompt'], data['sid']))
@@ -166,7 +168,7 @@ def hurl_submission_get_details (environ, start_response):
     global conn, cur
 
     parameters = parse_qs(environ.get('QUERY_STRING', ''))
-    print "     parameters: %s" % repr(parameters)
+    #print "     parameters: %s" % repr(parameters)
 
     sql = 'SELECT prompt, reviewed, noiselevel, truncated, comment, audiolevel, pcn FROM submissions WHERE id=' + parameters['id'][0]
 
@@ -224,7 +226,7 @@ def hurl_submission_get_details (environ, start_response):
 
     cur2.close()
 
-    print "Result: %s" % repr (res)
+    #print "Result: %s" % repr (res)
 
     start_response('200 OK', [('Content-Type', 'application/json')])
 
@@ -307,6 +309,8 @@ db_server = config.get("speech", "dbserver")
 db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
+
+audiodir  = config.get("speech", "audiodir")
 
 #
 # connect to db

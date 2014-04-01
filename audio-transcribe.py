@@ -34,7 +34,7 @@ from gutils import run_command, split_words
 def hurl_submissions (environ, start_response):
 
     parameters = parse_qs(environ.get('QUERY_STRING', ''))
-    print "     parameters: %s" % repr(parameters)
+    #print "     parameters: %s" % repr(parameters)
 
     sql = 'SELECT id, cfn, prompt, reviewed FROM submissions'
     countsql = 'SELECT Count(*) FROM submissions'
@@ -70,14 +70,14 @@ def hurl_submissions (environ, start_response):
     row = cur.fetchone()
     res['iTotalRecords'] = row[0]
 
-    print "     #1 res: %s" % repr(res)
-    print "     sql   : %s" % sql
+    #print "     #1 res: %s" % repr(res)
+    #print "     sql   : %s" % sql
 
     cur.execute (fcountsql)
     row = cur.fetchone()
     res['iTotalDisplayRecords'] = row[0]
 
-    print "     #2 res: %s" % repr(res)
+    #print "     #2 res: %s" % repr(res)
 
     res['aaData'] = []
     cur.execute (sql)
@@ -85,7 +85,7 @@ def hurl_submissions (environ, start_response):
     for row in rows:
         res['aaData'].append ( [ row[0], row[1], row[2], row[3] ] )
 
-    print "     #3 res: %s" % repr(res)
+    #print "     #3 res: %s" % repr(res)
 
     start_response('200 OK', [('Content-Type', 'application/json')])
 
@@ -234,11 +234,11 @@ def app(environ, start_response):
 
     global webroot    
 
-    print
-    print "-------------------------------------------------------------------------------"
-    print "GOT A REQUEST:" 
-    for f in [ 'REQUEST_METHOD', 'PATH_INFO', 'QUERY_STRING'] :
-        print "     %-15s : %s"% (f, environ.get(f, ''))
+    #print
+    #print "-------------------------------------------------------------------------------"
+    #print "GOT A REQUEST:" 
+    #for f in [ 'REQUEST_METHOD', 'PATH_INFO', 'QUERY_STRING'] :
+    #    print "     %-15s : %s"% (f, environ.get(f, ''))
 
     path = environ.get('PATH_INFO', '/')
 

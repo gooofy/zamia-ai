@@ -10,7 +10,7 @@ function select_submission (sId) {
     console.log ("Audio selected: ", sId);
     cur_id = sId;
                    
-    $('#audio').html ('<audio controls id="actrl"> <source id="asrc" src="/wav?id='+ sId +'" type="audio/wav"> Your browser does not support this audio format.</audio>');
+    $('#audio').html ('<audio controls id="actrl" autoplay> <source id="asrc" src="/wav?id='+ sId +'" type="audio/wav"> Your browser does not support this audio format.</audio>');
 
     $.get ('/submission_get_details?id=' + sId, function( data ) {
         console.log ("details for sId=", sId, ': ', data);    
@@ -19,50 +19,52 @@ function select_submission (sId) {
 
         $('#prompt-text').html (cur_prompt);
 
-        // audio quality
+        if (data['reviewed']) {
+            // audio quality
 
-        switch (data['pcn']) {
-        case 0:
-            $('#pr-clean').prop('checked', true);
-            break;
-        case 1:
-            $('#pr-accent').prop('checked', true);
-            break;
-        case 2:
-            $('#pr-dialect').prop('checked', true);
-            break;
-        case 3:
-            $('#pr-error').prop('checked', true);
-            break;
-        }
+            switch (data['pcn']) {
+            case 0:
+                $('#pr-clean').prop('checked', true);
+                break;
+            case 1:
+                $('#pr-accent').prop('checked', true);
+                break;
+            case 2:
+                $('#pr-dialect').prop('checked', true);
+                break;
+            case 3:
+                $('#pr-error').prop('checked', true);
+                break;
+            }
 
-        $('#truncated').prop('checked', data['truncated']);
+            $('#truncated').prop('checked', data['truncated']);
 
-        switch (data['audiolevel']) {
-        case 0:
-            $('#al-good').prop('checked', true);
-            break;
-        case 1:
-            $('#al-low').prop('checked', true);
-            break;
-        case 2:
-            $('#al-very-low').prop('checked', true);
-            break;
-        case 3:
-            $('#al-distorted').prop('checked', true);
-            break;
-        }
+            switch (data['audiolevel']) {
+            case 0:
+                $('#al-good').prop('checked', true);
+                break;
+            case 1:
+                $('#al-low').prop('checked', true);
+                break;
+            case 2:
+                $('#al-very-low').prop('checked', true);
+                break;
+            case 3:
+                $('#al-distorted').prop('checked', true);
+                break;
+            }
 
-        switch (data['noiselevel']) {
-        case 0:
-            $('#nl-low').prop('checked', true);
-            break;
-        case 1:
-            $('#nl-noticable').prop('checked', true);
-            break;
-        case 2:
-            $('#nl-high').prop('checked', true);
-            break;
+            switch (data['noiselevel']) {
+            case 0:
+                $('#nl-low').prop('checked', true);
+                break;
+            case 1:
+                $('#nl-noticable').prop('checked', true);
+                break;
+            case 2:
+                $('#nl-high').prop('checked', true);
+                break;
+            }
         }
 
         $('#comment').val (data['comment']);

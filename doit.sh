@@ -13,7 +13,7 @@ mkdir output/dict
 # dictionary
 #
 
-./lm-export-dict.py $MODELOPTS
+./lm-export-dict.py 
 
 #cp /home/ai/voxforge/de/work/dict.txt output/dict
 cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict

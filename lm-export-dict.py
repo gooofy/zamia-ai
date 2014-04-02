@@ -28,36 +28,6 @@ from gutils import detect_latin1, isgalnum, compress_ws
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
 #
-# commandline
-#
-
-parser = OptionParser("usage: %prog [options] [prefix]")
-
-parser.add_option ("-p", "--pronounciation", dest="pronounciation", type = "int", default=1,
-           help="worst acceptable pronounciation: 0=clean, 1=accent, 2=dialect, 3=error (default: 1)")
-
-parser.add_option ("-a", "--audiolevel", dest="audiolevel", type = "int", default=1,
-           help="worst acceptable audio level: 0=good, 1=low, 2=very low, 3=distorted (default: 1)")
-
-parser.add_option ("-n", "--noiselevel", dest="noiselevel", type = "int", default=1,
-           help="worst acceptable noise level: 0=low, 1=noticable, 2=high (default: 1)")
-
-parser.add_option ("-c", "--continous", dest="continous", action="store_true",
-           help="accept non-continous submissions (default: accept only continous submissions)")
-
-(options, args) = parser.parse_args()
-
-#print "Options: %s, args: %s" % (repr(options), repr(args))
-
-prefix = ''
-if len(args) ==1:
-    prefix = args[0]
-
-continous = True
-if options.continous:
-    continous = False
-
-#
 # load config, set up global variables
 #
 
@@ -93,21 +63,15 @@ outf_julius = open ('%s/dict-julius.txt' % workdir, 'w')
 outf_julius.write ("<s> [<s>] sil\n</s> [</s>] sil\n") 
 
 print 
-print "Fetching dict entries for transcript words from db..."
+print "Fetching dict entries from db..."
 
-sql = "SELECT DISTINCT word,phonemes FROM submissions,transcripts,words,pronounciations WHERE transcripts.sid=submissions.id AND transcripts.wid=words.id AND transcripts.pid = pronounciations.id AND reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s"
+sql = "SELECT DISTINCT word,phonemes FROM words,pronounciations WHERE words.id=pronounciations.wid ORDER BY word ASC"
 
-if continous:
-    sql += " AND continous=true"
-
-sql += " ORDER BY word ASC"
-
-cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciation, prefix+"%") )
-
-#cur.execute ("SELECT DISTINCT word,phonemes FROM submissions,transcripts,words,pronounciations WHERE transcripts.sid=submissions.id AND transcripts.wid=words.id AND transcripts.pid = pronounciations.id AND reviewed=true AND noiselevel<2 AND truncated=false AND audiolevel<2 AND pcn<2 ORDER BY word ASC", )
+cur.execute (sql)
 
 rows = cur.fetchall()
 cnt = 1
+words = set()
 for row in rows:
 
     word = row[0].decode ('UTF8')
@@ -116,8 +80,9 @@ for row in rows:
     xs = ipa2xsampa(word, ipa)
     xa = xsampa2xarpabet(word, xs)
 
-    outf_wlist.write (("%s\n" % word).encode('UTF8'))
-    #outf_julius.write (("%d\t[%s]\t%s\n" % (cnt, word, xa)).encode('UTF8'))
+    if not word in words:
+        outf_wlist.write (("%s\n" % word).encode('UTF8'))
+        words.add(word)
     outf_julius.write (("%s\t[%s]\t%s\n" % (word, word, xa)).encode('UTF8'))
 
     cnt += 1
@@ -133,30 +98,3 @@ print "%s/wlist.txt written." % workdir
 print "%s/dict-julius.txt written." % workdir
 print
 
-
-#
-# optionally restrict dictionary based on errors from julius logs
-#
-
-#if len(sys.argv) == 2:
-#
-#    print "Restricting by julius output..."
-#
-#    inf = open (sys.argv[1])
-#
-#    for line in inf:
-#
-#        m = re.match (r"^Error: voca_load_htkdict: the line content was: (\S+)", line.decode('UTF8'))
-#
-#        if not m:
-#            continue
-#
-#        word = m.group(1)
-#
-#        print "Removing word: %s" % word
-#
-#        dict.pop(word, None)
-
-#print
-#print "Final dict has %d entries." % len(dict)
-#print

@@ -31,8 +31,8 @@ export dictionary:
     /home/ai/voxforge/de/lm/wlist.txt written.
     /home/ai/voxforge/de/lm/dict-julius.txt written.
 
-CMULMTK Language Model
-======================
+CMUCLMTK Language Model
+=======================
 
 extract prompts from db:
 

@@ -334,6 +334,8 @@ while 1:
 
     elif c == ord('n'):
 
+        entry['phonemes'][cur_phi]['points'] = 10
+
         store_entry (entry)
 
         cur_word += 1

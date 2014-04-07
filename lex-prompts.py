@@ -52,17 +52,20 @@ cur = conn.cursor()
 sys.stdout.flush() 
 
 words = set()
+src = {}
 
-cur.execute ("SELECT DISTINCT prompt FROM submissions") 
+cur.execute ("SELECT DISTINCT prompt,id FROM submissions") 
 rows = cur.fetchall()
 for row in rows:
 
     prompt = row[0].decode('UTF8')
+    sid = row[1]
 
     ws = split_words(prompt)
 
     for word in ws:
         words.add(word)
+        src[word] = sid
 
 #print "done. %d unique words found." % len(words)
 
@@ -70,7 +73,7 @@ for row in rows:
 
 dict = set()
 
-cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid")
+cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid AND pronounciations.points > 0")
 for row in cur.fetchall():
     dict.add (row[0].decode('UTF8'))
 
@@ -79,7 +82,8 @@ for word in words:
 
     if not word in dict:
 
-        print "%s" % word,
+        print "%s:%d " % (word, src[word]),
+        #print "%s" % (word),
         count += 1
 
         if count > 100:

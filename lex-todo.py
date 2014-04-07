@@ -72,7 +72,7 @@ print "Loading dict from DB..."
 
 dict = set()
 
-cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid")
+cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pronounciations.wid AND pronounciations.points>0")
 for row in cur.fetchall():
     dict.add (row[0].decode('UTF8'))
 

@@ -120,16 +120,73 @@ os.system ('cp input_files/sphinx_train.cfg %s/etc' % workdir)
 os.system ('cp input_files/voxforge.filler %s/etc' % workdir)
 os.system ('cp %s/voxforge.lm.DMP %s/etc' % (lmworkdir, workdir))
 
+print
+print "Step 2 - Pronunciation Dictionnary"
+print
+
+pdfn = '%s/etc/voxforge.dic' % workdir
+pdf  = open (pdfn, 'w')
+
+phoneset = set()
+
+# word -> int, used to generate (2) (3) ... markers for words with multiple pronounciations
+word_counter = {}
+# pid -> ( word | word(1) | word(2) | ... )
+pmap = {}
+
+cur.execute ("SELECT phonemes,word,pronounciations.id FROM pronounciations,words WHERE pronounciations.wid=words.id ORDER BY word ASC")
+rows = cur.fetchall()
+for row in rows:
+
+    ipa  = row[0].decode('UTF8')
+    word = row[1].decode('UTF8')
+    pid  = row[2]
+
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
+    
+    if not word in word_counter:
+        pdf.write ( (u'%s %s\n' % (word, xa)).encode('UTF8') )
+        word_counter[word] = 1
+        pmap[pid] = word
+
+    else:
+        word_counter[word] += 1
+        w2 = u'%s(%d)' % (word, word_counter[word])
+        pdf.write ( (u'%s %s\n' % (w2, xa)).encode('UTF8') )
+        pmap[pid] = w2
+
+    phones = xa.split(' ')
+    for phone in phones:
+        phoneset.add(phone)
+
+pdf.close()
+
+print "%s written." % pdfn
+
+print "Got %d phones." % len(phoneset)
+
+phfn = '%s/etc/voxforge.phone' % workdir
+phf = open (phfn, 'w')
+
+for phone in phoneset:
+    phf.write ('%s\n' % phone)
+
+phf.write ('SIL\n')
+phf.close()
+
+print "%s written." % phfn
+
 
 print
-print "Step 2 - Collect Prompts, generate voxforge.transcription"
+print "Step 3 - Collect Prompts, generate voxforge.transcription"
 print
 
 #
 # prompts
 #
 
-widset = set()
+#widset = set()
 
 train_fifn = '%s/etc/voxforge_train.fileids' % workdir
 train_fif  = open (train_fifn, 'w')
@@ -143,7 +200,7 @@ test_fif  = open (test_fifn, 'w')
 test_tsfn = '%s/etc/voxforge_test.transcription' % workdir
 test_tsf  = open (test_tsfn, 'w')
 
-sql = "SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s"
+sql = "SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s AND alignment_error=false"
 
 if continous:
     sql += " AND continous=true"
@@ -172,13 +229,11 @@ for row in rows:
 
     tsf.write ('<s> ')
 
-    cur.execute ("SELECT word,transcripts.wid FROM transcripts,words WHERE sid=%s AND words.id=transcripts.wid ORDER BY transcripts.id ASC" % (sid,))
+    cur.execute ("SELECT pid FROM transcripts WHERE sid=%s ORDER BY id ASC" % (sid,))
     rows2 = cur.fetchall()
     for row2 in rows2:
-        word = row2[0]
-        wid  = row2[1]
-        tsf.write ("%s " % word)
-        widset.add(wid)
+        pid  = row2[0]
+        tsf.write ( (u"%s " % pmap[pid]).encode('UTF8') )
 
     tsf.write ('</s> (%s)\n' % cfn)
 
@@ -191,53 +246,6 @@ print "%s written." % train_tsfn
 print "%s written." % train_fifn
 print "%s written." % test_tsfn
 print "%s written." % test_fifn
-print "Got %d words." % len(widset)
-
-print
-print "Step 3 - Pronunciation Dictionnary"
-print
-
-pdfn = '%s/etc/voxforge.dic' % workdir
-pdf  = open (pdfn, 'w')
-
-phoneset = set()
-
-for wid in widset:
-
-    cur.execute ("SELECT phonemes,word FROM pronounciations,words WHERE words.id=%s AND pronounciations.wid=words.id", (wid,))
-    row = cur.fetchone()
-    if not row:
-        print "*** ERROR: missing pronounciation, wid=%d" % wid
-        sys.exit(1)
-
-    ipa = row[0].decode('UTF8')
-    word = row[1].decode('UTF8')
-
-    xs = ipa2xsampa(word, ipa)
-    xa = xsampa2xarpabet(word, xs)
-    
-    pdf.write ( (u'%s %s\n' % (word, xa)).encode('UTF8') )
-
-    phones = xa.split(' ')
-    for phone in phones:
-        phoneset.add(phone)
-
-pdf.close()
-
-print "%s written." % pdfn
-
-print "Got %d phones." % len(phoneset)
-
-phfn = '%s/etc/voxforge.phone' % workdir
-phf = open (phfn, 'w')
-
-for phone in phoneset:
-    phf.write ('%s\n' % phone)
-
-phf.write ('SIL\n')
-phf.close()
-
-print "%s written." % phfn
 
 print
 print "Step 4 - sphinxtrain"

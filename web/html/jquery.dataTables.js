@@ -2129,6 +2129,14 @@
 				}
 			);
 			
+			jqFilter
+				.attr('aria-controls', oSettings.sTableId)
+				.bind( 'click.DT', function(e) {
+                    console.log ("CLICK");
+                    jqFilter.select();
+				}
+			);
+			
 			return nFilter;
 		}
 		

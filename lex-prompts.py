@@ -82,8 +82,8 @@ for word in words:
 
     if not word in dict:
 
-        print "%s:%d " % (word, src[word]),
-        #print "%s" % (word),
+        #print "%s:%d " % (word, src[word]),
+        print "%s" % (word),
         count += 1
 
         if count > 100:

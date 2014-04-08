@@ -351,7 +351,7 @@ while 1:
 
                 ipas = mary2ipa(word, mp)
 
-                entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 1.0, 'points': 10 }  )
+                entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
                 repaint_main()
 
                 mary_say_phonemes (mp)

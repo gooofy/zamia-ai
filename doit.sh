@@ -109,7 +109,7 @@ AMNAME="voxforge-de-r$datum"
 mkdir "output/$AMNAME"
 mkdir "output/$AMNAME/model_parameters"
 
-cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_4000 "output/$AMNAME/model_parameters"
+cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_3000 "output/$AMNAME/model_parameters"
 cp -r /home/ai/voxforge/de/work/etc "output/$AMNAME"
 cp -r /home/ai/voxforge/de/work/result "output/$AMNAME"
 cp /home/ai/voxforge/de/work/voxforge.html "output/$AMNAME"

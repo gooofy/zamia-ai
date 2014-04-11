@@ -106,8 +106,8 @@ config.set_string('-dict', dictf)
 config.set_string('-logfn', "/dev/null")
 decoder = pocketsphinx.Decoder(config)
 
-
-cur.execute ('SELECT id,prompt,cfn FROM submissions WHERE cfn LIKE \'%s%%\' AND reviewed=False' % login)
+cnt = 0
+cur.execute ('SELECT id,prompt,cfn FROM submissions WHERE cfn LIKE \'%s%%\' AND reviewed=false' % login)
 rows = cur.fetchall()
 for row in rows:
 
@@ -115,8 +115,10 @@ for row in rows:
     prompt      = row[1].decode('UTF8').lstrip().rstrip()
     cfn         = row[2].decode('UTF8')
 
+    cnt += 1
+
     print 
-    print "Decoding %s..." % cfn
+    print "%6d/%6d Decoding %s..." % (cnt, len(rows), cfn)
 
     wavfile = "%s/%s.wav" % (w16dir, cfn)
 
@@ -125,30 +127,18 @@ for row in rows:
 
     # Retrieve hypothesis.
     hypothesis = decoder.hyp()
-    print 'HYPOTH: ', hypothesis.best_score, hypothesis.hypstr
 
     hstr = hypothesis.hypstr.decode('UTF8').lstrip().rstrip()
 
-    if prompt == hstr:
-        print "MATCH!!!!!!"
+    if prompt != hstr:
+        print 'HYPOTH: %s' % repr(hstr)
+        print "PROMPT: %s" % repr(prompt)
         continue
 
-    print 'HYPOTH: %s' % repr(hstr)
-    print "PROMPT: %s" % repr(prompt)
+    print 'HYPOTH: ', hypothesis.best_score, hypothesis.hypstr
+    print "MATCH!!!!!!"
 
-    cur.execute ('SELECT id FROM transcripts WHERE sid=%s', (sid,))
-    if cur.fetchone():
-
-        print "SID %6d: %s already transcribed." % (sid, prompt)
-
-        if force:
-            print "setting review parameters anyway."
-            cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s, continous=%s WHERE id=%s', 
-                         (options.noiselevel, truncated, options.audiolevel, options.pronounciation, continous, sid))
-            conn.commit()
-            cur = conn.cursor()
-
-        continue
+    cur.execute ('DELETE FROM transcripts WHERE sid=%s', (sid,))
 
     # collect dictionary entries for all the words
    
@@ -193,8 +183,12 @@ for row in rows:
         cur.execute ('INSERT INTO transcripts (sid,wid,pid) VALUES (%s, %s, %s)', 
                      (sid, wid, pid))
 
+    print "UPDATE DB..."
+
     cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, audiolevel=%s, pcn=%s, continous=%s WHERE id=%s', 
                  (options.noiselevel, truncated, options.audiolevel, options.pronounciation, continous, sid))
     conn.commit()
     cur = conn.cursor()
+
+    print "UPDATE DB...DONE."
 

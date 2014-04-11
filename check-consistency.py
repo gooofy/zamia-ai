@@ -124,5 +124,7 @@ for row in rows:
     print "PROMPT:     %s" % prompt
     print "TRANSCRIPT: %s" % transcript
 
+    cur.execute ("UPDATE submissions SET reviewed=false WHERE id=%s", (sid,))
 
+conn.commit()
 

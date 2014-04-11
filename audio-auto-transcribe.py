@@ -15,7 +15,7 @@ from cgi import parse_qs, escape
 import pdb
 
 #
-# simple tool mainly usefull to mass-rate known-good or known-bad submissions
+# simple tool mainly useful to mass-rate known-good or known-bad submissions
 #
 
 #

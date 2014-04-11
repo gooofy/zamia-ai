@@ -178,6 +178,10 @@ for row in rows:
                     break
 
                 entries.append ( (wid, rows2[0][0]) )
+            else:
+                print "ERROR: word %s not found in DB!" % w
+                fail = True
+                break
 
     if fail:
         continue

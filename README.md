@@ -154,6 +154,31 @@ text corpora) currently not covered by prompts and/or our dictionary.
 
 now compose sentences using as many words as possible from output/missingwords and read them.
 
+Audiobooks
+----------
+
+(1/7) Convert Audio to Wav:
+
+for i in mp3/*.mp3 ; do mpg123 -w wav/`basename $i`.wav $i ; done
+
+(2/7) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
+
+(3/7) Spellcheck:
+
+hunspell -d de_DE abook/das_alte_haus/txt/kapitel1.txt 
+
+(4/7) Filter, convert into list of words:
+
+./abook-filter.py abook/das_alte_haus/txt/kapitel1.txt >abook/das_alte_haus/prompts/kapitel1.txt
+
+(5/7) add missing words to dictionary:
+
+./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/kapitel1.txt`
+
+FIXME: segment, train
+
+
+
 Compute HTK Model (currently not used)
 --------------------------------------
 

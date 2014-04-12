@@ -143,10 +143,15 @@ big_phoneme_table = [
 IPA_normalization = {
         u':' : u'ː',
         u'?' : u'ʔ',
+        u'ɾ' : u'ʁ',
+        u'ɡ' : u'g',
+        u'ŋ' : u'ɳ',
+        u' ' : None,
         u'\u02c8' : u'\'',
         u'\u032f' : None,
         u'\u0329' : None,
         u'\u02cc' : None,
+        u'\u200d' : None,
     }
 
 XSAMPA_normalization = {
@@ -207,7 +212,7 @@ def _translate (graph, s, f_idx, t_idx):
 
             p = s[i]
             
-            msg = (u"_translate: %s: %s Phoneme not found: %s (%d)" % (graph, s, p, ord(p))).encode('UTF8')
+            msg = (u"_translate: %s: %s Phoneme not found: %s (%s)" % (graph, s, p, repr(p))).encode('UTF8')
 
             raise Exception (msg)
 
@@ -328,7 +333,7 @@ xs2xa_table = [
     ('V'  , 'VV'),
     ('@'  , 'AX'),
     ('6'  , 'EX'),
-    ('3'  , 'AOR'),
+    #('3'  , 'AOR'),
 
     # back
     ('u'  , 'UH'),
@@ -447,6 +452,7 @@ class TestPhoneticAlphabets (unittest.TestCase):
         for entry in xs2xa_table:
             xs = entry[0]
             xa = entry[1]
+            #print (u"xs: %s, xa: %s" % (xs, xa)).encode('utf8')
             self.assertFalse (xa in uniq_xa)
             uniq_xa.add(xa)
             self.assertFalse (xs in uniq_xs)

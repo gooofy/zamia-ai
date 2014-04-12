@@ -30,9 +30,11 @@ from optparse import OptionParser
 import xml.etree.ElementTree as ET
 import httplib, urllib
 import psycopg2
+import traceback 
 
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, mary2ipa, ipa2mary
 from maryclient import maryclient, pulseplayer
+from espeakclient import espeak_gen_ipa
 
 #
 # A simple, db-based lexicon editor
@@ -65,13 +67,17 @@ def mary_say_phonemes (phonemes):
 
     global mclient, player
 
-    s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="de"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % phonemes
+    try:
+        s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="de"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % phonemes
 
-    mclient.set_input_type("PHONEMES")
-    mclient.set_output_type("AUDIO")
-    wav = mclient.generate(s)
+        mclient.set_input_type("PHONEMES")
+        mclient.set_output_type("AUDIO")
+        wav = mclient.generate(s)
 
-    player.play(wav)
+        player.play(wav)
+    except:
+        print "*** ERROR: unexpected error:", sys.exc_info()[0]
+        traceback.print_exc()
 
 def mary_gather_ph (parent):
 
@@ -258,7 +264,7 @@ def repaint_main():
 
         phi += 1
 
-    stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Generate  A: Add  1-9: Select  N:Next" )
+    stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Generate(mary)  H:Generate(espeak)  A: Add  1-9: Select  N:Next" )
     stdscr.refresh()
 
 while 1:
@@ -293,11 +299,26 @@ while 1:
     elif c == ord('g'):
         
         mp = mary_gen_phonemes (entry['word'])
-        #mary_say_phonemes (mp)
+        mary_say_phonemes (mp)
 
         #print "mp: %s" % mp
 
         ipas = mary2ipa(word, mp)
+
+        if len(entry['phonemes']) == 0:
+
+            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+
+        else:
+
+            entry['phonemes'][cur_phi]['phonemes'] = ipas
+            entry['phonemes'][cur_phi]['points'] = 10
+
+    elif c == ord('h'):
+        
+        ipas = espeak_gen_ipa (entry['word'])
+        mp = ipa2mary (entry['word'], ipas)
+        mary_say_phonemes (mp)
 
         if len(entry['phonemes']) == 0:
 
@@ -347,9 +368,13 @@ while 1:
             entry = load_entry (word)
 
             if len(entry['phonemes']) == 0:
-                mp = mary_gen_phonemes (entry['word'])
 
-                ipas = mary2ipa(word, mp)
+                # default: espeak
+                ipas = espeak_gen_ipa (entry['word'])
+                mp = ipa2mary (entry['word'], ipas)
+
+                #mp = mary_gen_phonemes (entry['word'])
+                #ipas = mary2ipa(word, mp)
 
                 entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
                 repaint_main()

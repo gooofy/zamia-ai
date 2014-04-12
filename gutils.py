@@ -312,7 +312,7 @@ def split_words (s):
     words = re.split ('\s+', s)
     for word in words:
 
-        w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()=']", '', word.rstrip()).upper()
+        w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()='»«]", '', word.rstrip()).replace(u'–',u'').upper()
         if len(w) > 0:
 
             if w in wrt:

@@ -27,7 +27,7 @@ import ConfigParser
 from optparse import OptionParser
 import psycopg2
 
-from gutils import detect_latin1
+from gutils import detect_latin1, split_words
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
 # simple wrapper around os.system, will 
@@ -95,6 +95,7 @@ db_pass   = config.get("speech", "dbpass")
 w16dir    = config.get("speech", "16khzdir")
 workdir   = config.get("speech", "workdir")
 lmworkdir = config.get("speech", "lmworkdir")
+featdir   = config.get("speech", "featdir")
 
 #
 # connect to db
@@ -121,7 +122,7 @@ systemlog ('sphinxtrain -t voxforge setup', 'sphinxtrain_setup.log')
 inf = open ('input_files/sphinx_train.cfg')
 outf = open ('%s/etc/sphinx_train.cfg' % workdir, 'w')
 for line in inf:
-    s = line.decode('utf8').replace('%FEATDIR%', '%s/feat' % workdir)
+    s = line.decode('utf8').replace('%FEATDIR%', featdir)
     outf.write (s.encode('utf8'))
 inf.close()
 outf.close()
@@ -209,7 +210,7 @@ test_fif  = open (test_fifn, 'w')
 test_tsfn = '%s/etc/voxforge_test.transcription' % workdir
 test_tsf  = open (test_tsfn, 'w')
 
-sql = "SELECT id,cfn FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s AND alignment_error=false"
+sql = "SELECT id,cfn,prompt FROM submissions WHERE reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s AND alignment_error=false"
 
 if continous:
     sql += " AND continous=true"
@@ -218,16 +219,28 @@ cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciatio
 
 count = 0
 
+# keep track of words we have covered
+dict_covered = set()
+
 rows = cur.fetchall()
 for row in rows:
 
     sid = row[0]
     cfn = row[1]
+    prompt = row[2].decode('utf8')
 
     count += 1
 
-    # 10% go to test data set
-    if count % 10 == 0:
+    # check to see which words are covered by this submission
+    uncovered_word = False
+    for word in split_words(prompt):
+        if word in dict_covered:
+            continue
+        dict_covered.add(word)
+        uncovered_word = True
+
+    # up to 10% go to test data set
+    if count % 10 == 0 and not uncovered_word:
         fif = test_fif
         tsf = test_tsf
     else:
@@ -260,6 +273,6 @@ print
 print "Step 4 - sphinxtrain"
 print
 
-systemlog ('sphinxtrain -s verify,g2p_train,lda_train,mllt_train run', 'sphinxtrain_run.log')
+systemlog ('sphinxtrain -s verify,g2p_train,lda_train,mllt_train,vector_quantize,falign_ci_hmm,force_align,vtln_align,ci_hmm,cd_hmm_untied,buildtrees,prunetree,cd_hmm_tied,lattice_generation,lattice_pruning,lattice_conversion,mmie_train,deleted_interpolation,decode run', 'sphinxtrain_run.log')
 
 

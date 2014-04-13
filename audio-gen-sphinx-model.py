@@ -116,7 +116,16 @@ os.system ("mkdir %s/logs" % workdir)
 
 systemlog ('sphinxtrain -t voxforge setup', 'sphinxtrain_setup.log')
 
-os.system ('cp input_files/sphinx_train.cfg %s/etc' % workdir)
+# generate sphinx_train.cfg, featdir in there
+
+inf = open ('input_files/sphinx_train.cfg')
+outf = open ('%s/etc/sphinx_train.cfg' % workdir, 'w')
+for line in inf:
+    s = line.decode('utf8').replace('%FEATDIR%', '%s/feat' % workdir)
+    outf.write (s.encode('utf8'))
+inf.close()
+outf.close()
+
 os.system ('cp input_files/voxforge.filler %s/etc' % workdir)
 os.system ('cp %s/voxforge.lm.DMP %s/etc' % (lmworkdir, workdir))
 
@@ -251,6 +260,6 @@ print
 print "Step 4 - sphinxtrain"
 print
 
-systemlog ('sphinxtrain run', 'sphinxtrain_run.log')
+systemlog ('sphinxtrain -s verify,g2p_train,lda_train,mllt_train run', 'sphinxtrain_run.log')
 
 

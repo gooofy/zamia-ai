@@ -47,7 +47,7 @@ db_pass   = config.get("speech", "dbpass")
 
 audiodir  = config.get("speech", "audiodir")
 w16dir    = config.get("speech", "16khzdir")
-mfccdir   = config.get("speech", "mfccdir")
+featdir   = config.get("speech", "featdir")
 
 #
 # connect to db
@@ -97,10 +97,10 @@ for submission in os.listdir (audiodir):
 
         # convert audio if not done yet
 
-        mfccfilename = "%s/%s.mfc" % (mfccdir, cfn)
+        featfilename = "%s/%s.mfc" % (featdir, cfn)
         w16filename = "%s/%s.wav" % (w16dir, cfn)
 
-        if not os.path.isfile (mfccfilename):
+        if not os.path.isfile (featfilename):
 
             wavfilename  = "%s/wav/%s.wav" % (subdir, fn)
 
@@ -116,16 +116,17 @@ for submission in os.listdir (audiodir):
                 os.system ("flac -s -f -d '%s' -o /tmp/foo.wav" % flacfilename)
                 print "%-20s: converting /tmp/foo.wav => %s (16kHz mono)" % (cfn, w16filename)
                 os.system ("sox /tmp/foo.wav -r 16000 -c 1 %s" % w16filename)
-                print "%-20s: converting %s => %s" % (cfn, w16filename, mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config %s '%s'" % (w16filename, mfccfilename) )
+                print "%-20s: converting %s => %s" % (cfn, w16filename, featfilename)
+                os.system ("sphinx_fe -i '%s' -part 1 -npart 1 -ei wav -o '%s' -eo mfc -nist no -raw no -mswav yes -samprate 16000 -lowerf 130 -upperf 6800 -nfilt 25 -transform dct -lifter 22" % (w16filename, featfilename) )
                 os.system ("rm /tmp/foo.wav")
             
             else:
 
                 print "%-20s: converting %s => %s (16kHz mono)" % (cfn, wavfilename, w16filename)
                 os.system ("sox '%s' -r 16000 -c 1 %s" % (wavfilename, w16filename))
-                print "%-20s: converting %s => %s" % (cfn, w16filename, mfccfilename)
-                os.system ("HCopy -T 0 -C input_files/wav_config '%s' '%s'" % (w16filename, mfccfilename))
+                print "%-20s: converting %s => %s" % (cfn, w16filename, featfilename)
+                os.system ("sphinx_fe -i '%s' -part 1 -npart 1 -ei wav -o '%s' -eo mfc -nist no -raw no -mswav yes -samprate 16000 -lowerf 130 -upperf 6800 -nfilt 25 -transform dct -lifter 22" % (w16filename, featfilename) )
+                #os.system ("HCopy -T 0 -C input_files/wav_config '%s' '%s'" % (w16filename, featfilename))
 
         # db entry
 
@@ -138,7 +139,7 @@ for submission in os.listdir (audiodir):
             # compute num samples
 
             num_samples = 0
-            for line in run_command ( ['HList', '-h', '-e', '0', mfccfilename] ):
+            for line in run_command ( ['HList', '-h', '-e', '0', featfilename] ):
 
                 m = re.match (r"^  Num Samples:\s+(\d+)\s+File Format:   HTK", line)
                 if not m:

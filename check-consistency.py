@@ -45,8 +45,6 @@ db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
-mfccdir   = config.get("speech", "mfccdir")
-
 #
 # connect to db
 #

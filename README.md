@@ -76,12 +76,20 @@ transcribe, rate:
     ./audio-transcribe.py 
     point web browser to: http://localhost:8000/
 
+optional: auto-transcribe prompts accepted by the current model:
+
+    ./audio-sphinx-transcribe.py -p 1 -a 1 -n 1 Manu
+
 export dictionary:
 
     ./lm-export-dict.py -c
 
 Compute Sphinx Model
 --------------------
+
+verify:
+    ./check-consistency.py 
+    ./lex-spellcheck.py
 
 compute model:
 

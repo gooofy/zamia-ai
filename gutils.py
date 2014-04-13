@@ -186,15 +186,19 @@ wrt = { u'0'     : u'NULL',
         u'95'    : u'FÜNFUNDNEUNZIG',
         u'99'    : u'NEUNUNDNEUNZIG',
         u'100'   : u'HUNDERT',
-        u'DAß'   : u'DASS',
-        u'HAß'   : u'HASS',
-        u'GROSS' : u'GROß',
-        u'GROSSE': u'GROßE',
-        u'GROSSEN': u'GROßEN',
-        u'GROSSES': u'GROßES',
-        u'PHOTO' : u'FOTO',
-        u'TELEPHON': u'TELEFON',
-        u'§'     : u'PARAGRAPH'}
+        u'DAß'           : u'DASS',
+        u'HAß'           : u'HASS',
+        u'GROSS'         : u'GROß',
+        u'GROSSE'        : u'GROßE',
+        u'GROSSEN'       : u'GROßEN',
+        u'GROSSES'       : u'GROßES',
+        u'PHOTO'         : u'FOTO',
+        u'TELEPHON'      : u'TELEFON',
+        u'PHANTASIE'     : u'FANTASIE',
+        u'PHANTASTEREIEN': u'FANTASTEREIEN',
+        u'MIKROPHON'     : u'MIKROFON',
+        u'MIKROPHONE'    : u'MIKROFONE',
+        u'§'             : u'PARAGRAPH'}
 
 
 symb_abbrev_norm = [

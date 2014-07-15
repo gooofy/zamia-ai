@@ -158,9 +158,9 @@ for row in rows:
                 words_per_user[login] = num_words
     
 print
-print "total    %6d files, total    length: %8.2fmin" % (total_num_files, total_numsamples / (60 * 100.0))
-print "reviewed %6d files, reviewed length: %8.2fmin (%3d%% done)" % (reviewed_num_files, reviewed_numsamples / (60 * 100.0), reviewed_num_files * 100 / total_num_files)
-print "good     %6d files, good     length: %8.2fmin (%3d%% good)" % (good_num_files, good_numsamples / (60 * 100.0), good_num_files * 100 /reviewed_num_files)
+print "total    %6d files, total    length: %8.2fmin" % (total_num_files, total_numsamples / (60.0 * 16000.0))
+print "reviewed %6d files, reviewed length: %8.2fmin (%3d%% done)" % (reviewed_num_files, reviewed_numsamples / (60.0 * 16000.0), reviewed_num_files * 100 / total_num_files)
+print "good     %6d files, good     length: %8.2fmin (%3d%% good)" % (good_num_files, good_numsamples / (60.0 * 16000.0), good_num_files * 100 /reviewed_num_files)
 print
 print "unique words in all submissions: %d, unique words in reviewed good submissions: %d" % (len(total_words), len(good_words))
 print
@@ -174,7 +174,7 @@ eval_werr  = 0
 for login in sorted(samples_per_user):
     samples = samples_per_user[login]
     words   = words_per_user[login]
-    print "%-25s : %8.2fmin %5d words" % (login, samples / (60*100.0), words),
+    print "%-25s : %8.2fmin %5d words" % (login, samples / (60.0 * 16000.0), words),
 
     ulogin = login.upper()
 

@@ -26,6 +26,7 @@ import ConfigParser
 from os.path import expanduser
 from gutils import detect_latin1, isgalnum, run_command
 import psycopg2
+import wave
 
 def canon_fn (fn):
 
@@ -138,16 +139,10 @@ for submission in os.listdir (audiodir):
            
             # compute num samples
 
-            num_samples = 0
-            for line in run_command ( ['HList', '-h', '-e', '0', featfilename] ):
+            wavf = wave.open(w16filename, 'r')
+            numsamples = wavf.getnframes()
+            wavf.close()
 
-                m = re.match (r"^  Num Samples:\s+(\d+)\s+File Format:   HTK", line)
-                if not m:
-                    continue
-
-                num_samples = int (m.group(1))
-                break
-            
             print "%-20s: adding submission entry, %6d samples, prompt is: '%s'" % (cfn, num_samples, pstr)
 
             cur.execute ("INSERT INTO submissions (dir, audiofn, cfn, prompt, comment, numsamples) VALUES (%s, %s, %s, %s, '', %s)", (submission, fn, cfn, pstr, num_samples))

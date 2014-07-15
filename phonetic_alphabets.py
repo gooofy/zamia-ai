@@ -147,11 +147,14 @@ IPA_normalization = {
         u'ɡ' : u'g',
         u'ŋ' : u'ɳ',
         u' ' : None,
+        u'(' : None,
+        u')' : None,
         u'\u02c8' : u'\'',
         u'\u032f' : None,
         u'\u0329' : None,
         u'\u02cc' : None,
         u'\u200d' : None,
+        u'\u0279' : None,
     }
 
 XSAMPA_normalization = {

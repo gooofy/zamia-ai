@@ -179,7 +179,7 @@ def _normalize (s, norm_table):
 
     return buf
 
-def _translate (graph, s, f_idx, t_idx):
+def _translate (graph, s, f_idx, t_idx, spaces=False):
 
     buf = ""
     i = 0
@@ -204,6 +204,8 @@ def _translate (graph, s, f_idx, t_idx):
 
                 if substr == p_f:
                     buf += p_t
+                    if spaces:
+                        buf += ' '
                     i += pl
                     found = True
                     break
@@ -221,9 +223,9 @@ def _translate (graph, s, f_idx, t_idx):
 
     return buf
 
-def ipa2xsampa (graph, ipas):
+def ipa2xsampa (graph, ipas, spaces=False):
     ipas = _normalize (ipas,  IPA_normalization)
-    return _translate (graph, ipas, 0, 1)
+    return _translate (graph, ipas, 0, 1, spaces)
 
 def ipa2mary (graph, ipas):
     ipas = _normalize (ipas,  IPA_normalization)

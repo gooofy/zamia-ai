@@ -9,12 +9,9 @@ import ConfigParser
 from optparse import OptionParser
 from os.path import expanduser
 import subprocess
-import json
 import psycopg2
-from cgi import parse_qs, escape
-import pdb
 import pocketsphinx
-from itertools import izip
+from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
 #
 # use current audio model to detect good submissions and rate/transcribe them automatically
@@ -86,7 +83,8 @@ w16dir    = config.get("speech", "16khzdir")
 
 hmdir     = config.get("pocketsphinx", "hmm")
 lmdir     = config.get("pocketsphinx", "lm")
-dictf     = config.get("pocketsphinx", "dict")
+#dictf     = config.get("pocketsphinx", "dict")
+dictf     = "/tmp/voxforge.dic"
 
 #
 # connect to db
@@ -98,6 +96,43 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
+#
+# dump current dict
+#
+
+print "dumping current dict..."
+
+pdf  = open (dictf, 'w')
+
+# word -> int, used to generate (2) (3) ... markers for words with multiple pronounciations
+word_counter = {}
+
+cur.execute ("SELECT phonemes,word FROM pronounciations,words WHERE pronounciations.wid=words.id ORDER BY word ASC")
+rows = cur.fetchall()
+for row in rows:
+
+    ipa  = row[0].decode('UTF8')
+    word = row[1].decode('UTF8')
+
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
+    
+    if not word in word_counter:
+        pdf.write ( (u'%s %s\n' % (word, xa)).encode('UTF8') )
+        word_counter[word] = 1
+
+    else:
+        word_counter[word] += 1
+        w2 = u'%s(%d)' % (word, word_counter[word])
+        pdf.write ( (u'%s %s\n' % (w2, xa)).encode('UTF8') )
+
+pdf.close()
+
+print "%s written. %d words." % (dictf, len(word_counter))
+
+#
+# sphinx decoder setup
+#
 
 config = pocketsphinx.Decoder.default_config()
 config.set_string('-hmm', hmdir)
@@ -121,6 +156,8 @@ for row in rows:
     print "%6d/%6d Decoding %s..." % (cnt, len(rows), cfn)
 
     wavfile = "%s/%s.wav" % (w16dir, cfn)
+
+    print wavfile
 
     wavFile = file(wavfile,'rb')
     decoder.decode_raw(wavFile)

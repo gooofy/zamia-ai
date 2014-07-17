@@ -204,9 +204,9 @@ def _translate (graph, s, f_idx, t_idx, spaces=False):
 
                 if substr == p_f:
                     buf += p_t
-                    if spaces:
-                        buf += ' '
                     i += pl
+                    if i<l and s[i] != u'ː' and spaces:
+                        buf += ' '
                     found = True
                     break
 

@@ -35,6 +35,7 @@ import traceback
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, mary2ipa, ipa2mary
 from maryclient import maryclient, pulseplayer
 from espeakclient import espeak_gen_ipa
+from phonetisaurusclient import phonetisaurus_gen_ipa
 
 #
 # A simple, db-based lexicon editor
@@ -264,7 +265,7 @@ def repaint_main():
 
         phi += 1
 
-    stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Generate(mary)  H:Generate(espeak)  A: Add  1-9: Select  N:Next" )
+    stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Gen(mary)  H:Gen(espeak)  J:Gen(saurus)  A: Add  1-9: Select  N:Next" )
     stdscr.refresh()
 
 while 1:
@@ -329,6 +330,21 @@ while 1:
             entry['phonemes'][cur_phi]['phonemes'] = ipas
             entry['phonemes'][cur_phi]['points'] = 10
 
+    elif c == ord('j'):
+        
+        ipas = phonetisaurus_gen_ipa (entry['word'])
+        mp = ipa2mary (entry['word'], ipas)
+        mary_say_phonemes (mp)
+
+        if len(entry['phonemes']) == 0:
+
+            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+
+        else:
+
+            entry['phonemes'][cur_phi]['phonemes'] = ipas
+            entry['phonemes'][cur_phi]['points'] = 10
+
     elif c == ord('p'):
 
         if len(entry['phonemes']) == 0:
@@ -369,8 +385,8 @@ while 1:
 
             if len(entry['phonemes']) == 0:
 
-                # default: espeak
-                ipas = espeak_gen_ipa (entry['word'])
+                # default: phonetisaurus
+                ipas = phonetisaurus_gen_ipa (entry['word'])
                 mp = ipa2mary (entry['word'], ipas)
 
                 #mp = mary_gen_phonemes (entry['word'])

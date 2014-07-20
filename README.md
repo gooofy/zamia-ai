@@ -165,25 +165,39 @@ now compose sentences using as many words as possible from output/missingwords a
 Audiobooks
 ----------
 
-(1/7) Convert Audio to Wav:
+(1/9) Convert Audio to Wav:
 
-for i in mp3/*.mp3 ; do mpg123 -w wav/`basename $i`.wav $i ; done
+    for i in mp3/*.mp3 ; do mpg123 -w wav/`basename $i`.wav $i ; done
 
-(2/7) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
+(2/9) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
 
-(3/7) Spellcheck:
+(3/9) Spellcheck:
 
-hunspell -d de_DE abook/das_alte_haus/txt/kapitel1.txt 
+    hunspell -d de_DE abook/das_alte_haus/txt/kapitel1.txt 
 
-(4/7) Filter, convert into list of words:
+(4/9) Filter, convert into list of words:
 
-./abook-filter.py abook/das_alte_haus/txt/kapitel1.txt >abook/das_alte_haus/prompts/kapitel1.txt
+    ./abook-filter.py abook/das_alte_haus/txt/kapitel1.txt >abook/das_alte_haus/prompts/kapitel1.txt
 
-(5/7) add missing words to dictionary:
+(5/9) add missing words to dictionary:
 
-./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/kapitel1.txt`
+    ./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/kapitel1.txt`
 
-FIXME: segment, train
+(6/9) segment
+
+    ./abook-segment.py Karlsson abook/das_alte_haus/wav/altehaus_01_gerstaecker_64kb.mp3.wav
+
+(7/9) align prompts
+
+    ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/kapitel1.txt 
+
+(8/9) import
+
+    ./audio-import.py
+
+(9/9) transcribe
+
+    ./audio-sphinx-align.py Karlsson
 
 
 

@@ -385,8 +385,8 @@ while 1:
 
             if len(entry['phonemes']) == 0:
 
-                # default: phonetisaurus
-                ipas = phonetisaurus_gen_ipa (entry['word'])
+                # default: espeak
+                ipas = espeak_gen_ipa (entry['word'])
                 mp = ipa2mary (entry['word'], ipas)
 
                 #mp = mary_gen_phonemes (entry['word'])

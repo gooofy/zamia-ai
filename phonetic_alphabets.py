@@ -124,6 +124,7 @@ big_phoneme_table = [
         ( u'o' , 'o' , 'o' ),
         ( u'ɔ' , 'O' , 'O' ),
         ( u'ɑ' , 'A' , 'A' ),
+        ( u'ɒ' , 'Q' , 'Q' ),
 
         # diphtongs
 
@@ -348,6 +349,7 @@ xs2xa_table = [
     ('o:' , 'OOH'),
     ('O'  , 'OO'),
     ('A'  , 'AA'),
+    ('Q'  , 'QQ'),
 
     # diphtongs
     ('aI'  , 'AY'),

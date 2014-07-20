@@ -170,9 +170,11 @@ cp README.md output/readme.txt
 ./audio-export-csv.py >output/audio-transcripts.csv
 ./lex-export.py
 
+./lex-phonetisaurus.sh 
+
 #
 # upload
 #
 
-# rsync -avPz --delete --bwlimit=32 output/ goofy:/var/www/html/voxforge/de
+# rsync -avPz --delete --bwlimit=256 output/ goofy:/var/www/html/voxforge/de
 

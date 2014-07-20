@@ -268,160 +268,174 @@ def repaint_main():
     stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Gen(mary)  H:Gen(espeak)  J:Gen(saurus)  A: Add  1-9: Select  N:Next" )
     stdscr.refresh()
 
-while 1:
+#
+# main loop
+#
 
-    repaint_main()
+try:
 
-    c = stdscr.getch()
-    if c == ord('q'):
-        break  
-
-    elif c >= ord('1') and c <= ord('0') + len(entry['phonemes']):
-
-        cur_phi = c - ord('1')
-
-    elif c == ord('a'):
-        
-        mp = mary_gen_phonemes (entry['word'])
-        #mary_say_phonemes (mp)
-
-        #print "mp: %s" % mp
-
-        ipas = mary2ipa(word, mp)
-
-        entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
-
-        n = len(entry['phonemes'])
-
-        p = 100 / n
-        for e in entry['phonemes']:
-            e['probability'] = p
-
-    elif c == ord('g'):
-        
-        mp = mary_gen_phonemes (entry['word'])
-        mary_say_phonemes (mp)
-
-        #print "mp: %s" % mp
-
-        ipas = mary2ipa(word, mp)
-
-        if len(entry['phonemes']) == 0:
-
+    while 1:
+    
+        repaint_main()
+    
+        c = stdscr.getch()
+        if c == ord('q'):
+            break  
+    
+        elif c >= ord('1') and c <= ord('0') + len(entry['phonemes']):
+    
+            cur_phi = c - ord('1')
+    
+        elif c == ord('a'):
+            
+            mp = mary_gen_phonemes (entry['word'])
+            #mary_say_phonemes (mp)
+    
+            #print "mp: %s" % mp
+    
+            ipas = mary2ipa(word, mp)
+    
             entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
-
-        else:
-
-            entry['phonemes'][cur_phi]['phonemes'] = ipas
-            entry['phonemes'][cur_phi]['points'] = 10
-
-    elif c == ord('h'):
-        
-        ipas = espeak_gen_ipa (entry['word'])
-        mp = ipa2mary (entry['word'], ipas)
-        mary_say_phonemes (mp)
-
-        if len(entry['phonemes']) == 0:
-
-            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
-
-        else:
-
-            entry['phonemes'][cur_phi]['phonemes'] = ipas
-            entry['phonemes'][cur_phi]['points'] = 10
-
-    elif c == ord('j'):
-        
-        ipas = phonetisaurus_gen_ipa (entry['word'])
-        mp = ipa2mary (entry['word'], ipas)
-        mary_say_phonemes (mp)
-
-        if len(entry['phonemes']) == 0:
-
-            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
-
-        else:
-
-            entry['phonemes'][cur_phi]['phonemes'] = ipas
-            entry['phonemes'][cur_phi]['points'] = 10
-
-    elif c == ord('p'):
-
-        if len(entry['phonemes']) == 0:
-            continue
-
-        ipas = entry['phonemes'][cur_phi]['phonemes']
-
-        xs = ipa2mary (word, ipas)
-
-        mclient.set_voice ("bits3")
-        mary_say_phonemes (xs)
-
-    elif c == ord('o'):
-
-        if len(entry['phonemes']) == 0:
-            continue
-
-        ipas = entry['phonemes'][cur_phi]['phonemes']
-
-        xs = ipa2mary (word, ipas)
-
-        mclient.set_voice ("dfki-pavoque-neutral-hsmm")
-        mary_say_phonemes (xs)
-
-    elif c == ord('n'):
-
-        entry['phonemes'][cur_phi]['points'] = 10
-
-        store_entry (entry)
-
-        cur_word += 1
-        if cur_word >= len(args):
-            break
-        else:
-            word = args[cur_word].decode('UTF8').upper()
-            cur_phi = 0
-            entry = load_entry (word)
-
+    
+            n = len(entry['phonemes'])
+    
+            p = 100 / n
+            for e in entry['phonemes']:
+                e['probability'] = p
+    
+        elif c == ord('g'):
+            
+            mp = mary_gen_phonemes (entry['word'])
+            mary_say_phonemes (mp)
+    
+            #print "mp: %s" % mp
+    
+            ipas = mary2ipa(word, mp)
+    
             if len(entry['phonemes']) == 0:
+    
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+    
+            else:
+    
+                entry['phonemes'][cur_phi]['phonemes'] = ipas
+                entry['phonemes'][cur_phi]['points'] = 10
+    
+        elif c == ord('h'):
+            
+            ipas = espeak_gen_ipa (entry['word'])
+            mp = ipa2mary (entry['word'], ipas)
+            mary_say_phonemes (mp)
+    
+            if len(entry['phonemes']) == 0:
+    
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+    
+            else:
+    
+                entry['phonemes'][cur_phi]['phonemes'] = ipas
+                entry['phonemes'][cur_phi]['points'] = 10
+    
+        elif c == ord('j'):
+            
+            ipas = phonetisaurus_gen_ipa (entry['word'])
+            mp = ipa2mary (entry['word'], ipas)
+            mary_say_phonemes (mp)
+    
+            if len(entry['phonemes']) == 0:
+    
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+    
+            else:
+    
+                entry['phonemes'][cur_phi]['phonemes'] = ipas
+                entry['phonemes'][cur_phi]['points'] = 10
+    
+        elif c == ord('p'):
+    
+            if len(entry['phonemes']) == 0:
+                continue
+    
+            ipas = entry['phonemes'][cur_phi]['phonemes']
+    
+            xs = ipa2mary (word, ipas)
+    
+            mclient.set_voice ("bits3")
+            mary_say_phonemes (xs)
+    
+        elif c == ord('o'):
+    
+            if len(entry['phonemes']) == 0:
+                continue
+    
+            ipas = entry['phonemes'][cur_phi]['phonemes']
+    
+            xs = ipa2mary (word, ipas)
+    
+            mclient.set_voice ("dfki-pavoque-neutral-hsmm")
+            mary_say_phonemes (xs)
+    
+        elif c == ord('n'):
+    
+            entry['phonemes'][cur_phi]['points'] = 10
+    
+            store_entry (entry)
+    
+            cur_word += 1
+            if cur_word >= len(args):
+                break
+            else:
+                word = args[cur_word].decode('UTF8').upper()
+                cur_phi = 0
+                entry = load_entry (word)
+    
+                if len(entry['phonemes']) == 0:
+    
+                    # default: espeak
+                    ipas = espeak_gen_ipa (entry['word'])
+                    mp = ipa2mary (entry['word'], ipas)
+    
+                    #mp = mary_gen_phonemes (entry['word'])
+                    #ipas = mary2ipa(word, mp)
+    
+                    entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+                    repaint_main()
+    
+                    mary_say_phonemes (mp)
+    
+        elif c == ord('e'):
+    
+            if len(entry['phonemes']) == 0:
+                continue
+    
+            stdscr.addstr(14, 5, "X-Sampa:" )
+            win = curses.newwin(1, 60, 15, 5)
+            tb = curses.textpad.Textbox(win, insert_mode=True)
+    
+            xs = ipa2xsampa (word, entry['phonemes'][cur_phi]['phonemes'])
+            win.addstr (0, 0, xs)
+            stdscr.refresh()
+    
+            xs = tb.edit()
+    
+            ipas = xsampa2ipa (word, xs)
+    
+            entry['phonemes'][cur_phi]['phonemes'] = ipas
 
-                # default: espeak
-                ipas = espeak_gen_ipa (entry['word'])
-                mp = ipa2mary (entry['word'], ipas)
+    #
+    # fini
+    #
 
-                #mp = mary_gen_phonemes (entry['word'])
-                #ipas = mary2ipa(word, mp)
+    curses.nocbreak(); stdscr.keypad(0); curses.echo()
+    curses.endwin()
 
-                entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
-                repaint_main()
+except:
+    curses.nocbreak(); stdscr.keypad(0); curses.echo()
+    curses.endwin()
 
-                mary_say_phonemes (mp)
+    print u"*** ERROR: Unexpected error:", sys.exc_info()[0]
+    traceback.print_exc()
+    #raise
 
-    elif c == ord('e'):
-
-        if len(entry['phonemes']) == 0:
-            continue
-
-        stdscr.addstr(14, 5, "X-Sampa:" )
-        win = curses.newwin(1, 60, 15, 5)
-        tb = curses.textpad.Textbox(win, insert_mode=True)
-
-        xs = ipa2xsampa (word, entry['phonemes'][cur_phi]['phonemes'])
-        win.addstr (0, 0, xs)
-        stdscr.refresh()
-
-        xs = tb.edit()
-
-        ipas = xsampa2ipa (word, xs)
-
-        entry['phonemes'][cur_phi]['phonemes'] = ipas
-
-
-#
-# fini
-#
-
-curses.nocbreak(); stdscr.keypad(0); curses.echo()
-curses.endwin()
 
 

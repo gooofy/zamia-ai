@@ -140,7 +140,7 @@ for submission in os.listdir (audiodir):
             # compute num samples
 
             wavf = wave.open(w16filename, 'r')
-            numsamples = wavf.getnframes()
+            num_samples = wavf.getnframes()
             wavf.close()
 
             print "%-20s: adding submission entry, %6d samples, prompt is: '%s'" % (cfn, num_samples, pstr)

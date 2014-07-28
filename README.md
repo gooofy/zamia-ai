@@ -173,23 +173,25 @@ Audiobooks
 
 (3/9) Spellcheck:
 
-    hunspell -d de_DE abook/das_alte_haus/txt/kapitel1.txt 
+    hunspell -d de_DE abook/das_alte_haus/txt/abschnitt1.txt 
 
 (4/9) Filter, convert into list of words:
 
-    ./abook-filter.py abook/das_alte_haus/txt/kapitel1.txt >abook/das_alte_haus/prompts/kapitel1.txt
+    ./abook-filter.py abook/das_alte_haus/txt/abschnitt1.txt >abook/das_alte_haus/prompts/abschnitt1.txt
 
 (5/9) add missing words to dictionary:
 
-    ./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/kapitel1.txt`
+    ./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/abschnitt1.txt`
 
 (6/9) segment
 
     ./abook-segment.py Karlsson abook/das_alte_haus/wav/altehaus_01_gerstaecker_64kb.mp3.wav
 
+make sure to check the last segment generated, usually it is empty. If so, delete it.
+
 (7/9) align prompts
 
-    ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/kapitel1.txt 
+    ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/abschnitt1.txt 
 
 (8/9) import
 

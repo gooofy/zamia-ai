@@ -330,6 +330,7 @@ xs2xa_table = [
     ('E'  , 'EH'),
     ('E:' , 'EHH'),
     ('{'  , 'AE'),
+    ('{:' , 'AEH'),
     ('a'  , 'AH'),
     ('a:' , 'AAH'),
     ('3'  , 'ER'),
@@ -348,7 +349,9 @@ xs2xa_table = [
     ('o'  , 'AO'),
     ('o:' , 'OOH'),
     ('O'  , 'OO'),
+    ('O:' , 'OOOH'),
     ('A'  , 'AA'),
+    ('A:' , 'AAAH'),
     ('Q'  , 'QQ'),
 
     # diphtongs
@@ -402,7 +405,7 @@ def xsampa2xarpabet (graph, s):
 
             p = s[i]
 
-            msg = u"xsampa2xarpabet: %s: %s Phoneme not found: %s (%d) %s" % (graph, s, p, ord(p), s[i:])
+            msg = u"xsampa2xarpabet: graph:'%s' - s:'%s' Phoneme not found: '%s' (%d) '%s'" % (graph, s, p, ord(p), s[i:])
 
             raise Exception (msg.encode('UTF8'))
 

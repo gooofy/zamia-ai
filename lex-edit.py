@@ -146,9 +146,14 @@ def store_entry (entry):
 
     cur = conn.cursor()
 
+    oov = len(entry['phonemes'])==0
+
     if entry['id'] == 0:
-        cur.execute ("INSERT INTO words (word, occurences) VALUES (%s, 1) RETURNING id", (entry['word'],))
+        cur.execute ("INSERT INTO words (word, occurences, oov) VALUES (%s, 1, %s) RETURNING id", (entry['word'], oov))
         entry['id'] = cur.fetchone()[0]
+    else:
+        cur.execute ("UPDATE words SET oov=%s WHERE id=%s", (oov, entry['id']))
+
 
     for ph in entry['phonemes']:
 
@@ -265,7 +270,9 @@ def repaint_main():
 
         phi += 1
 
-    stdscr.addstr(20, 0, "Q:Quit  P:Play (unitsel)  O:Play (hsmm)  E:Edit  G:Gen(mary)  H:Gen(espeak)  J:Gen(saurus)  A: Add  1-9: Select  N:Next" )
+    stdscr.addstr(20, 0, "P:Play (unitsel)  O:Play (hsmm)  G:Gen(mary)    H:Gen(espeak)  J:Gen(saurus)" )
+    stdscr.addstr(21, 0, "E:Edit            A:Add          R:Remove all   1-9:Select                  " )
+    stdscr.addstr(22, 0, "                                                N:Next         Q:Quit       " )
     stdscr.refresh()
 
 #
@@ -374,10 +381,15 @@ try:
     
             mclient.set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (xs)
-    
+   
+        elif c == ord('r'):
+
+            entry['phonemes'] = []
+ 
         elif c == ord('n'):
-    
-            entry['phonemes'][cur_phi]['points'] = 10
+   
+            if len(entry['phonemes']) > 0:
+                entry['phonemes'][cur_phi]['points'] = 10
     
             store_entry (entry)
     
@@ -392,11 +404,12 @@ try:
                 if len(entry['phonemes']) == 0:
     
                     # default: espeak
-                    ipas = espeak_gen_ipa (entry['word'])
-                    mp = ipa2mary (entry['word'], ipas)
+                    #ipas = espeak_gen_ipa (entry['word'])
+                    #mp = ipa2mary (entry['word'], ipas)
     
-                    #mp = mary_gen_phonemes (entry['word'])
-                    #ipas = mary2ipa(word, mp)
+                    # default: mary
+                    mp = mary_gen_phonemes (entry['word'])
+                    ipas = mary2ipa(word, mp)
     
                     entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
                     repaint_main()

@@ -35,6 +35,9 @@ function select_submission (sId) {
             case 3:
                 $('#pr-error').prop('checked', true);
                 break;
+            case 4:
+                $('#pr-oov').prop('checked', true);
+                break;
             }
 
             $('#truncated').prop('checked', data['truncated']);

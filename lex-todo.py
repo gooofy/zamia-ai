@@ -76,6 +76,12 @@ cur.execute ("SELECT words.word FROM words,pronounciations WHERE words.id = pron
 for row in cur.fetchall():
     dict.add (row[0].decode('UTF8'))
 
+# add OOV words
+
+cur.execute ("SELECT word FROM words WHERE oov=true")
+for row in cur.fetchall():
+    dict.add (row[0].decode('UTF8'))
+
 print "%d entries." % len(dict)
 print 
 

@@ -30,6 +30,8 @@ import psycopg2
 from gutils import detect_latin1, split_words
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
 
+MIN_PHONE_COVERAGE = 10
+
 # simple wrapper around os.system, will 
 # - cd to workdir first
 # - print out command to stdout
@@ -134,6 +136,93 @@ print
 print "Step 2 - Pronunciation Dictionnary"
 print
 
+# compute phoneme converage for all good submissions
+# phoneme -> counter
+phone_coverage = {}
+
+sql = "SELECT phonemes,word FROM transcripts,submissions,pronounciations,words WHERE words.id=transcripts.wid AND transcripts.sid=submissions.id AND pronounciations.id=transcripts.pid AND reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s AND alignment_error=false "
+if continous:
+    sql += " AND continous=true"
+
+#sql += " LIMIT 100000"
+
+print "Computing phoneme coverage..."
+
+print sql
+
+cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciation, prefix+"%") )
+rows = cur.fetchall()
+
+print "%d rows..." % len(rows)
+
+for row in rows:
+
+    ipa  = row[0].decode('UTF8')
+    word = row[1].decode('UTF8')
+
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
+    
+    phones = xa.split(' ')
+    for phone in phones:
+
+        if not phone in phone_coverage:
+            phone_coverage[phone] = 1
+        else:
+            phone_coverage[phone] += 1
+
+for phone in phone_coverage:
+    print "%6s %d" % (phone, phone_coverage[phone])
+
+print
+print "Computing well-covered pids..."
+print
+
+# compute list of pids covered by good submissions (we will use only those in training)
+
+pids_covered = set()
+
+sql = "SELECT DISTINCT pid,phonemes,word FROM transcripts,submissions,pronounciations,words WHERE words.id=transcripts.wid AND pronounciations.id=transcripts.pid AND transcripts.sid=submissions.id AND reviewed=true AND noiselevel<=%s AND truncated=false AND audiolevel<=%s AND pcn<=%s AND cfn LIKE %s AND alignment_error=false"
+if continous:
+    sql += " AND continous=true"
+
+cur.execute (sql, (options.noiselevel, options.audiolevel, options.pronounciation, prefix+"%") )
+rows = cur.fetchall()
+for row in rows:
+
+    pid  = row[0]
+    ipa  = row[1].decode('UTF8')
+    word = row[2].decode('UTF8')
+
+    xs = ipa2xsampa(word, ipa)
+    xa = xsampa2xarpabet(word, xs)
+    
+    phones = xa.split(' ')
+    covered = True
+    lacking_phone = ""
+    for phone in phones:
+
+        if not phone in phone_coverage:
+            lacking_phone = phone
+            covered = False
+            break
+    
+        coverage = phone_coverage[phone]
+        if coverage < MIN_PHONE_COVERAGE:
+            lacking_phone = phone
+            covered = False
+            break
+
+    if covered:
+        pids_covered.add(pid)
+    else:
+        print (u"skipping word for lack of coverage for phone %s in submissions: %s" % (lacking_phone, word)).encode('utf8')
+
+# now: generate dict
+
+print
+print "Generating dictionary..."
+
 pdfn = '%s/etc/voxforge.dic' % workdir
 pdf  = open (pdfn, 'w')
 
@@ -151,6 +240,9 @@ for row in rows:
     ipa  = row[0].decode('UTF8')
     word = row[1].decode('UTF8')
     pid  = row[2]
+
+    if not pid in pids_covered:
+        continue
 
     xs = ipa2xsampa(word, ipa)
     xa = xsampa2xarpabet(word, xs)
@@ -239,6 +331,22 @@ for row in rows:
         dict_covered.add(word)
         uncovered_word = True
 
+    # compute list of pids
+    cur.execute ("SELECT pid FROM transcripts WHERE sid=%s ORDER BY id ASC" % (sid,))
+    rows2 = cur.fetchall()
+
+    # check to see if all pids are covered:
+    pids_covered = True
+    for row2 in rows2:
+        pid  = row2[0]
+        if not pid in pmap:
+            pids_covered = False
+            break
+
+    if not pids_covered:
+        print "Skipping submission %s (pid used not covered)" % cfn
+        continue
+
     # up to 10% go to test data set
     if count % 10 == 0 and not uncovered_word:
         fif = test_fif
@@ -251,8 +359,6 @@ for row in rows:
 
     tsf.write ('<s> ')
 
-    cur.execute ("SELECT pid FROM transcripts WHERE sid=%s ORDER BY id ASC" % (sid,))
-    rows2 = cur.fetchall()
     for row2 in rows2:
         pid  = row2[0]
         tsf.write ( (u"%s " % pmap[pid]).encode('UTF8') )

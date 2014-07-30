@@ -82,6 +82,7 @@ db_name   = config.get("speech", "dbname")
 db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
+wdir      = config.get("speech", "workdir") 
 workdir   = config.get("speech", "workdir") + "/align"
 featdir   = config.get("speech", "featdir")
 
@@ -104,6 +105,16 @@ cur = conn.cursor()
 # dump current dict
 #
 
+# read model phoneme list (we do not want to put words into our dict the model does not have phonemes for)
+
+phones_covered = set()
+
+phfn = '%s/etc/voxforge.phone' % wdir
+for line in open (phfn, 'r'):
+    phones_covered.add(line.rstrip())
+
+#print repr(phones_covered)
+
 print "dumping current dict..."
 
 pdf  = open (dictf, 'w')
@@ -120,7 +131,21 @@ for row in rows:
 
     xs = ipa2xsampa(word, ipa)
     xa = xsampa2xarpabet(word, xs)
+
+    phones = xa.split(' ')
+
+    #print "%s %s" % (word, repr(phones))
+
+    covered = True
+    for phone in phones:
+        if not phone in phones_covered:
+            print (u"Skipping word %s (at least one phoneme not covered)" % word).encode('utf8')
+            covered = False
+            break
     
+    if not covered:
+        continue
+
     if not word in word_counter:
         pdf.write ( (u'%s %s\n' % (word, xa)).encode('UTF8') )
         word_counter[word] = 1

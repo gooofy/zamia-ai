@@ -19,7 +19,6 @@
 #
 
 import StringIO
-import re
 import sys
 import curses
 import curses.textpad
@@ -27,13 +26,13 @@ import locale
 import ConfigParser
 from os.path import expanduser
 from optparse import OptionParser
-import xml.etree.ElementTree as ET
 import httplib, urllib
 import psycopg2
 import traceback 
 
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, mary2ipa, ipa2mary
-from maryclient import maryclient, pulseplayer
+
+from maryclient import mary_say_phonemes, mary_gather_ph, mary_gen_phonemes, mary_init, mary_set_voice
 from espeakclient import espeak_gen_ipa
 from phonetisaurusclient import phonetisaurus_gen_ipa
 
@@ -45,74 +44,6 @@ from phonetisaurusclient import phonetisaurus_gen_ipa
 # 2013, 2014 by G. Bartsch. License: LGPLv3
 #
 
-def compress_ws (str):
-
-        vc = False
-
-        res = ''
-
-        for c in str:
-
-                if c == ' ':
-                        vc = False
-                else:
-                        if vc:
-                                res = res + c
-                        else:
-                                res = res + ' ' + c
-                        vc = True
-
-        return res 
-
-def mary_say_phonemes (phonemes):
-
-    global mclient, player
-
-    try:
-        s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="de"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % phonemes
-
-        mclient.set_input_type("PHONEMES")
-        mclient.set_output_type("AUDIO")
-        wav = mclient.generate(s)
-
-        player.play(wav)
-    except:
-        print "*** ERROR: unexpected error:", sys.exc_info()[0]
-        traceback.print_exc()
-
-def mary_gather_ph (parent):
-
-	res = ""
-
-	for child in parent:
-		r = mary_gather_ph (child)
-		if len(r) > 0:
-			res += r + " "
-
-	if 'ph' in parent.attrib:
-		res += parent.attrib['ph'] + " "
-
-	return compress_ws(res)
-
-
-def mary_gen_phonemes (word):
-
-    global mclient
-
-    mclient.set_input_type ("TEXT")
-    mclient.set_output_type ("PHONEMES")
-
-    xmls = mclient.generate(word.lower())
-
-    #print "Got: For %s %s" % (graph.encode('utf-8'), xmls)
-
-    root = ET.fromstring(xmls)
-
-    #print "ROOT: %s" % repr(root)
-
-    mph = mary_gather_ph (root)
-
-    return re.sub(u"^ \?", "", re.sub(u"^ ' \?", "'", mph))
 
 def load_entry (word):
 
@@ -208,13 +139,7 @@ if len(args)==0:
 # Mary / pulse init
 #
 
-mclient = maryclient()
-mclient.set_locale ("de")
-mclient.set_voice ("bits3")
-#mclient.set_locale ("en")
-#mclient.set_locale ("dfki-spike")
-
-player = pulseplayer("HAL 9000")
+mary_init()
 
 #
 # connect to db
@@ -366,8 +291,8 @@ try:
             ipas = entry['phonemes'][cur_phi]['phonemes']
     
             xs = ipa2mary (word, ipas)
-    
-            mclient.set_voice ("bits3")
+   
+            mary_set_voice ("bits3") 
             mary_say_phonemes (xs)
     
         elif c == ord('o'):
@@ -379,7 +304,7 @@ try:
     
             xs = ipa2mary (word, ipas)
     
-            mclient.set_voice ("dfki-pavoque-neutral-hsmm")
+            mary_set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (xs)
    
         elif c == ord('r'):

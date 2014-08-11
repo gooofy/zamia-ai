@@ -26,13 +26,18 @@ import wave
 import ctypes
 import wave
 import sys
+import re 
+
+import xml.etree.ElementTree as ET
+
+from gutils import compress_ws
 
 #
 # A simple MARY TTS client in Python, using pulseaudio for playback
 #
 # based on Code from Hugh Sasse (maryclient-http.py)
 #
-# 2013 by G. Bartsch. License: LGPLv3
+# 2013, 2014 by G. Bartsch. License: LGPLv3
 
 class maryclient:
 
@@ -227,6 +232,78 @@ class pulseplayer:
 
             # Freeing resources and closing connection.
             pa.pa_simple_free(s)
+
+#
+# higher-level functions
+#
+
+def mary_say_phonemes (phonemes):
+
+    global mclient, player
+
+    try:
+        s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="de"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % phonemes
+
+        mclient.set_input_type("PHONEMES")
+        mclient.set_output_type("AUDIO")
+        wav = mclient.generate(s)
+
+        player.play(wav)
+    except:
+        print "*** ERROR: unexpected error:", sys.exc_info()[0]
+        traceback.print_exc()
+
+def mary_gather_ph (parent):
+
+	res = ""
+
+	for child in parent:
+		r = mary_gather_ph (child)
+		if len(r) > 0:
+			res += r + " "
+
+	if 'ph' in parent.attrib:
+		res += parent.attrib['ph'] + " "
+
+	return compress_ws(res)
+
+
+def mary_gen_phonemes (word):
+
+    global mclient
+
+    mclient.set_input_type ("TEXT")
+    mclient.set_output_type ("PHONEMES")
+
+    xmls = mclient.generate(word.lower())
+
+    #print "Got: For %s %s" % (graph.encode('utf-8'), xmls)
+
+    root = ET.fromstring(xmls)
+
+    #print "ROOT: %s" % repr(root)
+
+    mph = mary_gather_ph (root)
+
+    return re.sub(u"^ \?", "", re.sub(u"^ ' \?", "'", mph))
+
+def mary_init ():
+
+    global mclient, player
+
+    mclient = maryclient()
+    mclient.set_locale ("de")
+    mclient.set_voice ("bits3")
+    #mclient.set_locale ("en")
+    #mclient.set_locale ("dfki-spike")
+
+    player = pulseplayer("HAL 9000")
+   
+def mary_set_voice (voice):
+
+    global mclient
+
+    mclient.set_voice (voice) 
 
 if __name__ == "__main__":
 

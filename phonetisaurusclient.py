@@ -34,11 +34,11 @@ def phonetisaurus_gen_ipa (s):
     xs = ''
 
     for line in run_command ( ['phonetisaurus-g2p', '--model=%s' % psmodel, '--nbest=1', '--input=%s' % s.encode('utf8')] ):
-        print line,
+        #print line,
         xs = line.decode('utf8').lstrip().rstrip()
 
     parts = xs.split('\t')[1].split(' ')
-    print repr(parts)
+    #print repr(parts)
     xs = ''
     for p in parts:
         xs = xs + p

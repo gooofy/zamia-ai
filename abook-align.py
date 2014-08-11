@@ -258,10 +258,13 @@ try:
 
         elif c == ord('e'):
             stdscr.addstr(14, 0, "Edit prompt:" )
-            win = curses.newwin(1, 180, 15, 0)
+
+            tstr = tex_encode(cur_prompt)
+
+            win = curses.newwin(1, len(tstr)+12, 15, 0)
             tb = curses.textpad.Textbox(win, insert_mode=True)
 
-            win.addstr (0, 0, tex_encode(cur_prompt))
+            win.addstr (0, 0, tstr)
             stdscr.refresh()
 
             cur_prompt = tex_decode(tb.edit())

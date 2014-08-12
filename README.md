@@ -179,23 +179,24 @@ Audiobooks
 
     ./abook-filter.py abook/das_alte_haus/txt/abschnitt1.txt >abook/das_alte_haus/prompts/abschnitt1.txt
 
-(5/9) add missing words to dictionary:
-
-    ./lex-edit.py `./abook-words.py abook/das_alte_haus/prompts/abschnitt1.txt`
-
-(6/9) segment
+(5/9) segment
 
     ./abook-segment.py Karlsson abook/das_alte_haus/wav/altehaus_01_gerstaecker_64kb.mp3.wav
 
 make sure to check the last segment generated, usually it is empty. If so, delete it.
 
-(7/9) align prompts
+(6/9) align prompts
 
     ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/abschnitt1.txt 
 
-(8/9) import
+(7/9) import
 
     ./audio-import.py
+
+(8/9) add missing words to dictionary:
+
+    ./lex-auto.py
+    ./lex-edit.py `./lex-prompts.py`
 
 (9/9) transcribe
 

@@ -165,40 +165,42 @@ now compose sentences using as many words as possible from output/missingwords a
 Audiobooks
 ----------
 
-(1/9) Convert Audio to Wav:
+(1/8) Convert Audio to Wav:
 
     for i in mp3/*.mp3 ; do mpg123 -w wav/`basename $i`.wav $i ; done
 
-(2/9) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
+(2/8) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
 
-(3/9) Spellcheck:
+(3/8) Spellcheck, convert to prompts:
 
-    hunspell -d de_DE abook/das_alte_haus/txt/abschnitt1.txt 
+    ./abook-spellcheck.py abook/janeeyre/txt/abschnitt1.txt abook/janeeyre/prompts/abschnitt1.txt
 
-(4/9) Filter, convert into list of words:
-
-    ./abook-filter.py abook/das_alte_haus/txt/abschnitt1.txt >abook/das_alte_haus/prompts/abschnitt1.txt
-
-(5/9) segment
+(4/8) segment
 
     ./abook-segment.py Karlsson abook/das_alte_haus/wav/altehaus_01_gerstaecker_64kb.mp3.wav
 
 make sure to check the last segment generated, usually it is empty. If so, delete it.
 
-(6/9) align prompts
+(5/8) align prompts
+
+automatically:
+
+    ./abook-align-sphinx.py /home/ai/voxforge/de/audio/Hokuspokus-20140826-qah abook/janeeyre/prompts/abschnitt1.txt 
+
+or manually:
 
     ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/abschnitt1.txt 
 
-(7/9) import
+(6/8) import
 
     ./audio-import.py
 
-(8/9) add missing words to dictionary:
+(7/8) add missing words to dictionary:
 
     ./lex-auto.py
     ./lex-edit.py `./lex-prompts.py`
 
-(9/9) transcribe
+(8/8) transcribe
 
     ./audio-sphinx-align.py Karlsson
 

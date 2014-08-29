@@ -301,7 +301,16 @@ symb_abbrev_norm = [
         (u'z.T.'    , u'ZUM TEIL '),
         (u'z. T.'   , u'ZUM TEIL '),
         (u'z.Zt.'   , u'ZUR ZEIT '),
-        (u'z. Zt.'  , u'ZUR ZEIT ')
+        (u'z. Zt.'  , u'ZUR ZEIT '),
+        (u'\ufeff'  , u' '),
+        (u'\u2019'  , u' '),
+        (u'\xa0'    , u' '),
+        (u'\u203a'  , u' '),
+        (u'\u2039'  , u' '),
+        (u'_'       , u' '),
+        (u'&'       , u'UND'),
+        (u'-'       , u' '),
+        (u'\xa020'  , u' ')
     ]
 
 
@@ -360,7 +369,7 @@ def split_words (s):
     words = re.split ('\s+', s)
     for word in words:
 
-        w = re.sub(r"[,.?\-+*#! ;:/\"\[\]()='»«]", '', word.rstrip()).replace(u'–',u'').upper()
+        w = re.sub(r"[,.?+*#! ;:/\"\[\]()='»«]", '', word.rstrip()).replace(u'–',u'').upper()
         if len(w) > 0:
 
             if w in wrt:

@@ -60,7 +60,7 @@ for row in rows:
     ipas = row[0].decode('UTF8')
     word = row[1].decode('UTF8')
 
-    if ( (ipas.count(u'-') > 0) or (len(ipas)<6) ) and (ipas.count(u"'") > 0):
+    if ( (ipas.count(u'-') > 0) or (len(ipas)<7) ) and (ipas.count(u"'") > 0):
         continue
 
     print (u"%s " % word).encode('utf8'),

@@ -79,9 +79,13 @@ for submission in os.listdir (audiodir):
     if detect_latin1(prompts):
         encoding = 'latin-1'
 
+    #print prompts
 
     promptsfile = open (prompts)
     for line in promptsfile:
+
+        #print line,
+
         parts = re.split ('\s+', line.decode(encoding))
 
         # filename

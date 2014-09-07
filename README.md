@@ -165,46 +165,56 @@ now compose sentences using as many words as possible from output/missingwords a
 Audiobooks
 ----------
 
-(1/9) Convert Audio to Wav:
+Download mp3 files and transcripts for each mp3 file (part). Add prologs/epilogs to 
+transcripts as necessary. Create a folder in your abook-dir (as specified in your ~/.airc)
+of this structure:
 
-    for i in mp3/*.mp3 ; do mpg123 -w wav/`basename $i`.wav $i ; done
+abook-dir/
+  booktitle/
+    mp3/
+      part01.mp3
+      part02.mp3
+      ...
+    txt/
+      part01.txt
+      part02.txt
+      ...
 
-(2/9) Check Audio, add prolog/epilog of chapters to transcripts, if necessary.
 
-(3/9) Spellcheck, convert to prompts:
+(1/6) Preprocess part (spellcheck prompts, convert to wav, segment, add to DB)
 
-    ./abook-spellcheck.py abook/janeeyre/txt/abschnitt1.txt abook/janeeyre/prompts/abschnitt1.txt
+    ./abook-preprocess.py janeeyre 05 JuliaNiedermaier
 
-(4/9) segment
-
-    ./abook-segment.py Karlsson abook/das_alte_haus/wav/altehaus_01_gerstaecker_64kb.mp3.wav
-
-make sure to check the last segment generated, usually it is empty. If so, delete it.
-
-(5/9) align prompts
+(2/6) align prompts
 
 automatically:
 
-    ./abook-align-sphinx.py /home/ai/voxforge/de/audio/Hokuspokus-20140826-qah abook/janeeyre/prompts/abschnitt1.txt 
+    ./abook-align-sphinx.py janeeyre 05 
 
 or manually:
 
     ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/abschnitt1.txt 
 
-(6/9) import
+(3/6) import
 
     ./audio-import.py
 
-(7/9) add missing words to dictionary:
+(4/6) add missing words to dictionary:
 
     ./lex-auto.py
     ./lex-edit.py `./lex-prompts.py`
 
-(8/9) transcribe
+(5/6) transcribe
 
-    ./audio-sphinx-align.py Hokuspokus
+    ./audio-sphinx-align.py -p 1 -a 1 JuliaNiedermaier
 
-(9/9) export
+if necessary, re-align prompts using (slower) sphinx_align:
+
+    ./abook-realign-sphinx.py janeeyre 05
+
+iterate this process as needed (fix some prompts manually, re-align rest)
+
+(6/6) export
 
     ./audio-export-submission.py Hokuspokus-20140826-qah
 

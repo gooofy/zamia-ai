@@ -55,7 +55,8 @@ db_user   = config.get("speech", "dbuser")
 db_pass   = config.get("speech", "dbpass")
 
 wdir      = config.get("speech", "workdir") 
-
+abook_dir = config.get("speech", "abookdir")
+audiodir  = config.get("speech", "audiodir")
 hmdir     = config.get("pocketsphinx", "hmm")
 #dictf     = config.get("pocketsphinx", "dict")
 
@@ -82,16 +83,13 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 #
 
 if len(sys.argv) != 3:
-    print "usage: %s dir prompt.txt" % sys.argv[0]
+    print "usage: %s title partnum" % sys.argv[0]
     sys.exit(1)
 
-dir_path = sys.argv[1]
-dir_name = os.path.basename(dir_path)
+abook_title  = sys.argv[1]
+abook_part   = int(sys.argv[2])
 
-promptfn = sys.argv[2]
-
-promptsfn  = "%s/etc/PROMPTS" % (dir_path)
-opromptsfn = "%s/etc/prompts-original" % (dir_path)
+promptfn = '%s/%s/prompts/part%02d.txt' % (abook_dir, abook_title, abook_part)
 
 #
 # connect to db
@@ -102,6 +100,19 @@ conn_string = "host='%s' dbname='%s' user='%s' password='%s'" % (db_server, db_n
 conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
+
+#
+# fetch cfn for this abook part from db
+#
+
+cur.execute ('SELECT cfn FROM abooks WHERE title=%s AND partnum=%s', (abook_title, abook_part))
+row = cur.fetchone()
+
+dir_name = row[0].decode('utf8')
+dir_path = '%s/%s' % (audiodir, dir_name)
+
+promptsfn  = "%s/etc/PROMPTS" % (dir_path)
+opromptsfn = "%s/etc/prompts-original" % (dir_path)
 
 #
 # create CMUCLMTK Language Model
@@ -318,8 +329,8 @@ for wfn in sorted(os.listdir('%s/wav/' % dir_path)):
 
     wavfn = '%s/wav/%s' % (dir_path, wfn)
 
-    print 
-    print "recognizing %s ... " % wavfn
+    #print 
+    #print "recognizing %s ... " % wavfn
 
     wavFile = file(wavfn,'rb')
     decoder.decode_raw(wavFile)
@@ -329,7 +340,7 @@ for wfn in sorted(os.listdir('%s/wav/' % dir_path)):
 
     hstr = hypothesis.hypstr.decode('UTF8').lstrip().rstrip()
 
-    print u'HYPOTH: %s' % hstr
+    #print u'HYPOTH: %s' % hstr
 
     # len in words
     hyp_words = split_words(hstr)
@@ -361,9 +372,9 @@ for wfn in sorted(os.listdir('%s/wav/' % dir_path)):
                 best_prompt = prompt_words
             #print "Distance: %d, best distance: %d" % (dist, best_dist) 
 
-    print 
-    print u"HYP        : %s" % hyp_words
-    print u"Best prompt: %s (%d)" % (best_prompt, best_dist)
+    #print 
+    print u"%-20s %3d HYP        : %s" % (wfn, best_dist, hyp_words)
+    print u"%-20s %3d Best prompt: %s" % (wfn, best_dist, best_prompt)
 
     p = ' '.join(best_prompt)
 

@@ -64,6 +64,7 @@ print "Exporting dict..."
 print
 
 outf_ipa    = open ('output/dict/dict-ipa.txt', 'w')
+outf_ipaf   = open ('output/dict/dict-ipa-formatted.txt', 'w')
 outf_xsampa = open ('output/dict/dict-xsampa.txt', 'w')
 outf_xss    = open ('output/dict/dict-xsampa-spaces.txt', 'w')
 
@@ -82,16 +83,19 @@ for row in rows:
     xss= ipa2xsampa(word, ipa, True)
 
     outf_ipa.write ( (u"%s\t%s\n" % (word, ipa)).encode('UTF8') )
+    outf_ipaf.write ( (u"%-32s%s\n" % (word, ipa)).encode('UTF8') )
     outf_xsampa.write ( (u"%s\t%s\n" % (word, xs)).encode('UTF8') )
     outf_xss.write ( (u"%s\t%s\n" % (word, xss)).encode('UTF8') )
 
     count += 1
 
 outf_ipa.close()
+outf_ipaf.close()
 outf_xsampa.close()
 outf_xss.close()
 
 print 'output/dict/dict-ipa.txt written.'
+print 'output/dict/dict-ipa-formatted.txt written.'
 print 'output/dict/dict-xsampa.txt written.'
 print 'output/dict/dict-xsampa-spaces.txt written.'
 print

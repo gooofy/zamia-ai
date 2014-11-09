@@ -9,7 +9,6 @@ import ConfigParser
 from os.path import expanduser
 import subprocess
 import psycopg2
-import pocketsphinx
 import traceback
 
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet, mary2ipa
@@ -53,15 +52,20 @@ conn = psycopg2.connect(conn_string)
 
 cur = conn.cursor()
 
-cur.execute ("SELECT phonemes,word FROM pronounciations,words WHERE pronounciations.wid=words.id ORDER BY word ASC")
+cur.execute ("SELECT phonemes,word,words.id,pronounciations.id FROM pronounciations,words WHERE pronounciations.wid=words.id AND pronounciations.points < 11 ORDER BY word ASC")
 rows = cur.fetchall()
 for row in rows:
 
     ipas = row[0].decode('UTF8')
     word = row[1].decode('UTF8')
+    wid  = row[2]
+    pid  = row[3]
 
-    if ( (ipas.count(u'-') > 0) or (len(ipas)<7) ) and (ipas.count(u"'") > 0):
+    if ( (ipas.count(u'-') > 0) or (len(ipas)<4) ) and (ipas.count(u"'") > 0):
         continue
+
+    #print wid, pid, ipas
+    #print ipas.count(u'-')
 
     print (u"%s " % word).encode('utf8'),
 

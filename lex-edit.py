@@ -32,7 +32,7 @@ import traceback
 
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, mary2ipa, ipa2mary
 
-from maryclient import mary_say_phonemes, mary_gather_ph, mary_gen_phonemes, mary_init, mary_set_voice
+from maryclient import mary_say_phonemes, mary_gather_ph, mary_gen_phonemes, mary_init, mary_set_voice, mary_set_locale
 from espeakclient import espeak_gen_ipa
 from phonetisaurusclient import phonetisaurus_gen_ipa
 
@@ -44,6 +44,7 @@ from phonetisaurusclient import phonetisaurus_gen_ipa
 # 2013, 2014 by G. Bartsch. License: LGPLv3
 #
 
+DEFAULT_POINTS = 11
 
 def load_entry (word):
 
@@ -195,9 +196,11 @@ def repaint_main():
 
         phi += 1
 
-    stdscr.addstr(20, 0, "P:Play (unitsel)  O:Play (hsmm)  G:Gen(mary)    H:Gen(espeak)  J:Gen(saurus)" )
-    stdscr.addstr(21, 0, "E:Edit            A:Add          R:Remove all   1-9:Select                  " )
-    stdscr.addstr(22, 0, "                                                N:Next         Q:Quit       " )
+    stdscr.addstr(18, 0, "SPEAK  P:de-unitsel  O:de-hsmm                  I:fr-hsmm   U:en-hsmm" )
+    stdscr.addstr(19, 0, "GEN    G:de-mary     H:de-espeak  J:de-saurus   K:fr-mary   L:en-mary" )
+
+    stdscr.addstr(21, 0, "       E:Edit        A:Add        R:Remove all  1-9:Select           " )
+    stdscr.addstr(22, 0, "                                                N:Next      Q:Quit   " )
     stdscr.refresh()
 
 #
@@ -220,6 +223,7 @@ try:
     
         elif c == ord('a'):
             
+            mary_set_locale ("de")
             mp = mary_gen_phonemes (entry['word'])
             #mary_say_phonemes (mp)
     
@@ -227,7 +231,7 @@ try:
     
             ipas = mary2ipa(word, mp)
     
-            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+            entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
     
             n = len(entry['phonemes'])
     
@@ -237,7 +241,9 @@ try:
     
         elif c == ord('g'):
             
+            mary_set_locale ("de")
             mp = mary_gen_phonemes (entry['word'])
+            mary_set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (mp)
     
             #print "mp: %s" % mp
@@ -246,42 +252,91 @@ try:
     
             if len(entry['phonemes']) == 0:
     
-                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
     
             else:
     
                 entry['phonemes'][cur_phi]['phonemes'] = ipas
-                entry['phonemes'][cur_phi]['points'] = 10
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
+   
+        # generate en-mary 
+        elif c == ord('l'):
+            
+            mary_set_locale ("en-US")
+            mp = mary_gen_phonemes (entry['word'])
     
+            #print "mp: %s" % mp
+    
+            ipas = mary2ipa(word, mp)
+    
+            if len(entry['phonemes']) == 0:
+    
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
+    
+            else:
+    
+                entry['phonemes'][cur_phi]['phonemes'] = ipas
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
+    
+            xs = ipa2mary (word, ipas)
+    
+            mary_set_voice ("cmu-rms-hsmm")
+            mary_say_phonemes (xs)
+
+        elif c == ord('k'):
+            
+            mary_set_locale ("fr")
+            mp = mary_gen_phonemes (entry['word'])
+    
+            #print "mp: %s" % mp
+    
+            ipas = mary2ipa(word, mp)
+    
+            if len(entry['phonemes']) == 0:
+    
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
+    
+            else:
+    
+                entry['phonemes'][cur_phi]['phonemes'] = ipas
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
+    
+            xs = ipa2mary (word, ipas)
+    
+            mary_set_voice ("pierre-voice-hsmm")
+            mary_say_phonemes (xs)
+
         elif c == ord('h'):
             
             ipas = espeak_gen_ipa (entry['word'])
             mp = ipa2mary (entry['word'], ipas)
+            mary_set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (mp)
     
             if len(entry['phonemes']) == 0:
     
-                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
     
             else:
     
                 entry['phonemes'][cur_phi]['phonemes'] = ipas
-                entry['phonemes'][cur_phi]['points'] = 10
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
     
         elif c == ord('j'):
             
             ipas = phonetisaurus_gen_ipa (entry['word'])
             mp = ipa2mary (entry['word'], ipas)
+            mary_set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (mp)
     
             if len(entry['phonemes']) == 0:
     
-                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+                entry['phonemes'].append ( { 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
     
             else:
     
                 entry['phonemes'][cur_phi]['phonemes'] = ipas
-                entry['phonemes'][cur_phi]['points'] = 10
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
     
         elif c == ord('p'):
     
@@ -292,6 +347,7 @@ try:
     
             xs = ipa2mary (word, ipas)
    
+            mary_set_locale ("de")
             mary_set_voice ("bits3") 
             mary_say_phonemes (xs)
     
@@ -304,7 +360,34 @@ try:
     
             xs = ipa2mary (word, ipas)
     
+            mary_set_locale ("de")
             mary_set_voice ("dfki-pavoque-neutral-hsmm")
+            mary_say_phonemes (xs)
+   
+        elif c == ord('i'):
+    
+            if len(entry['phonemes']) == 0:
+                continue
+    
+            ipas = entry['phonemes'][cur_phi]['phonemes']
+    
+            xs = ipa2mary (word, ipas)
+    
+            mary_set_locale ("fr")
+            mary_set_voice ("pierre-voice-hsmm")
+            mary_say_phonemes (xs)
+   
+        elif c == ord('u'):
+    
+            if len(entry['phonemes']) == 0:
+                continue
+    
+            ipas = entry['phonemes'][cur_phi]['phonemes']
+    
+            xs = ipa2mary (word, ipas)
+    
+            mary_set_locale ("en-US")
+            mary_set_voice ("cmu-rms-hsmm")
             mary_say_phonemes (xs)
    
         elif c == ord('r'):
@@ -314,7 +397,7 @@ try:
         elif c == ord('n'):
    
             if len(entry['phonemes']) > 0:
-                entry['phonemes'][cur_phi]['points'] = 10
+                entry['phonemes'][cur_phi]['points'] = DEFAULT_POINTS
     
             store_entry (entry)
     
@@ -336,7 +419,7 @@ try:
                     mp = mary_gen_phonemes (entry['word'])
                     ipas = mary2ipa(word, mp)
     
-                    entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': 10 }  )
+                    entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
                     repaint_main()
     
                     mary_say_phonemes (mp)

@@ -161,6 +161,7 @@ IPA_normalization = {
 XSAMPA_normalization = {
     ' ': None,
     '~': None,
+    '0': 'O',
     ',': None,
     }
 

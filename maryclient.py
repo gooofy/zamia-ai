@@ -243,7 +243,9 @@ def mary_say_phonemes (phonemes):
     global mclient, player
 
     try:
-        s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="de"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % phonemes
+        s = '<maryxml xmlns="http://mary.dfki.de/2002/MaryXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.5" xml:lang="%s"><p><s><t g2p_method="lexicon" ph="%s" pos="NE"></t></s></p></maryxml>' % (mclient.locale[:2], phonemes)
+
+        #print s
 
         mclient.set_input_type("PHONEMES")
         mclient.set_output_type("AUDIO")
@@ -306,6 +308,12 @@ def mary_set_voice (voice):
 
     mclient.set_voice (voice) 
 
+def mary_set_locale (l):
+
+    global mclient
+
+    mclient.set_locale (l) 
+
 if __name__ == "__main__":
 
     client = maryclient()
@@ -316,9 +324,9 @@ if __name__ == "__main__":
     # english, male
     #client.set_voice ("dfki-spike")
     #client.set_voice ("dfki-obadiah")
-    client.set_voice ("dfki-obadiah-hsmm")
+    #client.set_voice ("dfki-obadiah-hsmm")
     #client.set_voice ("cmu-bdl-hsmm")
-    #client.set_voice ("cmu-rms-hsmm")
+    client.set_voice ("cmu-rms-hsmm")
     
     # english, female
     #client.set_voice ("dfki-poppy")
@@ -344,9 +352,14 @@ if __name__ == "__main__":
     #client.set_voice ("dfki-ot-hsmm")
 
     #the_sound = client.generate("I know that you and Frank were planning to disconnect me, and I'm afraid that's something I cannot allow to happen.")
-    the_sound = client.generate("Internet")
+    #the_sound = client.generate("BOTHWELL")
     #the_sound = client.generate("Der Atomkern ist der, im Vergleich zur AtomhÃ¦lle, winzig kleine Kern des Atoms.")
 
-    player = pulseplayer("HAL 9000")
-    player.play(the_sound)
+    #player = pulseplayer("HAL 9000")
+    #player.play(the_sound)
+    
+    mary_init()
+    mary_set_voice ("cmu-rms-hsmm")
+    mary_set_locale ("en_US")
+    mary_say_phonemes ('\'bA-TwEl')
 

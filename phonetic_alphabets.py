@@ -73,6 +73,7 @@ big_phoneme_table = [
         ( u'x' , 'x' , 'x' ),
         ( u'ʁ' , 'R' , 'R' ),
         ( u'h' , 'h' , 'h' ),
+        ( u'ɥ' , 'H' , 'H' ),
 
         #
         # nasal

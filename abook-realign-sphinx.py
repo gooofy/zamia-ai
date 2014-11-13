@@ -41,12 +41,16 @@ from phonetisaurusclient import phonetisaurus_gen_ipa
 #
 
 MIN_SENT_LEN   = 1
-MAX_SENT_LEN   = 40
+MAX_SENT_LEN   = 64
 OFFSET_JITTER  = 2
 REALIGN_JITTER = 20
 
 # switch off for faster debugging
 CREATE_DICT   = True
+
+#WORST_SCORE =   -850000
+WORST_SCORE  =  -8500000
+#WORST_SCORE = -32274658
 
 #
 # load config, set up global variables
@@ -430,6 +434,12 @@ for wav_idx in range (0, len(wav_files)-1):
                 print "%s     %7d %4d %4d %4d %s" % (wavfn, score, base_offset, p_start, p_end, p)
 
     print "%s Done. Best prompt: %s" % (wavfn, best_prompt)
+
+    if best_score < WORST_SCORE:
+        print
+        print "*** ERROR: Score too bad, lost sync. Exiting."
+        print
+        sys.exit(1)
 
     base_offset = best_offset + best_len
 

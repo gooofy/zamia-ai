@@ -101,8 +101,8 @@ db_pass   = config.get("speech", "dbpass")
 abook_dir = config.get("speech", "abookdir")
 audiodir  = config.get("speech", "audiodir")
 
-tmpwavfn  = '%s/%s/tmp.wav' % (abook_dir, abook_title)
-tmpwav16fn= '%s/%s/tmp16.wav' % (abook_dir, abook_title)
+tmpwavfn  = '%s/%s/tmp_%08x.wav' % (abook_dir, abook_title, os.getpid())
+tmpwav16fn= '%s/%s/tmp16_%08x.wav' % (abook_dir, abook_title, os.getpid())
 mp3fn     = '%s/%s/mp3/part%02d.mp3' % (abook_dir, abook_title, abook_part)
 
 #

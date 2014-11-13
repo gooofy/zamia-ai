@@ -310,6 +310,7 @@ try:
             
             ipas = espeak_gen_ipa (entry['word'])
             mp = ipa2mary (entry['word'], ipas)
+            mary_set_locale ("de")
             mary_set_voice ("dfki-pavoque-neutral-hsmm")
             mary_say_phonemes (mp)
     
@@ -411,17 +412,23 @@ try:
     
                 if len(entry['phonemes']) == 0:
     
-                    # default: espeak
+                    # espeak
                     #ipas = espeak_gen_ipa (entry['word'])
                     #mp = ipa2mary (entry['word'], ipas)
     
-                    # default: mary
-                    mp = mary_gen_phonemes (entry['word'])
-                    ipas = mary2ipa(word, mp)
-    
+                    # mary
+                    #mp = mary_gen_phonemes (entry['word'])
+                    #ipas = mary2ipa(word, mp)
+
+                    # default: phonetisaurus
+                    ipas = phonetisaurus_gen_ipa (entry['word'])
+                    mp = ipa2mary (entry['word'], ipas)
+
                     entry['phonemes'].append ({ 'id': 0, 'phonemes': ipas, 'probability': 100, 'points': DEFAULT_POINTS }  )
                     repaint_main()
     
+                    mary_set_locale ("de")
+                    mary_set_voice ("dfki-pavoque-neutral-hsmm")
                     mary_say_phonemes (mp)
     
         elif c == ord('e'):

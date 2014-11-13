@@ -179,12 +179,14 @@ $(document).ready(function(){
         console.log ("savebutton data: ", data);
 
         $.ajax({
-            url: '/save?data=' + JSON.stringify(data),
-            type: 'GET',
-            //contentType: 'application/json',
-            //data: { obj: data },
+            url: '/save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            //dataType: "JSON",
+            //data: data,
             success: function(result) {
-                console.log ("savebutton result: ", result);
+                console.log ("savebutton result: ", result) ;
                 selector_table.fnReloadAjax();
             }
         });

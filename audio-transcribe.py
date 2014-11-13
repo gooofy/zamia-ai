@@ -120,10 +120,22 @@ def hurl_save (environ, start_response):
 
     global conn, cur
 
-    parameters = parse_qs(environ.get('QUERY_STRING', ''))
-    data = json.loads(parameters['data'][0])
-    #print "     data: %s" % repr(data)
+    #print "hurl_save environment:"
+    #for k,v in sorted(environ.items()):
+    #    print "    %-20s: %s" % (k, v)
 
+    try:
+        request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+    except (ValueError):
+        request_body_size = 0
+    
+    request_body = environ['wsgi.input'].read(request_body_size)
+
+    #print "request_body = %s" % request_body
+
+    data = json.loads(request_body)
+    #print "     data: %s" % repr(data)
+    
     cur.execute ('UPDATE submissions SET reviewed=true, noiselevel=%s, truncated=%s, comment=%s, audiolevel=%s, pcn=%s WHERE id=%s',
                  (data['noiselevel'], data['truncated'], data['comment'], data['audiolevel'], data['pcn'], data['sid']))
 
@@ -131,6 +143,7 @@ def hurl_save (environ, start_response):
     # transcript
     cur.execute ('DELETE FROM transcripts WHERE sid=%s', (data['sid'],))
     for winfo in data['transcript']:
+        #print "    winfo: %s" % repr(winfo)
         cur.execute ('INSERT INTO transcripts (sid,wid,pid) VALUES (%s, %s, %s)', 
                      (data['sid'], winfo['wid'], winfo['pid']))
 
@@ -155,7 +168,7 @@ def hurl_setprompt (environ, start_response):
     #print "     sid: %s, prompt: %s" % (data['sid'], data['prompt'])
 
     cur.execute ('UPDATE submissions SET prompt=%s WHERE id=%s',
-                 (data['prompt'], data['sid']))
+                 (data['prompt'].replace('\n',' ').replace('\r',' '), data['sid']))
 
     conn.commit()
 

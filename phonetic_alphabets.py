@@ -291,6 +291,7 @@ xs2xa_table = [
     ('x'  , 'X'),
     ('R'  , 'RR'),
     ('h'  , 'HH'),
+    ('H'  , 'HHH'),
 
     #
     # nasal

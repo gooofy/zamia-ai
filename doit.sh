@@ -162,7 +162,7 @@ DSTR=`date +%y%m%d%H%M`
 cp /home/ai/voxforge/de/work/voxforge.html priv/stats/voxforge-$DSTR.html
 cp output/audio-stats.txt priv/stats/audio-stats-$DSTR.txt
 
-pg_dump -U lexicon lexicon_de >output/db.sql
+pg_dump -U lexicon -h localhost lexicon_de >output/db.sql
 gzip output/db.sql
 
 cp README.md output/readme.txt

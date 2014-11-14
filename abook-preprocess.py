@@ -42,10 +42,20 @@ import wave, struct
 
 random.seed (42)
 
-SILENCE_THRESH     = 256
-SILENCE_MIN_LENGTH = 4000
+# silence: anything < 20% of avg volume
+SILENCE_THRESH     = 0.2
 
-MIN_SEGMENT_LENGTH = 2 * 16000
+SAMPLE_RATE        = 16000
+
+# segment length: minimum 5 seconds, max 10 seconds
+MIN_SEGMENT_LENGTH =  5 * SAMPLE_RATE
+MAX_SEGMENT_LENGTH = 10 * SAMPLE_RATE
+# segment has to contain at least 1s of content
+MIN_VOICE_LENGTH   =  1 * SAMPLE_RATE
+
+# debug purposes only, set to 0 to disable debug limit
+#DEBUG_LENGTH       = 5000000
+DEBUG_LENGTH       = 0
 
 def gen_dirname ():
 
@@ -260,75 +270,114 @@ print cmd
 
 os.system (cmd)
 
-
 #
-# segment audio
+# read all samples into memory so we have random access to them
+# when we're looking for cut-points
 #
 
 wavf = wave.open(tmpwav16fn, 'r')
-
-wavoutcnt = 0
-wavoutfn  = "%s/wav/de10-%03d.wav" % (dir_path, wavoutcnt)
-
-wavoutf   = wave.open(wavoutfn, 'w')
-wavoutf.setparams((1, 2, 16000, 0, "NONE", "not compressed"))
-
-cur_segment_length = 0
-cur_silence_length = 0
-cur_voice_length   = 0
-
 length = wavf.getnframes()
+
+if DEBUG_LENGTH>0 and length >DEBUG_LENGTH:
+    length = DEBUG_LENGTH
+
+samples = []
+avg = 0.0
+
+print "Reading %6d/%6d samples from %s..." % (len(samples), length, tmpwav16fn),
+
 for i in range(0,length):
+
     wd = wavf.readframes(1)
 
     try:
 
         data = struct.unpack("<h", wd)
-    
         sample = int(data[0])
-    
-        wavoutf.writeframes(wd)
-        cur_segment_length += 1
-    
-        if sample < SILENCE_THRESH:
-            cur_silence_length += 1
-    
-            if cur_silence_length == SILENCE_MIN_LENGTH:
-    
-                print "%07d / %07d Silence detected, segment length: %ds" % (i/16000, length/16000, cur_segment_length/16000)
-    
-                if cur_segment_length > MIN_SEGMENT_LENGTH:
-    
-                    wavoutcnt += 1
-                    wavoutfn  = "%s/wav/de10-%03d.wav" % (dir_path, wavoutcnt)
-    
-                    print "    CUT TO %s" % wavoutfn
-    
-                    wavoutf.close()
-    
-                    wavoutf   = wave.open(wavoutfn, 'w')
-                    wavoutf.setparams((1, 2, 16000, 0, "NONE", "not compressed"))
-    
-                    cur_segment_length = 0
-                    cur_voice_length = 0
-    
-    
-        else:
-            cur_silence_length = 0
-            cur_voice_length  += 1
+        samples.append(sample)
+        avg += abs(float(sample))
+
+        if i % 1000 == 0:
+            p = len(samples) * 100 / length
+            print "\rReading %9d/%9d %3d%% samples from %s..." % (len(samples), length, p, tmpwav16fn),
 
     except:
         print "*** ERROR: unexpected error:", sys.exc_info()[0]
         traceback.print_exc()
         print "wd: %s" % repr(wd)
 
-wavoutf.close()
+avg = int(avg/length)
 
-if cur_voice_length <= SILENCE_MIN_LENGTH:
-    print "deleting silent last segment %s" % wavoutfn
-    os.system ('rm %s' % wavoutfn)
+print "\ndone. Read %d samples, avg: %d" % (len(samples), avg)
 
-#
+silence_thresh = int(SILENCE_THRESH * avg + 1)
+
+cur_pos   = 0
+wavoutcnt = 0
+
+while cur_pos < length:
+
+    cut_pos             = cur_pos + MIN_SEGMENT_LENGTH
+    best_silence_pos    = cut_pos 
+    best_silence_length = 0
+
+    cur_silence_pos     = cut_pos
+    cur_silence_length  = 0
+
+    max_pos             = cur_pos + MAX_SEGMENT_LENGTH
+    if max_pos > length:
+        max_pos = length
+
+    #print "cur_pos: %d, max_pos: %d, best_silence_pos: %d" % (cur_pos, max_pos, best_silence_pos)
+
+    while cut_pos < max_pos:
+
+        sample  = samples[cut_pos]
+        cut_pos += 1
+
+        if sample < silence_thresh:
+            cur_silence_length += 1
+    
+        else:
+
+            if cur_silence_length > best_silence_length:
+                best_silence_length = cur_silence_length
+                best_silence_pos    = cur_silence_pos
+
+            cur_silence_length = 0
+            cur_silence_pos    = cut_pos
+
+    print "Segment detected: %5ds -> %5ds (len: %2ds, silence: %5d samples)" % (cur_pos / SAMPLE_RATE, best_silence_pos / SAMPLE_RATE, (best_silence_pos - cur_pos) / SAMPLE_RATE, best_silence_length)
+
+    #print "best_silence_pos: %d" % (best_silence_pos)
+
+
+    csp = best_silence_pos if best_silence_pos < length else length
+
+    cur_voice_len = 0
+    for i in range (cur_pos, csp):
+        if samples[i] >= silence_thresh:
+            cur_voice_len += 1
+
+    if cur_voice_len >= MIN_VOICE_LENGTH:
+        wavoutfn  = "%s/wav/de10-%03d.wav" % (dir_path, wavoutcnt)
+        #wavoutfn  = "/tmp/de10-%03d.wav" % (wavoutcnt)
+
+        wavoutf   = wave.open(wavoutfn, 'w')
+        wavoutf.setparams((1, 2, 16000, 0, "NONE", "not compressed"))
+        for i in range (cur_pos, csp):
+            wd = struct.pack("<h", samples[i])
+            wavoutf.writeframes(wd)
+        wavoutf.close()
+        wavoutcnt += 1
+
+        print "%s written." % wavoutfn
+    else:
+        print "Voice content too short (%5d samples), wav file not written." % (cur_voice_len)
+
+    cur_pos = best_silence_pos + 1
+
+
 # cleanup
 #
 os.system ('rm %s' % tmpwavfn)

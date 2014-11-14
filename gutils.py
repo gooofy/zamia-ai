@@ -418,6 +418,46 @@ def edit_distance (s, t):
 def kill_umlauts(s):
     return s.replace(u'ß',u'SS').replace(u'Ü',u'UE').replace(u'Ö',u'OE').replace(u'Ä',u'AE').replace(u'§', 'PARAGRAPH').replace('%','PROZENT').replace('-','STRICH').replace("'",'')
 
+
+tex_umlaut_map = { u'ä': '"a', u'ü': '"u', u'ö': '"o', u'Ä':'"A', u'Ü':'"U', u'Ö':'"O', u'ß':'"s' }
+
+def tex_encode (u):
+
+    s = ''
+
+    for c in u:
+
+        if c in tex_umlaut_map:
+            s += tex_umlaut_map[c]
+        else:
+            s += str(c)
+
+    return s
+
+def tex_decode (s):
+
+    u = ''
+
+    pos = 0
+    while (pos < len(s)):
+
+        found = False
+
+        for umlaut in tex_umlaut_map:
+            v = tex_umlaut_map[umlaut]
+            if s[pos:].startswith(v):
+                u += umlaut
+                pos += len(v)
+                found = True
+                break
+
+        if not found:
+            u += unicode(s[pos])
+            pos += 1
+
+    return u
+
+
 class TestGUtils (unittest.TestCase):
 
     def setUp(self):

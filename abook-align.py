@@ -24,7 +24,7 @@ import os
 import StringIO
 import ConfigParser
 from os.path import expanduser
-from gutils import detect_latin1, isgalnum, compress_ws, split_words
+from gutils import detect_latin1, isgalnum, compress_ws, split_words, tex_decode, tex_encode
 import random
 import datetime
 import curses
@@ -32,44 +32,6 @@ import curses.textpad
 import locale
 import traceback
 from phonetic_alphabets import ipa2xsampa, xsampa2ipa, xsampa2xarpabet
-
-tex_umlaut_map = { u'ä': '"a', u'ü': '"u', u'ö': '"o', u'Ä':'"A', u'Ü':'"U', u'Ö':'"O', u'ß':'"s' }
-
-def tex_encode (u):
-
-    s = ''
-
-    for c in u:
-
-        if c in tex_umlaut_map:
-            s += tex_umlaut_map[c]
-        else:
-            s += str(c)
-
-    return s
-
-def tex_decode (s):
-
-    u = ''
-
-    pos = 0
-    while (pos < len(s)):
-
-        found = False
-
-        for umlaut in tex_umlaut_map:
-            v = tex_umlaut_map[umlaut]
-            if s[pos:].startswith(v):
-                u += umlaut
-                pos += len(v)
-                found = True
-                break
-
-        if not found:
-            u += unicode(s[pos])
-            pos += 1
-
-    return u
 
 #
 # command line

@@ -142,5 +142,9 @@ print
 # kaldi model stats
 #
 
-# FIXME
+print "kaldi models: "
+with codecs.open('data/dst/speech/%s/kaldi/RESULTS.txt' % LANG, 'r', 'utf8') as logf:
+    for line in logf:
+        print line.strip()
+print
 

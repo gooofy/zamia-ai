@@ -6,5 +6,6 @@ syntax: glob
 tmp
 old
 data/dst
+data/dist
 *.log
 TODO

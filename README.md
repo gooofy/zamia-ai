@@ -1,127 +1,159 @@
+# NLP
+
+Various scripts that one day could form a complete A.I. system. 
+
+Probably the most useful part are the Python scripts to compute audio and language models from voxforge.org speech data.
+Models that can be built include:
+
+* CMU Sphinx audio model
+* various Kaldi audio models
+* cmuclmtk language model
+* srilm language model
+* sequitur g2p model
+
+Also included are some rough sketches of further NLP processing stages (i.e. syntax/semantics) based on a Keras based
+LSTM model feeding into a prolog engine for reasoning. This part is in a very early stage of development.
+
+*Important*: Please note that these scripts form in no way a complete application ready for end-user consumption.
+However, if you are a developer interested in natural language processing you may find some of them useful.
+Contributions, patches and pull requests are very welcome.
+
+At the time of this writing, the scripts here are focused on building the german VoxForge model. However, there is no
+reason why they couldn't be used to build other language models as well, in fact I am planning to add support for the
+english language und audio models soon.
+
 Links
 =====
 
-Data / Exports: http://goofy.zamia.org/voxforge/
+* [Data / Models](http://goofy.zamia.org/voxforge/ "models")
 
-Code: https://github.com/gooofy/voxforge
+* [Code](https://github.com/gooofy/nlp "github")
 
-Dictionary
-==========
+Requirements
+============
 
-check dictionary for missing words from submissions:
+*Note*: very incomplete.
 
-    [guenter@dagobert speech]$ ./lex-todo.py 
-    loading transcripts... done. 9891 unique words found.
-    Looking up words in dictionary... done
+* Python 2.7 with nltk, numpy, ...
+* CMU Sphinx, cmuclmtk
+* keras
+* srilm
+* kaldi, tensorflow
 
-    STATS: 32 of 9891 words have no entry yet => 99% done.
-
-add missing pronounciations:
-
-    ./lex-edit.py `./lex-prompts.py`
-
-export dictionary:
-
-    [guenter@dagobert speech]$ ./lm-export-dict.py -c
-
-    Fetching dict entries for transcript words from db...
-
-    Found 2070 entries.
-
-    /home/ai/voxforge/de/lm/wlist.txt written.
-    /home/ai/voxforge/de/lm/dict-julius.txt written.
-
-CMUCLMTK Language Model
-=======================
-
-extract prompts from db:
-
-    ./lm-prompts.py
-
-prepare sentences, vocabulary:
-
-    pushd /home/ai/voxforge/de/lm
-
-    cat prompts.sent parole.sent > all.sent
-
-    sed 's/^/<s> /' all.sent | sed 's/$/ <\/s>/' >all.txt
-
-    echo '</s>' > all.vocab
-    echo '<s>' >> all.vocab
-    cat wlist.txt >>all.vocab
-
-generate model:
-
-    text2idngram -vocab all.vocab -idngram voxforge.idngram < all.txt
-    idngram2lm -vocab_type 0 -idngram voxforge.idngram -vocab all.vocab -arpa voxforge.arpa
-    sphinx_lm_convert -i voxforge.arpa -o voxforge.lm.DMP
-
-Audio Model
+Setup Notes
 ===========
 
-Record Audio, Create Dictionary Entries, Review + Transcribe
-------------------------------------------------------------
+Just some rough notes on the environment needed to get these scripts to run. This is in no way a complete set of
+instructions, just some hints to get you started.
 
-record:
+`~/.nlprc`:
 
-    ./audio-record-init.py /home/ai/corpora/de/chat/conversation_starters.txt 
-    ./audio-record.py /home/ai/voxforge/de/audio/guenter-20131123-qah
+```ini
+[speech]
+vf_login            = <your voxforge login>
 
-import into db:
+vf_audiodir_de      = /home/bofh/projects/ai/data/speech/de/voxforge/audio
+vf_contribdir_de    = /home/bofh/projects/ai/data/speech/de/voxforge/audio-contrib
+extrasdir_de        = /home/bofh/projects/ai/data/speech/de/kitchen
+gspv2_dir           = /home/bofh/projects/ai/data/speech/de/gspv2
 
-    ./audio-import.py
+kaldi_root          = /apps/kaldi
 
-transcribe, rate:
+wav16_dir_de        = /home/bofh/projects/ai/data/speech/de/16kHz
+wav16_dir_en        = /home/bofh/projects/ai/data/speech/en/16kHz
 
-    ./audio-transcribe.py 
-    point web browser to: http://localhost:8000/
+europarl_de         = /home/bofh/projects/ai/data/corpora/de/europarl-v7.de-en.de
+parole_de           = /home/bofh/projects/ai/data/corpora/de/German Parole Corpus/DE_Parole/
 
-optional: auto-transcribe prompts accepted by the current model:
+asr_server          = hal
+asr_port            = 8301
 
-    ./audio-sphinx-transcribe.py -p 1 -a 1 -n 1 Manu
+[semantics]
+dbserver  = dagobert
+dbname    = nlp
+dbuser    = semantics
+dbpass    = ********
 
-export dictionary:
+[weather]
+api_key   = <your API key>
+city_id   = 2825297
+city_pred = stuttgart
+dbserver  = dagobert
+dbname    = hal_getty
+dbuser    = hal
+dbpass    = ********
 
-    ./lm-export-dict.py -c
+[tts]
+host      = dagobert
+port      = 8300
+```
 
-Compute Sphinx Model
---------------------
+Language Model
+==============
 
-verify:
-    ./check-consistency.py 
-    ./lex-spellcheck.py
+extract sentences from corpuses:
 
-compute model:
+```bash
+./speech_sentences.py
+```
 
-    ./audio-gen-sphinx-model.py -c
+language models will be built as part of the sphinx/kaldi model builds.
 
-collect results:
+voxforge
+========
 
-    datum=`date +%Y%m%d`
+download latest audio data from voxforge, add them to submissions:
 
-    AMNAME="voxforge-de-r$datum"
+```bash
+./speech_pull_voxforge
+./speech_audio_scan.py
+```
 
-    mkdir "output/$AMNAME"
-    mkdir "output/$AMNAME/model_parameters"
+Submission Review and Transcription
+===================================
 
-    cp -r /home/ai/voxforge/de/work/model_parameters/voxforge.cd_cont_4000 "output/$AMNAME/model_parameters"
-    cp -r /home/ai/voxforge/de/work/etc "output/$AMNAME"
-    cp -r /home/ai/voxforge/de/work/result "output/$AMNAME"
-    cp /home/ai/voxforge/de/work/voxforge.html "output/$AMNAME"
-    cp /home/ai/voxforge/de/work/voxforge.html "output/"
+The main tool used for submission review, transcription and lexicon expansion is:
 
-    cp input_files/run-pocketsphinx.sh "output/$AMNAME"
-    cp input_files/sphinx-model-README "output/$AMNAME/README"
+```bash
+./speech_editor.py
+```
 
-    pushd output
-    tar cfvz "$AMNAME.tgz" $AMNAME
-    popd
 
-    rm -r "output/$AMNAME"
+Lexicon
+=======
 
-produce stats overview text file:
+The lexicon used here (data/src/speech/de/dict.ipa) is my own creation, i.e. entries have been manually checked and
+added using my `speech_editor` / `lex_editor` tools. For new entries, I usually let MaryTTS, espeak and sequitur generate
+phonemes, listen to them using MaryTTS and pick the best one. Quite frequently I will still make manual adjustments
+(typically I will add or move stress markers, syllable boundaries, change vocal lengths, ...), often using additional
+sources like wiktionary which has IPA transcriptions for many words.
 
-    ./audio-stats.py >output/audio-stats.txt
+In general it is recommended to use the `speech_editor.py` tool (see above) which ensures all lexicon entries
+are actually covered by audio submissions. However, there are tools which work on the lexicon directly:
+
+I also tend to review lexicon entries randomly from time to time. For that I have a small script which will pick 20
+random entries where sequitur disagrees with the current transcription in the lexicon:
+
+```bash
+./speech_lex_edit.py `./speech_lex_review.py`
+```
+
+Also, I sometimes use this command to add missing words from transcripts in batch mode:
+
+```bash
+./speech_lex_edit.py `./speech_lex_missing.py`
+```
+
+CMU Sphinx Model
+================
+
+To build the CMU Sphinx model:
+
+```bash
+./speech_sphinx_export.py
+cd data/dst/speech/de/cmusphinx/
+./sphinx-run.sh
+```
 
 Running pocketsphinx
 --------------------
@@ -129,268 +161,64 @@ Running pocketsphinx
 just a sample invocation for live audio from mic:
 
     pocketsphinx_continuous \
-        -hmm model_parameters/voxforge.cd_cont_4000 \
+        -hmm model_parameters/voxforge.cd_cont_3000 \
         -lw 10 -feat 1s_c_d_dd -beam 1e-80 -wbeam 1e-40 \
         -dict etc/voxforge.dic \
         -lm etc/voxforge.lm.DMP \
         -wip 0.2 \
         -agc none -varnorm no -cmn current
 
-Expanding the Dictionary
-------------------------
 
-The idea here is to generate lists of frequently used words (according to our
-text corpora) currently not covered by prompts and/or our dictionary.
 
-    ./lm-topwords.py 
-    Reading /home/ai/voxforge/de/lm/prompts.sent...
-      10000 sentences.   9700 unique words.
-      20000 sentences.  11765 unique words.
-    Reading /home/ai/voxforge/de/lm/parole.sent...
-      10000 sentences.  30165 unique words.
-    [...]
-    Got 602300 unique words from corpora.
-
-    Computed top 7000 words.
-    output/topwords.txt written.
-
-    Already covered by submissions: 12832 words.
-
-
-    Words not covered: 999
-    output/missingwords.txt written.
-
-now compose sentences using as many words as possible from output/missingwords and read them.
-
-Audiobooks
-----------
-
-Download mp3 files and transcripts for each mp3 file (part). Add prologs/epilogs to 
-transcripts as necessary. Create a folder in your abook-dir (as specified in your ~/.airc)
-of this structure:
-
-abook-dir/
-  booktitle/
-    mp3/
-      part01.mp3
-      part02.mp3
-      ...
-    txt/
-      part01.txt
-      part02.txt
-      ...
-
-
-(1/6) Preprocess part (spellcheck prompts, convert to wav, segment, add to DB)
-
-    ./abook-preprocess.py janeeyre 05 JuliaNiedermaier
-
-(2/6) align prompts
-
-automatically:
-
-    ./abook-align-sphinx.py janeeyre 05 
-
-or manually:
-
-    ./abook-align.py /home/ai/voxforge/de/audio/Karlsson-20140718-qah abook/das_alte_haus/prompts/abschnitt1.txt 
-
-(3/6) import
-
-    ./audio-import.py
-
-(4/6) add missing words to dictionary:
-
-    ./lex-auto.py
-    ./lex-edit.py `./lex-prompts.py`
-
-(5/6) transcribe
-
-    ./audio-sphinx-align.py -p 1 -a 1 JuliaNiedermaier
-
-if necessary, re-align prompts using (slower) sphinx_align:
-
-    ./abook-realign-sphinx.py janeeyre 05
-
-iterate this process as needed (fix some prompts manually, re-align rest)
-
-(6/6) export
-
-    ./audio-export-submission.py Hokuspokus-20140826-qah
-
-
-
-Compute HTK Model (currently not used)
---------------------------------------
-
-    ./audio-gen-model.py
-
-    [guenter@dagobert speech]$ ./audio-gen-model.py
-    
-    Step 1 - Preparation
-    
-    Loading dict...
-    30222 words found in dictionary.
-    
-    Step 2 - Collect Prompts, generate words.mlf, convert audio
-    
-    ...
-    
-    Step 10 - Making Tied-State Triphones
-    
-    cd /home/ai/voxforge/de/work ; HDMan -A -D -T 1 -b sp -n fulllist -g ./input_files/global.ded dict-tri dict.txt > logs/Step10_HDMan.log
-    making hmm13
-    cd /home/ai/voxforge/de/work ; HHEd -A -D -T 1 -H hmm12/macros -H hmm12/hmmdefs -M hmm13 tree.hed triphones1 > logs/Step10_HHed_hmm13.log
-    making hmm14
-    cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm13/macros -H hmm13/hmmdefs -M hmm14 tiedlist > logs/Step10_HERest_hmm14.log
-    making hmm15
-    cd /home/ai/voxforge/de/work ; HERest -A -D -T 1 -T 1 -C ./input_files/config -I wintri.mlf -t 250.0 150.0 3000.0 -s stats -S train.scp -H hmm14/macros -H hmm14/hmmdefs -M hmm15 tiedlist > logs/Step11_HERest_hmm15.log
-    
-    *** completed ***
-
-    Final model copied to: /home/ai/voxforge/de/work/acoustic_model_files
-
-collect final model:
-
-    cp -r /home/ai/voxforge/de/work/acoustic_model_files output/
-    cp /home/ai/voxforge/de/work/dict.txt output/dict
-    cp /home/ai/voxforge/de/lm/dict-julius.txt output/dict
-    cp /home/ai/voxforge/de/work/logs/Step* output/logs
-
-SRILM / MITLM Language Models (currently not used)
-==================================================
-
-SRILM Language Model Generation
--------------------------------
-
-workdir: /home/ai/voxforge/de/lm
-
-References:
-* http://julius.sourceforge.jp/forum/viewtopic.php?f=5&t=132&p=783&hilit=reverse+model#p783
-* http://www.speech.sri.com/projects/srilm/download.html
-* http://trulymadlywordly.blogspot.de/2011/03/creating-text-corpus-from-wikipedia.html
-* HTK Book
-
-SRILM Installation:
-* unpack
-* export SRILM=`pwd`
-* make MACHINE_TYPE=i686-m64-rhel World
-
-Download from http://www.statmt.org/europarl/
-
-Export dictionary, generate wordlist:
-
-    ./lm-export-dict.py
-
-Generate corpus:
-
-    #./lm-europarl.py
-    ./lm-prompts.py 
-
-Generate reverse corpus:
-
-    #~/projects/ai/speech/lm-reverse.pl conversation_starters.sent >conversation_starters.rev
-    #~/projects/ai/speech/lm-reverse.pl europarl.sent >europarl.rev
-    ~/projects/ai/speech/lm-reverse.pl prompts.sent > prompts.rev
-
-Train forward 2-gram in ARPA format:
-
-    #ngram-count -order 2 -text prompts.sent -text conversation_starters.sent -text europarl.sent -unk -lm german.arpa -vocab wlist.txt
-    ngram-count -order 2 -text prompts.sent -unk -lm german.arpa -vocab wlist.txt
-
-Train backward N-gram:
-
-    #ngram-count -order 4 -text prompts.rev -text conversation_starters.rev -text europarl.rev -unk -lm german-rev.arpa -vocab wlist.txt
-    ngram-count -order 4 -text prompts.rev -unk -lm german-rev.arpa -vocab wlist.txt
-
-Combine the two ARPA N-grams and convert into binary format for Julius:
-
-    mkbingram -nlr german.arpa -nrl german-rev.arpa german.bingram
-
-collect results:
-
-    cp /home/ai/voxforge/de/lm/german.bingram output/lm
-    cp /home/ai/voxforge/de/lm/wlist.txt output/lm
-
-test julius:
-
-    ./run-julius.sh
-
-if fail:
-
-    ./run-julius.sh &>t.log
-    ./lm-export-dict.py t.log
-    cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
-
-
-MITLM Language Model Generation
--------------------------------
-
-workdir: /home/ai/voxforge/de/lm
-
-References:
-
-* http://trulymadlywordly.blogspot.de/2011/03/creating-text-corpus-from-wikipedia.html
-* HTK Book
-
-Download from http://www.statmt.org/europarl/
-
-    ./lm-europarl.py
-    ./lm-export-dict.py
-
-estimate-ngram -vocab wlist.txt -text europarl.sent -write-lm german.lm
-
-    ./lm-collect-sentences.py /home/ai/corpora/de/chat/conversation_starters.txt > /home/ai/voxforge/de/lm/conversation_starters.sent
-
-    estimate-ngram -vocab wlist.txt -text conversation_starters.sent,europarl.sent -write-lm german.lm
-
-    cp /home/ai/voxforge/de/lm/german.lm /home/guenter/projects/ai/speech/output/
-    cp /home/ai/voxforge/de/lm/dict-julius.txt /home/guenter/projects/ai/speech/output/
-
-
-test julius:
-
-    ./run-julius.sh
-
-if fail:
-
-    ./run-julius.sh &>t.log
-    ./lm-export-dict.py t.log
-
-
-Grammar Generation:
-===================
-
-edit 
-
-    grammar/starter.grammar
-    grammar/starter.voca
-
-compute
-
-    cd grammar
-    [guenter@dagobert grammar]$ mkdfa.pl starter
-    starter.grammar has 3 rules
-    starter.voca    has 8 categories and 8 words
-    ---
-    Now parsing grammar file
-    Now modifying grammar to minimize states[-1]
-    Now parsing vocabulary file
-    Now making nondeterministic finite automaton[11/11]
-    Now making deterministic finite automaton[11/11] 
-    Now making triplet list[11/11]
-    8 categories, 11 nodes, 11 arcs
-    -> minimized: 9 nodes, 9 arcs
-    ---
-    generated: starter.dfa starter.term starter.dict
-
-
-Running Julius
-==============
-
-    julius -input pulseaudio -h output/acoustic_model_files/hmmdefs -hlist output/acoustic_model_files/tiedlist -nlr output/german.lm -v output/dict-julius.txt
-
-    julius -input file -filelist files.txt -h output/acoustic_model_files/hmmdefs -hlist output/acoustic_model_files/tiedlist -dfa grammar/starter.dfa -v grammar/starter.dict -smpFreq 48000
-
-    julius -input rawfile -realtime -filelist $sndfile -h $mmf -gramlist julius/gramlist.txt -multipath -lv 2500 -rejectshort 70 -headmargin 50 -tailmargin 50 -progout -sp sil -b 0
+Kaldi Models
+============
+
+To build the kaldi models:
+
+```bash
+./speech_kaldi_export.py
+cd data/dst/speech/de/kaldi/
+./run.sh
+```
+
+Once this is finished, you can find various models in the `exp/` subdirectory. A few notes on what all those models are
+supposed to be:
+
+```
+exp              tool                  training set       lm        based on        # comment
+---------------------------------------------------------------------------------------------------------------------------------
+mono             train_mono.sh         train              lang                      # Train monophone models
+mono_ali         align_si.sh           train              lang      mono            # Get alignments from monophone system.
+tri1             train_deltas.sh       train              lang      mono_ali        # train tri1 [first triphone pass]
+tri1_ali         align_si.sh           train              lang      tri1            
+tri2a            train_deltas.sh       train              lang      tri1_ali        # Train tri2a, which is deltas+delta+deltas
+tri2b            train_lda_mllt.sh     train              lang      tri1_ali        # tri2b [LDA+MLLT]
+tri2b_ali        align_si.sh           train              lang      tri2b           # Align all data with LDA+MLLT system (tri2b)
+tri2b_denlats    make_denlats.sh       train              lang      tri2b           # Do MMI on top of LDA+MLLT.
+tri2b_mmi        train_mmi.sh          train              lang      tri2b_denlats   
+tri2b_mmi_b0.05  train_mmi.sh --boost  train              lang      tri2b_denlats 
+tri2b_mpe        train_mpe.sh          train              lang      tri2b_denlats   # Do MPE.
+
+tri3b            train_sat.sh          train              lang      tri2b_ali       # LDA + MLLT + SAT.
+tri3b_ali        align_fmllr.sh        train              lang      tri3b           # align all data.
+
+tri3b_denlats    make_denlats.sh       train              lang      tri3b           # Do MMI on top of LDA+MLLT+SAT
+tri3b_mmi        train_mmi.sh          train              lang      tri3b_denlats   
+tri3b_mmi_b0.05  train_mmi.sh --boost  train              lang      tri3b_denlats 
+tri3b_mpe        train_mpe.sh          train              lang      tri3b_denlats   # Do MPE.
+
+ubm5a            train_ubm.sh          train              lang      tri3b_ali       # SGMM (subspace gaussian mixture model)
+sgmm_5a          train_sgmm2.sh        train              lang      ubm5a
+sgmm_5a_denlats  make_denlats_sgmm2.sh train              lang      sgmm_5a_ali 
+sgmm_5a_mmi_b0.1 train_mmi_sgmm2.sh    train              lang      sgmm_5a_denlats 
+```
+
+License
+=======
+
+My own scripts as well as the data I create (i.e. lexicon and transcripts) is LGPLv3 licensed unless otherwise noted in
+the scritp's copyright headers.
+
+Some scripts and files are based on works of others, in those case it is my intention to keep the original license
+intact. Please make sure to check the copyright headers inside for more information.
 

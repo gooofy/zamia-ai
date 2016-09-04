@@ -1,0 +1,84 @@
+% Wird es morgen regnen?
+
+context(place, P), answer (weatherPrecCloud, de, tomorrow, P)
+
+% Wird es regnen
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weather, de, EvT, P)
+
+% Wird es morgen in Freudental regnen?
+
+answer (weatherRainProb, de, tomorrow, freudental)
+
+% Wird es Regen geben?
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weatherPrecCloud, de, EvT, P)
+
+% Wie gross ist die Wahrscheinlichkeit fuer Regen?
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weatherPrecCloud, de, EvT, P)
+
+% Wie wahrscheinlich ist es, dass es regnen wird?
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weatherPrecCloud, de, EvT, P)
+
+% Wie wird das Wetter?
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weather, de, EvT, P)
+
+% Scheint morgen die Sonne?
+
+context(place, P), answer (weatherPrecCloud, de, tomorrow, P)
+
+% Regnet es?
+
+context(time, T), context(place, P), near_future(weather, T, EvT), answer (weatherPrecCloud, de, EvT, P)
+
+% Wie wird das Wetter morgen?
+
+question(Report), report(E, Report), time(E,EvT), tomorrow(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Und in den kommenden Tagen?
+
+question(Report), report(E, Report), time(E,EvT), next_days(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Wie wird es naechste Woche werden?
+
+question(Report), report(E, Report), time(E,EvT), next_week(EvT), place(E, P), context(P), topic(Report, T), context(T)
+
+% Kommt heute noch Regen?
+
+yesnoprob(E), rain_prob(E), time(E,EvT), today(EvT), future(EvT), place(E, P), context(P)
+
+% Wie warm wird es heute?
+
+question(MaxTemp), max_temp(E, MaxTemp), time(E,EvT), today(EvT), place(E, P), context(P)
+
+% Wie wird das Wetter heute?
+
+question(Report), report(E, Report), time(E,EvT), today(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Wie kalt wird es werden?
+
+question(MinTemp), min_temp(E, MinTemp), time(E,EvT), context(EvT), place(E, P), context(P)
+
+% Was sagt der Wetterbericht?
+
+question(Report), report(E, Report), time(E,EvT), context(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Was sagt die Wettervorhersage?
+
+question(Report), report(E, Report), time(E,EvT), context(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Wann geht die Sonne unter?
+
+question(SunsetTime), sunset_time(E, SunsetTime), time(E,EvT), context(EvT), place(E, P), context(P)
+
+% Wie sind die Wetteraussichten?
+
+question(Report), report(E, Report), time(E,EvT), context(EvT), place(E, P), context(P), topic(Report, weather)
+
+% Wie sind die Wetteraussichten fuer die naechsten Tage?
+
+question(Report), report(E, Report), time(E,EvT), next_days(EvT), place(E, P), context(P), topic(Report, weather)
+

@@ -3,10 +3,9 @@ syntax: glob
 *.swp
 *.swo
 *.pyc
+tmp
 old
-test
-output
-prompts
-priv
-abook
-batch.sh
+data/dst
+data/dist
+*.log
+TODO

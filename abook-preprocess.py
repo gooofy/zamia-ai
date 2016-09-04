@@ -47,9 +47,9 @@ SILENCE_THRESH     = 0.2
 
 SAMPLE_RATE        = 16000
 
-# segment length: minimum 5 seconds, max 10 seconds
-MIN_SEGMENT_LENGTH =  5 * SAMPLE_RATE
-MAX_SEGMENT_LENGTH = 10 * SAMPLE_RATE
+# segment length: minimum 4 seconds, max 15 seconds
+MIN_SEGMENT_LENGTH =  4 * SAMPLE_RATE
+MAX_SEGMENT_LENGTH = 15 * SAMPLE_RATE
 # segment has to contain at least 1s of content
 MIN_VOICE_LENGTH   =  1 * SAMPLE_RATE
 

@@ -19,6 +19,9 @@ mkdir "$DISTDIR/$AMNAME/model_parameters"
 cp -r data/dst/speech/de/cmusphinx/model_parameters/voxforge.cd_cont_3000 "$DISTDIR/$AMNAME/model_parameters"
 cp -r data/dst/speech/de/cmusphinx/etc "$DISTDIR/$AMNAME"
 cp data/dst/speech/de/cmusphinx/voxforge.html "$DISTDIR/$AMNAME"
+cp README.md "$DISTDIR/$AMNAME"
+cp COPYING   "$DISTDIR/$AMNAME"
+cp AUTHORS   "$DISTDIR/$AMNAME"
 
 pushd $DISTDIR
 tar cfvz "$AMNAME.tgz" $AMNAME
@@ -66,6 +69,9 @@ export_kaldi_model tri3b_mmi       tri3b_denlats/dengraph
 export_kaldi_model tri3b_mmi_b0.05 tri3b_denlats/dengraph
 
 cp data/dst/speech/de/kaldi/RESULTS.txt $DISTDIR/$AMNAME/
+cp README.md "$DISTDIR/$AMNAME"
+cp COPYING   "$DISTDIR/$AMNAME"
+cp AUTHORS   "$DISTDIR/$AMNAME"
 
 pushd $DISTDIR
 tar cfvz "$AMNAME.tgz" $AMNAME
@@ -86,14 +92,28 @@ gzip data/dist/$LMNAME
 #
 
 LMNAME="cmuclmtk-voxforge-de-r$datum"
-cp data/dst/speech/de/cmusphinx/voxforge.arpa data/dist/$LMNAME
-gzip data/dist/$LMNAME
+cp data/dst/speech/de/cmusphinx/voxforge.arpa $DISTDIR/$LMNAME
+gzip $DISTDIR/$LMNAME
 
 #
 # sequitur de
 #
 
 MODELNAME="sequitur-voxforge-de-r$datum"
-cp data/dst/speech/de/sequitur/model-6 data/dist/$MODELNAME
-gzip data/dist/$MODELNAME
+cp data/dst/speech/de/sequitur/model-6 $DISTDIR/$MODELNAME
+gzip $DISTDIR/$MODELNAME
+
+#
+# copyright info
+#
+
+cp README.md "$DISTDIR"
+cp COPYING   "$DISTDIR"
+cp AUTHORS   "$DISTDIR"
+
+#
+# upload
+#
+
+echo rsync -avPz --delete --bwlimit=256 data/dist goofy:/var/www/html/voxforge/de
 

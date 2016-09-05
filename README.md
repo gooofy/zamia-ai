@@ -222,3 +222,8 @@ the scritp's copyright headers.
 Some scripts and files are based on works of others, in those case it is my intention to keep the original license
 intact. Please make sure to check the copyright headers inside for more information.
 
+Author
+======
+
+Guenter Bartsch <guenter@zamia.org>
+

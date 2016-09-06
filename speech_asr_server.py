@@ -53,8 +53,9 @@ PROC_TITLE        = 'hal_asr'
 SAMPLE_RATE       = 16000
 
 hmdir     = 'data/dst/speech/de/cmusphinx/model_parameters/voxforge.cd_cont_3000'
-dictf     = 'data/dst/speech/de/cmusphinx/etc/voxforge.dic'
+#dictf     = 'data/dst/speech/de/cmusphinx/etc/voxforge.dic'
 #lm        = 'data/dst/speech/de/cmusphinx/etc/voxforge.lm.DMP'
+dictf     = 'data/dst/lm/hal.dic'
 lm        = 'data/dst/lm/hal.lm.DMP'
 
 def hal_comm (cmd, arg):

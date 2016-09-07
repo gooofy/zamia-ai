@@ -19,7 +19,8 @@
 #
 #
 # server accepting WAV files via ZMQ
-# for now, just stores them to be added to ASR training corpus
+# - stores them to be added to ASR training corpus
+# - runs pocketsphinx on them
 #
 
 import os
@@ -42,8 +43,36 @@ from setproctitle import setproctitle
 import wave
 import struct
 
+from sphinxclient import SphinxClient
+from tts_client import TTSClient
+
+ENABLE_WAVE_STORE = True
+
 PROC_TITLE        = 'hal_asr'
+
 SAMPLE_RATE       = 16000
+
+hmdir     = 'data/dst/speech/de/cmusphinx/model_parameters/voxforge.cd_cont_3000'
+#dictf     = 'data/dst/speech/de/cmusphinx/etc/voxforge.dic'
+#lm        = 'data/dst/speech/de/cmusphinx/etc/voxforge.lm.DMP'
+dictf     = 'data/dst/lm/hal.dic'
+lm        = 'data/dst/lm/hal.lm.DMP'
+
+def hal_comm (cmd, arg):
+
+    global getty_socket
+
+    rq = json.dumps ([cmd, arg])
+
+    #print "Sending request %s" % rq
+    getty_socket.send (rq)
+
+    #  Get the reply.
+    message = getty_socket.recv()
+    res = json.loads(message)
+
+    return res
+
 
 logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.INFO)
@@ -65,70 +94,121 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 config = utils.load_config()
 
-zmqport     = config.get('speech', 'asr_port')
+port_asr    = config.get('speech', 'port_asr')
 extrasdir   = config.get('speech', 'extrasdir_de')
 vf_login    = config.get('speech', 'vf_login')
+
+host_getty  = config.get('speech', 'host_getty')
+port_getty  = config.get('speech', 'port_getty')
+
+host_tts    = config.get('tts', 'host')
+port_tts    = config.get('tts', 'port')
 
 #
 # zmq init
 #
 
 context = zmq.Context()
-zmq_socket = context.socket(zmq.REP)
-zmq_socket.bind ("tcp://*:%s" % zmqport)
+asr_socket = context.socket(zmq.REP)
+asr_socket.bind ("tcp://*:%s" % port_asr)
+
+getty_socket = context.socket(zmq.REQ)
+getty_socket.connect ("tcp://%s:%s" % (host_getty, port_getty))
+
+#
+# pocketsphinx
+#
+
+sphinx = SphinxClient (hmdir, dictf, lm=lm)
+
+#
+# TTS Client
+#
+
+tts = TTSClient (host_tts, port_tts, locale='de', voice='bits3')
 
 #
 # main command loop
 #
 
-logging.debug("ready, waiting for messages...")
-
 while True:
 
+    reply = 0
+
     try:
-        message = zmq_socket.recv()
+
+        logging.debug("ready, waiting for messages...")
+
+        message = asr_socket.recv()
         # logging.debug("received: '%s'" % message)
-        reply = 0
 
         msg = json.loads(message)
 
-        # logging.debug("decoded: %s" % repr(msg))
+        logging.debug("msg[0]: %s" % repr(msg[0]))
 
         if msg[0] == 'REC':
 
             audio = map(lambda x: int(x), msg[1].split(','))
-
-            # store recording in WAV format
-            ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
-            audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
-            logging.debug('audiodirfn: %s' % audiodirfn)
-            utils.mkdirs(audiodirfn)
-
-            cnt = 0
-            while True:
-                cnt += 1
-                audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
-                if not os.path.isfile(audiofn):
-                    break
-
-            logging.debug('audiofn: %s' % audiofn)
-
-            wf = wave.open(audiofn, 'wb')
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(SAMPLE_RATE)
-            wf.setnframes(len(audio)/2)
-
             packed_audio = struct.pack('%sh' % len(audio), *audio)
-            wf.writeframes(packed_audio)
 
-            wf.close()
-            logging.info("%s written." % audiofn)
+            if ENABLE_WAVE_STORE:
+                # store recording in WAV format
+                ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
+                audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
+                logging.debug('audiodirfn: %s' % audiodirfn)
+                utils.mkdirs(audiodirfn)
+
+                cnt = 0
+                while True:
+                    cnt += 1
+                    audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
+                    if not os.path.isfile(audiofn):
+                        break
+
+                logging.debug('audiofn: %s' % audiofn)
+
+                wf = wave.open(audiofn, 'wb')
+                wf.setnchannels(1)
+                wf.setsampwidth(2)
+                wf.setframerate(SAMPLE_RATE)
+                wf.setnframes(len(audio)/2)
+
+                wf.writeframes(packed_audio)
+
+                wf.close()
+                logging.info("%s written." % audiofn)
+
+            hypothesis, hstr = sphinx.decode(packed_audio)
+
+            if hstr:
+                print
+                print "****************************************************"
+                print "**"
+                print "** %s" % hstr
+                print "**"
+                print "****************************************************"
+                print
+
+            hal_comm('ASR_REC', hstr)
+           
+            if hstr:
+
+                #astr = 'Hallo! Ich freue mich, von Dir zu hören.'
+                astr = 'ok'
+                hal_comm('ASR_ANSWER', astr)
+
+                tts.say(astr)
+
+            hal_comm('ASR_DONE', None)
+
+        elif msg[0] == 'RECSTART':
+
+            hal_comm('ASR_RECSTART', None)
 
     except:
         logging.error("****************** ERROR: unexpected exception")
         logging.error(traceback.format_exc())
 
     logging.debug("reply: %s" % repr(reply))
-    zmq_socket.send (json.dumps(reply))
+    asr_socket.send (json.dumps(reply))
 

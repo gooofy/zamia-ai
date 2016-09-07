@@ -191,13 +191,13 @@ while True:
 
             hal_comm('ASR_REC', hstr)
            
-            if hstr:
+            #if hstr:
 
                 #astr = 'Hallo! Ich freue mich, von Dir zu hören.'
-                astr = 'ok'
-                hal_comm('ASR_ANSWER', astr)
+                #astr = 'ok'
+                #hal_comm('ASR_ANSWER', astr)
 
-                tts.say(astr)
+                #tts.say(astr)
 
             hal_comm('ASR_DONE', None)
 

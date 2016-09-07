@@ -40,6 +40,8 @@ from speech_tokenizer import tokenize
 from speech_sequitur import sequitur_gen_ipa
 from tts_client import TTSClient
 
+DEFAULT_MARY = False # switch between mary and sequitur default g2p
+
 def play_wav(ts):
 
     global wav16_dir, tts
@@ -125,7 +127,11 @@ def lex_set_token(token):
 
     else:
 
-        ipas = tts.gen_ipa (lex_base)
+        if DEFAULT_MARY:
+            ipas = tts.gen_ipa (lex_base)
+        else:
+            ipas = sequitur_gen_ipa (lex_base)
+
         lex_entry = {'ipa': ipas}
         lex[lex_token] = lex_entry
 

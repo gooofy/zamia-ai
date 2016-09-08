@@ -630,7 +630,9 @@ albernheiten;'ʔal-bɐn-haɪ-tən
 albrecht;'ʔal-bʁɛçt
 album;'ʔal-bʊm
 alcatraz;'ʔal-kə-træz
+aleksandria;ʔa-lɛk-'san-dʁiː-aː
 alexander;ʔa-lɛk-'san-dɐ
+alexandria;ʔa-lɛk-'san-'dʁiː-aː
 alexis;'ʔa-lɛks-ɪs
 alfred;'ʔal-fʁeːt
 algebra;'ʔal-gə-bʁaː
@@ -1476,6 +1478,7 @@ arroganz;ʔa-ʁoː-'gants
 art;'ʔaɐt
 arte;'ʔaɐ-tə
 arten;'ʔaɐ-tən
+arteriellen;ʔaɐ-'teː-ʁiː-'ɛ-lən
 arthritis;ʔaɐ-'tʁiː-tɪs
 arthurs;'ʔaɐ-tʊɐs
 artig;'ʔaɐ-tɪç
@@ -2936,6 +2939,8 @@ beistimmend;'baɪ-ʃtɪ-mənt
 beistimmung;'baɪ-ʃtɪ-mʊɳ
 beitrag;'baɪ-tʁaːk
 beitragen;'baɪ-tʁaː-gən
+beitragssätze;'baɪ-tʁaː-ksɛ-tsə
+beitrittsverhandlungen;'baɪ-tʁɪts-fɛɐ-'han-tlʊ-ɳən
 beitrug;'baɪ-tʁuːk
 beiträge;'baɪ-tʁɛː-gə
 beiträgen;'baɪ-tʁɛː-gən
@@ -3418,6 +3423,7 @@ bestanden;bə-'ʃtan-dən
 bestandteil;bə-'ʃtan-taɪl
 bestandteile;bə-'ʃtant-taɪ-lə
 bestandteilen;bə-'ʃtant-taɪ-lən
+bestattet;bə-'ʃta-tət
 beste;'bɛs-tə
 bestechen;bə-'ʃtɛçən
 bestehe;be-'ʃteː-ʔə
@@ -3484,6 +3490,7 @@ besuchen;bə-'zuː-xən
 besucher;bə-'suː-xɐ
 besuchern;bə-'zuː-xɐn
 besucherzahlen;bə-'suː-xɐ-tsaː-lən
+besuchs;bə-'zʊxs
 besuchst;bə-'zʊxst
 besucht;bə-'zuːxt
 besuchte;bə-'zuːx-tə
@@ -4030,6 +4037,7 @@ blut;'bluːt
 blutarmut;'bluːt-ʔaɐ-muːt
 blute;'bluː-tə
 blutendem;'bluːtən-deːm
+blutes;'bluː-təs
 blutete;'bluːtə-teː-ʔeː
 blutgeld;'bluːt-gɛlt
 blutige;'bluː-tɪ-gə
@@ -4094,6 +4102,7 @@ bohrte;'boːɐ-tə
 bohrung;'boː-ʁʊɳ
 bois;'bwa
 boite;'boː-iː-tə
+bombenangriffes;'bɔm-bən-ʔan-gʁɪf-əs
 bonbon;bɔ-'bɔ
 bonbons;'bɔɳ-bɔɳs
 bonbons_1;bɔ-'bɔː
@@ -4501,6 +4510,7 @@ bürgerin;'bʏɐ-gɐ-ʁɪn
 bürgerinnen;'bʏɐ-gɐ-ʁɪn-ən
 bürgerliche;'bʏɐ-gɐ-lɪ-çə
 bürgermeister;bʏɐ-gɐ-'maɪs-tɐ
+bürgermeisters;'bʏɐ-gɐ-'maɪs-tɐs
 bürgern;'bʏɐ-gɐn
 bürgerrechten;'bʏɐ-gɐ-ʁɛç-tən
 bürgers;'bʏɐ-gɐs
@@ -4550,6 +4560,7 @@ cebit;'tseː-bɪt
 cecile;'se-sil
 cela;'kɛ-laː
 celine;'se-lin
+cello;'tʃɛ-loː
 cent;'sɛnt
 center;'sɛn-tɐ
 cerises;sə-'ʁiz
@@ -5373,6 +5384,7 @@ drein;'dʁaɪn
 dreister;'dʁaɪs-tɛʁ
 dreistes;'dʁaɪs-təs
 dreitausend;'dʁaɪ-taʊ-zənt
+dreitausendfünfhundert;'dʁaɪ-taʊ-zənt-fʏnf-hʊn-dɐt
 dreiundachtzig;'dʁaɪ-ʔʊnt-ʔaxt-tsɪç
 dreiunddreißig;dʁaɪ-ʊnt-'dʁaɪ-sɪç
 dreiundfünfzig;'dʁaɪ-ʔʊnt-fʏnf-tsɪç
@@ -7575,6 +7587,7 @@ extrem;ʔɛks-'tʁeːm
 extreme;ʔɛks-'tʁeː-mə
 extremes;ʔɛks-'tʁeː-məs
 extremophilen;ʔɛks-'tʁeː-moː-fiː-lən
+extremsituation;ʔɛks-'tʁeːm-ziː-tuː-a-tsjoːn
 exzellent;ʔɛk-'stsɛ-lɛnt
 exzentrisch;'ʔɛk-stsɛn-tʁɪʃ
 exzentrischen;ʔɛks-'tsɛn-tʁɪ-ʃən
@@ -7732,6 +7745,7 @@ farbigen;'faɐ-bɪ-gən
 farblose;'faɐp-loː-zə
 farblosen;'faɐp-loː-zən
 farbloses;'faɐp-loː-zəs
+farbname;'faʁp-naː-mə
 farbring;'faʁp-ʁɪɳ
 farm;'faɐm
 fasching;'fa-ʃɪɳ
@@ -8446,6 +8460,7 @@ freiheitsstrafe;'fʁaɪ-haɪts-ʃtʁaː-fə
 freikaufen;'fʁaɪ-kaʊ-fən
 freilassung;'fʁaɪ-la-sʊɳ
 freilich;'fʁaɪ-lɪç
+freimaurer;'fʁaɪ-maʊ-ʁɐ
 freiraum;'fʁaɪ-ʁaʊm
 freisprechen;'fʁaɪ-ʃpʁɛ-çən
 freisprechung;'fʁaɪʃ-pʁɛ-çʊɳ
@@ -8890,6 +8905,7 @@ ganzen;'gan-tsən
 ganzer;'gan-tsɐ
 ganzes;'gan-tsəs
 ganzjährig;'gants-jɛː-ʁɪç
+ganztagsschulen;'gants-taːks-'ʃuː-lən
 gap;'gæp
 gar;'gaːɐ
 garagentor;ga-'ʁaː-ʒən-toːɐ
@@ -8920,6 +8936,7 @@ gartenwege;'gaɐ-tən-veː-gə
 gas;'gaːs
 gasbeleuchtung;'gas-bə-'lɔøç-tʊɳ
 gase;'gaː-zə
+gasleitung;'gaːs-laɪ-tʊɳ
 gaslicht;'gas-lɪçt
 gasse;'ga-sə
 gast;'gast
@@ -9092,6 +9109,7 @@ gefahr;gə-'faːɐ
 gefahren;gə-'faː-ʁən
 gefahrlosen;gə-'faːɐ-loː-zən
 gefallen;gə-'fa-lən
+gefallene;gə-'fa-lə-nə
 gefallenen;gə-'fa-lə-nən
 gefaltet;gə-'fal-tət
 gefalteten;gə-'fal-tə-tən
@@ -12530,6 +12548,7 @@ iii_2;'dʁaɪ
 il;'ʔil
 illegal;'ʔɪl-leː-gaːl
 illegalen;'ʔɪl-eː-'gaː-lən
+illuminaten;ʔɪ-luː-mi-'naː-tən
 illumination;ʔɪ-luː-miː-nats-'joːn
 illuminiert;ʔɪ-luː-miː-'niːɐt
 illusionen;ʔɪ-luː-'zjoː-nən
@@ -13635,6 +13654,7 @@ knapp;'knap
 knappe;'kna-pə
 knappen;'kna-pən
 knapper;'kna-pɐ
+knappes;'knap-əs
 knappheit;'knap-haɪt
 knarrenden;'kna-ʁən-dən
 knarrt;'kna-ʁt
@@ -13855,6 +13875,7 @@ konsolen;'kɔn-zoː-lən
 konsolidierung;kɔn-zoː-liː-'diː-ʁʊɳ
 konsolidierungsphase;kɔn-zoː-liː-'diː-ʁʊɳs-faː-zə
 konsonanten;kɔn-zoː-'nan-tən
+konsortium;kɔn-'zɔʁ-tsiː-ʊm
 konstant;kɔn-'stant
 konstanten;kɔnʃ-'tan-tən
 konstitution;kɔns-tiː-tuː-'tsjoːn
@@ -14196,6 +14217,7 @@ kulturell;kʊl-tuː-'ʁɛl
 kulturelle;kʊl-tuː-'ʁɛ-lə
 kulturellen;kʊl-tuː-'ʁɛ-lən
 kulturen;kʊl-'tuː-ʁən
+kulturliebenden;kʊl-'tuːɐ-liː-bən-dən
 kulturpolitik;kʊl-'tuːɐ-po-li-tik
 kumar;'kuː-maːʁ
 kummer;'kʊ-mɐ
@@ -15220,6 +15242,7 @@ längerem;'lɛɳ-ɐ-ʁəm
 längeren;'lɛɳ-ɐ-ʁən
 längerer;'lɛɳ-ɐ-ʁɐ
 längeres;'lɛɳ-ɐ-ʁəs
+längerfristige;'lɛɳ-ɐ-fʁɪs-tɪ-gə
 längst;'lɛɳst
 längste;'lɛɳs-tə
 längsten;'lɛɳs-tən
@@ -15412,6 +15435,7 @@ manöver;ma-'nøː-vɐ
 manövrierens;ma-'nøː-vʁiːʁəns
 mappe;'ma-pə
 maps;'mɛps
+marathon;'ma-ʁa-toːn
 marax;'ma-ʁaːks
 marble;'maʁ-bəl
 march;'maːʁtʃ
@@ -15538,6 +15562,7 @@ maximalwert;mak-siː-'maːl-vɛɐt
 maxime;'mak-siː-mə
 maß;'maːs
 maße;'maː-sə
+maßgeblich;'maːs-geːp-lɪç
 maßlos;'maːs-loːs
 maßlosem;'mas-loː-zəm
 maßnahme;'mas-naː-mə
@@ -15777,6 +15802,7 @@ mildtätigkeits;'mɪlt-tɛː-tɪç-kaɪ-ts
 miles;'maɪls
 milieus;mɪl-'jøːs
 militär;miː-liː-'tɛːɐ
+militärgüter;miː-liː-'tɛːɐ-gyː-tɐ
 militärisch;miː-liː-'tɛː-ʁɪʃ
 militärische;miː-liː-'tɛː-ʁɪ-ʃə
 militärischen;miː-liː-'tɛː-ʁɪ-ʃən
@@ -16112,6 +16138,7 @@ morgenschulstunden;'mɔʁgən-'ʃuːls-tʊn-dən
 morgenstunden;'mɔɐ-gən-ʃtʊn-dən
 morgige;'mɔɐ-gɪ-gə
 moritz;'moː-ʁɪts
+moriz;'moː-ʁɪ-ts
 morsch;'mɔɐʃ
 morsche;'mɔɐ-ʃə
 morshead;'mɔr-ʃɛd
@@ -16542,6 +16569,7 @@ nationalem;nats-joː-'naː-ləm
 nationalen;na-tsjoː-'naː-lən
 nationaler;na-tsi-o-'naː-lɐ
 nationales;na-tsio-'naː-ləs
+nationalsozialismus;na-tsi-o-'naːl-zo-tsja-'lɪs-mʊs
 nationaltheater;na-tsi-o-'naːl-teː-aː-tɐ
 nationen;na-'tsjoː-nən
 nato;'naː-toː
@@ -18016,6 +18044,7 @@ projekte;pʁoː-'jɛk-tə
 projekten;pʁoː-'jɛk-tən
 proklamation;pʁo-'kla-ma-'tsjoːn
 promenade;pʁɔ-mə-'naː-də
+promill;pʁo-'mɪl
 prominente;pʁoː-miː-'nɛn-tə
 prominenten;pʁoː-miː-'nɛn-tən
 promotion;pʁoː-moː-'tsjoːn
@@ -20445,6 +20474,7 @@ sengte;'zɛn-gtə
 senioren;'zeː-niː-oː-ʁən
 seniorenfußballer;'zeː-niː-oɐən-fuːs-ba-lɐ
 senken;'zɛɳ-kən
+senkrecht;'zɛɳ-kʁɛçt
 senkrechter;'zɛɳ-kʁɛç-tɐ
 senkte;'zɛɳ-ktə
 senkung;'zɛɳ-kʊɳ
@@ -20495,6 +20525,7 @@ sexy;'sɛk-sɪ
 sharing;'ʃɛr-ɪɳ
 shaun;'ʃɔn
 shawl;'ʃɔːl
+shell;'ʃɛl
 sherlock;'ʃɛʁ-lɔk
 shire;'ʃɑɪr
 shoot;'ʃuːt
@@ -20514,6 +20545,7 @@ sicheres;'zɪç-ʁəs
 sichergestellt;'zɪ-çɐ-gə-ʃtɛlt
 sicherheit;'zɪ-çɐ-haɪt
 sicherheiten;'zɪ-çɐ-haɪ-tən
+sicherheitsanalyse;'zɪ-çɐ-haɪts-ʔa-naː-'lyː-zə
 sicherheitsanforderungen;'zɪ-çɐ-haɪts-ʔan-foːɐ-də-ʁʊ-ɳən
 sicherheitsdienste;'zɪ-çɐ-haɪts-diːns-tə
 sicherheitskräfte;'zɪ-çɐ-haɪts-kʁɛf-tə
@@ -21304,6 +21336,7 @@ starten;'ʃtaːɐ-tən
 startet;'ʃtaːɐ-tət
 startete;'ʃtaʁ-tə-tə
 starteten;'ʃtaɐ-tə-tən
+startlinie;'ʃtaɐt-liː-nɪ-ə
 station;'ʃtats-'joːn
 stationen;'ʃtats-'joː-nən
 stationiert;ʃtats-joː-'niːɐt
@@ -21316,6 +21349,7 @@ statistisch;ʃta-'tɪs-tɪʃ
 statistische;ʃta-'tɪs-tɪ-ʃə
 statistischen;ʃta-'tɪs-tɪ-ʃən
 statistisches;ʃta-'tɪs-tɪ-ʃəs
+statoil;'stæt-ʔɔɪl
 statt;'ʃtat
 stattdessen;ʃtat-'dɛ-sən
 stattfinden;'ʃtat-fɪn-dən
@@ -21800,6 +21834,7 @@ stübchen;'ʃtyːb-çən
 stück;'ʃtʏk
 stückchen;'ʃtʏk-çən
 stücke;'ʃtʏ-kə
+stückgut;'ʃtʏk-guːt
 stückpreis;'ʃtʏk-pʁaɪs
 stückzahlen;'ʃtʏk-tsaː-lən
 stühle;'ʃtyː-lə
@@ -21981,6 +22016,7 @@ tadels;'taː-dəls
 tadelt;'taː-dəlt
 tafel;'taː-fəl
 tafelaufsatz;'taː-fəl-ʔaʊf-zats
+tafelbucht;'taː-fəl-'bʊxt
 tafelgeschirr;'taː-fəl-gə-ʃɪ-ʁ
 tafelkonfekt;'taː-fəl-kɔn-fɛkt
 tafelrunde;'taː-fəl-ʁʊn-də
@@ -22609,6 +22645,7 @@ treppentür;tʁɛp-ən-'tyːɐ
 treten;'tʁeː-tən
 tretenden;'tʁeː-tən-deːn
 treu;'tʁɔʏ
+treuchtlingen;'tʁɔʏç-tlɪ-ɳən
 treue;'tʁɔʏ-ə
 treuen;'tʁɔʏ-ən
 treuhand;'tʁɔʏ-hant
@@ -24153,6 +24190,7 @@ vergleichbare;fɛɐ-'glaɪç-baː-ʁə
 vergleichbarer;fɛɐ-'glaɪç-baː-ʁɐ
 vergleiche;fɛɐ-'glaɪ-çə
 vergleichen;fɛɐ-'glaɪ-çən
+vergleichender;fɛɐ-'glaɪ-çən-dɐ
 vergleichs;fɛɐ-'glaɪçs
 vergleichsweise;fɛɐ-'glaɪçs-vaɪ-zə
 vergleichswerte;fɛɐ-'glaɪçs-veːɐ-tə
@@ -24633,6 +24671,7 @@ verschwommene;'fɛɐ-ʃvɔ-mə-nə
 verschworen;'fɛɐ-ʃvoː-ʁən
 verschwunden;fɛɐ-'ʃvʊn-dən
 verschwundener;fɛɐ-'ʃvʊn-də-nɐ
+verschwörer;fɛɐ-'ʃvøː-ʁɐ
 verschwörungen;fɛɐ-'ʃvøː-ʁʊ-ɳən
 verschämt;fɛɐ-'ʃɛːmt
 verschärfen;fɛɐ-'ʃɛːʁ-fən
@@ -25596,6 +25635,7 @@ wacker;'va-kɐ
 wackere;'va-kɐ-ʁə
 wackeren;'va-kɐ-ʁən
 wackligen;'vak-lɪ-gən
+wacks;'va-ks
 waffe;'va-fə
 waffen;'va-fən
 wage;'vaː-gə
@@ -26002,6 +26042,7 @@ welthandelskonferenz;'vɛlt-han-dəls-kɔn-fɐ-ʁɛnts
 weltkluger;'vɛl-tkluː-gɐ
 weltkrieg;'vɛlt-kʁiːk
 weltkriegen;'vɛlt-kʁiː-gən
+weltkrieges;'vɛlt-kʁiː-gəs
 weltkultur;'vɛlt-kʊl-tuːɐ
 weltlage;'vɛlt-laː-gə
 weltliche;'vɛlt-lɪ-çə
@@ -26090,6 +26131,7 @@ wesentlichste;'veː-zənt-lɪçs-tə
 weshalb;vɛs-'halp
 wessen;'vɛ-sən
 west;'vɛst
+westbalkanländer;'vɛst-'bal-kaːn-lɛn-dɐ
 westdeutschen;'vɛst-dɔʏ-tʃən
 westdeutschland;'vɛst-dɔʏtʃ-lant
 weste;'vɛs-tə
@@ -27001,6 +27043,7 @@ zitterte;'tsɪ-tɐ-tə
 zitterten;'tsɪ-tɐ-tən
 zitzfenstervorhänge;tsɪts-fɛns-tɐ-foːʁ-'hɛ-ɳə
 zivil;tsiː-'viːl
+zivile;tsiː-'viː-lə
 zivilen;'tsiː-viː-lən
 zivilgesellschaft;tsiː-'viːl-gə-'zɛl-ʃaft
 zivilisierte;tsiː-viː-liː-'ziːɐ-tə
@@ -27780,6 +27823,7 @@ zürnen;'tsʏʁ-nən
 ölen;'ʔøː-lən
 ölfirmen;'ʔøːl-fɪɐ-mən
 ölfördermenge;'ʔøːl-føːʁ-dɐ-mɛ-ɳə
+ölkonzerne;'ʔøːl-kɔn-'tsɛɐ-nə
 öllampe;'ʔøː-lam-pə
 örtliche;'œʁtlɪçə
 örtlichen;'ʔœɐt-lɪ-çən
@@ -27863,6 +27907,7 @@ zürnen;'tsʏʁ-nən
 übergroßen;ʔyː-bɐ-'gʁoː-sən
 übergängen;'ʔyː-bɐ-gɛ-ɳən
 überhaupt;ʔyː-bɐ-'haʊpt
+überhitzten;ʔyː-bɐ-'hɪts-tən
 überhob;ʔyː-bɐ-'hoːp
 überholt;ʔyː-bɐ-'hoːlt
 überhäufen;ʔyː-bɐ-'hɔʏ-fən

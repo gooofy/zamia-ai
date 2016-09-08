@@ -178,15 +178,15 @@ while True:
                 wf.close()
                 logging.info("%s written." % audiofn)
 
-            hypothesis, hstr = sphinx.decode(packed_audio)
+            confidence, hstr = sphinx.decode(packed_audio)
 
             if hstr:
                 print
-                print "****************************************************"
+                print "*****************************************************************************"
                 print "**"
-                print "** %s" % hstr
+                print "** %9.5f %s" % (confidence, hstr)
                 print "**"
-                print "****************************************************"
+                print "*****************************************************************************"
                 print
 
             hal_comm('ASR_REC', hstr)

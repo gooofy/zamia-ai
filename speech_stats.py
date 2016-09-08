@@ -148,3 +148,15 @@ with codecs.open('data/dst/speech/%s/kaldi/RESULTS.txt' % LANG, 'r', 'utf8') as 
         print line.strip()
 print
 
+#
+# sequitur model stats
+#
+
+print "sequitur g2p model:"
+with codecs.open('data/dst/speech/%s/sequitur/model-6.test' % LANG, 'r', 'utf8', 'ignore') as logf:
+    for line in logf:
+        if not line.startswith('   '):
+            continue
+        print line.rstrip()
+print
+

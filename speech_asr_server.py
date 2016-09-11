@@ -44,9 +44,6 @@ import wave
 import struct
 
 from sphinxclient import SphinxClient
-from tts_client import TTSClient
-
-ENABLE_WAVE_STORE = True
 
 PROC_TITLE        = 'hal_asr'
 
@@ -98,12 +95,6 @@ port_asr    = config.get('speech', 'port_asr')
 extrasdir   = config.get('speech', 'extrasdir_de')
 vf_login    = config.get('speech', 'vf_login')
 
-host_getty  = config.get('speech', 'host_getty')
-port_getty  = config.get('speech', 'port_getty')
-
-host_tts    = config.get('tts', 'host')
-port_tts    = config.get('tts', 'port')
-
 #
 # zmq init
 #
@@ -112,20 +103,11 @@ context = zmq.Context()
 asr_socket = context.socket(zmq.REP)
 asr_socket.bind ("tcp://*:%s" % port_asr)
 
-getty_socket = context.socket(zmq.REQ)
-getty_socket.connect ("tcp://%s:%s" % (host_getty, port_getty))
-
 #
 # pocketsphinx
 #
 
 sphinx = SphinxClient (hmdir, dictf, lm=lm)
-
-#
-# TTS Client
-#
-
-tts = TTSClient (host_tts, port_tts, locale='de', voice='bits3')
 
 #
 # main command loop
@@ -146,12 +128,27 @@ while True:
 
         logging.debug("msg[0]: %s" % repr(msg[0]))
 
-        if msg[0] == 'REC':
+        if msg[0] == 'DECODE':
 
-            audio = map(lambda x: int(x), msg[1].split(','))
+            audios, save = msg[1]
+
+            audio = map(lambda x: int(x), audios.split(','))
             packed_audio = struct.pack('%sh' % len(audio), *audio)
 
-            if ENABLE_WAVE_STORE:
+            # create wav file in memory
+
+            wav_buffer = StringIO()
+            wf = wave.open(wav_buffer, 'wb')
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(SAMPLE_RATE)
+            wf.setnframes(len(audio)/2)
+
+            wf.writeframes(packed_audio)
+
+            wf.close()
+
+            if save:
                 # store recording in WAV format
                 ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
                 audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
@@ -167,18 +164,14 @@ while True:
 
                 logging.debug('audiofn: %s' % audiofn)
 
-                wf = wave.open(audiofn, 'wb')
-                wf.setnchannels(1)
-                wf.setsampwidth(2)
-                wf.setframerate(SAMPLE_RATE)
-                wf.setnframes(len(audio)/2)
+                with open(audiofn, 'wb') as audiof:
+                    wav_buffer.seek(0)
+                    audiof.write(wav_buffer.read())
 
-                wf.writeframes(packed_audio)
-
-                wf.close()
                 logging.info("%s written." % audiofn)
 
-            confidence, hstr = sphinx.decode(packed_audio)
+            wav_buffer.seek(0)
+            confidence, hstr = sphinx.decode(wav_buffer.read())
 
             if hstr:
                 print
@@ -189,17 +182,9 @@ while True:
                 print "*****************************************************************************"
                 print
 
-            hal_comm('ASR_REC', hstr)
-           
-            #if hstr:
-
-                #astr = 'Hallo! Ich freue mich, von Dir zu hören.'
-                #astr = 'ok'
-                #hal_comm('ASR_ANSWER', astr)
-
-                #tts.say(astr)
-
-            hal_comm('ASR_DONE', None)
+                reply = (confidence, hstr)
+            else:
+                reply = (0.0, '???')
 
         elif msg[0] == 'RECSTART':
 

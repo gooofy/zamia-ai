@@ -47,7 +47,7 @@ class TTSClient(object):
         #
 
         self.context = zmq.Context()
-        logging.debug ("Connecting to server...")
+        logging.debug ("Connecting to TTS server %s:%s ..." % (server, port))
         self.socket = self.context.socket(zmq.REQ)
         self.socket.connect ("tcp://%s:%s" % (server, port))
 

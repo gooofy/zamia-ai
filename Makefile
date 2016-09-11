@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 all:	prolog nlp_train
 
 prolog:
@@ -19,14 +21,15 @@ kaldi:
 sphinx:
 	rm -rf data/dst/speech/de/cmusphinx
 	./speech_sphinx_export.py 
-	pushd data/dst/speech/de/cmusphinx
-	./sphinx-run.sh
-	popd
+	pushd data/dst/speech/de/cmusphinx && ./sphinx-run.sh && popd
 	
 sequitur:
 	rm -rf data/dst/speech/de/sequitur/
 	./speech_sequitur_export.py
 	./speech_sequitur_train.sh
+
+stats:
+	./speech_stats.py
 
 clean:
 	./clean_clauses.py

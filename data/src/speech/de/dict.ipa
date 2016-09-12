@@ -495,6 +495,7 @@ achtzehnhundertfünfzig;'ʔaxt-tseːn-hʊn-dɐt-fʏnf-tsɪç
 achtzehnhundertsechsundsiebzig;'ʔaxt-tseːn-hʊn-dɐt-zɛks-ʔʊnt-ziːp-tsɪç
 achtzehnhundertsechzig;'ʔaxt-tseːn-hʊn-dɐt-zɛç-tsɪç
 achtzehnhundertzwanzig;'ʔaxt-tseːn-hʊn-dɐt-tsvan-tsɪç
+achtzehnhundertzweiundneunzig;'ʔaxt-tseːn-hʊn-dɐt-tsvaɪ-ʔʊnt-nɔʏn-tsɪç
 achtzehntausend;'ʔaxt-tseːn-taʊ-zənt
 achtzehnten;'ʔaxt-tseːn-tən
 achtzig;'ʔaxt-sɪç
@@ -2908,6 +2909,7 @@ beiden;'baɪ-dən
 beider;'baɪ-dɐ
 beiderseitigen;'baɪ-dɐ-saɪ-tɪ-gən
 beides;'baɪ-dəs
+beidfüßigkeit;'baɪ-tfyː-sɪç-kaɪt
 beifall;'baɪ-fal
 beigem;'beːʃ
 beigem_1;'baɪ-gəm
@@ -3860,6 +3862,7 @@ bildungshilfe;'bɪl-dʊɳs-hɪl-fə
 bildungsplans;'bɪl-dʊɳs-plaːns
 bildungsurlaub;'bɪl-dʊɳs-ʔuːɐ-laʊp
 bildungswerk;'bɪl-dʊɳs-vɛʁk
+bildungsziele;'bɪl-dʊɳs-'tsiː-lə
 bildunterschrift;'bɪlt-ʔʊn-tɐ-ʃʁɪft
 bildwand;'bɪld-vant
 bill;'bɪl
@@ -4318,6 +4321,7 @@ brodirtem;'bʁoː-diɐ-təm
 brombeeren;bʁɔm-'beːɐ-ʁən
 brontë;'bʁɔn-teː
 bronzelampe;'bʁɔn-tsə-'lam-pə
+brooklyns;'brʊk-lɪnz
 brosche;bʁɔ-'ʃə
 broschüre;bʁɔ-'ʃyː-ʁə
 brot;'bʁoːt
@@ -4570,6 +4574,7 @@ carrarischem;kɐ-'ʁaː-ʁɪ-ʃəm
 carter;'kaɐ-tɐ
 cartoon;'kaɐ-tuːn
 cartoons;'kaʁ-tuːns
+castlegarden;'kæs-əl-gɑr-dən
 castortransport;'kas-toːɐ-tʁans-pɔʁt
 catherine;'kɛθ-rɪn
 cc;'tseː-'tseː
@@ -4688,6 +4693,7 @@ codierung;ko-'diː-ʁʊɳ
 coffre;'koː-fʁə
 colombiana;'kəl-am-bi-əna
 com;'kɔm
+comeback;'kʌm-bæk
 comme;'kɔ-mə
 commodore;kɔ-moː-'doː-ʁə
 compact;'kɔm-pakt
@@ -5356,6 +5362,8 @@ dortmund;'dɔɐt-mʊnt
 dose;'doː-zə
 dosen;'doː-zən
 dot;'dɔt
+dotieren;do-'tiː-ʁən
+dotierung;do-'tiː-ʁʊɳ
 down;'daʊn
 download;'daʊn-loːt
 downloads;'daʊn-loːts
@@ -6449,6 +6457,7 @@ elle;'ʔɛlə
 ellen;'ʔɛ-lən
 ellenbogen;'ʔɛ-lən-boː-gən
 elli;'ʔɛ-liː
+ellis;'ɛ-lɪs
 elterlichen;ʔltɐ-'lɪ-çən
 eltern;'ʔɛl-tɐn
 elternlos;'ʔɛl-tɐn-loːs
@@ -9524,6 +9533,7 @@ gelbroten;'gɛlp-ʁoː-tən
 gelbseidene;'gɛlb-zaɪ-dən-ə
 gelbseidenen;'gɛlb-zaɪ-dən-ən
 geld;'gɛlt
+geldabfluss;'gɛlt-ʔap-flʊs
 geldangebotes;'gɛlt-ʔan-gə-boː-təs
 geldangelegenheiten;'gɛlt-ʔan-gə-leː-gən-haɪ-tən
 geldanlage;'gɛlt-ʔan-laː-gə
@@ -10733,6 +10743,7 @@ gouvernanten;'guː-vɛɐ-'nan-tən
 gouverneur;guː-vəʁ-'nøːɐ
 gparted;'geː-'paʁt-ed
 grab;'gʁaːp
+grabbing;'græ-bɪɳ
 grabe;'gʁaː-bə
 graben;'gʁaː-bən
 grabesfeucht;gʁ'aːbəs-'fɔʏxt
@@ -13780,6 +13791,7 @@ kohlendioxid;koː-lən-'diː-ɔ-ksiːt
 kohlenhydrate;'koː-lən-hyː-dʁaː-tə
 kohlschwarzen;'koːl-ʃvaɐ-tsən
 kohärenz;koː-ɛɐ-'ʁɛnts
+kohäsionspolitik;koː-hɛ-'zjoːns-po-li-'tɪk
 koketterie;koː-kɛ-teː-'ʁiː
 kokopelli;ko-ko-'pɛ-liː
 kollabieren;kɔ-laː-'biː-ʁən
@@ -13906,6 +13918,7 @@ konfrontiert;kɔn-fʁɔn-'tiːɐt
 konfusion;kɔn-fuː-'zjoːn
 kongress;kɔɳ-'gʁɛs
 kongresses;kɔɳ-'gʁɛ-səs
+kongresswahlbezirk;kɔɳ-'gʁɛs-vaːl-bə-'tsɪɐk
 konjunktur;'kɔn-jʊɳ-ktʊɐ
 konjunkturprogramm;kɔn-jʊɳ-ktʊʁ-pʁoː-'gʁam
 konkret;kɔɳ-'kʁeːt
@@ -18219,6 +18232,7 @@ prämissen;'pʁɛ-mɪ-sən
 präpariert;pʁɛ-pa-'ʁiːɐt
 prärogative;'pʁɛː-ʁoː-ga-tiː-və
 prärogativen;'pʁɛː-ʁoː-ga-tiː-vən
+präsent;pʁɛ-'zɛnt
 präsentation;pʁɛzɛn-ta-'tsiː-oːn
 präsentierbrett;pʁɛː-zɛn-'tiːɐ-bʁɛt
 präsentiere;pʁɛ-zɛn-'tiː-ʁə
@@ -20243,6 +20257,7 @@ schwindel;'ʃvɪn-dəl
 schwindelig;'ʃvɪn-dəlɪç
 schwindelnd;'ʃvɪn-dəlnt
 schwinden;'ʃvɪn-dən
+schwindenden;'ʃvɪn-dən-dən
 schwindets;'ʃvɪn-dəts
 schwindlig;'ʃvɪn-tlɪç
 schwindsucht;'ʃvɪn-tzʊxt
@@ -21749,6 +21764,7 @@ strauchle;'ʃtʁaʊx-lə
 strauß;'ʃtʁaʊs
 straußenfedern;'ʃtʁaʊ-sən-'feː-dɐn
 straußtochter;'ʃtʁaʊs-tɔx-tɐ
+straßburg;'ʃtʁaː-s-bʊɐk
 straße;'ʃtʁaː-sə
 straßen;'ʃtʁaː-sən
 straßenbahn;'ʃtʁaː-sən-baːn
@@ -23370,6 +23386,7 @@ unendlichen;'ʔʊn-ʔɛnt-lɪ-çən
 unendlicher;ʔʊn-'ʔɛnt-lɪçɐ
 unentdeckt;ʔʊn-'ʔɛnt-'dɛkt
 unentgeltlich;'ʔʊ-nɛn-tgɛl-tlɪç
+unentgeltlichen;ʔʊn-'ʔɛn-tgɛl-tlɪ-çən
 unentgeltlicher;'ʔʊ-nɛn-tgɛl-tlɪ-çɐ
 unentschieden;'ʔʊn-ʔɛnt-ʃiː-dən
 unentschlossenheit;'ʔʊn-ʔɛnt-ʃlɔs-ən-haɪt
@@ -25950,6 +25967,7 @@ wasserläufe;'vas-ɐ-lɔʏ-fə
 wasserpfuhl;'va-sɐ-pfuːl
 wasserrabe;'vasɐ-'ʁaː-bə
 wasserreichtum;'va-sɐ-'ʁaɪç-tuːm
+wasserressourcen;'va-sɐ-ʁɛ-'sʊɐ-sən
 wassers;'vasɐs
 wasserstrahl;'va-sɐʃ-tʁaːl
 wassertemperatur;'va-sɐ-tɛm-pə-ʁa-tuːɐ
@@ -26499,7 +26517,7 @@ winterwind;vɪn-tɐ-'vɪnt
 winterzeit;'vɪn-tɐ-tsaɪt
 winzige;'vɪn-tsɪ-gə
 winzigen;'vɪn-tsɪ-gən
-wir;'viːɐ
+wir;'wɜ
 wirbel;'vɪɐ-bəl
 wirbeln;'vɪɐ-bəln
 wirbelnd;'vɪɐ-bəlnt
@@ -26883,6 +26901,7 @@ yahoo;'jɑ-hu
 yoga;'joː-ga
 york;'jɔrk
 yorker;'jɔɐ-kɐ
+yorks;'jɔrks
 you;'ju
 your;'jɔr
 youtube;j'uː-tjuːb

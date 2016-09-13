@@ -8,6 +8,7 @@ prolog:
 	./prolog_compile.py data/dst/weather-dynamic.pl
 	./prolog_compile.py -t data/dst/weather.ts -s data/dst/weather.sem data/src/weather.pl 
 	./prolog_compile.py -t data/dst/greetings.ts -s data/dst/greetings.sem data/src/greetings.pl 
+	./prolog_compile.py -t data/dst/radio.ts -s data/dst/radio.sem data/src/radio.pl 
 
 nlp_train:
 	./nlp_train_keras.py

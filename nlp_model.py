@@ -43,11 +43,12 @@ DATA_COMPUTED    = 'data/dst'
 
 class NLPModel(object):
 
-    def __init__(self):
+    def __init__(self, p_test = 10):
 
         # read segments from .sem files
 
-        self.segments = []
+        self.seg_train = []
+        self.seg_test  = []
 
         for fn in os.listdir(DATA_COMPUTED):
             if not fn.endswith('.sem'):
@@ -59,7 +60,10 @@ class NLPModel(object):
                 for line in f:
                     parts = line.rstrip().split(';')
 
-                    self.segments.append((parts[0], set(map(lambda x: x.lstrip(), parts[1:]))))
+                    if len(self.seg_test) < p_test*len(self.seg_train)/100:
+                        self.seg_test.append((parts[0], set(map(lambda x: x.lstrip(), parts[1:]))))
+                    else:
+                        self.seg_train.append((parts[0], set(map(lambda x: x.lstrip(), parts[1:]))))
 
     def compute_output_term_index(self):
 
@@ -71,19 +75,20 @@ class NLPModel(object):
         out_middle = set()
         out_back   = set()
 
-        for segment in self.segments:
+        for segments in (self.seg_test, self.seg_train):
 
-            for term in segment[1]:
+            for segment in segments:
 
-                # FIXME: hardcoded order, make user configurable
+                for term in segment[1]:
 
-                if 'answer' in term:
-                    out_back.add(term)
-                elif 'context' in term:
-                    out_front.add(term)
-                else:
-                    out_middle.add(term)
+                    # FIXME: hardcoded order, make user configurable
 
+                    if 'answer' in term:
+                        out_back.add(term)
+                    elif 'context' in term:
+                        out_front.add(term)
+                    else:
+                        out_middle.add(term)
 
         self.out_idx    = {}
         for term in out_front:
@@ -138,23 +143,24 @@ class NLPModel(object):
         self.max_len = 0
         self.num_segments = 0
 
-        for segment in self.segments:
+        for segments in (self.seg_test, self.seg_train):
+            for segment in segments:
 
-            tokens = tokenize (segment[0])
+                tokens = tokenize (segment[0])
 
-            # print segment.txt, '->', repr(tokens)
+                # print segment.txt, '->', repr(tokens)
 
-            l = len(tokens)
+                l = len(tokens)
 
-            if l > self.max_len:
-                self.max_len = l
+                if l > self.max_len:
+                    self.max_len = l
 
-            i = 0
-            for token in tokens:
-                if not token in self.dictionary:
-                    self.dictionary[token] = len(self.dictionary)
+                i = 0
+                for token in tokens:
+                    if not token in self.dictionary:
+                        self.dictionary[token] = len(self.dictionary)
 
-            self.num_segments += 1
+                self.num_segments += 1
 
         logging.info ('input dict done. %d entries, max segment len is %d tokens.' % (len(self.dictionary), self.max_len))
 
@@ -228,11 +234,11 @@ class NLPModel(object):
 
         return model
 
-    def __len__(self):
-        return len(self.segments)
+    # def __len__(self):
+    #     return len(self.segments)
 
-    def __getitem__(self, key):
-        return self.segments[key]
+    # def __getitem__(self, key):
+    #     return self.segments[key]
 
-    def __iter__(self):
-        return iter(sorted(self.segments))
+    # def __iter__(self):
+    #     return iter(sorted(self.segments))

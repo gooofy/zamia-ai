@@ -43,7 +43,7 @@ import prolog_builtins
 
 from speech_tokenizer import tokenize
 
-import nlp_model
+from nlp_model import NLPModel, KERAS_WEIGHTS_FN
 
 # logging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.INFO)
@@ -79,6 +79,8 @@ atexit.register(readline.write_history_file, histfile)
 # load nlp model
 #
 
+nlp_model = NLPModel()
+
 out_idx = nlp_model.load_output_term_index()
 
 print (repr(out_idx))
@@ -87,9 +89,9 @@ dictionary, max_len = nlp_model.load_input_dict()
 
 print repr(dictionary)
 
-model = nlp_model.create_keras_model(dictionary, max_len, out_idx)
+model = nlp_model.create_keras_model()
 
-model.load_weights(nlp_model.KERAS_WEIGHTS_FN)
+model.load_weights(KERAS_WEIGHTS_FN)
 
 #
 # main
@@ -111,7 +113,7 @@ while True:
 
     try:
 
-        x = nlp_model.compute_x(line, max_len, dictionary)
+        x = nlp_model.compute_x(line)
 
         print 'x:', x
 

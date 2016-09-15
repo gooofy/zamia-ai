@@ -59,30 +59,35 @@ dictionary, max_len, num_segments = nlp_model.compute_input_dict()
 nlp_model.save_input_dict()
 
 #
-# compute dataset
+# compute datasets
 #
 
-batch_x = np.zeros([0, max_len], np.int32)
-batch_y = np.zeros([0, len(out_idx)], np.float32)
+def compute_dataset(segments):
 
-cnt = 0
-for segment in nlp_model:
+    ds_x = np.zeros([0, max_len], np.int32)
+    ds_y = np.zeros([0, len(out_idx)], np.float32)
 
-    x = nlp_model.compute_x(segment[0])
 
-    y = np.zeros(len(out_idx), np.float32)
+    cnt = 0
+    for segment in segments:
 
-    for term in segment[1]:
-        y[out_idx[term]] = 1.0
+        x = nlp_model.compute_x(segment[0])
 
-    cnt += 1
-    logging.debug("%4d/%4d: Generating training data %s -> %s" % (cnt, num_segments, x, y))
+        y = np.zeros(len(out_idx), np.float32)
 
-    batch_x = np.append(batch_x, [x], axis=0)
-    batch_y = np.append(batch_y, [y], axis=0)
-    
-# print batch_x
-# print batch_y
+        for term in segment[1]:
+            y[out_idx[term]] = 1.0
+
+        cnt += 1
+        logging.debug("%4d/%4d: %s: %s -> %s" % (cnt, num_segments, segment[0], x, y))
+
+        ds_x = np.append(ds_x, [x], axis=0)
+        ds_y = np.append(ds_y, [y], axis=0)
+   
+    return ds_x, ds_y
+
+train_x, train_y = compute_dataset(nlp_model.seg_train)
+test_x,  test_y  = compute_dataset(nlp_model.seg_test)
 
 #
 # keras model
@@ -90,18 +95,48 @@ for segment in nlp_model:
 
 model = nlp_model.create_keras_model()
 
-# with open(KERAS_MODEL_FN, 'w') as f:
-#     f.write(model.to_json())
-# 
-# logging.info("%s written." % KERAS_MODEL_FN)
+# train until no further improvement on test set
 
-# print model.metrics_names
-#while True:
-#    print model.train_on_batch(batch_x, batch_y)
+best_loss = 1000.0
 
-h = model.fit (batch_x, batch_y, batch_size=BATCH_SIZE, nb_epoch=99)
+while True:
 
-model.save_weights(KERAS_WEIGHTS_FN, overwrite=True)
+    h = model.fit (train_x, train_y, batch_size=BATCH_SIZE, nb_epoch=10, validation_split=0.1)
+
+    test_loss = model.evaluate (test_x, test_y,  batch_size=BATCH_SIZE)
+
+    print
+    print "loss on test set:", test_loss, "best loss:", best_loss
+    
+    y_pred = model.predict(test_x, batch_size=BATCH_SIZE)
+
+    for i in range(len(y_pred)):
+
+        nr = 0
+        nw = 0
+
+        for j in range(len(test_y[i])):
+
+            if test_y[i][j] < 0.5:
+                if y_pred[i][j] < 0.5:
+                    nr += 1
+                else:
+                    nw += 1
+            else:
+                if y_pred[i][j] < 0.5:
+                    nw += 1
+                else:
+                    nr += 1
+
+        print '[%2d/%2d]' % (nr, nr+nw),
+
+    print
+    if test_loss > best_loss:
+        break
+    best_loss = test_loss
+
+    model.save_weights(KERAS_WEIGHTS_FN, overwrite=True)
+    logging.info("%s written." % KERAS_WEIGHTS_FN)
 
 sys.exit(0)
 

@@ -287,6 +287,7 @@ abschlagen;'ʔap-ʃlaː-gən
 abschlenkern;'ʔap-ʃləɳ-kɐn
 abschließen;'ʔap-ʃliː-sən
 abschließend;'ʔap-ʃliː-sənt
+abschließt;'ʔap-ʃliːst
 abschloss;'ʔap-ʃlɔs
 abschlossen;'ʔap-ʃlɔ-sən
 abschluss;'ʔap-ʃlʊs
@@ -1075,7 +1076,10 @@ angolapythons;'ʔan-goː-la-pyː-tɔns
 angreifen;'ʔan-gʁaɪ-fən
 angreifer;'ʔan-gʁaɪ-fɐ
 angreifern;'ʔan-gʁaɪ-fɐn
+angrenzen;'ʔan-gʁɛn-tsən
+angrenzend;'ʔan-gʁɛn-tsənt
 angrenzenden;'ʔan-gʁɛn-tsən-dən
+angrenzt;'ʔan-gʁɛntst
 angriff;'ʔan-gʁɪf
 angriffe;'ʔan-gʁɪ-fə
 angriffs;'ʔan-gʁɪfs
@@ -1207,6 +1211,7 @@ anschlag;'ʔan-ʃlaːk
 anschließen;'ʔan-ʃliː-zɛn
 anschließend;'ʔan-ʃliː-sənt
 anschließenden;'ʔan-ʃliː-sən-dən
+anschließt;'ʔan-ʃliːst
 anschloss;'ʔan-ʃlɔs
 anschluss;'ʔan-ʃlʊs
 anschuldigungen;'ʔan-ʃʊl-diː-gʊ-ɳən
@@ -2263,6 +2268,7 @@ aussagen;'ʔaʊs-zaː-gən
 aussah;'ʔaʊs-zaː
 ausschalten;'ʔaʊs-ʃal-tən
 ausschau;'ʔaʊs-ʃaʊ
+ausschaut;'ʔaʊs-ʃaʊt
 ausscheiden;'ʔaʊs-ʃaɪ-dən
 ausscheidungen;'ʔaʊs-ʃaɪ-dʊ-ɳən
 ausschelten;'ʔaʊs-ʃɛl-tən
@@ -2431,6 +2437,7 @@ autos;'ʔaʊ-toːs
 autosalon;ʔaʊ-toː-za-'loɳ
 autoventile;'ʔaʊ-toː-vɛn-tiː-lə
 außen;'ʔaʊ-sən
+außenkante;'ʔaʊ-sən-kan-tə
 außenmauer;'ʔaʊ-sən-maʊ-ɐ
 außenminister;'ʔaʊ-sən-miː-nɪs-tɐ
 außenpolitik;'ʔaʊ-sən-po-liː-tɪk
@@ -2600,6 +2607,8 @@ bauabschnitt;'baʊ-ʔap-ʃnɪt
 bauarbeiten;'baʊ-ʔaɐ-baɪ-tən
 bauarten;'baʊ-ʔaɐ-tən
 bauch;'baʊx
+bauchlinie;'baʊx-liː-nɪ-ə
+bauchraumes;'baʊ-xʁaʊ-məs
 bauen;'baʊ-ən
 bauend;'baʊ-ənd
 bauer;'baʊ-ɐ
@@ -2627,6 +2636,7 @@ baust;'baʊst
 baustein;'baʊ-ʃtaɪn
 bausteine;'baʊ-ʃtaɪ-nə
 bausteinen;'baʊ-ʃtaɪ-nən
+bausteines;'baʊ-ʃtaɪ-nəs
 bausteinkomplex;'baʊ-ʃtaɪn-kɔm-'plɛks
 baut;'baʊt
 baute;'baʊ-tə
@@ -4717,6 +4727,7 @@ bürstete;'bʏɐs-tə-tə
 büschen;'bʏ-ʃən
 büste;'bʏs-tə
 büßen;'byː-sən
+c;'tseː
 cadeau;'kaː-deː-aʊ
 cadeaux;'ka-do
 café;ka-'feː
@@ -6630,6 +6641,7 @@ elbe;'ʔɛl-bə
 elche;'ʔɛl-çə
 elec;'ʔeː-lɛk
 electronic;ʔɛlɛk'tr-ɔnɪk
+elefanten;ʔɛl-ɛ-'fan-tən
 elegant;ʔeː-leː-'gant
 elegante;ʔeː-leː-'gan-tə
 eleganten;ʔeː-leː-'gan-tən
@@ -6655,7 +6667,6 @@ elende;'ʔeː-lən-də
 elenden;'ʔeː-lən-dən
 elender;'ʔeː-lən-dɐ
 elendeste;'ʔeːl-ɛn-dəs-tə
-elephanten;ʔɛl-ɛ-'fan-tən
 eler;ʔeː-ʔɛl-ʔeː-ʔɛʁ
 eleven;ʔɪ-'lɛ-vən
 elf;'ʔɛlf
@@ -9060,6 +9071,7 @@ fußbodens;'fuːs-boː-dəns
 fuße;'fuː-sə
 fußend;'fuː-sənt
 fußende;'fuː-sən-də
+fußes;'fuː-səs
 fußgänger;'fʊs-gɛɳ-ɐ
 fußnote;'fuːs-noː-tə
 fußnoten;'fuːs-noː-tən
@@ -11014,6 +11026,7 @@ gnome;'gnoː-mə
 gnomen;'gnoː-mən
 gnomon;'gnoː-mɔn
 gnubbel;'gnʊ-bəl
+gnubbeln;'gnʊ-bəln
 gnädige;'gnɛː-dɪ-gə
 gnädigen;'gnɛː-dɪ-gən
 gnädiges;'gnɛː-dɪ-gəs
@@ -11324,6 +11337,7 @@ grüßen;'gʁyː-sən
 grüßten;'gʁyːs-tən
 gs;'geː-'ʔɛs
 guaranteed;gæ-rən-'tiːd
+guckt;'gʊkt
 guido;'giː-doː
 gulden;'gʊl-dən
 gulliver;'gʊ-liː-vɐ
@@ -11506,6 +11520,7 @@ halm;'halm
 hals;'hals
 halsbinde;'hals-bɪn-də
 halse;'hal-zə
+halses;'hal-zəs
 halskrause;'hals-kʁaʊ-zə
 halskrausen;'hals-kʁaʊ-zən
 halstuch;'hals-tʊx
@@ -12449,6 +12464,7 @@ hintere;'hɪn-tɐ-ʁə
 hintereinander;hɪn-tɐ-ʔaɪ-'nan-dɐ
 hinteren;'hɪn-tɐ-ʁən
 hinterfragt;hɪn-tɐ-'fʁaːkt
+hinterfuß;'hɪn-tɐ-fuːs
 hintergrund;'hɪn-tɐ-gʁʊnt
 hintergrundbild;hɪn-tɐ-'gʁʊnd-bɪlt
 hintergrunde;'hɪn-tɐ-gʁʊn-də
@@ -12735,6 +12751,7 @@ hundert;'hʊn-dɐt
 hundertachtundzwanzig;'hʊn-dɐt-ʔaxt-ʔʊnt-tsvan-tsɪç
 hundertachtzehn;'hʊn-dɐt-ʔaxt-tseːn
 hundertachtzig;'hʊn-dɐt-ʔaxt-tsɪç
+hundertachzig;'hʊn-dɐt-ʔax-tsɪç
 hundertdrei;'hʊn-dɐt-dʁaɪ
 hundertdreizehn;'hʊn-dɐt-dʁaɪ-tseːn
 hundertdreißig;'hʊn-dɐt-dʁaɪ-sɪç
@@ -14884,6 +14901,7 @@ körperlich;'kœʁ-pɐ-lɪç
 körperliche;'kœɐ-pɐ-lɪ-çə
 körperlichen;'kœɐ-pɐ-lɪ-çən
 körperlicher;'kœʁ-pɐ-lɪ-çɐ
+körpermitte;'kœɐ-pɐ-mɪ-tə
 körpern;'kœʁ-pɐn
 körpers;'kœɐ-pɐs
 körperverletzung;'kœɐ-pɐ-fɛɐ-lɛ-tsʊɳ
@@ -15623,11 +15641,14 @@ linings;'laɪ-nɪɳs
 link;'lɪɳk
 linke;'lɪɳ-kə
 linken;'lɪɳ-kən
+linkere;'lɪɳ-kɐ-ʁə
 linkes;'lɪɳ-kəs
 linkischen;'lɪɳ-kɪ-ʃən
 links;'lɪɳks
+linksbündig;'lɪɳks-bʏn-dɪç
 linksfraktion;'lɪɳks-fʁak-'tsjoːn
 linksklick;'lɪɳ-ksklɪk
+linksseitig;'lɪɳks-saɪ-tɪç
 linnen;'lɪ-nən
 linné;'li-ne
 linsen;'lɪn-zən
@@ -16623,6 +16644,7 @@ mittelfinger;'mɪ-təl-fɪ-ɳɐ
 mittelfristig;'mɪ-təl-fʁɪs-tɪç
 mittelgebirgen;'mɪ-təl-gə-'bɪɐ-gən
 mittelgroß;'mɪ-təl-gʁoːs
+mittelkante;'mɪ-təl-'kan-tə
 mittelmeer;'mɪ-təl-meːɐ
 mitteln;'mɪ-təln
 mittelpunkt;'mɪ-təl-pʊɳkt
@@ -16639,6 +16661,7 @@ mitternacht;'mɪ-tɐ-naxt
 mitternachtskrimi;'mɪ-tɐ-naxts-kʁɪ-miː
 mitternachtssonne;'mɪ-tɐ-naxts-zɔ-nə
 mittig;'mɪ-tɪç
+mittiger;'mɪt-tɪ-gɐ
 mittigsten;'mɪ-tɪç-stən
 mittlere;'mɪt-lɐ-ʁə
 mittleren;'mɪt-lɐ-ʁən
@@ -17283,6 +17306,7 @@ neckische;'nɛ-kɪ-ʃə
 neckisches;'nɛ-kɪ-ʃəs
 neckte;'nɛk-tə
 neckten;'nɛk-tən
+nee;'neː
 neffe;'nɛ-fə
 negativ;'neː-ga-tiːf
 negative;'neː-ga-tiː-və
@@ -18477,6 +18501,7 @@ plötzliche;'plœts-lɪç-ə
 plötzlichen;'plœts-lɪ-çən
 plötzlicher;'plø-tslɪ-çɐ
 plötzliches;'plø-tslɪ-çəs
+po;'poː
 pochen;'pɔ-xən
 pochte;'poːx-tə
 podiumsteilnehmer;'poː-diː-ʊms-taɪl-neː-mɐ
@@ -18956,6 +18981,7 @@ quadrates;kva-'dʁaː-təs
 quadratisch;'kv-ad-ʁa-tɪʃ
 quadratische;'kv-ad-ʁa-tɪ-ʃə
 quadratmeter;kvaː-'dʁaːt-meː-tɐ
+quadrats;kva-'dʁaːts
 quadratur;'kv-ad-ʁa-tʊɐ
 qual;kv'aːl
 qualen;'kvaː-lən
@@ -19237,6 +19263,7 @@ rechtsbegriffen;'ʁɛçts-bə-gʁɪ-fən
 rechtschaffener;'ʁɛçt-ʃaf-ən-ɐ
 rechtschaffenheit;'ʁɛçt-ʃaf-ən-haɪt
 rechtschreibung;'ʁɛçt-ʃʁaɪ-bʊɳ
+rechtseitig;'ʁɛçt-saɪ-tɪç
 rechtserfolg;'ʁɛçts-ɛɐ-fɔlk
 rechtsfolge;'ʁɛçts-fɔl-gə
 rechtsfolgen;'ʁɛçts-fɔl-gən
@@ -19449,6 +19476,8 @@ reinlich;'ʁaɪn-lɪç
 reinliche;'ʁaɪ-nlɪ-çə
 reinlichkeit;'ʁaɪ-nlɪç-kaɪt
 reinmachen;'ʁaɪn-max-ən
+reinpasst;'ʁaɪn-past
+reinsetzen;'ʁaɪn-zɛ-tsən
 reinste;'ʁaɪns-tə
 reinster;'ʁaɪns-tɐ
 reis;'ʁaɪs
@@ -19844,6 +19873,8 @@ ruine;'ʁʊ-ʔiː-nə
 ruinen;ʁuː-'ʔiː-nən
 ruinieren;ʁuː-iː-'niː-ʁən
 ruiniert;ʁuː-iː-'niːɐt
+rumpf;'ʁʊmpf
+rumpfes;'ʁʊmpf-əs
 rumänien;ʁuː-'mɛː-niː-ən
 rumäniens;ʁʊ-'mɛː-niː-ɛns
 rund;'ʁʊnt
@@ -19911,6 +19942,8 @@ rötlichen;'ʁøː-tlɪ-çən
 rück;'ʁʏk
 rücken;'ʁʏ-kən
 rückend;'ʁʏk-ənt
+rückenlinie;'ʁʏk-ən-liː-nɪ-ə
+rückens;'ʁʏ-kəns
 rückfall;'ʁʏk-fal
 rückgang;'ʁʏk-gaɳ
 rückgrat;'ʁʏk-gʁaːt
@@ -19964,6 +19997,7 @@ rührte;'ʁyːɐ-tə
 rührten;'ʁyːɐ-tən
 rührung;'ʁyː-ʁʊɳ
 rüsche;'ʁʏ-ʃə
+rüssel;'ʁʏ-səl
 rüstig;'ʁʏs-tɪç
 rüstige;'ʁʏs-tɪ-gə
 rüstungsexport;'ʁʏs-tʊɳ-zə-kspɔɐt
@@ -21309,6 +21343,7 @@ serviert;'zɛɐ-viːɐt
 servies;'sɛ-ʁvi
 serviette;zɛɐ-viː-'ɛ-tə
 serviettenzipfel;'zɛɐ-vije-tən-tsɪ-pfəl
+sessel;'zɛ-səl
 sessels;'zɛ-səls
 sesshaften;'zɛs-haf-tən
 set;'zɛt
@@ -21864,6 +21899,7 @@ spiegelfechterei;ʃpiː-gəl-'fɛç-tɐ-aɪ
 spiegeln;'ʃpiː-gəln
 spiegelschränkchen;'ʃpiː-gəl-ʃʁɛɳ-kçən
 spiegelte;'ʃpiː-gɛl-tə
+spiegle;'ʃpiː-glə
 spiel;'ʃpiːl
 spiele;'ʃpiː-lə
 spielen;'ʃpiː-lən
@@ -22249,7 +22285,9 @@ steinadlers;'ʃtaɪn-ʔaː-dlɐs
 steinbank;'ʃtaɪn-baɳk
 steinbock;'ʃtaɪn-bɔk
 steinbrück;'ʃtaɪn-bʁʏ-k
+steinchen;'ʃtaɪn-çən
 steine;'ʃtaɪ-nə
+steinen;'ʃtaɪ-nən
 steinerne;'ʃtaɪnɐ-nə
 steinernen;'ʃtaɪ-nɐ-nən
 steinerner;'ʃtaɪ-nɐ-nɐ
@@ -23518,6 +23556,7 @@ treppenhalle;'tʁɛ-pən-ha-lə
 treppenlampe;'tʁɛpən-lam-pə
 treppenleiter;'tʁɛp-ən-laɪ-tɐ
 treppenskandal;'tʁɛp-ən-skan-'daːl
+treppenstufe;'tʁɛ-pən-'ʃtuː-fə
 treppentür;tʁɛp-ən-'tyːɐ
 treten;'tʁeː-tən
 tretenden;'tʁeː-tən-deːn
@@ -24505,6 +24544,7 @@ unterhielt;ʔʊn-tɐ-'hiːlt
 unterhielten;'ʔʊn-tɐ-hiːl-tən
 unterhält;ʔʊn-tɐ-'hɛlt
 unterirdische;'ʔʊn-tɐ-ʔɪʁ-dɪʃə
+unterkante;'ʔʊn-tɐ-kan-tə
 unterkiefer;'ʔʊn-tɐ-kiː-fɐ
 unterlag;'ʔʊn-tɐ-'laːk
 unterlagen;'ʔʊn-tɐ-laː-gən
@@ -24572,12 +24612,14 @@ unterschätze;'ʔʊn-tɐ-ʃɛ-tsə
 unterschätzen;'ʔʊn-tɐ-ʃɛ-tsən
 unterschätzt;'ʔʊn-tɐ-ʃɛtst
 unterschätzte;'ʔʊn-tɐ-ʃɛts-tə
+unterseite;'ʔʊn-tɐ-zaɪ-tə
 untersetzte;'ʔʊn-tɐ-zɛts-tə
 unterspannung;'ʔʊn-tɐ-ʃpa-nʊɳ
 unterst;'ʔʊn-tɐst
 unterste;'ʔʊn-tɐs-tə
 unterstellt;'ʔʊn-tɐ-'ʃtɛlt
 unterstellung;'ʔʊn-tɐ-'ʃtɛ-lʊɳ
+untersten;'ʔʊn-tɐs-tən
 unterstreichen;'ʔʊn-tɐ-'ʃtʁaɪ-çən
 unterstreicht;ʔʊn-tɐ-'ʃtʁaɪçt
 unterstrich;'ʔʊn-tɐ-'ʃtʁɪç
@@ -26041,6 +26083,7 @@ vielseitigen;'fiːl-saɪ-tɪ-gən
 vielzahl;'fiːl-tsaːl
 vier;'fiːɐ
 viereckige;'fɪʁɛ-kɪ-gə
+viererkette;'fiːɐ-ʔɛɐ-kɛ-tə
 vierfarbig;'fiːɐ-'faʁ-bɪç
 vierhundert;fiːɐ-'hʊn-dɐt
 vierhundertfünfzig;fiːɐ-'hʊn-dɐt-fʏnf-tsɪç
@@ -26236,6 +26279,7 @@ vordeklamieren;foːɐ-'dɛk-la-'miː-ʁən
 vorderachse;'foːɐ-dɐ-'ʔak-sə
 vordere;'fɔɐ-dɐ-ʁə
 vorderen;'fɔɐ-dɐ-ʁən
+vorderfuß;'fɔɐ-dɐ-fuːs
 vordergrund;'fɔɐ-dɐ-gʁʊnt
 vordergrunde;'fɔɐ-dɐ-gʁʊn-də
 vorderhufen;'foːɐ-dɐ-'huː-fən
@@ -26567,6 +26611,7 @@ völlig;'fœ-lɪç
 völlige;'fœl-ɪ-gə
 w;'veː
 waage;'v-aː-gə
+waagerecht;'v-aː-gɐ-ʁɛçt
 waagschale;'vaːk-ʃaː-lə
 wach;'vax
 wache;'va-xə
@@ -27977,6 +28022,7 @@ zertrümmert;tsɛɐ-'tʁʏm-ɐt
 zertrümmerten;tsɛɐ-'tʁʏm-ɐtən
 zession;tsɛ-'sjoːn
 zettel;'tsɛt-əl
+zetts;'tsɛts
 zeug;'tsɔʏk
 zeuge;'tsɔʏ-gə
 zeugen;'tsɔʏ-gən

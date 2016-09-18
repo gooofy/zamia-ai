@@ -130,7 +130,7 @@ while True:
 
         if msg[0] == 'DECODE':
 
-            audios, save = msg[1]
+            audios, do_record, do_asr = msg[1]
 
             audio = map(lambda x: int(x), audios.split(','))
             packed_audio = struct.pack('%sh' % len(audio), *audio)
@@ -148,7 +148,7 @@ while True:
 
             wf.close()
 
-            if save:
+            if do_record:
                 # store recording in WAV format
                 ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
                 audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
@@ -164,31 +164,30 @@ while True:
 
                 logging.debug('audiofn: %s' % audiofn)
 
+                reply = (1.0, 'WAV NUM: ' + str(cnt))
+
                 with open(audiofn, 'wb') as audiof:
                     wav_buffer.seek(0)
                     audiof.write(wav_buffer.read())
 
                 logging.info("%s written." % audiofn)
 
-            wav_buffer.seek(0)
-            confidence, hstr = sphinx.decode(wav_buffer.read())
+            if do_asr:
+                wav_buffer.seek(0)
+                confidence, hstr = sphinx.decode(wav_buffer.read())
 
-            if hstr:
-                print
-                print "*****************************************************************************"
-                print "**"
-                print "** %9.5f %s" % (confidence, hstr)
-                print "**"
-                print "*****************************************************************************"
-                print
+                if hstr:
+                    print
+                    print "*****************************************************************************"
+                    print "**"
+                    print "** %9.5f %s" % (confidence, hstr)
+                    print "**"
+                    print "*****************************************************************************"
+                    print
 
-                reply = (confidence, hstr)
-            else:
-                reply = (0.0, '???')
-
-        elif msg[0] == 'RECSTART':
-
-            hal_comm('ASR_RECSTART', None)
+                    reply = (confidence, hstr)
+                else:
+                    reply = (0.0, '???')
 
     except:
         logging.error("****************** ERROR: unexpected exception")

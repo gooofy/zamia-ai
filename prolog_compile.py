@@ -82,7 +82,7 @@ def nlp_gen(clause):
 
     # extract all macros used
 
-    macro_names = []
+    macro_names = set()
 
     for pos, char in enumerate(nlp):
 
@@ -92,10 +92,11 @@ def nlp_gen(clause):
 
             # print "MACRO:", macro.group(1)
 
-            macro_names.append(macro.group(1))
+            macro_names.add(macro.group(1))
 
     # generate all macro-expansions
 
+    macro_names = sorted(macro_names)
     todo = [ (0, {}) ]
 
     while True:

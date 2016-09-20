@@ -41,6 +41,7 @@ import utils
 
 TRANSCRIPTFN = 'ts.txt'
 SEMANTICSFN  = 'sem.txt'
+TESTSFN      = 'test.txt'
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -144,7 +145,40 @@ def nlp_gen(clause):
 
             nlp_segments.append((s, p))            
 
-    
+def nlp_test(clause):
+
+    global nlp_tests
+
+    args = clause.head.args
+
+    cnt = 0
+    for ivr in args:
+
+        # print "nlp_test: ivr=%s %s" % (repr(ivr), ivr.__class__)
+
+        if ivr.name != 'ivr':
+            raise PrologError ('nlp_test: ivr predicate args expected.')
+
+        test_in = ''
+        test_out = ''
+        test_actions = set()
+
+        for e in ivr.args:
+
+            if e.name == 'in':
+                test_in = e.args[0].s
+            elif e.name == 'out':
+                test_out = e.args[0].s
+            elif e.name == 'action':
+                test_actions.add(unicode(e))
+            else:
+                raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
+            
+        nlp_tests.append((cnt, test_in, test_out, test_actions))
+            
+        cnt += 1
+
+    # print repr(nlp_tests)
 
 #
 # init terminal
@@ -165,6 +199,9 @@ parser.add_option ("-t", "--transcript", dest="transcriptfn", type = "str", defa
 
 parser.add_option ("-s", "--semantics", dest="semanticsfn", type = "str", default=SEMANTICSFN,
            help="semantics filename (default: %s)" % SEMANTICSFN)
+
+parser.add_option ("-T", "--tests", dest="testsfn", type = "str", default=TESTSFN,
+           help="tests filename (default: %s)" % TESTSFN)
 
 # 
 # parser.add_option ("-n", "--kb-name", dest="kb_name", type = "str", default=KB_DEFAULT_NAME,
@@ -209,6 +246,7 @@ for pl_fn in args:
 
     nlp_macros   = {}
     nlp_segments = []
+    nlp_tests    = []
 
     with open (pl_fn, 'r') as f:
         parser.start(f, pl_fn)
@@ -230,6 +268,8 @@ for pl_fn in args:
                     nlp_macro(clause)
                 elif clause.head.name == 'nlp_gen':
                     nlp_gen(clause)
+                elif clause.head.name == 'nlp_test':
+                    nlp_test(clause)
                 else:
                     db.store (parser.module, clause)
 
@@ -242,19 +282,30 @@ for pl_fn in args:
 
     if len(nlp_segments)>0:
 
-        with open (options.transcriptfn, 'w') as tf:
+        with codecs.open (options.transcriptfn, 'w', 'utf8') as tf:
 
             for segment in nlp_segments:
-                tf.write((u'%s\n' % segment[0]).encode('utf8'))
+                tf.write(u'%s\n' % segment[0])
 
             print "%s written." % options.transcriptfn
 
-        with open (options.semanticsfn, 'w') as sf:
+        with codecs.open (options.semanticsfn, 'w', 'utf8') as sf:
 
             for segment in nlp_segments:
-                sf.write((u'%s;%s\n' % (segment[0],segment[1])).encode('utf8'))
+                sf.write(u'%s;%s\n' % (segment[0],segment[1]))
 
             print "%s written." % options.semanticsfn
+
+    if len(nlp_tests)>0:
+        with codecs.open (options.testsfn, 'w', 'utf8') as sf:
+
+            for test in nlp_tests:
+                sf.write(u'%d;%s;%s;%s\n' % (test[0],
+                                             test[1],
+                                             test[2],
+                                             ';'.join(test[3])))
+
+            print "%s written." % options.testsfn
 
 session.commit()
 

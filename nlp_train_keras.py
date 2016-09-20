@@ -128,7 +128,10 @@ while True:
                 else:
                     nr += 1
 
-        print '[%2d/%2d]' % (nr, nr+nw),
+        if nr != nr+nw:
+            print '[%2d/%2d]' % (nr, nr+nw),
+        else:
+            print 'OK',
 
     print
     if test_loss > best_loss:

@@ -238,6 +238,7 @@ wrt = { u'0'             : u'null',
         u'sodass'        : u'so dass',
         u'elephant'      : u'elefant',
         u'elephanten'    : u'elefanten',
+        u'abschluß'      : u'abschluss',
         u'§'             : u'paragraph'}
 
 

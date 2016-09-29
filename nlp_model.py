@@ -83,7 +83,7 @@ class NLPModel(object):
 
                     # FIXME: hardcoded order, make user configurable
 
-                    if 'answer' in term:
+                    if 'answer' in term or 'set_context' in term or 'action' in term:
                         out_back.add(term)
                     elif 'context' in term:
                         out_front.add(term)

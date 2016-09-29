@@ -79,7 +79,9 @@ def compute_dataset(segments):
             y[out_idx[term]] = 1.0
 
         cnt += 1
-        logging.debug("%4d/%4d: %s: %s -> %s" % (cnt, num_segments, segment[0], x, y))
+        logging.debug("%4d/%4d: %s:" % (cnt, num_segments, segment[0]))
+        logging.debug("    %s" % x)
+        logging.debug("    %s" % y)
 
         ds_x = np.append(ds_x, [x], axis=0)
         ds_y = np.append(ds_y, [y], axis=0)
@@ -131,7 +133,9 @@ while True:
         if nr != nr+nw:
             print '[%2d/%2d]' % (nr, nr+nw),
         else:
-            print 'OK',
+            print '*******',
+        if i % 15 == 14:
+            print
 
     print
     if test_loss > best_loss:

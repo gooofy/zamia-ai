@@ -26,10 +26,10 @@ nlp_macro('PLEASE'   , map(w(''         )),
 nlp_macro('MAL'      , map(w(''         )),
                        map(w('mal'      ))).
 
-nlp_macro('VERB',      map(w('schalte'   ), v('ein'), p('set_context(channel, C), action(media, tune, C).')),
-                       map(w('mach '     ), v('an'),  p('set_context(channel, C), action(media, tune, C).')),
-                       map(w('mach '     ), v('aus'), p('action(media, off).')),
-                       map(w('schalte '  ), v('aus'), p('action(media, off).'))).
+nlp_macro('VERB',      map(w('schalte'   ), v('ein'), p('set_context(channel, C); action(media, tune, C)')),
+                       map(w('mach '     ), v('an'),  p('set_context(channel, C); action(media, tune, C)')),
+                       map(w('mach '     ), v('aus'), p('action(media, off)')),
+                       map(w('schalte '  ), v('aus'), p('action(media, off)'))).
 
 nlp_macro('WHAT',      map(w('Musik'           ), p('C is music')),
                        map(w('das Radio '      ), p('context(channel, C)')),

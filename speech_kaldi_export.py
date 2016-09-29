@@ -264,10 +264,13 @@ print "%s written." % fn
 #
 
 utils.copy_file ('data/src/speech/kaldi-run.sh', '%s/run.sh' % work_dir)
+utils.copy_file ('data/src/speech/kaldi-run-nnet3.sh', '%s/run-nnet3.sh' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-cmd.sh', '%s/cmd.sh' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-path.sh', '%s/path.sh' % work_dir)
 utils.mkdirs ('%s/conf' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-mfcc.conf', '%s/conf/mfcc.conf' % work_dir)
+utils.copy_file ('data/src/speech/kaldi-mfcc-hires.conf', '%s/conf/mfcc_hires.conf' % work_dir)
+utils.copy_file ('data/src/speech/kaldi-online-cmvn.conf', '%s/conf/online_cmvn.conf' % work_dir)
 utils.mkdirs ('%s/local' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-build-lm.sh', '%s/local/build_lm.sh' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-run-am.sh', '%s/local/run_am.sh' % work_dir)

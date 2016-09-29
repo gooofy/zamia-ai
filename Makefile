@@ -16,9 +16,7 @@ nlp_train:
 kaldi:
 	rm -rf data/dst/speech/de/kaldi
 	./speech_kaldi_export.py
-	# pushd data/dst//speech/kaldi
-	# ./run.sh
-	# popd
+	pushd data/dst/speech/de/kaldi && ./run.sh && popd
 
 sphinx:
 	rm -rf data/dst/speech/de/cmusphinx

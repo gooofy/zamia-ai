@@ -73,6 +73,11 @@ cp README.md "$DISTDIR/$AMNAME"
 cp COPYING   "$DISTDIR/$AMNAME"
 cp AUTHORS   "$DISTDIR/$AMNAME"
 
+mkdir "$DISTDIR/$AMNAME/conf"
+cp data/src/speech/kaldi-mfcc.conf        $DISTDIR/$AMNAME/conf/mfcc.conf 
+cp data/src/speech/kaldi-mfcc-hires.conf  $DISTDIR/$AMNAME/conf/mfcc-hires.conf  
+cp data/src/speech/kaldi-online-cmvn.conf $DISTDIR/$AMNAME/conf/online_cmvn.conf
+
 pushd $DISTDIR
 tar cfvz "$AMNAME.tgz" $AMNAME
 popd

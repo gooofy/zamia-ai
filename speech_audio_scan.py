@@ -53,7 +53,7 @@ sys.setdefaultencoding('utf-8')
 config = utils.load_config()
 
 vf_audiodir = config.get("speech", "vf_audiodir_de")
-extrasdir  = config.get("speech",  "extrasdir_de")
+extrasdir   = config.get("speech",  "extrasdir_de")
 gspv2_dir   = config.get("speech", "gspv2_dir")
 
 wav16_dir   = config.get("speech", "wav16_dir_de")
@@ -174,7 +174,7 @@ scan_audiodir (vf_audiodir)
 scan_audiodir (extrasdir)
 scan_audiodir (gspv2_dir + '/dev')
 # FIXME: enable scan_audiodir (gspv2_dir + '/test')
-# FIXME: enable scan_audiodir (gspv2_dir + '/train')
+scan_audiodir (gspv2_dir + '/train')
 
 print "scanning done."
 

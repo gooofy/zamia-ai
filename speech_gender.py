@@ -90,9 +90,30 @@ port        = int(config.get('tts', 'port'))
 tts = TTSClient (host, port, locale='de', voice='bits3')
 
 #
+# count
+#
+
+known = set()
+for spk in spk2gender:
+    known.add(spk)
+
+num_unk = 0
+for cfn in transcripts:
+
+    ts = transcripts[cfn]
+
+    if ts['spk'] in known:
+        continue
+
+    num_unk += 1
+
+    known.add(ts['spk'])
+
+#
 # main 
 #
 
+cnt = 0
 for cfn in transcripts:
 
     ts = transcripts[cfn]
@@ -100,7 +121,8 @@ for cfn in transcripts:
     if ts['spk'] in spk2gender:
         continue
 
-    print ts['spk']
+    cnt += 1
+    print '%5d/%5d' % (cnt, num_unk), ts['spk']
     play_wav(cfn)
 
     spk2gender[ts['spk']] = raw_input('m/f >')

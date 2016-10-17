@@ -62,10 +62,11 @@ fi
 #
 
 for datadir in train test; do
-  utils/copy_data_dir.sh data/$datadir data/${datadir}_hires
-  steps/make_mfcc.sh --nj $nJobs --mfcc-config conf/mfcc_hires.conf \
-    --cmd "$train_cmd" data/${datadir}_hires exp/make_hires/$datadir $mfccdir || exit 1;
-  steps/compute_cmvn_stats.sh data/${datadir}_hires exp/make_hires/$datadir $mfccdir || exit 1;
+    utils/fix_data_dir.sh data/$datadir 
+    utils/copy_data_dir.sh data/$datadir data/${datadir}_hires
+    steps/make_mfcc.sh --nj $nJobs --mfcc-config conf/mfcc_hires.conf \
+      --cmd "$train_cmd" data/${datadir}_hires exp/make_hires/$datadir $mfccdir || exit 1;
+    steps/compute_cmvn_stats.sh data/${datadir}_hires exp/make_hires/$datadir $mfccdir || exit 1;
 done
 
 #

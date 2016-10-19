@@ -44,6 +44,14 @@ verbose = len(sys.argv)==2 and sys.argv[1] == '-v'
 logging.basicConfig(level=logging.DEBUG)
 
 #
+# init terminal
+#
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+# sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
+#
 # load transcripts
 #
 

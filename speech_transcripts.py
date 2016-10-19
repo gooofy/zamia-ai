@@ -23,6 +23,8 @@
 
 # quality: 0=not reviewed, 1=poor, 2=fair, 3=good
 
+from speech_tokenizer import tokenize
+
 class Transcripts(object):
 
     def __init__(self, lang='de'):
@@ -84,7 +86,7 @@ class Transcripts(object):
                 v = self.ts[cfn]
                 f.write((u"%s;%s;%s;%s;%s;%d\n" % (cfn, v['dirfn'], v['audiofn'], v['prompt'], v['ts'], v['quality'])).encode('utf8'))
 
-    def split(self, p_test=5, limit=0, min_quality=2):
+    def split(self, p_test=5, limit=0, min_quality=2, add_all=False):
 
         ts_all   = {}
         ts_train = {}
@@ -102,11 +104,15 @@ class Transcripts(object):
                 break
 
             if v['quality'] < min_quality:
-                continue
+                if ( v['quality'] != 0 ) or ( not add_all ):
+                    continue
 
             if len(v['ts']) == 0:
-                print "WARNING: %s transcript missing" % cfn
-                continue
+                if add_all:
+                    v['ts'] = ' '.join(tokenize(v['prompt']))
+                else:
+                    print "WARNING: %s transcript missing" % cfn
+                    continue
 
             ts_all[cfn]  = v
             if len(ts_test) < (len(ts_all) * p_test / 100):

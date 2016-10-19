@@ -7,5 +7,6 @@ tmp
 old
 data/dst
 data/dist
+data/kaldi-voxforge-de-r20160922
 *.log
 TODO

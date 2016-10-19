@@ -453,6 +453,7 @@ abzuschweifen;ʔap-tsuː-'ʃvaɪ-fən
 abzuschütteln;'ʔap-tsuː-ʃʏ-təln
 abzusetzen;'ʔap-tsuː-zɛ-tsən
 abzustecken;'ʔap-tsuː-ʃtɛ-kən
+abzustimmen;'ʔap-tsuː-ʃtɪ-mən
 abzutreten;ʔap-tsuː-'tʁeː-tən
 abzuwarten;'ʔap-tsuː-vaɐ-tən
 abzuweichen;'ʔap-tsuː-vaɪ-çən
@@ -1226,6 +1227,7 @@ ansicht;'ʔan-zɪçt
 ansichten;'ʔan-zɪç-tən
 ansichtig;'ʔan-zɪç-tɪç
 ansiedeln;'ʔan-ziː-dəln
+ansitz;'ʔan-zɪts
 ansonsten;ʔan-'zɔns-tən
 anspielung;'ʔan-ʃpiː-lʊɳ
 anspornen;'ʔan-ʃpɔʁ-nən
@@ -1482,6 +1484,7 @@ arbeitszimmer;'ʔaɐ-baɪts-tsɪ-mɐ
 arbeitsämter;'ʔaɐ-baɪts-ʔɛm-tɐ
 arch;'ʔaɐtʃ
 arche;'ʔaɐ-çə
+archimedischen;ʔaɐ-çiː-'meː-dɪ-ʃən
 architekt;ʔaɐ-çiː-'tɛkt
 architekten;ʔaɐ-çiː-'tɛk-tən
 architektonische;'ʔaɐ-çiː-tɛk-toː-nɪ-ʃə
@@ -1645,6 +1648,7 @@ aufdringlich;'ʔaʊf-dʁɪɳ-glɪç
 aufdrängende;'ʔaʊf-dʁɛ-ɳən-də
 aufeinander;ʔaʊf-ʔaɪ-'nan-dɐ
 aufeinandergepresst;ʔaʊf-ʔaɪ-'nan-dɐ-gə-pʁɛst
+aufeinandertreffen;ʔaʊf-ʔaɪ-'nan-dɐ-tʁɛ-fən
 aufenthalt;'ʔaʊ-fɛnt-halt
 aufenthaltes;'ʔaʊ-fɛn-thal-təs
 aufenthalts;'ʔaʊ-fɛnt-halts
@@ -2237,6 +2241,7 @@ auslösen;'ʔaʊs-løː-zən
 auslöser;'ʔaʊs-løː-zɐ
 auslöste;'ʔaʊs-løːs-tə
 auslösung;'ʔaʊs-løː-zʊɳ
+ausmachen;'ʔaʊs-max-ən
 ausmaß;'ʔaʊs-maːs
 ausmaße;'ʔaʊs-maː-sə
 ausnahme;'ʔaʊs-naː-mə
@@ -3621,6 +3626,7 @@ bestimmteste;bə-'ʃtɪm-təs-tə
 bestimmung;bə-'ʃtɪ-mʊɳ
 bestimmungen;bə-'ʃtɪ-mʊ-ɳən
 bestimmungsorte;bə-'ʃtɪ-mʊɳs-ʔɔɐ-tə
+bestmöglich;'bɛst-'møːk-lɪç
 bestmöglichen;bɛst-'møːg-lɪç-ən
 bestrafe;bə-'ʃtʁaː-fə
 bestrafen;bə-'ʃtʁaː-fən
@@ -3658,6 +3664,7 @@ besuchern;bə-'zuː-xɐn
 besucherzahlen;bə-'suː-xɐ-tsaː-lən
 besuchs;bə-'zʊxs
 besuchst;bə-'zʊxst
+besuchstermin;bə-'zʊxs-tɛʁ-'miːn
 besucht;bə-'zuːxt
 besuchte;bə-'zuːx-tə
 besuchten;bə-'zuːx-tən
@@ -4605,6 +4612,7 @@ bundesbank;'bʊn-dəs-baɳk
 bundesfinanzminister;bʊn-dəs-fiː-'nants-miː-nɪs-tɐ
 bundesforschungsanstalt;'bʊn-dəs-fɔɐ-ʃʊɳs-ʔan-ʃtalt
 bundesgenossen;'bʊn-dəs-gə-nɔ-sən
+bundeshauptstadt;'bʊn-dəs-haʊpt-ʃtat
 bundeshaus;'bʊn-dəs-haʊs
 bundeskanzler;'bʊn-dəs-kants-lɐ
 bundeskanzlerin;'bʊn-dəs-kants-lɐ-ʁɪn
@@ -4612,6 +4620,7 @@ bundesland;'bʊn-dəs-lant
 bundeslandes;'bʊn-dəs-lan-dəs
 bundesliga;'bʊn-dəs-liː-gaː
 bundesländer;'bʊn-dəs-lɛn-dɐ
+bundesländergrenzen;'bʊn-dəs-'lɛn-dɐ-'gʁɛn-tsən
 bundesländern;'bʊn-dəs-lɛn-dɐn
 bundesminister;'bʊn-dəs-miː-'nɪs-tɐ
 bundesministerium;'bʊn-dəs-miː-nɪs-teː-ʁɪ-ʊm
@@ -4928,6 +4937,7 @@ constantine;'kɑn-stən-tiːn
 container;kɔn-'tɛɪ-nɐ
 containerformat;kɔn-'tɛɪ-nɐ-fɔɐ-maːt
 containerformate;kɔn-'teː-nɐ-fɔɐ-maː-tə
+containerhäfen;kɔn-'tɛɪ-nɐ-hɛː-fən
 containerschiffen;kɔn-'teɪ-nɐ-ʃɪ-fən
 cool;'kuːl
 coolste;'kuːl-stə
@@ -6501,6 +6511,7 @@ einsortiert;'ʔaɪn-zɔʁ-tiːɐt
 einsparungen;'ʔaɪnʃ-pa-ʁʊ-ɳən
 einsperren;'ʔaɪn-ʃpɛ-ʁən
 einsprache;'ʔaɪn-ʃpʁaː-xə
+einspuriges;'ʔaɪn-ʃpuː-ʁɪ-gəs
 einspänner;'ʔaɪnʃ-pɛ-nɐ
 einspännigen;'ʔaɪnʃ-pɛ-nɪ-gən
 einst;'ʔaɪnst
@@ -6525,6 +6536,7 @@ eintausendzweihundert;'ʔaɪn-taʊ-zənt-tsvaɪ-hʊn-dɐt
 einteilung;'ʔaɪn-taɪ-lʊɳ
 eintracht;'ʔaɪn-tʁaxt
 eintraf;'ʔaɪn-tʁaːf
+eintragen;'ʔaɪn-tʁaː-gən
 eintragungen;'ʔaɪn-tʁaːkʊɳən
 eintrat;'ʔaɪn-tʁaːt
 eintraten;'ʔaɪn-tʁaː-tən
@@ -6905,6 +6917,7 @@ enteignung;ʔɛnt-'ʔaɪ-gnʊɳ
 enten;'ʔɛn-tən
 enter;'ʔɛn-tɐ
 enterbte;ʔənt-'ʔɛʁptə
+entfachen;ʔɛnt-'fax-ən
 entfallen;ʔɛnt-'fa-lən
 entfalten;ʔɛnt-'fal-tən
 entfaltend;'ʔɛn-tfal-tənt
@@ -7123,6 +7136,7 @@ entwicklungsländer;ʔɛnt-'vɪk-lʊɳs-lɛn-dɐ
 entwicklungsländern;ʔɛnt-'vɪk-lʊɳs-lɛn-dɐn
 entwicklungsphase;ʔɛnt-'vɪk-lʊɳs-faː-zə
 entwicklungsstadium;ʔɛnt-'vɪk-lʊɳs-ʃtaː-diː-ʊm
+entwicklungszonen;ʔɛnt-'vɪk-lʊɳs-tsoː-nən
 entwinden;'ʔɛn-tvɪn-dən
 entworfen;ʔɛnt-'vɔɐ-fən
 entwurf;ʔɛnt-'vʊɐf
@@ -7970,6 +7984,7 @@ fachlich;'fax-lɪç
 fachliche;'fax-lɪ-çə
 fachpersonal;'fax-pɛɐ-zoː-naːl
 fackeln;'fa-kəln
+facto;'fak-toː
 fade;'faː-də
 faden;'faː-dən
 fadesten;'faː-dəs-tən
@@ -8217,6 +8232,7 @@ feldexperiment;'fɛlt-ʔɛks-peː-ʁiː-'mɛnt
 feldkabel;'fɛlt-kaː-bəl
 feldrain;'fɛl-dʁaɪn
 felix;'feː-lɪks
+fell;'fɛl
 felle;'fɛ-lə
 felsen;'fɛl-zən
 felsens;'fɛl-zəns
@@ -8224,6 +8240,7 @@ felsenspalten;'fɛl-zənʃ-pal-tən
 felsigen;'fɛl-zɪ-gən
 felsmasse;'fɛl-sma-sə
 felsspalten;'fɛls-ʃpal-tən
+felswänden;'fɛls-vɛn-dən
 fender;'fɛn-dɐ
 fenster;'fɛns-tɐ
 fensterbleche;'fɛnstɐ-blɛ-çə
@@ -8538,6 +8555,7 @@ fluchtbewegung;'flʊxt-bə-veː-gʊɳ
 fluchte;'fluːx-tə
 flug;'fluːk
 flugbenzins;'fluːk-bɛn-tsiːns
+flugbild;'fluːk-bɪlt
 flughafen;'fluːk-haː-fən
 flughäfen;'fluːk-hɛː-fən
 flugreise;'fluːg-ʁaɪ-zə
@@ -9162,6 +9180,7 @@ fördern;'fœɐ-dɐn
 fördert;'fœɐ-dɐt
 förderung;'fœɐ-də-ʁʊɳ
 förderzentrums;'fœɐ-dɐ-tsɛn-tʁʊms
+förmiges;'føːɐ-mɪ-gəs
 förmlich;'føːɐ-mlɪç
 förmlichen;'føːɐ-mlɪ-çən
 förmliches;'føːɐm-lɪç-əs
@@ -9349,6 +9368,7 @@ gatt;'gat
 gatte;'ga-tə
 gatten;'ga-tən
 gattin;'ga-tɪn
+gattung;'ga-tʊɳ
 gauweiler;'gaʊ-vaɪlɐ
 geachtet;gə-'ax-tət
 geahndet;gə-'ʔaːn-dət
@@ -10035,6 +10055,7 @@ gemordeten;gə-'moːɐ-də-tən
 gemurmel;gə-'mʊɐ-məl
 gemurmelt;gə-'mʊɐ-məlt
 gemächer;gə-'mɛː-çɐ
+gemäht;gə-'mɛːt
 gemälde;gə-'mɛl-də
 gemälden;gə-'mɛl-dən
 gemästet;gə-'mɛs-tət
@@ -10243,6 +10264,7 @@ gerippen;gə-'ʁɪ-pən
 gerissen;gə-'ʁɪ-sən
 gerissene;gə-'ʁɪ-sə-nə
 gerissenen;gə-'ʁɪ-sə-nən
+germanischen;gɛɐ-'maː-nɪ-ʃən
 gern;'gɛʁn
 gerne;'gɛʁ-nə
 gernhaben;'gɛʁn-haː-bən
@@ -11192,6 +11214,7 @@ grausamste;'gʁaʊ-zaːms-tə
 grausen;'gʁaʊ-zən
 grausenhaften;'gʁaʊ-zən-haf-tən
 grausliche;'gʁaʊ-slɪ-çə
+grautönen;'gʁaʊ-tøː-nən
 grauweiße;'gʁaʊ-vaɪ-sə
 graventhin;'gʁaː-vɛn-tɪn
 gravierend;gʁa-'viː-ʁənt
@@ -11270,6 +11293,7 @@ großmacht;'gʁoːs-maxt
 großmama;'gʁoːs-ma-maː
 großmut;'gʁoːs-muːt
 großmutter;'gʁoːs-mʊ-tɐ
+großmächte;'gʁoːs-mɛç-tə
 großmächtigen;'gʁoːs-mɛç-tɪ-gən
 großmütig;'gʁoːs-mʏ-tɪç
 großmütigen;'gʁoːs-mʏ-tɪ-gən
@@ -11277,6 +11301,7 @@ großmütiger;'gʁoːs-mʏ-tɪ-gɐ
 großmütterliche;'gʁoːs-mʏ-tɐ-lɪ-çə
 großpapa;'gʁoːs-pa-paː
 großrechner;'gʁoːs-ʁɛç-nɐ
+großreiche;'gʁoːs-ʁaɪ-çə
 großteil;'gʁoːs-taɪl
 großvater;'gʁoːs-faː-tɐ
 großvaters;'gʁoːs-faː-tɐs
@@ -11951,6 +11976,7 @@ helldunkle;'hɛl-dʊɳ-klə
 helle;'hɛ-lə
 hellem;'hɛl-əm
 hellen;'hɛ-lən
+hellenistischen;'hɛl-ən-ɪs-tɪ-ʃən
 heller;'hɛl-ɐ
 helles;'hɛl-əs
 hellgelbem;'hɛl-gel-bəm
@@ -12906,6 +12932,7 @@ hängen;'hɛɳ-ən
 hängenden;'hɛɳ-ən-dən
 hängt;'hɛɳt
 hängten;'hɛɳ-tən
+häppchen;'hɛp-çən
 härmte;'hɛɐm-tə
 härte;'hɛɐ-tə
 härten;'hɛɐ-tən
@@ -13050,6 +13077,7 @@ idiotin;ʔiː-diː-'oːtɪn
 idol;'ʔɪ-doːl
 idylls;ʔɪ-'dyːls
 idéal;ʔiː-deː-'aːl
+igel;'ʔiː-gəl
 ignis;'ʔiː-gnɪs
 ignoriere;ʔɪg-noː-'ʁiː-ʁə
 ignorieren;ʔɪg-'noː-ʁiː-ʁən
@@ -13080,6 +13108,7 @@ illumination;ʔɪ-luː-miː-nats-'joːn
 illuminiert;ʔɪ-luː-miː-'niːɐt
 illusionen;ʔɪ-luː-'zjoː-nən
 illustrierte;ʔɪ-lʊs-'tʁiːɐ-tə
+ilz;'ʔɪlts
 im;'ʔɪm
 image;'ʔɪ-mɪtʃ
 imaginären;ʔɪ-ma-giː-'nɛː-ʁən
@@ -13227,6 +13256,7 @@ inliegenden;'ʔɪn-liː-gən-dən
 inländische;'ʔɪn-lɛn-dɪ-ʃə
 inländisches;'ʔɪn-lɛn-dɪ-ʃəs
 inmitten;ʔɪn-'mɪ-tən
+inn;'ʔɪn
 inne;'ʔɪ-nə
 innehielt;'ʔɪnə-hiːlt
 innen;'ʔɪ-nən
@@ -14153,6 +14183,7 @@ kleidungsstück;'klaɪ-dʊɳs-ʃtʏk
 kleidungsstücke;'klaɪ-dʊɳs-ʃtʏ-kə
 klein;'klaɪn
 kleinanleger;'klaɪn-ʔan-leː-gɐ
+kleinasien;'klaɪn-ʔa-ziː-ən
 kleincomputer;'klaɪn-kɔm-pjuː-tɐ
 kleine;'klaɪ-nə
 kleinen;'klaɪ-nən
@@ -14441,6 +14472,7 @@ konfitüren;kɔn-fɪ-'tyː-ʁən
 konflikt;kɔn-'flɪkt
 konflikte;kɔn-'flɪk-tə
 konflikten;kɔn-'flɪk-tən
+konfliktpotential;kɔn-'flɪkt-poː-tɛn-'tsjaːl
 konfrontieren;kɔn-fʁɔn-'tiː-ʁən
 konfrontiert;kɔn-fʁɔn-'tiːɐt
 konfusion;kɔn-fuː-'zjoːn
@@ -15105,6 +15137,7 @@ landesverband;'lan-dəs-fɛɐ-bant
 landesverfassungsgericht;lan-dəs-fɛɐ-'fas-ʊɳs-gə-ʁɪçt
 landesweites;'lan-dəs-'vaɪ-təs
 landet;'lan-dət
+landfahrzeug;'lant-faːɐ-tsɔʏk
 landgericht;'lant-gə-ʁɪçt
 landhauses;'lant-haʊ-zəs
 landkarte;'lant-kaɐ-tə
@@ -15182,6 +15215,7 @@ latein;la-'taɪn
 lateinamerika;la-'taɪn-am-eːʁiː-kaː
 lateinamerikanisch;la-'taɪn-am-eːʁiː-'kan-ɪʃ
 lateinisch;la-'taɪn-ɪʃ
+lateinische;la-'taɪ-nɪ-ʃə
 lateinischen;la-'taɪ-nɪ-ʃən
 later;'leɪ-tə
 laterne;laː-'tɛɐ-nə
@@ -15401,6 +15435,7 @@ lehnstuhls;'leːn-ʃtuːls
 lehnstühle;'leːnʃ-'tyː-lə
 lehnt;'leːnt
 lehnte;'leːn-tə
+lehnwörter;'leːn-vøːɐ-tɐ
 lehre;'leː-ʁə
 lehren;'leː-ʁən
 lehrer;'leː-ʁɐ
@@ -15916,6 +15951,7 @@ lämpchen;'lɛm-pçən
 länder;'lɛn-dɐ
 länderinfo;'lɛn-dɐ-ʔɪn-foː
 ländern;'lɛn-dɐn
+länderübergreifende;'lɛn-dɐ-ʔʏ-bɐ-'gʁaɪf-ən-də
 ländlichen;'lɛnt-lɪ-çən
 länge;'lɛ-ɳə
 längen;'lɛ-ɳən
@@ -16003,6 +16039,7 @@ machterhalt;'maxt-ʔɛɐ-halt
 machtest;'max-təst
 machtinstrument;'maxt-ʔɪns-tʁuː-mɛnt
 machtmissbrauchs;'maxt-mɪs-bʁaʊxs
+machtspiel;'maxt-ʃpiːl
 machtverlust;'maxt-fɛɐ-lʊst
 madagaskar;'ma-da-gas-kaːɐ
 madam;'mæ-dəm
@@ -16727,6 +16764,7 @@ mittelgroß;'mɪ-təl-gʁoːs
 mittelkante;'mɪ-təl-'kan-tə
 mittellinie;'mɪ-təl-liː-nɪ-ə
 mittelmeer;'mɪ-təl-meːɐ
+mittelmeerraum;'mɪ-təl-'meːɐ-ʁaʊm
 mitteln;'mɪ-təln
 mittelpunkt;'mɪ-təl-pʊɳkt
 mittelraum;'mɪ-təl-ʁaʊm
@@ -16797,6 +16835,7 @@ modernisiert;moː-'dɐ-niː-ziːɐt
 modernisierung;mo-dɐ-niː-'ziː-ʁʊɳ
 moderten;'moː-dɐ-tən
 modifikationen;moː-diː-fiː-kats-'joː-nən
+modifizierte;moː-diː-fiː-'tsiːɐ-tə
 modulation;moː-duː-lats-'joːn
 modus;'moː-dʊs
 mogelpackung;'moː-gəl-pa-kʊɳ
@@ -16943,6 +16982,7 @@ musikstücke;muː-'ziːk-ʃtʏ-kə
 musiziert;muː-ziː-'tsiːɐt
 musizierte;muː-ziː-'tsiːɐ-tə
 muskel;'mʊs-kəl
+muskelkraft;'mʊs-kəl-kʁaft
 muslime;mʊs-'liː-mə
 muslinkleid;mʊs-'liː-n-klaɪt
 muslinkleidern;mʊs-'liː-n-klaɪ-dɐn
@@ -17349,8 +17389,10 @@ naturkunde;na-'tuːɐ-kʊn-də
 naturschutz;na-'tuːɐ-ʃʊts
 naturschutzgebiete;na-'tuːɐ-'ʃʊts-geː-'biː-tə
 naturschutzgebieten;na-'tuːɐ-ʃʊts-gɛ-'biː-tən
+naturschützer;na-'tuːɐ-'ʃʏ-tsɐ
 naturvolkes;na-'tuːɐ-fɔl-kəs
 naturwacht;na-'tuːɐ-'vaxt
+naturwaldreservate;na-'tuːɐ-valt-ʁe-zɛɐ-'vaː-tə
 naturwissenschaft;naː-'tuːɐ-vɪ-sən-ʃaft
 naturwissenschaftlern;naː-'tuːɐ-vɪ-sən-ʃaft-lɛɐn
 naturwissenschaftliche;naː-'tʊɐ-vɪ-sən-ʃaf-tlɪ-çə
@@ -17719,6 +17761,7 @@ nirgends;'nɪɐ-gənts
 nirgendwo;'nɪɐ-gɛnt-voː
 nische;'nɪ-ʃə
 nischenkonsole;niː-ʃən-kɔn-'zoː-lə
+nistet;'nɪs-tət
 niveau;niː-'voː
 nizza;'nɪ-tsaː
 no;'noʊ
@@ -17811,6 +17854,7 @@ nrw;'ʔɛn-'ʔɛɐ-'veː
 ntv;'ʔɛn-'teː-'faʊ
 nu;'nʊ
 nuancen;nuː-'ɔ-sən
+nudeln;'nuː-dəln
 nuklearen;nuk-le-'aː-ʁən
 nuklearmaterial;nuk-le-'aɐ-ma-te-ʁiː-'aːl
 null;'nʊl
@@ -18321,6 +18365,7 @@ peace;'piːs
 peacemaker;piːs-'meɪkɐ
 pearl;'pɜl
 pech;'pɛç
+pedalen;pe-'daː-lən
 pegel;'pe-gəl
 pein;'paɪn
 peinigen;'paɪ-nɪ-gən
@@ -18443,6 +18488,7 @@ pflegen;'pfleː-gən
 pflegestätte;'pfleː-gə-ʃtɛ-tə
 pflegeversicherung;'pfleː-gə-fɛɐ-zɪ-çɐ-ʁʊɳ
 pflegezone;'pfleː-gə-tsoː-nə
+pflegezonen;'pfleː-gə-tsoː-nən
 pflegt;'pfleːkt
 pflegte;'pfleːk-tə
 pflegten;'pfleːk-tən
@@ -21083,6 +21129,7 @@ schwimmen;'ʃvɪ-mən
 schwimmenden;'ʃvɪm-ən-dən
 schwimmer;'ʃvɪ-mɐ
 schwimmkörper;'ʃvɪm-kœɐ-pɐ
+schwimmt;'ʃvɪmt
 schwindel;'ʃvɪn-dəl
 schwindelig;'ʃvɪn-dəlɪç
 schwindelnd;'ʃvɪn-dəlnt
@@ -21244,6 +21291,7 @@ secretary;'sɛkr-ətər-i
 sed;'ʔes-'ʔeː-'deː
 see;'zeː
 seebad;'zeː-baːt
+seehafen;'zeː-haː-fən
 seehofer;'zeː-hoː-fɐ
 seele;'zeː-lə
 seeleben;'zeː-leː-bən
@@ -21265,6 +21313,7 @@ seereise;'zeː-ʁaɪ-zə
 seeschlangen;'zeː-ʃla-ɳən
 seetransport;'zeː-tʁans-pɔʁt
 seevögel;'zeː'føː-gəl
+segelflug;'zeː-gəl-fluːk
 segelten;'zeː-gəl-tən
 segen;'zeː-gən
 segment;'zəg-mɛnt
@@ -21721,6 +21770,7 @@ skulpturen;skʊlp-'tuː-ʁən
 skyfm;'skaɪ-ʔef-ʔem
 skype;skaɪp
 slap;'slæp
+slawischen;'slaː-vɪ-ʃən
 slip;'slɪp
 slowakei;slo-va-'kaɪ
 slowenische;sloː-'veː-nɪ-ʃə
@@ -24139,6 +24189,7 @@ umwandlung;'ʔʊm-van-dlʊɳ
 umwandte;'ʔʊm-vanttə
 umweg;'ʔʊm-veːg
 umwelt;'ʔʊm-vɛlt
+umweltbelangen;'ʔʊm-vɛlt-bə-'laɳ-ən
 umweltfragen;'ʔʊm-vɛlt-fʁaː-gən
 umweltfreundlich;'ʔʊm-vɛlt-fʁɔʏnt-lɪç
 umweltkatastrophen;'ʔʊm-vɛlt-ka-tas-'tʁoː-fən
@@ -24181,6 +24232,7 @@ unantastbar;'ʔʊnan-tas-tbaːɐ
 unartig;'ʔʊ-naɐ-tɪç
 unartigen;'ʔʊ-naɐ-tɪ-gən
 unartiges;'ʔʊn-aɐ-tɪ-gəs
+unauffälligen;'ʔʊn-ʔaʊ-fɛ-lɪ-gən
 unaufgefordert;ʔuː-'naʊf-gə-'foːʁ-dɐt
 unaufhörlich;'ʔʊn-ʔaʊf-høː-ʁlɪç
 unaufhörlichen;'ʔʊn-ʔaʊf-høːɐ-lɪ-çən
@@ -24306,6 +24358,7 @@ unehrlichen;'ʔʊneː-ʁlɪ-çən
 uneigennützige;ʔuːn-'ʔaɪgə-nʏ-tsɪ-gə
 uneingelöst;'ʔʊn-ʔaɪn-gə-løːst
 uneingeschränkt;'ʔʊn-ʔaɪn-gə-ʃʁɛɳkt
+uneingeschränkten;'ʔʊn-ʔaɪn-gə-'ʃʁɛɳ-ktən
 unempfindlich;ʔʊn-'ʔmpfɪn-tlɪç
 unendlich;ʔʊn-'ʔɛnt-lɪç
 unendliche;ʔʊn-'ʔɛnt-lɪ-çə
@@ -24474,6 +24527,7 @@ unglückselige;'ʔʊn-glʏk-zeː-lɪgə
 unglückseligen;'ʔʊn-glʏk-zeː-lɪ-gən
 unglücksnacht;'ʔʊn-glʏksnaxt
 ungnade;'ʔʊn-gnaːdə
+ungut;'ʔʊn-guːt
 ungültig;'ʔʊn-gʏl-tɪç
 ungünstig;'ʔʊɳ-ʏns-tɪç
 ungünstiger;'ʔʊn-gʏns-tɪ-gɐ
@@ -24922,6 +24976,7 @@ urteilungsvermögen;'ʔuːɐ-taɪ-lʊɳs-fɛɐ-møː-gən
 us;'ʔuː-'ʔɛs
 usa;'ʔuː-ʔeːs-ʔaː
 uwe;'ʔʊ-və
+v;'faʊ
 vag;'vaːk
 vage;'vaː-gə
 vai;'vaɪ
@@ -24948,6 +25003,7 @@ vegas;'veː-gas
 vegetation;'veː-gɛ-tats-'joːn
 vehement;ve-he-'mɛnt
 veilchenduft;'faɪl-çən-dʊft
+velo;'veː-loː
 venedig;veː-'neː-dɪç
 venezuela;veː-neː-tsuː-'ʔeː-laː
 ventil;vɛn-'tiːl
@@ -26562,6 +26618,7 @@ vorliegenden;'foːɐ-liː-gən-dən
 vorliegt;'fɔɐ-liːkt
 vorläufig;'foːɐ-lɔʏ-fɪç
 vorläufigen;'foː-ʁlɔʏ-fɪ-gən
+vormacht;'foːɐ-maxt
 vormachtstellung;'foːɐ-maxt-ʃtɛ-lʊɳ
 vormals;'foːɐ-maːls
 vormarsch;'foːɐ-maɐʃ
@@ -26958,6 +27015,7 @@ washington;'wɔ-ʃɪɳ-tən
 wasser;'va-sɐ
 wasserbehälter;'va-sɐ-beː-hɛl-tɐ
 wasserdampf;'va-sɐ-dampf
+wasserfahrzeug;'va-sɐ-faːɐ-tsɔʏk
 wasserfarben;'va-sɐ-faɐ-bən
 wasserfuhren;'va-sɐ-fuː-ʁən
 wasserfälle;'va-sɐ-fɛ-lə
@@ -27145,6 +27203,7 @@ weiterleiten;'vaɪ-tɐ-laɪ-tən
 weiterleitung;'vaɪ-tɐ-laɪ-tʊɳ
 weitermachen;'vaɪ-tɐ-max-ən
 weitern;'vaɪ-tɐn
+weiterschlafen;'vaɪ-tɐ-ʃlaː-fən
 weitersprach;'vaɪ-tɐ-ʃpʁaːx
 weiterverarbeiten;'vaɪ-tɐ-fɛɐ-ʔaɐ-baɪ-tən
 weiterverbreitet;'vaɪ-tɐ-fɛɐ-bʁaɪ-tət
@@ -28790,6 +28849,7 @@ zweihundertvierzig;'tsvaɪ-hʊn-dɐt-fɪɐ-tsɪç
 zweihundertzehn;'tsvaɪ-hʊn-dɐt-tseːn
 zweihundertzweiundvierzig;'tsvaɪ-hʊn-dɐt-tsvaɪ-ʔʊnt-fɪʁ-tsɪç
 zweimal;'tsvaɪ-maːl
+zweirädriges;'tsvaɪ-'ʁɛː-dʁɪ-gəs
 zweistöckigen;'tsvaɪ-'ʃtø-kɪ-gən
 zweistündiger;tsvaɪ-'ʃtʏn-dɪ-gɐ
 zweitausend;'tsvaɪ-taʊ-sənd
@@ -29203,6 +29263,7 @@ zürnen;'tsʏʁ-nən
 übermüdung;ʔyː-bɐ-'myː-dʊɳ
 übermütig;'ʔyː-bɐ-mʏ-tɪç
 übermütiges;ʔyː-bɐ-'myː-tɪ-gəs
+übernachten;ʔyː-bɐ-'naːx-tən
 übernahm;ʔyː-bɐ-'naːm
 übernahme;'ʔyː-bɐ-naː-mə
 übernatürlich;ʔyː-bɐ-na-'tyːɐ-lɪç

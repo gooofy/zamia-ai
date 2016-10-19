@@ -33,6 +33,8 @@ from StringIO import StringIO
 import utils
 from speech_lexicon import ipa2xsampa, Lexicon
 from speech_transcripts import Transcripts
+from speech_tokenizer import tokenize
+from speech_sequitur import sequitur_gen_ipa
 
 WORKDIR = 'data/dst/speech/%s/kaldi'
 LANG    = 'de'
@@ -42,6 +44,8 @@ DEBUG_LIMIT = 0
 
 logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.INFO)
+
+add_all = len(sys.argv)==2 and sys.argv[1] == '-a'
 
 #
 # init terminal
@@ -75,11 +79,9 @@ print "loading lexicon...done."
 
 print "loading transcripts..."
 transcripts = Transcripts()
-ts_all, ts_train, ts_test = transcripts.split(limit=DEBUG_LIMIT)
+ts_all, ts_train, ts_test = transcripts.split(limit=DEBUG_LIMIT, add_all=add_all)
 print "loading transcripts (%d train, %d test) ...done." % (len(ts_train),
                                                             len(ts_test))
-
-
 #
 # create work_dir structure
 #
@@ -122,6 +124,53 @@ def export_kaldi_data (destdirfn, tsdict):
 
 export_kaldi_data('%s/train/' % data_dir, ts_train)
 export_kaldi_data('%s/test/'  % data_dir, ts_test)
+
+
+#
+# add missing words to dictionary using sequitur, if add_all is set
+#
+
+if add_all:
+
+    print "looking for missing words..."
+
+    missing = {} # word -> count
+
+    num = len(transcripts)
+    cnt = 0
+
+    for cfn in transcripts:
+        ts = transcripts[cfn]
+
+        cnt += 1
+
+        if ts['quality']>0:
+            continue
+
+        for word in tokenize(ts['prompt']):
+
+            if word in lex:
+                continue
+
+            if word in missing:
+                missing[word] += 1
+            else:
+                missing[word] = 1
+
+    cnt = 0
+    for item in reversed(sorted(missing.items(), key=lambda x: x[1])):
+
+        lex_base = item[0] 
+
+        ipas = sequitur_gen_ipa (lex_base)
+
+        print u"%5d/%5d Adding missing word : %s [ %s ]" % (cnt, len(missing), item[0], ipas)
+
+        lex_entry = {'ipa': ipas}
+        lex[lex_base] = lex_entry
+        cnt += 1
+        
+
 
 #
 # dictionary export
@@ -244,8 +293,8 @@ fn = '%s/local/lm/train_nounk.txt' % data_dir
 
 with open(fn, 'w') as f:
     
-    for utt_id in sorted(ts_all):
-        ts = ts_all[utt_id]
+    for utt_id in sorted(transcripts):
+        ts = transcripts[utt_id]
         f.write((u'%s\n' % ts['ts']).encode('utf8'))
 
 print "%s written." % fn

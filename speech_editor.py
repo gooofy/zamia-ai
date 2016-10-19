@@ -305,6 +305,10 @@ parser = OptionParser("usage: %prog [options] [filter])")
 parser.add_option("-p", "--prompts", dest="promptsfn",
                   help="read prompts from FILE", metavar="FILE")
 
+parser.add_option("-m", "--missing-words", action="store_true", dest="missing_words", 
+                  help="only work on submissions that have at least one missing word")
+
+
 (options, args) = parser.parse_args()
 
 ts_filter = None
@@ -470,7 +474,25 @@ try:
             continue
 
         if not ts_filter or (ts_filter in cfn) or (ts_filter in ts['prompt'].lower()):
-            edit_ts.append(ts)
+
+            if options.missing_words:
+
+                missing = False
+
+                t = ts['ts']
+                if len(t) == 0:
+                    t = ' '.join(tokenize(ts['prompt']))
+                    
+                for token in t.split(' '):
+
+                    if not token in lex:
+                        missing = True
+                        break
+                if missing:
+                    edit_ts.append(ts)
+
+            else:
+                edit_ts.append(ts)
 
         cur_ts = 0
 

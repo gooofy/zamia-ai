@@ -240,6 +240,7 @@ wrt = { u'0'             : u'null',
         u'elephanten'    : u'elefanten',
         u'abschluß'      : u'abschluss',
         u'philipp'       : u'philip',
+        u'millenium'     : u'millennium',
         u'§'             : u'paragraph'}
 
 

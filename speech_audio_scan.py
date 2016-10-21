@@ -39,6 +39,19 @@ from speech_transcripts import Transcripts
 logging.basicConfig(level=logging.INFO)
 
 #
+# commandline
+#
+
+parser = OptionParser("usage: %prog [options] ")
+
+parser.add_option ("-l", "--lang", dest="lang", type = "str", default='de',
+           help="language (default: de)")
+
+(options, args) = parser.parse_args()
+
+lang = options.lang
+
+#
 # init terminal
 #
 
@@ -52,18 +65,37 @@ sys.setdefaultencoding('utf-8')
 
 config = utils.load_config()
 
-vf_audiodir = config.get("speech", "vf_audiodir_de")
-extrasdir   = config.get("speech",  "extrasdir_de")
-gspv2_dir   = config.get("speech", "gspv2_dir")
+scan_dirs = []
+if lang == 'de':
 
-wav16_dir   = config.get("speech", "wav16_dir_de")
+
+    scan_dirs.append(config.get("speech", "vf_audiodir_de"))
+    scan_dirs.append(config.get("speech", "extrasdir_de"))
+    scan_dirs.append(config.get("speech", "gspv2_dir") + '/train')
+    scan_dirs.append(config.get("speech", "gspv2_dir") + '/dev')
+    # scan_dirs.append(config.get("speech", "gspv2_dir") + '/test')
+
+    wav16_dir   = config.get("speech", "wav16_dir_de")
+
+elif lang == 'en':
+
+    scan_dirs.append(config.get("speech", "vf_audiodir_en"))
+
+    wav16_dir   = config.get("speech", "wav16_dir_en")
+
+else:
+
+    print "***ERROR: language %s not supported yet." % lang
+    print
+    sys.exit(1)
+
 
 #
 # load transcripts
 #
 
 print "loading transcripts..."
-transcripts = Transcripts()
+transcripts = Transcripts(lang=lang)
 print "loading transcripts...done."
 
 
@@ -170,11 +202,8 @@ def scan_audiodir(audiodir):
 
                 audio_convert (cfn, subdir, audiofn, audiodir)
 
-scan_audiodir (vf_audiodir)
-scan_audiodir (extrasdir)
-scan_audiodir (gspv2_dir + '/dev')
-# FIXME: enable scan_audiodir (gspv2_dir + '/test')
-scan_audiodir (gspv2_dir + '/train')
+for d in scan_dirs:
+    scan_audiodir (d)
 
 print "scanning done."
 

@@ -169,7 +169,7 @@ def scan_audiodir(audiodir):
                         afn = line.split(' ')[0]
                         ts = line[len(afn)+1:]
 
-                    prompts[afn] = ts
+                    prompts[afn] = ts.replace(';',',')
 
             # print repr(prompts)
 

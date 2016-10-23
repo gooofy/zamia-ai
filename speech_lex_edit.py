@@ -101,7 +101,7 @@ def lex_gen_ipa (locale, engine, voice, speak=False):
     if speak:
         tts.set_locale ('de')
         tts.set_engine ('mary')
-        tts.set_voice  ('bits3')
+        tts.set_voice  ('dfki-pavoque-neutral-hsmm')
         tts.say_ipa(ipas)
 
     return ipas
@@ -110,10 +110,6 @@ def lex_gen_ipa (locale, engine, voice, speak=False):
 def lex_set_token(token):
 
     global lex, lex_token, lex_entry, lex_base, lex_gen
-
-    tts.set_locale ('de')
-    tts.set_engine ('mary')
-    tts.set_voice ('bits3')
 
     lex_token = token
     lex_base  = token.split('_')[0]
@@ -124,11 +120,16 @@ def lex_set_token(token):
 
     else:
 
-        ipas = tts.gen_ipa (lex_base)
+        ipas = lex_gen_ipa('de', 'sequitur', 'de')
         lex_entry = {'ipa': ipas}
         lex[lex_token] = lex_entry
 
+
     ipas = lex_entry['ipa']
+
+    tts.set_locale ('de')
+    tts.set_engine ('mary')
+    tts.set_voice ('dfki-pavoque-neutral-hsmm')
     tts.say_ipa(ipas)
 
     lex_gen['de-mary']     = lex_gen_ipa('de', 'mary',     'bits3')

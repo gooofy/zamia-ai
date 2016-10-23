@@ -37,7 +37,7 @@ from speech_transcripts import Transcripts
 from speech_lexicon import Lexicon, ipa2xsampa, xsampa2ipa
 from speech_tokenizer import tokenize
 
-NUM_WORDS = 20
+NUM_WORDS = 50
 
 verbose = len(sys.argv)==2 and sys.argv[1] == '-v'
 

@@ -150,6 +150,10 @@ with codecs.open (pdfn, 'w', 'utf8') as pdf:
 
         phones = xa.split(' ')
         for phone in phones:
+
+            if len(phone.strip()) == 0:
+                print u"***ERROR: empty phone detected in lex entry %s %s" % (word, ipa)
+
             phoneset.add(phone)
     
 print "%s written." % pdfn

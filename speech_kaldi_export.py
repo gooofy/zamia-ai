@@ -322,7 +322,6 @@ utils.copy_file ('data/src/speech/kaldi-mfcc-hires.conf', '%s/conf/mfcc_hires.co
 utils.copy_file ('data/src/speech/kaldi-online-cmvn.conf', '%s/conf/online_cmvn.conf' % work_dir)
 utils.mkdirs ('%s/local' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-build-lm.sh', '%s/local/build_lm.sh' % work_dir)
-utils.copy_file ('data/src/speech/kaldi-run-am.sh', '%s/local/run_am.sh' % work_dir)
 utils.copy_file ('data/src/speech/kaldi-score.sh', '%s/local/score.sh' % work_dir)
 
 #

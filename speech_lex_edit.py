@@ -237,7 +237,7 @@ try:
             
             tts.set_locale ('fr')
             tts.set_engine ('mary')
-            tts.set_voice ('pierre-voice-hsmm')
+            tts.set_voice ('upmc-pierre-hsmm')
 
             ipas = tts.gen_ipa (lex_base)
             tts.say_ipa(ipas)
@@ -285,7 +285,7 @@ try:
 
             tts.set_locale ('fr')
             tts.set_engine ('mary')
-            tts.set_voice ('pierre-voice-hsmm')
+            tts.set_voice ('upmc-pierre-hsmm')
 
             tts.say_ipa(ipas)
    

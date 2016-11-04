@@ -36,8 +36,11 @@ from sqlalchemy.orm import sessionmaker
 import model
 from logic import *
 from logicdb import *
-from prolog_parser import PrologParser, SYM_EOF
+from prolog_parser import PrologParser, SYM_EOF, PrologError
+from prolog_ai_engine import PrologAIEngine
 import utils
+
+from speech_tokenizer import tokenize
 
 TRANSCRIPTFN = 'ts.txt'
 SEMANTICSFN  = 'sem.txt'
@@ -72,28 +75,35 @@ def nlp_macro(clause):
     nlp_macros[name] = mappings
 
     
-def nlp_gen(clause):
+def nlp_gen(src, clause):
 
-    global nlp_macros, nlp_segments
+    global nlp_macros, session
 
     args = clause.head.args
 
-    nlp = args[0].s
-    preds = args[1].s
+    lang = args[0].name
 
     # extract all macros used
 
     macro_names = set()
 
-    for pos, char in enumerate(nlp):
+    argc = 1
+    while argc < len(args):
 
-        if char == '@':
+        nlp   = args[argc  ].s
+        preds = args[argc+1].s
 
-            macro = re.match(r'@([A-Z]+):', nlp[pos:])
+        argc += 2
 
-            # print "MACRO:", macro.group(1)
+        for pos, char in enumerate(nlp):
 
-            macro_names.add(macro.group(1))
+            if char == '@':
+
+                macro = re.match(r'@([A-Z]+):', nlp[pos:])
+
+                # print "MACRO:", macro.group(1)
+
+                macro_names.add(macro.group(1))
 
     # generate all macro-expansions
 
@@ -120,41 +130,115 @@ def nlp_gen(clause):
                 todo.append ( (idx+1, nm) )
 
         else:
+
+            # generate discourse for this set of mappings
+
             # print repr(mappings)
 
-            s = nlp
-            p = preds
+            # create discourse in db
 
-            for k in mappings:
+            discourse = model.Discourse(num_participants = 2,
+                                        lang             = lang,
+                                        src              = src)
+            session.add(discourse)
 
-                for v in mappings[k]:
+            argc       = 1
+            round_num = 0
+            while argc < len(args):
 
-                    s = s.replace('@'+k+':'+v, mappings[k][v])
-                    p = p.replace('@'+k+':'+v, mappings[k][v])
+                s = args[argc  ].s
+                p = args[argc+1].s
 
-            s = utils.compress_ws(s.lstrip().rstrip())
-            p = utils.compress_ws(p.lstrip().rstrip())
+                argc += 2
 
-            # print s
-            # print p
+                for k in mappings:
 
-            # terms = map(lambda x: x.rstrip().lstrip(), p.split(';'))
-            # print repr(terms)
+                    for v in mappings[k]:
 
-            # FIXME model.add_segment(session, doc, s, terms)
+                        s = s.replace('@'+k+':'+v, mappings[k][v])
+                        p = p.replace('@'+k+':'+v, mappings[k][v])
 
-            nlp_segments.append((s, p))            
+                inp_raw = utils.compress_ws(s.lstrip().rstrip())
+                p       = utils.compress_ws(p.lstrip().rstrip())
+
+                # print s
+                # print p
+
+                # tokenize strings, wrap them into say() calls
+
+                inp_tokenized = ' '.join(tokenize(inp_raw, lang))
+
+                preds = p.split(';')
+                np = ''
+                for pr in preds:
+                    if not pr.startswith('"'):
+                        if len(np)>0:
+                            np += ';'
+                        np += pr.strip()
+                        continue
+
+                    for word in tokenize (pr, lang):
+                        if len(np)>0:
+                            np += ';'
+                        np += 'say(' + lang + ', "' + word + '")'
+
+                    if len(p) > 2:
+                        if p[len(p)-2] in ['.', '?', '!']:
+                            if len(np)>0:
+                                np += ';'
+                            np += 'say(' + lang + ', "' + p[len(p)-2] + '")'
+                    np += ';eou'
+
+
+                dr = model.DiscourseRound(inp_raw       = inp_raw, 
+                                          inp_tokenized = inp_tokenized,
+                                          response      = np, 
+                                          discourse     = discourse, 
+                                          round_num     = round_num)
+                session.add(dr)
+
+                round_num += 1
+
+def nlp_test_setup(clause):
+
+    global nlp_test_engine, db
+
+    nlp_test_context = 'test'
+
+    db.disable_all_modules()
+    db.enable_module(parser.module)
+
+    for arg in clause.head.args:
+
+        if arg.name == 'requires':
+
+            module = arg.args[0].s
+            db.enable_module(module)
+
+        elif arg.name == 'context':
+
+            nlp_test_context = arg.args[0].s
+
+        else:
+            raise PrologError ('nlp_test_setup: only requires / context args allowed')
+
+    nlp_test_engine.set_context_name(nlp_test_context)
 
 def nlp_test(clause):
 
-    global nlp_tests
+    global nlp_test_engine, db
 
     args = clause.head.args
 
-    cnt = 0
-    for ivr in args:
+    lang = args[0].name
 
-        # print "nlp_test: ivr=%s %s" % (repr(ivr), ivr.__class__)
+    # extract test rounds, look up matching discourses
+
+    rounds        = [] # [ (in, out, actions), ...]
+    round_num     = 0
+    discourse_ids = set()
+
+    for ivr in args[1:]:
 
         if ivr.name != 'ivr':
             raise PrologError ('nlp_test: ivr predicate args expected.')
@@ -166,19 +250,116 @@ def nlp_test(clause):
         for e in ivr.args:
 
             if e.name == 'in':
-                test_in = e.args[0].s
+                test_in = ' '.join(tokenize(e.args[0].s, lang))
             elif e.name == 'out':
-                test_out = e.args[0].s
+                test_out = ' '.join(tokenize(e.args[0].s, lang))
             elif e.name == 'action':
                 test_actions.add(unicode(e))
             else:
                 raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
-            
-        nlp_tests.append((cnt, test_in, test_out, test_actions))
-            
-        cnt += 1
+           
+        rounds.append((test_in, test_out, test_actions))
 
-    # print repr(nlp_tests)
+        # look up matching discourse_ids:
+
+        d_ids = set()
+        
+        for dr in session.query(model.DiscourseRound).filter(model.DiscourseRound.inp_tokenized==test_in) \
+                                                     .filter(model.DiscourseRound.round_num==round_num).all():
+            d_ids.add(dr.discourse_id)
+
+        if round_num==0:
+            discourse_ids = d_ids
+        else:
+            discourse_ids = discourse_ids & d_ids
+
+        print 'discourse_ids:', repr(discourse_ids)
+
+        round_num += 1
+
+    if len(discourse_ids) == 0:
+        raise PrologError ('nlp_test: no matching discourse found.')
+
+    # run the test(s): look up reaction to input in db, execute it, check result
+    for did in discourse_ids:
+        nlp_test_engine.reset_context()
+
+        round_num = 0
+        for dr in session.query(model.DiscourseRound).filter(model.DiscourseRound.discourse_id==did) \
+                                                     .order_by(model.DiscourseRound.round_num):
+        
+            prolog_s = ','.join(dr.response.split(';'))
+
+            print
+            print "Round:", round_num, dr.inp_tokenized, '=>', prolog_s
+
+            c = parser.parse_line_clause_body(prolog_s)
+            # logging.debug( "Parse result: %s" % c)
+
+            # logging.debug( "Searching for c: %s" % c )
+
+            nlp_test_engine.reset_utterances()
+            solutions = nlp_test_engine.search(c)
+
+            if len(solutions) == 0:
+                raise PrologError ('nlp_test: no solution found.')
+        
+            print "round %d utterances: %s" % (round_num, repr(nlp_test_engine.get_utterances())) 
+
+            # check actual utterances vs expected one
+
+            test_in, test_out, test_actions = rounds[round_num]
+
+            found = False
+            for utt in nlp_test_engine.get_utterances():
+                actual_out = ' '.join(tokenize(utt['utterance'], utt['lang']))
+                if actual_out == test_out:
+                    found = True
+                    break
+
+            if found:
+                print "***MATCHED!"
+            else:
+                raise PrologError ('nlp_test: actual utterance did not match.')
+            
+
+            # FIXME: check actions
+
+            round_num += 1
+
+def init_src(ref, name):
+
+    global session
+
+    session.query(model.Source).filter(model.Source.ref==ref).delete()
+    src = model.Source(ref  = ref,
+                       name = name)
+    session.add(src)
+    return src
+
+def set_context_default(clause):
+
+    global db, nlp_test_engine
+
+    solutions = nlp_test_engine.search(clause)
+
+    # print "set_context_default: solutions=%s" % repr(solutions)
+
+    if len(solutions) != 1:
+        raise PrologError ('set_context_default: need exactly one solution.')
+
+    args = clause.head.args
+
+    name  = args[0].s
+    key   = args[1].name
+
+    value = args[2]
+    if isinstance (value, Variable):
+        value = solutions[0][value.name]
+
+    value = unicode(value)
+
+    db.set_context_default(name, key, value)
 
 #
 # init terminal
@@ -194,30 +375,11 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 parser = OptionParser("usage: %prog [options] [foo.pl ...] ")
 
-parser.add_option ("-t", "--transcript", dest="transcriptfn", type = "str", default=TRANSCRIPTFN,
-           help="transcript filename (default: %s)" % TRANSCRIPTFN)
+parser.add_option("-g", "--trace", action="store_true", dest="trace",
+                  help="trace test execution")
 
-parser.add_option ("-s", "--semantics", dest="semanticsfn", type = "str", default=SEMANTICSFN,
-           help="semantics filename (default: %s)" % SEMANTICSFN)
-
-parser.add_option ("-T", "--tests", dest="testsfn", type = "str", default=TESTSFN,
-           help="tests filename (default: %s)" % TESTSFN)
-
-# 
-# parser.add_option ("-n", "--kb-name", dest="kb_name", type = "str", default=KB_DEFAULT_NAME,
-#            help="KB Name (default: %s)" % KB_DEFAULT_NAME)
-# 
-# parser.add_option ("-p", "--kb-prefix", dest="kb_prefix", type = "str", default='',
-#            help="KB Prefix (default: none)")
-# 
-# parser.add_option ("-l", "--license", dest="kb_license", type = "str", default=KB_DEFAULT_LICENSE,
-#            help="KB License (default: %s)" % KB_DEFAULT_LICENSE)
-# 
-# parser.add_option ("-u", "--uri", dest="kb_uri", type = "str", default=KB_DEFAULT_URI,
-#            help="KB URI (default: %s)" % KB_DEFAULT_URI)
-# 
-# parser.add_option ("-c", "--clear", dest="clear", action="store_true",
-#            help="clear old KB entries first (default: false)")
+# parser.add_option ("-T", "--tests", dest="testsfn", type = "str", default=TESTSFN,
+#            help="tests filename (default: %s)" % TESTSFN)
 
 (options, args) = parser.parse_args()
 
@@ -244,9 +406,10 @@ for pl_fn in args:
             linecnt += 1
     print "%s: %d lines." % (pl_fn, linecnt)
 
-    nlp_macros   = {}
-    nlp_segments = []
-    nlp_tests    = []
+    nlp_macros      = {}
+    src             = None
+    nlp_test_engine = PrologAIEngine(db)
+    nlp_test_engine.set_trace(options.trace)
 
     with open (pl_fn, 'r') as f:
         parser.start(f, pl_fn)
@@ -259,17 +422,32 @@ for pl_fn in args:
                     raise Exception ("No module name given!")
 
                 db.clear_module(parser.module)
+                db.store_module_requirements(parser.module, parser.requirements)
+
                 first = False
 
             for clause in clauses:
                 print u"%7d / %7d (%3d%%) > %s" % (parser.cur_line, linecnt, parser.cur_line * 100 / linecnt, unicode(clause))
 
+                # compiler directive?
+
                 if clause.head.name == 'nlp_macro':
                     nlp_macro(clause)
+
                 elif clause.head.name == 'nlp_gen':
-                    nlp_gen(clause)
+                    if not src:
+                        src = init_src(pl_fn, parser.module)
+                    nlp_gen(src, clause)
+
+                elif clause.head.name == 'nlp_test_setup':
+                    nlp_test_setup(clause)
+
                 elif clause.head.name == 'nlp_test':
                     nlp_test(clause)
+
+                elif clause.head.name == 'set_context_default':
+                    set_context_default(clause)
+
                 else:
                     db.store (parser.module, clause)
 
@@ -279,33 +457,6 @@ for pl_fn in args:
 
                 parser.comment_pred = None
                 parser.comment = ''
-
-    if len(nlp_segments)>0:
-
-        with codecs.open (options.transcriptfn, 'w', 'utf8') as tf:
-
-            for segment in nlp_segments:
-                tf.write(u'%s\n' % segment[0])
-
-            print "%s written." % options.transcriptfn
-
-        with codecs.open (options.semanticsfn, 'w', 'utf8') as sf:
-
-            for segment in nlp_segments:
-                sf.write(u'%s;%s\n' % (segment[0],segment[1]))
-
-            print "%s written." % options.semanticsfn
-
-    if len(nlp_tests)>0:
-        with codecs.open (options.testsfn, 'w', 'utf8') as sf:
-
-            for test in nlp_tests:
-                sf.write(u'%d;%s;%s;%s\n' % (test[0],
-                                             test[1],
-                                             test[2],
-                                             ';'.join(test[3])))
-
-            print "%s written." % options.testsfn
 
 session.commit()
 

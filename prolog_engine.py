@@ -159,14 +159,24 @@ class PrologGoal:
     def __str__ (self) :
         return "Goal clause=%s inx=%d env=%s" % (self.clause, self.inx, self.env)
 
+    def get_depth (self):
+        if not self.parent:
+            return 0
+        return self.parent.get_depth() + 1
+
 class PrologEngine(object):
 
     def register_builtin (self, name, builtin):
         self.builtins[name] = builtin
 
+    def set_trace(self, trace):
+        self.trace = trace
+
     def __init__(self, db):
-        self.db       = db
-        self.builtins = {}
+        self.db           = db
+        self.builtins     = {}
+        self.context_name = 'test'
+        self.trace        = False
 
     # A Goal is a rule in at a certain point in its computation. 
     # env contains definitions (so far), inx indexes the current term
@@ -214,25 +224,47 @@ class PrologEngine(object):
             destEnv.update(dde)
             return True
 
+    def _trace (self, label, goal):
+
+        if not self.trace:
+            return
+
+        depth = goal.get_depth()
+        ind = depth * '  ' + len(label) * ' '
+
+        if goal.inx < len(goal.clause.body):
+            print u"%s %s: %s" % (depth*'  ', label, unicode(goal.clause.body[goal.inx]))
+            print u"%s : %s" % (ind, unicode(goal.clause))
+        else:
+            print u"%s %s: %s" % (depth*'  ', label, unicode(goal.clause))
+
+        print "%s : %s" % (ind, repr(goal.env))
+
+
+
     def search (self, clause):
 
-        queue = [ PrologGoal (clause) ]
+        queue     = [ PrologGoal (clause) ]
+        solutions = []
 
         while queue :
             g = queue.pop()                         # Next goal to consider
-            logging.debug ('g=%s' % str(g))
+
+            self._trace ('CONSIDER', g)
+
+            # logging.debug ('g=%s' % str(g))
             if g.inx >= len(g.clause.body) :        # Is this one finished?
-                logging.debug ('finished: ' + str(g))
+                self._trace ('SUCCESS ', g)
+                # logging.debug ('finished: ' + str(g))
                 if g.parent == None :               # Yes. Our original goal?
-                    if g.env : print  g.env         # Yes. tell user we
-                    else     : print "Yes"          # have a solution
+                    solutions.append(g.env)         # Record solution
                     continue
                 parent = copy.deepcopy(g.parent)    # Otherwise resume parent goal
                 self._unify (g.clause.head, g.env,
                              parent.clause.body[parent.inx], parent.env)
                 parent.inx = parent.inx+1           # advance to next goal in body
                 queue.insert(0,parent)              # let it wait its turn
-                logging.debug ("queue: %s" % str(parent))
+                # logging.debug ("queue: %s" % str(parent))
                 continue
 
             # No. more to do with this goal.
@@ -246,24 +278,33 @@ class PrologEngine(object):
                     if ques == None :
                         g.env[pred.args[0].name] = ans  # Set variable
                     elif ques.name != ans.name :
+                        self._trace ('FAIL    ', g)
                         continue                # Mismatch, fail
                 elif name == 'cut' : queue = [] # Zap the competition
-                elif name == 'fail': continue   # Dont succeed
+                elif name == 'fail':            # Dont succeed
+                    self._trace ('FAIL    ', g)
+                    continue
                 g.inx = g.inx + 1               # Succeed. resume self.
-                queue.insert(0,g)
+                queue.insert(0, g)
                 continue
 
             # builtin predicate ?
 
             if pred.name in self.builtins:
-                if self.builtins[pred.name](g):
+                if self.builtins[pred.name](g, self):
+                    self._trace ('BUILTIN ', g)
                     g.inx = g.inx + 1
                     queue.insert (0, g)
+                else:
+                    self._trace ('FAIL    ', g)
                 continue
 
             # Not special. look up in rule database
 
             clauses = self.db.lookup(pred.name)
+
+            if len(clauses) == 0:
+                raise PrologRuntimeError ('Failed to find predicate "%s" !' % pred.name)
 
             for clause in clauses:
 
@@ -275,6 +316,7 @@ class PrologEngine(object):
                 ans = self._unify (pred, g.env, clause.head, child.env)
                 if ans:                             # if unifies, queue it up
                     queue.insert(0, child)
-                    logging.debug ("Queue %s" % str(child))
+                    # logging.debug ("Queue %s" % str(child))
 
+        return solutions
 

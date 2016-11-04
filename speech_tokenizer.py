@@ -356,10 +356,13 @@ for i in range(10000):
     wrt[u'00'+u] = zahl_in_worten(i)
     wrt[u'000'+u] = zahl_in_worten(i)
 
-def tokenize (s):
-
+def tokenize (s, lang='de'):
 
     global wrt
+
+    if lang != 'de':
+        # FIXME
+        raise Exception ("FIXME: implement tokenizer support for language: " + lang)
 
     for san in symb_abbrev_norm:
         srch = san[0]

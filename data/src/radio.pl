@@ -13,17 +13,17 @@ context(channel, b5aktuell).
 %
 
 nlp_macro('HI',        map(w(''         )),
-                       map(w('Hallo' )),
-                       map(w('Hi' ))).
+                       map(w('Hallo'    )),
+                       map(w('Hi'       ))).
 
 nlp_macro('ADDRESSEE', map(w(''         )),
                        map(w('Computer' )),
                        map(w('HAL'      ))).
 
-nlp_macro('PLEASE'   , map(w(''         )),
+nlp_macro('PLEASE',    map(w(''         )),
                        map(w('bitte'    ))).
 
-nlp_macro('MAL'      , map(w(''         )),
+nlp_macro('MAL',       map(w(''         )),
                        map(w('mal'      ))).
 
 nlp_macro('VERB',      map(w('schalte'   ), v('ein'), p('set_context(channel, C); action(media, tune, C)')),

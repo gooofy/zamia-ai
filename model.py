@@ -67,152 +67,89 @@ class ORMPredicateDoc(Base):
 
     doc               = Column(UnicodeText)
 
+class ModuleDependency(Base):
+
+    __tablename__ = 'module_dependencies'
+
+    id                = Column(Integer, primary_key=True)
+
+    module            = Column(String(255), index=True)
+    requires          = Column(String(255), index=True)
+
 #
 # NLP stuff
 #
 
-class Document(Base):
+class Source(Base):
 
-    __tablename__ = 'documents'
+    __tablename__ = 'sources'
 
     ref               = Column(String(255), primary_key=True)
     
     name              = Column(Unicode(255), index=True)
-    doctype           = Column(Enum('col', 'doc', 'dlg', name='doctypes'), default='col', index=True)
 
-    segments          = relationship("Segment", back_populates="doc", cascade="all, delete-orphan")
+    discourses        = relationship("Discourse", backref="src", passive_deletes=True)
 
     def __unicode__(self):
         return self.name
 
-class Segment(Base):
+class Discourse(Base):
 
-    __tablename__ = 'segments'
+    __tablename__ = 'discourses'
 
     id                = Column(Integer, primary_key=True)
     
-    txt               = Column(UnicodeText, index=True)
+    num_participants  = Column(Integer)
     lang              = Column(String(2), index=True)
-    participant       = Column(Integer, index=True) # for dialogs
 
-    doc_ref           = Column(String(255), ForeignKey('documents.ref'))
-    doc               = relationship("Document")
+    src_ref           = Column(String(255), ForeignKey('sources.ref', ondelete='CASCADE'))
 
-    ssms              = relationship("SegmentSemanticMap", back_populates="segment", cascade="all, delete-orphan")
+    rounds            = relationship("DiscourseRound", backref="discourse", passive_deletes=True)
 
-# Semantics
+class DiscourseRound(Base):
 
-class SemanticTerm(Base):
-
-    __tablename__ = 'semantic_terms'
-
-    term              = Column(String(255), primary_key=True)
-    comment           = Column(UnicodeText)
-
-class SegmentSemanticMap(Base):
-
-    __tablename__ = 'seg_sem_map'
+    __tablename__ = 'discourse_rounds'
 
     id                = Column(Integer, primary_key=True)
-    
-    segment_id        = Column(Integer, ForeignKey('segments.id'))
-    segment           = relationship("Segment")
-    term_term         = Column(String(255), ForeignKey('semantic_terms.term'))
-    term              = relationship("SemanticTerm")
 
-# Speech
-# 
-# class Pronounciation(Base):
-# 
-#     __tablename__ = 'pronounciations'
-# 
-#     id                = Column(Integer, primary_key=True)
-#     
-#     token_txt         = Column(String(255), ForeignKey('tokens.txt'))
-#     token             = relationship("Token")
-#     ipa               = Column(Unicode(255))
-#     priority          = Column(Integer)
-#     lang              = Column(String(2))
-# 
-# class Speaker(Base):
-# 
-#     __tablename__ = 'speakers'
-# 
-#     name              = Column(Unicode(255), primary_key=True)
-#     gender            = Column(Enum('male', 'female', 'unknown', name='genders'), default='unknown', index=True)
-#     accent            = Column(Enum('none', 'mild', 'strong', 'unknown', name='accents'), default='unknown', index=True)
-# 
-# class Recording(Base):
-# 
-#     __tablename__ = 'recordings'
-# 
-#     fileref           = Column(String(255), primary_key=True)
-# 
-#     segment_id        = Column(Integer, ForeignKey('segments.id'))
-#     segment           = relationship("Segment")
-#     speaker_name      = Column(Unicode(255), ForeignKey('speakers.name'))
-#     speaker           = relationship("Speaker")
-# 
-#     quality           = Column(Enum('high', 'low', 'bad', 'unknown', name='qualities'), default='unknown', index=True)
-# 
-# class RecordingPronounciationMap(Base):
-# 
-#     __tablename__ = 'rec_prn_map'
-# 
-#     id                = Column(Integer, primary_key=True)
-#     
-#     recording_id      = Column(String(255), ForeignKey('recordings.fileref'))
-#     recording         = relationship("Recording")
-#     idx               = Column(Integer)
-#     pronounciation_id = Column(Integer, ForeignKey('pronounciations.id'))
-#     pronounciation    = relationship("Pronounciation")
+    round_num         = Column(Integer, index=True)
+
+    inp_raw           = Column(UnicodeText)
+    inp_tokenized     = Column(UnicodeText)
+    response          = Column(UnicodeText)
+
+    discourse_id      = Column(Integer, ForeignKey('discourses.id', ondelete='CASCADE'))
+
+class Context(Base):
+
+    __tablename__ = 'contexts'
+
+    id                = Column(Integer, primary_key=True)
+
+    name              = Column(String, index=True)
+    key               = Column(Unicode, index=True)
+    value             = Column(UnicodeText)
+    default_value     = Column(UnicodeText)
 
 Base.metadata.create_all(engine)
 
-def store_doc (session, ref, name, delete = True):
+# def store_doc (session, ref, name, delete = True):
+# 
+#     doc = session.query(Document).filter(Document.ref==ref).first()
+# 
+#     if not doc:
+#         doc = Document (ref=ref, name=name)
+#         session.add(doc)
+# 
+#     else:
+# 
+#         if delete:
+# 
+#             session.delete(doc)
+# 
+#             doc = Document (ref=ref, name=name)
+#             session.add(doc)
+# 
+#     return doc
 
-    doc = session.query(Document).filter(Document.ref==ref).first()
-
-    if not doc:
-        doc = Document (ref=ref, name=name)
-        session.add(doc)
-
-    else:
-
-        if delete:
-
-            session.delete(doc)
-
-            doc = Document (ref=ref, name=name)
-            session.add(doc)
-
-    return doc
-
-term_cache = {}
-
-def add_segment (session, doc, txt, terms):
-
-    global term_cache
-
-    segment = Segment (txt=txt, lang='de', participant=0, doc=doc)
-    session.add(segment)
-
-    for t in terms:
-
-        if not t in term_cache:
-
-            term = session.query(SemanticTerm).filter(SemanticTerm.term == t).first()
-
-            if not term:
-                term = SemanticTerm(term=t)
-                session.add(term)
-
-            term_cache[t] = term
-        else:
-            term = term_cache[t]
-
-        ssm = SegmentSemanticMap(segment=segment, term=term)
-        session.add(ssm)
-
-    return segment
 

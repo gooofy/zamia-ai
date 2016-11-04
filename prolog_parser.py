@@ -171,6 +171,10 @@ class PrologParser(object):
                     if m:
                         self.module = m.group(1)
 
+                    m = re.match (r"^\s*requires\s+([a-zA-Z0-9_-]+)", comment_line)
+                    if m:
+                        self.requirements.add(m.group(1))
+
                 elif self.cstate == CSTATE_BODY:
                     if len(self.comment)>0:
                         self.comment += '\n'
@@ -487,6 +491,7 @@ class PrologParser(object):
         self.comment_pred = None
         self.comment      = ''
         self.module       = None
+        self.requirements = set()
 
         self.next_c()
         self.next_sym()

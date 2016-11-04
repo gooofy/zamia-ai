@@ -3,63 +3,13 @@
 %! module common-sense
 
 %
-% answers (FIXME: move to separate module)
+% time strings
 %
 
 timeStrDe(today, "heute").
 timeStrDe(tomorrow, "morgen").
 timeStrDe(dayAfterTomorrow, "übermorgen").
-
-answerWeatherDe(weatherCondRain, DeP, DeEvT, TMIN, TMAX):-
-    say("de","%s regnet es in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TMIN, TMAX).
-
-answer(weather, de, EvT, P) :-
-    time(E, EvT), 
-    place(E, P), 
-    weatherDesc(E, DESC),
-    tempMin(E, TMIN),
-    tempMax(E, TMAX),
-    precipitation (E, PREC),
-    timeStrDe(EvT, DeEvT),
-    placeStrDe(P, DeP),
-    answerWeatherDe(DESC, DeP, DeEvT, TMIN, TMAX).
-
-answer(weatherPrecCloud, de, EvT, P) :-
-    time(E, EvT), 
-    place(E, P), 
-    precipitation (E, PREC),
-    cloudiness (E, CLDS),
-    timeStrDe(EvT, DeEvT),
-    placeStrDe(P, DeP),
-    answerWeatherPrecCloudDe(PREC, CLDS, DeEvT, DeP).
-
-
-answerWeatherPrecCloudDe(PREC, CLDS, DeEvT, DeP) :-
-    PREC < 0.5,
-    CLDS < 50,
-    say("de","%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP).
-
-answerWeatherPrecCloudDe(PREC, CLDS, DeEvT, DeP) :-
-    PREC >= 0.5,
-    CLDS < 50,
-    say("de","%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC).
-
-answerWeatherPrecCloudDe(PREC, CLDS, DeEvT, DeP) :-
-    PREC < 0.5,
-    CLDS >= 50,
-    say("de","%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP).
-
-answerWeatherPrecCloudDe(PREC, CLDS, DeEvT, DeP) :-
-    PREC >= 0.5,
-    CLDS >= 50,
-    say("de","%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC).
-
-%
-% defaults
-%
-
-context(place, stuttgart).
-context(time, now).
+timeStrDe(nextThreeDays, "in den nächsten drei Tagen").
 
 %
 % geography
@@ -78,13 +28,10 @@ placeStrDe(freudental, "Freudental").
 %
 
 before_evening(TS)  :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H < 18.
-before_evening(now) :- get_time(T), before_evening(T).
+% before_evening(now) :- get_time(T), before_evening(T).
 
 after_evening(TS)   :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H >= 18.
-after_evening(now)  :- get_time(T), after_evening(T).
-
-near_future(weather, now, today)    :- before_evening(now).
-near_future(weather, now, tomorrow) :- after_evening(now).
+% after_evening(now)  :- get_time(T), after_evening(T).
 
 % startTime(tomorrowAfternoon,X) :- date_time_stamp(date(2015,12,03,11,0,0,'local'),X).
 % endTime(tomorrowAfternoon,X)   :- date_time_stamp(date(2015,12,03,17,0,0,'local'),X).

@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# export speech training data to create a CMU Sphinx training case
+# export speech training data to create a CMU Sphinx training cases
 #
 
 import sys
@@ -35,7 +35,8 @@ import utils
 from speech_lexicon import ipa2xsampa, xsampa2ipa, xsampa2xarpabet, Lexicon
 from speech_transcripts import Transcripts
 
-WORKDIR = 'data/dst/speech/%s/cmusphinx'
+WORKDIR_CONT = 'data/dst/speech/%s/cmusphinx_cont'
+WORKDIR_PTM  = 'data/dst/speech/%s/cmusphinx_ptm'
 LANG    = 'de'
 
 #DEBUG_LIMIT = 5000
@@ -60,10 +61,6 @@ sys.setdefaultencoding('utf-8')
 
 config = utils.load_config()
 
-work_dir    = WORKDIR % LANG
-
-mfcc_dir    = "%s/mfcc" % work_dir
-
 wav16_dir   = config.get("speech", "wav16_dir_de")
 
 #
@@ -79,145 +76,153 @@ transcripts = Transcripts()
 ts_all, ts_train, ts_test = transcripts.split(limit=DEBUG_LIMIT)
 print "loading transcripts (%d train, %d test) ...done." % (len(ts_train),
                                                             len(ts_test))
-#
-# language model
-#
 
-utils.mkdirs('%s' % work_dir)
+def export_sphinx_case(work_dir, sphinxtrain_cfg_fn):
 
-fn = '%s/prompts.sent' % work_dir
+    #
+    # language model
+    #
 
-with codecs.open(fn, 'w', 'utf8') as outf:
+    utils.mkdirs('%s' % work_dir)
 
-    for cfn in ts_all:
+    fn = '%s/prompts.sent' % work_dir
 
-        transcript = transcripts[cfn]['ts']
+    with codecs.open(fn, 'w', 'utf8') as outf:
 
-        outf.write ('%s\n' % transcript)
+        for cfn in ts_all:
 
-print "%s written." % fn
-print
+            transcript = transcripts[cfn]['ts']
 
-fn = '%s/wlist.txt' % work_dir
+            outf.write ('%s\n' % transcript)
 
-with codecs.open(fn, 'w', 'utf8') as outf:
+    print "%s written." % fn
+    print
 
-    for word in lex:
+    fn = '%s/wlist.txt' % work_dir
 
-        outf.write ('%s\n' % word)
+    with codecs.open(fn, 'w', 'utf8') as outf:
 
-print "%s written." % fn
-print
+        for word in lex:
 
-#
-# create work_dir structure
-#
+            outf.write ('%s\n' % word)
 
+    print "%s written." % fn
+    print
 
-utils.mkdirs('%s/logs' % work_dir)
-utils.mkdirs('%s/etc'  % work_dir)
-utils.mkdirs('%s' % mfcc_dir)
+    #
+    # create work_dir structure
+    #
 
-# generate sphinx_train.cfg, featdir in there
+    mfcc_dir    = "%s/mfcc" % work_dir
 
-# inf = codecs.open ('data/src/speech/sphinx_train.cfg', 'r', 'utf8')
-# outf = codecs.open ('%s/etc/sphinx_train.cfg' % work_dir, 'w', 'utf8')
-# for line in inf:
-#     s = line.replace('%FEATDIR%', mfcc_dir).replace('%WORKDIR%', work_dir)
-#     outf.write (s)
-# inf.close()
-# outf.close()
+    utils.mkdirs('%s/logs' % work_dir)
+    utils.mkdirs('%s/etc'  % work_dir)
+    utils.mkdirs('%s' % mfcc_dir)
 
-utils.copy_file ('data/src/speech/sphinx_train.cfg', '%s/etc/sphinx_train.cfg' % work_dir)
-utils.copy_file ('data/src/speech/sphinx-voxforge.filler', '%s/etc/voxforge.filler' % work_dir)
-utils.copy_file ('data/src/speech/sphinx-feat.params', '%s/etc/feat.params' % work_dir)
+    # generate sphinx_train.cfg, featdir in there
 
-# generate dict
+    # inf = codecs.open ('data/src/speech/sphinx_train.cfg', 'r', 'utf8')
+    # outf = codecs.open ('%s/etc/sphinx_train.cfg' % work_dir, 'w', 'utf8')
+    # for line in inf:
+    #     s = line.replace('%FEATDIR%', mfcc_dir).replace('%WORKDIR%', work_dir)
+    #     outf.write (s)
+    # inf.close()
+    # outf.close()
 
-phoneset = set()
+    utils.copy_file (sphinxtrain_cfg_fn, '%s/etc/sphinx_train.cfg' % work_dir)
+    utils.copy_file ('data/src/speech/sphinx-voxforge.filler', '%s/etc/voxforge.filler' % work_dir)
+    utils.copy_file ('data/src/speech/sphinx-feat.params', '%s/etc/feat.params' % work_dir)
 
-pdfn = '%s/etc/voxforge.dic' % work_dir
-with codecs.open (pdfn, 'w', 'utf8') as pdf:
+    # generate dict
 
-    for word in lex:
+    phoneset = set()
 
-        ipa = lex[word]['ipa']
+    pdfn = '%s/etc/voxforge.dic' % work_dir
+    with codecs.open (pdfn, 'w', 'utf8') as pdf:
 
-        xs  = ipa2xsampa(word, ipa)
-        xa  = xsampa2xarpabet(word, xs)
+        for word in lex:
 
-        pdf.write (u'%s %s\n' % (word, xa))
+            ipa = lex[word]['ipa']
 
-        phones = xa.split(' ')
-        for phone in phones:
+            xs  = ipa2xsampa(word, ipa)
+            xa  = xsampa2xarpabet(word, xs)
 
-            if len(phone.strip()) == 0:
-                print u"***ERROR: empty phone detected in lex entry %s %s" % (word, ipa)
+            pdf.write (u'%s %s\n' % (word, xa))
 
-            phoneset.add(phone)
-    
-print "%s written." % pdfn
-print
+            phones = xa.split(' ')
+            for phone in phones:
 
-print "Got %d phones." % len(phoneset)
+                if len(phone.strip()) == 0:
+                    print u"***ERROR: empty phone detected in lex entry %s %s" % (word, ipa)
 
-phfn = '%s/etc/voxforge.phone' % work_dir
-with codecs.open (phfn, 'w', 'utf8') as phf:
+                phoneset.add(phone)
+        
+    print "%s written." % pdfn
+    print
 
-    for phone in phoneset:
-        phf.write (u'%s\n' % phone)
+    print "Got %d phones." % len(phoneset)
 
-    phf.write (u'SIL\n')
+    phfn = '%s/etc/voxforge.phone' % work_dir
+    with codecs.open (phfn, 'w', 'utf8') as phf:
 
-print "%s written." % phfn
-print
+        for phone in phoneset:
+            phf.write (u'%s\n' % phone)
 
-#
-# prompts
-#
+        phf.write (u'SIL\n')
 
-train_fifn = '%s/etc/voxforge_train.fileids'       % work_dir
-train_tsfn = '%s/etc/voxforge_train.transcription' % work_dir
-test_fifn  = '%s/etc/voxforge_test.fileids'        % work_dir
-test_tsfn  = '%s/etc/voxforge_test.transcription'  % work_dir
-runfeatfn  = '%s/run-feat.sh'                      % work_dir
+    print "%s written." % phfn
+    print
 
-SPHINXFE = "sphinx_fe -i '%s' -part 1 -npart 1 -ei wav -o '%s' -eo mfc -nist no -raw no -mswav yes -samprate 16000 -lowerf 130 -upperf 6800 -nfilt 25 -transform dct -lifter 22 >>logs/mfcc%02d.log 2>&1 &\n"
-with codecs.open (runfeatfn,  'w', 'utf8') as runfeatf:
+    #
+    # prompts
+    #
 
-    runfeatf.write('#!/bin/bash\n\n')
+    train_fifn = '%s/etc/voxforge_train.fileids'       % work_dir
+    train_tsfn = '%s/etc/voxforge_train.transcription' % work_dir
+    test_fifn  = '%s/etc/voxforge_test.fileids'        % work_dir
+    test_tsfn  = '%s/etc/voxforge_test.transcription'  % work_dir
+    runfeatfn  = '%s/run-feat.sh'                      % work_dir
 
-    cnt = 0
-    for cfn in ts_all:
+    SPHINXFE = "sphinx_fe -i '%s' -part 1 -npart 1 -ei wav -o '%s' -eo mfc -nist no -raw no -mswav yes -samprate 16000 -lowerf 130 -upperf 6800 -nfilt 25 -transform dct -lifter 22 >>logs/mfcc%02d.log 2>&1 &\n"
+    with codecs.open (runfeatfn,  'w', 'utf8') as runfeatf:
 
-        w16filename = "%s/%s.wav" % (wav16_dir, cfn)
-        mfcfilename = "mfcc/%s.mfc" % cfn
-        runfeatf.write(SPHINXFE % (w16filename, mfcfilename, cnt) )
-        cnt = (cnt + 1) % NJOBS
+        runfeatf.write('#!/bin/bash\n\n')
 
-        if cnt == 0:
-            runfeatf.write('wait\n')
+        cnt = 0
+        for cfn in ts_all:
 
-print "%s written." % runfeatfn
+            w16filename = "%s/%s.wav" % (wav16_dir, cfn)
+            mfcfilename = "mfcc/%s.mfc" % cfn
+            runfeatf.write(SPHINXFE % (w16filename, mfcfilename, cnt) )
+            cnt = (cnt + 1) % NJOBS
 
-with codecs.open (train_fifn, 'w', 'utf8') as train_fif, \
-     codecs.open (train_tsfn, 'w', 'utf8') as train_tsf, \
-     codecs.open (test_fifn,  'w', 'utf8') as test_fif,  \
-     codecs.open (test_tsfn,  'w', 'utf8') as test_tsf:
+            if cnt == 0:
+                runfeatf.write('wait\n')
 
-    for cfn in ts_train:
-        train_fif.write ('%s\n' % cfn)
-        train_tsf.write (u'<s> %s </s> (%s)\n' % (ts_train[cfn]['ts'], cfn))
+    print "%s written." % runfeatfn
 
-    for cfn in ts_test:
-        test_fif.write ('%s\n' % cfn)
-        test_tsf.write (u'<s> %s </s> (%s)\n' % (ts_test[cfn]['ts'], cfn))
+    with codecs.open (train_fifn, 'w', 'utf8') as train_fif, \
+         codecs.open (train_tsfn, 'w', 'utf8') as train_tsf, \
+         codecs.open (test_fifn,  'w', 'utf8') as test_fif,  \
+         codecs.open (test_tsfn,  'w', 'utf8') as test_tsf:
 
-print "%s written." % train_tsfn
-print "%s written." % train_fifn
-print "%s written." % test_tsfn
-print "%s written." % test_fifn
+        for cfn in ts_train:
+            train_fif.write ('%s\n' % cfn)
+            train_tsf.write (u'<s> %s </s> (%s)\n' % (ts_train[cfn]['ts'], cfn))
 
-utils.copy_file ('data/src/speech/sphinx-run.sh', '%s/sphinx-run.sh' % work_dir)
+        for cfn in ts_test:
+            test_fif.write ('%s\n' % cfn)
+            test_tsf.write (u'<s> %s </s> (%s)\n' % (ts_test[cfn]['ts'], cfn))
 
+    print "%s written." % train_tsfn
+    print "%s written." % train_fifn
+    print "%s written." % test_tsfn
+    print "%s written." % test_fifn
+
+    utils.copy_file ('data/src/speech/sphinx-run.sh', '%s/sphinx-run.sh' % work_dir)
+
+# we create two different training cases in separate subdirs here, one for a continous and one for a ptm model
+
+export_sphinx_case(WORKDIR_CONT % LANG, 'data/src/speech/sphinx_train_cont.cfg')
+export_sphinx_case(WORKDIR_PTM  % LANG, 'data/src/speech/sphinx_train_ptm.cfg')
 

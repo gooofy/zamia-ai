@@ -8,17 +8,39 @@ mkdir $DISTDIR
 datum=`date +%Y%m%d`
 
 #
-# sphinx model de
+# cont sphinx model de
 #
 
-AMNAME="cmusphinx-voxforge-de-r$datum"
+AMNAME="cmusphinx-cont-voxforge-de-r$datum"
 
 mkdir "$DISTDIR/$AMNAME"
 mkdir "$DISTDIR/$AMNAME/model_parameters"
 
-cp -r data/dst/speech/de/cmusphinx/model_parameters/voxforge.cd_cont_3000 "$DISTDIR/$AMNAME/model_parameters"
-cp -r data/dst/speech/de/cmusphinx/etc "$DISTDIR/$AMNAME"
-cp data/dst/speech/de/cmusphinx/voxforge.html "$DISTDIR/$AMNAME"
+cp -r data/dst/speech/de/cmusphinx_cont/model_parameters/voxforge.cd_cont_6000 "$DISTDIR/$AMNAME/model_parameters"
+cp -r data/dst/speech/de/cmusphinx_cont/etc "$DISTDIR/$AMNAME"
+cp data/dst/speech/de/cmusphinx_cont/voxforge.html "$DISTDIR/$AMNAME"
+cp README.md "$DISTDIR/$AMNAME"
+cp COPYING   "$DISTDIR/$AMNAME"
+cp AUTHORS   "$DISTDIR/$AMNAME"
+
+pushd $DISTDIR
+tar cfvz "$AMNAME.tgz" $AMNAME
+popd
+
+rm -r "$DISTDIR/$AMNAME"
+
+#
+# ptm sphinx model de
+#
+
+AMNAME="cmusphinx-ptm-voxforge-de-r$datum"
+
+mkdir "$DISTDIR/$AMNAME"
+mkdir "$DISTDIR/$AMNAME/model_parameters"
+
+cp -r data/dst/speech/de/cmusphinx_ptm/model_parameters/voxforge.cd_ptm_5000 "$DISTDIR/$AMNAME/model_parameters"
+cp -r data/dst/speech/de/cmusphinx_ptm/etc "$DISTDIR/$AMNAME"
+cp data/dst/speech/de/cmusphinx_ptm/voxforge.html "$DISTDIR/$AMNAME"
 cp README.md "$DISTDIR/$AMNAME"
 cp COPYING   "$DISTDIR/$AMNAME"
 cp AUTHORS   "$DISTDIR/$AMNAME"
@@ -88,7 +110,7 @@ rm -r "$DISTDIR/$AMNAME"
 # srilm de
 #
 
-LMNAME="srilm-voxforge-de-r$datum"
+LMNAME="srilm-voxforge-de-r$datum.arpa"
 cp data/dst/speech/de/kaldi/data/local/lm/lm.arpa data/dist/$LMNAME
 gzip data/dist/$LMNAME
 
@@ -96,8 +118,8 @@ gzip data/dist/$LMNAME
 # cmuclmtk de
 #
 
-LMNAME="cmuclmtk-voxforge-de-r$datum"
-cp data/dst/speech/de/cmusphinx/voxforge.arpa $DISTDIR/$LMNAME
+LMNAME="cmuclmtk-voxforge-de-r$datum.arpa"
+cp data/dst/speech/de/cmusphinx_cont/voxforge.arpa $DISTDIR/$LMNAME
 gzip $DISTDIR/$LMNAME
 
 #

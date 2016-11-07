@@ -132,10 +132,17 @@ print
 #
 
 print
-with codecs.open('data/dst/speech/%s/cmusphinx/logs/sphinxtrain_run.log' % LANG, 'r', 'utf8') as logf:
+with codecs.open('data/dst/speech/%s/cmusphinx_cont/logs/sphinxtrain_run.log' % LANG, 'r', 'utf8') as logf:
     for line in logf:
         if 'WORD ERROR RATE' in line:
-            print "cmusphinx model: %s" % line.strip()
+            print "cmusphinx cont model: %s" % line.strip()
+print
+
+print
+with codecs.open('data/dst/speech/%s/cmusphinx_ptm/logs/sphinxtrain_run.log' % LANG, 'r', 'utf8') as logf:
+    for line in logf:
+        if 'WORD ERROR RATE' in line:
+            print "cmusphinx ptm model: %s" % line.strip()
 print
 
 #

@@ -225,7 +225,7 @@ steps/nnet3/decode.sh --nj $nDecodeJobs --cmd "$decode_cmd" \
     --online-ivector-dir exp/nnet3/ivectors_test \
    exp/nnet3/nnet_tdnn_a/graph data/test_hires exp/nnet3/nnet_tdnn_a/decode || exit 1;
 
-grep WER exp/nnet3/nnet_tdnn_a/decode/scoring_kaldi/best_wer 
+grep WER exp/nnet3/nnet_tdnn_a/decode/scoring_kaldi/best_wer >>RESULTS.txt
 
 echo #############################################################################################################
 echo # LSTM
@@ -332,5 +332,6 @@ steps/nnet3/lstm/decode.sh --nj $nDecodeJobs --cmd "$decode_cmd" \
 	  --online-ivector-dir exp/nnet3/ivectors_test \
 	 $dir/graph data/test_hires $dir/decode || exit 1;
 
-grep WER $dir/decode/scoring_kaldi/best_wer
+# grep WER $dir/decode/scoring_kaldi/best_wer
+cat exp/nnet3/lstm_ld5/decode/scoring_kaldi/best_wer >>RESULTS.txt
 

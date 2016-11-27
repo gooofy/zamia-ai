@@ -43,17 +43,12 @@ from setproctitle import setproctitle
 import wave
 import struct
 
-from sphinxclient import SphinxClient
+from kaldisimple.nnet3 import KaldiNNet3OnlineDecoder
+import numpy as np
 
 PROC_TITLE        = 'hal_asr'
 
 SAMPLE_RATE       = 16000
-
-hmdir     = 'data/dst/speech/de/cmusphinx/model_parameters/voxforge.cd_cont_3000'
-dictf     = 'data/dst/speech/de/cmusphinx/etc/voxforge.dic'
-lm        = 'data/dst/speech/de/cmusphinx/etc/voxforge.lm.DMP'
-#dictf     = 'data/dst/lm/hal.dic'
-#lm        = 'data/dst/lm/hal.lm.DMP'
 
 def hal_comm (cmd, arg):
 
@@ -91,9 +86,12 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 config = utils.load_config()
 
-port_asr    = config.get('speech', 'port_asr')
-extrasdir   = config.get('speech', 'extrasdir_de')
-vf_login    = config.get('speech', 'vf_login')
+port_asr           = config.get('speech', 'port_asr')
+extrasdir          = config.get('speech', 'extrasdir_de')
+vf_login           = config.get('speech', 'vf_login')
+
+kaldi_model_dir_de = config.get('speech', 'kaldi_model_dir_de')
+kaldi_model_de     = config.get('speech', 'kaldi_model_de')
 
 #
 # zmq init
@@ -104,18 +102,23 @@ asr_socket = context.socket(zmq.REP)
 asr_socket.bind ("tcp://*:%s" % port_asr)
 
 #
-# pocketsphinx
+# kaldi asr
 #
 
-sphinx = SphinxClient (hmdir, dictf, lm=lm)
+print '%s loading model...' % kaldi_model_de
+decoder = KaldiNNet3OnlineDecoder (kaldi_model_dir_de, kaldi_model_de)
+print '%s loading model... done.' % kaldi_model_de
+
 
 #
 # main command loop
 #
 
+wf = None
+
 while True:
 
-    reply = 0
+    reply = (0.0, '')
 
     try:
 
@@ -130,53 +133,56 @@ while True:
 
         if msg[0] == 'DECODE':
 
-            audios, do_record, do_asr = msg[1]
+            audios, do_record, do_asr, finalize = msg[1]
 
             audio = map(lambda x: int(x), audios.split(','))
-            packed_audio = struct.pack('%sh' % len(audio), *audio)
-
-            # create wav file in memory
-
-            wav_buffer = StringIO()
-            wf = wave.open(wav_buffer, 'wb')
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(SAMPLE_RATE)
-            wf.setnframes(len(audio)/2)
-
-            wf.writeframes(packed_audio)
-
-            wf.close()
 
             if do_record:
+
                 # store recording in WAV format
-                ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
-                audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
-                logging.debug('audiodirfn: %s' % audiodirfn)
-                utils.mkdirs(audiodirfn)
 
-                cnt = 0
-                while True:
-                    cnt += 1
-                    audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
-                    if not os.path.isfile(audiofn):
-                        break
+                if not wf:
 
-                logging.debug('audiofn: %s' % audiofn)
+                    ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
+                    audiodirfn = '%s/%s-%s-rec/wav' % (extrasdir, vf_login, ds)
+                    logging.debug('audiodirfn: %s' % audiodirfn)
+                    utils.mkdirs(audiodirfn)
 
-                reply = (1.0, 'WAV NUM: ' + str(cnt))
+                    cnt = 0
+                    while True:
+                        cnt += 1
+                        audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
+                        if not os.path.isfile(audiofn):
+                            break
 
-                with open(audiofn, 'wb') as audiof:
-                    wav_buffer.seek(0)
-                    audiof.write(wav_buffer.read())
+                    logging.debug('audiofn: %s' % audiofn)
 
-                logging.info("%s written." % audiofn)
+                    # create wav file 
+
+                    wf = wave.open(audiofn, 'wb')
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)
+                    wf.setframerate(SAMPLE_RATE)
+                    # FIXME ? wf.setnframes(len(audio)/2)
+
+                packed_audio = struct.pack('%sh' % len(audio), *audio)
+                wf.writeframes(packed_audio)
+
+                if finalize:
+
+                    wf.close()  
+                    wf = None
+
+                    reply = (0.0, os.path.basename(audiofn))
 
             if do_asr:
-                wav_buffer.seek(0)
-                confidence, hstr = sphinx.decode(wav_buffer.read())
+                decoder.decode(SAMPLE_RATE, np.array(audio, dtype=np.float32), finalize)
 
-                if hstr:
+                if finalize:
+
+                    hstr       = decoder.get_decoded_string()
+                    confidence = decoder.get_likelihood()
+
                     print
                     print "*****************************************************************************"
                     print "**"
@@ -186,8 +192,6 @@ while True:
                     print
 
                     reply = (confidence, hstr)
-                else:
-                    reply = (0.0, '???')
 
     except:
         logging.error("****************** ERROR: unexpected exception")

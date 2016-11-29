@@ -213,6 +213,21 @@ sgmm_5a_denlats  make_denlats_sgmm2.sh train              lang      sgmm_5a_ali
 sgmm_5a_mmi_b0.1 train_mmi_sgmm2.sh    train              lang      sgmm_5a_denlats 
 ```
 
+Knowledge Base
+==============
+
+set up local dbpedia mirror according to
+
+https://joernhees.de/blog/2015/11/23/setting-up-a-linked-data-mirror-from-rdf-dumps-dbpedia-2015-04-freebase-wikidata-linkedgeodata-with-virtuoso-7-2-1-and-docker-optional/
+
+add local info from:
+
+data/src/kb/weather\_base.n3
+
+run virtuoso:
+
+virtuoso-t -f -c virtuoso
+
 License
 =======
 

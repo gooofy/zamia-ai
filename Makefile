@@ -1,14 +1,15 @@
 SHELL := /bin/bash
 
-all:	prolog nlp_train
+all:	prolog 
 
 prolog:
-	./gen_weather_data.py
 	./prolog_compile.py data/src/common-sense.pl
-	./prolog_compile.py data/dst/weather-dynamic.pl
-	./prolog_compile.py -t data/dst/weather.ts   -s data/dst/weather.sem   -T data/dst/weather.test   data/src/weather.pl 
-	./prolog_compile.py -t data/dst/greetings.ts -s data/dst/greetings.sem -T data/dst/greetings.test data/src/greetings.pl 
-	./prolog_compile.py -t data/dst/radio.ts     -s data/dst/radio.sem     -T data/dst/radio.test     data/src/radio.pl 
+	./prolog_compile.py data/src/weather.pl
+	# ./prolog_compile.py data/src/greetings.pl 
+	# ./prolog_compile.py data/src/radio.pl 
+
+weather:
+	./kb_weather.py
 
 nlp_train:
 	./nlp_train_keras.py
@@ -32,5 +33,5 @@ stats:
 	./speech_stats.py
 
 clean:
-	./clean_clauses.py
+	./prolog_compile.py -C
 	rm -rf data/dst/*

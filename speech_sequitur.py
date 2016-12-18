@@ -33,8 +33,8 @@ from speech_lexicon import xsampa2ipa
 
 LANG = 'de'
 
-MODELFN = 'data/dst/speech/%s/sequitur/model-6'   % LANG
-TMPFN   = 'data/dst/speech/%s/sequitur/words.txt' % LANG
+MODELFN = 'data/models/sequitur-voxforge-%s-r20161117' % LANG
+TMPFN   = '/tmp/sequitur_words_%s.txt' % LANG
 
 def sequitur_gen_ipa(word):
 

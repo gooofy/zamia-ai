@@ -43,6 +43,8 @@ from tts_client import TTSClient
 # Lex Editor
 #
 
+TOKENIZER_ERRORS='data/src/speech/de/tokenizer_errors.txt'
+
 def lex_paint_main():
 
     global stdscr, lex_token, lex, lex_entry, lex_tokens, lex_cur_token, lex_gen
@@ -82,7 +84,7 @@ def lex_paint_main():
     stdscr.insstr(my-2, 0, "SPEAK  P:de-unitsel  O:de-hsmm                   I:fr-hsmm   U:en-hsmm", curses.A_REVERSE )
     stdscr.insstr(my-1, 0, "GEN    G:de-mary     H:de-espeak  J:de-sequitur  K:fr-mary   L:en-mary", curses.A_REVERSE )
     stdscr.insstr(my-2, mx-40, "                                 N:Next ", curses.A_REVERSE )
-    stdscr.insstr(my-1, mx-40, "           E:Edit  T:Token       Q:Quit ", curses.A_REVERSE )
+    stdscr.insstr(my-1, mx-40, " R:remove  E:Edit  T:Token       Q:Quit ", curses.A_REVERSE )
     stdscr.refresh()
 
 def lex_gen_ipa (locale, engine, voice, speak=False):
@@ -211,6 +213,20 @@ try:
     
         elif c == ord('n'):
             lex_cur_token = (lex_cur_token + 1) % len(lex_tokens)
+            lex_set_token (lex_tokens[lex_cur_token])
+   
+        # remove wrong entry 
+        elif c == ord('r'):
+
+            wrong_token = lex_tokens[lex_cur_token]
+
+            lex_tokens.remove(wrong_token)
+            lex.remove(wrong_token)
+
+            with codecs.open(TOKENIZER_ERRORS, 'a', 'utf8') as f:
+                f.write('%s\n' % wrong_token)
+
+            lex_cur_token = lex_cur_token % len(lex_tokens)
             lex_set_token (lex_tokens[lex_cur_token])
     
         # generate de-mary

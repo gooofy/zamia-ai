@@ -46,6 +46,15 @@ class LogicDB(object):
         self.session.query(model.ModuleDependency).filter(model.ModuleDependency.module==module).delete()
         logging.info("Clearing %s ... done." % module)
 
+    def clear_all_modules(self):
+
+        logging.info("Clearing all modules ...")
+        self.session.query(model.ORMClause).delete()
+        self.session.query(model.ORMPredicateDoc).delete()
+        self.session.query(model.ModuleDependency).delete()
+        logging.info("Clearing all modules ... done.")
+        
+
     def store_module_requirements(self, module, requirements):
         for r in requirements:
             md = model.ModuleDependency(module   = module,

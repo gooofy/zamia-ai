@@ -378,6 +378,9 @@ parser = OptionParser("usage: %prog [options] [foo.pl ...] ")
 parser.add_option("-g", "--trace", action="store_true", dest="trace",
                   help="trace test execution")
 
+parser.add_option("-C", "--clear-all", action="store_true", dest="clear_all",
+                  help="clear all modules in db")
+
 # parser.add_option ("-T", "--tests", dest="testsfn", type = "str", default=TESTSFN,
 #            help="tests filename (default: %s)" % TESTSFN)
 
@@ -394,6 +397,9 @@ session = Session()
 #
 
 db = LogicDB(session)
+
+if options.clear_all:
+    db.clear_all_modules()
 
 first = True
 

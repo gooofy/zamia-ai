@@ -88,6 +88,9 @@ class Lexicon(object):
                 entry = self.dictionary[w]
                 f.write(u"%s;%s\n" % (w, entry['ipa']))
 
+    def remove(self, key):
+        del self.dictionary[key]
+
 #
 # big phoneme table
 #

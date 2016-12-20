@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2015 Guenter Bartsch
+# Copyright 2015, 2016 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,22 @@ def _next_skolem_const():
     skolem_index += 1
     return 'g'+str(skolem_index)
 
+class SourceLocation:
+
+    def __init__ (self, fn, line, col):
+        self.fn   = fn
+        self.line = line
+        self.col  = col
+
+    def __str__(self):
+        return '%s: line=%d, col=%d' % (self.fn, self.line, self.col)
+
+    def __unicode__(self):
+        return u'%s: line=%d, col=%d' % (self.fn, self.line, self.col)
+
+    def __repr__(self):
+        return 'SourceLocation(fn=%s, line=%d, col=%d)' % (self.fn, self.line, self.col)
+
 class Literal:
 
     def __unicode__(self):
@@ -55,11 +71,39 @@ class StringLiteral(Literal):
     def __unicode__(self):
         return '"' + self.s + '"'
 
-    def __eq__(self, other):
-        return isinstance(other, StringLiteral) and other.s == self.s
+    def __eq__(self, b):
+        return isinstance(b, StringLiteral) and self.s == b.s
+
+    def __lt__(self, b):
+        assert isinstance(b, StringLiteral)
+        return self.s < b.s
+
+    def __le__(self, b):
+        assert isinstance(b, StringLiteral)
+        return self.s <= b.s
+
+    def __ne__(self, b):
+        return isinstance(b, StringLiteral) and self.s != b.s
+
+    def __ge__(self, b):
+        assert isinstance(b, StringLiteral)
+        return self.s >= b.s
+
+    def __gt__(self, b):
+        assert isinstance(b, StringLiteral)
+        return self.s > b.s
 
     def get_literal(self):
         return self.s
+
+    def __unicode__(self):
+        return u'"' + unicode(self.s.replace('"', '\\"')) + u'"'
+
+    def __str__(self):
+        return '"' + str(self.s.replace('"', '\\"')) + '"'
+
+    def __repr__(self):
+        return repr(self.s)
 
 class NumberLiteral(Literal):
 
@@ -75,11 +119,61 @@ class NumberLiteral(Literal):
     def __repr__(self):
         return repr(self.f)
 
-    def __eq__(self, other):
-        return isinstance(other, NumberLiteral) and other.f == self.f
+    def __eq__(self, b):
+        return isinstance(b, NumberLiteral) and self.f == b.f
+
+    def __lt__(self, b):
+        assert isinstance(b, NumberLiteral)
+        return self.f < b.f
+
+    def __le__(self, b):
+        assert isinstance(b, NumberLiteral)
+        return self.f <= b.f
+
+    def __ne__(self, b):
+        return isinstance(b, NumberLiteral) and self.f != b.f
+
+    def __ge__(self, b):
+        assert isinstance(b, NumberLiteral)
+        return self.f >= b.f
+
+    def __gt__(self, b):
+        assert isinstance(b, NumberLiteral)
+        return self.f > b.f
+
+    def __add__(self, b):
+        assert isinstance(b, NumberLiteral) 
+        return NumberLiteral(b.f + self.f)
+
+    def __div__(self, b):
+        assert isinstance(b, NumberLiteral) 
+        return NumberLiteral(self.f / b.f)
 
     def get_literal(self):
         return self.f
+
+class ListLiteral(Literal):
+
+    def __init__(self, l):
+        self.l = l
+
+    def __unicode__(self):
+        return repr(self.l)
+
+    def __eq__(self, other):
+        return isinstance(other, ListLiteral) and other.l == self.l
+
+    def get_literal(self):
+        return self.l
+
+    def __unicode__(self):
+        return unicode(self.l)
+
+    def __str__(self):
+        return str(self.l)
+
+    def __repr__(self):
+        return repr(self.l)
 
 class Variable(object):
 
@@ -137,7 +231,7 @@ class Predicate:
 
     def __eq__(self, other):
         return (isinstance(other, Predicate)
-                and self.pred == other.pred
+                and self.name == other.name
                 and list(self.args) == list(other.args))
 
     def normalize(self, depth = 0):
@@ -165,9 +259,10 @@ class Predicate:
 
 class Clause:
 
-    def __init__(self, head, body=None):
-        self.head = head
-        self.body = body or []
+    def __init__(self, head, body=None, location=None):
+        self.head     = head
+        self.body     = body or []
+        self.location = location
 
     def __str__(self):
         if self.body:

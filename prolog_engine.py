@@ -52,101 +52,6 @@ binary_operators = {'+': prolog_binary_add,
                     '-': prolog_binary_sub, 
                     '*': prolog_binary_mul}
 
-def prolog_eval (term, env):      # eval all variables within a term to constants
-
-    if isinstance(term, Predicate):
-        if len(term.args) == 1:
-            op = unary_operators.get(term.name)
-            if op:
-
-                a = prolog_eval(term.args[0],env)
-
-                if not isinstance (a, NumberLiteral):
-                    return None
-
-                return op(a.f)
-
-        op = binary_operators.get(term.name)
-        if op:
-            if len(term.args) != 2:
-                return None
-
-            a = prolog_eval(term.args[0],env)
-
-            if not isinstance (a, NumberLiteral):
-                return None
-
-            b = prolog_eval(term.args[1],env)
-
-            if not isinstance (b, NumberLiteral):
-                return None
-
-            return op(a.f, b.f)
-
-    if isinstance (term, Literal):
-        return term
-    if isinstance (term, Variable):
-        ans = env.get(term.name)
-        if not ans:
-            return None
-        else: 
-            return prolog_eval(ans,env)
-    args = []
-    for arg in term.args : 
-        a = prolog_eval(arg,env)
-        if not a: 
-            return None
-        args.append(a)
-    return Predicate(term.name, args)
-
-# helper functions (used by builtin predicates)
-def prolog_get_int(term, env):
-
-    t = prolog_eval (term, env)
-
-    if not isinstance (t, NumberLiteral):
-        raise PrologRuntimeError('Integer expected, %s found instead.' % term.__class__)
-    return int(t.f)
-
-def prolog_get_float(term, env):
-
-    t = prolog_eval (term, env)
-
-    if not isinstance (t, NumberLiteral):
-        raise PrologRuntimeError('Float expected, %s found instead.' % term.__class__)
-    return t.f
-
-def prolog_get_string(term, env):
-
-    t = prolog_eval (term, env)
-
-    if not isinstance (t, StringLiteral):
-        raise PrologRuntimeError('String expected, %s found instead.' % t.__class__)
-    return t.s
-
-def prolog_get_literal(term, env):
-
-    t = prolog_eval (term, env)
-
-    if not isinstance (t, Literal):
-        raise PrologRuntimeError('Literal expected, %s found instead.' % t.__class__)
-    return t.get_literal()
-
-def prolog_get_bool(term, env):
-
-    t = prolog_eval (term, env)
-
-    if not isinstance(t, Predicate):
-        raise PrologRuntimeError('Boolean expected, %s found instead.' % term.__class__)
-    return t.name == 'true'
-
-def prolog_get_variable(term, env):
-
-    if not isinstance(term, Variable):
-        raise PrologRuntimeError('Variable expected, %s found instead.' % term.__class__)
-    return term.name
-
-
 class PrologGoal:
 
     def __init__ (self, clause, parent=None, env={}) :
@@ -169,14 +74,131 @@ class PrologEngine(object):
     def register_builtin (self, name, builtin):
         self.builtins[name] = builtin
 
+    def register_builtin_function (self, name, fn):
+        self.builtin_functions[name] = fn
+
     def set_trace(self, trace):
         self.trace = trace
 
     def __init__(self, db):
-        self.db           = db
-        self.builtins     = {}
-        self.context_name = 'test'
-        self.trace        = False
+        self.db                = db
+        self.builtins          = {}
+        self.builtin_functions = {}
+        self.context_name      = 'test'
+        self.trace             = False
+
+    def prolog_eval (self, term, env):      # eval all variables within a term to constants
+
+        if isinstance(term, Predicate):
+
+            # unary builtin ?
+
+            if len(term.args) == 1:
+                op = unary_operators.get(term.name)
+                if op:
+
+                    a = self.prolog_eval(term.args[0],env)
+
+                    if not isinstance (a, NumberLiteral):
+                        return None
+
+                    return op(a.f)
+
+            # binary builtin ?
+
+            op = binary_operators.get(term.name)
+            if op:
+                if len(term.args) != 2:
+                    return None
+
+                a = self.prolog_eval(term.args[0],env)
+
+                if not isinstance (a, NumberLiteral):
+                    return None
+
+                b = self.prolog_eval(term.args[1],env)
+
+                if not isinstance (b, NumberLiteral):
+                    return None
+
+                return op(a.f, b.f)
+
+            # engine-provided builtin function ?
+
+            if term.name in self.builtin_functions:
+                return self.builtin_functions[term.name](term, env, self)
+
+        if isinstance (term, Literal):
+            return term
+        if isinstance (term, Variable):
+            ans = env.get(term.name)
+            if not ans:
+                return None
+            else: 
+                return self.prolog_eval(ans,env)
+        args = []
+        for arg in term.args : 
+            a = self.prolog_eval(arg,env)
+            if not a: 
+                return None
+            args.append(a)
+        return Predicate(term.name, args)
+
+    # helper functions (used by builtin predicates)
+    def prolog_get_int(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance (t, NumberLiteral):
+            raise PrologRuntimeError('Integer expected, %s found instead.' % term.__class__)
+        return int(t.f)
+
+    def prolog_get_float(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance (t, NumberLiteral):
+            raise PrologRuntimeError('Float expected, %s found instead.' % term.__class__)
+        return t.f
+
+    def prolog_get_string(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance (t, StringLiteral):
+            raise PrologRuntimeError('String expected, %s found instead.' % t.__class__)
+        return t.s
+
+    def prolog_get_literal(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance (t, Literal):
+            raise PrologRuntimeError('Literal expected, %s %s found instead.' % (t.__class__, t))
+        return t.get_literal()
+
+    def prolog_get_bool(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance(t, Predicate):
+            raise PrologRuntimeError('Boolean expected, %s found instead.' % term.__class__)
+        return t.name == 'true'
+
+    def prolog_get_list(self, term, env):
+
+        t = self.prolog_eval (term, env)
+
+        if not isinstance(t, ListLiteral):
+            raise PrologRuntimeError('List expected, %s found instead.' % term.__class__)
+        return t
+
+    def prolog_get_variable(self, term, env):
+
+        if not isinstance(term, Variable):
+            raise PrologRuntimeError('Variable expected, %s found instead.' % term.__class__)
+        return term.name
+
 
     # A Goal is a rule in at a certain point in its computation. 
     # env contains definitions (so far), inx indexes the current term
@@ -190,23 +212,23 @@ class PrologEngine(object):
         # FIXME: ?!? if src.pred == '_' or dest.pred == '_' : return sts(1,"Wildcard")
 
         if isinstance (src, Variable):
-            srcVal = prolog_eval(src, srcEnv)
+            srcVal = self.prolog_eval(src, srcEnv)
             if not srcVal: 
                 return True 
             else: 
                 return self._unify(srcVal, srcEnv, dest, destEnv)
 
         if isinstance (dest, Variable):
-            destVal = prolog_eval(dest, destEnv)     # evaluate destination
+            destVal = self.prolog_eval(dest, destEnv)     # evaluate destination
             if destVal: 
                 return self._unify(src, srcEnv, destVal, destEnv)
             else:
-                destEnv[dest.name] = prolog_eval(src, srcEnv)
+                destEnv[dest.name] = self.prolog_eval(src, srcEnv)
                 return True                         # unifies. destination updated
 
         elif isinstance (src, Literal):
-            srcVal = prolog_eval(src, srcEnv)
-            destVal = prolog_eval(dest, destEnv)
+            srcVal  = self.prolog_eval(src, srcEnv)
+            destVal = self.prolog_eval(dest, destEnv)
             return srcVal == destVal
             
         elif isinstance (dest, Literal):
@@ -241,6 +263,13 @@ class PrologEngine(object):
         print "%s : %s" % (ind, repr(goal.env))
 
 
+    def _trace_fn (self, label, env):
+
+        if not self.trace:
+            return
+
+        print u"%s %s: %s" % ('              ', label, repr(env))
+
 
     def search (self, clause):
 
@@ -273,11 +302,12 @@ class PrologEngine(object):
             name = pred.name
             if name in ['is', 'cut', 'fail'] :
                 if name == 'is' :
-                    ques = prolog_eval(pred.args[0], g.env)
-                    ans  = prolog_eval(pred.args[1], g.env)
+                    ques = self.prolog_eval(pred.args[0], g.env)
+                    ans  = self.prolog_eval(pred.args[1], g.env)
+
                     if ques == None :
                         g.env[pred.args[0].name] = ans  # Set variable
-                    elif ques.name != ans.name :
+                    elif ques != ans :
                         self._trace ('FAIL    ', g)
                         continue                # Mismatch, fail
                 elif name == 'cut' : queue = [] # Zap the competition
@@ -292,11 +322,11 @@ class PrologEngine(object):
 
             if pred.name in self.builtins:
                 if self.builtins[pred.name](g, self):
-                    self._trace ('BUILTIN ', g)
+                    self._trace ('SUCCESS FROM BUILTIN ', g)
                     g.inx = g.inx + 1
                     queue.insert (0, g)
                 else:
-                    self._trace ('FAIL    ', g)
+                    self._trace ('FAIL FROM BUILTIN ', g)
                 continue
 
             # Not special. look up in rule database

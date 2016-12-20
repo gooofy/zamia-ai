@@ -48,6 +48,8 @@ DEBUG_SGM_LIMIT = 0
 PUNKT_PICKLEFN  = 'data/dst/speech/de/punkt.pickle'
 SENTENCEFN      = 'data/dst/speech/de/sentences.txt'
 
+ENABLE_TRAINING = True
+
 class ParoleParser(HTMLParser):
 
     def __init__  (self, processfn):
@@ -155,7 +157,7 @@ def apply_punkt (text):
     sentncs = tokenizer.tokenize(text, realign_boundaries=True)
     for sentence in sentncs:
 
-        # print "Sentence: %s" % sentence
+        print "Sentence: %s" % sentence
 
         outf.write(u'%s\n' % ' '.join(tokenize(sentence)))
 
@@ -179,33 +181,42 @@ config.read("%s/%s" % (home_path, ".nlprc"))
 parole    = config.get("speech", "parole_de")
 europarl  = config.get("speech", "europarl_de")
 
-#
-# punkt tokenizer training
-#
+if ENABLE_TRAINING:
+    #
+    # punkt tokenizer training
+    #
 
-print "training punkt..."
+    print "training punkt..."
 
-punkt_trainer = nltk.tokenize.punkt.PunktTrainer()
+    punkt_trainer = nltk.tokenize.punkt.PunktTrainer()
 
-punkt_count = 0
+    punkt_count = 0
 
-parole_crawl (parole, train_punkt)
+    parole_crawl (parole, train_punkt)
 
-print
-print "Finalizing training..."
-punkt_trainer.finalize_training(verbose=True)
-print "Training done. %d text segments." % punkt_count
-print
+    print
+    print "Finalizing training..."
+    punkt_trainer.finalize_training(verbose=True)
+    print "Training done. %d text segments." % punkt_count
+    print
 
-params = punkt_trainer.get_params()
-# print "Params: %s" % repr(params)
+    params = punkt_trainer.get_params()
+    # print "Params: %s" % repr(params)
 
-tokenizer = nltk.tokenize.punkt.PunktSentenceTokenizer(params)
-with open(PUNKT_PICKLEFN, mode='wb') as f:
-        pickle.dump(tokenizer, f, protocol=pickle.HIGHEST_PROTOCOL)
+    tokenizer = nltk.tokenize.punkt.PunktSentenceTokenizer(params)
+    with open(PUNKT_PICKLEFN, mode='wb') as f:
+            pickle.dump(tokenizer, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-print '%s written.' % PUNKT_PICKLEFN
+    print '%s written.' % PUNKT_PICKLEFN
 
+else:
+
+    print "Loading %s ..." % PUNKT_PICKLEFN
+
+    with open(PUNKT_PICKLEFN, mode='rb') as f:
+        tokenizer = pickle.load(f)
+
+    print "Loading %s ... done." % PUNKT_PICKLEFN
 
 with codecs.open(SENTENCEFN, 'w', 'utf8') as outf:
 

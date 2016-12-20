@@ -92,6 +92,9 @@ class LogicDB(object):
                                arity     = len(clause.head.args), 
                                head      = clause.head.name, 
                                prolog    = unicode(clause))
+
+        # print unicode(clause)
+
         self.session.add(ormc)
        
     def store_doc (self, module, name, doc):

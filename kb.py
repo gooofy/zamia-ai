@@ -21,7 +21,7 @@
 #
 # HAL's central, semantic web based knowledge base
 #
-# current implementation: virtuoso universal server hosted mirror of DBPedia + extensions
+# current implementation: small excerpts from DBPedia plus some extensions stored in a local RDFLib Graph
 #
 
 import sys
@@ -34,8 +34,15 @@ from time import time
 import requests
 from requests.auth import HTTPDigestAuth
 
+import rdflib
+
 import utils
 import model
+
+# our sleepycat graph store
+
+RDF_LIB_STORE_PATH = 'data/dst/HALRDFLibStore'
+RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
 
 #
 # common prefixes we use in our queries
@@ -50,44 +57,111 @@ COMMON_PREFIXES = {
             'dbp':     'http://dbpedia.org/property/',
             'xml':     'http://www.w3.org/XML/1998/namespace',
             'xsd':     'http://www.w3.org/2001/XMLSchema#',
+            'geo':     'http://www.opengis.net/ont/geosparql#',
+            'geof':    'http://www.opengis.net/def/function/geosparql/',
     }
+
+#
+# essentially we have two graphs: dbpedia subset + our own entries
+#
+
+GRAPHS = [ 'http://dbpedia.org', 'http://hal.zamia.org' ]
 
 class HALKB(object):
 
     def __init__(self):
 
         #
-        # get config
-        #
-
-        self.endpoint      = model.config.get("kb", "endpoint")
-        user               = model.config.get("kb", "user")
-        passwd             = model.config.get("kb", "passwd")
-      
-        #
         # prepare our lightweight sparql wrapper
         #
 
         self.query_prefixes = ''.join(map(lambda k: "PREFIX %s: <%s>\n" % (k, COMMON_PREFIXES[k]), COMMON_PREFIXES))
-        self.auth           = HTTPDigestAuth(user, passwd)
+
+        #
+        # set up graph store
+        #
+
+        self.graph = rdflib.ConjunctiveGraph('Sleepycat')
+        self.graph.open(RDF_LIB_STORE_PATH, create = True)
+
+        # Bind a few prefix/namespace pairs for more readable output
+
+        for c in GRAPHS:
+            g = self.graph.get_context(c)
+            for p in COMMON_PREFIXES:
+                g.bind(p, rdflib.Namespace(COMMON_PREFIXES[p]))
+
+    def clear_graph(self, context):
+        query = """
+                CLEAR GRAPH <%s>
+                """ % (context)
+        self.sparql(query)
+
+    def dump(self, fn=RDF_LIB_DUMP_PATH):
+
+        # print
+        # print 'dump', fn
+        # print
+        # print list(self.graph.contexts())
+
+        self.graph.serialize(destination=fn, format='n3')
+
+    def dump_graph(self, context, fn, format='n3'):
+
+        g = self.graph.get_context(context)
+
+        g.serialize(destination=fn, format='n3')
+
+    def parse (self, context, format, data):
+        g = self.graph.get_context(context)
+        g.parse(format=format, data=data)
+
+    def parse_file (self, context, format, fn):
+        g = self.graph.get_context(context)
+        g.parse(fn, format=format)
+
+    #
+    # local sparql queries
+    #
 
     def sparql(self, query):
+
+        query  = self.query_prefixes + query
+
+        return self.graph.update(query)
+
+    def query(self, query):
+
+        query  = self.query_prefixes + query
+
+        return self.graph.query(query)
+
+    #
+    # remote sparql utilities
+    #
+
+    def remote_sparql(self, endpoint, query, user=None, passwd=None, response_format='application/sparql-results+json'):
+
+        if user:
+            auth   = HTTPDigestAuth(user, passwd)
+        else:
+            auth   = None
 
         query  = self.query_prefixes + query
         # print query
 
         response = requests.post(
-          self.endpoint,
+          endpoint,
           # data    = '',
           params  = {'query': query},
-          headers = {"accept": "application/sparql-results+json"},
-          auth   = self.auth
+          headers = {"accept": response_format},
+          auth    = auth
         )
         return response
 
-    def query(self, query):
+    def remote_query(self, endpoint, query, user=None, passwd=None):
 
-        response = self.sparql(query)
+        response = self.remote_sparql(endpoint, query, user=user, passwd=passwd)
 
         return json.loads(response.text.decode("utf-8"))
 
@@ -107,33 +181,5 @@ if __name__ == "__main__":
                    }
                 }
             """
-    print kb.sparql(query)
-
-    query = """
-            WITH <http://hal.zamia.org>
-            DELETE { weather:fc_Fairbanks__Alaska_20161112_morning ?p ?v }
-            WHERE { weather:fc_Fairbanks__Alaska_20161112_morning ?p ?v }
-            """
-    print kb.sparql(query)
-
-
-    # query = """
-    #        SELECT DISTINCT ?location ?cityid ?timezone ?label
-    #        WHERE {
-    #           ?location weather:cityid ?cityid .
-    #           ?location weather:timezone ?timezone .
-    #           ?location rdfs:label ?label .
-    #           FILTER(LANGMATCHES(LANG(?label), "en")) .
-    #        }"""
-    query = """
-           SELECT DISTINCT ?p ?v ?g
-           WHERE {
-              GRAPH ?g { weather:fc_Fairbanks__Alaska_20161112_morning ?p ?v }.
-           }"""
-
-    r = kb.query(query)
-
-    for b in r['results']['bindings']:
-        print repr(b)
-
+    kb.sparql(query)
 

@@ -42,12 +42,6 @@ import utils
 
 from speech_tokenizer import tokenize
 
-TRANSCRIPTFN = 'ts.txt'
-SEMANTICSFN  = 'sem.txt'
-TESTSFN      = 'test.txt'
-
-logging.basicConfig(level=logging.DEBUG)
-
 def nlp_macro(clause):
 
     global nlp_macros
@@ -245,7 +239,7 @@ def nlp_test(clause):
 
         test_in = ''
         test_out = ''
-        test_actions = set()
+        test_actions = []
 
         for e in ivr.args:
 
@@ -254,7 +248,7 @@ def nlp_test(clause):
             elif e.name == 'out':
                 test_out = ' '.join(tokenize(e.args[0].s, lang))
             elif e.name == 'action':
-                test_actions.add(unicode(e))
+                test_actions.append(e.args)
             else:
                 raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
            
@@ -273,12 +267,14 @@ def nlp_test(clause):
         else:
             discourse_ids = discourse_ids & d_ids
 
-        print 'discourse_ids:', repr(discourse_ids)
+        # print 'discourse_ids:', repr(discourse_ids)
 
         round_num += 1
 
     if len(discourse_ids) == 0:
-        raise PrologError ('nlp_test: no matching discourse found.')
+        raise PrologError ('nlp_test: %s: no matching discourse found.' % clause.location)
+
+    nlp_test_parser = PrologParser()
 
     # run the test(s): look up reaction to input in db, execute it, check result
     for did in discourse_ids:
@@ -290,40 +286,67 @@ def nlp_test(clause):
         
             prolog_s = ','.join(dr.response.split(';'))
 
-            print
-            print "Round:", round_num, dr.inp_tokenized, '=>', prolog_s
+            logging.info("nlp_test: %s round=%3d, %s => %s" % (clause.location, round_num, dr.inp_tokenized, prolog_s) )
 
-            c = parser.parse_line_clause_body(prolog_s)
+            c = nlp_test_parser.parse_line_clause_body(prolog_s)
             # logging.debug( "Parse result: %s" % c)
 
             # logging.debug( "Searching for c: %s" % c )
 
             nlp_test_engine.reset_utterances()
+            nlp_test_engine.reset_actions()
             solutions = nlp_test_engine.search(c)
 
             if len(solutions) == 0:
-                raise PrologError ('nlp_test: no solution found.')
+                raise PrologError ('nlp_test: %s no solution found.' % clause.location)
         
-            print "round %d utterances: %s" % (round_num, repr(nlp_test_engine.get_utterances())) 
+            # print "round %d utterances: %s" % (round_num, repr(nlp_test_engine.get_utterances())) 
 
             # check actual utterances vs expected one
 
             test_in, test_out, test_actions = rounds[round_num]
 
-            found = False
-            for utt in nlp_test_engine.get_utterances():
-                actual_out = ' '.join(tokenize(utt['utterance'], utt['lang']))
-                if actual_out == test_out:
-                    found = True
-                    break
+            utterance_matched = False
+            actual_out = ''
+            utts = nlp_test_engine.get_utterances()
 
-            if found:
-                print "***MATCHED!"
+            if len(utts) > 0:
+                for utt in utts:
+                    actual_out = ' '.join(tokenize(utt['utterance'], utt['lang']))
+                    if actual_out == test_out:
+                        utterance_matched = True
+                        break
             else:
-                raise PrologError ('nlp_test: actual utterance did not match.')
-            
+                utterance_matched = len(test_out) == 0
 
-            # FIXME: check actions
+            if utterance_matched:
+                if len(utts) > 0:
+                    logging.info("nlp_test: %s round=%3d *** UTTERANCE MATCHED!" % (clause.location, round_num))
+            else:
+                raise PrologError (u'nlp_test: %s round=%3d actual utterance \'%s\' did not match expected utterance \'%s\'.' % (clause.location, round_num, actual_out, test_out))
+            
+            # check actions
+
+            if len(test_actions)>0:
+
+                # print repr(test_actions)
+
+                actions_matched = True
+                acts = nlp_test_engine.get_actions()
+                for action in test_actions:
+                    for act in acts:
+                        # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                        if action == act:
+                            break
+                    if action != act:
+                        actions_matched = False
+                        break
+
+                if actions_matched:
+                    logging.info("nlp_test: %s round=%3d *** ACTIONS MATCHED!" % (clause.location, round_num))
+                    
+                else:
+                    raise PrologError (u'nlp_test: %s round=%3d ACTIONS MISMATCH.' % (clause.location, round_num))
 
             round_num += 1
 
@@ -381,10 +404,15 @@ parser.add_option("-g", "--trace", action="store_true", dest="trace",
 parser.add_option("-C", "--clear-all", action="store_true", dest="clear_all",
                   help="clear all modules in db")
 
-# parser.add_option ("-T", "--tests", dest="testsfn", type = "str", default=TESTSFN,
-#            help="tests filename (default: %s)" % TESTSFN)
+parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
+                  help="verbose output")
 
 (options, args) = parser.parse_args()
+
+if options.verbose:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
 
 # session, connect to db
 
@@ -401,69 +429,75 @@ db = LogicDB(session)
 if options.clear_all:
     db.clear_all_modules()
 
-first = True
+try:
+    parser = PrologParser()
+    for pl_fn in args:
 
-parser = PrologParser()
-for pl_fn in args:
+        linecnt = 0
+        with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
+            while f.readline():
+                linecnt += 1
+        logging.info("%s: %d lines." % (pl_fn, linecnt))
 
-    linecnt = 0
-    with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
-        while f.readline():
-            linecnt += 1
-    print "%s: %d lines." % (pl_fn, linecnt)
+        nlp_macros      = {}
+        src             = None
+        first           = True
+        nlp_test_engine = PrologAIEngine(db)
+        nlp_test_engine.set_trace(options.trace)
 
-    nlp_macros      = {}
-    src             = None
-    nlp_test_engine = PrologAIEngine(db)
-    nlp_test_engine.set_trace(options.trace)
+        with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
+            parser.start(f, pl_fn)
 
-    with open (pl_fn, 'r') as f:
-        parser.start(f, pl_fn)
+            while parser.cur_sym != SYM_EOF:
+                clauses = parser.clause()
 
-        while parser.cur_sym != SYM_EOF:
-            clauses = parser.clause()
+                if first:
+                    if not parser.module:
+                        raise Exception ("No module name given!")
 
-            if first:
-                if not parser.module:
-                    raise Exception ("No module name given!")
+                    db.clear_module(parser.module)
+                    db.store_module_requirements(parser.module, parser.requirements)
 
-                db.clear_module(parser.module)
-                db.store_module_requirements(parser.module, parser.requirements)
+                    first = False
 
-                first = False
+                for clause in clauses:
+                    logging.debug(u"%7d / %7d (%3d%%) > %s" % (parser.cur_line, linecnt, parser.cur_line * 100 / linecnt, unicode(clause)))
 
-            for clause in clauses:
-                print u"%7d / %7d (%3d%%) > %s" % (parser.cur_line, linecnt, parser.cur_line * 100 / linecnt, unicode(clause))
+                    # compiler directive?
 
-                # compiler directive?
+                    if clause.head.name == 'nlp_macro':
+                        nlp_macro(clause)
 
-                if clause.head.name == 'nlp_macro':
-                    nlp_macro(clause)
+                    elif clause.head.name == 'nlp_gen':
+                        if not src:
+                            src = init_src(pl_fn, parser.module)
+                        nlp_gen(src, clause)
 
-                elif clause.head.name == 'nlp_gen':
-                    if not src:
-                        src = init_src(pl_fn, parser.module)
-                    nlp_gen(src, clause)
+                    elif clause.head.name == 'nlp_test_setup':
+                        nlp_test_setup(clause)
 
-                elif clause.head.name == 'nlp_test_setup':
-                    nlp_test_setup(clause)
+                    elif clause.head.name == 'nlp_test':
+                        nlp_test(clause)
 
-                elif clause.head.name == 'nlp_test':
-                    nlp_test(clause)
+                    elif clause.head.name == 'set_context_default':
+                        set_context_default(clause)
 
-                elif clause.head.name == 'set_context_default':
-                    set_context_default(clause)
+                    else:
+                        db.store (parser.module, clause)
 
-                else:
-                    db.store (parser.module, clause)
+                if parser.comment_pred:
 
-            if parser.comment_pred:
+                    db.store_doc (parser.module, parser.comment_pred, parser.comment)
 
-                db.store_doc (parser.module, parser.comment_pred, parser.comment)
+                    parser.comment_pred = None
+                    parser.comment = ''
 
-                parser.comment_pred = None
-                parser.comment = ''
+    logging.info("Compilation succeeded. Commit...")
+    session.commit()
+    logging.info("done.")
 
-session.commit()
+except PrologError as e:
+
+    logging.error(u"Compilation failed: %s" % unicode(e))
 
 

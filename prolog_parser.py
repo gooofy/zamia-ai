@@ -45,7 +45,7 @@
 #
 # unary-op      ::= '+' | '-' 
 #
-# primary-term  ::= ( variable | number | string | relation | '(' term ')' )
+# primary-term  ::= ( variable | number | string | relation | '(' term { ',' term } ')' )
 #
 
 import os
@@ -61,16 +61,16 @@ from logic import *
 
 # lexer
 
-REL_OP   = set (['=', '\\=', '<', '>', '=<', '>=', 'is']) 
-ADD_OP   = set (['+', '-'])
-MUL_OP   = set (['*', '/', 'div', 'rem', '//', 'rdiv', 'gcd'])
-UNARY_OP = set (['+', '-'])
+REL_OP   = set ([u'=', u'\\=', u'<', u'>', u'=<', u'>=', u'is']) 
+ADD_OP   = set ([u'+', u'-'])
+MUL_OP   = set ([u'*', u'/', u'div', u'rem', u'//', u'rdiv', u'gcd'])
+UNARY_OP = set ([u'+', u'-'])
 
 NAME_CHARS = set(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
                   'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
                   '_','0','1','2','3','4','5','6','7','8','9'])
 
-SIGN_CHARS = set(['=','<','>','+','-','*','/','\\'])
+SIGN_CHARS = set([u'=',u'<',u'>',u'+',u'-',u'*',u'/',u'\\'])
 
 SYM_NONE      =  0
 SYM_EOF       =  1
@@ -96,6 +96,8 @@ class PrologError(Exception):
         self.value = value
     def __str__(self):
         return repr(self.value)
+    def __unicode__(self):
+        return self.value
 
 class PrologParser(object):
 
@@ -105,11 +107,14 @@ class PrologParser(object):
     def report_error(self, s):
         raise PrologError ("%s: error in line %d col %d: %s" % (self.prolog_fn, self.cur_line, self.cur_col, s))
 
+    def get_location(self):
+        return SourceLocation(self.prolog_fn, self.cur_line, self.cur_col)
+
     def next_c(self):
-        self.cur_c    = self.prolog_f.read(1)
+        self.cur_c    = unicode(self.prolog_f.read(1))
         self.cur_col += 1
 
-        if self.cur_c == '\n':
+        if self.cur_c == u'\n':
             self.cur_line += 1
             self.cur_col   = 1
             if self.linecnt > 0 and self.cur_line % 100 == 0:
@@ -121,7 +126,7 @@ class PrologParser(object):
         # print '[', self.cur_c, ']',
 
     def peek_c(self):
-        peek_c = self.prolog_f.read(1)
+        peek_c = unicode(self.prolog_f.read(1))
         self.prolog_f.seek(-1,1)
         return peek_c
 
@@ -136,17 +141,17 @@ class PrologParser(object):
             while not (self.cur_c is None) and self.cur_c.isspace():
                 self.next_c()
 
-            if self.cur_c is None or self.cur_c == '':
+            if self.cur_c is None or self.cur_c == u'':
                 self.cur_sym = SYM_EOF
                 return
 
             # skip comments
-            if self.cur_c == '%':
+            if self.cur_c == u'%':
 
-                comment_line = ''
+                comment_line = u''
                 
                 self.next_c()
-                if self.cur_c == '!':
+                if self.cur_c == u'!':
                     self.cstate = CSTATE_HEADER
                     self.next_c()
 
@@ -154,7 +159,7 @@ class PrologParser(object):
                     if self.cur_c is None:
                         self.cur_sym = SYM_EOF
                         return
-                    if self.cur_c == '\n':
+                    if self.cur_c == u'\n':
                         self.next_c()
                         break
                     comment_line += self.cur_c
@@ -186,9 +191,9 @@ class PrologParser(object):
         #if self.comment_pred:
         #    print "COMMENT FOR %s : %s" % (self.comment_pred, self.comment)
 
-        self.cur_str = ''
+        self.cur_str = u''
 
-        if self.cur_c == '\'' or self.cur_c =='"':
+        if self.cur_c == u'\'' or self.cur_c == u'"':
             self.cur_sym = SYM_STRING
             startc = self.cur_c
 
@@ -196,7 +201,7 @@ class PrologParser(object):
                 self.next_c()
                 if self.cur_c is None:
                     self.report_error ("Unterminated string literal.")
-                if self.cur_c == '\\':
+                if self.cur_c == u'\\':
                     self.next_c()
                     self.cur_str += self.cur_c
                     self.next_c()
@@ -220,7 +225,7 @@ class PrologParser(object):
                     break
 
         elif self.cur_c in NAME_CHARS:
-            self.cur_sym = SYM_VARIABLE if self.cur_c == '_' or self.cur_c.isupper() else SYM_NAME
+            self.cur_sym = SYM_VARIABLE if self.cur_c == u'_' or self.cur_c.isupper() else SYM_NAME
 
             while True:
                 self.cur_str += self.cur_c
@@ -237,30 +242,30 @@ class PrologParser(object):
                 if not self.cur_c or not (self.cur_c in SIGN_CHARS):
                     break
 
-        elif self.cur_c == ':':
+        elif self.cur_c == u':':
             self.next_c()
-            if self.cur_c == '-':
+            if self.cur_c == u'-':
                 self.next_c()
                 self.cur_sym = SYM_IMPL
             else:
                 self.report_error ("Lexer error")
 
-        elif self.cur_c == '(':
+        elif self.cur_c == u'(':
             self.cur_sym = SYM_LPAREN
             self.next_c()
-        elif self.cur_c == ')':
+        elif self.cur_c == u')':
             self.cur_sym = SYM_RPAREN
             self.next_c()
 
-        elif self.cur_c == ',':
+        elif self.cur_c == u',':
             self.cur_sym = SYM_COMMA
             self.next_c()
 
-        elif self.cur_c == '.':
+        elif self.cur_c == u'.':
             self.cur_sym = SYM_PERIOD
             self.next_c()
 
-        elif self.cur_c == ';':
+        elif self.cur_c == u';':
             self.cur_sym = SYM_SEMICOLON
             self.next_c()
 
@@ -296,7 +301,14 @@ class PrologParser(object):
         elif self.cur_sym == SYM_LPAREN:
             self.next_sym()
             res = self.term()
-            if self.cur_sym != SYM_RPARENT:
+
+            while (self.cur_sym == SYM_COMMA):
+                self.next_sym()
+                if not isinstance(res, list):
+                    res = [res]
+                res.append(self.term())
+
+            if self.cur_sym != SYM_RPAREN:
                 self.report_error ("primary term: ) expected.")
             self.next_sym()
 
@@ -317,7 +329,10 @@ class PrologParser(object):
 
         res = self.primary_term()
         if o:
-            res = Predicate (o, [res])
+            if not isinstance(res, list):
+                res = [res]
+            
+            res = Predicate (o, res)
 
         return res
 
@@ -437,12 +452,15 @@ class PrologParser(object):
 
         body  = []
 
+        loc = self.get_location()
+
         while True:
             body.append(self.term())
 
             if self.cur_sym == SYM_SEMICOLON:
-                res.append (Clause (head, body))
+                res.append (Clause (head, body, location=loc))
                 body = []
+                loc = self.get_location()
 
             elif self.cur_sym != SYM_COMMA:
                 break
@@ -455,6 +473,8 @@ class PrologParser(object):
 
         res = []
 
+        loc = self.get_location()
+
         head = self.relation()
 
         if self.cur_sym == SYM_IMPL:
@@ -463,10 +483,10 @@ class PrologParser(object):
             body = self.clause_body()
 
             if len(body) > 0:
-                res.append (Clause (head, body))
+                res.append (Clause (head, body, location=loc))
 
         else:
-            res.append (Clause (head))
+            res.append (Clause (head, location=loc))
 
         if self.cur_sym != SYM_PERIOD:
             self.report_error ("clause: . expected.")
@@ -478,9 +498,9 @@ class PrologParser(object):
 
     def start (self, prolog_f, prolog_fn, linecnt = 0):
 
-        self.cur_c        = ' '
+        self.cur_c        = u' '
         self.cur_sym      = SYM_NONE
-        self.cur_str      = ''
+        self.cur_str      = u''
         self.cur_line     = 1
         self.cur_col      = 1
         self.prolog_f     = prolog_f
@@ -489,7 +509,7 @@ class PrologParser(object):
 
         self.cstate       = CSTATE_IDLE
         self.comment_pred = None
-        self.comment      = ''
+        self.comment      = u''
         self.module       = None
         self.requirements = set()
 
@@ -507,4 +527,16 @@ class PrologParser(object):
 
         self.start (StringIO(line), '<str>')
         return self.clause()
+
+if __name__ == "__main__":
+
+    # line = 'time_span(tomorrow, TS, TE) :- context(currentTime, T), stamp_date_time(T, date(Y, M, D, H, Mn, S, "local")), date_time_stamp(date(Y, M, +(D, 1.0), 0.0, 0.0, 0.0, "local"), TS), date_time_stamp(date(Y, M, +(D, 1.0), 23.0, 59.0, 59.0, "local"), TE).'
+    line = 'time_span(TE) :- date_time_stamp(+(D, 1.0)).'
+
+    parser = PrologParser()
+    tree = parser.parse_line_clauses(line)
+
+    print unicode(tree[0].body)
+
+
 

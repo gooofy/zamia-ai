@@ -3,13 +3,45 @@
 %! module common-sense
 
 %
+% time and date (very crude so far, but we have to get started somewhere...)
+%
+
+%
+% time/date calculations
+%
+
+time_span(today, TS, TE) :-
+    context(currentTime, T),
+    stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
+    date_time_stamp(date(Y,M,D, 0, 0, 0,'local'), TS),
+    date_time_stamp(date(Y,M,D,23,59,59,'local'), TE).
+
+time_span(tomorrow, TS, TE) :-
+    context(currentTime, T),
+    stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
+    date_time_stamp(date(Y,M,D + 1, 0, 0, 0,'local'), TS),
+    date_time_stamp(date(Y,M,D + 1,23,59,59,'local'), TE).
+
+time_span(dayAfterTomorrow, TS, TE) :-
+    context(currentTime, T),
+    stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
+    date_time_stamp(date(Y,M,D + 2, 0, 0, 0,'local'), TS),
+    date_time_stamp(date(Y,M,D + 2,23,59,59,'local'), TE).
+
+time_span(nextThreeDays, TS, TE) :-
+    context(currentTime, T),
+    stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
+    date_time_stamp(date(Y,M,D,H,Mn,S,'local'), TS),
+    date_time_stamp(date(Y,M,D+3,H,Mn,S,'local'), TE).
+
+%
 % time strings
 %
 
-timeStrDe(today, "heute").
-timeStrDe(tomorrow, "morgen").
-timeStrDe(dayAfterTomorrow, "übermorgen").
-timeStrDe(nextThreeDays, "in den nächsten drei Tagen").
+time_str(de, today,            "heute").
+time_str(de, tomorrow,         "morgen").
+time_str(de, dayAfterTomorrow, "übermorgen").
+time_str(de, nextThreeDays,    "in den nächsten drei Tagen").
 
 %
 % geography
@@ -18,14 +50,30 @@ timeStrDe(nextThreeDays, "in den nächsten drei Tagen").
 %! doc place
 % A place in this universe.
 
-place(stuttgart).
-placeStrDe(stuttgart, "Stuttgart").
-place(freudental).
-placeStrDe(freudental, "Freudental").
+place_str(de, "dbr:Stuttgart",            "Stuttgart").
+place_str(de, "dbr:Freudental",           "Freudental").
+place_str(de, "dbr:Tallinn",              "Tallinn").
+place_str(de, "dbr:San_Francisco",        "San Francisco").
+place_str(de, "dbr:Los_Angeles",          "Los Angeles").
+place_str(de, "dbr:New_York_City",        "New York").
+place_str(de, "dbr:London",               "London").
+place_str(de, "dbr:Paris",                "Paris").
+place_str(de, "dbr:Reykjavík",            "Reykjavík").
+place_str(de, "dbr:Oberwiesenthal",       "Oberwiesenthal").
+place_str(de, "dbr:Arnstorf",             "Arnstorf").
+place_str(de, "dbr:Hamburg",              "Hamburg").
+place_str(de, "<http://dbpedia.org/resource/Washington,_D.C.>", "Washington").
+place_str(de, "<http://dbpedia.org/resource/Fairbanks,_Alaska>", "Alaska").
+place_str(de, "dbr:Brackenheim",          "Brackenheim").
+place_str(de, "dbr:Heilbronn",            "Heilbronn").
+place_str(de, "dbr:Biberach_an_der_Riss", "Biberach").
 
 %
 % time and dates
 %
+
+before_noon(TS) :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H < 12.
+after_noon(TS) :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H >= 12.
 
 before_evening(TS)  :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H < 18.
 % before_evening(now) :- get_time(T), before_evening(T).

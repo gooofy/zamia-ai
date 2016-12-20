@@ -5,11 +5,19 @@ all:	prolog
 prolog:
 	./prolog_compile.py data/src/common-sense.pl
 	./prolog_compile.py data/src/weather.pl
-	# ./prolog_compile.py data/src/greetings.pl 
-	# ./prolog_compile.py data/src/radio.pl 
+	./prolog_compile.py data/src/greetings.pl 
+	./prolog_compile.py data/src/radio.pl 
 
 weather:
 	./kb_weather.py
+
+kb:
+	./kb_shell.py graph_clear  -g http://hal.zamia.org
+	./kb_shell.py graph_import -g http://hal.zamia.org data/src/kb/weather_base.n3
+	./kb_shell.py graph_import -g http://hal.zamia.org data/src/kb/weather_test.n3
+	./kb_weather.py
+	./kb_shell.py <data/src/kb/dbpedia.kb
+	./kb_shell.py dump
 
 nlp_train:
 	./nlp_train_keras.py

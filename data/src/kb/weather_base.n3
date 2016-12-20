@@ -48,3 +48,12 @@ dbr:Hamburg           weather:timezone "Europe/Berlin" .
 <http://dbpedia.org/resource/Fairbanks,_Alaska> weather:cityid   5861897 .
 <http://dbpedia.org/resource/Fairbanks,_Alaska> weather:timezone "America/Anchorage" .
 
+dbr:Brackenheim          weather:cityid 2945591 .
+dbr:Brackenheim          weather:timezone "Europe/Berlin" .
+
+dbr:Heilbronn            weather:cityid 2907669 .
+dbr:Heilbronn            weather:timezone "Europe/Berlin" .
+
+dbr:Biberach_an_der_Riss weather:cityid 2949426 .
+dbr:Biberach_an_der_Riss weather:timezone "Europe/Berlin" .
+

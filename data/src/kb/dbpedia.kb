@@ -1,0 +1,10 @@
+graph_set http://dbpedia.org
+graph_clear
+
+endpoint_set http://dbpedia.org/sparql
+endpoint_import dbr:Freudental dbr:Ludwigsburg dbr:Stuttgart dbr:Tallinn
+endpoint_import dbr:San_Francisco dbr:Los_Angeles dbr:New_York_City dbr:London
+endpoint_import dbr:Paris dbr:Reykjavík dbr:Oberwiesenthal dbr:Arnstorf
+endpoint_import dbr:Hamburg dbr:Brackenheim dbr:Heilbronn dbr:Biberach_an_der_Riss
+endpoint_import '<http://dbpedia.org/resource/Washington,_D.C.>'
+endpoint_import '<http://dbpedia.org/resource/Fairbanks,_Alaska>' 

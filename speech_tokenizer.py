@@ -24,6 +24,7 @@
 import sys
 import re
 import unittest
+import logging
 
 def detect_latin1 (fn):
 
@@ -311,8 +312,10 @@ symb_abbrev_norm = [
         (u'\u2039'  , u' '),
         (u'_'       , u' '),
         (u'&'       , u'und'),
-        (u'-'       , u' '),
-        (u'\xa020'  , u' ')
+        (u'\xa020'  , u' '),
+        (u'„'       , u' '),
+        (u'“'       , u' '),
+        (u'$'       , u'dollar ')
     ]
 
 
@@ -321,10 +324,11 @@ symb_abbrev_norm = [
 w1 = u"null ein zwei drei vier fünf sechs sieben acht neun zehn elf zwölf dreizehn vierzehn fünfzehn sechzehn siebzehn achtzehn neunzehn".split()
 w2 = u"zwanzig dreißig vierzig fünfzig sechzig siebzig achtzig neunzig".split()
  
-def zahl_in_worten(n, s=True, z=False):
+def zahl_in_worten(n, s=True, z=False, e=False):
     if n < 0: raise ValueError
     if n == 0 and z: return ""
     if n == 1 and s: return "eins"
+    if n == 1 and e: return "eine"
     if n < 20: return w1[n]
     if n < 100:
         w = w2[(n - 20) // 10]
@@ -342,19 +346,61 @@ def zahl_in_worten(n, s=True, z=False):
         return w1[n // 100] + "hundert" + zahl_in_worten(n % 100, z=True)
     if n < 1000000:
         return zahl_in_worten(n // 1000, s=False) + "tausend" + zahl_in_worten(n % 1000, z=True)
-    raise ValueError
+    if n < 1000000000:
+        m = n // 1000000
+        suff = 'millionen' if m>1 else 'million'
+        return zahl_in_worten(m, s=False, e=True) + suff + zahl_in_worten(n % 1000000, z=True)
+    # raise ValueError
+    logging.warn('zahl_in_worten: cannot handle %s' % n)
+    return str(n)
 
-#
-# init number replacement dict
-#
+# #
+# # init number replacement dict
+# #
+# 
+# for i in range(10000):
+#     u = unicode(i)
+#     if not u in wrt:
+#         wrt[u] = zahl_in_worten(i)
+#     wrt[u'0'+u] = zahl_in_worten(i)
+#     wrt[u'00'+u] = zahl_in_worten(i)
+#     wrt[u'000'+u] = zahl_in_worten(i)
 
-for i in range(10000):
-    u = unicode(i)
-    if not u in wrt:
-        wrt[u] = zahl_in_worten(i)
-    wrt[u'0'+u] = zahl_in_worten(i)
-    wrt[u'00'+u] = zahl_in_worten(i)
-    wrt[u'000'+u] = zahl_in_worten(i)
+
+
+def spellout_number (m):
+
+    numstr = m.group(0)
+
+    # print "spellout number:", numstr
+
+    res = ''
+
+    if numstr[0] == '-':
+        res = 'minus '
+        numstr = numstr[1:].strip()
+
+    if not '.' in numstr:
+        numstr = numstr.replace(',','.')
+
+    parts = numstr.split ('.')
+
+    # print repr(parts)
+
+    res += zahl_in_worten(int(parts[0]))
+
+    if len(parts)>1:
+
+        # spell out fractional part in digits
+
+        res += ' komma'
+
+        for c in parts[1]:
+            res += ' ' + zahl_in_worten(int(c))
+    
+    return res
+
+NUMBER_PATTERN = re.compile(r"[-]?\d+[,.]?\d*")
 
 def tokenize (s, lang='de'):
 
@@ -370,9 +416,15 @@ def tokenize (s, lang='de'):
 
         s = s.replace (srch, repl)
 
+    # deal with numbers
+    s = NUMBER_PATTERN.sub(spellout_number, s).replace('-',' ')
+
     res = []
 
     words = re.split ('\s+', s)
+
+    # print repr(words)
+
     for word in words:
 
         w = re.sub(r"[,.?+*#! ;:/\"\[\]()='»«<>|]", '', word.rstrip()).replace(u'–',u'').lower()
@@ -434,13 +486,27 @@ class TestTokenizer (unittest.TestCase):
     #     self.assertTrue (detect_latin1('/home/ai/voxforge/de/audio/ralfherzog-20071220-de34/etc/prompts-original'))
     #     self.assertFalse (detect_latin1('/home/ai/voxforge/de/audio/mjw-20110527-dyg/etc/prompts-original'))
 
+    def test_tokenize_special(self):
+
+        self.assertEqual (tokenize(u"„kamel“"), [u'kamel'])
+        self.assertEqual (tokenize(u"$test"), [u'dollar', u'test'])
+
+    def test_tokenize_numbers(self):
+
+        self.assertEqual (tokenize(u"des individual- verwendungs-weise"), [u"des", u"individual", u"verwendungs", u"weise"])
+        self.assertEqual (tokenize(u"-1 -2 3 -42"), [u"minus", u"eins", u"minus", u"zwei", u"drei", u"minus", u"zweiundvierzig"])
+        self.assertEqual (tokenize(u"1,2 3.456"), [u"eins", u"komma", u"zwei", u"drei", u"komma", u'vier', u'fünf', u'sechs'])
+        self.assertEqual (tokenize(u"-42.23"), [u'minus', u'zweiundvierzig', u'komma', u'zwei', u'drei'])
+        self.assertEqual (tokenize(u"1000000 2234567"), [u'einemillion', u'zweimillionenzweihundertvierunddreißigtausendfünfhundertsiebenundsechzig'])
+        self.assertEqual (tokenize(u"zahlten 1000000"), [u'zahlten', u'einemillion'])
+
     def test_ws(self):
         self.assertEqual (compress_ws('   ws   foo bar'), ' ws foo bar')
 
     def test_split(self):
-        self.assertEqual (tokenize(u"1 2 3 4"), ["EINS", "ZWEI", "DREI", "VIER"])
-        self.assertEqual (tokenize(u"00 01 02 03 04"), ["NULL", "EINS", "ZWEI", "DREI", "VIER"])
-        self.assertEqual (tokenize(u"z.B. u. U. Prof. Dr. Dipl. Ing."), [u'ZUM', u'BEISPIEL', u'UNTER', u'UMST\xc4NDEN', u'PROFESSOR', u'DOKTOR', u'DIPLOM', u'INGENIEUR'])
+        self.assertEqual (tokenize(u"1 2 3 4"), ["eins", "zwei", "drei", "vier"])
+        self.assertEqual (tokenize(u"00 01 02 03 04"), ["null", "eins", "zwei", "drei", "vier"])
+        self.assertEqual (tokenize(u"z.B. u. U. Prof. Dr. Dipl. Ing."), [u'zum', u'beispiel', u'unter', u'umständen', u'professor', u'doktor', u'diplom', u'ingenieur'])
 
     def test_zahl_in_worten(self):
 
@@ -453,11 +519,11 @@ class TestTokenizer (unittest.TestCase):
 
     def test_editdist(self):
         self.assertEqual (edit_distance(
-                             tokenize(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT'), 
-                             tokenize(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT')), 0)
+                             tokenize(u'die leistung wurde zurückverlangt'), 
+                             tokenize(u'die leistung wurde zurückverlangt')), 0)
         self.assertEqual (edit_distance(
-                             tokenize(u'DIE LEISTUNG WURDE'), 
-                             tokenize(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT')), 1)
+                             tokenize(u'die leistung wurde'), 
+                             tokenize(u'die leistung wurde zurückverlangt')), 1)
         self.assertEqual (edit_distance(
                              tokenize(u'DIE LEISTUNG'), 
                              tokenize(u'DIE LEISTUNG WURDE ZURÜCKVERLANGT')), 2)

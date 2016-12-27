@@ -27,6 +27,7 @@ import logging
 import readline
 import atexit
 import traceback
+import random
 
 from optparse import OptionParser
 from StringIO import StringIO
@@ -35,15 +36,16 @@ from sqlalchemy.orm import sessionmaker
 import numpy as np
 
 import model
+
 from logic import *
 from logicdb import *
-from prolog_engine import PrologEngine
-from prolog_parser import PrologParser, PrologError
-import prolog_builtins
+from prolog_parser import PrologParser, SYM_EOF, PrologError
+from prolog_ai_engine import PrologAIEngine
 
 from speech_tokenizer import tokenize
 
-from nlp_model import NLPModel, KERAS_WEIGHTS_FN
+from nlp_model import NLPModel, BUCKETS, CKPT_FN
+import tensorflow as tf
 
 # logging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.INFO)
@@ -63,6 +65,20 @@ Session = sessionmaker(bind=model.engine)
 session = Session()
 
 #
+# prolog environment setup
+#
+
+db = LogicDB(session)
+
+prolog_engine = PrologAIEngine(db)
+
+parser = PrologParser()
+
+db.enable_module('weather')
+db.enable_module('greetings-nlp')
+db.enable_module('radio')
+
+#
 # readline, history
 #
 
@@ -79,86 +95,99 @@ atexit.register(readline.write_history_file, histfile)
 # load nlp model
 #
 
-nlp_model = NLPModel()
+nlp_model = NLPModel(session)
 
-out_idx = nlp_model.load_output_term_index()
+nlp_model.load_dicts()
 
-print (repr(out_idx))
+# we need the inverse dict to reconstruct the output from tensor
 
-dictionary, max_len = nlp_model.load_input_dict()
+inv_output_dict = {v: k for k, v in nlp_model.output_dict.iteritems()}
 
-print repr(dictionary)
+# setup config to use BFC allocator
+config = tf.ConfigProto()  
+config.gpu_options.allocator_type = 'BFC'
 
-model = nlp_model.create_keras_model()
+with tf.Session(config=config) as tf_session:
 
-model.load_weights(KERAS_WEIGHTS_FN)
+    tf_model = nlp_model.create_tf_model(tf_session, forward_only = True) 
+    tf_model.batch_size = 1
 
-#
-# main
-#
+    nlp_model.load_model(tf_session)
 
-db = LogicDB(session)
+    while True:
 
-engine = PrologEngine(db)
-prolog_builtins.register_builtins(engine)
+        line = raw_input ('nlp> ')
 
-parser = PrologParser()
+        if line == 'quit' or line == 'exit':
+            break
 
-while True:
+        # line = "huhu hal"
+        # line = "hal, wie wird das wetter morgen in stuttgart?"
 
-    line = raw_input ('nlp> ')
-
-    if line == 'quit' or line == 'exit':
-        break
-
-    try:
+        # print line
 
         x = nlp_model.compute_x(line)
 
-        print 'x:', x
+        # print x
 
-        batch_x = np.zeros([0, max_len], np.int32)
-        batch_x = np.append(batch_x, [x], axis=0)
+        # which bucket does it belong to?
+        bucket_id = min([b for b in xrange(len(BUCKETS)) if BUCKETS[b][0] > len(x)])
 
-        y = model.predict(batch_x)
+        # get a 1-element batch to feed the sentence to the model
+        encoder_inputs, decoder_inputs, target_weights = tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
 
-        y = y[0]
+        # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
 
-        print 'y:', y
-      
+        # get output logits for the sentence
+        _, _, output_logits = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+
+        # print "output_logits", output_logits
+
+        # for logit in output_logits:
+        #     print "logit", logit
+        #     print "argmax", np.argmax(logit, axis=1)
+
+        # this is a greedy decoder - outputs are just argmaxes of output_logits.
+        outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
+
+        # print "outputs", outputs
+
+        preds = map (lambda o: inv_output_dict[o], outputs)
+        # print preds
+
         prolog_s = ''
 
-        for i in range(len(y)):
+        for p in preds:
 
-            if y[i] > 0.5:
-                if len(prolog_s)>0:
-                    prolog_s += ', '
-                prolog_s += out_idx[i]
+            if p[0] == '_':
+                continue # skip _EOS
+
+            if len(prolog_s)>0:
+                prolog_s += ', '
+            prolog_s += p
+
         print '?-', prolog_s
 
         try:
             c = parser.parse_line_clause_body(prolog_s)
-            logging.debug( "Parse result: %s" % c)
+            # logging.debug( "Parse result: %s" % c)
 
-            logging.debug( "Searching for c:", c )
+            # logging.debug( "Searching for c:", c )
 
-            print engine.search(c)
+            prolog_engine.reset_utterances()
+            prolog_engine.reset_actions()
+
+            prolog_engine.search(c)
+
+            utts = prolog_engine.get_utterances()
+            if len(utts)>0:
+                print "SAY", random.choice(utts)['utterance']
+
+            actions = prolog_engine.get_actions()
+            for action in actions:
+                print "ACTION", action
 
         except PrologError as e:
 
             print "*** ERROR: %s" % e
-
-
-#         c = parser.parse_line_clause_body(line)
-#         logging.debug( "Parse result: %s" % c)
-# 
-#         logging.debug( "Searching for c:", c )
-# 
-#         print engine.search(c)
-
-    except PrologError as e:
-
-        print "*** ERROR: %s" % e
-
-
 

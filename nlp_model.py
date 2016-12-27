@@ -29,162 +29,154 @@ import numpy as np
 
 import codecs
 
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Embedding, LSTM
-
 from speech_tokenizer import tokenize
 
-OUT_TERM_IDX_FN  = 'data/dst/lstm_out_term_idx.csv'
-IN_DICT_FN       = 'data/dst/lstm_in_dict.csv'
+from sqlalchemy.orm import sessionmaker
+import model
 
-KERAS_WEIGHTS_FN = 'data/dst/lstm_weights.h5'
+import tensorflow as tf
 
-DATA_COMPUTED    = 'data/dst'
+from tensorflow.models.rnn.translate import seq2seq_model
+from tensorflow.models.rnn.translate.data_utils import _PAD, PAD_ID, _GO, GO_ID, _EOS, EOS_ID, _UNK, UNK_ID
+
+OUT_DICT_FN  = 'data/dst/nlp_out_dict.csv'
+IN_DICT_FN   = 'data/dst/nlp_in_dict.csv'
+
+CKPT_FN      = 'data/dst/nlp_model.ckpt'
+
+# We use a number of buckets and pad to the closest one for efficiency.
+# See seq2seq_model.Seq2SeqModel for details of how they work.
+# BUCKETS = [(5, 10), (10, 15), (20, 25), (40, 50)]
+BUCKETS = [(7, 4), (14, 8)]
+
+# number of LSTM layers : 1/2/3
+NUM_LAYERS = 1
+# typical options : 128, 256, 512, 1024
+LAYER_SIZE = 128
+
+BATCH_SIZE = 64
+
+LEARNING_RATE              = 0.5
+LEARNING_RATE_DECAY_FACTOR = 0.99
+MAX_GRADIENT_NORM          = 5.0
+USE_LSTM                   = False
+NUM_SAMPLES                = 32 
+FORWARD_ONLY               = False
 
 class NLPModel(object):
 
-    def __init__(self, p_test = 10):
+    def __init__(self, session, input_dim = 16 ):
+        self.session   = session
+        self.input_dim = input_dim
 
-        # read segments from .sem files
+    def compute_input_hist(self):
 
-        self.seg_train = []
-        self.seg_test  = []
+        hist = {}
 
-        for fn in os.listdir(DATA_COMPUTED):
-            if not fn.endswith('.sem'):
-                continue
+        for dr in self.session.query(model.DiscourseRound).all():
 
-            logging.info("reading %s..." % fn)
+            tokens = tokenize (dr.inp_tokenized)
 
-            with codecs.open('%s/%s' % (DATA_COMPUTED, fn), 'r', encoding='utf8') as f:
-                for line in f:
-                    parts = line.rstrip().split(';')
+            if not (len(tokens) in hist):
+                hist[len(tokens)] = 0
 
-                    if len(self.seg_test) < p_test*len(self.seg_train)/100:
-                        self.seg_test.append((parts[0], set(map(lambda x: x.lstrip(), parts[1:]))))
-                    else:
-                        self.seg_train.append((parts[0], set(map(lambda x: x.lstrip(), parts[1:]))))
+            hist[len(tokens)] += 1
+            
+        return hist
 
-    def compute_output_term_index(self):
+    def compute_output_hist(self):
 
-        # build output term index
+        hist = {}
 
-        logging.info ('Computing output term index...')
+        for dr in self.session.query(model.DiscourseRound).all():
 
-        out_front  = set()
-        out_middle = set()
-        out_back   = set()
+            preds = dr.response.split(';')
 
-        for segments in (self.seg_test, self.seg_train):
+            if not (len(preds) in hist):
+                hist[len(preds)] = 0
 
-            for segment in segments:
+            hist[len(preds)] += 1
+            
+        return hist
 
-                for term in segment[1]:
 
-                    # FIXME: hardcoded order, make user configurable
+    def compute_dicts(self):
 
-                    if 'answer' in term or 'set_context' in term or 'action' in term:
-                        out_back.add(term)
-                    elif 'context' in term:
-                        out_front.add(term)
-                    else:
-                        out_middle.add(term)
+        # build input and output dicts
 
-        self.out_idx    = {}
-        for term in out_front:
-            self.out_idx[term] = len(self.out_idx)
-        for term in out_middle:
-            self.out_idx[term] = len(self.out_idx)
-        for term in out_back:
-            self.out_idx[term] = len(self.out_idx)
+        self.input_dict  = {_PAD : PAD_ID, _GO : GO_ID, _EOS : EOS_ID, _UNK : UNK_ID}
+        self.output_dict = {_PAD : PAD_ID, _GO : GO_ID, _EOS : EOS_ID, _UNK : UNK_ID}
 
-        logging.info ('%d terms found.' % len(self.out_idx))
+        self.input_max_len  = 0
+        self.output_max_len = 0
 
-        return self.out_idx
-
-    def save_output_term_index(self, fn=OUT_TERM_IDX_FN):
-
-        with open (fn, 'w') as f:
-
-            for k in sorted(self.out_idx):
-
-                f.write((u"%d;%s\n" % (self.out_idx[k], k)).encode('utf8'))
-
-        logging.info ('%s written.', fn)
-
-    def load_output_term_index(self, fn = OUT_TERM_IDX_FN, reverse = True):
-
-        self.out_idx = {}
-
-        with open(fn) as f:
-
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-
-                line = line.lstrip().rstrip()
-
-                parts = line.split(';')
-
-                if reverse:
-                    self.out_idx[int(parts[0])] = parts[1]
-                else:
-                    self.out_idx[parts[1]] = int(parts[0])
-
-        return self.out_idx
-
-    def compute_input_dict(self):
-
-        logging.info ('Computing input dict...')
-
-        self.dictionary = {'': 0}
-
-        self.max_len = 0
         self.num_segments = 0
 
-        for segments in (self.seg_test, self.seg_train):
-            for segment in segments:
+        for dr in self.session.query(model.DiscourseRound).all():
 
-                tokens = tokenize (segment[0])
+            # input
 
-                # print segment.txt, '->', repr(tokens)
+            tokens = tokenize (dr.inp_tokenized)
 
-                l = len(tokens)
+            l = len(tokens)
 
-                if l > self.max_len:
-                    self.max_len = l
+            if l > self.input_max_len:
+                self.input_max_len = l
 
-                i = 0
-                for token in tokens:
-                    if not token in self.dictionary:
-                        self.dictionary[token] = len(self.dictionary)
+            i = 0
+            for token in tokens:
 
-                self.num_segments += 1
+                if not token in self.input_dict:
+                    self.input_dict[token] = len(self.input_dict)
 
-        logging.info ('input dict done. %d entries, max segment len is %d tokens.' % (len(self.dictionary), self.max_len))
+            # output
 
-        return self.dictionary, self.max_len, self.num_segments
+            preds = dr.response.split(';')
+            l = len(preds) + 1 # +1 to account for _EOS token
 
-    def save_input_dict(self, fn=IN_DICT_FN):
+            if l > self.output_max_len:
+                self.output_max_len = l
 
-        with open(fn, 'w') as f:
+            i = 0
+            for pred in preds:
+                if not pred in self.output_dict:
+                    self.output_dict[pred] = len(self.output_dict)
 
-            f.write("%d\n" % self.max_len)
+            self.num_segments += 1
 
-            for k in sorted(self.dictionary):
+        logging.info ('dicts done. input: %d enties, input_max_len=%d. output: %d enties, input_max_len=%d.  num_segments: %d' %
+                      (len(self.input_dict), self.input_max_len, len(self.output_dict), self.output_max_len, self.num_segments))
 
-                f.write((u"%d;%s\n" % (self.dictionary[k], k)).encode('utf8'))
+
+    def save_dicts(self):
+
+        with open(IN_DICT_FN, 'w') as f:
+
+            f.write("%d\n" % self.input_max_len)
+
+            for k in sorted(self.input_dict):
+
+                f.write((u"%d;%s\n" % (self.input_dict[k], k)).encode('utf8'))
 
         logging.info ('%s written.', IN_DICT_FN)
 
-    def load_input_dict(self, fn=IN_DICT_FN):
+        with open(OUT_DICT_FN, 'w') as f:
 
-        with open(fn) as f:
+            f.write("%d\n" % self.output_max_len)
 
-            self.max_len = int(f.readline().rstrip())
+            for k in sorted(self.output_dict):
 
-            self.dictionary = {}
+                f.write((u"%d;%s\n" % (self.output_dict[k], k)).encode('utf8'))
+
+        logging.info ('%s written.', OUT_DICT_FN)
+
+    def load_dicts(self):
+
+        with open(IN_DICT_FN, 'r') as f:
+
+            self.input_max_len = int(f.readline().rstrip())
+
+            self.input_dict = {}
 
             while True:
                 line = f.readline()
@@ -195,44 +187,106 @@ class NLPModel(object):
 
                 parts = line.split(';')
 
-                self.dictionary[parts[1]] = int(parts[0])
+                self.input_dict[parts[1]] = int(parts[0])
 
-        return self.dictionary, self.max_len
+        logging.info ('%s read, %d entries, output_max_len=%d.' % (IN_DICT_FN, len(self.input_dict), self.input_max_len))
+
+        with open(OUT_DICT_FN, 'r') as f:
+
+            self.output_max_len = int(f.readline().rstrip())
+
+            self.output_dict = {}
+
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+
+                line = line.lstrip().rstrip()
+
+                parts = line.split(';')
+
+                self.output_dict[parts[1]] = int(parts[0])
+
+        logging.info ('%s read, %d entries, output_max_len=%d.' % (OUT_DICT_FN, len(self.output_dict), self.output_max_len))
 
     def compute_x(self, txt):
 
-        x = np.zeros(self.max_len, np.int32)
-
         tokens = tokenize(txt)
 
-        l = len(tokens)
-        i = 0
-        for token in tokens:
-            x[self.max_len - l + i] = self.dictionary[token] if token in self.dictionary else 0
-            i += 1
+        return map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, tokens)
 
-        return x
+        # x = np.zeros(self.input_max_len, np.int32)
+        #l = len(tokens)
+        #i = 0
+        #for token in tokens:
+        #    x[self.input_max_len - l + i] = self.input_dict[token] if token in self.input_dict else 0
+        #    i += 1
 
-    def create_keras_model(self):
+        #return x
 
-        logging.info ("Creating Keras model...")
+    def compute_y(self, response):
 
-        model = Sequential()
+        preds = map(lambda pred: self.output_dict[pred] if pred in self.output_dict else UNK_ID, response.split(';'))
 
-        model.add(Embedding(len(self.dictionary), 16, input_length=self.max_len))
+        preds.append(EOS_ID)
 
-        model.add(LSTM(16, dropout_W=0.2, dropout_U=0.2))  # try using a GRU instead, for fun
-        model.add(Dense(len(self.out_idx)))
-        model.add(Activation('sigmoid'))
+        return preds
 
-        # try using different optimizers and different optimizer configs
-        # model.compile(loss='mse',
-        #               optimizer='adam',
-        #               metrics=['accuracy'])
-        model.compile(loss='binary_crossentropy', optimizer='adam')
+        # y = np.zeros((self.output_max_len, len(self.output_dict)), np.float32)
 
+        # preds = response.split(';')
 
-        return model
+        # l = len(preds)
+        # i = 0
+        # for pred in preds:
+        #     out_idx = self.output_dict[pred] if pred in self.output_dict else 0
+        #     y[self.output_max_len - l + i, out_idx] = 1.0
+        #     i += 1
+
+        # return y
+
+    def create_tf_model(self, tf_session, layer_size                 = LAYER_SIZE, 
+                                          num_layers                 = NUM_LAYERS, 
+                                          max_gradient_norm          = MAX_GRADIENT_NORM, 
+                                          batch_size                 = BATCH_SIZE,
+                                          learning_rate              = LEARNING_RATE, 
+                                          learning_rate_decay_factor = LEARNING_RATE_DECAY_FACTOR, 
+                                          use_lstm                   = USE_LSTM,
+                                          num_samples                = NUM_SAMPLES, 
+                                          forward_only               = FORWARD_ONLY):
+
+        logging.info("creating seq2seq model: %d layers of %d units." % (num_layers, layer_size))
+
+        print len(self.input_dict), len(self.output_dict), BUCKETS, layer_size, num_layers, max_gradient_norm, batch_size, learning_rate, learning_rate_decay_factor, num_samples, forward_only
+
+        # 20000 20000 [(5, 10), (10, 15), (20, 25), (40, 50)] 128 1 5.0 64 0.5 0.99 True
+        #   103    59 [(7, 4), (14, 8)]                       128 1 5.0 64 0.5 0.99 32 True
+
+        self.model = seq2seq_model.Seq2SeqModel( len(self.input_dict), 
+                                                 len(self.output_dict),
+                                                 BUCKETS, 
+                                                 layer_size, 
+                                                 num_layers, 
+                                                 max_gradient_norm, 
+                                                 batch_size, 
+                                                 learning_rate, 
+                                                 learning_rate_decay_factor, 
+                                                 num_samples=num_samples,
+                                                 forward_only=forward_only)
+
+        tf_session.run(tf.initialize_all_variables())
+
+        return self.model
+
+    def save_model (self, tf_session, fn=CKPT_FN):
+        # self.model.saver.save(tf_session, fn, global_step=self.model.global_step)
+        self.model.saver.save(tf_session, fn)
+        logging.info("model saved to %s ." % fn)
+
+    def load_model(self, tf_session, fn=CKPT_FN):
+        self.model.saver.restore(tf_session, fn)
+        logging.info("model restored from %s ." % fn)
 
     # def __len__(self):
     #     return len(self.segments)

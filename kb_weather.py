@@ -77,13 +77,13 @@ locations = {}
 print "fetching city ids, timezones from kb..."
 
 query = """
-        SELECT DISTINCT ?location ?cityid ?timezone ?label ?lat ?long
+        SELECT DISTINCT ?location ?cityid ?timezone ?label ?long ?lat
                WHERE {
                   ?location weather:cityid ?cityid .
                   ?location weather:timezone ?timezone .
                   ?location rdfs:label ?label .
-                  ?location geo:lat ?lat .
-                  ?location geo:long ?long .
+                  ?location geo1:long ?long .
+                  ?location geo1:lat ?lat .
                   FILTER(LANGMATCHES(LANG(?label), "en")) .
         }
         """
@@ -95,7 +95,7 @@ try:
 
     for row in results:
 
-        # print repr(result)
+        # print repr(row)
         #         print(result["label"]["value"])
 
         location = row['location']

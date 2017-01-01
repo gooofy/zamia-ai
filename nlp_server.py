@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2015, 2016 Guenter Bartsch
+# Copyright 2015, 2016, 2017 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# interactive nlp shell
+# nlp wsgi server
+#
+# usage:
+#
+# curl -i http://hal:8302/nlp/process?line=hallo%20hal
 #
 
 import os
@@ -27,7 +31,6 @@ import logging
 import readline
 import atexit
 import traceback
-import random
 
 from optparse import OptionParser
 
@@ -37,19 +40,15 @@ from nlp_engine import NLPEngine
 
 import tensorflow as tf
 
-#
-# init terminal
-#
+from flask import Flask, jsonify, request, abort, send_file, Markup, render_template, send_from_directory
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+app = Flask(__name__)
 
 #
 # commandline
 #
 
-parser = OptionParser("usage: %prog [options] [foo.pl ...] ")
+parser = OptionParser("usage: %prog [options] ")
 
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                   help="verbose output")
@@ -58,21 +57,10 @@ parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
 
 if options.verbose:
     logging.basicConfig(level=logging.DEBUG)
+    debug=True
 else:
     logging.basicConfig(level=logging.INFO)
-
-#
-# readline, history
-#
-
-histfile = os.path.join(os.path.expanduser("~"), ".hal_nlp_history")
-try:
-    readline.read_history_file(histfile)
-    # default history len is -1 (infinite), which may grow unruly
-    readline.set_history_length(1000)
-except IOError:
-    pass
-atexit.register(readline.write_history_file, histfile)
+    debug=False
 
 #
 # setup nlp engine, tensorflow session
@@ -82,21 +70,39 @@ atexit.register(readline.write_history_file, histfile)
 config = tf.ConfigProto()  
 config.gpu_options.allocator_type = 'BFC'
 
-with tf.Session(config=config) as tf_session:
-    nlp_engine = NLPEngine(tf_session)
+tf_session = tf.Session(config=config) 
 
-    while True:
+nlp_engine = NLPEngine(tf_session)
 
-        line = raw_input ('nlp> ')
+@app.route('/nlp/process', methods=['GET'])
+def process_line():
 
-        if line == 'quit' or line == 'exit':
-            break
+    global nlp_engine
 
+    if not 'line' in request.args:
+        return jsonify({'message': 'missing "line" argument.'}), 400
+    line    = request.args['line']
+
+    try:
         utts, actions = nlp_engine.process_line(line)
 
-        if len(utts)>0:
-            print "SAY", random.choice(utts)['utterance']
+        logging.debug("utts: %s" % repr(utts)) 
+        logging.debug("actions: %s" % repr(actions)) 
 
-        for action in actions:
-            print "ACTION", action
+        return jsonify({'utts': utts, 'actions': map(lambda p: unicode(p), actions)}), 201
+
+    except:
+
+        print >>sys.stderr, traceback.format_exc()
+        print >>sys.stderr, 'process_line failed for line=%s' % repr(line)
+
+    abort(400)
+
+
+if __name__ == '__main__':
+
+    server_host   = model.config.get("semantics", "server_host")
+    server_port   = model.config.get("semantics", "server_port")
+
+    app.run(debug=debug, host = server_host, port=int(server_port))
 

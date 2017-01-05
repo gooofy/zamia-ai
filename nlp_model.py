@@ -274,8 +274,8 @@ class NLPModel(object):
                                                  learning_rate_decay_factor, 
                                                  num_samples=num_samples,
                                                  forward_only=forward_only)
-
-        tf_session.run(tf.initialize_all_variables())
+        init = tf.global_variables_initializer()
+        tf_session.run(init)
 
         return self.model
 

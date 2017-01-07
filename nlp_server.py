@@ -18,21 +18,40 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# nlp wsgi server
+# simple nlp http api server
 #
-# usage:
+# WARNING: 
+#     right now, this supports a single client only - needs a lot more work
+#     to become (at least somewhat) scalable
 #
-# curl -i http://hal:8302/nlp/process?line=hallo%20hal
-#
+# Process NLP input line
+# ----------------------
+# 
+# * POST `/process`
+# * args (JSON encoded dict): 
+#   * "line"        : line to be processed 
+# 
+# Returns:
+# 
+# * 400 if request is invalid
+# * 200 OK {"utts": ["ok", "erledigt"], "actions": ['radio_on']}
+# 
+# Example:
+# 
+# curl -i -H "Content-Type: application/json" -X POST \
+#      -d '{"line": "computer, schalte bitte das radio ein"}' \
+#      http://localhost:8302/process
 
 import os
 import sys
 import logging
-import readline
-import atexit
 import traceback
+import json
 
+from time import time
 from optparse import OptionParser
+from setproctitle import setproctitle
+from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 import model
 
@@ -40,69 +59,111 @@ from nlp_engine import NLPEngine
 
 import tensorflow as tf
 
-from flask import Flask, jsonify, request, abort, send_file, Markup, render_template, send_from_directory
+PROC_TITLE        = 'nlp_server'
 
-app = Flask(__name__)
+class NLPHandler(BaseHTTPRequestHandler):
+	
+    def do_GET(self):
+        self.send_error(400, 'Invalid request')
 
-#
-# commandline
-#
+    def do_HEAD(self):
+        self._set_headers()
 
-parser = OptionParser("usage: %prog [options] ")
+    def do_POST(self):
 
-parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
-                  help="verbose output")
+        global nlp_engine
 
-(options, args) = parser.parse_args()
+        logging.debug("POST %s" % self.path)
 
-if options.verbose:
-    logging.basicConfig(level=logging.DEBUG)
-    debug=True
-else:
-    logging.basicConfig(level=logging.INFO)
-    debug=False
+        if self.path=="/process":
 
-#
-# setup nlp engine, tensorflow session
-#
+            try:
+                data = json.loads(self.rfile.read(int(self.headers.getheader('content-length'))))
 
-# setup config to use BFC allocator
-config = tf.ConfigProto()  
-config.gpu_options.allocator_type = 'BFC'
+                # print data
 
-tf_session = tf.Session(config=config) 
+                line        = data['line']
 
-nlp_engine = NLPEngine(tf_session)
+                utts, actions = nlp_engine.process_line(line)
 
-@app.route('/nlp/process', methods=['GET'])
-def process_line():
+                logging.debug("utts: %s" % repr(utts)) 
+                logging.debug("actions: %s" % repr(actions)) 
 
-    global nlp_engine
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
 
-    if not 'line' in request.args:
-        return jsonify({'message': 'missing "line" argument.'}), 400
-    line    = request.args['line']
+                reply = {'utts': utts, 'actions': map(lambda p: unicode(p), actions)}
 
-    try:
-        utts, actions = nlp_engine.process_line(line)
+                self.wfile.write(json.dumps(reply))
 
-        logging.debug("utts: %s" % repr(utts)) 
-        logging.debug("actions: %s" % repr(actions)) 
+            except:
 
-        return jsonify({'utts': utts, 'actions': map(lambda p: unicode(p), actions)}), 201
+                logging.error(traceback.format_exc())
 
-    except:
+                self.send_response(400)
+                self.end_headers()
 
-        print >>sys.stderr, traceback.format_exc()
-        print >>sys.stderr, 'process_line failed for line=%s' % repr(line)
-
-    abort(400)
+        else:
+            self.send_response(400)
+            self.end_headers()
 
 
 if __name__ == '__main__':
 
     server_host   = model.config.get("semantics", "server_host")
-    server_port   = model.config.get("semantics", "server_port")
+    server_port   = int(model.config.get("semantics", "server_port"))
 
-    app.run(debug=debug, host = server_host, port=int(server_port))
+    setproctitle (PROC_TITLE)
+
+    #
+    # commandline
+    #
+
+    parser = OptionParser("usage: %prog [options] ")
+
+    parser.add_option ("-v", "--verbose", action="store_true", dest="verbose",
+                       help="verbose output")
+
+    parser.add_option ("-H", "--host", dest="host", type = "string", default=server_host,
+                       help="host, default: %s" % server_host)
+
+    parser.add_option ("-p", "--port", dest="port", type = "int", default=server_port,
+                       help="port, default: %d" % server_port)
+
+    (options, args) = parser.parse_args()
+
+    if options.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+        debug=True
+    else:
+        logging.basicConfig(level=logging.INFO)
+        debug=False
+
+    #
+    # setup nlp engine, tensorflow session
+    #
+
+    # setup config to use BFC allocator
+    config = tf.ConfigProto()  
+    config.gpu_options.allocator_type = 'BFC'
+
+    tf_session = tf.Session(config=config) 
+
+    nlp_engine = NLPEngine(tf_session)
+
+    #
+    # run HTTP server
+    #
+
+    try:
+        server = HTTPServer((options.host, options.port), NLPHandler)
+        logging.info('listening for HTTP requests on %s:%d' % (options.host, options.port))
+        
+        # wait forever for incoming http requests
+        server.serve_forever()
+
+    except KeyboardInterrupt:
+        logging.error('^C received, shutting down the web server')
+        server.socket.close()
 

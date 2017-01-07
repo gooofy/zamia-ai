@@ -34,7 +34,8 @@
 # Returns:
 # 
 # * 400 if request is invalid
-# * 200 OK {"utts": ["ok", "erledigt"], "actions": ['radio_on']}
+# * 200 OK {"utts": [{"lang": "de", "finished": true, "utterance": "Hallo!"}], 
+#           "actions": [["media", "tune", "\"media:B5_aktuell\""]]}
 # 
 # Example:
 # 
@@ -93,7 +94,10 @@ class NLPHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
 
-                reply = {'utts': utts, 'actions': map(lambda p: unicode(p), actions)}
+                reply_actions = map (lambda action: map (lambda p: unicode(p), action), actions)
+
+                logging.debug("reply_actions: %s" % repr(reply_actions)) 
+                reply = {'utts': utts, 'actions': reply_actions }
 
                 self.wfile.write(json.dumps(reply))
 

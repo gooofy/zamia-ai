@@ -1,8 +1,5 @@
 % prolog
 
-%! module greetings-nlp
-%! requires common-sense
-
 %
 % test setup and context
 %
@@ -10,9 +7,6 @@
 set_context_default('test', place, 'dbr:Stuttgart').
 set_context_default('test', time, today).
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
-
-nlp_test_setup(context('test')).
-
 
 answer(greeting, de, personal) :-
     say_eou(de, "Hallo!"),
@@ -56,7 +50,7 @@ nlp_macro('GREETING',  map(w('guten morgen')     , p('answer (greeting, de, S)')
                        map(w('huhu')             , p('answer (greeting, de, S)')),
                        map(w('auf wiedersehen')  , p('answer (goodbye,  de, S)')),
                        map(w('tschüss')          , p('answer (goodbye,  de, S)')),
-                       map(w('ciao')          , p('answer (goodbye,  de, S)')),
+                       map(w('ciao')             , p('answer (goodbye,  de, S)')),
                        map(w('ade')              , p('answer (goodbye,  de, S)'))).
 
 nlp_macro('ADDRESSEE', map(w(''         ), p('S is anonymous')),

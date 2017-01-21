@@ -1,0 +1,42 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hal: <http://hal.zamia.org/kb/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dbr:Freudental        hal:cityid 2924888 .
+
+dbr:Stuttgart         hal:cityid 2825297 .
+
+dbr:Tallinn           hal:cityid 588409 .
+
+dbr:San_Francisco     hal:cityid 5391959 .
+
+dbr:Los_Angeles       hal:cityid 5368361 .
+
+dbr:New_York_City     hal:cityid 5128581 .
+
+dbr:London            hal:cityid 2643743 .
+
+dbr:Paris             hal:cityid 2988507 .
+
+dbr:Reykjavík         hal:cityid 3413829 .
+
+dbr:Oberwiesenthal    hal:cityid 2882332 .
+
+dbr:Arnstorf          hal:cityid 2854179 .
+
+dbr:Hamburg           hal:cityid 2911298 .
+
+<http://dbpedia.org/resource/Washington,_D.C.>  hal:cityid 4140963 .
+
+<http://dbpedia.org/resource/Fairbanks,_Alaska> hal:cityid   5861897 .
+
+dbr:Brackenheim          hal:cityid 2945591 .
+
+dbr:Heilbronn            hal:cityid 2907669 .
+
+dbr:Biberach_an_der_Riss hal:cityid 2949426 .
+

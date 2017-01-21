@@ -1,7 +1,5 @@
 % prolog
 
-%! module common-sense
-
 %
 % time and date (very crude so far, but we have to get started somewhere...)
 %

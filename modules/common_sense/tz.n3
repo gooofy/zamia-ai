@@ -1,0 +1,42 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hal: <http://hal.zamia.org/kb/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dbr:Freudental        hal:timezone "Europe/Berlin" .
+
+dbr:Stuttgart         hal:timezone "Europe/Berlin" .
+
+dbr:Tallinn           hal:timezone "Europe/Tallinn" .
+
+dbr:San_Francisco     hal:timezone "America/Los_Angeles" .
+
+dbr:Los_Angeles       hal:timezone "America/Los_Angeles" .
+
+dbr:New_York_City     hal:timezone "America/New_York" .
+
+dbr:London            hal:timezone "Europe/London" .
+
+dbr:Paris             hal:timezone "Europe/Paris" .
+
+dbr:Reykjavík         hal:timezone "Atlantic/Reykjavik" .
+
+dbr:Oberwiesenthal    hal:timezone "Europe/Berlin" .
+
+dbr:Arnstorf          hal:timezone "Europe/Berlin" .
+
+dbr:Hamburg           hal:timezone "Europe/Berlin" .
+
+<http://dbpedia.org/resource/Washington,_D.C.>  hal:timezone "America/New_York" .
+
+<http://dbpedia.org/resource/Fairbanks,_Alaska> hal:timezone "America/Anchorage" .
+
+dbr:Brackenheim          hal:timezone "Europe/Berlin" .
+
+dbr:Heilbronn            hal:timezone "Europe/Berlin" .
+
+dbr:Biberach_an_der_Riss hal:timezone "Europe/Berlin" .
+

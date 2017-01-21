@@ -1,15 +1,10 @@
 % prolog
 
-%! module radio
-%! requires common-sense
-
 %
 % test setup and context
 %
 
 set_context_default('test', channel, 'media:B5_aktuell').
-
-nlp_test_setup(context('test')).
 
 %
 % natural language part

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2015, 2016 Guenter Bartsch
+# Copyright 2015, 2016, 2017 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,6 @@ class LogicDB(object):
     def __init__(self, session):
 
         self.session         = session
-        self.enabled_modules = set()
         self.parser          = PrologParser()
 
         
@@ -43,7 +42,6 @@ class LogicDB(object):
         logging.info("Clearing %s ..." % module)
         self.session.query(model.ORMClause).filter(model.ORMClause.module==module).delete()
         self.session.query(model.ORMPredicateDoc).filter(model.ORMPredicateDoc.module==module).delete()
-        self.session.query(model.ModuleDependency).filter(model.ModuleDependency.module==module).delete()
         logging.info("Clearing %s ... done." % module)
 
     def clear_all_modules(self):
@@ -51,39 +49,8 @@ class LogicDB(object):
         logging.info("Clearing all modules ...")
         self.session.query(model.ORMClause).delete()
         self.session.query(model.ORMPredicateDoc).delete()
-        self.session.query(model.ModuleDependency).delete()
+        self.session.query(model.Context).delete()
         logging.info("Clearing all modules ... done.")
-        
-
-    def store_module_requirements(self, module, requirements):
-        for r in requirements:
-            md = model.ModuleDependency(module   = module,
-                                        requires = r)
-            self.session.add(md)
-
-    def disable_all_modules(self):
-        self.enabled_modules = set()
-        
-    def enable_module(self, module):
-
-        # also enable required modules
-
-        todo = [module]
-        done = set()
-
-        while len(todo)>0:
-
-            m = todo.pop()
-            if m in done:
-                continue
-
-            # print "LogicDB: enabling module %s" % m
-            self.enabled_modules.add(m)
-
-            for req in self.session.query(model.ModuleDependency).filter(model.ModuleDependency.module==m).all():
-                todo.append(req.requires)
-
-            done.add(m)
         
 
     def store (self, module, clause):
@@ -114,9 +81,6 @@ class LogicDB(object):
         res = []
 
         for ormc in self.session.query(model.ORMClause).filter(model.ORMClause.head==name).all():
-
-            if not ormc.module in self.enabled_modules:
-                continue
 
             for c in self.parser.parse_line_clauses(ormc.prolog):
                 res.append (c)

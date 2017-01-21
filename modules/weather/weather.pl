@@ -1,8 +1,5 @@
 % prolog
 
-%! module weather
-%! requires common-sense
-
 %
 % test setup and context
 %
@@ -10,8 +7,6 @@
 set_context_default('test', place, 'dbr:Stuttgart').
 set_context_default('test', time, today).
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
-
-nlp_test_setup(context('test')).
 
 %
 % weather reasoning / common sense
@@ -62,14 +57,14 @@ weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, 
     sparql_query (format_str(
                       "SELECT ?temp_min ?temp_max ?precipitation ?clouds ?icon
                        WHERE {
-                           ?wev weather:dt_end ?dt_end. 
-                           ?wev weather:dt_start ?dt_start.
-                           ?wev weather:location %s.
-                           ?wev weather:temp_min ?temp_min   .
-                           ?wev weather:temp_max ?temp_max   .
-                           ?wev weather:precipitation ?precipitation .
-                           ?wev weather:clouds ?clouds .
-                           ?wev weather:icon ?icon .
+                           ?wev hal:dt_end ?dt_end. 
+                           ?wev hal:dt_start ?dt_start.
+                           ?wev hal:location %s.
+                           ?wev hal:temp_min ?temp_min   .
+                           ?wev hal:temp_max ?temp_max   .
+                           ?wev hal:precipitation ?precipitation .
+                           ?wev hal:clouds ?clouds .
+                           ?wev hal:icon ?icon .
                            FILTER (?dt_start >= \"%s\"^^xsd:dateTime && 
                                    ?dt_end   <= \"%s\"^^xsd:dateTime)
                        }", 

@@ -28,15 +28,17 @@ import utils
 
 config = utils.load_config()
 
-db_server = config.get("semantics", "dbserver")
-db_name   = config.get("semantics", "dbname")
-db_user   = config.get("semantics", "dbuser")
-db_pass   = config.get("semantics", "dbpass")
+# db_server = config.get("semantics", "dbserver")
+# db_name   = config.get("semantics", "dbname")
+# db_user   = config.get("semantics", "dbuser")
+# db_pass   = config.get("semantics", "dbpass")
+# 
+# # We connect with the help of the PostgreSQL URL
+# # postgresql://federer:grandestslam@localhost:5432/tennis
+# url = 'postgresql://{}:{}@{}:{}/{}'
+# url = url.format(db_user, db_pass, db_server, 5432, db_name)
 
-# We connect with the help of the PostgreSQL URL
-# postgresql://federer:grandestslam@localhost:5432/tennis
-url = 'postgresql://{}:{}@{}:{}/{}'
-url = url.format(db_user, db_pass, db_server, 5432, db_name)
+url = config.get("db", "url")
 
 #engine = create_engine(url, echo=True)
 engine = create_engine(url)
@@ -67,31 +69,9 @@ class ORMPredicateDoc(Base):
 
     doc               = Column(UnicodeText)
 
-class ModuleDependency(Base):
-
-    __tablename__ = 'module_dependencies'
-
-    id                = Column(Integer, primary_key=True)
-
-    module            = Column(String(255), index=True)
-    requires          = Column(String(255), index=True)
-
 #
 # NLP stuff
 #
-
-class Source(Base):
-
-    __tablename__ = 'sources'
-
-    ref               = Column(String(255), primary_key=True)
-    
-    name              = Column(Unicode(255), index=True)
-
-    discourses        = relationship("Discourse", backref="src", passive_deletes=True)
-
-    def __unicode__(self):
-        return self.name
 
 class Discourse(Base):
 
@@ -102,7 +82,7 @@ class Discourse(Base):
     num_participants  = Column(Integer)
     lang              = Column(String(2), index=True)
 
-    src_ref           = Column(String(255), ForeignKey('sources.ref', ondelete='CASCADE'))
+    module            = Column(String(255), index=True)
 
     rounds            = relationship("DiscourseRound", backref="discourse", passive_deletes=True)
 
@@ -131,25 +111,15 @@ class Context(Base):
     value             = Column(UnicodeText)
     default_value     = Column(UnicodeText)
 
+class Cronjob(Base):
+
+    __tablename__ = 'cronjobs'
+
+    id                = Column(Integer, primary_key=True)
+
+    module            = Column(String, index=True)
+    name              = Column(String, index=True)
+    last_run          = Column(Integer, index=True)
+
 Base.metadata.create_all(engine)
-
-# def store_doc (session, ref, name, delete = True):
-# 
-#     doc = session.query(Document).filter(Document.ref==ref).first()
-# 
-#     if not doc:
-#         doc = Document (ref=ref, name=name)
-#         session.add(doc)
-# 
-#     else:
-# 
-#         if delete:
-# 
-#             session.delete(doc)
-# 
-#             doc = Document (ref=ref, name=name)
-#             session.add(doc)
-# 
-#     return doc
-
 

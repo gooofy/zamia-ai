@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016 Guenter Bartsch
+# Copyright 2016, 2017 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -25,23 +25,21 @@
 #
 
 import sys
-import re
-import os
-import codecs
+import logging
 import json
-from time import time
-
+import traceback
+import time
 import requests
 from requests.auth import HTTPDigestAuth
 
 import rdflib
+import rdflib_sqlalchemy
 
-import utils
-import model
+from nltools import misc
 
-# our sleepycat graph store
-
-RDF_LIB_STORE_PATH = 'data/dst/HALRDFLibStore'
+# # our sleepycat graph store
+# 
+# RDF_LIB_STORE_PATH = 'data/dst/HALRDFLibStore'
 RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
 
 #
@@ -51,7 +49,7 @@ RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
 COMMON_PREFIXES = {
             'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
             'rdfs':    'http://www.w3.org/2000/01/rdf-schema#',
-            'weather': 'http://hal.zamia.org/weather/',
+            'hal':     'http://hal.zamia.org/kb/',
             'dbo':     'http://dbpedia.org/ontology/',
             'dbr':     'http://dbpedia.org/resource/',
             'dbp':     'http://dbpedia.org/property/',
@@ -66,9 +64,9 @@ COMMON_PREFIXES = {
 # essentially we have two graphs: dbpedia subset + our own entries
 #
 
-GRAPHS = [ 'http://dbpedia.org', 'http://hal.zamia.org' ]
-
 class HALKB(object):
+
+    ident = rdflib.URIRef("halkb")
 
     def __init__(self):
 
@@ -82,21 +80,59 @@ class HALKB(object):
         # set up graph store
         #
 
-        self.graph = rdflib.ConjunctiveGraph('Sleepycat')
-        self.graph.open(RDF_LIB_STORE_PATH, create = True)
+        config = misc.load_config('.nlprc')
+
+        # self.graph = rdflib.ConjunctiveGraph('Sleepycat')
+        # self.graph.open(RDF_LIB_STORE_PATH, create = True)
+
+        # SQLAlchemy
+
+        url = config.get('db', 'url')
+
+        self.uri = rdflib.Literal(url)
+
+        rdflib_sqlalchemy.registerplugins()
+        store = rdflib.plugin.get("SQLAlchemy", rdflib.store.Store)(identifier=self.ident)
+        self.graph = rdflib.ConjunctiveGraph(store, identifier=self.ident)
+        self.graph.open(self.uri, create=True)
+
+        # postgresql
+
+        # dbserver  = config.get('db', 'dbserver')
+        # dbname    = config.get('db', 'dbname')
+        # dbuser    = config.get('db', 'dbuser')
+        # dbpass    = config.get('db', 'dbpass')
+
+        # db_type = 'PostgreSQL' # Use 'MySQL' instead, if that's what you have
+        # xfg = 'user=%s,password=%s,host=%s,db=%s' % (dbuser, dbpass, dbserver, dbname)
+        # store = rdflib.plugin.get(db_type, rdflib.store.Store)( identifier    = 'halkb',
+        #                                                         configuration = cfg)
+        # store.open(create=True) # only True when opening a store for the first time
+
+        # self.graph = rdflib.graph.ConjunctiveGraph(store)
+
+
+    def register_graph(self, c):
 
         # Bind a few prefix/namespace pairs for more readable output
 
-        for c in GRAPHS:
-            g = self.graph.get_context(c)
-            for p in COMMON_PREFIXES:
-                g.bind(p, rdflib.Namespace(COMMON_PREFIXES[p]))
+        g = self.graph.get_context(c)
+        for p in COMMON_PREFIXES:
+            g.bind(p, rdflib.Namespace(COMMON_PREFIXES[p]))
+
+    def close (self):
+        self.graph.close()
 
     def clear_graph(self, context):
         query = """
                 CLEAR GRAPH <%s>
                 """ % (context)
         self.sparql(query)
+
+    def clear_all_graphs (self):
+        for context in self.graph.contexts():
+            print repr(context.identifier)
+            self.clear_graph(context.identifier)
 
     def dump(self, fn=RDF_LIB_DUMP_PATH):
 
@@ -114,8 +150,35 @@ class HALKB(object):
         g.serialize(destination=fn, format='n3')
 
     def parse (self, context, format, data):
-        g = self.graph.get_context(context)
-        g.parse(format=format, data=data)
+
+        # parse to memory firstm then do a bulk insert into our DB
+
+        logging.debug('parsing to memory...')
+        cj = rdflib.ConjunctiveGraph()
+        memg = cj.get_context(context)
+        memg.parse(format=format, data=data)
+
+        quads = cj.quads()
+
+        # foo = (s, p, o, c) for s, p, o, c in quads
+        #                   if isinstance(c, Graph)
+        #                   and c.identifier is self.identifier
+        #                   and _assertnode(s,p,o)
+
+        # print foo
+        # import pdb; pdb.set_trace()
+
+        # qs = map(lambda x: x, cj.quads())
+
+        #for q in quads:
+        #    print repr(q)
+
+        logging.debug('addN ...')
+        g = self.graph.addN(quads)
+
+        # FIXME: old code without memg
+        # g = self.graph.get_context(context)
+        # g.parse(format=format, data=data)
 
     def parse_file (self, context, format, fn):
         g = self.graph.get_context(context)
@@ -170,17 +233,51 @@ class HALKB(object):
 
 if __name__ == "__main__":
 
-    kb = HALKB()
+    logging.basicConfig(level=logging.DEBUG)
 
-    query = """
-               INSERT DATA {
-                   GRAPH <http://hal.zamia.org>
-                   { 
-                       weather:fc_Fairbanks__Alaska_20161112_morning weather:location <http://dbpedia.org/resource/Fairbanks,_Alaska> .
-                       weather:fc_Fairbanks__Alaska_20161112_morning weather:temp_min -30 .
-                       weather:fc_Fairbanks__Alaska_20161112_morning weather:temp_max -20 .
-                   }
-                }
-            """
-    kb.sparql(query)
+    gn = 'http://hal.zamia.org/benchmark'
+
+    start_time = time.time()
+    kb = HALKB()
+    logging.debug ('HALKB init took %fs' % (time.time() - start_time))
+
+    start_time = time.time()
+    kb.clear_graph(gn)
+    logging.debug ('HALKB clear graph took %fs' % (time.time() - start_time))
+
+    # query = """
+    #            INSERT DATA {
+    #                GRAPH <http://hal.zamia.org/benchmark>
+    #                { 
+    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:location <http://dbpedia.org/resource/Fairbanks,_Alaska> .
+    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:temp_min -30 .
+    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:temp_max -20 .
+    #                }
+    #             }
+    #         """
+    # start_time = time.time()
+    # kb.sparql(query)
+    # logging.debug ('HALKB sparql() took %fs' % (time.time() - start_time))
+
+    # generate lots of n3 data, for parser benchmarking
+
+    n3data = '@prefix hal: <http://hal.zamia.org/kb/> .\n'
+    for i in range (1000):
+        n3data += 'hal:n%d hal:bench hal:m%d .\n' % (i, i)
+
+    # print n3data
+
+    print 'HALKB parsing...'
+    start_time = time.time()
+    kb.parse (gn, 'n3', n3data)
+    logging.debug ('HALKB parse() took %fs' % (time.time() - start_time))
+
+    print 'HALKB parsing (again)...'
+    start_time = time.time()
+    kb.parse (gn, 'n3', n3data)
+    logging.debug ('HALKB parse() took %fs' % (time.time() - start_time))
+
+    start_time = time.time()
+    kb.close()
+    logging.debug ('HALKB close() took %fs' % (time.time() - start_time))
 

@@ -24,19 +24,18 @@
 
 import os
 import sys
-import locale
-import ConfigParser
-from os.path import expanduser
-from optparse import OptionParser
 import traceback
 import codecs
 import logging
 import imp
 import time
 import cmdln
+import random
 
 from sqlalchemy.orm import sessionmaker
 import psycopg2
+
+import tensorflow as tf
 
 import model
 
@@ -45,6 +44,7 @@ from prolog_compiler import PrologCompiler
 from logicdb import LogicDB
 from nltools import misc
 from nlp_model import NLPModel
+from nlp_engine import NLPEngine
 
 GRAPH_PREFIX       = 'http://hal.zamia.org/kb/'
 
@@ -80,12 +80,15 @@ class NLPCli(cmdln.Cmdln):
         self.kb = HALKB()
 
         #
-        # module management
+        # module management, setup
         #
 
         self.modules  = {}
         s = self.config.get('semantics', 'modules')
         self.all_modules = map (lambda s: s.strip(), s.split(','))
+
+        for mn2 in self.all_modules:
+            self.load_module (mn2)
 
     @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
            help="clean predicates from logicdb")
@@ -551,6 +554,49 @@ class NLPCli(cmdln.Cmdln):
         nlp_model.train(opts.num_steps)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_chat(self, subcmd, opts, *paths):
+        """${cmd_name}: chat with model in natural language
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        #
+        # setup nlp engine, tensorflow session
+        #
+
+        # setup config to use BFC allocator
+        config = tf.ConfigProto()  
+        config.gpu_options.allocator_type = 'BFC'
+
+        with tf.Session(config=config) as tf_session:
+            nlp_engine = NLPEngine(self.db, self.session, tf_session)
+
+            while True:
+
+                line = raw_input ('nlp> ')
+
+                if line == 'quit' or line == 'exit':
+                    break
+
+                utts, actions = nlp_engine.process_line(line)
+
+                if len(utts)>0:
+                    print "SAY", random.choice(utts)['utterance']
+
+                for action in actions:
+                    print "ACTION", action
+
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+
 #
 # init terminal
 #

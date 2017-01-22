@@ -44,6 +44,7 @@ from kb import HALKB, RDF_LIB_DUMP_PATH
 from prolog_compiler import PrologCompiler
 from logicdb import LogicDB
 from nltools import misc
+from nlp_model import NLPModel
 
 GRAPH_PREFIX       = 'http://hal.zamia.org/kb/'
 
@@ -530,6 +531,26 @@ class NLPCli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option ("-n", "--num-steps", dest="num_steps", type = "int", default=5000,
+           help="number of training steps, default: 5000")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_train(self, subcmd, opts, *paths):
+        """${cmd_name}: train tensorflow model
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        nlp_model = NLPModel(self.session)
+        nlp_model.train(opts.num_steps)
+
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 #
 # init terminal
 #

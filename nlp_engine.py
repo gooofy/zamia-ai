@@ -28,10 +28,6 @@ import sys
 import logging
 import traceback
 
-from optparse import OptionParser
-from StringIO import StringIO
-from sqlalchemy.orm import sessionmaker
-
 import numpy as np
 
 import model
@@ -48,30 +44,17 @@ import tensorflow as tf
 
 class NLPEngine(object):
 
-    def __init__(self, tf_session):
+    def __init__(self, db, session, tf_session):
 
         self.tf_session = tf_session
-
-        # session, connect to db
-
-        Session = sessionmaker(bind=model.engine)
-
-        session = Session()
 
         #
         # prolog environment setup
         #
 
-        db = LogicDB(session)
-
         self.prolog_engine = PrologAIEngine(db)
 
         self.parser = PrologParser()
-
-        for m in model.config.get("semantics", "modules").split(','):
-            m = m.strip()
-            logging.debug("enabling module %s" % repr(m))
-            db.enable_module(m)
 
         #
         # load nlp model

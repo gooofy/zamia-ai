@@ -31,7 +31,6 @@ import imp
 import time
 
 import numpy as np
-import tensorflow as tf
 
 from sqlalchemy.orm import sessionmaker
 import model
@@ -45,7 +44,6 @@ from prolog_compiler import PrologCompiler
 from speech_tokenizer import tokenize
 
 from kb import HALKB
-from nlp_model import NLPModel, BUCKETS, CKPT_FN
 from nltools import misc
 
 GRAPH_PREFIX       = 'http://hal.zamia.org/kb/'
@@ -76,14 +74,11 @@ class NLPKernal(object):
         self.kb = HALKB()
 
         #
-        # TensorFlow
+        # TensorFlow (deferred, as tf can take quite a bit of time to set up)
         #
 
-        # setup config to use BFC allocator
-        config = tf.ConfigProto()  
-        config.gpu_options.allocator_type = 'BFC'
-
-        self.tf_session = tf.Session(config=config)
+        self.tf_session = None
+        self.nlp_model  = None
 
         #
         # module management, setup
@@ -104,22 +99,39 @@ class NLPKernal(object):
 
         self.parser = PrologParser()
 
-        #
-        # load nlp model
-        #
 
-        self.nlp_model = NLPModel(self.session)
+    # FIXME: this will work only on the first call
+    def setup_tf_model (self, forward_only, load_model):
 
-        self.nlp_model.load_dicts()
+        if not self.tf_session:
 
-        # we need the inverse dict to reconstruct the output from tensor
+            import tensorflow as tf
 
-        self.inv_output_dict = {v: k for k, v in self.nlp_model.output_dict.iteritems()}
+            # setup config to use BFC allocator
+            config = tf.ConfigProto()  
+            config.gpu_options.allocator_type = 'BFC'
 
-        self.tf_model = self.nlp_model.create_tf_model(self.tf_session, forward_only = True) 
-        self.tf_model.batch_size = 1
+            self.tf_session = tf.Session(config=config)
 
-        self.nlp_model.load_model(self.tf_session)
+        if not self.nlp_model:
+
+            from nlp_model import NLPModel
+
+            self.nlp_model = NLPModel(self.session)
+
+            if load_model:
+
+                self.nlp_model.load_dicts()
+
+                # we need the inverse dict to reconstruct the output from tensor
+
+                self.inv_output_dict = {v: k for k, v in self.nlp_model.output_dict.iteritems()}
+
+                self.tf_model = self.nlp_model.create_tf_model(self.tf_session, forward_only = forward_only) 
+                self.tf_model.batch_size = 1
+
+                self.nlp_model.load_model(self.tf_session)
+
 
     def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
                                    clean_cronjobs, clean_kb):
@@ -371,8 +383,16 @@ class NLPKernal(object):
 
         self.session.commit()
 
+    def train (self, num_steps):
+
+        self.setup_tf_model (False, False)
+        self.nlp_model.train(num_steps)
+
 
     def process_line(self, line):
+
+        self.setup_tf_model (True, True)
+        from nlp_model import BUCKETS
 
         x = self.nlp_model.compute_x(line)
 

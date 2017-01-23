@@ -40,7 +40,6 @@ from nltools import misc
 # # our sleepycat graph store
 # 
 # RDF_LIB_STORE_PATH = 'data/dst/HALRDFLibStore'
-RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
 
 #
 # common prefixes we use in our queries
@@ -134,7 +133,7 @@ class HALKB(object):
             print repr(context.identifier)
             self.clear_graph(context.identifier)
 
-    def dump(self, fn=RDF_LIB_DUMP_PATH):
+    def dump(self, fn):
 
         # print
         # print 'dump', fn

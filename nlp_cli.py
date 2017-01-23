@@ -32,16 +32,12 @@ import random
 
 import psycopg2
 
-import tensorflow as tf
-
 import model
 
-from kb import RDF_LIB_DUMP_PATH
-from logicdb import LogicDB
-from nlp_model import NLPModel
 from nlp_kernal import NLPKernal
 
 DEFAULT_LOGLEVEL   = logging.INFO
+RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
 
 class NLPCli(cmdln.Cmdln):
 
@@ -282,8 +278,7 @@ class NLPCli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        nlp_model = NLPModel(self.session)
-        nlp_model.train(opts.num_steps)
+        self.kernal.train (opts.num_steps)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
@@ -300,6 +295,8 @@ class NLPCli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
+
+        self.kernal.setup_tf_model(True, True)
 
         while True:
 

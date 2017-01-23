@@ -11,8 +11,8 @@ kb:
 cron:
 	./nlp_cli.py cron all
 
-nlp_train:
-	./nlp_train_keras.py
+train:
+	./nlp_cli.pu train
 
 kaldi:
 	rm -rf data/dst/speech/de/kaldi

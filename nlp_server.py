@@ -56,9 +56,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 import model
 
-from nlp_engine import NLPEngine
-
-import tensorflow as tf
+from nlp_kernal import NLPKernal
 
 PROC_TITLE        = 'nlp_server'
 
@@ -72,7 +70,7 @@ class NLPHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
 
-        global nlp_engine
+        global kernal
 
         logging.debug("POST %s" % self.path)
 
@@ -85,7 +83,7 @@ class NLPHandler(BaseHTTPRequestHandler):
 
                 line        = data['line']
 
-                utts, actions = nlp_engine.process_line(line)
+                utts, actions = kernal.process_line(line)
 
                 logging.debug("utts: %s" % repr(utts)) 
                 logging.debug("actions: %s" % repr(actions)) 
@@ -145,16 +143,11 @@ if __name__ == '__main__':
         debug=False
 
     #
-    # setup nlp engine, tensorflow session
+    # setup nlp kernal
     #
 
-    # setup config to use BFC allocator
-    config = tf.ConfigProto()  
-    config.gpu_options.allocator_type = 'BFC'
-
-    tf_session = tf.Session(config=config) 
-
-    nlp_engine = NLPEngine(tf_session)
+    kernal = NLPKernal()
+    kernal.setup_tf_model (True, True)
 
     #
     # run HTTP server

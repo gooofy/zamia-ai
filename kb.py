@@ -33,7 +33,7 @@ import requests
 from requests.auth import HTTPDigestAuth
 
 import rdflib
-import rdflib_sqlalchemy
+import rdflib_sqlalchemy2
 
 from nltools import misc
 
@@ -91,8 +91,8 @@ class HALKB(object):
 
         self.uri = rdflib.Literal(url)
 
-        rdflib_sqlalchemy.registerplugins()
-        store = rdflib.plugin.get("SQLAlchemy", rdflib.store.Store)(identifier=self.ident)
+        rdflib_sqlalchemy2.registerplugins()
+        store = rdflib.plugin.get("SQLAlchemy2", rdflib.store.Store)(identifier=self.ident)
         self.graph = rdflib.ConjunctiveGraph(store, identifier=self.ident)
         self.graph.open(self.uri, create=True)
 

@@ -232,7 +232,7 @@ License
 =======
 
 My own scripts as well as the data I create (i.e. lexicon and transcripts) is
-LGPLv3 licensed unless otherwise noted in the scritp's copyright headers.
+LGPLv3 licensed unless otherwise noted in the script's copyright headers.
 
 Some scripts and files are based on works of others, in those cases it is my
 intention to keep the original license intact. Please make sure to check the

@@ -27,28 +27,26 @@ import logging
 import codecs
 import re
 
-from optparse import OptionParser
-from StringIO import StringIO
 from copy import copy
-
-from sqlalchemy.orm import sessionmaker
 
 import model
 from logic import *
 from logicdb import *
 from prolog_parser import PrologParser, SYM_EOF, PrologError
 from prolog_ai_engine import PrologAIEngine
+from speech_tokenizer import tokenize
+from nlp_macros import NLPMacroEngine
 import utils
 
-from speech_tokenizer import tokenize
 
 class PrologCompiler(object):
 
-    def __init__(self, session, trace = False, run_tests = False):
+    def __init__(self, session, trace = False, run_tests = False, print_utterances=False):
 
-        self.session   = session
-        self.trace     = trace
-        self.run_tests = run_tests
+        self.session          = session
+        self.trace            = trace
+        self.run_tests        = run_tests
+        self.print_utterances = print_utterances
 
     def set_trace (self, trace):
         self.trace = trace
@@ -76,132 +74,51 @@ class PrologCompiler(object):
 
             mappings.append(mapping)
 
-        # print repr(mappings)
+        self.macro_engine.define_named_macro(name, mappings)
 
-        self.nlp_macros[name] = mappings
-
-        
     def nlp_gen(self, module_name, clause):
 
         args = clause.head.args
 
         lang = args[0].name
 
-        # extract all macros used
+        # extract arguments
 
-        macro_names = set()
+        nlps  = []
+        preds = []
 
         argc = 1
         while argc < len(args):
 
-            nlp   = args[argc  ].s
-            preds = args[argc+1].s
+            n = args[argc  ].s
+            p = args[argc+1].s
 
             argc += 2
 
-            for pos, char in enumerate(nlp):
-
-                if char == '@':
-
-                    macro = re.match(r'@([A-Z]+):', nlp[pos:])
-
-                    # print "MACRO:", macro.group(1)
-
-                    macro_names.add(macro.group(1))
+            nlps.append(n)
+            preds.append(p)
 
         # generate all macro-expansions
 
-        macro_names = sorted(macro_names)
-        todo = [ (0, {}) ]
+        ds = self.macro_engine.macro_expand(lang, nlps, preds)
 
-        while True:
+        for d in ds:
 
-            if len(todo) == 0:
-                break
+            discourse = model.Discourse(num_participants = 2,
+                                        lang             = lang,
+                                        module           = module_name)
+            self.session.add(discourse)
 
-            idx, mappings = todo.pop(0)
+            round_num = 0
+            for inp, resp in d:
 
-            if idx < len(macro_names):
+                dr = model.DiscourseRound(inp       = inp, 
+                                          resp      = resp,  
+                                          discourse = discourse, 
+                                          round_num = round_num)
+                self.session.add(dr)
 
-                macro_name = macro_names[idx]
-
-                for v in self.nlp_macros[macro_name]:
-
-                    nm = copy(mappings)
-                    # nm[macro_name] = (v, self.nlp_macros[macro_name][v])
-                    nm[macro_name] = v
-
-                    todo.append ( (idx+1, nm) )
-
-            else:
-
-                # generate discourse for this set of mappings
-
-                # print repr(mappings)
-
-                # create discourse in db
-
-                discourse = model.Discourse(num_participants = 2,
-                                            lang             = lang,
-                                            module           = module_name)
-                self.session.add(discourse)
-
-                argc       = 1
-                round_num = 0
-                while argc < len(args):
-
-                    s = args[argc  ].s
-                    p = args[argc+1].s
-
-                    argc += 2
-
-                    for k in mappings:
-
-                        for v in mappings[k]:
-
-                            s = s.replace('@'+k+':'+v, mappings[k][v])
-                            p = p.replace('@'+k+':'+v, mappings[k][v])
-
-                    inp_raw = utils.compress_ws(s.lstrip().rstrip())
-                    p       = utils.compress_ws(p.lstrip().rstrip())
-
-                    # print s
-                    # print p
-
-                    # tokenize strings, wrap them into say() calls
-
-                    inp_tokenized = ' '.join(tokenize(inp_raw, lang))
-
-                    preds = p.split(';')
-                    np = ''
-                    for pr in preds:
-                        if not pr.startswith('"'):
-                            if len(np)>0:
-                                np += ';'
-                            np += pr.strip()
-                            continue
-
-                        for word in tokenize (pr, lang):
-                            if len(np)>0:
-                                np += ';'
-                            np += 'say(' + lang + ', "' + word + '")'
-
-                        if len(p) > 2:
-                            if p[len(p)-2] in ['.', '?', '!']:
-                                if len(np)>0:
-                                    np += ';'
-                                np += 'say(' + lang + ', "' + p[len(p)-2] + '")'
-                        np += ';eou'
-
-
-                    dr = model.DiscourseRound(inp_raw       = inp_raw, 
-                                              inp_tokenized = inp_tokenized,
-                                              response      = np, 
-                                              discourse     = discourse, 
-                                              round_num     = round_num)
-                    self.session.add(dr)
-
-                    round_num += 1
+                round_num += 1
 
     def nlp_test(self, clause):
 
@@ -267,7 +184,7 @@ class PrologCompiler(object):
             for dr in self.session.query(model.DiscourseRound).filter(model.DiscourseRound.discourse_id==did) \
                                                               .order_by(model.DiscourseRound.round_num):
             
-                prolog_s = ','.join(dr.response.split(';'))
+                prolog_s = ','.join(dr.resp.split(';'))
 
                 logging.info("nlp_test: %s round=%3d, %s => %s" % (clause.location, round_num, dr.inp_tokenized, prolog_s) )
 
@@ -367,13 +284,11 @@ class PrologCompiler(object):
 
         # setup compiler / test environment
 
-        self.db         = LogicDB(self.session)
+        self.db           = LogicDB(self.session)
 
-        parser          = PrologParser()
+        parser            = PrologParser()
 
-        self.nlp_macros = {}
-        src             = None
-        first           = True
+        self.macro_engine = NLPMacroEngine()
 
         self.nlp_test_engine = PrologAIEngine(self.db)
         self.nlp_test_engine.set_trace(self.trace)
@@ -384,10 +299,6 @@ class PrologCompiler(object):
 
             while parser.cur_sym != SYM_EOF:
                 clauses = parser.clause()
-
-                if first:
-                    self.db.clear_module(module_name)
-                    first = False
 
                 for clause in clauses:
                     logging.debug(u"%7d / %7d (%3d%%) > %s" % (parser.cur_line, linecnt, parser.cur_line * 100 / linecnt, unicode(clause)))

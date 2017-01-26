@@ -12,7 +12,7 @@ cron:
 	./nlp_cli.py cron all
 
 train:
-	./nlp_cli.pu train
+	./nlp_cli.py train
 
 kaldi:
 	rm -rf data/dst/speech/de/kaldi

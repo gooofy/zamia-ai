@@ -314,11 +314,14 @@ class NLPKernal(object):
 
         self.session.commit()
 
-    def compile_module (self, module_name, trace=False, run_tests=False):
+    def compile_module (self, module_name, trace=False, run_tests=False, print_utterances=False):
 
         m = self.modules[module_name]
 
-        compiler = PrologCompiler (self.session, trace, run_tests)
+        self.db.clear_module(module_name)
+        self.session.query(model.Discourse).filter(model.Discourse.module==module_name).delete()
+
+        compiler = PrologCompiler (self.session, trace, run_tests, print_utterances)
 
         for pl_fn in getattr (m, 'PL_SOURCES'):
             
@@ -326,7 +329,7 @@ class NLPKernal(object):
 
             compiler.do_compile (pl_pathname, module_name)
 
-    def compile_module_multi (self, module_names, run_trace=False, run_tests=False):
+    def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False):
 
         for module_name in module_names:
 
@@ -334,11 +337,11 @@ class NLPKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile_module (mn2, run_trace, run_tests)
+                    self.compile_module (mn2, run_trace, run_tests, print_utterances)
 
             else:
                 self.load_module (module_name)
-                self.compile_module (module_name, run_trace, run_tests)
+                self.compile_module (module_name, run_trace, run_tests, print_utterances)
 
         self.session.commit()
 

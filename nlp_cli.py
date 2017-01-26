@@ -214,6 +214,8 @@ class NLPCli(cmdln.Cmdln):
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")
+    @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
+           help="print generated utterances")
     @cmdln.option("-t", "--tests", dest="run_tests", action="store_true",
            help="run tests")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -234,7 +236,7 @@ class NLPCli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.compile_module_multi (paths, opts.run_trace, opts.run_tests)
+        self.kernal.compile_module_multi (paths, opts.run_trace, opts.run_tests, opts.print_utterances)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

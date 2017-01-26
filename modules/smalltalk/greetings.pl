@@ -4,7 +4,6 @@
 % test setup and context
 %
 
-set_context_default('test', place, 'dbr:Stuttgart').
 set_context_default('test', time, today).
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 
@@ -12,7 +11,7 @@ answer(greeting, de, personal) :-
     say_eou(de, "Hallo!"),
     say_eou(de, "Hi!"),
     say_eou(de, "Grüß Dich!"),
-    say_eou(de, "Huhu!").
+    say_eou(de, "Hey!").
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
@@ -53,11 +52,16 @@ nlp_macro('GREETING',  map(w('guten morgen')     , p('answer (greeting, de, S)')
                        map(w('ciao')             , p('answer (goodbye,  de, S)')),
                        map(w('ade')              , p('answer (goodbye,  de, S)'))).
 
-nlp_macro('ADDRESSEE', map(w(''         ), p('S is anonymous')),
-                       map(w('Computer '), p('S is personal')),
+nlp_macro('ADDRESSEE', map(w('Computer '), p('S is personal')),
                        map(w('HAL '     ), p('S is personal'))).
 
+nlp_gen(de,'@GREETING:w',
+           'S is anonymous; @GREETING:p').
+
 nlp_gen(de,'@GREETING:w @ADDRESSEE:w',
+           '@ADDRESSEE:p; @GREETING:p').
+
+nlp_gen(de,'@ADDRESSEE:w @GREETING:w',
            '@ADDRESSEE:p; @GREETING:p').
 
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
@@ -89,4 +93,25 @@ nlp_test(de,
 nlp_test(de,
          ivr(in('Ciao'),
              out('Auf Wiedersehen!'))).
+
+nlp_macro('ADDRESSEE2', map(w('')),
+                        map(w('Computer ')),
+                        map(w('HAL '     ))).
+
+answer(howdy, de) :-
+    say_eou(de, "Sehr gut, danke. Und selber?"),
+    say_eou(de, "Gut, danke. Wie geht es Dir?"),
+    say_eou(de, "Mir geht's prima, und Dir?"),
+    say_eou(de, "Mir geht's gut, und selber?"),
+    say_eou(de, "Super, wie immer!"),
+    say_eou(de, "Gut, danke der Nachfrage. Wie geht es Dir?").
+
+nlp_gen(de,'@ADDRESSEE2:w wie geht es dir?',
+           'answer (howdy, de)').
+
+nlp_gen(de,'@ADDRESSEE2:w wie gehts',
+           'answer (howdy, de)').
+
+nlp_gen(de,'@ADDRESSEE2:w wie fühlst du dich',
+           'answer (howdy, de)').
 

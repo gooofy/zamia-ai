@@ -78,7 +78,7 @@ class NLPModel(object):
 
         for dr in self.session.query(model.DiscourseRound).all():
 
-            tokens = tokenize (dr.inp_tokenized)
+            tokens = tokenize (dr.inp)
 
             if not (len(tokens) in hist):
                 hist[len(tokens)] = 0
@@ -93,7 +93,7 @@ class NLPModel(object):
 
         for dr in self.session.query(model.DiscourseRound).all():
 
-            preds = dr.response.split(';')
+            preds = dr.resp.split(';')
 
             if not (len(preds) in hist):
                 hist[len(preds)] = 0
@@ -119,7 +119,7 @@ class NLPModel(object):
 
             # input
 
-            tokens = tokenize (dr.inp_tokenized)
+            tokens = tokenize (dr.inp)
 
             l = len(tokens)
 
@@ -134,7 +134,7 @@ class NLPModel(object):
 
             # output
 
-            preds = dr.response.split(';')
+            preds = dr.resp.split(';')
             l = len(preds) + 1 # +1 to account for _EOS token
 
             if l > self.output_max_len:
@@ -338,11 +338,11 @@ class NLPModel(object):
         cnt = 0
         for dr in self.session.query(model.DiscourseRound).all():
 
-            x = self.compute_x(dr.inp_tokenized)
-            # print dr.inp_tokenized, x
+            x = self.compute_x(dr.inp)
+            # print dr.inp, x
 
-            y = self.compute_y(dr.response)
-            # print dr.response, y
+            y = self.compute_y(dr.resp)
+            # print dr.resp, y
 
             if cnt % 10 == 9:
                 data_set = ds_dev

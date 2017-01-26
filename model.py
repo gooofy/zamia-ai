@@ -94,9 +94,8 @@ class DiscourseRound(Base):
 
     round_num         = Column(Integer, index=True)
 
-    inp_raw           = Column(UnicodeText)
-    inp_tokenized     = Column(UnicodeText)
-    response          = Column(UnicodeText)
+    inp               = Column(UnicodeText)
+    resp              = Column(UnicodeText)
 
     discourse_id      = Column(Integer, ForeignKey('discourses.id', ondelete='CASCADE'))
 

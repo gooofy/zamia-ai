@@ -112,6 +112,12 @@ class PrologCompiler(object):
             round_num = 0
             for inp, resp in d:
 
+                if len(inp.strip()) == 0:
+                    raise PrologError ('nlp_gen: empty input generated.')
+
+                if self.print_utterances:
+                    logging.info(u'inp: %s' % inp)
+
                 dr = model.DiscourseRound(inp       = inp, 
                                           resp      = resp,  
                                           discourse = discourse, 

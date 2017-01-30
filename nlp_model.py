@@ -60,7 +60,8 @@ BATCH_SIZE                 = 64
 STEPS_PER_STAT             = 200
 
 LEARNING_RATE              = 0.5
-LEARNING_RATE_DECAY_FACTOR = 0.99
+# LEARNING_RATE_DECAY_FACTOR = 0.99
+LEARNING_RATE_DECAY_FACTOR = 0.95
 MAX_GRADIENT_NORM          = 5.0
 USE_LSTM                   = False
 NUM_SAMPLES                = 32 
@@ -384,7 +385,7 @@ class NLPModel(object):
 
             # this is the training loop
 
-            step_time, loss = 0.0, 0.0
+            step_time, loss, best_loss = 0.0, 0.0, 100000.0
             current_step = 0
             previous_losses = []
             while tf_model.global_step.eval() <= num_steps:
@@ -421,8 +422,9 @@ class NLPModel(object):
                         tf_session.run(tf_model.learning_rate_decay_op)
 
                     previous_losses.append(loss)
-            
                     step_time, loss = 0.0, 0.0
+           
+                    sum_loss = 0.0
             
                     # run evals on development set and print their perplexity.
                     for bucket_id in xrange(len(BUCKETS)):
@@ -434,11 +436,18 @@ class NLPModel(object):
                         _, eval_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
                         eval_ppx = math.exp(eval_loss) if eval_loss < 300 else float('inf')
                         logging.info("  eval: bucket %d perplexity %.4f" % (bucket_id, eval_ppx))
+                        
+                        sum_loss += eval_loss
+
+                    if sum_loss < best_loss:
+                        best_loss = sum_loss
+                        logging.info("*** best eval result so far (loss: %f), saving mode to %s ..." % (sum_loss, CKPT_FN))
+                        self.save_model(tf_session, CKPT_FN)
 
                     sys.stdout.flush()
 
-            logging.info("training finished. saving model...")
+            logging.info("training finished.")
 
-            self.save_model(tf_session, CKPT_FN)
+            # self.save_model(tf_session, CKPT_FN)
 
 

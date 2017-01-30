@@ -264,8 +264,8 @@ class NLPCli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option ("-n", "--num-steps", dest="num_steps", type = "int", default=5000,
-           help="number of training steps, default: 5000")
+    @cmdln.option ("-n", "--num-steps", dest="num_steps", type = "int", default=10000,
+           help="number of training steps, default: 10000")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_train(self, subcmd, opts, *paths):

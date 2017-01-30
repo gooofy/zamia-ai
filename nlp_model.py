@@ -154,29 +154,29 @@ class NLPModel(object):
 
     def save_dicts(self):
 
-        with open(IN_DICT_FN, 'w') as f:
+        with codecs.open(IN_DICT_FN, 'w', 'utf8') as f:
 
             f.write("%d\n" % self.input_max_len)
 
             for k in sorted(self.input_dict):
 
-                f.write((u"%d;%s\n" % (self.input_dict[k], k)).encode('utf8'))
+                f.write(u"%d;%s\n" % (self.input_dict[k], k))
 
         logging.info ('%s written.', IN_DICT_FN)
 
-        with open(OUT_DICT_FN, 'w') as f:
+        with codecs.open(OUT_DICT_FN, 'w', 'utf8') as f:
 
             f.write("%d\n" % self.output_max_len)
 
             for k in sorted(self.output_dict):
 
-                f.write((u"%d;%s\n" % (self.output_dict[k], k)).encode('utf8'))
+                f.write(u"%d;%s\n" % (self.output_dict[k], k))
 
         logging.info ('%s written.', OUT_DICT_FN)
 
     def load_dicts(self):
 
-        with open(IN_DICT_FN, 'r') as f:
+        with codecs.open(IN_DICT_FN, 'r', 'utf8') as f:
 
             self.input_max_len = int(f.readline().rstrip())
 
@@ -195,7 +195,7 @@ class NLPModel(object):
 
         logging.info ('%s read, %d entries, output_max_len=%d.' % (IN_DICT_FN, len(self.input_dict), self.input_max_len))
 
-        with open(OUT_DICT_FN, 'r') as f:
+        with codecs.open(OUT_DICT_FN, 'r', 'utf8') as f:
 
             self.output_max_len = int(f.readline().rstrip())
 

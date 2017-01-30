@@ -11,32 +11,38 @@ answer(greeting, de, personal) :-
     say_eou(de, "Hallo!"),
     say_eou(de, "Hi!"),
     say_eou(de, "Grüß Dich!"),
-    say_eou(de, "Hey!").
+    say_eou(de, "Hey!"),
+    action(attention,on).
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     before_noon(TS),
-    say_eou(de, "Guten Morgen!").
+    say_eou(de, "Guten Morgen!"),
+    action(attention,on).
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     before_evening(TS),
     after_noon(TS),
     say_eou(de, "Guten Tag!"),
-    say_eou(de, "Hallo!").
+    say_eou(de, "Hallo!"),
+    action(attention,on).
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     after_evening(TS),
-    say_eou(de, "Guten Abend!").
+    say_eou(de, "Guten Abend!"),
+    action(attention,on).
 
 answer(goodbye, de, anonymous) :-
-    say_eou(de, "Auf Wiedersehen!").
+    say_eou(de, "Auf Wiedersehen!"),
+    action(attention,off).
 
 answer(goodbye, de, personal) :-
     say_eou(de, "Ade"),
     say_eou(de, "Tschüss"),
-    say_eou(de, "Ciao").
+    say_eou(de, "Ciao"),
+    action(attention,off).
 
 nlp_macro('GREETING',  map(w('guten morgen')     , p('answer (greeting, de, S)')),
                        map(w('hallo')            , p('answer (greeting, de, S)')),
@@ -110,6 +116,9 @@ nlp_gen(de,'@ADDRESSEE2:w wie geht es dir?',
            'answer (howdy, de)').
 
 nlp_gen(de,'@ADDRESSEE2:w wie gehts',
+           'answer (howdy, de)').
+
+nlp_gen(de,'@ADDRESSEE2:w was geht',
            'answer (howdy, de)').
 
 nlp_gen(de,'@ADDRESSEE2:w wie fühlst du dich',

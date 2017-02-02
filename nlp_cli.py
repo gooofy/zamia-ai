@@ -37,7 +37,7 @@ import model
 from nlp_kernal import NLPKernal
 
 DEFAULT_LOGLEVEL   = logging.INFO
-RDF_LIB_DUMP_PATH  = 'data/dst/HALKB.n3'
+RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
 
 class NLPCli(cmdln.Cmdln):
 

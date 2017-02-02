@@ -42,10 +42,10 @@ import tensorflow as tf
 from tensorflow.models.rnn.translate import seq2seq_model
 from tensorflow.models.rnn.translate.data_utils import _PAD, PAD_ID, _GO, GO_ID, _EOS, EOS_ID, _UNK, UNK_ID
 
-OUT_DICT_FN  = 'data/dst/nlp_out_dict.csv'
-IN_DICT_FN   = 'data/dst/nlp_in_dict.csv'
+OUT_DICT_FN  = 'data/nlp_out_dict.csv'
+IN_DICT_FN   = 'data/nlp_in_dict.csv'
 
-CKPT_FN      = 'data/dst/nlp_model.ckpt'
+CKPT_FN      = 'data/nlp_model.ckpt'
 
 # We use a number of buckets and pad to the closest one for efficiency.
 # See seq2seq_model.Seq2SeqModel for details of how they work.

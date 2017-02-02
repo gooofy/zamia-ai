@@ -30,9 +30,8 @@ import re
 import unittest
 from copy import copy
 
-from speech_tokenizer import tokenize
-
-import utils
+from nltools import misc
+from nltools.tokenizer import tokenize
 
 class NLPMacroEngine(object):
 
@@ -159,8 +158,8 @@ class NLPMacroEngine(object):
                             s = s.replace('@'+k+':'+v, mappings[k][v])
                             p = p.replace('@'+k+':'+v, mappings[k][v])
 
-                    inp_raw = utils.compress_ws(s.lstrip().rstrip())
-                    p       = utils.compress_ws(p.lstrip().rstrip())
+                    inp_raw = misc.compress_ws(s.lstrip().rstrip())
+                    p       = misc.compress_ws(p.lstrip().rstrip())
 
                     # print s
                     # print p

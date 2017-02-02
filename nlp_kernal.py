@@ -29,6 +29,8 @@ import logging
 import traceback
 import imp
 import time
+import random
+import codecs
 
 import numpy as np
 
@@ -41,10 +43,9 @@ from prolog_parser import PrologParser, SYM_EOF, PrologError
 from prolog_ai_engine import PrologAIEngine
 from prolog_compiler import PrologCompiler
 
-from speech_tokenizer import tokenize
-
 from kb import HALKB
 from nltools import misc
+from nltools.tokenizer import tokenize
 
 GRAPH_PREFIX       = 'http://hal.zamia.org/kb/'
 
@@ -454,4 +455,55 @@ class NLPKernal(object):
             logging.error("*** ERROR: %s" % e)
 
         return [], []
+
+    def dump_utterances (self, num_utterances, dictfn):
+
+        dic = None
+        if dictfn:
+            dic = set()
+            with codecs.open(dictfn, 'r', 'utf8') as dictf:
+                for line in dictf:
+                    parts = line.strip().split(';')
+                    if len(parts) != 2:
+                        continue
+                    dic.add(parts[0])
+
+        all_utterances = []
+
+        for dr in self.session.query(model.DiscourseRound):
+
+            if not dic:
+                all_utterances.append(dr.inp)
+            else:
+
+                # is at least one word not covered by our dictionary?
+
+                unk = False
+                for t in tokenize(dr.inp):
+                    if not t in dic:
+                        # print u"unknown word: %s in %s" % (t, dr.inp)
+                        unk = True
+                        break
+                if not unk:
+                    continue
+
+                all_utterances.append(dr.inp)
+
+        utts = set()
+
+        if num_utterances > 0:
+
+            while (len(utts) < num_utterances):
+
+                i = random.randrange(0, len(all_utterances))
+                utts.add(all_utterances[i])
+
+        else:
+            for utt in all_utterances:
+                utts.add(utt)
+                
+        for utt in utts:
+            print utt
+
+
 

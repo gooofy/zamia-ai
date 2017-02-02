@@ -178,6 +178,10 @@ def fetch_weather_forecast(config, kb):
 
         data = json.load(urllib2.urlopen(url))
 
+        if not 'list' in data:
+            logging.error ('failed to fetch weather data for %s, got: %s' % (location, repr(data)))
+            continue
+
         # print repr(data['list'])
 
         for fc in data['list']:

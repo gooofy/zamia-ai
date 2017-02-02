@@ -32,7 +32,7 @@ import math
 import numpy as np
 from time import time
 
-from speech_tokenizer import tokenize
+from nltools.tokenizer import tokenize
 
 from sqlalchemy.orm import sessionmaker
 import model

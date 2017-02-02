@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016 Guenter Bartsch
+# Copyright 2016, 2017 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -24,9 +24,9 @@ from sqlalchemy import Column, Integer, String, Text, Unicode, UnicodeText, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-import utils
+from nltools import misc
 
-config = utils.load_config()
+config = misc.load_config('.nlprc')
 
 # db_server = config.get("semantics", "dbserver")
 # db_name   = config.get("semantics", "dbname")

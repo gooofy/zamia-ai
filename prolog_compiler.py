@@ -34,10 +34,8 @@ from logic import *
 from logicdb import *
 from prolog_parser import PrologParser, SYM_EOF, PrologError
 from prolog_ai_engine import PrologAIEngine
-from speech_tokenizer import tokenize
+from nltools.tokenizer import tokenize
 from nlp_macros import NLPMacroEngine
-import utils
-
 
 class PrologCompiler(object):
 

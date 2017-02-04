@@ -50,12 +50,34 @@ CKPT_FN      = 'data/nlp_model.ckpt'
 # We use a number of buckets and pad to the closest one for efficiency.
 # See seq2seq_model.Seq2SeqModel for details of how they work.
 # BUCKETS = [(5, 10), (10, 15), (20, 25), (40, 50)]
-BUCKETS = [(7, 4), (14, 8)]
+# BUCKETS = [(7, 4), 
+#            (8, 25),
+#            (14, 8), 
+#            (28, 16)]
+
+# BUCKETS = [
+#            ( 8, 4), 
+#            ( 8, 8), 
+#            # ( 8, 28),
+# 
+#            (16, 8), 
+#            (16, 18),
+#            (16, 35),
+# 
+#           ]
+BUCKETS = [
+           ( 8, 4), 
+           ( 8, 8), 
+#           (16, 4), 
+           (16, 8), 
+          ]
+
+
 
 # number of network layers : 1/2/3
-NUM_LAYERS                 = 1
+NUM_LAYERS                 = 2
 # typical options : 128, 256, 512, 1024
-LAYER_SIZE                 = 128
+LAYER_SIZE                 = 512
 BATCH_SIZE                 = 64
 STEPS_PER_STAT             = 200
 
@@ -148,7 +170,7 @@ class NLPModel(object):
 
             self.num_segments += 1
 
-        logging.info ('dicts done. input: %d enties, input_max_len=%d. output: %d enties, input_max_len=%d.  num_segments: %d' %
+        logging.info ('dicts done. input: %d enties, input_max_len=%d. output: %d enties, output_max_len=%d.  num_segments: %d' %
                       (len(self.input_dict), self.input_max_len, len(self.output_dict), self.output_max_len, self.num_segments))
 
 
@@ -350,10 +372,17 @@ class NLPModel(object):
             else:
                 data_set = ds_train
 
+            bucket_found = False
+
             for bucket_id, (x_size, y_size) in enumerate(BUCKETS):
                 if len(x) < x_size and len(y) < y_size:
                     data_set[bucket_id].append([x, y])
+                    bucket_found = True
                     break
+
+            if not bucket_found:
+                raise Exception ('ERROR: no bucket found for %d -> %d (%s)' % (len(x), len(y), dr.inp))
+
             cnt += 1
 
         train_bucket_sizes = [len(ds_train[b]) for b in xrange(len(BUCKETS))]
@@ -361,6 +390,9 @@ class NLPModel(object):
 
         dev_bucket_sizes = [len(ds_dev[b]) for b in xrange(len(BUCKETS))]
         dev_total_size = float(sum(dev_bucket_sizes))
+
+        for i, tbs in enumerate(train_bucket_sizes):
+            logging.info('bucket %-10s train: %6d samples, dev: %6d samples' % (repr(BUCKETS[i]), tbs, dev_bucket_sizes[i]))
 
         logging.info("total num samples: %d, train: %s, dev: %s" % (cnt, repr(train_bucket_sizes), repr(dev_bucket_sizes)))
         # logging.debug("ds_train: %s" % repr(ds_train))
@@ -386,7 +418,8 @@ class NLPModel(object):
             # this is the training loop
 
             step_time, loss, best_loss = 0.0, 0.0, 100000.0
-            current_step = 0
+            current_step    = 0
+            best_step       = 0
             previous_losses = []
             while tf_model.global_step.eval() <= num_steps:
                 # Choose a bucket according to data distribution. We pick a random number
@@ -441,8 +474,13 @@ class NLPModel(object):
 
                     if sum_loss < best_loss:
                         best_loss = sum_loss
-                        logging.info("*** best eval result so far (loss: %f), saving mode to %s ..." % (sum_loss, CKPT_FN))
-                        self.save_model(tf_session, CKPT_FN)
+                        best_step = tf_model.global_step.eval()
+                        logging.info("*** best eval result so far (loss: %f)" % (sum_loss))
+                        if best_step >= num_steps/2:
+                            logging.info("saving mode to %s ..." % CKPT_FN)
+                            self.save_model(tf_session, CKPT_FN)
+                    else:
+                        logging.info("         eval result        (loss: %f, best loss: %f from step %d)" % (sum_loss, best_loss, best_step))
 
                     sys.stdout.flush()
 

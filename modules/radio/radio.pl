@@ -48,7 +48,7 @@ nlp_macro('WHAT',      map(w('Musik'           ), p('C is "media:Music"')),
 
 nlp_gen(de, 
         '@HI:w @ADDRESSEE:w @VERB:w @PLEASE:w @MAL:w @WHAT:w @VERB:v',
-        '@WHAT:p; @VERB:p').
+        @WHAT:p, @VERB:p).
 
 nlp_test(de,
          ivr(in('HAL, schalte bitte das Radio ein'),

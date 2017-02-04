@@ -39,12 +39,13 @@ from nlp_macros import NLPMacroEngine
 
 class PrologCompiler(object):
 
-    def __init__(self, session, trace = False, run_tests = False, print_utterances=False):
+    def __init__(self, session, trace = False, run_tests = False, print_utterances=False, split_utterances=False):
 
         self.session          = session
         self.trace            = trace
         self.run_tests        = run_tests
         self.print_utterances = print_utterances
+        self.split_utterances = split_utterances
 
     def set_trace (self, trace):
         self.trace = trace
@@ -88,10 +89,75 @@ class PrologCompiler(object):
         argc = 1
         while argc < len(args):
 
-            n = args[argc  ].s
-            p = args[argc+1].s
+            logging.debug ('arg[%d]: %s' % (argc, repr(args[argc])))
+            argc += 1
 
-            argc += 2
+        argc = 1
+        while argc < len(args):
+
+            n = args[argc].s
+            argc += 1
+
+            p = u''
+
+            while argc < len(args):
+
+                a = args[argc]
+
+                if isinstance (a, Predicate):
+                    if a.name == 'nnr':
+                        argc += 1
+                        break
+
+                    if len(p)>0:
+                        p += u';'
+                    p += unicode(a)
+
+                elif isinstance (a, StringLiteral):
+
+                    if self.split_utterances:
+
+                        # split strings into individual words
+                        # generate one say(lang, word) predicate per word
+                        # plus one eou at the end to mark the end of the utterance
+
+                        # make sure we keep punctuation when tokenizing
+                        # so tts has a better chance at getting prosody right
+
+                        for token in tokenize(a.s, lang=lang, keep_punctuation=True):
+
+                            t = token.strip()
+
+                            if len(t) == 0:
+                                continue
+
+                            if len(p)>0:
+                                p += u';'
+                            p += u'say(%s, "%s")' % (lang, t)
+
+                        if len(p)>0:
+                            p += u';'
+                        p += u'eou'
+
+                    else:
+                        if len(p)>0:
+                            p += u';'
+                        p += u'say_eou(%s, "%s")' % (lang, a.s)
+
+
+                elif isinstance (a, NLPMacroCall):
+
+                    if len(p)>0:
+                        p += u';'
+                    p += u'@%s:%s' % (a.name, a.pred)
+
+                else:
+
+                    raise PrologError (u'nlp_gen: unexpected argument: %s' % unicode(a))
+                    
+
+                logging.debug (u'arg[%d]: %s p: %s' % (argc, repr(args[argc]), p))
+                argc += 1
 
             nlps.append(n)
             preds.append(p)

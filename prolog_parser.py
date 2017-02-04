@@ -27,7 +27,7 @@
 #
 # clause        ::= relation [ ':-' term { ( ',' | ';' ) term } ] '.'
 #
-# relation      ::= id [ '(' term { ',' term } ')' ]
+# relation      ::= name [ '(' term { ',' term } ')' ]
 #
 # term          ::= add-term { rel-op add-term }
 #
@@ -45,7 +45,9 @@
 #
 # unary-op      ::= '+' | '-' 
 #
-# primary-term  ::= ( variable | number | string | relation | '(' term { ',' term } ')' )
+# macro_call    ::= '@' ( variable | name ) ':' ( variable | name )
+#
+# primary-term  ::= ( variable | number | string | relation | macro_call | '(' term { ',' term } ')' )
 #
 
 import os
@@ -85,6 +87,8 @@ SYM_RPAREN    = 12   # )
 SYM_COMMA     = 13   # ,
 SYM_PERIOD    = 14   # .
 SYM_SEMICOLON = 15   # ;
+SYM_AT        = 16   # @
+SYM_COLON     = 17   # :
 
 # structured comments
 CSTATE_IDLE   = 0
@@ -236,11 +240,12 @@ class PrologParser(object):
 
         elif self.cur_c == u':':
             self.next_c()
+
             if self.cur_c == u'-':
                 self.next_c()
                 self.cur_sym = SYM_IMPL
             else:
-                self.report_error ("Lexer error")
+                self.cur_sym = SYM_COLON
 
         elif self.cur_c == u'(':
             self.cur_sym = SYM_LPAREN
@@ -259,6 +264,10 @@ class PrologParser(object):
 
         elif self.cur_c == u';':
             self.cur_sym = SYM_SEMICOLON
+            self.next_c()
+
+        elif self.cur_c == u'@':
+            self.cur_sym = SYM_AT
             self.next_c()
 
         else:
@@ -290,6 +299,10 @@ class PrologParser(object):
         elif self.cur_sym == SYM_NAME:
             res = self.relation()
 
+        elif self.cur_sym == SYM_AT:
+            self.next_sym()
+            res = self.macro_call()
+
         elif self.cur_sym == SYM_LPAREN:
             self.next_sym()
             res = self.term()
@@ -310,6 +323,24 @@ class PrologParser(object):
         # logging.debug ('primary_term: %s' % str(res))
 
         return res
+
+    def macro_call(self):
+
+        if self.cur_sym != SYM_NAME and self.cur_sym != SYM_VARIABLE:
+            self.report_error ("macro: name expected (%d)." % self.cur_sym)
+        macro_name = self.cur_str
+        self.next_sym()
+
+        if self.cur_sym != SYM_COLON:        
+            self.report_error ("macro: : expected.")
+        self.next_sym()
+
+        if self.cur_sym != SYM_NAME and self.cur_sym != SYM_VARIABLE:
+            self.report_error ("macro: predicate name expected.")
+        pred_name = self.cur_str
+        self.next_sym()
+
+        return NLPMacroCall(macro_name, pred_name)
 
     def unary_term(self):
 

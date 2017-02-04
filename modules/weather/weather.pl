@@ -167,119 +167,119 @@ nlp_macro('PLACEF',    map(w('')                  , p('context(place, P)')),
 
 nlp_gen(de,
         '@HELLO:w wird es @TIMESPEC:w @PLACE:w regnen?',
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P), set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hi, wird es morgen in Freudental regnen?'),
              out('morgen ist es in Freudental überwiegend bewölkt, aber es gibt wenig Niederschlag.'))).
 
 nlp_gen(de,
         '@HELLO:w wird es @TIMESPEC:w @PLACE:w Regen geben?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Computer, wird es heute in Tallinn regnen?'),
              out('heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben.'))).
 
 nlp_gen(de,
         '@HELLO:w wie groß ist die Wahrscheinlichkeit für Regen @TIMESPEC:w @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('wie groß ist die Wahrscheinlichkeit für Regen übermorgen in San Francisco?'),
              out('übermorgen ist es in san francisco überwiegend bewölkt und es gibt sieben millimeter niederschlag'))).
 
 nlp_gen(de,
         '@HELLO:w wie wahrscheinlich ist es, dass es @TIMESPEC:w @PLACE:w regnen wird?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('HAL, wie wahrscheinlich ist es, dass es heute in Los Angeles regnen wird?'),
              out('heute scheint in los angeles überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:w wie wird @TIMESPEC:w @PLACE:w das Wetter?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hi, wie wird morgen in New York das Wetter?'),
              out('morgen regnet es 10 millimeter in new york und es wird zwischen fünf und sechs grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w scheint @TIMESPEC:w @PLACE:w die Sonne?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hallo, scheint übermorgen in London die Sonne?'),
              out('übermorgen ist es in london überwiegend bewölkt und es gibt 0 millimeter niederschlag'))).
 
 nlp_gen(de,
         '@HELLO:w regnet es @TIMESPEC:w @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Regnet es in Paris?'),
              out('heute scheint in paris überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:w kommt @TIMESPEC:w noch Regen @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weatherPrecCloud, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Computer, kommt morgen noch Regen in Reykjavík?'),
              out('morgen ist es in reykjavík überwiegend bewölkt und es gibt 15 millimeter niederschlag'))).
 
 nlp_gen(de,
         '@HELLO:w wie warm wird es @TIMESPEC:w @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('HAL, wie warm wird es übermorgen in Oberwiesenthal?'),
              out('übermorgen zeigt sich ab und an die sonne in oberwiesenthal und es wird zwischen -11 und 0 grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w wie warm wird es @TIMESPEC:w @PLACE:w werden ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hi, wie warm wird es in Arnstorf werden?'),
              out('heute zeigt sich ab und an die sonne in arnstorf und es wird zwischen -8 und -2 grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w wie wird das Wetter @TIMESPEC:w @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hallo, wie wird das Wetter heute in Hamburg?'),
              out('heute regnet es null millimeter in hamburg und es wird zwischen minus zwei und null grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w wie wird das Wetter @PLACE:w @TIMESPEC:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('wie wird das Wetter in Washington morgen?'),
              out('morgen regnet es vier millimeter in washington und es wird zwischen fünf und sieben grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w wie kalt wird es @TIMESPEC:w @PLACE:w ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Computer, wie kalt wird es übermorgen in Alaska?'),
              out('übermorgen wird es der himmel klar sein in alaska und es wird zwischen -36 und -34 grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w wie kalt wird es @TIMESPEC:w @PLACE:w werden ?', 
-        '@TIMESPEC:p; @PLACE:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPEC:p, @PLACE:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('HAL, wie kalt wird es in Brackenheim?'),
              out('heute wird es wenige wolken geben in brackenheim und es wird zwischen -7 und 2 grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w was sagt der Wetterbericht @TIMESPECF:w @PLACEF:w ?', 
-        '@TIMESPECF:p; @PLACEF:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPECF:p, @PLACEF:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hi, was sagt der Wetterbericht für heute für Heilbronn?'),
              out('heute wird es wenige wolken geben in heilbronn und es wird zwischen minus sieben und zwei grad warm'))).
 
 nlp_gen(de,
         '@HELLO:w was sagt die Wettervorhersage @TIMESPECF:w @PLACEF:w ?', 
-        '@TIMESPECF:p; @PLACEF:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPECF:p, @PLACEF:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Hallo, was sagt die Wettervorhersage für morgen für Biberach?'),
              out('morgen wird es lockere wolken geben in biberach und es wird zwischen -8 und 1 grad warm'))).
 
 nlp_gen(de, 
         '@HELLO:w wie sind die Wetteraussichten @TIMESPECF:w @PLACEF:w ?', 
-        '@TIMESPECF:p; @PLACEF:p; answer (weather, de, EvT, P);set_context(place, P); set_context(time, EvT)').
+        @TIMESPECF:p, @PLACEF:p, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
 nlp_test(de,
          ivr(in('Wie sind die Wetteraussichten für übermorgen?'),
              out('übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen -9 und 1 grad warm'))).
@@ -289,11 +289,11 @@ nlp_test(de,
 
 nlp_gen(de,
         '@HELLO:w wie wird das Wetter @PLACE:w ?', 
-        'near_future(weather, EvT); @PLACE:p; answer (weather, de, EvT, P); set_context(place, P); set_context(time, EvT)',
+        near_future(weather, EvT), @PLACE:p, answer (weather, de, EvT, P), set_context(place, P), set_context(time, EvT), nnr,
         'und in den nächsten Tagen?',
-        'EvT is nextThreeDays ; context(place, P); answer (weather, de, EvT, P), set_context(time, EvT)',
+        EvT is nextThreeDays, context(place, P), answer (weather, de, EvT, P), set_context(time, EvT), nnr,
         'und in Freudental?',
-        'context(time, EvT) ; P is "dbr:Freudental" ; answer (weather, de, EvT, P), set_context(playe, P)' 
+        context(time, EvT), P is "dbr:Freudental", answer (weather, de, EvT, P), set_context(playe, P) 
         ).
 
 %

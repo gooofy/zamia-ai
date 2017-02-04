@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2015, 2016 Guenter Bartsch
+# Copyright 2015, 2016, 2017 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -103,7 +103,7 @@ class StringLiteral(Literal):
         return '"' + str(self.s.replace('"', '\\"')) + '"'
 
     def __repr__(self):
-        return repr(self.s)
+        return u'StringLiteral(' + repr(self.s) + ')'
 
 class NumberLiteral(Literal):
 
@@ -227,7 +227,7 @@ class Predicate:
         #return '(' + self.name + ' ' + ' '.join( [str(arg) for arg in self.args]) + ')'
 
     def __repr__(self):
-        return self.__unicode__()
+        return u'Predicate(' + self.__unicode__() + ')'
 
     def __eq__(self, other):
         return (isinstance(other, Predicate)
@@ -279,6 +279,21 @@ class Clause:
                 and self.head == other.head
                 and list(self.body) == list(other.body))
 
+
+class NLPMacroCall:
+
+    def __init__(self, name, pred):
+        self.name = name
+        self.pred = pred
+
+    def __str__(self):
+        return str(self.name) + '@' + str(self.pred)
+
+    def __unicode__(self):
+        return unicode(self.name) + u'@' + unicode(self.pred)
+
+    def __repr__(self):
+        return 'NLPMacroCall(%s, %s)' % (self.name, self.pred)
 
 #############################################################################
 #

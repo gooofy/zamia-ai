@@ -62,13 +62,13 @@ nlp_macro('ADDRESSEE', map(w('Computer '), p('S is personal')),
                        map(w('HAL '     ), p('S is personal'))).
 
 nlp_gen(de,'@GREETING:w',
-           'S is anonymous; @GREETING:p').
+           S is anonymous, @GREETING:p).
 
 nlp_gen(de,'@GREETING:w @ADDRESSEE:w',
-           '@ADDRESSEE:p; @GREETING:p').
+           @ADDRESSEE:p, @GREETING:p).
 
 nlp_gen(de,'@ADDRESSEE:w @GREETING:w',
-           '@ADDRESSEE:p; @GREETING:p').
+           @ADDRESSEE:p, @GREETING:p).
 
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
 nlp_test(de,
@@ -113,14 +113,14 @@ answer(howdy, de) :-
     say_eou(de, "Gut, danke der Nachfrage. Wie geht es Dir?").
 
 nlp_gen(de,'@ADDRESSEE2:w wie geht es dir?',
-           'answer (howdy, de)').
+           answer (howdy, de)).
 
 nlp_gen(de,'@ADDRESSEE2:w wie gehts',
-           'answer (howdy, de)').
+           answer (howdy, de)).
 
 nlp_gen(de,'@ADDRESSEE2:w was geht',
-           'answer (howdy, de)').
+           answer (howdy, de)).
 
 nlp_gen(de,'@ADDRESSEE2:w wie fühlst du dich',
-           'answer (howdy, de)').
+           answer (howdy, de)).
 

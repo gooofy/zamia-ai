@@ -164,33 +164,9 @@ class NLPMacroEngine(object):
                     # print s
                     # print p
 
-                    # tokenize strings, wrap them into say() calls
-
                     inp_tokenized = ' '.join(tokenize(inp_raw, lang))
 
-                    ps = p.split(';')
-                    np = ''
-                    for pr in ps:
-                        if not pr.startswith('"'):
-                            if len(np)>0:
-                                np += ';'
-                            np += pr.strip()
-                            continue
-
-                        for word in tokenize (pr, lang):
-                            if len(np)>0:
-                                np += ';'
-                            np += 'say(' + lang + ', "' + word + '")'
-
-                        if len(p) > 2:
-                            if p[len(p)-2] in ['.', '?', '!']:
-                                if len(np)>0:
-                                    np += ';'
-                                np += 'say(' + lang + ', "' + p[len(p)-2] + '")'
-                        np += ';eou'
-
-
-                    discourse.append((inp_tokenized, np))
+                    discourse.append((inp_tokenized, p))
 
                 logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))
 

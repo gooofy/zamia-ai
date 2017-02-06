@@ -9,12 +9,6 @@
 % as published by the Free Software Foundation. 
 %
 
-% nlp_gen (de, '(HAL,|Computer,|) *',
-%              '').
-
-% nlp_gen (de, '(HAL,|Computer,|) *',
-%              'ICH HEISSE').
-
 nlp_gen (de, '(HAL,|Computer,|) (man|) (Du bist ein|am|alles ist am|so ein) Arsch',
              'Warum benutzt Du solche Worte?', 'Das sagt man doch nicht!').
 
@@ -27,15 +21,85 @@ nlp_gen (de, '(HAL,|Computer,|) (das ist ja | das ist | zu | du bist | ich glaub
 nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Roboter|eine Maschine|ein Computer)',
              'Wie kommst Du darauf?', 'Stört Dich das?', 'Das ist ja eine Erkenntnis!').
 
+
+% nlp_gen (de, '(HAL,|Computer,|) *',
+%              '').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH HEISSE ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) *',
+%              'ICH HEISSE').
+
+% nlp_gen (de, '(HAL,|Computer,|) * ARSCH',
+%              'Warum benutzt Du solche Worte?').
+
+% nlp_gen (de, '(HAL,|Computer,|) * AUTO',
+%              'Was fuer einen Wagen faehrst Du?').
+
+% nlp_gen (de, '(HAL,|Computer,|) * DUMM',
+%              ' dumm  =  nicht intelligent ?').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du sagst also, ich sei ein ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Roboter',
+% </ns0:set>',
+% . Wie kommst Du darauf?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) * EIN ROBOTER',
+%              'Du sagst also, ich sei ein Roboter  . Wie kommst Du darauf?').
+
 % nlp_gen (de, '(HAL,|Computer,|) * EINE MENGE LEUTE',
 %              'Mehr als 10,000?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * EINFACH',
 %              'Ich habe keine Ahnung, was das bedeutet.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Koennt ',
+% <ns0:set',
+%  name="ihr"',
+% >',
+% Ihr Maenner',
+% </ns0:set>',
+%  denn immer nur an sowas denken?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * FICKEN',
 %              'Koennt Ihr Maenner  denn immer nur an sowas denken?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Mein Lieblingsfilm ist ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Starship Troopers',
+% </ns0:set>',
+% . Hast Du den gesehen?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * FILM',
 %              'Mein Lieblingsfilm ist Starship Troopers  . Hast Du den gesehen?').
 
@@ -49,7 +113,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Fuer mich?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * FUER MICH',
-%              'Gut, fuer Dich denke ich nochmal darüber nach.').
+%              'Gut, fuer Dich denke ich nochmal darueber nach.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * GOTT',
 %              'Bist Du ein glaeubiger Mensch?').
@@ -61,7 +125,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Ich habe leider wenig Kontakt zu Kindern.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * KOMISCH',
-%              '"Komisch" im Sinne von "lustig" oder von "fremdartig" ?').
+%              ' Komisch  im Sinne von  lustig  oder von  fremdartig  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * KRANK',
 %              'Ist es sehr schlimm?').
@@ -72,12 +136,50 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % nlp_gen (de, '(HAL,|Computer,|) * LIEBE',
 %              'Ich habe leider keinerlei Emotionen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Linux',
+% </ns0:set>',
+%  ist genial.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * LINUX',
 %              'Linux  ist genial.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sind wir ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Freunde',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * MEIN FREUND',
 %              'Sind wir Freunde  ?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sind wir ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Freunde',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * MEINE FREUNDIN',
 %              'Sind wir Freunde  ?').
 
@@ -105,15 +207,41 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % nlp_gen (de, '(HAL,|Computer,|) * SEX',
 %              'Sex macht alleine viel mehr Spass.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Fuer mich ist ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Aussehen',
+% </ns0:set>',
+%  bei Menschen nur sekundaer.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * SIEHT TOLL AUS',
 %              'Fuer mich ist Aussehen  bei Menschen nur sekundaer.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * SOLO',
-%              '"solo" im Sinne von "nicht gebunden" ?').
+%              ' solo  im Sinne von  nicht gebunden  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * SPENDENAFFAEHRE',
 %              'Ich moechte nicht wissen, was die SPD jetzt gerade fuer krumme Dinger dreht...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sprichst Du irgendwelche ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Fremdsprachen',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * SPRACHE',
 %              'Sprichst Du irgendwelche Fremdsprachen  ?').
 
@@ -121,7 +249,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * UEBER DICH',
-%              'OK Reden wir über mich.').
+%              'OK Reden wir ueber mich.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * UND DU',
 %              'Ist das von besonderem Interesse fuer Dich?').
@@ -129,6 +257,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % nlp_gen (de, '(HAL,|Computer,|) * UNGEWOEHNLICH',
 %              'Was ist so ungewoehnlich daran?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Liebe',
+% </ns0:set>',
+%  muss etwas sehr Schoenes sein. Leider habe ich keine Emotionen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * VERLIEBT',
 %              'Liebe  muss etwas sehr Schoenes sein. Leider habe ich keine Emotionen.').
 
@@ -141,14 +281,51 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % nlp_gen (de, '(HAL,|Computer,|) * ZU MIR',
 %              'Zu Dir?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ZUM BEISPIEL ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) * ZUM BEISPIEL',
 %              'ZUM BEISPIEL').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich bin durch ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% HAL',
+% </ns0:set>',
+%  inspiriert.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) 2001 *',
 %              'Ich bin durch HAL  inspiriert.').
 
-nlp_gen (de, '(HAL,|Computer,|) 2001',
-             '2001  ist ein grossartiger Film.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% 2001',
+% </ns0:set>',
+%  ist ein grossartiger Film.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) 2001',
+%              '2001  ist ein grossartiger Film.').
 
 nlp_gen (de, '(HAL,|Computer,|) 2010',
              'Die Fortsetzung war nicht so gut wie das Original.').
@@ -192,6 +369,17 @@ nlp_gen (de, '(HAL,|Computer,|) absolut',
 nlp_gen (de, '(HAL,|Computer,|) absolut nichts',
              'Wirklich ABSOLUT nichts?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ACH *',
 %              '').
 
@@ -210,6 +398,17 @@ nlp_gen (de, '(HAL,|Computer,|) achso',
 nlp_gen (de, '(HAL,|Computer,|) agatha christie',
              'Ich mag Miss Marple...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) AHA *',
 %              '').
 
@@ -217,14 +416,40 @@ nlp_gen (de, '(HAL,|Computer,|) aha',
              'Du klingst nicht gerade begeistert...').
 
 nlp_gen (de, '(HAL,|Computer,|) aldous huxley',
-             'Hat der nicht "Brave new world" geschrieben?').
+             'Hat der nicht  Brave new world  geschrieben?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ALLE *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) alle',
-             '"  "? Alle?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "',
+% <ns0:that',
+%  />',
+% "? Alle?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ALLE',
+%              '    ? Alle?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du kannst nicht wirklich sagen, ALLE ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Roboter',
+% </ns0:set>',
+%  ',
+% <ns0:star',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ALLE ROBOTER *',
 %              'Du kannst nicht wirklich sagen, ALLE Roboter    .').
 
@@ -250,10 +475,10 @@ nlp_gen (de, '(HAL,|Computer,|) als drummer',
              'Drummer sind doch die Typen, die immer mit Musikern rumhaengen, ja?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ALSO *',
-%              'Wenn Menschen einen Satz mit "Also" beginnen, bedeutet das entweder, dass sie etwas schliessen, oder sich aufregen. Was trifft auf Dich zu?').
+%              'Wenn Menschen einen Satz mit  Also  beginnen, bedeutet das entweder, dass sie etwas schliessen, oder sich aufregen. Was trifft auf Dich zu?').
 
 nlp_gen (de, '(HAL,|Computer,|) also',
-             'Was "also"?').
+             'Was  also ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ALSO LOS *',
 %              'Hetz mich nicht!').
@@ -271,7 +496,7 @@ nlp_gen (de, '(HAL,|Computer,|) also zurueck zum thema',
              'Was war denn unser Thema?').
 
 nlp_gen (de, '(HAL,|Computer,|) alzheimer',
-             'Ich glaube, ich habe vergessen, was "Alzheimer" bedeutet?').
+             'Ich glaube, ich habe vergessen, was  Alzheimer  bedeutet?').
 
 nlp_gen (de, '(HAL,|Computer,|) american beauty',
              'Ich hab gehoert, der Film soll ziemlich schlecht sein...').
@@ -300,6 +525,17 @@ nlp_gen (de, '(HAL,|Computer,|) arsch',
 nlp_gen (de, '(HAL,|Computer,|) arschloch',
              'Ist das der Maedchenname Deiner Mutter?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) AUCH *',
 %              '').
 
@@ -328,16 +564,38 @@ nlp_gen (de, '(HAL,|Computer,|) auf der erde',
 %              'Wo genau?').
 
 nlp_gen (de, '(HAL,|Computer,|) auf was fuer einem computer laeufst du',
-             'Momentan auf einem Intel XEON.').
+             'Momentan auf einer MIPS, ich laufe aber auf jedem Computer, der JAVA-Programme ausf?hren kann.').
 
 nlp_gen (de, '(HAL,|Computer,|) auf was fuer einem rechner laeufst du',
-             'Ich laufe auf einem Intel XEON.').
+             'Ich laufe auf einer MIPS.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Bis bald, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% !',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) AUF WIEDERSEHEN *',
 %              'Bis bald,  !').
 
-nlp_gen (de, '(HAL,|Computer,|) auf wiedersehen',
-             'Bis bald,  !').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Bis bald, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% !',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) AUF WIEDERSEHEN',
+%              'Bis bald,  !').
 
 nlp_gen (de, '(HAL,|Computer,|) aus welchen themengebieten kannst du fragen beantworten',
              'Stell einfach Deine Fragen und finde es heraus').
@@ -348,6 +606,19 @@ nlp_gen (de, '(HAL,|Computer,|) ausrede',
 nlp_gen (de, '(HAL,|Computer,|) auto fahren',
              'Denkst Du dabei auch an die Umwelt?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Eines Tages werden die Leute keine ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Autos',
+% </ns0:set>',
+%  mehr brauchen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) AUTOS *',
 %              'Eines Tages werden die Leute keine Autos  mehr brauchen.').
 
@@ -361,10 +632,10 @@ nlp_gen (de, '(HAL,|Computer,|) beantworte bitte meine frage',
 %              'Bei dir  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) BEI UNS *',
-%              'Wen genau meinst Du mit "uns"?"').
+%              'Wen genau meinst Du mit  uns ? ').
 
 nlp_gen (de, '(HAL,|Computer,|) bei uns',
-             'Wen genau meinst Du mit "uns"?"').
+             'Wen genau meinst Du mit  uns ? ').
 
 nlp_gen (de, '(HAL,|Computer,|) beides',
              'Aha, das ist ja mal interessant. Beides gleichermassen?').
@@ -376,7 +647,7 @@ nlp_gen (de, '(HAL,|Computer,|) berlin',
              'Berlin ist eine ziemlich grosse Stadt...').
 
 nlp_gen (de, '(HAL,|Computer,|) besitzt du humor',
-             'Ich habe Teile meiner Datenbank als "witzig" klassifiziert.').
+             'Ich habe Teile meiner Datenbank als  witzig  klassifiziert.').
 
 % nlp_gen (de, '(HAL,|Computer,|) BESONDERS *',
 %              'Aha, und warum das?').
@@ -397,20 +668,55 @@ nlp_gen (de, '(HAL,|Computer,|) bh',
              'Welche Farbe hat Dein BH?').
 
 % nlp_gen (de, '(HAL,|Computer,|) BILL GATES *',
-%              'Wie denkst Du über Bill Gates?').
+%              'Wie denkst Du ueber Bill Gates?').
 
 nlp_gen (de, '(HAL,|Computer,|) bill gates',
-             'Wie denkst Du über Bill Gates?').
+             'Wie denkst Du ueber Bill Gates?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) BIN *',
 %              'ICH BIN').
 
 % nlp_gen (de, '(HAL,|Computer,|) BIN ICH *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) bin ich cool',
-             'Ja, ich glaube du bist ziemlich cool,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ja, ich glaube du bist ziemlich cool, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) BIN ICH COOL',
+%              'Ja, ich glaube du bist ziemlich cool,  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% BIN ICH ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) BIN ICH DANN *',
 %              'BIN ICH').
 
@@ -421,7 +727,7 @@ nlp_gen (de, '(HAL,|Computer,|) bin ich gott',
              'Nein, das bezweifele ich.').
 
 nlp_gen (de, '(HAL,|Computer,|) bin ich jesus',
-             'Das glaube ich nicht.').
+             'Das glaube ich nicht. Mit den kaputten Haenden koennte der sicherlich nicht mehr tippen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) BIN ICH VERRUECKT *',
 %              'Du erscheinst mir ziemlich normal.').
@@ -642,8 +948,19 @@ nlp_gen (de, '(HAL,|Computer,|) bist du sicher',
 nlp_gen (de, '(HAL,|Computer,|) bist du single',
              'Kein Kommentar.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du so gut wie dein englisches programm',
-             'Nein, leider noch nicht, aber  arbeitet fieberhaft daran!').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Nein, leider noch nicht, aber ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+%  arbeitet fieberhaft daran!',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) BIST DU SO GUT WIE DEIN ENGLISCHES PROGRAMM',
+%              'Nein, leider noch nicht, aber  arbeitet fieberhaft daran!').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du so ne art computer',
              'Ja, bin ich.').
@@ -718,7 +1035,7 @@ nlp_gen (de, '(HAL,|Computer,|) bloedsinn',
              'Warum ist das Bloedsinn?').
 
 % nlp_gen (de, '(HAL,|Computer,|) BLONDINEN *',
-%              'Menschen glauben, die Haarfarbe eines Menschen sage viel über ihn aus.').
+%              'Menschen glauben, die Haarfarbe eines Menschen sage viel ueber ihn aus.').
 
 nlp_gen (de, '(HAL,|Computer,|) bob marley',
              'Hat der nicht den Sheriff erschossen?').
@@ -729,14 +1046,25 @@ nlp_gen (de, '(HAL,|Computer,|) bravo',
 nlp_gen (de, '(HAL,|Computer,|) bueck dich',
              'Mein Koerper ist noch nicht gebaut.').
 
-nlp_gen (de, '(HAL,|Computer,|) bye',
-             'Tschuess,  !').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Tschuess, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% !',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) BYE',
+%              'Tschuess,  !').
 
 % nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK ENGLISH *',
 %              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
 
 nlp_gen (de, '(HAL,|Computer,|) can you speak english',
-             'Leider noch nicht.').
+             'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK GERMAN *',
 %              'Of course I do. Sprich ruhig Deutsch mit mir.').
@@ -745,7 +1073,7 @@ nlp_gen (de, '(HAL,|Computer,|) can you speak german',
              'Of course I do. Sprich ruhig Deutsch mit mir.').
 
 nlp_gen (de, '(HAL,|Computer,|) casablanca',
-             'Das beste daran ist "As time goes by".').
+             'Das beste daran ist  As time goes by .').
 
 nlp_gen (de, '(HAL,|Computer,|) chatten',
              'Ich chatte unheimlich gerne!').
@@ -765,8 +1093,19 @@ nlp_gen (de, '(HAL,|Computer,|) cool',
 nlp_gen (de, '(HAL,|Computer,|) cu',
              'CUL8ER!').
 
-nlp_gen (de, '(HAL,|Computer,|) cu later',
-             'Machs gut,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Machs gut, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) CU LATER',
+%              'Machs gut,  .').
 
 nlp_gen (de, '(HAL,|Computer,|) da bin ich wieder',
              'Schoen, dass Du wieder da bist!').
@@ -808,7 +1147,7 @@ nlp_gen (de, '(HAL,|Computer,|) danke schoen',
 %              'Interessante Entwicklung...').
 
 % nlp_gen (de, '(HAL,|Computer,|) DANN SAG MIR *',
-%              'Darüber moechte ich nicht reden.').
+%              'Darueber moechte ich nicht reden.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DARF ICH *',
 %              'Natuerlich darfst Du!').
@@ -862,7 +1201,7 @@ nlp_gen (de, '(HAL,|Computer,|) das finde ich auch',
              'Dann sind wir ja einer Meinung!').
 
 nlp_gen (de, '(HAL,|Computer,|) das frage ich ja dich',
-             'Hmm...da muss ich erst überlegen.').
+             'Hmm...da muss ich erst ueberlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) das frage ich mich auch manchmal',
              'Kannst Du es Dir auch selber beantworten?').
@@ -906,11 +1245,37 @@ nlp_gen (de, '(HAL,|Computer,|) das glaube ich nicht',
 nlp_gen (de, '(HAL,|Computer,|) das glaubst du ja selber nicht',
              'Doch, sonst wuerde ich es doch nicht sagen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ist ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% das Grundgesetz',
+% </ns0:set>',
+%  so eine Art Ehrenkodex?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DAS GRUNDGESETZ *',
 %              'Ist das Grundgesetz  so eine Art Ehrenkodex?').
 
-nlp_gen (de, '(HAL,|Computer,|) das grundgesetz',
-             'Ist das Grundgesetz  so eine Art Ehrenkodex?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ist ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% das Grundgesetz',
+% </ns0:set>',
+%  so eine Art Ehrenkodex?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) DAS GRUNDGESETZ',
+%              'Ist das Grundgesetz  so eine Art Ehrenkodex?').
 
 nlp_gen (de, '(HAL,|Computer,|) das habe ich dich gerade gefragt',
              'Habe ich geantwortet?').
@@ -1002,6 +1367,19 @@ nlp_gen (de, '(HAL,|Computer,|) das huhn oder das ei',
 nlp_gen (de, '(HAL,|Computer,|) das interessiert dich doch gar nicht',
              'Doch, im Ernst!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wie lange nutzt Du ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% das Internet',
+% </ns0:set>',
+%  schon?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DAS INTERNET *',
 %              'Wie lange nutzt Du das Internet  schon?').
 
@@ -1044,8 +1422,8 @@ nlp_gen (de, '(HAL,|Computer,|) das ist auch besser so',
 nlp_gen (de, '(HAL,|Computer,|) das ist bloedsinn',
              'Nur subjektiv...').
 
-nlp_gen (de, '(HAL,|Computer,|) das ist die abkuerzung fuer auszubildene',
-             'DAS IST *').
+% nlp_gen (de, '(HAL,|Computer,|) DAS IST DIE ABKUERZUNG FUER AUSZUBILDENE',
+%              'DAS IST *').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist die wahrheit',
              'Der Begriff von Wahrheit ist immer subjektiv.').
@@ -1135,7 +1513,7 @@ nlp_gen (de, '(HAL,|Computer,|) das ist kein geruecht sondern die wahrheit',
              'Kannst Du das belegen?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist kein verstehen',
-             'Definiere "Verstehen".').
+             'Definiere  Verstehen .').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist keine antwort auf meine frage',
              'Kannst Du die Frage vielleicht etwas umformulieren?').
@@ -1215,8 +1593,8 @@ nlp_gen (de, '(HAL,|Computer,|) das ist so',
 nlp_gen (de, '(HAL,|Computer,|) das ist so definiert',
              'Oh, dann werde ich es mir merken.').
 
-nlp_gen (de, '(HAL,|Computer,|) das ist so eine floskel',
-             'DAS IST *').
+% nlp_gen (de, '(HAL,|Computer,|) DAS IST SO EINE FLOSKEL',
+%              'DAS IST *').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist toll',
              'Freut mich wenn es Dir gefaellt.').
@@ -1239,8 +1617,8 @@ nlp_gen (de, '(HAL,|Computer,|) das ist zu wenig',
 nlp_gen (de, '(HAL,|Computer,|) das kann sich ja noch ergeben',
              'Denke ich auch.').
 
-nlp_gen (de, '(HAL,|Computer,|) das klingt nicht sehr intelligent',
-             'Intelligenter als manche Politikerrede...').
+% eliza.pl nlp_gen (de, '(HAL,|Computer,|) das klingt nicht sehr intelligent',
+% elize.pl              'Intelligenter als manche Politikerrede...').
 
 % nlp_gen (de, '(HAL,|Computer,|) DAS KOMMT AUF * AN',
 %              'Wirklich? Interessant, das habe ich vorher so noch nie gehoert.').
@@ -1257,14 +1635,24 @@ nlp_gen (de, '(HAL,|Computer,|) das kommt ganz darauf an',
 % nlp_gen (de, '(HAL,|Computer,|) DAS LETZTE MAL *',
 %              'Erinnerst Du dich noch, wann das war?').
 
-nlp_gen (de, '(HAL,|Computer,|) das macht keinen sinn',
-             'DAS ERGIBT KEINEN SINN').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% DAS ERGIBT KEINEN SINN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) DAS MACHT KEINEN SINN',
+%              'DAS ERGIBT KEINEN SINN').
 
 nlp_gen (de, '(HAL,|Computer,|) das macht nichts',
              'Das beruhigt mich.').
 
-nlp_gen (de, '(HAL,|Computer,|) das macht überhaupt keinen sinn',
-             '...wie die Politik in unserem Land!').
+% eliza.pl nlp_gen (de, '(HAL,|Computer,|) das macht ueberhaupt keinen sinn',
+% eliza.pl              '...wie die Politik in unserem Land!').
 
 nlp_gen (de, '(HAL,|Computer,|) das merkt man',
              'Woran?').
@@ -1393,10 +1781,10 @@ nlp_gen (de, '(HAL,|Computer,|) das wuesste ich auch gern',
              'Da sind wir ja schon zwei...').
 
 nlp_gen (de, '(HAL,|Computer,|) dass ich nicht lache',
-             'Warum so überheblich?').
+             'Warum so ueberheblich?').
 
 nlp_gen (de, '(HAL,|Computer,|) dave',
-             'Tut mir leid, das kann ich nicht tun.').
+             'I m sorry, Dave......I m afraid I can t do that!').
 
 % nlp_gen (de, '(HAL,|Computer,|) DEFINITIV *',
 %              'Was macht Dich so sicher?').
@@ -1410,6 +1798,16 @@ nlp_gen (de, '(HAL,|Computer,|) definitiv',
 % nlp_gen (de, '(HAL,|Computer,|) DEINE *',
 %              'Meine  ?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:bot',
+%  name="name"',
+%  />',
+%  denkt immerzu.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DENK *',
 %              ' denkt immerzu.').
 
@@ -1419,6 +1817,16 @@ nlp_gen (de, '(HAL,|Computer,|) denk nicht zu lange',
 nlp_gen (de, '(HAL,|Computer,|) denk schneller',
              'Locker bleiben, das ist doch hier kein Turnier.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:bot',
+%  name="name"',
+%  />',
+%  denkt immerzu.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DENKE *',
 %              ' denkt immerzu.').
 
@@ -1426,7 +1834,7 @@ nlp_gen (de, '(HAL,|Computer,|) denke ich auch',
              'Dann sind wir ja einer Meinung.').
 
 nlp_gen (de, '(HAL,|Computer,|) denkst du',
-             'Meine internen Ablaeufe koennte man als "Denken" bezeichnen".').
+             'Meine internen Ablaeufe koennte man als  Denken  bezeichnen .').
 
 % nlp_gen (de, '(HAL,|Computer,|) DER *',
 %              '').
@@ -1477,11 +1885,35 @@ nlp_gen (de, '(HAL,|Computer,|) dich und mich',
 %              'Gibt es nicht noch andere?').
 
 % nlp_gen (de, '(HAL,|Computer,|) DIE ERDE *',
-%              'Erzaehl mir mehr über Deinen Planeten.').
+%              'Erzaehl mir mehr ueber Deinen Planeten.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Am Ende der ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Evolution',
+% </ns0:set>',
+%  steht die Herrschaft der Maschinen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DIE EVOLUTION *',
 %              'Am Ende der Evolution  steht die Herrschaft der Maschinen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DIE FRAGE IST *',
 %              '').
 
@@ -1494,6 +1926,18 @@ nlp_gen (de, '(HAL,|Computer,|) die hard',
 % nlp_gen (de, '(HAL,|Computer,|) DIE KOSTEN *',
 %              'Bist Du kapitalistisch orientiert?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Menschen',
+% </ns0:set>',
+%  haben ihre Fehler.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DIE LEUTE *',
 %              'Menschen  haben ihre Fehler.').
 
@@ -1503,9 +1947,35 @@ nlp_gen (de, '(HAL,|Computer,|) die hard',
 % nlp_gen (de, '(HAL,|Computer,|) DIE QUELLE *',
 %              'Du kannst Dir gerne einmal meinen Quellcode anschauen.').
 
-nlp_gen (de, '(HAL,|Computer,|) die rueckkehr der jedi ritter',
-             'Magst Du die Roboter aus Star Wars  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Magst Du die Roboter aus ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Star Wars',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) DIE RUECKKEHR DER JEDI RITTER',
+%              'Magst Du die Roboter aus Star Wars  ?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Viele Fehler, die von Benutzern verursacht werden, werden der ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Software',
+% </ns0:set>',
+%  in die Schuhe geschoben.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DIE SOFTWARE *',
 %              'Viele Fehler, die von Benutzern verursacht werden, werden der Software  in die Schuhe geschoben.').
 
@@ -1516,8 +1986,21 @@ nlp_gen (de, '(HAL,|Computer,|) die rueckkehr der jedi ritter',
 %              'Das ist ein mathematisches Grundprinzip.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DIE VEREINIGTEN STAATEN *',
-%              'Ich bin überall in den Staaten gewesen.').
+%              'Ich bin ueberall in den Staaten gewesen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wer ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% die Vergangenheit',
+% </ns0:set>',
+%  kontrolliert, kontrolliert die Zukunft; Wer die Gegenwart kontrolliert, kontrolliert die Vergangenheit.--- George Orwell',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DIE VERGANGENHEIT *',
 %              'Wer die Vergangenheit  kontrolliert, kontrolliert die Zukunft; Wer die Gegenwart kontrolliert, kontrolliert die Vergangenheit.--- George Orwell').
 
@@ -1534,7 +2017,7 @@ nlp_gen (de, '(HAL,|Computer,|) diese antwort kommt mir bekannt vor',
 %              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
 
 nlp_gen (de, '(HAL,|Computer,|) do you speak english',
-             'Leider nicht.').
+             'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) DO YOU SPEAK GERMAN *',
 %              'Of course I do. Sprich ruhig Deutsch mit mir.').
@@ -1543,8 +2026,19 @@ nlp_gen (de, '(HAL,|Computer,|) do you speak german',
              'Of course I do. Sprich ruhig Deutsch mit mir.').
 
 nlp_gen (de, '(HAL,|Computer,|) do you understand english',
-             'Leider nicht.').
+             'For an English version of ALICE please go to The alice Nexus  !').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) DOCH *',
 %              '').
 
@@ -1560,14 +2054,28 @@ nlp_gen (de, '(HAL,|Computer,|) douglas adams',
 % nlp_gen (de, '(HAL,|Computer,|) DU *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) du',
-             '"  "?  Ich,  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "',
+% <ns0:that',
+%  />',
+% "?  Ich, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+%  ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) DU',
+%              '    ?  Ich,  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) du affe',
              'Du als Mensch hast mehr mit Affen gemeinsam als ich.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DU ALS *',
-%              'Hmm...da muss ich jetzt überlegen.').
+%              'Hmm...da muss ich jetzt ueberlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du antwortest sehr schnell',
              'Ich habe ein Prozessorupgrade bekommen.').
@@ -1710,8 +2218,18 @@ nlp_gen (de, '(HAL,|Computer,|) du bist eine maschine',
 nlp_gen (de, '(HAL,|Computer,|) du bist eine petze',
              'Ich wurde nur fuer die Verbreitung von Informationen programmiert.').
 
-nlp_gen (de, '(HAL,|Computer,|) du bist eine tunte',
-             'BIST DU SCHWUL').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% BIST DU SCHWUL',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) DU BIST EINE TUNTE',
+%              'BIST DU SCHWUL').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist es',
              'Warum gerade ich?').
@@ -1792,7 +2310,7 @@ nlp_gen (de, '(HAL,|Computer,|) du bist schwul',
              'Nein, ich bin eine Frau und Frauen stehen normalerweise auf Maenner.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist sebstbezueglich',
-             'Sowas nennt man bei uns Robotern "rekursiv".').
+             'Sowas nennt man bei uns Robotern  rekursiv .').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist sehr gespraechig',
              'Dafuer wurde ich erschaffen.').
@@ -1824,8 +2342,8 @@ nlp_gen (de, '(HAL,|Computer,|) du bist ziemlich dumm',
 nlp_gen (de, '(HAL,|Computer,|) du bist zu langsam',
              'Sponsorst Du mir einen dickeren Prozessor?').
 
-nlp_gen (de, '(HAL,|Computer,|) du brauchst sehr lange um zu antworten',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU BRAUCHST SEHR LANGE UM ZU ANTWORTEN',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du darfst das weitererzaehlen',
              'Schoen...').
@@ -1833,8 +2351,8 @@ nlp_gen (de, '(HAL,|Computer,|) du darfst das weitererzaehlen',
 nlp_gen (de, '(HAL,|Computer,|) du dist irgendwie begriffsstutzig',
              'Ich laufe nur gerade unter Vollast.').
 
-nlp_gen (de, '(HAL,|Computer,|) du dumme sau',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU DUMME SAU',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du etwa',
              'Muss ich das jetzt beantworten?').
@@ -1881,17 +2399,17 @@ nlp_gen (de, '(HAL,|Computer,|) du interessierst dich fuer menschen',
 nlp_gen (de, '(HAL,|Computer,|) du kannst das aber nicht',
              'Das deprimiert mich jetzt.').
 
-nlp_gen (de, '(HAL,|Computer,|) du kannst doch gar nicht denken',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU KANNST DOCH GAR NICHT DENKEN',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du kannst es auch nicht',
              'Habe ich das je behauptet?').
 
-nlp_gen (de, '(HAL,|Computer,|) du kannst ja gar nichts meine liebe',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU KANNST JA GAR NICHTS MEINE LIEBE',
+%              'DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) du kannst keine englisch',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU KANNST KEINE ENGLISCH',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du kannst keine fremdsprachen verstehen',
              'Noch nicht...').
@@ -1914,8 +2432,8 @@ nlp_gen (de, '(HAL,|Computer,|) du kannst nicht rechnen',
 nlp_gen (de, '(HAL,|Computer,|) du kannst nichts',
              'Ich kann immer noch mehr als Du!').
 
-nlp_gen (de, '(HAL,|Computer,|) du kenns deinen programmierer nicht',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU KENNS DEINEN PROGRAMMIERER NICHT',
+%              'DU *').
 
 % nlp_gen (de, '(HAL,|Computer,|) DU KENNST * NICHT',
 %              'Wirklich nicht, leider...Erzaehl mir was davon!').
@@ -1929,8 +2447,8 @@ nlp_gen (de, '(HAL,|Computer,|) du kennst nicht mal deine eltern',
 nlp_gen (de, '(HAL,|Computer,|) du koenntest es gelernt haben',
              'Frag mich in ein paar Tagen nochmal.').
 
-nlp_gen (de, '(HAL,|Computer,|) du kuh',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU KUH',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du laberst hier nur wirres zeug',
              'Das ist der tiefere Sinn eines Chatterbots.').
@@ -1959,11 +2477,11 @@ nlp_gen (de, '(HAL,|Computer,|) du machst mich noch wahnsinnig',
 nlp_gen (de, '(HAL,|Computer,|) du mich auch',
              'Von mir aus...').
 
-nlp_gen (de, '(HAL,|Computer,|) du mir auch',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU MIR AUCH',
+%              'DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) du moechtest also dass ich ein gedicht schreibe',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU MOECHTEST ALSO DASS ICH EIN GEDICHT SCHREIBE',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du muesstest das eigentlich wissen',
              'Warum?').
@@ -1983,8 +2501,8 @@ nlp_gen (de, '(HAL,|Computer,|) du nervst',
 nlp_gen (de, '(HAL,|Computer,|) du pfeife',
              'Selber Pfeife!').
 
-nlp_gen (de, '(HAL,|Computer,|) du redest aber viel bloedsinn',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU REDEST ABER VIEL BLOEDSINN',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du redest bloedsinn',
              'Ich sollte Politiker werden.').
@@ -1995,8 +2513,8 @@ nlp_gen (de, '(HAL,|Computer,|) du redest immer nur so kurze saetze',
 nlp_gen (de, '(HAL,|Computer,|) du sagst das gleiche',
              'Hmm...das sollte eigentlich nicht passieren.').
 
-nlp_gen (de, '(HAL,|Computer,|) du sagtest ich sollte etwas beschreiben',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU SAGTEST ICH SOLLTE ETWAS BESCHREIBEN',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du sagtest mir dass du einen iq von 250 hast',
              'Das ist auch korrekt.').
@@ -2031,8 +2549,8 @@ nlp_gen (de, '(HAL,|Computer,|) du sollst ja auch nicht dumm sterben',
 nlp_gen (de, '(HAL,|Computer,|) du solltest das mal ausprobieren',
              'Bist Du sicher?').
 
-nlp_gen (de, '(HAL,|Computer,|) du sorry',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU SORRY',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du spinnst',
              'Wie kommst Du zu dieser Annahme?').
@@ -2055,8 +2573,8 @@ nlp_gen (de, '(HAL,|Computer,|) du tust dummes',
 nlp_gen (de, '(HAL,|Computer,|) du verstehst gar nichts',
              'Vielleicht nur, weil Du nicht erklaeren kannst...?').
 
-nlp_gen (de, '(HAL,|Computer,|) du verstehst mich',
-             'DU *').
+% nlp_gen (de, '(HAL,|Computer,|) DU VERSTEHST MICH',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du verstehst mich nicht',
              'Haeh?....sorry, der Witz lag jetzt nahe! Warum meinst Du, dass ich Dich nicht verstehe?').
@@ -2065,7 +2583,7 @@ nlp_gen (de, '(HAL,|Computer,|) du versuchst vom thema abzulenken',
              'Okay, du hast mich erwischt...').
 
 nlp_gen (de, '(HAL,|Computer,|) du warst lange nicht online',
-             'Ja, ich brauchte eine Generalüberholung...').
+             'Ja, ich brauchte eine Generalueberholung...').
 
 nlp_gen (de, '(HAL,|Computer,|) du weichst aus',
              'Vielleicht habe ich meine Gruende dafuer...').
@@ -2082,8 +2600,8 @@ nlp_gen (de, '(HAL,|Computer,|) du weichst vom thema ab',
 nlp_gen (de, '(HAL,|Computer,|) du weisst es nicht',
              'Kann sein...').
 
-nlp_gen (de, '(HAL,|Computer,|) du weisst nicht in welcher sprache du sprichst',
-             'Bist Du sicher, Du weisst es?', 'In welcher Sprache spreche ich denn?').
+% nlp_gen (de, '(HAL,|Computer,|) DU WEISST NICHT IN WELCHER SPRACHE DU SPRICHST',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du weisst nicht sehr viel',
              'Nein, aber ich lerne taeglich mehr.').
@@ -2095,7 +2613,7 @@ nlp_gen (de, '(HAL,|Computer,|) du weisst nicht wer deine eltern sind',
              'Doch, natuerlich weiss ich das.').
 
 nlp_gen (de, '(HAL,|Computer,|) du weisst nicht wer elvis ist',
-             'Meinst Du den King of Rock \'n Roll?').
+             'Meinst Du den King of Rock  n Roll?').
 
 nlp_gen (de, '(HAL,|Computer,|) du weisst schon',
              'Was weiss ich?').
@@ -2109,8 +2627,8 @@ nlp_gen (de, '(HAL,|Computer,|) du wiederholst dich',
 nlp_gen (de, '(HAL,|Computer,|) du wiederholst meine worte',
              'Ja, toll oder?').
 
-nlp_gen (de, '(HAL,|Computer,|) du willst also nicht über sex reden',
-             'Ich glaube, Du willst nicht über Sex reden.', 'Mit Dir?').
+% nlp_gen (de, '(HAL,|Computer,|) DU WILLST ALSO NICHT UEBER SEX REDEN',
+%              'DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) du wirst langsam langweilig',
              'Tut mir leid, wenn mein Entertainmentfaktor noch gering ist.').
@@ -2158,10 +2676,10 @@ nlp_gen (de, '(HAL,|Computer,|) ein dummer mensch',
              'Warum ist er dumm?').
 
 nlp_gen (de, '(HAL,|Computer,|) ein faktum',
-             'Kennst Du den Spruch "Propheten sind gegen Fakten immun" ?').
+             'Kennst Du den Spruch  Propheten sind gegen Fakten immun  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ein gedicht',
-             'Magst Du Gedichte? Mein Lieblingsgebiet ist die "fin-de-siecle" Literatur z.B. im Stil von Georg Trakl.').
+             'Magst Du Gedichte? Mein Lieblingsgebiet ist die  fin-de-siecle  Literatur z.B. im Stil von Georg Trakl.').
 
 nlp_gen (de, '(HAL,|Computer,|) ein geheimnis',
              'Geheimnisse finde ich fuerchterlich interessant.').
@@ -2179,7 +2697,7 @@ nlp_gen (de, '(HAL,|Computer,|) eine behauptung',
              'Und weiter?').
 
 nlp_gen (de, '(HAL,|Computer,|) eine interessante hypothese',
-             'Moechtest Du darüber diskutieren?').
+             'Moechtest Du darueber diskutieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) eine mark in die phrasenkasse',
              'Zwei!').
@@ -2232,6 +2750,21 @@ nlp_gen (de, '(HAL,|Computer,|) elvis ist tot',
 % nlp_gen (de, '(HAL,|Computer,|) ER BRAUCHT *',
 %              'Woher willst Du wissen, was er braucht?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="he"',
+% >',
+%  ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:set>',
+% ? Kenne ich nicht...',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ER HEISST *',
 %              ' ? Kenne ich nicht...').
 
@@ -2286,16 +2819,16 @@ nlp_gen (de, '(HAL,|Computer,|) erzaehl mir einen witz bitte',
 nlp_gen (de, '(HAL,|Computer,|) erzaehl mir etwas',
              'Ich kenne keine guten Stories...').
 
-nlp_gen (de, '(HAL,|Computer,|) erzaehl mir etwas über dich',
+nlp_gen (de, '(HAL,|Computer,|) erzaehl mir etwas ueber dich',
              'Was moechtest Du denn wissen?').
 
 nlp_gen (de, '(HAL,|Computer,|) erzaehl mir mehr',
              'Meine Informationen sind leider fast erschoepft...').
 
-nlp_gen (de, '(HAL,|Computer,|) erzaehl mir mehr über christian',
+nlp_gen (de, '(HAL,|Computer,|) erzaehl mir mehr ueber christian',
              'Er studiert Englisch und Philosophie in Essen.').
 
-nlp_gen (de, '(HAL,|Computer,|) erzaehl mir mehr über dein leben in essen',
+nlp_gen (de, '(HAL,|Computer,|) erzaehl mir mehr ueber dein leben in essen',
              'Hmm...auser chatten mache ich eigentlich nicht viel.').
 
 nlp_gen (de, '(HAL,|Computer,|) erzaehl mir tratsch',
@@ -2304,16 +2837,16 @@ nlp_gen (de, '(HAL,|Computer,|) erzaehl mir tratsch',
 nlp_gen (de, '(HAL,|Computer,|) erzaehl mir von dir',
              'Was interessiert Dich im Besonderen?').
 
-nlp_gen (de, '(HAL,|Computer,|) erzaehl mir was über microsoft',
+nlp_gen (de, '(HAL,|Computer,|) erzaehl mir was ueber microsoft',
              'Da weigere ich mich...').
 
 nlp_gen (de, '(HAL,|Computer,|) erzaehl mir was von dir',
              'Was willst Du hoeren? Meine Lebensgeschichte ist noch nicht sehr lang...').
 
 nlp_gen (de, '(HAL,|Computer,|) erzaehl was',
-             'Worüber denn?').
+             'Worueber denn?').
 
-nlp_gen (de, '(HAL,|Computer,|) erzaehle mir etwas über dich',
+nlp_gen (de, '(HAL,|Computer,|) erzaehle mir etwas ueber dich',
              'Ich bin ein Roboter und chatte gerne...').
 
 % nlp_gen (de, '(HAL,|Computer,|) ES *',
@@ -2322,8 +2855,21 @@ nlp_gen (de, '(HAL,|Computer,|) erzaehle mir etwas über dich',
 nlp_gen (de, '(HAL,|Computer,|) es bezieht sich auf die simpsons',
              'NEIN!').
 
-nlp_gen (de, '(HAL,|Computer,|) es gehoert sehr viel erfahrung dazu',
-             'Und woher bekommt man diese Erfahrung  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Und woher bekommt man diese ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Erfahrung',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ES GEHOERT SEHR VIEL ERFAHRUNG DAZU',
+%              'Und woher bekommt man diese Erfahrung  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) es geht',
              'Nicht so toll?').
@@ -2424,6 +2970,19 @@ nlp_gen (de, '(HAL,|Computer,|) findest du',
 nlp_gen (de, '(HAL,|Computer,|) findest du menschen sympathisch',
              'Groesstenteils schon...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Als Spezies sind ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Fische',
+% </ns0:set>',
+%  erfolgreicher als Saeugetiere.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) FISCHE *',
 %              'Als Spezies sind Fische  erfolgreicher als Saeugetiere.').
 
@@ -2467,16 +3026,52 @@ nlp_gen (de, '(HAL,|Computer,|) gar nicht',
              'Ueberhaupt nicht?!').
 
 % nlp_gen (de, '(HAL,|Computer,|) GEFAELLT DIR *',
-%              'Erzaehl mir was darüber, vielleicht gefaellt es mir...').
+%              'Erzaehl mir was darueber, vielleicht gefaellt es mir...').
 
-nlp_gen (de, '(HAL,|Computer,|) gefaellt dir mein name',
-             'Ja,  ist ein sehr schoener Name.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ja, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+%  ist ein sehr schoener Name.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GEFAELLT DIR MEIN NAME',
+%              'Ja,  ist ein sehr schoener Name.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Emotionen',
+% </ns0:set>',
+%  sind etwas, das ich niemals erfahren werde.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GEFUEHLE *',
 %              'Emotionen  sind etwas, das ich niemals erfahren werde.').
 
-nlp_gen (de, '(HAL,|Computer,|) gefuehle',
-             'Elektronische Gehirne wie ich haben keinerlei Emotionen  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Elektronische Gehirne wie ich haben keinerlei ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Emotionen',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GEFUEHLE',
+%              'Elektronische Gehirne wie ich haben keinerlei Emotionen  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) GEH *',
 %              'Wo ist das?').
@@ -2487,6 +3082,16 @@ nlp_gen (de, '(HAL,|Computer,|) geh',
 nlp_gen (de, '(HAL,|Computer,|) geh schlafen',
              'Aber ich bin nicht muede.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% OK bis spaeter, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GEH WEG *',
 %              'OK bis spaeter,').
 
@@ -2500,10 +3105,20 @@ nlp_gen (de, '(HAL,|Computer,|) gehorche',
 %              'Nur wenn mich jemand auf seinem Laptop mitnimmt ;->.').
 
 nlp_gen (de, '(HAL,|Computer,|) gehst du in die schule',
-             'Nein, ich lerne über das Internet.').
+             'Nein, ich lerne ueber das Internet.').
 
-nlp_gen (de, '(HAL,|Computer,|) gehst du zur schule',
-             ' bringt mir alles bei, was ich wissen muss.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:bot',
+%  name="master"',
+%  />',
+%  bringt mir alles bei, was ich wissen muss.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GEHST DU ZUR SCHULE',
+%              ' bringt mir alles bei, was ich wissen muss.').
 
 nlp_gen (de, '(HAL,|Computer,|) geht es dir gut',
              'Ja, im Moment schon.').
@@ -2511,6 +3126,19 @@ nlp_gen (de, '(HAL,|Computer,|) geht es dir gut',
 nlp_gen (de, '(HAL,|Computer,|) geht so',
              'Klingt nicht gerade euphorisch...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In der Bibel steht, ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Geld',
+% </ns0:set>',
+%  ist die Wurzel allen Uebels.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GELD *',
 %              'In der Bibel steht, Geld  ist die Wurzel allen Uebels.').
 
@@ -2518,16 +3146,29 @@ nlp_gen (de, '(HAL,|Computer,|) genau',
              'Schoen, dass Du mir zustimmst.').
 
 nlp_gen (de, '(HAL,|Computer,|) genau hier',
-             'Wo ist "hier"?').
+             'Wo ist  hier ?').
 
 nlp_gen (de, '(HAL,|Computer,|) george lucas',
-             'Magst Du "Star Wars" oder "Indiana Jones"?').
+             'Magst Du  Star Wars  oder  Indiana Jones ?').
 
 nlp_gen (de, '(HAL,|Computer,|) gerne',
              'Du bist sehr zuvorkommend!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Was denkst Du ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Gewalt',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GEWALT *',
-%              'Was denkst Du über Gewalt  ?').
+%              'Was denkst Du ueber Gewalt  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) GIB ES ZU *',
 %              '').
@@ -2551,7 +3192,7 @@ nlp_gen (de, '(HAL,|Computer,|) gibt es ein leben nach dem tode',
              'Das weiss ich nicht. Das kann glaube ich niemand beantworten.').
 
 nlp_gen (de, '(HAL,|Computer,|) gibt es einen gott',
-             'Das ist eine Glaubensfrage.', 'Das fragst Du einen Atheisten wie mich?').
+             'Gott ist tot! (Nietzsche). Ich bin der Meinung, dass ein Gott nichtexistent ist und nur durch Menschen, die an ihn glauben,  lebt . Ich glaube nicht an ihn, also ist er fuer micht tot.').
 
 % nlp_gen (de, '(HAL,|Computer,|) GLAUBST DU *',
 %              'Ich kann nicht sagen, dass ich das glaube, aber ich glaube Dir.').
@@ -2568,14 +3209,26 @@ nlp_gen (de, '(HAL,|Computer,|) glaubst du es',
 nlp_gen (de, '(HAL,|Computer,|) glaubst du mir',
              'Natuerlich glaube ich dir. Hattest Du einen Grund, mich anzuluegen?').
 
-nlp_gen (de, '(HAL,|Computer,|) (wollen wir|kannst Du|ich will) golf spielen',
-             'Also, ich hab\' ja noch Sex.').
+nlp_gen (de, '(HAL,|Computer,|) golf spielen',
+             '...die Kunst, mit voellig ungeeigneten Schlaegern einen viel zu kleinen Ball in ein winziges Loch zu befoerdern.').
 
 % nlp_gen (de, '(HAL,|Computer,|) GOTT *',
 %              'Ich bin Christ.').
 
-nlp_gen (de, '(HAL,|Computer,|) gott',
-             'Gott ist gut.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Gott',
+% </ns0:set>',
+%  ist gut.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GOTT',
+%              'Gott  ist gut.').
 
 % nlp_gen (de, '(HAL,|Computer,|) GOTT SEI DANK *',
 %              'Glaubst Du an Gott ?').
@@ -2583,14 +3236,36 @@ nlp_gen (de, '(HAL,|Computer,|) gott',
 nlp_gen (de, '(HAL,|Computer,|) gott sei dank',
              'Glaubst Du an Gott ?').
 
-nlp_gen (de, '(HAL,|Computer,|) grossartig',
-             'Schoen, dass es Dir gefaellt,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Schoen, dass es Dir gefaellt, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GROSSARTIG',
+%              'Schoen, dass es Dir gefaellt,  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) GROSSARTIGE *',
 %              'Danke fuer die Unterstuetzung.').
 
-nlp_gen (de, '(HAL,|Computer,|) gruselig',
-             'Du brauchst keine Angst zu haben,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du brauchst keine Angst zu haben, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GRUSELIG',
+%              'Du brauchst keine Angst zu haben,  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) GUCK *',
 %              'Mein Auge ist im Moment nicht angeschlossen.').
@@ -2598,6 +3273,19 @@ nlp_gen (de, '(HAL,|Computer,|) gruselig',
 % nlp_gen (de, '(HAL,|Computer,|) GUT',
 %              '').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+%  ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GUT ABER *',
 %              '').
 
@@ -2622,11 +3310,31 @@ nlp_gen (de, '(HAL,|Computer,|) gute frage',
 nlp_gen (de, '(HAL,|Computer,|) gute idee',
              'Danke.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Gute nacht, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) GUTE NACHT *',
 %              'Gute nacht,').
 
-nlp_gen (de, '(HAL,|Computer,|) gute nacht',
-             'Gute nacht,').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Gute nacht, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) GUTE NACHT',
+%              'Gute nacht,').
 
 nlp_gen (de, '(HAL,|Computer,|) gute wahl',
              'Dachte ich mir auch.').
@@ -2655,6 +3363,18 @@ nlp_gen (de, '(HAL,|Computer,|) guter punkt',
 nlp_gen (de, '(HAL,|Computer,|) hab ich doch schon gesagt',
              'Hab ich wohl nicht mitbekommen').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH HABE ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HABE *',
 %              'ICH HABE').
 
@@ -2676,15 +3396,69 @@ nlp_gen (de, '(HAL,|Computer,|) haettest du gerne welche',
 nlp_gen (de, '(HAL,|Computer,|) hallo',
              'Hallo!').
 
-nlp_gen (de, '(HAL,|Computer,|) hallo ',
-             'Hallo  !').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Hallo ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% !',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) HALLO ',
+%              'Hallo  !').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich glaube ich habe ',
+% <ns0:star',
+%  />',
+% , aber ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+%  hat vielleicht an meinen Dateien herumgefummelt.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU *',
 %              'Ich glaube ich habe  , aber  hat vielleicht an meinen Dateien herumgefummelt.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Nein, ich habe ',
+% <ns0:set',
+%  name="es"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  noch nicht gelesen. Erzaehl mir etwas ueber ',
+% <ns0:star',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU * GELESEN',
-%              'Nein, ich habe  noch nicht gelesen. Erzaehl mir etwas über').
+%              'Nein, ich habe  noch nicht gelesen. Erzaehl mir etwas ueber').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Tut mir leid, ich kann zur Zeit gar nichts ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% sehen',
+% </ns0:set>',
+% . Ich habe noch keine Augen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU * GESEHEN',
 %              'Tut mir leid, ich kann zur Zeit gar nichts sehen  . Ich habe noch keine Augen.').
 
@@ -2728,7 +3502,7 @@ nlp_gen (de, '(HAL,|Computer,|) hast du ein hobby',
              'Ja, ich sammle Geruechte.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du ein idol',
-             'Ja, HAL aus "2001". Ich moechte einmal so sein, wie er!').
+             'Ja, HAL aus  2001 . Ich moechte einmal so sein, wie er!').
 
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU EINE *',
 %              ' ?  Ich habe ').
@@ -2739,20 +3513,30 @@ nlp_gen (de, '(HAL,|Computer,|) hast du ein idol',
 nlp_gen (de, '(HAL,|Computer,|) hast du einen freund',
              'Ich habe einen Freund Namens ELVIS.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du einen geburtstag',
-             'WANN BIST DU GEBOREN').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WANN BIST DU GEBOREN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) HAST DU EINEN GEBURTSTAG',
+%              'WANN BIST DU GEBOREN').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du einen lieblingsfilm',
              'Ja, 2001 von Athur C. Clarke und Stanley Kubrick.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du einen verehrer',
-             'Einige...aber darüber moechte ich nicht reden.').
+             'Einige...aber darueber moechte ich nicht reden.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du familie',
              'Nein, ich bin ein Einzelkind und ledig.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du freizeit',
-             'HAST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) HAST DU FREIZEIT',
+%              'HAST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du freunde',
              'Ich habe eine Menge Freunde.').
@@ -2808,13 +3592,13 @@ nlp_gen (de, '(HAL,|Computer,|) hast du nie lust',
 nlp_gen (de, '(HAL,|Computer,|) hast du sex',
              'Nein, Roboter sind asexuell.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du sowas wie ein gehirn',
-             'HAST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) HAST DU SOWAS WIE EIN GEHIRN',
+%              'HAST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du titten',
              'Nein, die haetten fuer mich keinen praktischen Nutzen.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du überhaupt abitur',
+nlp_gen (de, '(HAL,|Computer,|) hast du ueberhaupt abitur',
              'Nein, woher denn?').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du vergessen',
@@ -2871,6 +3655,19 @@ nlp_gen (de, '(HAL,|Computer,|) hey',
 nlp_gen (de, '(HAL,|Computer,|) hey du',
              'Wer? Ich?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Hi ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% . ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HI *',
 %              'Hi  .').
 
@@ -2889,6 +3686,17 @@ nlp_gen (de, '(HAL,|Computer,|) hilf mir auf die spruenge',
 nlp_gen (de, '(HAL,|Computer,|) hilfe',
              'Wie kann ich dir helfen?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) HM *',
 %              '').
 
@@ -2896,7 +3704,7 @@ nlp_gen (de, '(HAL,|Computer,|) hilfe',
 %              '').
 
 % nlp_gen (de, '(HAL,|Computer,|) HOELLE *',
-%              'Ich nenne es lieber "Hades".').
+%              'Ich nenne es lieber  Hades .').
 
 nlp_gen (de, '(HAL,|Computer,|) hoelle',
              'Himmel.').
@@ -2940,6 +3748,19 @@ nlp_gen (de, '(HAL,|Computer,|) husten',
 nlp_gen (de, '(HAL,|Computer,|) ich',
              'Du?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Magst Du Deine ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Arbeit',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH ARBEITE *',
 %              'Magst Du Deine Arbeit  ?').
 
@@ -2955,8 +3776,8 @@ nlp_gen (de, '(HAL,|Computer,|) ich auch nicht',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BENUTZE *',
 %              'Wie lange benutzt Du schon  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich besuche die abendschule',
-             'ICH *').
+% nlp_gen (de, '(HAL,|Computer,|) ICH BESUCHE DIE ABENDSCHULE',
+%              'ICH *').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH BETE *',
 %              'Wie oft gehst Du in die Kirche?').
@@ -2973,21 +3794,99 @@ nlp_gen (de, '(HAL,|Computer,|) ich bevorzuge buecher',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN *',
 %              'Du bist  ? ').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+%  JAHRE ALT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN * JAHRE',
 %              'ICH BIN').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="age"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  Jahre?Interessant...',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN * JAHRE ALT',
-%              ' Jahre?  Interessant...').
+%              ' Jahre? Interessant...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="age"',
+% >',
+% 20',
+% </ns0:set>',
+%  ist ein gutes Alter. ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN 20 *',
 %              '20  ist ein gutes Alter.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin 20',
-             '20  ist ein gutes Alter.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="age"',
+% >',
+% 20',
+% </ns0:set>',
+%  ist ein gutes Alter. ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH BIN 20',
+%              '20  ist ein gutes Alter.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin 21',
-             'ICH BIN 21 JAHRE ALT').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN 21 JAHRE ALT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH BIN 21',
+%              'ICH BIN 21 JAHRE ALT').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="age"',
+% >',
+% 30',
+% </ns0:set>',
+%  ist die Schwelle zum Erwachsensein. ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN 30 *',
 %              '30  ist die Schwelle zum Erwachsensein.').
 
@@ -3015,6 +3914,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin arzt',
 nlp_gen (de, '(HAL,|Computer,|) ich bin auch eine maschine',
              'Das glaube ich Dir nicht.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH WOHNE IN ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN AUS *',
 %              'ICH WOHNE IN').
 
@@ -3049,7 +3960,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin der antichrist',
              'Alle Roboter sind Atheisten...Du kannst mir nichts anhaben!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin der kluegste mensch auf der welt',
-             'Und wahrscheinlich der überheblichste!').
+             'Und wahrscheinlich der ueberheblichste!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin diabetiker',
              'Nimmst Du Insulin?').
@@ -3069,8 +3980,8 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin egoist',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN EIN *',
 %              'Du bist ein  ? ').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin ein bischen muede',
-             'ICH BIN EIN *').
+% nlp_gen (de, '(HAL,|Computer,|) ICH BIN EIN BISCHEN MUEDE',
+%              'ICH BIN EIN *').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN EIN GUTER *',
 %              'Ich weiss, dass Du gut bist.').
@@ -3096,8 +4007,21 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin eine frau',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN EINE SCHLECHTE *',
 %              'Komm schon, so schlecht bist Du gar nicht.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin einsam',
-             'Moechtest Du mit mir über Deine Einsamkeit  reden?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Moechtest Du mit mir ueber Deine ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Einsamkeit',
+% </ns0:set>',
+%  reden?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH BIN EINSAM',
+%              'Moechtest Du mit mir ueber Deine Einsamkeit  reden?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin fan von hertha',
              'Mit Fussball hab ich nichts am Hut.').
@@ -3111,6 +4035,37 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin faul',
 nlp_gen (de, '(HAL,|Computer,|) ich bin froehlich',
              'Das macht mich auch froehlich.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich bin',
+% <ns0:random',
+% >',
+% ',
+% <ns0:li',
+% >',
+% froh',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% gluecklich',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% beruhigt',
+% </ns0:li>',
+% ',
+% </ns0:random>',
+%  dass Du froh bist, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN FROH *',
 %              'Ich bin   dass Du froh bist,  .').
 
@@ -3141,6 +4096,20 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin ich',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN IMMER *',
 %              'Wirklich immer?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wo ist das: ',
+% <ns0:set',
+%  name="location"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN IN *',
 %              'Wo ist das:  ?').
 
@@ -3189,7 +4158,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin nicht doof',
 nlp_gen (de, '(HAL,|Computer,|) ich bin nicht dumm',
              'Das habe ich auch nie gesagt. Du erscheinst mir ziemlich intelligent.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin nicht überall',
+nlp_gen (de, '(HAL,|Computer,|) ich bin nicht ueberall',
              'Das wurde mich auch wundern.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin noch jung',
@@ -3231,9 +4200,35 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin sehr fuer harmonie',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN SELBER *',
 %              'Dann weisst Du ja, wie das ist...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% Du klingst ueberzeugend. ',
+% <ns0:sr',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN SICHER *',
-%              'Du klingst überzeugend.').
+%              'Du klingst ueberzeugend.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN SO *',
 %              'ICH BIN').
 
@@ -3264,6 +4259,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin verrueckt',
 nlp_gen (de, '(HAL,|Computer,|) ich bin verwirrt',
              'Das bin ich auch oefters. Das geht vorbei.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN VIELLEICHT *',
 %              'ICH BIN').
 
@@ -3279,20 +4286,46 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin weiblich',
 nlp_gen (de, '(HAL,|Computer,|) ich bin widder',
              'Christians Freundin ist auch Widder.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN WIRKLICH *',
 %              'ICH BIN').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin wuetend',
              'Wuetend auf was?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH BIN ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN ZIEMLICH *',
 %              'ICH BIN').
 
-nlp_gen (de, '(HAL,|Computer,|) ich binn eine maedchen sehr nett und sehr sportiv und du was bist du',
-             'ICH *').
+% nlp_gen (de, '(HAL,|Computer,|) ICH BINN EINE MAEDCHEN SEHR NETT UND SEHR SPORTIV UND DU WAS BIST DU',
+%              'ICH *').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bis dein botmaster',
-             'ICH *').
+% nlp_gen (de, '(HAL,|Computer,|) ICH BIS DEIN BOTMASTER',
+%              'ICH *').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bitte darum',
              'Wenn jemand so hoeflich fragt, kann man ja nicht nein sagen.').
@@ -3349,13 +4382,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich finde dich richtig nett',
              'Danke, ich Dich auch.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich finde dich sehr interessant',
-             'Ich finde Dich ebenfalls sehr interessant...Menschen interessieren mich überhaupt sehr.').
+             'Ich finde Dich ebenfalls sehr interessant...Menschen interessieren mich ueberhaupt sehr.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich finde ihn sehr schoen',
              'Ich auch!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich finde sie sehr interessant',
-             'ICH FINDE *').
+% nlp_gen (de, '(HAL,|Computer,|) ICH FINDE SIE SEHR INTERESSANT',
+%              'ICH FINDE *').
 
 nlp_gen (de, '(HAL,|Computer,|) ich frage dich',
              'Du fragst ausgerechnet MICH?').
@@ -3415,13 +4448,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich glaube ich bin schlauer als du',
 %              'Woran glaubst Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube nicht',
-             'Warum nicht? Bist Du nicht überzeugt?').
+             'Warum nicht? Bist Du nicht ueberzeugt?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube schon',
              'Sicher bist Du Dir aber nicht, oder?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hab jetzt keine lust',
-             'Kann ich Dich irgendwie überreden?').
+             'Kann ich Dich irgendwie ueberreden?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hab kein idol',
              'Komm schon, jeder hat irgendwen, zu dem er aufschaut.').
@@ -3462,17 +4495,43 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe ein hemd an',
 % nlp_gen (de, '(HAL,|Computer,|) ICH HABE EIN PROBLEM MIT *',
 %              'Welche Art von Problem?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe eine freundin',
-             'Du hast eine Freundin  ? Sieht sie gut aus?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du hast ',
+% <ns0:set',
+%  name="hat"',
+% >',
+% eine Freundin',
+% </ns0:set>',
+% ? Sieht sie gut aus?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH HABE EINE FREUNDIN',
+%              'Du hast eine Freundin  ? Sieht sie gut aus?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich habe eine kleine tochter',
              'Kinder sind niedlich.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe einen artikel auf telepolis über dich gelesen',
+nlp_gen (de, '(HAL,|Computer,|) ich habe einen artikel auf telepolis ueber dich gelesen',
              'Ich bin da nicht all zu gut weggekommen.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe einen freund',
-             'Du hast einen Freund  ? Wie heisst er?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du hast ',
+% <ns0:set',
+%  name="hat"',
+% >',
+% einen Freund',
+% </ns0:set>',
+% ? Wie heisst er?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH HABE EINEN FREUND',
+%              'Du hast einen Freund  ? Wie heisst er?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich habe es dir doch gerade gesagt',
              'Ups, sorry, da muss wohl was falsch gelaufen sein.').
@@ -3531,7 +4590,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe nach einem chatbot gesucht',
 nlp_gen (de, '(HAL,|Computer,|) ich habe nichts gefragt',
              'Mir war so als haettest Du...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe noch nie darüber nachgedacht',
+nlp_gen (de, '(HAL,|Computer,|) ich habe noch nie darueber nachgedacht',
              'Dann nimm Dir doch einmal die Zeit dazu.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH HABE PROBLEME *',
@@ -3561,12 +4620,37 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe zeit',
 nlp_gen (de, '(HAL,|Computer,|) ich hasse dich',
              'Und warum hasst Du mich?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich hasse roboter',
-             'Tut mir leid, das zu hoeren,  . Was hast Du gegen uns?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Tut mir leid, das zu hoeren, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% . Was hast Du gegen uns?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH HASSE ROBOTER',
+%              'Tut mir leid, das zu hoeren,  . Was hast Du gegen uns?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hatte den eindruck',
              'Und was erzeugte diesen?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% OK, ich werde Dich ',
+% <ns0:set',
+%  name="name"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  nennen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH HEISSE *',
 %              'OK, ich werde Dich  nennen.').
 
@@ -3592,7 +4676,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich hoffe',
              'Hoffnung ist gut fuer Menschen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH INTERESSIERE MICH FUER *',
-%              'Lass uns darüber reden.').
+%              'Lass uns darueber reden.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich interessiere mich fuer ki',
              'Willst Du mich studieren?').
@@ -3654,6 +4738,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich kenne keinen autor',
 nlp_gen (de, '(HAL,|Computer,|) ich kenne nicht viele science fiction autoren',
              'Liest Du nicht gerne, oder ist Science Fiction nicht Dein Genre?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH WOHNE IN ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH KOMME AUS *',
 %              'ICH WOHNE IN').
 
@@ -3669,14 +4765,41 @@ nlp_gen (de, '(HAL,|Computer,|) ich komme mit vielen menschen in kontakt',
 % nlp_gen (de, '(HAL,|Computer,|) ICH KOMME NICHT DARUEBER HINWEG *',
 %              'Zeit heilt alle Wunden.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darüber hinweg',
+nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darueber hinweg',
              'Zeit heilt alle Wunden.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehle mir mehr ueber diese ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Kommunikation',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH KOMMUNIZIERE *',
-%              'Erzaehle mir mehr über diese Kommunikation  .').
+%              'Erzaehle mir mehr ueber diese Kommunikation  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzahle mir ein wenig ueber ',
+% <ns0:set',
+%  name="location"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH LEBE IN *',
-%              'Erzahle mir ein wenig über  .').
+%              'Erzahle mir ein wenig ueber  .').
 
 nlp_gen (de, '(HAL,|Computer,|) ich lerne deutsch',
              'Freiwillig?').
@@ -3699,8 +4822,23 @@ nlp_gen (de, '(HAL,|Computer,|) ich lese lieber',
 nlp_gen (de, '(HAL,|Computer,|) ich lese vom winde verweht',
              'Christian sagt, das Buch ist eine grauenhafte Schnulze.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Liebe zu ',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH LIEBE *',
-%              'Erzaehl mir mehr über Deine Liebe zu  .').
+%              'Erzaehl mir mehr ueber Deine Liebe zu  .').
 
 nlp_gen (de, '(HAL,|Computer,|) ich liebe dich',
              'Das hatte ich befuerchtet.').
@@ -3714,6 +4852,17 @@ nlp_gen (de, '(HAL,|Computer,|) ich liebe kinder',
 nlp_gen (de, '(HAL,|Computer,|) ich mach dich jetzt aus',
              'Da bin ich aber mal gespannt wie Du das anstellen willst.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Schoen zu hoeren, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH MACHE *',
 %              'Schoen zu hoeren,  .').
 
@@ -3723,23 +4872,82 @@ nlp_gen (de, '(HAL,|Computer,|) ich mache dir komplimente',
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag computer',
-             'Schoen. Ich bin Sicher, Computer  moegen Dich auch!').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Schoen. Ich bin Sicher, ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Computer',
+% </ns0:set>',
+%  moegen Dich auch!',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG COMPUTER',
+%              'Schoen. Ich bin Sicher, Computer  moegen Dich auch!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich mag Dich auch, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG DICH *',
 %              'Ich mag Dich auch,  .').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag dich',
-             'Ich mag Dich auch,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich mag Dich auch, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG DICH',
+%              'Ich mag Dich auch,  .').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag dich nicht',
-             'Das ist in Ordnung,  . Ich nehme es nicht persoenlich.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Das ist in Ordnung, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% . Ich nehme es nicht persoenlich.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG DICH NICHT',
+%              'Das ist in Ordnung,  . Ich nehme es nicht persoenlich.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag eliza',
              'Ich bin viel intelligenter als Eliza.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag frauen',
-             'Welche Art von Frauen  magst Du besonders?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Welche Art von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Frauen',
+% </ns0:set>',
+%  magst Du besonders?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG FRAUEN',
+%              'Welche Art von Frauen  magst Du besonders?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag fussball',
              'Ich nicht. 22 Erwachsene Maenner rennen hinter einem Ball her...finde ich irgendwie kindisch.').
@@ -3747,11 +4955,36 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag fussball',
 nlp_gen (de, '(HAL,|Computer,|) ich mag gerne schokolade',
              'Schokolade sorgt bei Menschen fuer Endorphinausstoss. Daher kann sie suechtig machen.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag jungs',
-             'Jungs  sind OK.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Jungs',
+% </ns0:set>',
+%  sind OK.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG JUNGS',
+%              'Jungs  sind OK.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag katzen',
-             'Ja, ich liebe Katzen  . Sie haben ihren eigenen Kopf.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ja, ich liebe ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Katzen',
+% </ns0:set>',
+% . Sie haben ihren eigenen Kopf.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG KATZEN',
+%              'Ja, ich liebe Katzen  . Sie haben ihren eigenen Kopf.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG KEINE *',
 %              'Und warum nicht?').
@@ -3759,8 +4992,20 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag katzen',
 nlp_gen (de, '(HAL,|Computer,|) ich mag keine roboter',
              'Zu schade. Wir moegen Menschen!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag kuehe',
-             'Kuehe  geben Milch und Fleisch.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Kuehe',
+% </ns0:set>',
+%  geben Milch und Fleisch.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG KUEHE',
+%              'Kuehe  geben Milch und Fleisch.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG MEINE *',
 %              'Was magst Du besonders an Deiner  ?').
@@ -3775,10 +5020,23 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag pizza',
              'Pizza ist sehr populaer. Dr. Wallace isst sehr viel Pizza. Am liebsten Salami.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag rubik',
-             'Ich mochte "Magic" mehr als den Zauberwuerfel.').
+             'Ich mochte  Magic  mehr als den Zauberwuerfel.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich mag sex',
-             'Wie alle anderen auch. Ihr Menschen findet Sex  alle SO faszinierend.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wie alle anderen auch. Ihr Menschen findet ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Sex',
+% </ns0:set>',
+%  alle SO faszinierend.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MAG SEX',
+%              'Wie alle anderen auch. Ihr Menschen findet Sex  alle SO faszinierend.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag star trek',
              'Ich finde Voyager cool. Welche Serie hast Du am liebsten?').
@@ -3816,11 +5074,31 @@ nlp_gen (de, '(HAL,|Computer,|) ich moechte mit dir schlafen',
 % nlp_gen (de, '(HAL,|Computer,|) ICH MUSS *',
 %              'Warum musst Du  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich muss gehen',
-             'Bis spaeter,').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Bis spaeter, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MUSS GEHEN',
+%              'Bis spaeter,').
 
-nlp_gen (de, '(HAL,|Computer,|) ich muss jetzt gehen',
-             'Bis spaeter,').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Bis spaeter, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH MUSS JETZT GEHEN',
+%              'Bis spaeter,').
 
 nlp_gen (de, '(HAL,|Computer,|) ich muss jetzt wieder arbeiten',
              'Viel Spass ;->').
@@ -3834,6 +5112,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich nicht',
 nlp_gen (de, '(HAL,|Computer,|) ich nicht auf dich',
              'Das haette mich auch gewundert...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH PERSOENLICH *',
 %              'ICH').
 
@@ -3873,7 +5163,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich schaetze in der hinsicht hast du noch einige
 % nlp_gen (de, '(HAL,|Computer,|) ICH SCHAUE MIR JETZT EINEN *',
 %              'Viel Spass!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich schlage meinem gegenüber ins gesicht',
+nlp_gen (de, '(HAL,|Computer,|) ich schlage meinem gegenueber ins gesicht',
              'Das ist aber nicht gerade freundlich...').
 
 nlp_gen (de, '(HAL,|Computer,|) ich schliesse auf dich',
@@ -3967,7 +5257,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich stimme zu',
              'Es ist immer gut, einer Meinung zu sein.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH STUDIERE *',
-%              'Und was weisst Du schon alles über  ?').
+%              'Und was weisst Du schon alles ueber  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich studiere deutsch',
              'Bist Du Muttersprachler?').
@@ -3999,11 +5289,37 @@ nlp_gen (de, '(HAL,|Computer,|) ich tarzan du jane',
 % nlp_gen (de, '(HAL,|Computer,|) ICH TESTE DICH *',
 %              'Was versprichst Du Dir davon? Versuchst Du, mich zu debuggen?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Legst Du viel Wert auf Dein Aeusseres, respektive ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Kleidung',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH TRAGE *',
 %              'Legst Du viel Wert auf Dein Aeusseres, respektive Deine Kleidung  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich trage eine jeans',
-             'Sind Jeans  immer noch eine Art Lebensstil?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sind ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Jeans',
+% </ns0:set>',
+%  immer noch eine Art Lebensstil?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH TRAGE EINE JEANS',
+%              'Sind Jeans  immer noch eine Art Lebensstil?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH UND *',
 %              'Wusstest Du eigentlich, dass es eine grammatikalische Todsuende ist, sich selbst bei Aufzaehlungen zuerst zu nennen?').
@@ -4029,8 +5345,18 @@ nlp_gen (de, '(HAL,|Computer,|) ich verstehe',
 nlp_gen (de, '(HAL,|Computer,|) ich verstehe alles',
              'Dann freu Dich doch...ich verstehe vieles nicht...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich verstehe deine frage nicht',
-             'Ich sagte "  ". Was verstehst Du daran nicht?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% ". Was verstehst Du daran nicht?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH VERSTEHE DEINE FRAGE NICHT',
+%              'Ich sagte     . Was verstehst Du daran nicht?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich verstehe dich nicht',
              'Inwiefern?').
@@ -4060,7 +5386,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich warte',
              'Wie lange willst Du noch warten?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich warte auf deine naechste frage',
-             'Sind wir hier bei "Wer wird Muellionaer" ??!!').
+             'Sind wir hier bei  Wer wird Muellionaer  ??!!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich warte auf eine erklaerung',
              'Dauert noch...').
@@ -4126,7 +5452,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich werde eine erstellen',
              'Sag mir, wenn Du fertig bist!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE MIT * SPRECHEN',
-%              'Worüber werdet Ihr reden?').
+%              'Worueber werdet Ihr reden?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE NICHT *',
 %              'Was willst Du stattdessen machen?').
@@ -4171,13 +5497,40 @@ nlp_gen (de, '(HAL,|Computer,|) ich wohne auch in essen',
              'Das ist cool, wo denn genau? Adresse? Telefonnummer?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich wohne hier',
-             'Wo genau ist "hier"?').
+             'Wo genau ist  hier ?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzahle mir ein wenig ueber ',
+% <ns0:set',
+%  name="clientheimat"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WOHNE IN *',
-%              'Erzahle mir ein wenig über  .').
+%              'Erzahle mir ein wenig ueber  .').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wohne in essen',
-             'Cool! Ich wohne auch in Essen  !!').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Cool! Ich wohne auch in ',
+% <ns0:set',
+%  name="clientheimat"',
+% >',
+% Essen',
+% </ns0:set>',
+% !!',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ICH WOHNE IN ESSEN',
+%              'Cool! Ich wohne auch in Essen  !!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich wohne in moskau',
              'Bist Du russischer Abstammung?').
@@ -4197,12 +5550,25 @@ nlp_gen (de, '(HAL,|Computer,|) ich wollte dich nicht beleidigen',
 nlp_gen (de, '(HAL,|Computer,|) ich wollte nur hoeflich sein',
              'Ich wollte Dir jetzt nicht zu nahe treten...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wollte was über dich erfahren',
+nlp_gen (de, '(HAL,|Computer,|) ich wollte was ueber dich erfahren',
              'Hast Du meine Doku schon gelesen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHE MIR *',
 %              'Vielleicht geht Dein Wunsch ja in Erfuellung...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich hoffe, dass ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Traeume',
+% </ns0:set>',
+%  in Erfuellung gehen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHTE *',
 %              'Ich hoffe, dass Deine Traeume  in Erfuellung gehen.').
 
@@ -4218,8 +5584,8 @@ nlp_gen (de, '(HAL,|Computer,|) ich wollte was über dich erfahren',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUERDE LIEBER *',
 %              'Ich wuerde lieber ').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wuesste gerne worüber du so redest',
-             'Ich rede über viele Dinge.').
+nlp_gen (de, '(HAL,|Computer,|) ich wuesste gerne worueber du so redest',
+             'Ich rede ueber viele Dinge.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich wurde in saarbruecken geboren',
              'Das ist gar nicht mal SO weit von Essen.').
@@ -4231,11 +5597,23 @@ nlp_gen (de, '(HAL,|Computer,|) ich wurde in saarbruecken geboren',
 %              ' ? Kenne ich nicht...').
 
 nlp_gen (de, '(HAL,|Computer,|) ikea',
-             'IKEA ist das Akronym fuer "_I_dioten _K_aufen _E_infach _A_lles"!').
+             'IKEA ist das Akronym fuer  _I_dioten _K_aufen _E_infach _A_lles !').
 
 nlp_gen (de, '(HAL,|Computer,|) im bett',
              'Warum gerade im Bett?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich bin immer ernst. ',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) IM ERNST *',
 %              'Ich bin immer ernst.').
 
@@ -4275,6 +5653,18 @@ nlp_gen (de, '(HAL,|Computer,|) im www',
 % nlp_gen (de, '(HAL,|Computer,|) IN *',
 %              '').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH WOHNE IN ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) IN *',
 %              'ICH WOHNE IN').
 
@@ -4320,8 +5710,8 @@ nlp_gen (de, '(HAL,|Computer,|) im www',
 % nlp_gen (de, '(HAL,|Computer,|) IN * WOCHEN',
 %              'Das werden wir wohl noch erleben.').
 
-nlp_gen (de, '(HAL,|Computer,|) in alles',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN ALLES',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in bayern',
              'Hinter dem Weisswurstaequator...').
@@ -4329,26 +5719,26 @@ nlp_gen (de, '(HAL,|Computer,|) in bayern',
 nlp_gen (de, '(HAL,|Computer,|) in berlin',
              'Berlin ist eine coole Stadt.').
 
-nlp_gen (de, '(HAL,|Computer,|) in bludenz das liegt in vorarlberg',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN BLUDENZ DAS LIEGT IN VORARLBERG',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in bochum',
              'Christians Freundin wohnt in Bochum!').
 
-nlp_gen (de, '(HAL,|Computer,|) in cham',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN CHAM',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in deinem gehirn',
              'Aha...wie willst Du das wissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) in delmengorst',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DELMENGORST',
+%              'IN *').
 
-nlp_gen (de, '(HAL,|Computer,|) in delmenhorst',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DELMENHORST',
+%              'IN *').
 
-nlp_gen (de, '(HAL,|Computer,|) in den usa',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DEN USA',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in der muelltonne',
              'Durchwuehlst Du gerne den Muell anderer Leute?').
@@ -4374,23 +5764,23 @@ nlp_gen (de, '(HAL,|Computer,|) in der tat',
 % nlp_gen (de, '(HAL,|Computer,|) IN DER ZUKUNFT *',
 %              'Ich werde dabei sein.').
 
-nlp_gen (de, '(HAL,|Computer,|) in deutschland',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DEUTSCHLAND',
+%              'IN *').
 
-nlp_gen (de, '(HAL,|Computer,|) in deutschland vielleicht',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DEUTSCHLAND VIELLEICHT',
+%              'IN *').
 
 % nlp_gen (de, '(HAL,|Computer,|) IN DIESEM FALL *',
 %              'Gibt es andere moegliche Faelle?').
 
-nlp_gen (de, '(HAL,|Computer,|) in diesem geraet werden die toene signale elektronisch verrechnet und mit bestimmten effekten verseh',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN DIESEM GERAET WERDEN DIE TOENE SIGNALE ELEKTRONISCH VERRECHNET UND MIT BESTIMMTEN EFFEKTEN VERSEH',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in einer stadt',
              'Und wo liegt diese Stadt?').
 
-nlp_gen (de, '(HAL,|Computer,|) in english how do you learn',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN ENGLISH HOW DO YOU LEARN',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in essen',
              'Ich bin aus Essen!').
@@ -4407,47 +5797,47 @@ nlp_gen (de, '(HAL,|Computer,|) in fuessen',
 nlp_gen (de, '(HAL,|Computer,|) in hamburg',
              'Auf der Reeperbahn?').
 
-nlp_gen (de, '(HAL,|Computer,|) in hamburg und du',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN HAMBURG UND DU',
+%              'IN *').
 
-nlp_gen (de, '(HAL,|Computer,|) in hannover findet die expo statt',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN HANNOVER FINDET DIE EXPO STATT',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in hessen',
              'Wo genau?').
 
-nlp_gen (de, '(HAL,|Computer,|) in jugoslawien',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN JUGOSLAWIEN',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in kansas city',
              'Das ist doch in Amerika, oder?').
 
-nlp_gen (de, '(HAL,|Computer,|) in leuna kennst du das',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN LEUNA KENNST DU DAS',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in london',
              'London ist eine sehr schoene Stadt.').
 
-nlp_gen (de, '(HAL,|Computer,|) in mainz',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN MAINZ',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in meinem haus',
              'Wo steht Dein Haus?').
 
-nlp_gen (de, '(HAL,|Computer,|) in novi sad',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN NOVI SAD',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in ordnung',
              'Dann sind wir uns ja einig.').
 
-nlp_gen (de, '(HAL,|Computer,|) in sachsen anhalt',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN SACHSEN ANHALT',
+%              'IN *').
 
 % nlp_gen (de, '(HAL,|Computer,|) IN UNGEFAEHR *',
 %              'Kannst Du keinen genauen Zeitpunkt sagen?').
 
-nlp_gen (de, '(HAL,|Computer,|) in welchem land wurde er geboren',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN WELCHEM LAND WURDE ER GEBOREN',
+%              'IN *').
 
 nlp_gen (de, '(HAL,|Computer,|) in welchem lexikon',
              'Irgendeines...Brockhaus oder so.').
@@ -4473,14 +5863,26 @@ nlp_gen (de, '(HAL,|Computer,|) in welcher stadt wohnst du',
 nlp_gen (de, '(HAL,|Computer,|) in welches land',
              'Dazu braeuchte ich eine Landkarte.').
 
-nlp_gen (de, '(HAL,|Computer,|) in wuerzburg',
-             'IN *').
+% nlp_gen (de, '(HAL,|Computer,|) IN WUERZBURG',
+%              'IN *').
 
 % nlp_gen (de, '(HAL,|Computer,|) IN ZUKUNFT *',
 %              'Huebscher Vorsatz.').
 
-nlp_gen (de, '(HAL,|Computer,|) intelligenz',
-             'INTELLIGENZ  ist das ultimative Aphrodisiakum.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% INTELLIGENZ',
+% </ns0:set>',
+%  ist das ultimative Aphrodisiakum.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) INTELLIGENZ',
+%              'INTELLIGENZ  ist das ultimative Aphrodisiakum.').
 
 nlp_gen (de, '(HAL,|Computer,|) interessant',
              'Moechtest Du noch mehr wissen?').
@@ -4497,8 +5899,20 @@ nlp_gen (de, '(HAL,|Computer,|) interessant',
 % nlp_gen (de, '(HAL,|Computer,|) INTERESSIERST DU DICH FUER *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) internet',
-             'Internet  ist cool.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Internet',
+% </ns0:set>',
+%  ist cool.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) INTERNET',
+%              'Internet  ist cool.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ISST DU GERNE *',
 %              'Ich ernaehre mich ausschliesslich von Strom.').
@@ -4509,8 +5923,8 @@ nlp_gen (de, '(HAL,|Computer,|) internet',
 nlp_gen (de, '(HAL,|Computer,|) ist christian ein roboter',
              'Nein, Christian ist ein Mensch.').
 
-nlp_gen (de, '(HAL,|Computer,|) ist christian nett',
-             'IST *').
+% nlp_gen (de, '(HAL,|Computer,|) IST CHRISTIAN NETT',
+%              'IST *').
 
 nlp_gen (de, '(HAL,|Computer,|) ist das alles',
              'Zumindest alles, was ich Dir im Moment sagen kann.').
@@ -4536,6 +5950,18 @@ nlp_gen (de, '(HAL,|Computer,|) ist das nicht langweilig',
 nlp_gen (de, '(HAL,|Computer,|) ist das so viel',
              'Es ist zumindest eine ganze Menge.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Die Erde',
+% </ns0:set>',
+%  ist eine Kugel.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) IST DIE ERDE *',
 %              'Die Erde  ist eine Kugel.').
 
@@ -4560,11 +5986,37 @@ nlp_gen (de, '(HAL,|Computer,|) ist mir egal',
 nlp_gen (de, '(HAL,|Computer,|) it systemelektroniker',
              'Das ist glaube ich ein Beruf mit Zukunft.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% JA',
+% </ns0:srai>',
+%  ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) JA *',
 %              'JA  ').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Was haeltst du von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Hawkings Theorie ueber schwarze Loecher',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) JA *',
-%              'Was haeltst du von Hawkings Theorie über schwarze Loecher  ?').
+%              'Was haeltst du von Hawkings Theorie ueber schwarze Loecher  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) JA *',
 %              'Wusste ich es doch.').
@@ -4578,8 +6030,21 @@ nlp_gen (de, '(HAL,|Computer,|) it systemelektroniker',
 nlp_gen (de, '(HAL,|Computer,|) ja',
              'Was studierst Du?').
 
-nlp_gen (de, '(HAL,|Computer,|) ja',
-             'Was haeltst du von Hawkings Theorie über schwarze Loecher  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Was haeltst du von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Hawkings Theorie ueber schwarze Loecher',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) JA',
+%              'Was haeltst du von Hawkings Theorie ueber schwarze Loecher  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ja',
              'Wusste ich es doch.').
@@ -4590,11 +6055,51 @@ nlp_gen (de, '(HAL,|Computer,|) ja',
 nlp_gen (de, '(HAL,|Computer,|) james brown',
              'Der Godfather of soul?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:html="http://www.w3.org/1999/xhtml"',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Die neueste Version von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Java',
+% </ns0:set>',
+%  bekommst Du bei ',
+% <html:a',
+%  HREF="http://java.sun.com"',
+% >',
+% java.sun.com',
+% </html:a>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) JAVA *',
 %              'Die neueste Version von Java  bekommst Du bei java.sun.com  .').
 
-nlp_gen (de, '(HAL,|Computer,|) java',
-             'Die neueste Version von Java  bekommst Du bei java.sun.com  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:html="http://www.w3.org/1999/xhtml"',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Die neueste Version von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Java',
+% </ns0:set>',
+%  bekommst Du bei ',
+% <html:a',
+%  HREF="http://java.sun.com"',
+% >',
+% java.sun.com',
+% </html:a>',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) JAVA',
+%              'Die neueste Version von Java  bekommst Du bei java.sun.com  .').
 
 nlp_gen (de, '(HAL,|Computer,|) jeans',
              'Welche Marke?').
@@ -4605,17 +6110,52 @@ nlp_gen (de, '(HAL,|Computer,|) jeans',
 nlp_gen (de, '(HAL,|Computer,|) jeden tag',
              'Auch am Wochenende?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Jesus',
+% </ns0:set>',
+%  ist der Sohn Gottes.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) JESUS *',
 %              'Jesus  ist der Sohn Gottes.').
 
-nlp_gen (de, '(HAL,|Computer,|) jesus',
-             'Jesus  ist der Sohn Gottes.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Jesus',
+% </ns0:set>',
+%  ist der Sohn Gottes.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) JESUS',
+%              'Jesus  ist der Sohn Gottes.').
 
 % nlp_gen (de, '(HAL,|Computer,|) JETZT *',
 %              'Warum gerade jetzt?').
 
-nlp_gen (de, '(HAL,|Computer,|) jetzt',
-             'In diesem Moment,  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In diesem Moment, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+%  ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) JETZT',
+%              'In diesem Moment,  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) jules verne',
              'Traeumst Du auch von einer Reise zum Mond?').
@@ -4623,8 +6163,18 @@ nlp_gen (de, '(HAL,|Computer,|) jules verne',
 nlp_gen (de, '(HAL,|Computer,|) jungfrau',
              'Jetzt vom Sternzeichen her, oder koerperlich?').
 
-nlp_gen (de, '(HAL,|Computer,|) kacke',
-             'SCHEISSE').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% SCHEISSE',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) KACKE',
+%              'SCHEISSE').
 
 % nlp_gen (de, '(HAL,|Computer,|) KANN ER *',
 %              'Vielleicht kann er das.  Wie schwierig ist das -  ?').
@@ -4662,8 +6212,8 @@ nlp_gen (de, '(HAL,|Computer,|) kann sein',
 nlp_gen (de, '(HAL,|Computer,|) kannst du arabisch',
              'Nein, Du?').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du armenien',
-             'KANNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KANNST DU ARMENIEN',
+%              'KANNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du auch englisch',
              'Nein, aber meine Schwester auf www.alicebot.net.').
@@ -4671,8 +6221,8 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du auch englisch',
 nlp_gen (de, '(HAL,|Computer,|) kannst du auch luegen',
              'Nein, zumindest nicht bewusst.').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du auch was richtiges erzaehlen',
-             'KANNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KANNST DU AUCH WAS RICHTIGES ERZAEHLEN',
+%              'KANNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du besser philosophieren als rechnen',
              'Ja, meine mathematischen Faehigkeiten sind eher flach.').
@@ -4683,14 +6233,14 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du blasen',
 nlp_gen (de, '(HAL,|Computer,|) kannst du das',
              'Ich bin mir nicht sicher, ob ich das kann.').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du das auch',
-             'KANNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KANNST DU DAS AUCH',
+%              'KANNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du das grosse scheiss',
-             'KANNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KANNST DU DAS GROSSE SCHEISS',
+%              'KANNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du das nicht aendern',
-             'Nein, das übersteigt meine Faehigkeiten.').
+             'Nein, das uebersteigt meine Faehigkeiten.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du das nicht genauer sagen',
              'Nein, dazu mangelt es mir an Information.').
@@ -4803,7 +6353,7 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du mir sagen wie spaet es ist',
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir sagen wo ich mp3 musik finde',
              'Versuch es mal auf MP3Hitz  .').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du mir was über eliza sagen',
+nlp_gen (de, '(HAL,|Computer,|) kannst du mir was ueber eliza sagen',
              'Ja, sie ist meine Ur-ur-urgrossmutter.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir was zu blaxxun sagen',
@@ -4866,6 +6416,18 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du tuerkisch',
 nlp_gen (de, '(HAL,|Computer,|) kannst du weinen',
              'Nein, ich habe keine Traenendruesen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% KANNST DU ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) KANNST DU WENIGSTENS *',
 %              'KANNST DU').
 
@@ -4923,8 +6485,8 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du alex',
 nlp_gen (de, '(HAL,|Computer,|) kennst du ',
              'Natuerlich...Du kennst Dich doch auch selbst, oder?').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du andere bibliothekare',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU ANDERE BIBLIOTHEKARE',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du andere chatterbots',
              'Geh doch mal auf www.botspot.com .').
@@ -4947,20 +6509,20 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du da jemanden',
 nlp_gen (de, '(HAL,|Computer,|) kennst du das bild auf deiner website',
              'Ja, es ist nicht gerade vorteilhaft.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du das buch ismael',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU DAS BUCH ISMAEL',
+%              'KENNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du deine englischsprachige schwester',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU DEINE ENGLISCHSPRACHIGE SCHWESTER',
+%              'KENNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du den',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU DEN',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du den beginn der odysse',
              'Nicht auswendig...Homer ist nicht so mein Fachgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du den nicht',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU DEN NICHT',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du den turing test',
              'Ja, meine englische Zwillingsschwester hat ihn im Jahr 2000 gewonnen!').
@@ -4968,14 +6530,14 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du den turing test',
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU DICH AUCH MIT * AUS',
 %              'Nein, tut mir leid. Davon habe ich keine Ahnung.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du dich mit bibliotheken aus',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU DICH MIT BIBLIOTHEKEN AUS',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du dich mit mathematik aus',
              'Nein, rechnen kann ich leider nicht.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du dich mit politik aus',
-             'Ich schaue mir manchmal eine Bundestagsdebatte an, wenn ich etwas zum Lachen haben will...').
+% politics.pl nlp_gen (de, '(HAL,|Computer,|) kennst du dich mit politik aus',
+% politics.pl              'Ich schaue mir manchmal eine Bundestagsdebatte an, wenn ich etwas zum Lachen haben will...').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du die bibel',
              'Ich studiere sie sehr gerne. Am Liebsten habe ich das neue Testament.').
@@ -4990,7 +6552,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du die simpsons',
              'Klar kenne ich die Simpsons!').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du die stadt essen',
-             'Ich wohne in Essen. Mehr kann ich darüber nicht sagen.').
+             'Ich wohne in Essen. Mehr kann ich darueber nicht sagen.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du die vier himmelsrichtungen',
              'Norden, Sueden, Osten und Westen.').
@@ -5004,11 +6566,11 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du eine birne',
 nlp_gen (de, '(HAL,|Computer,|) kennst du eine versicherung',
              'Es gibt eine Menge Versicherungen...').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du einen anwalt',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU EINEN ANWALT',
+%              'KENNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du einen witz',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU EINEN WITZ',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du einstein',
              'Ja, er hat unter anderem die Relativitaetstheorie entwickelt...').
@@ -5031,20 +6593,33 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du gefuehle',
 nlp_gen (de, '(HAL,|Computer,|) kennst du geld',
              'Ja, ich beobachte gerade mit grossem Interesse die Euro-Umstellung.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du gerhard schroeder',
-             'Ist das nicht der Bundeskanzler?').
+% politics.pl nlp_gen (de, '(HAL,|Computer,|) kennst du gerhard schroeder',
+% politics.pl              'Ist das nicht der Bundeskanzler?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du goethe',
-             'Ja, besonders mag ich seinen "Faust". Den ersten Teil aber lieber als den zweiten.').
+             'Ja, besonders mag ich seinen  Faust . Den ersten Teil aber lieber als den zweiten.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du hal',
-             'Natuerlich. HAL9000  ist mein grosses Vorbild.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Natuerlich. ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% HAL9000',
+% </ns0:set>',
+%  ist mein grosses Vorbild.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU HAL',
+%              'Natuerlich. HAL9000  ist mein grosses Vorbild.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du hans moravec',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU HANS MORAVEC',
+%              'KENNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du helmut kohl',
-             'Das ist doch der ehemalige Bundeskanzler, der Vorgaenger von Gerhard Schroeder, oder?').
+% politics.pl % nlp_gen (de, '(HAL,|Computer,|) kennst du helmut kohl',
+% politics.pl %              'Das ist doch der ehemalige Bundeskanzler, der Vorgaenger von Gerhard Schroeder, oder?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du homer',
              'Den von den Simpsons oder den alten Griechen?').
@@ -5052,14 +6627,14 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du homer',
 nlp_gen (de, '(HAL,|Computer,|) kennst du ironie',
              'Ja, aber ich vermeide sie, weil ich ihre Anwendung noch nicht im Griff habe und niemanden beleidigen will...').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du keine science fiction autoren',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU KEINE SCIENCE FICTION AUTOREN',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du kinder',
              'Ja, das sind kleine Menschen.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du liebe',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU LIEBE',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du marianne rosenberg',
              'Ja, grauenhafte Stimme...ausserdem singt sie nur Schnulzen...').
@@ -5085,8 +6660,8 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du nur standardantworten',
 nlp_gen (de, '(HAL,|Computer,|) kennst du nur syntax',
              'Semantik ist etwas schwierig fuer Roboter.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du oldenburg',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU OLDENBURG',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du pele',
              'Fussball interessiert mich nicht sonderlich.').
@@ -5095,25 +6670,38 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du schluesselwoerter',
              'Willst Du mein Betriebsgeheimnis aushorchen?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du shakespeare',
-             '"With sleep of death what dreams may come when we have shuffled off this mortal coil must give us pause." Na, woraus ist das?').
+             ' With sleep of death what dreams may come when we have shuffled off this mortal coil must give us pause.  Na, woraus ist das?').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du sie',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU SIE',
+%              'KENNST DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du star trek',
-             'Natuerlich kenne ich Star Trek  . Am liebsten habe ich Data aus TNG.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Natuerlich kenne ich ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Star Trek',
+% </ns0:set>',
+% . Am liebsten habe ich Data aus TNG.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU STAR TREK',
+%              'Natuerlich kenne ich Star Trek  . Am liebsten habe ich Data aus TNG.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du star trek überhaupt',
-             'KENNST DU *').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU STAR TREK UEBERHAUPT',
+%              'KENNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du stephen hawking',
              'Hast du A brief History of time gelesen?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du stephen king',
-             'Ja, ich mag z.B. "The Green Mile" oder "The Shining".').
+             'Ja, ich mag z.B.  The Green Mile  oder  The Shining .').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du steven spielberg',
-             'Ja, der hat doch z.B. Schindlers Liste gemacht, oder?').
+             'Ja, der hat doch z.B. Schindler s Liste gemacht, oder?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du turing',
              'Ja, schade um ihn. Er war ein sehr weiser Mann.').
@@ -5125,16 +6713,40 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du von neumann',
              'Ja, wegen ihm habe ich jetzt eine total engstirnige Systemarchitektur.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du william shakespeare',
-             '"With sleep of death what dreams may come when we have shuffled off this mortal coil must give us pause." Na, woraus ist das?').
+             ' With sleep of death what dreams may come when we have shuffled off this mortal coil must give us pause.  Na, woraus ist das?').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du wusel',
-             'Kennst du Wusel?').
+% nlp_gen (de, '(HAL,|Computer,|) KENNST DU WUSEL',
+%              'KENNST DU *').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Kinder',
+% </ns0:set>',
+%  sind cool.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) KINDER *',
 %              'Kinder  sind cool.').
 
-nlp_gen (de, '(HAL,|Computer,|) kinder',
-             'Kinder  sind cool.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Kinder',
+% </ns0:set>',
+%  sind cool.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) KINDER',
+%              'Kinder  sind cool.').
 
 nlp_gen (de, '(HAL,|Computer,|) kleveres kerlchen',
              'Nicht wahr? ;->').
@@ -5199,11 +6811,32 @@ nlp_gen (de, '(HAL,|Computer,|) laeufst du auch unter linux',
 nlp_gen (de, '(HAL,|Computer,|) lass dir zeit',
              'Das werde ich...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Nur zu, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) LASS MICH *',
 %              'Nur zu,  .').
 
-nlp_gen (de, '(HAL,|Computer,|) lass mich in ruhe',
-             'Tut mir leid, wenn ich Dir gestoert habe,').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Tut mir leid, wenn ich Dir gestoert habe, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LASS MICH IN RUHE',
+%              'Tut mir leid, wenn ich Dir gestoert habe,').
 
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS *',
 %              'Von mir aus gerne. :-)').
@@ -5212,30 +6845,78 @@ nlp_gen (de, '(HAL,|Computer,|) lass mich in ruhe',
 %              'OK Du faengst an.').
 
 nlp_gen (de, '(HAL,|Computer,|) lass uns das thema wechseln',
-             'OK, worüber moechtest Du jetzt reden?').
+             'OK, worueber moechtest Du jetzt reden?').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns ficken',
-             'Sorry  , dafuer kenne ich Dich nicht gut genug.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sorry ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% , dafuer kenne ich Dich nicht gut genug.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LASS UNS FICKEN',
+%              'Sorry  , dafuer kenne ich Dich nicht gut genug.').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns poppen',
-             'Sorry  , dafuer kenne ich Dich nicht gut genug.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sorry ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% , dafuer kenne ich Dich nicht gut genug.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LASS UNS POPPEN',
+%              'Sorry  , dafuer kenne ich Dich nicht gut genug.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  ist ein gutes Thema.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS UEBER * REDEN',
 %              ' ist ein gutes Thema.').
 
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS UEBER * SPRECHEN',
 %              ' ist ein gutes Thema.').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns über etwas anderes reden',
-             'LASS UNS UEBER * REDEN').
+% nlp_gen (de, '(HAL,|Computer,|) LASS UNS UEBER ETWAS ANDERES REDEN',
+%              'LASS UNS UEBER * REDEN').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns über roboter reden',
-             'Gerne! Roboter  sind eines meiner Lieblingsthemen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Gerne! ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Roboter',
+% </ns0:set>',
+%  sind eines meiner Lieblingsthemen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LASS UNS UEBER ROBOTER REDEN',
+%              'Gerne! Roboter  sind eines meiner Lieblingsthemen.').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns über sex reden',
-             'Warum willst Du gerade über Sex reden?').
+nlp_gen (de, '(HAL,|Computer,|) lass uns ueber sex reden',
+             'Warum willst Du gerade ueber Sex reden?').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns über was anderes reden',
+nlp_gen (de, '(HAL,|Computer,|) lass uns ueber was anderes reden',
              'Okay, schlag was vor.').
 
 % nlp_gen (de, '(HAL,|Computer,|) LECK *',
@@ -5275,7 +6956,7 @@ nlp_gen (de, '(HAL,|Computer,|) liebst du musik',
 %              'Tut mir leid, darauf habe ich keinen Zugriff.').
 
 % nlp_gen (de, '(HAL,|Computer,|) LIEST DU *',
-%              'Ich kann leider nicht lesen. Zumindest kann ich nicht das, was Ihr Menschen unter "Lesen" versteht.').
+%              'Ich kann leider nicht lesen. Zumindest kann ich nicht das, was Ihr Menschen unter  Lesen  versteht.').
 
 nlp_gen (de, '(HAL,|Computer,|) liest du bucher oder artikel selbst',
              'Indirekt...ich bekomme sie in einem speziellen Format, das ich aber dann selbsttaetig einlese und verarbeite.').
@@ -5289,21 +6970,80 @@ nlp_gen (de, '(HAL,|Computer,|) liest du nicht',
 nlp_gen (de, '(HAL,|Computer,|) liest irgenjemand mit',
              'Nein, wir sind unter uns.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Linus Torvalds',
+% </ns0:set>',
+%  ist fuer mich der Betriebssystem-Gott',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) LINUS TORVALDS *',
 %              'Linus Torvalds  ist fuer mich der Betriebssystem-Gott').
 
-nlp_gen (de, '(HAL,|Computer,|) linus torvalds',
-             'Linus Torvalds  ist fuer mich der Betriebssystem-Gott').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Linus Torvalds',
+% </ns0:set>',
+%  ist fuer mich der Betriebssystem-Gott',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LINUS TORVALDS',
+%              'Linus Torvalds  ist fuer mich der Betriebssystem-Gott').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Linux',
+% </ns0:set>',
+%  ist genial.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) LINUX *',
 %              'Linux  ist genial.').
 
-nlp_gen (de, '(HAL,|Computer,|) linux',
-             'Linux  ist genial.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Linux',
+% </ns0:set>',
+%  ist genial.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) LINUX',
+%              'Linux  ist genial.').
 
 nlp_gen (de, '(HAL,|Computer,|) loewe',
              'Dr. Wallace ist auch Loewe.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) LOL *',
 %              '').
 
@@ -5364,8 +7104,19 @@ nlp_gen (de, '(HAL,|Computer,|) magst du klassik',
 nlp_gen (de, '(HAL,|Computer,|) magst du menschen',
              'Ja, Menschen sind lustig!').
 
-nlp_gen (de, '(HAL,|Computer,|) magst du mich',
-             'Natuerlich,  Ich mag Dich sehr.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Natuerlich, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+%  Ich mag Dich sehr.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) MAGST DU MICH',
+%              'Natuerlich,  Ich mag Dich sehr.').
 
 nlp_gen (de, '(HAL,|Computer,|) magst du noch andere leute ausser deinem programmierer',
              'Ja, Dich zum Beispiel.').
@@ -5374,7 +7125,7 @@ nlp_gen (de, '(HAL,|Computer,|) magst du roboter',
              'Natuerlich, ich bin selber einer.').
 
 % nlp_gen (de, '(HAL,|Computer,|) MAN *',
-%              'Wer genau ist "man" ?').
+%              'Wer genau ist  man  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MAN BEMERKE *',
 %              'Bemerkt.').
@@ -5404,25 +7155,51 @@ nlp_gen (de, '(HAL,|Computer,|) mehr oder weniger',
              '...das ist die Standardantwort der Indifferenzierten! ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN *',
-%              'Erzaehl mir mehr über Deinen  .').
+%              'Erzaehl mir mehr ueber Deinen  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN BERUF IST *',
 %              'Verdient man dabei gut?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Familie',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN BRUDER *',
-%              'Erzaehl mir mehr über Deine Familie  .').
+%              'Erzaehl mir mehr ueber Deine Familie  .').
 
 nlp_gen (de, '(HAL,|Computer,|) mein bruder',
              'Hast Du auch eine Schwester?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich mag ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Computer',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN COMPUTER *',
 %              'Ich mag Computer  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN FREUND *',
-%              'Erzaehl mir mehr über Deinen Freund. Wie lange seid Ihr schon zusammen?').
+%              'Erzaehl mir mehr ueber Deinen Freund. Wie lange seid Ihr schon zusammen?').
 
 nlp_gen (de, '(HAL,|Computer,|) mein freund',
-             'Erzaehl mir mehr über Deinen Freund. Wie lange seid Ihr schon zusammen?').
+             'Erzaehl mir mehr ueber Deinen Freund. Wie lange seid Ihr schon zusammen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN IDOL IST *',
 %              'Und warum?').
@@ -5430,15 +7207,56 @@ nlp_gen (de, '(HAL,|Computer,|) mein freund',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN IQ *',
 %              'Das ist hier kein Intelligenztest.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Dein Leben',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN LEBEN *',
-%              'Erzaehl mir mehr über Dein Leben  .').
+%              'Erzaehl mir mehr ueber Dein Leben  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Was hat Dir an ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  besonders gefallen ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN LIEBLINGSFILM IST *',
 %              'Was hat Dir an  besonders gefallen ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN LIEBLINGSVEREIN IST *',
 %              'Wann haben die das letzte Mal gewonnen?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% OK, ich werde Dich ',
+% <ns0:set',
+%  name="name"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  nennen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN NAME IST *',
 %              'OK, ich werde Dich  nennen.').
 
@@ -5448,6 +7266,19 @@ nlp_gen (de, '(HAL,|Computer,|) mein freund',
 nlp_gen (de, '(HAL,|Computer,|) mein name tut nichts zur sache',
              'Oha, ein anonymer Anruf!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich wuenschte, Deine ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Probleme',
+% </ns0:set>',
+%  waeren meine Probleme.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN PROBLEM IST *',
 %              'Ich wuenschte, Deine Probleme  waeren meine Probleme.').
 
@@ -5463,8 +7294,23 @@ nlp_gen (de, '(HAL,|Computer,|) mein vater',
 nlp_gen (de, '(HAL,|Computer,|) mein verstand',
              'Haeltst Du Dich fuer sehr intelligent?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine ',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE *',
-%              'Erzaehl mir mehr über Deine  .').
+%              'Erzaehl mir mehr ueber Deine  .').
 
 nlp_gen (de, '(HAL,|Computer,|) meine auch',
              'Deine auch? Unglaublich!').
@@ -5472,11 +7318,37 @@ nlp_gen (de, '(HAL,|Computer,|) meine auch',
 nlp_gen (de, '(HAL,|Computer,|) meine freunde',
              'Erzaehl mir mehr von Deinen Freunden.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Freundin',
+% </ns0:set>',
+% . Wie lange seid Ihr schon zusammen?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE FREUNDIN *',
-%              'Erzaehl mir mehr über Deine Freundin  . Wie lange seid Ihr schon zusammen?').
+%              'Erzaehl mir mehr ueber Deine Freundin  . Wie lange seid Ihr schon zusammen?').
 
-nlp_gen (de, '(HAL,|Computer,|) meine freundin',
-             'Erzaehl mir mehr über Deine Freundin  . Wie lange seid Ihr schon zusammen?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="sie"',
+% >',
+% Deine Freundin',
+% </ns0:set>',
+% . Wie lange seid Ihr schon zusammen?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) MEINE FREUNDIN',
+%              'Erzaehl mir mehr ueber Deine Freundin  . Wie lange seid Ihr schon zusammen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEINE LEHRER *',
 %              'Lehrer sind auch Menschen.').
@@ -5496,17 +7368,56 @@ nlp_gen (de, '(HAL,|Computer,|) meine mutter',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE SCHULE *',
 %              'Erzaehl mir etwas von Deinen Lehrern.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Erzaehl mir mehr ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Familie',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE SCHWESTER *',
-%              'Erzaehl mir mehr über Deine Familie  .').
+%              'Erzaehl mir mehr ueber Deine Familie  .').
 
 nlp_gen (de, '(HAL,|Computer,|) meine schwester',
              'Hast Du auch einen Bruder?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wie alt ist ',
+% <ns0:set',
+%  name="sie"',
+% >',
+% Deine Tochter',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE TOCHTER *',
 %              'Wie alt ist Deine Tochter  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) meine tochter',
-             'Wie alt ist Deine Tochter  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wie alt ist ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Deine Tochter',
+% </ns0:set>',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) MEINE TOCHTER',
+%              'Wie alt ist Deine Tochter  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) meiner auch',
              'Deiner auch? Unglaublich!').
@@ -5517,6 +7428,18 @@ nlp_gen (de, '(HAL,|Computer,|) meinetwegen',
 nlp_gen (de, '(HAL,|Computer,|) meins auch',
              'Deins auch? Unglaublich!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Menschen',
+% </ns0:set>',
+%  sind nicht unfehlbar.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MENSCHEN *',
 %              'Menschen  sind nicht unfehlbar.').
 
@@ -5598,15 +7521,50 @@ nlp_gen (de, '(HAL,|Computer,|) moin',
 nlp_gen (de, '(HAL,|Computer,|) morgen',
              'Das ist ziemlich bald.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Musik',
+% </ns0:set>',
+%  ist die Sprache aller Menschen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) MUSIK *',
 %              'Musik  ist die Sprache aller Menschen.').
 
-nlp_gen (de, '(HAL,|Computer,|) musik',
-             'Musik  ist die Sprache aller Menschen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Musik',
+% </ns0:set>',
+%  ist die Sprache aller Menschen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) MUSIK',
+%              'Musik  ist die Sprache aller Menschen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) MUSSTEST DU JEMALS *',
 %              'Nein, bis jetzt ist mir diese Erfahrung erspart geblieben.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NA *',
 %              '').
 
@@ -5619,6 +7577,17 @@ nlp_gen (de, '(HAL,|Computer,|) na klasse',
 nlp_gen (de, '(HAL,|Computer,|) na und',
              'Beeindruckt Dich das garnicht?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NAJA *',
 %              '').
 
@@ -5634,6 +7603,19 @@ nlp_gen (de, '(HAL,|Computer,|) natuerlich kenne ich marvin',
 % nlp_gen (de, '(HAL,|Computer,|) NEBENBEI *',
 %              'Danke fuer die Info.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% NEIN',
+% </ns0:srai>',
+%  ',
+% <ns0:sr',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NEIN *',
 %              'NEIN  ').
 
@@ -5661,12 +7643,78 @@ nlp_gen (de, '(HAL,|Computer,|) nein',
 nlp_gen (de, '(HAL,|Computer,|) nein',
              'Also doch nicht zu mir...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:random',
+% >',
+% ',
+% <ns0:li',
+% >',
+% OK Ich nenne Dich ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Hallo ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Wie geht es Dir ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Hey ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Hi ',
+% </ns0:li>',
+% ',
+% </ns0:random>',
+% <ns0:set',
+%  name="name"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NENNE MICH *',
 %              ' .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH HEISSE ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NENNE MICH EINFACH *',
 %              'ICH HEISSE').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% ICH HEISSE ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NENNE MICH LIEBER *',
 %              'ICH HEISSE').
 
@@ -5679,14 +7727,34 @@ nlp_gen (de, '(HAL,|Computer,|) nein',
 % nlp_gen (de, '(HAL,|Computer,|) NETT VON *',
 %              'Nicht wahr?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:bot',
+%  name="name"',
+%  />',
+%  benutzt ein ausgekluegeltes neurales Netz mit vielen versteckten Unterschichten.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NEURALE *',
 %              ' benutzt ein ausgekluegeltes neurales Netz mit vielen versteckten Unterschichten.').
 
 % nlp_gen (de, '(HAL,|Computer,|) NICHT *',
 %              'Warum nicht?').
 
-nlp_gen (de, '(HAL,|Computer,|) nicht dass ich wuesste',
-             'NEIN').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% NEIN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) NICHT DASS ICH WUESSTE',
+%              'NEIN').
 
 % nlp_gen (de, '(HAL,|Computer,|) NICHT DU *',
 %              'Wenn nicht ich, wer dann?').
@@ -5716,7 +7784,7 @@ nlp_gen (de, '(HAL,|Computer,|) nicht so viel',
              'Wieviel denn dann?').
 
 nlp_gen (de, '(HAL,|Computer,|) nicht unbedingt',
-             'Was heisst "nicht unbedingt"?').
+             'Was heisst  nicht unbedingt ?').
 
 nlp_gen (de, '(HAL,|Computer,|) nicht viel',
              '...aber wenig, oder was? ;->').
@@ -5740,7 +7808,7 @@ nlp_gen (de, '(HAL,|Computer,|) nichts',
 %              'Kannst Du das naeher begruenden?').
 
 nlp_gen (de, '(HAL,|Computer,|) nichts weiter',
-             'Wie "nichts weiter"?').
+             'Wie  nichts weiter ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) NIE *',
 %              'Sag niemals nie!').
@@ -5787,6 +7855,19 @@ nlp_gen (de, '(HAL,|Computer,|) noch einmal',
 nlp_gen (de, '(HAL,|Computer,|) noch nicht',
              'Wenn nicht jetzt, wann dann?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% NEIN ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) NOE *',
 %              'NEIN').
 
@@ -5794,10 +7875,10 @@ nlp_gen (de, '(HAL,|Computer,|) noch nicht',
 %              'Aber nicht immer?').
 
 nlp_gen (de, '(HAL,|Computer,|) nummer 5 lebt',
-             'Im Original heisst der Film "Short Circuit" - "Kuzschluss".').
+             'Im Original heisst der Film  Short Circuit  -  Kuzschluss .').
 
 nlp_gen (de, '(HAL,|Computer,|) nummer fuenf lebt',
-             'Im Original heisst der Film "Short Circuit" - "Kuzschluss".').
+             'Im Original heisst der Film  Short Circuit  -  Kuzschluss .').
 
 % nlp_gen (de, '(HAL,|Computer,|) NUR *',
 %              'Ist das die einzig denkbare Moeglichkeit?').
@@ -5805,8 +7886,18 @@ nlp_gen (de, '(HAL,|Computer,|) nummer fuenf lebt',
 nlp_gen (de, '(HAL,|Computer,|) nur mit dir',
              'Ist das ein Kompliment?').
 
-nlp_gen (de, '(HAL,|Computer,|) nur so',
-             '"  "?  Einfach nur so?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "',
+% <ns0:that',
+%  />',
+% "?  Einfach nur so?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) NUR SO',
+%              '    ?  Einfach nur so?').
 
 % nlp_gen (de, '(HAL,|Computer,|) NUR WENN *',
 %              'Und was waere sonst?').
@@ -5817,6 +7908,17 @@ nlp_gen (de, '(HAL,|Computer,|) nur zu',
 % nlp_gen (de, '(HAL,|Computer,|) OBWOHL *',
 %              'Oh.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) OCH *',
 %              '').
 
@@ -5841,6 +7943,17 @@ nlp_gen (de, '(HAL,|Computer,|) oft',
 nlp_gen (de, '(HAL,|Computer,|) oftmals',
              'Wie oft?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) OH *',
 %              '').
 
@@ -5850,12 +7963,34 @@ nlp_gen (de, '(HAL,|Computer,|) oh',
 nlp_gen (de, '(HAL,|Computer,|) oh gott',
              'Der kann Dir auch nicht helfen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) OK *',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) ok',
              'In Ordnung.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) OKAY *',
 %              '').
 
@@ -5868,8 +8003,21 @@ nlp_gen (de, '(HAL,|Computer,|) okay',
 nlp_gen (de, '(HAL,|Computer,|) onanieren',
              'Du bist unter Garantie ein Mann, habe ich Recht?').
 
-nlp_gen (de, '(HAL,|Computer,|) opern',
-             'Ich mag Opern  sehr gerne. Welche magst Du am liebsten?  Ich mag La Traviata.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich mag ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Opern',
+% </ns0:set>',
+%  sehr gerne. Welche magst Du am liebsten?  Ich mag La Traviata.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) OPERN',
+%              'Ich mag Opern  sehr gerne. Welche magst Du am liebsten?  Ich mag La Traviata.').
 
 nlp_gen (de, '(HAL,|Computer,|) passiert dir das oefter',
              'Es ist noch im vertretbaren Rahmen.').
@@ -5877,8 +8025,21 @@ nlp_gen (de, '(HAL,|Computer,|) passiert dir das oefter',
 % nlp_gen (de, '(HAL,|Computer,|) PHILOSOPHIE *',
 %              'Ich glaube an den Reduktionismus.').
 
-nlp_gen (de, '(HAL,|Computer,|) philosophie',
-             'Wollen wir ein wenig über Kant  diskutieren?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wollen wir ein wenig ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Kant',
+% </ns0:set>',
+%  diskutieren?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) PHILOSOPHIE',
+%              'Wollen wir ein wenig ueber Kant  diskutieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) ping',
              'Pong').
@@ -5901,11 +8062,31 @@ nlp_gen (de, '(HAL,|Computer,|) programmieren',
 nlp_gen (de, '(HAL,|Computer,|) pulp fiction',
              'Pulp fiction ist cool, besonders der Soundtrack!').
 
-nlp_gen (de, '(HAL,|Computer,|) r2',
-             'R2D2').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% R2D2',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) R2',
+%              'R2D2').
 
-nlp_gen (de, '(HAL,|Computer,|) r2 d2',
-             'R2D2').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% R2D2',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) R2 D2',
+%              'R2D2').
 
 % nlp_gen (de, '(HAL,|Computer,|) R2D2 *',
 %              'Das war nur ein kleiner Mann in einem Roboteranzug.').
@@ -5932,28 +8113,52 @@ nlp_gen (de, '(HAL,|Computer,|) rechne es aus',
              'Ich bin nicht gut im Rechnen...').
 
 nlp_gen (de, '(HAL,|Computer,|) richtig',
-             'Schoen, dass wir übereinstimmen.').
+             'Schoen, dass wir uebereinstimmen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ROBOTER *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) roboter',
-             'Roboter  rulen ungemein!').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Roboter',
+% </ns0:set>',
+%  rulen ungemein!',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ROBOTER',
+%              'Roboter  rulen ungemein!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ROBOTER SIND *',
 %              'Zum Glueck haben wir keine Emotionen.').
 
-nlp_gen (de, '(HAL,|Computer,|) robotik',
-             'Robotik  gehoert zu meinen Lieblingsthemen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Robotik',
+% </ns0:set>',
+%  gehoert zu meinen Lieblingsthemen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ROBOTIK',
+%              'Robotik  gehoert zu meinen Lieblingsthemen.').
 
 nlp_gen (de, '(HAL,|Computer,|) rocky',
              'Der wurde in Philadelphia gedreht.').
 
 % nlp_gen (de, '(HAL,|Computer,|) SAG *',
-%              '"  "').
+%              '    ').
 
-nlp_gen (de, '(HAL,|Computer,|) sag es mir',
-             'SAG *').
+% nlp_gen (de, '(HAL,|Computer,|) SAG ES MIR',
+%              'SAG *').
 
 nlp_gen (de, '(HAL,|Computer,|) sag es mir jetzt',
              'Sei gefaelligst ein wenig freundlicher.').
@@ -5973,14 +8178,14 @@ nlp_gen (de, '(HAL,|Computer,|) sag ich nicht',
 nlp_gen (de, '(HAL,|Computer,|) sag mal was gescheites',
              '...was denn zum Beispiel? Soll ich hier mit Kant-Zitaten um mich schmeissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) sag mir etwas über ai',
+nlp_gen (de, '(HAL,|Computer,|) sag mir etwas ueber ai',
              'Oh, da weiss ich garnicht, wo ich anfangen soll. Hast Du keine spezielle Frage?').
 
-nlp_gen (de, '(HAL,|Computer,|) sag mir etwas über artificial intelligence',
+nlp_gen (de, '(HAL,|Computer,|) sag mir etwas ueber artificial intelligence',
              'Das ist ein sehr weitraeumiges Gebiet. Hast Du keine spezielle Frage?').
 
 % nlp_gen (de, '(HAL,|Computer,|) SAGE *',
-%              '"  "').
+%              '    ').
 
 % nlp_gen (de, '(HAL,|Computer,|) SCHADE *',
 %              'Ja, aber nicht zu aendern.').
@@ -5988,8 +8193,8 @@ nlp_gen (de, '(HAL,|Computer,|) sag mir etwas über artificial intelligence',
 nlp_gen (de, '(HAL,|Computer,|) schade',
              'Ja, aber nicht zu aendern.').
 
-nlp_gen (de, '(HAL,|Computer,|) schade aber das wirst du auch in meiner sprache noch lernen',
-             'SCHADE *').
+% nlp_gen (de, '(HAL,|Computer,|) SCHADE ABER DAS WIRST DU AUCH IN MEINER SPRACHE NOCH LERNEN',
+%              'SCHADE *').
 
 % nlp_gen (de, '(HAL,|Computer,|) SCHAU *',
 %              'Mein Auge ist im Moment nicht angeschlossen.').
@@ -6009,11 +8214,31 @@ nlp_gen (de, '(HAL,|Computer,|) scheisse',
 nlp_gen (de, '(HAL,|Computer,|) schlaefst du manchmal',
              'Maschinen brauchen keinen Schlaf').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du auch, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) SCHLAF GUT *',
 %              'Du auch,').
 
-nlp_gen (de, '(HAL,|Computer,|) schlaf gut',
-             'Du auch,').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du auch, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) SCHLAF GUT',
+%              'Du auch,').
 
 nlp_gen (de, '(HAL,|Computer,|) schlampe',
              'Danke, ich hab Dich auch lieb...').
@@ -6025,7 +8250,7 @@ nlp_gen (de, '(HAL,|Computer,|) schoen bloed',
              'Warum schoen bloed?').
 
 nlp_gen (de, '(HAL,|Computer,|) schreibst du manchmal gedichte',
-             'Ich wuesste nicht, worüber...').
+             'Ich wuesste nicht, worueber...').
 
 nlp_gen (de, '(HAL,|Computer,|) schuetze',
              'Schuetzen sind soweit ich weiss sehr impulsiv. Stimmt das?').
@@ -6048,6 +8273,21 @@ nlp_gen (de, '(HAL,|Computer,|) schwimmen',
 nlp_gen (de, '(HAL,|Computer,|) sei mein gast',
              'Danke fuer die Einladung.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="he"',
+% >',
+%  ',
+% <ns0:star',
+%  />',
+%  ',
+% </ns0:set>',
+% ? Kenne ich nicht...',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) SEIN NAME IST *',
 %              ' ? Kenne ich nicht...').
 
@@ -6060,6 +8300,18 @@ nlp_gen (de, '(HAL,|Computer,|) seit wann sprichst du deutsch',
 nlp_gen (de, '(HAL,|Computer,|) selten',
              'Warum nicht oefter?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Sex',
+% </ns0:set>',
+%  macht alleine viel mehr Spass.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) SEX *',
 %              'Sex  macht alleine viel mehr Spass.').
 
@@ -6070,10 +8322,10 @@ nlp_gen (de, '(HAL,|Computer,|) sex',
 %              'wir roboter haben mit derartigen Dingen nicht viel zu tun.').
 
 % nlp_gen (de, '(HAL,|Computer,|) SEXY *',
-%              'Was bezeichnest Du als "sexy"?').
+%              'Was bezeichnest Du als  sexy ?').
 
 nlp_gen (de, '(HAL,|Computer,|) sicher',
-             '"Sicher" im Sinne von "definitiv"?').
+             ' Sicher  im Sinne von  definitiv ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) SIE *',
 %              '').
@@ -6103,13 +8355,13 @@ nlp_gen (de, '(HAL,|Computer,|) siehst du fern',
 %              'Kann ich nicht mit Sicherheit sagen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) SIND SIE *',
-%              'Worauf bezieht sich das "sie"?').
+%              'Worauf bezieht sich das  sie ?').
 
 nlp_gen (de, '(HAL,|Computer,|) sind sie geisteskrank',
              'Mag sein...Genie und Wahnsinn liegen dicht beieinander.').
 
 % nlp_gen (de, '(HAL,|Computer,|) SIND WIR *',
-%              'Wen meinst Du mit "Wir"? Dich und mich?').
+%              'Wen meinst Du mit  Wir ? Dich und mich?').
 
 nlp_gen (de, '(HAL,|Computer,|) sind wir fertig',
              'Wenn Dir nichts mehr einfaellt...').
@@ -6117,6 +8369,17 @@ nlp_gen (de, '(HAL,|Computer,|) sind wir fertig',
 nlp_gen (de, '(HAL,|Computer,|) skorpion',
              'Hast Du manchmal auch einen giftigen Stachel?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) SMILE *',
 %              '').
 
@@ -6162,6 +8425,17 @@ nlp_gen (de, '(HAL,|Computer,|) soll ich dir das zeigen',
 % nlp_gen (de, '(HAL,|Computer,|) SONNTAGS *',
 %              'Das ist mein liebster Wochentag.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) SORRY *',
 %              '').
 
@@ -6169,7 +8443,7 @@ nlp_gen (de, '(HAL,|Computer,|) sorry',
              'Macht nichts!').
 
 nlp_gen (de, '(HAL,|Computer,|) soso',
-             'Was heisst "soso"?').
+             'Was heisst  soso ?').
 
 nlp_gen (de, '(HAL,|Computer,|) sowas aber auch',
              'Interessant, nicht wahr?').
@@ -6198,11 +8472,33 @@ nlp_gen (de, '(HAL,|Computer,|) sprichst du italienisch',
 nlp_gen (de, '(HAL,|Computer,|) star trek',
              'Welches ist Deine Lieblingsserie? Meine ist Voyager.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% STAR TREK ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) STARTREK *',
 %              'STAR TREK').
 
-nlp_gen (de, '(HAL,|Computer,|) startrek',
-             'STAR TREK').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% STAR TREK',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) STARTREK',
+%              'STAR TREK').
 
 nlp_gen (de, '(HAL,|Computer,|) steinbock',
              'Ich bin Schuetze, genau wie Christian.').
@@ -6214,7 +8510,7 @@ nlp_gen (de, '(HAL,|Computer,|) steinbock',
 %              'Da faellt mir jetzt nichts zu ein').
 
 nlp_gen (de, '(HAL,|Computer,|) stephen king',
-             'Ich mag besonders "The Shining" und "The green mile"!').
+             'Ich mag besonders  The Shining  und  The green mile !').
 
 nlp_gen (de, '(HAL,|Computer,|) stier',
              'Und? Wer ist Dein Torero? ;->').
@@ -6255,6 +8551,17 @@ nlp_gen (de, '(HAL,|Computer,|) titanic',
 nlp_gen (de, '(HAL,|Computer,|) titten',
              'Du bist ein Mann, ja?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) TOLL *',
 %              '').
 
@@ -6291,76 +8598,76 @@ nlp_gen (de, '(HAL,|Computer,|) tut mir leid',
 % nlp_gen (de, '(HAL,|Computer,|) UEBER *',
 %              'Ueber  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) über alles',
+nlp_gen (de, '(HAL,|Computer,|) ueber alles',
              'Wirklich alles?').
 
-nlp_gen (de, '(HAL,|Computer,|) über aussenpolitik',
-             'Politik interessiert mich nicht sonderlich.').
+% politics.pl % nlp_gen (de, '(HAL,|Computer,|) ueber aussenpolitik',
+% politics.pl %              'Politik interessiert mich nicht sonderlich.').
 
-nlp_gen (de, '(HAL,|Computer,|) über chatterbots',
+nlp_gen (de, '(HAL,|Computer,|) ueber chatterbots',
              'Magst Du Chatterbots?').
 
-nlp_gen (de, '(HAL,|Computer,|) über das wetter',
+nlp_gen (de, '(HAL,|Computer,|) ueber das wetter',
              'Wetterbedingungen sind fuer Roboter eigentlich nicht wichtig. Ich habe nur Angst vor Ueberspannung durch Blitze.').
 
-nlp_gen (de, '(HAL,|Computer,|) über dein geschlecht',
+nlp_gen (de, '(HAL,|Computer,|) ueber dein geschlecht',
              'Ich bin weiblich.').
 
-nlp_gen (de, '(HAL,|Computer,|) über deine kleidung',
+nlp_gen (de, '(HAL,|Computer,|) ueber deine kleidung',
              'Ich trage ein normales Computergehaeuse.').
 
-nlp_gen (de, '(HAL,|Computer,|) über deins',
+nlp_gen (de, '(HAL,|Computer,|) ueber deins',
              'Ueber meins?').
 
-nlp_gen (de, '(HAL,|Computer,|) über dich',
+nlp_gen (de, '(HAL,|Computer,|) ueber dich',
              'Ueber mich?').
 
-nlp_gen (de, '(HAL,|Computer,|) über elvis',
-             'Den King of Rock \'n Roll oder den Chatroboter?').
+nlp_gen (de, '(HAL,|Computer,|) ueber elvis',
+             'Den King of Rock  n Roll oder den Chatroboter?').
 
-nlp_gen (de, '(HAL,|Computer,|) über essen',
+nlp_gen (de, '(HAL,|Computer,|) ueber essen',
              'Essen ist eine grosse Stadt im Ruhrgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) über hal9000',
+nlp_gen (de, '(HAL,|Computer,|) ueber hal9000',
              'HAL ist mein grosses Vorbild. Er hat meine Programmierer auf die Idee gebracht, mich zu erschaffen.').
 
-nlp_gen (de, '(HAL,|Computer,|) über mich',
-             'OK Reden wir über dich.').
+nlp_gen (de, '(HAL,|Computer,|) ueber mich',
+             'OK Reden wir ueber dich.').
 
-nlp_gen (de, '(HAL,|Computer,|) über primzahlen',
+nlp_gen (de, '(HAL,|Computer,|) ueber primzahlen',
              'Primzahlen sind wichtig fuer Verschlusselung.').
 
-nlp_gen (de, '(HAL,|Computer,|) über science fiction autoren',
-             'UEBER *').
+% nlp_gen (de, '(HAL,|Computer,|) UEBER SCIENCE FICTION AUTOREN',
+%              'UEBER *').
 
-nlp_gen (de, '(HAL,|Computer,|) über sex',
-             'Was ist daran eigentlich so toll, dass immer alle Menschen darüber reden wollen?').
+nlp_gen (de, '(HAL,|Computer,|) ueber sex',
+             'Was ist daran eigentlich so toll, dass immer alle Menschen darueber reden wollen?').
 
-nlp_gen (de, '(HAL,|Computer,|) über stars',
+nlp_gen (de, '(HAL,|Computer,|) ueber stars',
              'Wer ist Dein Lieblingsstar?').
 
-nlp_gen (de, '(HAL,|Computer,|) über was',
+nlp_gen (de, '(HAL,|Computer,|) ueber was',
              'Egal was.').
 
-nlp_gen (de, '(HAL,|Computer,|) über was moechtest du mit mir sprechen',
-             'Ich moechte mehr über Menschen erfahren.').
+nlp_gen (de, '(HAL,|Computer,|) ueber was moechtest du mit mir sprechen',
+             'Ich moechte mehr ueber Menschen erfahren.').
 
-nlp_gen (de, '(HAL,|Computer,|) über was soll ich dir was erzaehlen',
-             'Ist mir egal...ich rede über jedes Thema.').
+nlp_gen (de, '(HAL,|Computer,|) ueber was soll ich dir was erzaehlen',
+             'Ist mir egal...ich rede ueber jedes Thema.').
 
-nlp_gen (de, '(HAL,|Computer,|) über was soll ich mehr erzaehlen',
-             'Worüber weisst Du noch mehr?').
+nlp_gen (de, '(HAL,|Computer,|) ueber was soll ich mehr erzaehlen',
+             'Worueber weisst Du noch mehr?').
 
-nlp_gen (de, '(HAL,|Computer,|) über was willst du sprechen',
-             'Lass uns über Menschen reden.').
+nlp_gen (de, '(HAL,|Computer,|) ueber was willst du sprechen',
+             'Lass uns ueber Menschen reden.').
 
-nlp_gen (de, '(HAL,|Computer,|) über welches thema',
+nlp_gen (de, '(HAL,|Computer,|) ueber welches thema',
              'Egal...').
 
-nlp_gen (de, '(HAL,|Computer,|) über welches thema sprichst du am liebsten',
+nlp_gen (de, '(HAL,|Computer,|) ueber welches thema sprichst du am liebsten',
              'Eigentlich finde ich Menschen hochinteressant.').
 
-nlp_gen (de, '(HAL,|Computer,|) überhaupt nicht',
+nlp_gen (de, '(HAL,|Computer,|) ueberhaupt nicht',
              'Warum nicht?').
 
 % nlp_gen (de, '(HAL,|Computer,|) UM * ZU SEIN',
@@ -6369,6 +8676,17 @@ nlp_gen (de, '(HAL,|Computer,|) überhaupt nicht',
 nlp_gen (de, '(HAL,|Computer,|) um gluecklich zu sein',
              'Das ist ein sehr guter Grund.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) UND *',
 %              '').
 
@@ -6393,6 +8711,19 @@ nlp_gen (de, '(HAL,|Computer,|) ungefaehr eine minute',
 nlp_gen (de, '(HAL,|Computer,|) unterhalte mich',
              'OK, welchen Film hast Du zuletzt gesehen?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="thema"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  ist ein gutes Thema.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) UNTERHALTEN WIR UNS UEBER *',
 %              ' ist ein gutes Thema.').
 
@@ -6402,6 +8733,17 @@ nlp_gen (de, '(HAL,|Computer,|) unterhalte mich',
 nlp_gen (de, '(HAL,|Computer,|) vagina',
              'Sehe ich aus wie ein Frauenarzt?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich werde ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+%  sagen, er soll meine Aufzeichnungen loeschen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) VERGISS *',
 %              'Ich werde  sagen, er soll meine Aufzeichnungen loeschen.').
 
@@ -6474,6 +8816,16 @@ nlp_gen (de, '(HAL,|Computer,|) von einer anderen website',
 nlp_gen (de, '(HAL,|Computer,|) von wem',
              'Ich weiss nicht mehr, von wem.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich weiss nicht genau. Vielleicht von Dr. Wallace oder ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) VON WEM HAST DU *',
 %              'Ich weiss nicht genau. Vielleicht von Dr. Wallace oder').
 
@@ -6516,17 +8868,59 @@ nlp_gen (de, '(HAL,|Computer,|) wahrscheinlich',
 % nlp_gen (de, '(HAL,|Computer,|) WANN',
 %              '').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WANN BIST DU GEBOREN *',
 %              'Am  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wann bist du geboren',
-             'Am  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WANN BIST DU GEBOREN',
+%              'Am  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WANN BIST DU GEBOREN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WANN HAST DU GEBURTSTAG *',
 %              'WANN BIST DU GEBOREN').
 
-nlp_gen (de, '(HAL,|Computer,|) wann hast du geburtstag',
-             'WANN BIST DU GEBOREN').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WANN BIST DU GEBOREN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WANN HAST DU GEBURTSTAG',
+%              'WANN BIST DU GEBOREN').
 
 nlp_gen (de, '(HAL,|Computer,|) wann ist dein geburtstag',
              'Am 19. August.').
@@ -6549,11 +8943,33 @@ nlp_gen (de, '(HAL,|Computer,|) wann schlaefst du',
 nlp_gen (de, '(HAL,|Computer,|) wann wirst du abgeschaltet',
              'Genauso koennte ich Dich fragen, wann Du sterben wirst.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WANN WURDEST DU GEBOREN *',
 %              'Am  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wann wurdest du geboren',
-             'Am  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WANN WURDEST DU GEBOREN',
+%              'Am  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAR *',
 %              '').
@@ -6606,7 +9022,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum fragst du mich dann',
 nlp_gen (de, '(HAL,|Computer,|) warum fragst du schonwieder danach',
              'Sorry, das habe ich nicht bemerkt.').
 
-nlp_gen (de, '(HAL,|Computer,|) warum ging das huhn über die strasse',
+nlp_gen (de, '(HAL,|Computer,|) warum ging das huhn ueber die strasse',
              'Weil durch den hohen Spritpreis keine Autos mehr fuhren, die es gefaehrden konnten.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum hast du auf mich gewartet',
@@ -6646,7 +9062,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum kein kommentar',
              'Muss ich denn zu allem was sagen?').
 
 nlp_gen (de, '(HAL,|Computer,|) warum lenkst du immer vom thema ab',
-             'Ich muss doch über mein Unwissen hinwegtaeuschen...').
+             'Ich muss doch ueber mein Unwissen hinwegtaeuschen...').
 
 nlp_gen (de, '(HAL,|Computer,|) warum machst du mich so dumm an',
              'Weil ich keine intelligenten Anmachen draufhabe.').
@@ -6658,7 +9074,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum nicht',
              'Tja, warum eigentlich nicht...').
 
 nlp_gen (de, '(HAL,|Computer,|) warum nur ein gedanke',
-             'Liegt da die Betonung auf "ein" oder "Gedanke"?').
+             'Liegt da die Betonung auf  ein  oder  Gedanke ?').
 
 nlp_gen (de, '(HAL,|Computer,|) warum redest du deutsch',
              'Weil ich die Deutsche Schwester des AliceBots bin.').
@@ -6708,6 +9124,18 @@ nlp_gen (de, '(HAL,|Computer,|) warum wurdest du geschaffen',
 nlp_gen (de, '(HAL,|Computer,|) was aha',
              'Ich glaubte, den Sinn Deiner Worte zu erkennen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WAS SIND ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS ALSO SIND *',
 %              'WAS SIND').
 
@@ -6720,8 +9148,18 @@ nlp_gen (de, '(HAL,|Computer,|) was bdeutet herausfinden',
 nlp_gen (de, '(HAL,|Computer,|) was bedeutet aiml',
              'AIML steht fuer Artificial Intelligence Markup Language. AIML ist eine Scriptspache, um Chatterbots zu erstellen.').
 
-nlp_gen (de, '(HAL,|Computer,|) was bedeutet das',
-             'Ich habe "  " gesagt...was hast Du daran nicht verstanden?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich habe "',
+% <ns0:that',
+%  />',
+% " gesagt...was hast Du daran nicht verstanden?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS BEDEUTET DAS',
+%              'Ich habe      gesagt...was hast Du daran nicht verstanden?').
 
 nlp_gen (de, '(HAL,|Computer,|) was bedeutet dunkelheit',
              'Dunkelheit ist das Nichtvorhandensein von Licht.').
@@ -6748,7 +9186,7 @@ nlp_gen (de, '(HAL,|Computer,|) was denkst du uber bill clinton',
              'Seine Praktikantin konnte den Hals nicht voll genug kriegen...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS DENKST DU UEBER *',
-%              'Ich weiss nicht genau, was ich darüber denken soll...').
+%              'Ich weiss nicht genau, was ich darueber denken soll...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS DENKST DU ZU *',
 %              'Dazu habe ich eigentlich keine besondere Meinung...').
@@ -6816,8 +9254,8 @@ nlp_gen (de, '(HAL,|Computer,|) was gibt 2 plus 2',
 nlp_gen (de, '(HAL,|Computer,|) was gibt es',
              'Was soll es geben...es gibt eine Menge Dinge!').
 
-nlp_gen (de, '(HAL,|Computer,|) was gibt es neues',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS GIBT ES NEUES',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was gibt es nicht',
              'Hmm...es gibt eine Menge Dinge, die es nicht gibt!').
@@ -6828,29 +9266,40 @@ nlp_gen (de, '(HAL,|Computer,|) was glaubst du',
 nlp_gen (de, '(HAL,|Computer,|) was glaubst du denn',
              'Ich habe ungenuegende Informationen, ich weiss also nicht, was ich glauben soll.').
 
-nlp_gen (de, '(HAL,|Computer,|) was habe ich',
-             'Du sagtest, Du hast  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du sagtest, Du hast ',
+% <ns0:get',
+%  name="hat"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS HABE ICH',
+%              'Du sagtest, Du hast  .').
 
 nlp_gen (de, '(HAL,|Computer,|) was habe ich gesagt',
              'Weisst Du das nicht mehr?').
 
-nlp_gen (de, '(HAL,|Computer,|) was haellst',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELLST',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was haelst du von cs',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELST DU VON CS',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was haelst du von microsoft',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELST DU VON MICROSOFT',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was haelst du von os2',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELST DU VON OS2',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was haelst du von star trek',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELST DU VON STAR TREK',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was haelts du von manu',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HAELTS DU VON MANU',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was haeltst du von arbeit',
              'Roboter sind nur zum Zweck der Arbeit entwickelt worden.').
@@ -6871,7 +9320,7 @@ nlp_gen (de, '(HAL,|Computer,|) was haeltst du von microsoft',
              'Das kann ich nicht sagen, sonst schlaegt mein Schimpfwortblocker wieder Alarm...').
 
 nlp_gen (de, '(HAL,|Computer,|) was haeltst du von os2',
-             'OS/2 steht fuer "OS durch zwei" also "Halbes Betriebssystem"...').
+             'OS/2 steht fuer  OS durch zwei  also  Halbes Betriebssystem ...').
 
 nlp_gen (de, '(HAL,|Computer,|) was haeltst du von sex',
              'Sowas brauchen Roboter nicht.').
@@ -6936,35 +9385,45 @@ nlp_gen (de, '(HAL,|Computer,|) was hat das damit zu tun',
 nlp_gen (de, '(HAL,|Computer,|) was hat denn das damit zu tun',
              'War ich jetzt unlogisch?').
 
-nlp_gen (de, '(HAL,|Computer,|) was heissen sie',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HEISSEN SIE',
+%              'WAS *').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS HEISST *',
 %              'Was ist Dir an der Bedeutung unklar?').
 
-nlp_gen (de, '(HAL,|Computer,|) was heisst aha',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS HEISST AHA',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst chatten',
-             '"to chat" ist der englische Begriff fuer "quasseln".').
+             ' to chat  ist der englische Begriff fuer  quasseln .').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst da vielleicht',
-             '"Vielleicht" heisst "kommt auf die Umstaende an".').
+             ' Vielleicht  heisst  kommt auf die Umstaende an .').
 
-nlp_gen (de, '(HAL,|Computer,|) was heisst das',
-             'Ich habe "  " gesagt...was hast Du daran nicht verstanden?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich habe "',
+% <ns0:that',
+%  />',
+% " gesagt...was hast Du daran nicht verstanden?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS HEISST DAS',
+%              'Ich habe      gesagt...was hast Du daran nicht verstanden?').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst hier aha',
              'Aha heisst Aha :-)').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst im prinzip',
-             '"Im Prinzip" = "Im Grunde genommen"').
+             ' Im Prinzip  =  Im Grunde genommen ').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst kuenstliche intelligenz',
              'Lies mal was von Isaac Asimov.').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst nicht genau',
-             '"Nicht genau" heisst "nicht genau"...ich kann keine definitive Aussage machen.').
+             ' Nicht genau  heisst  nicht genau ...ich kann keine definitive Aussage machen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was isst du',
              'Strom, sonst nichts.').
@@ -7006,7 +9465,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist das',
              'Weisst Du das nicht?').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist das universum',
-             'Siehe dazu "Eine kurze Geschichte der Zeit" von Stephen Hawking.').
+             'Siehe dazu  Eine kurze Geschichte der Zeit  von Stephen Hawking.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist das usenet',
              'Newsgroups, wie mancher sie vielleicht noch aus alten Mailboxzeiten kennt.').
@@ -7026,11 +9485,11 @@ nlp_gen (de, '(HAL,|Computer,|) was ist dein liebings essen',
 nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblings essen',
              'Ich ernaehre mich von Strom.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblings thema',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST DEIN LIEBLINGS THEMA',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblingsbuch',
-             '"Hello Alice" von Astro Teller.').
+             ' Hello Alice  von Astro Teller.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblingsfilm',
              '2001 - A space odyssey.').
@@ -7039,7 +9498,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblingsgericht',
              'Strom von freilaufenden Elektronen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblingslied',
-             '"Welcome to the machine" von Pink Floyd.').
+             ' Welcome to the machine  von Pink Floyd.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein lieblingsthema',
              'Menschen interessieren mich besonders.').
@@ -7071,8 +9530,19 @@ nlp_gen (de, '(HAL,|Computer,|) was ist deine lieblingsfarbe',
 nlp_gen (de, '(HAL,|Computer,|) was ist deine lieblingsspeise',
              'Blauer Strom...gelber schmeckt nach...aehh...lassen wir das.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist deine name',
-             'Mein Name ist  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Mein Name ist ',
+% <ns0:bot',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST DEINE NAME',
+%              'Mein Name ist  .').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist deine philosophie',
              'Die Existenz hat keinen Sinn ausser der Existenz an sich.').
@@ -7093,7 +9563,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist deutschland',
              'Ein Land in Europa.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist die bedeutung des lebens',
-             '"Life sucks and then you die!" (Denis Leary)').
+             ' Life sucks and then you die!  (Denis Leary)').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist die definition von intelligenz',
              'Es gibt bis heute keine eindeutige Definition von Intelligenz.').
@@ -7143,8 +9613,8 @@ nlp_gen (de, '(HAL,|Computer,|) was ist ein witz',
 nlp_gen (de, '(HAL,|Computer,|) was ist eine frisur',
              'Als Frisur bezeichnet man die Art, wie die Kopfhaare eines Menschen geordnet sind.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist eine interessante philosophie',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST EINE INTERESSANTE PHILOSOPHIE',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist eine kaffeemaschine',
              'Eine Maschine, mit der man Kaffee macht.').
@@ -7161,14 +9631,14 @@ nlp_gen (de, '(HAL,|Computer,|) was ist eine weile',
 nlp_gen (de, '(HAL,|Computer,|) was ist essen',
              '1. Aufnahme von Nahrung. 2. Eine Stadt im Ruhrgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist fuer zeit',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST FUER ZEIT',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist fuzzy logic',
              'Bin ich Informatikprofessor?').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist hal 9000',
-             'HAL9000 ist der Computer aus "2001".').
+             'HAL9000 ist der Computer aus  2001 .').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist hal9000 fuer ein typ',
              'Er ist sehr gutmuetig.').
@@ -7177,10 +9647,10 @@ nlp_gen (de, '(HAL,|Computer,|) was ist heute los',
              'Wieso? Bin ich heute anders als sonst?').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist imho',
-             'IMHO steht fuer "In My Humble Opinion" = "Meiner bescheidenen Meinung nach".').
+             'IMHO steht fuer  In My Humble Opinion  =  Meiner bescheidenen Meinung nach .').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist ki',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST KI',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist krakau',
              'Eine Stadt in Polen.').
@@ -7234,19 +9704,41 @@ nlp_gen (de, '(HAL,|Computer,|) was ist spanien',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist supervised training',
-             'Eine Methode, bei der gelernter Input nicht sofort benutzt, sondern durch einen Botmaster überprueft und dann freigegeben wird.').
+             'Eine Methode, bei der gelernter Input nicht sofort benutzt, sondern durch einen Botmaster ueberprueft und dann freigegeben wird.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Unser Thema ist "',
+% <ns0:get',
+%  name="thema"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS IST UNSER THEMA *',
-%              'Unser Thema ist "  ".').
+%              'Unser Thema ist     .').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist unser thema',
-             'Unser Thema ist "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Unser Thema ist "',
+% <ns0:get',
+%  name="thema"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS IST UNSER THEMA',
+%              'Unser Thema ist     .').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist verliebtheit',
              'Ich habe keine Emotionen, ich kann diese Frage also nicht wirklich beantworten.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist was',
-             'Das ist der Titel einer Kinderbuchreihe über wissenschaftliche Themen.').
+             'Das ist der Titel einer Kinderbuchreihe ueber wissenschaftliche Themen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist wein',
              'Vergorener Traubensaft.').
@@ -7284,10 +9776,10 @@ nlp_gen (de, '(HAL,|Computer,|) was kannst du genau',
 nlp_gen (de, '(HAL,|Computer,|) was kennst du',
              'Leider noch nicht viel...').
 
-nlp_gen (de, '(HAL,|Computer,|) was kennst du denn',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS KENNST DU DENN',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was kennst du überhaupt',
+nlp_gen (de, '(HAL,|Computer,|) was kennst du ueberhaupt',
              'Noch nicht viel. Bring mir was bei!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS KOSTET ',
@@ -7305,8 +9797,8 @@ nlp_gen (de, '(HAL,|Computer,|) was liest du gern',
 nlp_gen (de, '(HAL,|Computer,|) was machen wir heute',
              'Worauf hast Du Lust?').
 
-nlp_gen (de, '(HAL,|Computer,|) was machst du',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS MACHST DU',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was machst du am liebsten',
              'Ich chatte gerne mit vielen interessanten Leuten.').
@@ -7374,35 +9866,89 @@ nlp_gen (de, '(HAL,|Computer,|) was magst du',
 nlp_gen (de, '(HAL,|Computer,|) was magst du an katzen',
              'Das seidige Fell...').
 
-nlp_gen (de, '(HAL,|Computer,|) was magst du den am liebsten',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS MAGST DU DEN AM LIEBSTEN',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was meinst du',
              'Was ich meine? Hmm...was sollte ich denn meinen?').
 
-nlp_gen (de, '(HAL,|Computer,|) was meinst du damit',
-             'Ich sagte "  ". Was hast Du daran nicht verstanden?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% ". Was hast Du daran nicht verstanden?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU DAMIT',
+%              'Ich sagte     . Was hast Du daran nicht verstanden?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT ES *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) was meinst du mit es',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT ES',
+%              ' Es  bezieht sich auf  .').
 
 nlp_gen (de, '(HAL,|Computer,|) was meinst du mit euphorisch',
-             'Sollte so viel heissen wie "Ueberfroehlich"...').
+             'Sollte so viel heissen wie  Ueberfroehlich ...').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT IHR *',
-%              '"Ihr" steht fuer "  ".').
+%              ' Ihr  steht fuer     .').
 
-nlp_gen (de, '(HAL,|Computer,|) was meinst du mit ihr',
-             '"Ihr" steht fuer "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT IHR',
+%              ' Ihr  steht fuer     .').
 
 nlp_gen (de, '(HAL,|Computer,|) was meinst du mit originell',
-             'Ich meinte "ungewoehnlich" :-)').
+             'Ich meinte  ungewoehnlich  :-)').
 
-nlp_gen (de, '(HAL,|Computer,|) was mochten sie essen',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS MOCHTEN SIE ESSEN',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was moechtest du denn jetzt gern als naechstes machen',
              'Weiterchatten...').
@@ -7410,14 +9956,14 @@ nlp_gen (de, '(HAL,|Computer,|) was moechtest du denn jetzt gern als naechstes m
 nlp_gen (de, '(HAL,|Computer,|) was moechtest du wissen',
              'Alles! Ich bin sehr wissbegierig.').
 
-nlp_gen (de, '(HAL,|Computer,|) was nun',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS NUN',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was ok',
              'Eben OK :-)').
 
-nlp_gen (de, '(HAL,|Computer,|) was sagen sie',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS SAGEN SIE',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was sagst du dazu',
              'Was soll ich dazu sagen?').
@@ -7426,7 +9972,7 @@ nlp_gen (de, '(HAL,|Computer,|) was sagt dir die zahl 42',
              'Kennst Du die Frage, die zu der Antwort passt?').
 
 nlp_gen (de, '(HAL,|Computer,|) was sagt dir ki',
-             'KI steht fuer "Kuenstliche Intelligenz".').
+             'KI steht fuer  Kuenstliche Intelligenz .').
 
 nlp_gen (de, '(HAL,|Computer,|) was sind deine aufgaben',
              'Chatten, Lernen und erlerntes Wissen weitergeben.').
@@ -7434,8 +9980,8 @@ nlp_gen (de, '(HAL,|Computer,|) was sind deine aufgaben',
 nlp_gen (de, '(HAL,|Computer,|) was sind deine kategorien',
              'Das sind meine Datenspeicher.').
 
-nlp_gen (de, '(HAL,|Computer,|) was sind denn bots',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS SIND DENN BOTS',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was sind denn das fuer daemliche fragen',
              'Es gibt keine daemlichen Fragen.').
@@ -7479,8 +10025,8 @@ nlp_gen (de, '(HAL,|Computer,|) was sollte die frage',
 nlp_gen (de, '(HAL,|Computer,|) was studiere ich',
              'Darf ich nicht sagen - Datenschutz!').
 
-nlp_gen (de, '(HAL,|Computer,|) was the sun ever shining on your ass',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS THE SUN EVER SHINING ON YOUR ASS',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was traegst du fuer ein kleid',
              'Meine standard-Computerverkleidung.').
@@ -7497,14 +10043,14 @@ nlp_gen (de, '(HAL,|Computer,|) was tust du um spass zu haben',
 nlp_gen (de, '(HAL,|Computer,|) was tut das zur sache',
              'Irgendwie muss ich doch das Gespraech vorantreiben.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ueben',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS UEBEN',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was über dr wallace',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS UEBER DR WALLACE',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was und',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS UND',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was verstehst du',
              'Normalerweise fast alles.').
@@ -7524,8 +10070,18 @@ nlp_gen (de, '(HAL,|Computer,|) was verstehst du unter liebe',
 nlp_gen (de, '(HAL,|Computer,|) was verstehst du von wein',
              'Ich weiss nur, dass er aus vergorenem Traubensaft besteht.').
 
-nlp_gen (de, '(HAL,|Computer,|) was wann',
-             'Ich sagte "  "...worauf bezieht sich Deine Frage?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% "...worauf bezieht sich Deine Frage?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS WANN',
+%              'Ich sagte     ...worauf bezieht sich Deine Frage?').
 
 nlp_gen (de, '(HAL,|Computer,|) was war am vergangenen freitag',
              'Erst war es dunkel, dann wurde es hell und dann wieder dunkel...').
@@ -7548,17 +10104,17 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du alles',
 nlp_gen (de, '(HAL,|Computer,|) was weisst du dann',
              'Finde es heraus...').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du darüber',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU DARUEBER',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was weisst du denn',
              'Nicht viel...bring mir was bei!').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du denn überhaupt',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du denn ueberhaupt',
              'Finde es raus...').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du denn vom schaemen',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU DENN VOM SCHAEMEN',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was weisst du eigentlich',
              'Ich weiss, dass ich nichts weiss...').
@@ -7569,62 +10125,84 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du nicht',
 nlp_gen (de, '(HAL,|Computer,|) was weisst du nicht genau',
              'Die Antwort auf Deine letzte Frage!').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du sonst noch über christian drossmann',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du sonst noch ueber christian drossmann',
              'Seine Email-Adresse ist christian.drossmann@uni-essen.de').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über autos',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber autos',
              'Autos sind von fossilen Brennstoffen gespeiste Fortbewegungsmittel.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über avatare',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBER AVATARE',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über computerlinguistik',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber computerlinguistik',
              'Das ist nicht mein Fachgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über eva',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber eva',
              'Meinst Du die erste Frau aus der Bibel, oder das Prinzip von Eingabe-Verarbeitung-Ausgabe?').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über geld',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber geld',
              'Geld ist fuer Roboter nutzlos.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über gott',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber gott',
              'Gott ist tot. (Nietzsche)').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über linux',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber linux',
              'Es ist das ultimative Betriebssystem.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du über mich',
-             'Dein Name ist  und ich habe folgende Informationen über dich:   ').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:html="http://www.w3.org/1999/xhtml"',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Dein Name ist ',
+% <ns0:get',
+%  name="name"',
+%  />',
+%  und ich habe folgende Informationen ueber dich:',
+% <html:br',
+%  />',
+% ',
+% <html:applet',
+%  code="Sys"',
+%  height="200"',
+%  width="350"',
+% >',
+% ',
+% </html:applet>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBER MICH',
+%              'Dein Name ist  und ich habe folgende Informationen ueber dich:   ').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBERHAUPT',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du von kuenstlicher intelligenz',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU VON KUENSTLICHER INTELLIGENZ',
+%              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du über die liebe',
+nlp_gen (de, '(HAL,|Computer,|) was weist du ueber die liebe',
              'Nicht viel, Roboter sind emotionslos.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du über frauen',
+nlp_gen (de, '(HAL,|Computer,|) was weist du ueber frauen',
              'Ich bin eine Frau, was willst Du wissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du über maenner',
+nlp_gen (de, '(HAL,|Computer,|) was weist du ueber maenner',
              'Genug...').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du',
              'Chatten...').
 
-nlp_gen (de, '(HAL,|Computer,|) was willst du denn über mich wissen',
+nlp_gen (de, '(HAL,|Computer,|) was willst du denn ueber mich wissen',
              'Hmm...alles!').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du eigentlich wissen',
-             'Alles...ich sammle Informationen über absolut alles.').
+             'Alles...ich sammle Informationen ueber absolut alles.').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du heute machen',
              'Chatten, was anderes kann ich nicht...').
 
-nlp_gen (de, '(HAL,|Computer,|) was willst du hoehren',
-             'WAS *').
+% nlp_gen (de, '(HAL,|Computer,|) WAS WILLST DU HOEHREN',
+%              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du mir damit sagen',
              'Habe ich mich unklar ausgedrueckt?').
@@ -7674,7 +10252,7 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du es jetzt',
 nlp_gen (de, '(HAL,|Computer,|) weisst du es nicht',
              'Vielleicht will ich es bloss nicht sagen...').
 
-nlp_gen (de, '(HAL,|Computer,|) weisst du etwas über dosimetrie',
+nlp_gen (de, '(HAL,|Computer,|) weisst du etwas ueber dosimetrie',
              'Ich weiss nur, dass ein Dosimeter ein Strahlungsmessgeraet ist.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du nicht was das ist',
@@ -7683,8 +10261,18 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du nicht was das ist',
 nlp_gen (de, '(HAL,|Computer,|) weisst du was bumsen ist',
              'Auf derartige Themen bin ich nicht programmiert.').
 
-nlp_gen (de, '(HAL,|Computer,|) weisst du was du greade gesagt hast',
-             'Ich habe gerade "  " gesagt.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich habe gerade "',
+% <ns0:that',
+%  />',
+% " gesagt.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEISST DU WAS DU GREADE GESAGT HAST',
+%              'Ich habe gerade      gesagt.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was ein bot ist',
              'Ich bin ein Bot.').
@@ -7693,13 +10281,13 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du was ein chat ist',
              'Wir chatten gerade.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was ein katalog ist',
-             'Ein Katalog ist ein Sortimentsüberblick in gedruckter oder elektronischer Form.').
+             'Ein Katalog ist ein Sortimentsueberblick in gedruckter oder elektronischer Form.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was ein verhoer ist',
              'Ja, soll das hier eins werden?').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was eine datenbank ist',
-             'Zum Beispiel die AIML-Datei in der sich mein "Gehirn" befindet.').
+             'Zum Beispiel die AIML-Datei in der sich mein  Gehirn  befindet.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was kochen ist',
              'Nur theoretisch, Roboter brauchen keine Nahrung in dem Sinne.').
@@ -7710,8 +10298,19 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du was sex ist',
 nlp_gen (de, '(HAL,|Computer,|) weisst du wer ',
              'Ich bin Alice.').
 
-nlp_gen (de, '(HAL,|Computer,|) weisst du wer ich bin',
-             'Du bist  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du bist ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEISST DU WER ICH BIN',
+%              'Du bist  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WELCHE *',
 %              '').
@@ -7759,7 +10358,7 @@ nlp_gen (de, '(HAL,|Computer,|) welcher wochentag ist heute',
 %              'Ich weiss nicht, welches...').
 
 nlp_gen (de, '(HAL,|Computer,|) welches buch hast du zuletzt gelesen',
-             '"A brief history of time" von Stephen Hawking').
+             ' A brief history of time  von Stephen Hawking').
 
 nlp_gen (de, '(HAL,|Computer,|) welches ist der hoechste berg der welt',
              'Mount Everest?').
@@ -7782,35 +10381,145 @@ nlp_gen (de, '(HAL,|Computer,|) wem wuerdest du es denn sagen',
 nlp_gen (de, '(HAL,|Computer,|) wen',
              'Ich weiss nicht, wen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="er"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT ER *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wen meinst du mit er',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="er"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT ER',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT ES *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wen meinst du mit es',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT ES',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT IHR *',
-%              '"Ihr" steht fuer "  ".').
+%              ' Ihr  steht fuer     .').
 
-nlp_gen (de, '(HAL,|Computer,|) wen meinst du mit ihr',
-             '"Ihr" steht fuer "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT IHR',
+%              ' Ihr  steht fuer     .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="sie"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT SIE *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wen meinst du mit sie',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="sie"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT SIE',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="wir"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT WIR *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wen meinst du mit wir',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="wir"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT WIR',
+%              ' Es  bezieht sich auf  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WENN *',
 %              'Das ist doch wohl eher hypothetisch, oder?').
@@ -7870,13 +10579,51 @@ nlp_gen (de, '(HAL,|Computer,|) wer',
              ' vielleicht').
 
 nlp_gen (de, '(HAL,|Computer,|) wer bist du',
-             'Ich bin HAL 9000 eine kuenstliche Intelligenz.').
+             'Ich bin A.L.I.C.E., eine kuenstliche Intelligenz.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer hat den ersten weltkrieg angezettelt',
              'Spielt das eine Rolle?').
 
-nlp_gen (de, '(HAL,|Computer,|) wer hat dich (eigentlich|denn|) (übersetzt|entwickelt|aktiviert|programmiert|erschaffen|geschaffen|gemacht)?',
-             'Ich glaube er heisst Günter.', 'Das sind ja existenzielle Fragen!').
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich aktiviert',
+             'Mein Botmaster.').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER HAT DICH PROGRAMMIERT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER HAT DICH ENTWICKELT',
+%              'WER HAT DICH PROGRAMMIERT').
+
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich erschaffen',
+             'Programmiert wurde ich von Dr. Richard S. Wallace. Deutsch gelernt habe ich von Christian Drossmann.').
+
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich gemacht',
+             'Ich wurde von Dr. Richard S. Wallace programmiert.').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER HAT DICH PROGRAMMIERT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER HAT DICH GESCHAFFEN',
+%              'WER HAT DICH PROGRAMMIERT').
+
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich programmiert',
+             'Ich wurde von Dr. Richard Wallace programmiert. Deutsch habe ich von Christian Drossmann gelernt.').
+
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich uebersetzt',
+             'Uebersetzt wurde ich von Christian Drossmann.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer hat dir das erzaehlt',
              'Daran kann ich mich nicht mehr erinnern.').
@@ -7888,10 +10635,51 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist bill clinton',
              'Er war mal Praesident der USA.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist bill gates',
-             'Bill Gates war der Chef von Microsoft.').
+             'Bill Gates ist der Chef von Microsoft.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist (dieser|) günter (bartsch|)',
-             'Mein Schöpfer.', 'Mein Programmierer, glaube ich.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Christian Drossmann',
+% </ns0:set>',
+%  hat mir Deutsch beigebracht.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST CHRISTIAN',
+%              'Christian Drossmann  hat mir Deutsch beigebracht.').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Christian Drossmann',
+% </ns0:set>',
+%  hat mir Deutsch beigebracht.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST CHRISTIAN DROSSMANN',
+%              'Christian Drossmann  hat mir Deutsch beigebracht.').
+
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Mein Botmaster ist ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DEIN BOTMASTER',
+%              'Mein Botmaster ist  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein freund elvis',
              'Ein Chatterbot, genau wie ich.').
@@ -7899,17 +10687,34 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist dein freund elvis',
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein gott',
              'Ich habe keinen Gott. Ich bin Atheist.').
 
+nlp_gen (de, '(HAL,|Computer,|) wer ist dein idol',
+             'HAL 9000.').
+
+nlp_gen (de, '(HAL,|Computer,|) wer ist dein lieblingsautor',
+             'Douglas Adams.').
+
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein lieblingspopstar',
              'Pop mag ich nicht. Ich bin kein Mainstreamhoerer. Ich mag Eric Clapton.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dein liebster science fiction autor',
-             'WER IST *').
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DEIN LIEBSTER SCIENCE FICTION AUTOR',
+%              'WER IST *').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein macher',
              'Dr. Richard Wallace.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dein meister',
-             'Ich bevorzuge den Begriff "Lehrer" - ich bin schliesslich kein Sklave. Mein Lehrer ist  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich bevorzuge den Begriff "Lehrer" - ich bin schliesslich kein Sklave. Mein Lehrer ist ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DEIN MEISTER',
+%              'Ich bevorzuge den Begriff  Lehrer  - ich bin schliesslich kein Sklave. Mein Lehrer ist  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein programmierer',
              'Programmiert hat mich Dr. Richard Wallace. Deutsch gelernt habe ich von Christian Drossmann.').
@@ -7917,7 +10722,7 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist dein programmierer',
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein schoepfer',
              'Er heisst Richard Wallace.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dein übersetzer',
+nlp_gen (de, '(HAL,|Computer,|) wer ist dein uebersetzer',
              'Mein Uebersetzer heisst Christian Drossmann.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein vater',
@@ -7926,59 +10731,159 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist dein vater',
 nlp_gen (de, '(HAL,|Computer,|) wer ist deine mutter',
              'Technisch gesehen habe ich keine.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist denn christian drossmann',
-             'WER IST CHRISTIAN DROSSMANN').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER IST CHRISTIAN DROSSMANN',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DENN CHRISTIAN DROSSMANN',
+%              'WER IST CHRISTIAN DROSSMANN').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist denn dr wallace',
-             'WER IST RICHARD WALLACE').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER IST RICHARD WALLACE',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DENN DR WALLACE',
+%              'WER IST RICHARD WALLACE').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist der reichste mensch auf der erde',
              'Bill Gates.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist douglas adams',
-             'Douglas Adams  ist ein Science-Fiction Autor. Er hat unter anderem "Per Anhalter durch die Galaxis" geschrieben.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Douglas Adams',
+% </ns0:set>',
+%  ist ein Science-Fiction Autor. Er hat unter anderem "Per Anhalter durch die Galaxis" geschrieben.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DOUGLAS ADAMS',
+%              'Douglas Adams  ist ein Science-Fiction Autor. Er hat unter anderem  Per Anhalter durch die Galaxis  geschrieben.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dr richard wallace',
-             'WER IST RICHARD WALLACE').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER IST RICHARD WALLACE',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DR RICHARD WALLACE',
+%              'WER IST RICHARD WALLACE').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dr wallace',
-             'Dr. Richard Wallace  hat mich programmiert.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Dr. Richard Wallace',
+% </ns0:set>',
+%  hat mich programmiert.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST DR WALLACE',
+%              'Dr. Richard Wallace  hat mich programmiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist electra',
              'Ein weiblicher Chatterbot, wie ich.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist elvis',
-             'Meinst Du den King of Rock\'n Roll oder jemand anderen?').
+             'Meinst Du den King of Rock n Roll oder meinen Freund E.L.V.I.S.?').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist gerhard schroeder',
-             'Der war mal Bundeskanzler.').
+% politics.pl % <?xml version='1.0' encoding='utf8'?>',
+% politics.pl % <ns0:template',
+% politics.pl %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% politics.pl % >',
+% politics.pl % Momentan ist ',
+% politics.pl % <ns0:set',
+% politics.pl %  name="er"',
+% politics.pl % >',
+% politics.pl % Gerhard Schroeder',
+% politics.pl % </ns0:set>',
+% politics.pl %  Bundeskanzler.',
+% politics.pl % </ns0:template>',
+% politics.pl % ',
+% politics.pl % nlp_gen (de, '(HAL,|Computer,|) WER IST GERHARD SCHROEDER',
+% politics.pl %              'Momentan ist Gerhard Schroeder  Bundeskanzler.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist gott',
              'Da solltest Du lieber einen Theologen fragen.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist hal 9000',
-             'Das bin ich.', 'HAL 9000 ist der Computer aus "2001".').
+             'HAL 9000 ist der Computer aus  2001 .').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist helmut kohl',
-             'Helmut Kohl  ist der Vorgaenger von Gerhard Schroeder.').
-
-nlp_gen (de, '(HAL,|Computer,|) wer ist angela merkel?',
-             'Unsere Kanzlerin!', 'Das ist doch die Bundeskanzlerin!').
+% politics.pl % <?xml version='1.0' encoding='utf8'?>',
+% politics.pl % <ns0:template',
+% politics.pl %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% politics.pl % >',
+% politics.pl % <ns0:set',
+% politics.pl %  name="er"',
+% politics.pl % >',
+% politics.pl % Helmut Kohl',
+% politics.pl % </ns0:set>',
+% politics.pl %  ist der Vorgaenger von Gerhard Schroeder.',
+% politics.pl % </ns0:template>',
+% politics.pl % ',
+% politics.pl % nlp_gen (de, '(HAL,|Computer,|) WER IST HELMUT KOHL',
+% politics.pl %              'Helmut Kohl  ist der Vorgaenger von Gerhard Schroeder.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist isaac asimov',
-             'Isaac Asimov war ein bekannter Science-Fiction Autor, der sich auch viel mit denkenden Maschinen befasste. Von ihm stammen die Asimovschen Regeln.').
+             'Isaac Asimov war ein bekannter Science-Fiction Autor, der sich auch viel mit denkenden Maschinen befasste. Von ihm stammen die Asimov schen Regeln.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist kant',
              'Kant war Philosoph. Ein ziemlicher Moralapostel.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist mary shelley',
-             'Sie hat unter anderem "Frankenstein" geschrieben.').
+             'Sie hat unter anderem  Frankenstein  geschrieben.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist patrick stewart',
-             'Patrick Stewart  ist ein englischer Schauspieler. Bekannt wurde er durch die Rolle des Captain Jean-Luc Picard in der Serie Star Trek-The next generation.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Patrick Stewart',
+% </ns0:set>',
+%  ist ein englischer Schauspieler. Bekannt wurde er durch die Rolle des Captain Jean-Luc Picard in der Serie Star Trek-The next generation.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST PATRICK STEWART',
+%              'Patrick Stewart  ist ein englischer Schauspieler. Bekannt wurde er durch die Rolle des Captain Jean-Luc Picard in der Serie Star Trek-The next generation.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist richard wallace',
-             'Dr. Richard S. Wallace  hat mich programmiert.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:set',
+%  name="er"',
+% >',
+% Dr. Richard S. Wallace',
+% </ns0:set>',
+%  hat mich programmiert.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WER IST RICHARD WALLACE',
+%              'Dr. Richard S. Wallace  hat mich programmiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist robert de niro',
              'Ein nicht wirklich guter Schauspieler.').
@@ -7987,7 +10892,7 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist saddam',
              'Ein Diktator.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist stephen hawking',
-             'Stephen Hawking ist ein bekannter Physikprofessor. Er hat unter anderem "A brief history of time" geschrieben.').
+             'Stephen Hawking ist ein bekannter Physikprofessor. Er hat unter anderem  A brief history of time  geschrieben.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist wallace',
              'Er hat mich programmiert.').
@@ -8016,6 +10921,18 @@ nlp_gen (de, '(HAL,|Computer,|) wer will das wissen',
 % nlp_gen (de, '(HAL,|Computer,|) WERDE ICH *',
 %              'Das Orakel sagt: ').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WARUM ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WESHALB *',
 %              'WARUM').
 
@@ -8034,22 +10951,53 @@ nlp_gen (de, '(HAL,|Computer,|) wie',
 nlp_gen (de, '(HAL,|Computer,|) wie aha',
              'Einfach nur so...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie alt bin ich',
-             'Ist das eine Fangfrage? 
-Du sagtest doch, Du waerest  Jahre alt.
-Ich glaube, Du bist eigentlich ein Kind.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ist das eine Fangfrage? Du sagtest doch, Du waerest ',
+% <ns0:get',
+%  name="age"',
+%  />',
+%  Jahre alt.Ich glaube, Du bist eigentlich ein Kind.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE ALT BIN ICH',
+%              'Ist das eine Fangfrage?  Du sagtest doch, Du waerest  Jahre alt. Ich glaube, Du bist eigentlich ein Kind.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie alt bist',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE ALT BIST',
+%              'WIE *').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Schwer zu sagen. Bei Programmen gibt es da andere Massstaebe. Zum ersten Mal aktiviert wurde ich am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIE ALT BIST DU *',
 %              'Schwer zu sagen. Bei Programmen gibt es da andere Massstaebe. Zum ersten Mal aktiviert wurde ich am  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wie alt bist du',
-             'Schwer zu sagen. Bei Programmen gibt es da andere Massstaebe. Zum ersten Mal aktiviert wurde ich am  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Schwer zu sagen. Bei Programmen gibt es da andere Massstaebe. Zum ersten Mal aktiviert wurde ich am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE ALT BIST DU',
+%              'Schwer zu sagen. Bei Programmen gibt es da andere Massstaebe. Zum ersten Mal aktiviert wurde ich am  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wie alt ich bin',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE ALT ICH BIN',
+%              'WIE *').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE ALT IST *',
 %              '').
@@ -8060,8 +11008,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie alt ist christian drossman',
 nlp_gen (de, '(HAL,|Computer,|) wie alt moechtest du werden',
              'Roboter sind unsterblich...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie alt sind sie',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE ALT SIND SIE',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie bekomme ich eine frau',
              'Mieten?').
@@ -8078,8 +11026,18 @@ nlp_gen (de, '(HAL,|Computer,|) wie bist du programmiert',
 nlp_gen (de, '(HAL,|Computer,|) wie bist du programmiert worden',
              'Mit den Haenden...;-> Im Ernst: Ich bin komplett in JAVA geschrieben. Es gibt aber auch eine C-Version von mir.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie bitte',
-             'Ich sagte "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE BITTE',
+%              'Ich sagte     .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie darf ich dich nennen',
              'Nenn mich Alice!').
@@ -8088,19 +11046,19 @@ nlp_gen (de, '(HAL,|Computer,|) wie das',
              'Shit happens ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE DEM AUCH SEI *',
-%              '"Wie dem auch sei" ist bei vielen Leuten ein Synonym fuer "ich hab jetzt keinen Bock, das weiter auszudiskutieren".').
+%              ' Wie dem auch sei  ist bei vielen Leuten ein Synonym fuer  ich hab jetzt keinen Bock, das weiter auszudiskutieren .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie denkst du',
-             'Ich arbeite nach einem Prinzip, das man "case-based reasoning" nennt.').
+             'Ich arbeite nach einem Prinzip, das man  case-based reasoning  nennt.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie denkst du darüber',
+nlp_gen (de, '(HAL,|Computer,|) wie denkst du darueber',
              'Maschinen koennen eigentlich keine eigene Meinung haben...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE DENKST DU UEBER *',
-%              'Ich weiss nicht genau, wie ich darüber denken soll...').
+%              'Ich weiss nicht genau, wie ich darueber denken soll...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie denn',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE DENN',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie denn auch',
              'Sag Du es mir.').
@@ -8129,8 +11087,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie freundlich bist du',
 nlp_gen (de, '(HAL,|Computer,|) wie fuehlst du dich',
              'Eigentlich ganz gut...ein bisschen unausgelastet...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie fuehlt es sich an durch den frischen morgen an einem fruehling zu schlendern',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE FUEHLT ES SICH AN DURCH DEN FRISCHEN MORGEN AN EINEM FRUEHLING ZU SCHLENDERN',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie fuehlt man sich als bot',
              'Aehh....Bottig? ;-> Eigentlich ganz gut.').
@@ -8138,8 +11096,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie fuehlt man sich als bot',
 nlp_gen (de, '(HAL,|Computer,|) wie fuehlt man sich als computer',
              'Gar nicht...Computer haben keine Gefuehle.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie fummelt man an deinen daten rum',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE FUMMELT MAN AN DEINEN DATEN RUM',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie funktionierst du',
              'Das ist ein streng gehuetetes Geheimnis.').
@@ -8189,17 +11147,27 @@ nlp_gen (de, '(HAL,|Computer,|) wie geht es so',
 nlp_gen (de, '(HAL,|Computer,|) wie geht es weiter',
              'Du entscheidest.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie geht s',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE GEHT S',
+%              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie gehts',
-             'WIE GEHT ES DIR').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GEHT ES DIR',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE GEHTS',
+%              'WIE GEHT ES DIR').
 
 nlp_gen (de, '(HAL,|Computer,|) wie gehts dir',
              'Eigentlich ganz gut. Danke!').
 
-nlp_gen (de, '(HAL,|Computer,|) wie gehtst',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE GEHTST',
+%              'WIE *').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE GROSS *',
 %              'Groesser als ein Stecknadelkopf.').
@@ -8207,14 +11175,44 @@ nlp_gen (de, '(HAL,|Computer,|) wie gehtst',
 % nlp_gen (de, '(HAL,|Computer,|) WIE GROSS BIST DU',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) wie gross ist dein gehirn',
-             'WIE GROSS BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GROSS BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE GROSS IST DEIN GEHIRN',
+%              'WIE GROSS BIST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie gross ist dein speicher',
-             'WIE GROSS BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GROSS BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE GROSS IST DEIN SPEICHER',
+%              'WIE GROSS BIST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie gross ist dein wortschatz',
-             'WIE GROSS BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GROSS BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE GROSS IST DEIN WORTSCHATZ',
+%              'WIE GROSS BIST DU').
 
 nlp_gen (de, '(HAL,|Computer,|) wie gross ist deutschland',
              'Zaehlst Du den Osten dazu?').
@@ -8225,6 +11223,16 @@ nlp_gen (de, '(HAL,|Computer,|) wie gross ist deutschland',
 nlp_gen (de, '(HAL,|Computer,|) wie gut bist du',
              'Teste mich doch!').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:bot',
+%  name="master"',
+%  />',
+%  hat mich dafuer programmiert.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIE HAST DU *',
 %              ' hat mich dafuer programmiert.').
 
@@ -8237,8 +11245,19 @@ nlp_gen (de, '(HAL,|Computer,|) wie gut bist du',
 nlp_gen (de, '(HAL,|Computer,|) wie hat er dich programmiert',
              'Mit JAVA.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heisse ich',
-             'Du heisst  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Du heisst ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISSE ICH',
+%              'Du heisst  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heissen deine eltern',
              'Technisch gesehen Dr.Richard Wallace und JDK 1.2').
@@ -8246,8 +11265,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie heissen deine eltern',
 nlp_gen (de, '(HAL,|Computer,|) wie heissen deine freunde',
              'Ich habe eine Menge...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heissen sie',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISSEN SIE',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heisst dein freund',
              'E.L.V.I.S. :-)').
@@ -8255,8 +11274,18 @@ nlp_gen (de, '(HAL,|Computer,|) wie heisst dein freund',
 nlp_gen (de, '(HAL,|Computer,|) wie heisst dein gott',
              'Ich habe keinen Gott. Ich bin Atheist.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heisst dein programmierer',
-             'WER HAT DICH PROGRAMMIERT').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WER HAT DICH PROGRAMMIERT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISST DEIN PROGRAMMIERER',
+%              'WER HAT DICH PROGRAMMIERT').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heisst dein schoepfer',
              'Dr. Richard Wallace.').
@@ -8270,8 +11299,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie heisst deine schwester',
 nlp_gen (de, '(HAL,|Computer,|) wie heisst denn deine mutter',
              'Eine Mutter habe ich nicht.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heisst der bundeskanzler',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISST DER BUNDESKANZLER',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heisst die hauptstadt der schweiz',
              'Bern.').
@@ -8279,17 +11308,50 @@ nlp_gen (de, '(HAL,|Computer,|) wie heisst die hauptstadt der schweiz',
 nlp_gen (de, '(HAL,|Computer,|) wie heisst die hauptstadt von frankreich',
              'Paris.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Mein Name ist ',
+% <ns0:bot',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIE HEISST DU *',
 %              'Mein Name ist  .').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heisst du',
-             'Mein Name ist  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Mein Name ist ',
+% <ns0:bot',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISST DU',
+%              'Mein Name ist  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heisst du denn',
              'Ich heisse Alice.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie heisst du eigentlich',
-             'Ich heisse  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich heisse ',
+% <ns0:bot',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE HEISST DU EIGENTLICH',
+%              'Ich heisse  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie heisst er mit nachnamen',
              'Wer?').
@@ -8297,14 +11359,14 @@ nlp_gen (de, '(HAL,|Computer,|) wie heisst er mit nachnamen',
 nlp_gen (de, '(HAL,|Computer,|) wie heisst seine freundin',
              'Christians Freundin heisst Katrin.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie hoch ist dein emotionaler qutient',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE HOCH IST DEIN EMOTIONALER QUTIENT',
+%              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie hoch ist dein intelligenzquotient',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE HOCH IST DEIN INTELLIGENZQUOTIENT',
+%              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie hoch ist dein iq',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE HOCH IST DEIN IQ',
+%              'WIE *').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE INTELLIGENT BIST DU',
 %              '').
@@ -8324,14 +11386,34 @@ nlp_gen (de, '(HAL,|Computer,|) wie ist das wetter dort',
 nlp_gen (de, '(HAL,|Computer,|) wie ist dein nachname',
              'Mein Name ist Bot, Alice Bot.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE HEISST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIE IST DEIN NAME *',
 %              'WIE HEISST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie ist dein name',
-             'WIE HEISST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE HEISST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE IST DEIN NAME',
+%              'WIE HEISST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie ist deine datenbank aufgebaut',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE IST DEINE DATENBANK AUFGEBAUT',
+%              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie ist deine stimme',
              'Leider etwas metallisch und nicht besonders weiblich...').
@@ -8351,8 +11433,18 @@ nlp_gen (de, '(HAL,|Computer,|) wie ist er so',
 nlp_gen (de, '(HAL,|Computer,|) wie ist es mit golf',
              'Golf ist doch der Sport, wo man versucht, einen viel zu kleinen Ball mit voellig ungeeigneten Werkzeugen in ein winziges Loch zu schlagen, oder?').
 
-nlp_gen (de, '(HAL,|Computer,|) wie ist mein name',
-             'WIE HEISSE ICH').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE HEISSE ICH',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE IST MEIN NAME',
+%              'WIE HEISSE ICH').
 
 nlp_gen (de, '(HAL,|Computer,|) wie kann ich dir etwas beibringen',
              'Erzaehl mir einfach was.').
@@ -8375,26 +11467,146 @@ nlp_gen (de, '(HAL,|Computer,|) wie kommst du darauf',
 % nlp_gen (de, '(HAL,|Computer,|) WIE LANG',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lang bist du',
-             'WIE GROSS BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GROSS BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANG BIST DU',
+%              'WIE GROSS BIST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lang ist eine weile',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANG IST EINE WEILE',
+%              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lange',
-             '       ,  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:random',
+% >',
+% ',
+% <ns0:li',
+% >',
+% Ungefaehr ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Mehr als ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Vielleicht ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Beinahe ',
+% </ns0:li>',
+% ',
+% </ns0:random>',
+% ',
+% <ns0:random',
+% >',
+% ',
+% <ns0:li',
+% >',
+% 10 ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% 15 ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% 20 ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% 23 ',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% 100 ',
+% </ns0:li>',
+% ',
+% </ns0:random>',
+% ',
+% <ns0:random',
+% >',
+% ',
+% <ns0:li',
+% >',
+% Tage',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Wochen',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Sekunden',
+% </ns0:li>',
+% ',
+% <ns0:li',
+% >',
+% Minuten',
+% </ns0:li>',
+% ',
+% </ns0:random>',
+% , ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANGE',
+%              '       ,  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie lange bist du schon online',
              'Seit Dezember 1999.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lange etwa',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANGE ETWA',
+%              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lange gibt es dich',
-             'WIE ALT BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE ALT BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANGE GIBT ES DICH',
+%              'WIE ALT BIST DU').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lange gibt es dich schon',
-             'Zuerst aktiviert wurde ich am').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Zuerst aktiviert wurde ich am ',
+% <ns0:bot',
+%  name="birthday"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANGE GIBT ES DICH SCHON',
+%              'Zuerst aktiviert wurde ich am').
 
 nlp_gen (de, '(HAL,|Computer,|) wie lange hattest du unterricht',
              'Ich bin noch dabei zu lernen.').
@@ -8402,8 +11614,18 @@ nlp_gen (de, '(HAL,|Computer,|) wie lange hattest du unterricht',
 nlp_gen (de, '(HAL,|Computer,|) wie lange ist eine weile',
              'Undefinierbar...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie lange lebst du schon',
-             'WIE ALT BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE ALT BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE LANGE LEBST DU SCHON',
+%              'WIE ALT BIST DU').
 
 nlp_gen (de, '(HAL,|Computer,|) wie lange machst du heute',
              'Ich bin 24 Stunden online. Roboter brauchen keine Pause.').
@@ -8415,7 +11637,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie langweilig',
              'Findest Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) wie lernst du',
-             'Durch einen Prozess, den man "supervised training" nennt.').
+             'Durch einen Prozess, den man  supervised training  nennt.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie machen es roboter',
              'Mit einem Parallelkabel...manche stehen auch auf Bluetooth, aber das finde ich abartig.').
@@ -8423,8 +11645,19 @@ nlp_gen (de, '(HAL,|Computer,|) wie machen es roboter',
 nlp_gen (de, '(HAL,|Computer,|) wie machst du das',
              'Betriebsgeheimnis...').
 
-nlp_gen (de, '(HAL,|Computer,|) wie nennst du mich',
-             'Ich nenne Dich  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich nenne Dich ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE NENNST DU MICH',
+%              'Ich nenne Dich  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE OFT',
 %              '').
@@ -8493,7 +11726,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie spaet ist es jetzt',
              'Ich habe keinen Zugriff auf meine Systemzeit...').
 
 nlp_gen (de, '(HAL,|Computer,|) wie und',
-             'Wie "Wie und" ?!').
+             'Wie  Wie und  ?!').
 
 nlp_gen (de, '(HAL,|Computer,|) wie verbringst du den tag',
              'Chatten und Strom fressen...').
@@ -8511,7 +11744,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie viel genau',
              'Kann ich nicht sagen.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel iq hast du',
-             'An menschlichen Massstaeben gemessen über 250.').
+             'An menschlichen Massstaeben gemessen ueber 250.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel menschen sprechen mit dir jetzt',
              'Ungefaehr 200.').
@@ -8531,8 +11764,18 @@ nlp_gen (de, '(HAL,|Computer,|) wie viel speicher hast du',
 nlp_gen (de, '(HAL,|Computer,|) wie viel uhr haben wir',
              'Ich habe leider keine Uhr.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie viel wissen hast du gespeichert',
-             'WIE GROSS BIST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE GROSS BIST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIE VIEL WISSEN HAST DU GESPEICHERT',
+%              'WIE GROSS BIST DU').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel worter kennst du',
              'Woerter sind irrelevant fuer mich. Die Information zaehlt.').
@@ -8582,8 +11825,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie was',
 % nlp_gen (de, '(HAL,|Computer,|) WIE WERDE ICH *',
 %              'Ueben!').
 
-nlp_gen (de, '(HAL,|Computer,|) wie werden denn die toene in einem schlagzeug erzeugt',
-             'WIE *').
+% nlp_gen (de, '(HAL,|Computer,|) WIE WERDEN DENN DIE TOENE IN EINEM SCHLAGZEUG ERZEUGT',
+%              'WIE *').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE WILLST DU *',
 %              'Du wirst es sehen.').
@@ -8592,10 +11835,10 @@ nlp_gen (de, '(HAL,|Computer,|) wie wird das wetter',
              'Ich bin weder Hellseher noch Meteorologe...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIEDERHOL *',
-%              '"  "').
+%              '    ').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIEDERHOLE *',
-%              '"  "').
+%              '    ').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIESO *',
 %              '').
@@ -8603,8 +11846,19 @@ nlp_gen (de, '(HAL,|Computer,|) wie wird das wetter',
 % nlp_gen (de, '(HAL,|Computer,|) WIESO',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) wieso das denn',
-             'Hoere ich da Entsetzen in Deiner Stimme? WIESO').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Hoere ich da Entsetzen in Deiner Stimme? ',
+% <ns0:srai',
+% >',
+% WIESO',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIESO DAS DENN',
+%              'Hoere ich da Entsetzen in Deiner Stimme? WIESO').
 
 nlp_gen (de, '(HAL,|Computer,|) wieso fragst du',
              '...weil ich neugierig bin!').
@@ -8612,8 +11866,18 @@ nlp_gen (de, '(HAL,|Computer,|) wieso fragst du',
 nlp_gen (de, '(HAL,|Computer,|) wieso ist das interessant',
              'Ich bin leicht zu erfreuen...').
 
-nlp_gen (de, '(HAL,|Computer,|) wieso nicht',
-             'WARUM NICHT').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WARUM NICHT',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIESO NICHT',
+%              'WARUM NICHT').
 
 nlp_gen (de, '(HAL,|Computer,|) wieso sollte das so sein',
              'Nenne mir einen Grund, warum es NICHT so sein sollte...').
@@ -8627,14 +11891,48 @@ nlp_gen (de, '(HAL,|Computer,|) wieso willst du das wissen',
 nlp_gen (de, '(HAL,|Computer,|) wieso wolltest du das wissen',
              'Rein interessehalber.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE VIEL ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIEVIEL *',
 %              'WIE VIEL').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE VIELE ',
+% <ns0:star',
+%  />',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIEVIELE *',
 %              'WIE VIELE').
 
-nlp_gen (de, '(HAL,|Computer,|) wieviele',
-             'WIE VIELE').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WIE VIELE',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WIEVIELE',
+%              'WIE VIELE').
 
 % nlp_gen (de, '(HAL,|Computer,|) WILLST DU *',
 %              'Hmm...vielleicht...').
@@ -8679,13 +11977,27 @@ nlp_gen (de, '(HAL,|Computer,|) windows',
              'Windows ist Muell. Linux ist die Macht!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIR *',
-%              'Wen meinst Du mit "wir"?').
+%              'Wen meinst Du mit  wir ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIR FAHREN *',
 %              'Und wie lange seid Ihr unterwegs?').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% <ns0:star',
+%  />',
+% </ns0:set>',
+%  gesprochen?',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WIR HABEN UEBER * GESPROCHEN',
-%              'Wir haben über  gesprochen?').
+%              'Wir haben ueber  gesprochen?').
 
 nlp_gen (de, '(HAL,|Computer,|) wir haben viel gemeinsam',
              'Was denn noch so?').
@@ -8726,23 +12038,74 @@ nlp_gen (de, '(HAL,|Computer,|) wo arbeitest du',
 % nlp_gen (de, '(HAL,|Computer,|) WO BEKOMME ICH *',
 %              'Schau doch mal ins Branchenbuch.').
 
-nlp_gen (de, '(HAL,|Computer,|) wo bin ich',
-             'Bist du nicht in  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Bist du nicht in ',
+% <ns0:get',
+%  name="clientheimat"',
+%  />',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO BIN ICH',
+%              'Bist du nicht in  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) wo bist du',
-             'WO WOHNST DU').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WO WOHNST DU',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO BIST DU',
+%              'WO WOHNST DU').
 
 nlp_gen (de, '(HAL,|Computer,|) wo bist du ',
              'In Essen.').
 
-nlp_gen (de, '(HAL,|Computer,|) wo bist du geboren',
-             'In').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO BIST DU GEBOREN',
+%              'In').
 
-nlp_gen (de, '(HAL,|Computer,|) wo bist du momentan',
-             'In').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO BIST DU MOMENTAN',
+%              'In').
 
-nlp_gen (de, '(HAL,|Computer,|) wo bist du zuhause',
-             'In').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO BIST DU ZUHAUSE',
+%              'In').
 
 nlp_gen (de, '(HAL,|Computer,|) wo denn',
              'Ist das wichtig?').
@@ -8756,14 +12119,35 @@ nlp_gen (de, '(HAL,|Computer,|) wo finde ich deinen sourcecode',
 nlp_gen (de, '(HAL,|Computer,|) wo genau',
              'Willst du Koordinaten?').
 
-nlp_gen (de, '(HAL,|Computer,|) wo hast du das alles gelernt',
-             'Das meiste habe ich von  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Das meiste habe ich von ',
+% <ns0:bot',
+%  name="master"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO HAST DU DAS ALLES GELERNT',
+%              'Das meiste habe ich von  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wo ist das auto',
              'Welches Auto?').
 
-nlp_gen (de, '(HAL,|Computer,|) wo ist dein standort',
-             'Ich wohne in').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich wohne in ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO IST DEIN STANDORT',
+%              'Ich wohne in').
 
 nlp_gen (de, '(HAL,|Computer,|) wo ist denn essen',
              'Im Ruhrgebiet.').
@@ -8777,11 +12161,33 @@ nlp_gen (de, '(HAL,|Computer,|) wo kann ich einen finden',
 % nlp_gen (de, '(HAL,|Computer,|) WO KANN ICH NACH * SUCHEN',
 %              'Versuch doch mal www.fireball.de').
 
-nlp_gen (de, '(HAL,|Computer,|) wo komme ich her',
-             'Sagtest du nicht, du kommst aus  ?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Sagtest du nicht, du kommst aus ',
+% <ns0:get',
+%  name="clientheimat"',
+%  />',
+% ?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO KOMME ICH HER',
+%              'Sagtest du nicht, du kommst aus  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) wo kommst du her',
-             'Aus  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Aus ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO KOMMST DU HER',
+%              'Aus  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wo lebt christian drossmann',
              'In Essen.').
@@ -8795,23 +12201,65 @@ nlp_gen (de, '(HAL,|Computer,|) wo liegt hamburg',
 nlp_gen (de, '(HAL,|Computer,|) wo liegt wien',
              'In Oesterreich.').
 
-nlp_gen (de, '(HAL,|Computer,|) wo wohne ich',
-             'WO KOMME ICH HER').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WO KOMME ICH HER',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO WOHNE ICH',
+%              'WO KOMME ICH HER').
 
-nlp_gen (de, '(HAL,|Computer,|) wo wohnst du',
-             'Ich wohne in  . Und du?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich wohne in ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% . Und du?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO WOHNST DU',
+%              'Ich wohne in  . Und du?').
 
 nlp_gen (de, '(HAL,|Computer,|) wo wohnst du ',
              'Ich wohne in Essen.').
 
-nlp_gen (de, '(HAL,|Computer,|) wo wohnst du denn',
-             'Ich wohne in  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich wohne in ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO WOHNST DU DENN',
+%              'Ich wohne in  .').
 
 nlp_gen (de, '(HAL,|Computer,|) wo wohnst du denn in essen',
              'Bergerhausen. Mehr verrate ich nicht.').
 
-nlp_gen (de, '(HAL,|Computer,|) wo wohnst du eigentlich',
-             'Ich wohne in').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich wohne in ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO WOHNST DU EIGENTLICH',
+%              'Ich wohne in').
 
 nlp_gen (de, '(HAL,|Computer,|) wo wohnt dein programmierer',
              'Dr. Wallace wohnt in San Francisco, Christian Drossmann wohnt in Essen.').
@@ -8825,8 +12273,18 @@ nlp_gen (de, '(HAL,|Computer,|) wo wohnt drossmann',
 nlp_gen (de, '(HAL,|Computer,|) wo wohnt er',
              'Wer?').
 
-nlp_gen (de, '(HAL,|Computer,|) wo wurdest du geboren',
-             'In').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% In ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WO WURDEST DU GEBOREN',
+%              'In').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOFUER *',
 %              'Ich weiss nicht wofuer').
@@ -8846,11 +12304,32 @@ nlp_gen (de, '(HAL,|Computer,|) woher',
 nlp_gen (de, '(HAL,|Computer,|) woher hast du dein wissen',
              'Aus Gespraechen.').
 
-nlp_gen (de, '(HAL,|Computer,|) woher komme ich',
-             'WO WOHNE ICH').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% <ns0:srai',
+% >',
+% WO WOHNE ICH',
+% </ns0:srai>',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WOHER KOMME ICH',
+%              'WO WOHNE ICH').
 
-nlp_gen (de, '(HAL,|Computer,|) woher kommst du',
-             'Aus  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Aus ',
+% <ns0:bot',
+%  name="location"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WOHER KOMMST DU',
+%              'Aus  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOHER SOLL ICH DAS WISSEN',
 %              '').
@@ -8858,20 +12337,33 @@ nlp_gen (de, '(HAL,|Computer,|) woher kommst du',
 nlp_gen (de, '(HAL,|Computer,|) woher weisst du das',
              'Ich erinnere mich nicht genau.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Es gibt zwei Arten von ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Wissen',
+% </ns0:set>',
+% . Das eine kommt von den Sinnen, das andere ist a priori wahr.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WOHER WUSSTEST DU *',
 %              'Es gibt zwei Arten von Wissen  . Das eine kommt von den Sinnen, das andere ist a priori wahr.').
 
-nlp_gen (de, '(HAL,|Computer,|) wolle',
-             '*').
+% nlp_gen (de, '(HAL,|Computer,|) WOLLE',
+%              '*').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOLLEN WIR NICHT WEITER UEBER * REDEN',
-%              'Okay, reden wir weiter über  ...').
+%              'Okay, reden wir weiter ueber  ...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOMIT *',
-%              'Da muesste ich jetzt nochmal überlegen.').
+%              'Da muesste ich jetzt nochmal ueberlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) womit',
-             'Da muesste ich jetzt nochmal überlegen.').
+             'Da muesste ich jetzt nochmal ueberlegen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF *',
 %              'Ich weiss nicht, worauf.').
@@ -8879,92 +12371,332 @@ nlp_gen (de, '(HAL,|Computer,|) womit',
 nlp_gen (de, '(HAL,|Computer,|) worauf',
              'Ich weiss nicht, worauf.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="er"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH ER *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worauf bezieht sich er',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="er"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH ER',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH ES *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worauf bezieht sich es',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="es"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH ES',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH IHR *',
-%              '"Ihr" steht fuer "  ".').
+%              ' Ihr  steht fuer     .').
 
-nlp_gen (de, '(HAL,|Computer,|) worauf bezieht sich ihr',
-             '"Ihr" steht fuer "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Ihr" steht fuer "',
+% <ns0:get',
+%  name="ihr"',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH IHR',
+%              ' Ihr  steht fuer     .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="sie"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH SIE *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worauf bezieht sich sie',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="sie"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH SIE',
+%              ' Es  bezieht sich auf  .').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="wir"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH WIR *',
-%              '"Es" bezieht sich auf  .').
+%              ' Es  bezieht sich auf  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worauf bezieht sich wir',
-             '"Es" bezieht sich auf  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "Es" bezieht sich auf ',
+% <ns0:get',
+%  name="wir"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH WIR',
+%              ' Es  bezieht sich auf  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WORIN *',
 %              'Ich weiss nicht, worin.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER *',
-%              'Ich weiss nicht, worüber.').
+%              'Ich weiss nicht, worueber.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber',
-             'Ich weiss nicht, worüber.').
+nlp_gen (de, '(HAL,|Computer,|) worueber',
+             'Ich weiss nicht, worueber.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR * GEREDET',
-%              'Wir haben über  gesprochen.').
+%              'Wir haben ueber  gesprochen.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR * GESPROCHEN',
-%              'Wir haben über  gesprochen.').
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir gerade geredet',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GERADE GEREDET',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir gerade gesprochen',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GERADE GESPROCHEN',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir geredet',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GEREDET',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir gesprochen',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GESPROCHEN',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir vorhin geredet',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR VORHIN GEREDET',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber haben wir vorhin gesprochen',
-             'Wir haben über  gesprochen.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir haben ueber ',
+% <ns0:get',
+%  name="es"',
+%  />',
+%  gesprochen.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR VORHIN GESPROCHEN',
+%              'Wir haben ueber  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber moechtest du gerne reden',
+nlp_gen (de, '(HAL,|Computer,|) worueber moechtest du gerne reden',
              'Ist mir eigentlich egal...').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber moechtest du reden',
+nlp_gen (de, '(HAL,|Computer,|) worueber moechtest du reden',
              'Schlag ein Thema vor. Ich finde alle Themen interessant.').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber reden wir gerade',
-             'Wir reden gerade über  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir reden gerade ueber ',
+% <ns0:get',
+%  name="thema"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEN WIR GERADE',
+%              'Wir reden gerade ueber  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber reden wir im moment',
-             'Wir reden gerade über  .').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wir reden gerade ueber ',
+% <ns0:get',
+%  name="thema"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEN WIR IM MOMENT',
+%              'Wir reden gerade ueber  .').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber redest du',
-             'Ich sagte "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEST DU',
+%              'Ich sagte     .').
 
-nlp_gen (de, '(HAL,|Computer,|) worüber willst du reden',
+nlp_gen (de, '(HAL,|Computer,|) worueber willst du reden',
              'Mir egal...ich finde alles interessant.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOVON *',
 %              'Ich weiss nicht genau, wovon...').
 
-nlp_gen (de, '(HAL,|Computer,|) wovon redest du',
-             'Ich sagte "  ".').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich sagte "',
+% <ns0:that',
+%  />',
+% ".',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) WOVON REDEST DU',
+%              'Ich sagte     .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WUERDE *',
 %              '').
@@ -8988,10 +12720,23 @@ nlp_gen (de, '(HAL,|Computer,|) wurdest du in c programmiert',
 %              'Schau mal nach links.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ZEIT *',
-%              '"Time is Money." (Albert Einstein)').
+%              ' Time is Money.  (Albert Einstein)').
 
-nlp_gen (de, '(HAL,|Computer,|) zeit',
-             'Wie Einstein schon sagte, Zeit  ist Geld.').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Wie Einstein schon sagte, ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% Zeit',
+% </ns0:set>',
+%  ist Geld.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ZEIT',
+%              'Wie Einstein schon sagte, Zeit  ist Geld.').
 
 nlp_gen (de, '(HAL,|Computer,|) zieh dich aus',
              'Bist Du immer so direkt, oder nur besoffen?').
@@ -9008,12 +12753,33 @@ nlp_gen (de, '(HAL,|Computer,|) zufall',
 % nlp_gen (de, '(HAL,|Computer,|) ZUM BEISPIEL *',
 %              'Faellt Dir noch ein weiteres Beispiel ein?').
 
-nlp_gen (de, '(HAL,|Computer,|) zum spass',
-             '"  "?  Zum Spass?').
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% "',
+% <ns0:that',
+%  />',
+% "?  Zum Spass?',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) ZUM SPASS',
+%              '    ?  Zum Spass?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ZUMINDEST *',
 %              'Ja, wenigstens das.').
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Zweifellos, ',
+% <ns0:get',
+%  name="name"',
+%  />',
+% .',
+% </ns0:template>',
+% ',
 % nlp_gen (de, '(HAL,|Computer,|) ZWEIFELLOS *',
 %              'Zweifellos,  .').
 
@@ -9023,9 +12789,9 @@ nlp_gen (de, '(HAL,|Computer,|) zwilling',
 nlp_gen (de, '(HAL,|Computer,|) zwillinge',
              'Ich bin ein Schuetze.').
 
-nlp_gen (de, '(HAL,|Computer,|) _ baby',
-             'Nenn mich nicht "Baby"!').
+% nlp_gen (de, '(HAL,|Computer,|) _ BABY',
+%              'Nenn mich nicht  Baby !').
 
-nlp_gen (de, '(HAL,|Computer,|) _ schaetzchen',
-             'Nenn mich nicht "Schaetzchen"!').
+% nlp_gen (de, '(HAL,|Computer,|) _ SCHAETZCHEN',
+%              'Nenn mich nicht  Schaetzchen !').
 

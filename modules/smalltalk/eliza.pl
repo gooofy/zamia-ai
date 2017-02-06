@@ -226,7 +226,11 @@ nlp_gen(de, '(HAL,|Computer,|Du|) (vielleicht|möglicherweise|das ist denkbar)',
 nlp_gen(de, '(HAL,|Computer,|) du bist (dumm|strohdumm|doof|verrückt)',
             'Warum denkst Du das?', 'Bist Du Dir da ganz sicher?', 'Sprechen doch nicht wirklich über mich, oder?').
 
+nlp_gen (de, '(HAL,|Computer,|) das klingt nicht (sehr|besonders|allzu|) intelligent',
+             'Intelligenter als manche Politikerrede...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
 
+nlp_gen (de, '(HAL,|Computer,|) das (ergibt|macht) (gar keinen|ueberhaupt keinen|keinen|wenig|nicht viel) sinn',
+             'Da habe ich wohl den Faden verloren?', 'Oh, bitte hilf mir auf die Sprünge').
 
 
 % nlp_gen(de,

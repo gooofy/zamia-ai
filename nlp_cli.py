@@ -163,12 +163,19 @@ class NLPCli(cmdln.Cmdln):
 
     @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
                    help="argument(s) represent(s) file name(s) to read sparql from")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
     def do_kb_query(self, subcmd, opts, *paths):
         """${cmd_name}: run sparql query
 
         ${cmd_usage}
         ${cmd_option_list}
         """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
 
         for a in paths:
 
@@ -178,9 +185,10 @@ class NLPCli(cmdln.Cmdln):
             else:
                 query = a
 
-            qres = self.kb.query(query)
+            qres = self.kernal.kb.query(query)
 
-            # print repr(qres)
+            logging.debug('sparql query result: %s' % str(qres))
+            logging.debug('sparql query bindings: %s' % repr(qres.bindings))
             # print repr(qres.bindings)
 
             for binding in qres.bindings:
@@ -190,8 +198,9 @@ class NLPCli(cmdln.Cmdln):
                 s = ''
 
                 for var in binding:
-                     s += u'%s=%s ' % (unicode(var), unicode(binding[var]))
+                     s += u'%s=%s ' % (unicode(var), repr(binding[var]))
                 logging.info(s)
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
                    help="argument(s) represent(s) file name(s) to read sparql from")

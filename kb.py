@@ -57,6 +57,7 @@ COMMON_PREFIXES = {
             'geo':     'http://www.opengis.net/ont/geosparql#',
             'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
             'geof':    'http://www.opengis.net/def/function/geosparql/',
+            'schema':  'http://schema.org/',
     }
 
 #

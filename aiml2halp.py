@@ -110,9 +110,37 @@ with codecs.open(outputfn, 'w', 'utf8') as outputf:
                         t += ' '
                     t += ' ' + child.tail.strip()
 
+            t = t.replace('"', ' ').replace('\n', ' ').replace('\'', ' ')
+
+            # comment out pattern if it contains any aiml mechanics
+            # we do not support yet
+
+            comment_out = '*' in pt or '_' in pt or '*' in t or len(t) == 0
+            keep_xml    = False
+            if tmpl.find('aiml:srai', ns) is not None:
+                keep_xml = True
+                comment_out = True
+            if tmpl.find('aiml:that', ns) is not None:
+                keep_xml = True
+                comment_out = True
+            if tmpl.find('aiml:bot', ns) is not None:
+                keep_xml = True
+                comment_out = True
+            if tmpl.find('aiml:set', ns) is not None:
+                keep_xml = True
+                comment_out = True
+            if tmpl.find('aiml:get', ns) is not None:
+                keep_xml = True
+                comment_out = True
+
+
             # print '   ', t
 
-            if '*' in pt or len(t)==0:
+            if comment_out:
+                if keep_xml:
+                    for l in ET.tostringlist(tmpl, 'utf8'):
+                        outputf.write("%% %s',\n" % l.replace('\n',''))
+
                 outputf.write("%% nlp_gen (de, '(HAL,|Computer,|) %s',\n" % pt)
                 outputf.write("%%              '%s').\n\n" % t)
             else:

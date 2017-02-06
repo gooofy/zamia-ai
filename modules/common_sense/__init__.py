@@ -25,6 +25,8 @@ KB_SOURCES = [
                 'dbr:Hamburg',
                 'dbr:Brackenheim',
                 'dbr:Heilbronn',
+                'dbr:Ludwigshafen',
+                '<http://dbpedia.org/resource/Blomberg,_North_Rhine-Westphalia>',
                 'dbr:Biberach_an_der_Riss',
                 '<http://dbpedia.org/resource/Washington,_D.C.>',
                 '<http://dbpedia.org/resource/Fairbanks,_Alaska>' 

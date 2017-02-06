@@ -26,6 +26,7 @@ import sys
 import logging
 import codecs
 import re
+import rdflib
 
 from copy import copy
 
@@ -36,6 +37,7 @@ from prolog_parser import PrologParser, SYM_EOF, PrologError
 from prolog_ai_engine import PrologAIEngine
 from nltools.tokenizer import tokenize
 from nlp_macros import NLPMacroEngine
+from kb import HALKB
 
 class PrologCompiler(object):
 
@@ -72,6 +74,100 @@ class PrologCompiler(object):
                 mapping[p.name] = p.args[0].s
 
             mappings.append(mapping)
+
+        self.macro_engine.define_named_macro(name, mappings)
+
+    def sparql_macro(self, clause):
+
+        args = clause.head.args
+
+        if not isinstance (args[0], StringLiteral):
+            raise PrologError (u'sparql_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
+        if not isinstance (args[1], StringLiteral):
+            raise PrologError (u'sparql_macro: arg 1 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
+
+        name  = args[0].s
+        query = args[1].s
+
+        result = self.kb.query (query)
+
+        logging.debug ('ran query. resulting bindings: %s' % repr(result.bindings))
+
+        # turn result into lists of strings we can then bind to macro variables
+
+        res_map  = {} 
+        res_vars = {} # variable idx -> variable name
+
+        for binding in result:
+
+            for v in binding.labels:
+
+                l = binding[v]
+
+                logging.debug('l class: %s' % l.__class__)
+
+                value = unicode(l)
+
+                if isinstance (l, rdflib.term.Literal):
+
+                    if l.datatype:
+
+                        datatype = str(l.datatype)
+
+                        if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                            value = unicode(value)
+                        elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                            value = unicode(value)
+                        # FIXME elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                        # FIXME     dt = dateutil.parser.parse(value)
+                        # FIXME     value = NumberLiteral(time.mktime(dt.timetuple()))
+                        else:
+                            raise PrologError('sparql_macro: unknown datatype %s .' % datatype)
+                   
+                    else:
+                        value = unicode(value)
+
+                if not v in res_map:
+                    res_map[v] = []
+                    res_vars[binding.labels[v]] = v
+
+                res_map[v].append(value)
+
+        logging.debug("sparql_macro: res_map : '%s'" % repr(res_map))
+        logging.debug("sparql_macro: res_vars: '%s'" % repr(res_vars))
+
+        # transform bindings into macro mappings
+
+        # v_idx = 0
+
+        # for arg in args[1:]:
+
+        #     sparql_var = res_vars[v_idx]
+        #     prolog_var = pe.prolog_get_variable(arg, g.env)
+        #     value      = res_map[sparql_var]
+
+        #     # logging.debug("builtin_sparql_query mapping %s -> %s: '%s'" % (sparql_var, prolog_var, value))
+
+        #     g.env[prolog_var] = ListLiteral(value)
+
+        #     v_idx += 1
+
+        mappings = []
+
+        for binding_idx in range(len(res_map[res_vars[0]])):
+
+            mapping = {}
+
+            for i, m in enumerate(args[2:]):
+
+                if not isinstance (m, Variable):
+                    raise PrologError (u'sparql_macro: arg %d unexpected type: %s. Variable expected.' % (i+2, m.__class__))
+
+                mapping[m.name] = res_map[res_vars[i]][binding_idx]
+
+            mappings.append(mapping)
+
+        logging.debug ('sparql_macro: resulting mappings: %s' % repr(mappings))
 
         self.macro_engine.define_named_macro(name, mappings)
 
@@ -359,10 +455,12 @@ class PrologCompiler(object):
         parser            = PrologParser()
 
         self.macro_engine = NLPMacroEngine()
+        self.kb           = HALKB()
 
         self.nlp_test_engine = PrologAIEngine(self.db)
         self.nlp_test_engine.set_trace(self.trace)
         self.nlp_test_engine.set_context_name('test')
+
 
         with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
             parser.start(f, pl_fn)
@@ -377,6 +475,9 @@ class PrologCompiler(object):
 
                     if clause.head.name == 'nlp_macro':
                         self.nlp_macro(clause)
+
+                    elif clause.head.name == 'sparql_macro':
+                        self.sparql_macro(clause)
 
                     elif clause.head.name == 'nlp_gen':
                         self.nlp_gen(module_name, clause)

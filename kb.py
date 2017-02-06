@@ -134,14 +134,14 @@ class HALKB(object):
             print repr(context.identifier)
             self.clear_graph(context.identifier)
 
-    def dump(self, fn):
+    def dump(self, fn, format='n3'):
 
         # print
         # print 'dump', fn
         # print
         # print list(self.graph.contexts())
 
-        self.graph.serialize(destination=fn, format='n3')
+        self.graph.serialize(destination=fn, format=format)
 
     def dump_graph(self, context, fn, format='n3'):
 

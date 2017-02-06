@@ -122,10 +122,10 @@ class NLPCli(cmdln.Cmdln):
         """
 
         if opts.module == 'all':
-            self.kb.dump(opts.outfn, format=opts.format)
+            self.kernal.kb.dump(opts.outfn, format=opts.format)
         else:
-            graph = self._module_graph_name(opts.module)
-            self.kb.dump_graph(graph, opts.outfn, format=opts.format)
+            graph = self.kernal._module_graph_name(opts.module)
+            self.kernal.kb.dump_graph(graph, opts.outfn, format=opts.format)
 
         logging.info( "%s written." % opts.outfn)
 

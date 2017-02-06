@@ -277,7 +277,12 @@ class NLPKernal(object):
                              }
                              """ % (node, node)
 
+                    logging.debug('query: %s' % (query))
+
                     res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
+
+                    if res.status_code != 200:
+                        raise Exception ('%d: SPARQL request failed: %s query was: %s' % (res.status_code, res.text, query))
 
                     logging.debug("importing %s ?r ?n from %s: %d bytes." % (node, endpoint, len(res.text)))
 

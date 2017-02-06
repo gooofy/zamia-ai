@@ -12,7 +12,7 @@ prolog:
 	./nlp_cli.py compile common_sense weather smalltalk radio
 
 train:
-	./nlp_cli.py train
+	./nlp_cli.py train -n 50000
 
 clean:
 	./nlp_cli.py clean -a all

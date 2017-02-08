@@ -29,6 +29,7 @@ import codecs
 import logging
 import cmdln
 import random
+import time
 
 import psycopg2
 
@@ -163,8 +164,10 @@ class NLPCli(cmdln.Cmdln):
 
     @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
                    help="argument(s) represent(s) file name(s) to read sparql from")
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
+    @cmdln.option ("-s", "--sql", dest="sql", action="store_true",
+                   help="log SQL statements")
+    @cmdln.option ("-v", "--verbose", dest="verbose", action="store_true",
+                   help="verbose logging")
     def do_kb_query(self, subcmd, opts, *paths):
         """${cmd_name}: run sparql query
 
@@ -177,6 +180,9 @@ class NLPCli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
+        if opts.sql:
+            logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
         for a in paths:
 
             if opts.from_file:
@@ -185,10 +191,15 @@ class NLPCli(cmdln.Cmdln):
             else:
                 query = a
 
+            logging.debug ('running query...')
+            start_time = time.time()
+
             qres = self.kernal.kb.query(query)
 
-            logging.debug('sparql query result: %s' % str(qres))
-            logging.debug('sparql query bindings: %s' % repr(qres.bindings))
+            logging.debug ('query done. took %fs' % (time.time()-start_time))
+
+            logging.debug ('sparql query result: %s' % str(qres))
+            logging.debug ('sparql query bindings: %s' % repr(qres.bindings))
             # print repr(qres.bindings)
 
             for binding in qres.bindings:
@@ -201,6 +212,7 @@ class NLPCli(cmdln.Cmdln):
                      s += u'%s=%s ' % (unicode(var), repr(binding[var]))
                 logging.info(s)
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.WARN)
 
     @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
                    help="argument(s) represent(s) file name(s) to read sparql from")

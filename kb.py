@@ -33,9 +33,9 @@ import requests
 from requests.auth import HTTPDigestAuth
 
 import rdflib
-import rdflib_sqlalchemy2
 
 from nltools import misc
+from sparqlalchemy.sparqlalchemy import SPARQLAlchemyStore
 
 # # our sleepycat graph store
 # 
@@ -66,8 +66,6 @@ COMMON_PREFIXES = {
 
 class HALKB(object):
 
-    ident = rdflib.URIRef("halkb")
-
     def __init__(self):
 
         #
@@ -82,107 +80,61 @@ class HALKB(object):
 
         config = misc.load_config('.nlprc')
 
-        # self.graph = rdflib.ConjunctiveGraph('Sleepycat')
-        # self.graph.open(RDF_LIB_STORE_PATH, create = True)
+        # DB, SPARQLAlchemyStore
 
-        # SQLAlchemy
+        db_url = config.get('db', 'url')
 
-        url = config.get('db', 'url')
-
-        self.uri = rdflib.Literal(url)
-
-        rdflib_sqlalchemy2.registerplugins()
-        store = rdflib.plugin.get("SQLAlchemy2", rdflib.store.Store)(identifier=self.ident)
-        self.graph = rdflib.ConjunctiveGraph(store, identifier=self.ident)
-        self.graph.open(self.uri, create=True)
-
-        # postgresql
-
-        # dbserver  = config.get('db', 'dbserver')
-        # dbname    = config.get('db', 'dbname')
-        # dbuser    = config.get('db', 'dbuser')
-        # dbpass    = config.get('db', 'dbpass')
-
-        # db_type = 'PostgreSQL' # Use 'MySQL' instead, if that's what you have
-        # xfg = 'user=%s,password=%s,host=%s,db=%s' % (dbuser, dbpass, dbserver, dbname)
-        # store = rdflib.plugin.get(db_type, rdflib.store.Store)( identifier    = 'halkb',
-        #                                                         configuration = cfg)
-        # store.open(create=True) # only True when opening a store for the first time
-
-        # self.graph = rdflib.graph.ConjunctiveGraph(store)
+        self.sas = SPARQLAlchemyStore(db_url, 'halkb', echo=False)
 
 
     def register_graph(self, c):
 
-        # Bind a few prefix/namespace pairs for more readable output
+        raise Exception ('FIXME: implement dump functions in sparqlalchemy')
 
-        g = self.graph.get_context(c)
-        for p in COMMON_PREFIXES:
-            g.bind(p, rdflib.Namespace(COMMON_PREFIXES[p]))
+        # # Bind a few prefix/namespace pairs for more readable output
+
+        # g = self.graph.get_context(c)
+        # for p in COMMON_PREFIXES:
+        #     g.bind(p, rdflib.Namespace(COMMON_PREFIXES[p]))
 
     def close (self):
-        self.graph.close()
+        # self.graph.close()
+        pass
 
     def clear_graph(self, context):
-        query = """
-                CLEAR GRAPH <%s>
-                """ % (context)
-        self.sparql(query)
+        self.sas.clear_graph(context)
+        # query = """
+        #         CLEAR GRAPH <%s>
+        #         """ % (context)
+        # self.sparql(query)
 
     def clear_all_graphs (self):
-        for context in self.graph.contexts():
-            print repr(context.identifier)
-            self.clear_graph(context.identifier)
+        self.sas.clear_all_graphs()
 
     def dump(self, fn, format='n3'):
 
+        raise Exception ('FIXME: implement dump functions in sparqlalchemy')
         # print
         # print 'dump', fn
         # print
         # print list(self.graph.contexts())
 
-        self.graph.serialize(destination=fn, format=format)
+        # self.graph.serialize(destination=fn, format=format)
 
     def dump_graph(self, context, fn, format='n3'):
 
-        g = self.graph.get_context(context)
+        raise Exception ('FIXME: implement dump functions in sparqlalchemy')
+        # g = self.graph.get_context(context)
 
-        g.serialize(destination=fn, format='n3')
+        # g.serialize(destination=fn, format='n3')
 
     def parse (self, context, format, data):
 
-        # parse to memory firstm then do a bulk insert into our DB
+        self.sas.parse(format=format, data=data, context=context)
 
-        logging.debug('parsing to memory...')
-        cj = rdflib.ConjunctiveGraph()
-        memg = cj.get_context(context)
-        memg.parse(format=format, data=data)
-
-        quads = cj.quads()
-
-        # foo = (s, p, o, c) for s, p, o, c in quads
-        #                   if isinstance(c, Graph)
-        #                   and c.identifier is self.identifier
-        #                   and _assertnode(s,p,o)
-
-        # print foo
-        # import pdb; pdb.set_trace()
-
-        # qs = map(lambda x: x, cj.quads())
-
-        #for q in quads:
-        #    print repr(q)
-
-        logging.debug('addN ...')
-        g = self.graph.addN(quads)
-
-        # FIXME: old code without memg
-        # g = self.graph.get_context(context)
-        # g.parse(format=format, data=data)
 
     def parse_file (self, context, format, fn):
-        g = self.graph.get_context(context)
-        g.parse(fn, format=format)
+        self.sas.parse(fn, format=format, context=context)
 
     #
     # local sparql queries
@@ -190,15 +142,17 @@ class HALKB(object):
 
     def sparql(self, query):
 
-        query  = self.query_prefixes + query
+        raise Exception ('FIXME: sparql update queries not implemented yet.')
 
-        return self.graph.update(query)
+        # query  = self.query_prefixes + query
+
+        # return self.graph.update(query)
 
     def query(self, query):
 
         query  = self.query_prefixes + query
 
-        return self.graph.query(query)
+        return self.sas.query(query)
 
     #
     # remote sparql utilities
@@ -235,7 +189,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
 
-    gn = 'http://hal.zamia.org/benchmark'
+    gn = u'http://hal.zamia.org/benchmark'
 
     start_time = time.time()
     kb = HALKB()

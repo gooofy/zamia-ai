@@ -89,7 +89,8 @@ class HALKB(object):
 
     def register_graph(self, c):
 
-        raise Exception ('FIXME: implement dump functions in sparqlalchemy')
+        #FIXME: implement dump functions in sparqlalchemy
+        pass
 
         # # Bind a few prefix/namespace pairs for more readable output
 

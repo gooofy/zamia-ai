@@ -100,11 +100,11 @@ class PrologCompiler(object):
 
         for binding in result:
 
+            logging.debug(' binding labels: %s' % repr(binding.labels))
+
             for v in binding.labels:
 
                 l = binding[v]
-
-                logging.debug('l class: %s' % l.__class__)
 
                 value = unicode(l)
 

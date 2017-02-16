@@ -47,7 +47,7 @@ from kb import HALKB
 from nltools import misc
 from nltools.tokenizer import tokenize
 
-GRAPH_PREFIX       = 'http://hal.zamia.org/kb/'
+GRAPH_PREFIX       = u'http://hal.zamia.org/kb/'
 
 class NLPKernal(object):
 

@@ -30,6 +30,7 @@ import json
 import traceback
 import time
 import requests
+import urllib
 from requests.auth import HTTPDigestAuth
 
 import rdflib
@@ -58,6 +59,8 @@ COMMON_PREFIXES = {
             'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
             'geof':    'http://www.opengis.net/def/function/geosparql/',
             'schema':  'http://schema.org/',
+            'wd':      'http://www.wikidata.org/entity/',
+            'wdt':     'http://www.wikidata.org/prop/direct/',
     }
 
 #
@@ -130,12 +133,13 @@ class HALKB(object):
         # g.serialize(destination=fn, format='n3')
 
     def parse (self, context, format, data):
-
         self.sas.parse(format=format, data=data, context=context)
-
 
     def parse_file (self, context, format, fn):
         self.sas.parse(fn, format=format, context=context)
+
+    def addN (self, quads):
+        self.sas.addN(quads)
 
     #
     # local sparql queries
@@ -184,6 +188,70 @@ class HALKB(object):
 
         return json.loads(response.text.decode("utf-8"))
 
+    #
+    # LDF support
+    #
+
+    def ldf_fetch (self, ldf_endpoint, resource):
+
+        res = []
+
+        for pfx in COMMON_PREFIXES:
+
+            prefix = pfx + ':'
+
+            if resource.startswith(prefix):
+                resource = COMMON_PREFIXES[pfx] + resource[len(prefix):]
+
+        logging.debug ('LDF: r with prefixes resolved: "%s"' % resource)
+      
+        for do_subject in (True, False):
+
+            if do_subject:
+                url = ldf_endpoint + '?' + urllib.urlencode({'subject': resource})
+            else:
+                url = ldf_endpoint + '?' + urllib.urlencode({'object': resource})
+
+            logging.debug ('url: %s' % url)
+
+            while True:
+
+                response = requests.get(
+                  url,
+                  # data    = '',
+                  # params  = {'subject': resource, 'page': page} if do_subject else {'object':resource, 'page': page},
+                  headers = {"accept": 'text/turtle'},
+                )
+
+                logging.debug ('%s response: %d' % (url, response.status_code))
+
+                # for h in response.headers:
+                #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
+
+                if response.status_code != 200:
+                    break
+
+                res.append(response.text)
+
+                # paged resource?
+
+                logging.debug('parsing to memory...')
+
+                memg = rdflib.Graph()
+                memg.parse(data=response.text, format='turtle')
+               
+                url = None
+                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
+
+                    logging.debug ('got next page ref: %s' % repr(o))
+                    url = str(o)
+                    logging.debug ('got next page url: %s' % url)
+
+                if not url:
+                    break
+
+
+        return res
 
 
 if __name__ == "__main__":
@@ -199,6 +267,44 @@ if __name__ == "__main__":
     start_time = time.time()
     kb.clear_graph(gn)
     logging.debug ('HALKB clear graph took %fs' % (time.time() - start_time))
+
+    #
+    # LDF import test
+    #
+
+    # Linus Torvalds in dbpedia
+
+    ldf_endpoint = 'http://fragments.dbpedia.org/2016-04/en'
+    r =  'dbr:Linus_Torvalds'
+
+    docs = kb.ldf_fetch(ldf_endpoint, r)
+
+    logging.debug ('wikidata query for %s yielded %d documents' % (r, len(docs)))
+
+    for d in docs:
+        logging.debug ('adding doc...')
+        print d
+        kb.parse (gn, 'turtle', d)
+
+    # angela merkel in wikidata
+
+    ldf_endpoint = 'https://query.wikidata.org/bigdata/ldf'
+    r =  'wd:Q567'
+
+    docs = kb.ldf_fetch(ldf_endpoint, r)
+
+    logging.debug ('wikidata query for %s yielded %d documents' % (r, len(docs)))
+
+    for d in docs:
+
+        print d
+
+        logging.debug ('parsing doc...')
+        kb.parse (gn, 'turtle', d)
+
+
+    sys.exit(0)
+
 
     # query = """
     #            INSERT DATA {

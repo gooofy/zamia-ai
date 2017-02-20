@@ -271,39 +271,48 @@ class NLPKernal(object):
 
                     logging.debug('importing %s from %s...' % (node, endpoint))
 
-                    query = u"""
-                             CONSTRUCT {
-                                %s ?r ?n .
-                             }
-                             WHERE {
-                                %s ?r ?n .
-                             }
-                             """ % (node, node)
+                    # query = u"""
+                    #          CONSTRUCT {
+                    #             %s ?r ?n .
+                    #          }
+                    #          WHERE {
+                    #             %s ?r ?n .
+                    #          }
+                    #          """ % (node, node)
 
-                    logging.debug('query: %s' % (query))
+                    # logging.debug('query: %s' % (query))
 
-                    res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
+                    # res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
 
-                    if res.status_code != 200:
-                        raise Exception ('%d: SPARQL request failed: %s query was: %s' % (res.status_code, res.text, query))
+                    # if res.status_code != 200:
+                    #     raise Exception ('%d: SPARQL request failed: %s query was: %s' % (res.status_code, res.text, query))
 
-                    logging.debug("importing %s ?r ?n from %s: %d bytes." % (node, endpoint, len(res.text)))
+                    # logging.debug("importing %s ?r ?n from %s: %d bytes." % (node, endpoint, len(res.text)))
 
-                    self.kb.parse(context=graph, format='n3', data=res.text) 
+                    # self.kb.parse(context=graph, format='n3', data=res.text) 
 
-                    query = u"""
-                             CONSTRUCT {
-                                ?n ?r %s .
-                             }
-                             WHERE {
-                                ?n ?r %s .
-                             }
-                             """ % (node, node)
+                    # query = u"""
+                    #          CONSTRUCT {
+                    #             ?n ?r %s .
+                    #          }
+                    #          WHERE {
+                    #             ?n ?r %s .
+                    #          }
+                    #          """ % (node, node)
 
-                    res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
-                    logging.debug("importing ?n ?r %s from %s: %d bytes" % (node, endpoint, len(res.text)))
+                    # res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
+                    # logging.debug("importing ?n ?r %s from %s: %d bytes" % (node, endpoint, len(res.text)))
 
-                    self.kb.parse(context=graph, format='n3', data=res.text)
+                    # self.kb.parse(context=graph, format='n3', data=res.text)
+            
+                    docs = self.kb.ldf_fetch(endpoint, node)
+
+                    logging.debug ('%s query for %s yielded %d documents' % (endpoint, node, len(docs)))
+
+                    for d in docs:
+                        logging.debug ('   parsing %d bytes...' % len(d))
+                        self.kb.parse (context=graph, format='turtle', data=d)
+
 
     def import_kb_multi (self, module_names):
 

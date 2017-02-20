@@ -46,45 +46,8 @@ engine = create_engine(url)
 Base = declarative_base()
 
 #
-# knowledge / reasoning
-#
-
-class ORMClause(Base):
-
-    __tablename__ = 'clauses'
-
-    id                = Column(Integer, primary_key=True)
-
-    module            = Column(String(255), index=True)
-    head              = Column(String(255), index=True)
-    arity             = Column(Integer, index=True) 
-    prolog            = Column(UnicodeText)
-  
-class ORMPredicateDoc(Base):
-
-    __tablename__ = 'predicate_docs'
-
-    module            = Column(String(255), index=True)
-    name              = Column(String(255), primary_key=True)
-
-    doc               = Column(UnicodeText)
-
-#
 # NLP stuff
 #
-
-class Discourse(Base):
-
-    __tablename__ = 'discourses'
-
-    id                = Column(Integer, primary_key=True)
-    
-    num_participants  = Column(Integer)
-    lang              = Column(String(2), index=True)
-
-    module            = Column(String(255), index=True)
-
-    rounds            = relationship("DiscourseRound", backref="discourse", passive_deletes=True)
 
 class DiscourseRound(Base):
 
@@ -92,12 +55,11 @@ class DiscourseRound(Base):
 
     id                = Column(Integer, primary_key=True)
 
-    round_num         = Column(Integer, index=True)
+    lang              = Column(String(2), index=True)
+    module            = Column(String(255), index=True)
 
     inp               = Column(UnicodeText)
     resp              = Column(UnicodeText)
-
-    discourse_id      = Column(Integer, ForeignKey('discourses.id', ondelete='CASCADE'))
 
 class Context(Base):
 

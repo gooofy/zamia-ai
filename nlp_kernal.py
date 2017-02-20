@@ -37,11 +37,15 @@ import numpy as np
 from sqlalchemy.orm import sessionmaker
 import model
 
-from logic import *
-from logicdb import *
-from prolog_parser import PrologParser, SYM_EOF, PrologError
-from prolog_ai_engine import PrologAIEngine
-from prolog_compiler import PrologCompiler
+from halprolog.logicdb   import LogicDB
+from aiprolog.runtime    import AIPrologRuntime
+from aiprolog.parser     import AIPrologParser
+
+# from logic import *
+# from logicdb import *
+# from prolog_parser import PrologParser, SYM_EOF, PrologError
+# from prolog_ai_engine import PrologAIEngine
+# from prolog_compiler import PrologCompiler
 
 from kb import HALKB
 from nltools import misc
@@ -66,7 +70,7 @@ class NLPKernal(object):
         # logic DB
         #
 
-        self.db = LogicDB(self.session)
+        self.db = LogicDB(model.url)
 
         #
         # knowledge base
@@ -96,9 +100,8 @@ class NLPKernal(object):
         # prolog environment setup
         #
 
-        self.prolog_engine = PrologAIEngine(self.db)
-
-        self.parser = PrologParser()
+        self.prolog_rt = AIPrologRuntime(self.db)
+        self.parser    = AIPrologParser()
 
 
     # FIXME: this will work only on the first call
@@ -325,15 +328,20 @@ class NLPKernal(object):
         m = self.modules[module_name]
 
         self.db.clear_module(module_name)
-        self.session.query(model.Discourse).filter(model.Discourse.module==module_name).delete()
 
-        compiler = PrologCompiler (self.session, trace, run_tests, print_utterances)
+        logging.debug ('clearing discourses...')
+        self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
+
+        logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
+
+        compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances)
 
         for pl_fn in getattr (m, 'PL_SOURCES'):
             
             pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
 
-            compiler.do_compile (pl_pathname, module_name)
+            logging.debug('   parsing %s ...' % pl_pathname)
+            compiler.compile_file (pl_pathname, module_name, self.db)
 
     def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False):
 
@@ -445,13 +453,13 @@ class NLPKernal(object):
             c = self.parser.parse_line_clause_body(prolog_s)
             logging.debug( "Parse result: %s" % c)
 
-            self.prolog_engine.reset_utterances()
-            self.prolog_engine.reset_actions()
+            self.prolog_rt.reset_utterances()
+            self.prolog_rt.reset_actions()
 
-            self.prolog_engine.search(c)
+            self.prolog_rt.search(c)
 
-            utts    = self.prolog_engine.get_utterances()
-            actions = self.prolog_engine.get_actions()
+            utts    = self.prolog_rt.get_utterances()
+            actions = self.prolog_rt.get_actions()
 
             return utts, actions
 

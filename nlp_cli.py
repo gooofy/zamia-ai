@@ -254,6 +254,7 @@ class NLPCli(cmdln.Cmdln):
 
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
+            logging.debug('verbose logging enabled.')
         else:
             logging.getLogger().setLevel(logging.INFO)
 

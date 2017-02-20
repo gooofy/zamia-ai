@@ -42,53 +42,45 @@ class NLPMacroEngine(object):
     def define_named_macro(self, name, mappings):
         self.named_macros[name] = mappings
 
-    def macro_expand(self, lang, nlps, preds):
+    def macro_expand(self, lang, nlp_input, response):
 
-        logging.debug ('macro_expand: nlps=%s, preds=%s' % (repr(nlps), repr(preds)))
+        logging.debug ('macro_expand: nlp_input=%s, response=%s' % (repr(nlp_input), repr(response)))
 
         # handle implicit macros
 
         implicit_macros = {}
 
-        nlps2 = []
+        nlp_input2 = ''
 
-        for nlp in nlps:
+        i = 0
+        while i<len(nlp_input):
 
-            nlp2 = ''
+            if nlp_input[i] == '(':
 
-            i = 0
-            while i<len(nlp):
+                j = nlp_input[i+1:].find(')')
+                if j<0:
+                    raise Exception (') missing')
+                j += i
 
-                if nlp[i] == '(':
+                # extract macro
 
-                    j = nlp[i+1:].find(')')
-                    if j<0:
-                        raise Exception (') missing')
-                    j += i
+                macro_s = nlp_input[i+1:j+1]
 
-                    # extract macro
+                # print "macro_s: %s" % macro_s
 
-                    macro_s = nlp[i+1:j+1]
+                macro_name = '__INTERNAL_MACRO_%06d__' % len(implicit_macros)
 
-                    # print "macro_s: %s" % macro_s
+                implicit_macros[macro_name] = []
+                for s in macro_s.split('|'):
+                    implicit_macros[macro_name].append({'w': s.strip()})
 
-                    macro_name = '__INTERNAL_MACRO_%06d__' % len(implicit_macros)
+                nlp_input2 += '@' + macro_name + ':w '
 
-                    implicit_macros[macro_name] = []
-                    for s in macro_s.split('|'):
-                        implicit_macros[macro_name].append({'w': s.strip()})
+                i = j+2
+            else:
 
-                    nlp2 += '@' + macro_name + ':w '
-
-                    i = j+2
-                else:
-
-                    nlp2 += nlp[i]
-                    i+=1
-
-            nlps2.append(nlp2)
-
-            # print "after implicit macro handling: %s" % nlp2
+                nlp_input2 += nlp_input[i]
+                i+=1
 
         # print "implicit macros: %s" % repr(implicit_macros)
 
@@ -96,19 +88,17 @@ class NLPMacroEngine(object):
 
         macro_names = set()
 
-        for nlp in nlps2:
+        # print nlp_input
 
-            # print nlp
+        for pos, char in enumerate(nlp_input):
 
-            for pos, char in enumerate(nlp):
+            if char == '@':
 
-                if char == '@':
+                macro = re.match(r'@([A-Z0-9_]+):', nlp_input[pos:])
 
-                    macro = re.match(r'@([A-Z0-9_]+):', nlp[pos:])
+                # print "MACRO:", macro.group(1)
 
-                    # print "MACRO:", macro.group(1)
-
-                    macro_names.add(macro.group(1))
+                macro_names.add(macro.group(1))
 
         # print "macro names used: %s" % macro_names
 
@@ -140,37 +130,31 @@ class NLPMacroEngine(object):
 
             else:
 
-                # generate discourse for this set of mappings
+                # generate discourse_round for this set of mappings
 
                 # print 'mappings:', repr(mappings)
 
-                discourse = []
+                s = nlp_input2
+                p = response
 
-                argc      = 1
-                for s, p in zip(nlps2, preds):
+                # print s,p
 
-                    # print s,p
+                for k in mappings:
 
-                    for k in mappings:
+                    for v in mappings[k]:
 
-                        for v in mappings[k]:
+                        s = s.replace('@'+k+':'+v, mappings[k][v])
+                        p = p.replace('@'+k+':'+v, mappings[k][v])
 
-                            s = s.replace('@'+k+':'+v, mappings[k][v])
-                            p = p.replace('@'+k+':'+v, mappings[k][v])
+                inp_raw = misc.compress_ws(s.lstrip().rstrip())
+                p       = misc.compress_ws(p.lstrip().rstrip())
 
-                    inp_raw = misc.compress_ws(s.lstrip().rstrip())
-                    p       = misc.compress_ws(p.lstrip().rstrip())
+                inp_tokenized = ' '.join(tokenize(inp_raw, lang))
 
-                    # print s
-                    # print p
-
-                    inp_tokenized = ' '.join(tokenize(inp_raw, lang))
-
-                    discourse.append((inp_tokenized, p))
+                discourse = (inp_tokenized, p)
+                discourses.append(discourse)
 
                 logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))
-
-                discourses.append(discourse)
 
         return discourses
 

@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# HAL-PROLOG compiler
+# HAL-PROLOG parser with AI specific directives and macros added
 #
 
 import os
@@ -31,23 +31,37 @@ import rdflib
 from copy import copy
 
 import model
-from logic import *
-from logicdb import *
-from prolog_parser import PrologParser, SYM_EOF, PrologError
-from prolog_ai_engine import PrologAIEngine
 from nltools.tokenizer import tokenize
-from nlp_macros import NLPMacroEngine
 from kb import HALKB
 
-class PrologCompiler(object):
+from halprolog.parser import PrologParser
+from halprolog.errors import PrologError
+from halprolog.logic  import *
+from nlp_macro_engine import NLPMacroEngine
+from runtime          import AIPrologRuntime
 
-    def __init__(self, session, trace = False, run_tests = False, print_utterances=False, split_utterances=False):
+# from prolog_parser import PrologParser, SYM_EOF, PrologError
+# from prolog_ai_engine import PrologAIEngine
+# from nlp_macros import NLPMacroEngine
 
-        self.session          = session
+class AIPrologParser(PrologParser):
+
+    def __init__(self, trace = False, run_tests = False, print_utterances=False, split_utterances=False):
+
+        super (AIPrologParser, self).__init__()
+
         self.trace            = trace
         self.run_tests        = run_tests
         self.print_utterances = print_utterances
         self.split_utterances = split_utterances
+
+        # register directives
+
+        self.register_directive('nlp_macro',           self.nlp_macro,           None)
+        self.register_directive('sparql_macro',        self.sparql_macro,        None)
+        self.register_directive('nlp_gen',             self.nlp_gen,             None)
+        self.register_directive('nlp_test',            self.nlp_test,            None)
+        self.register_directive('set_context_default', self.set_context_default, None)
 
     def set_trace (self, trace):
         self.trace = trace
@@ -55,7 +69,7 @@ class PrologCompiler(object):
     def set_run_tests (self, run_tests):
         self.run_tests = run_tests
 
-    def nlp_macro(self, clause):
+    def nlp_macro(self, module_name, clause, user_data):
 
         args = clause.head.args
 
@@ -77,7 +91,7 @@ class PrologCompiler(object):
 
         self.macro_engine.define_named_macro(name, mappings)
 
-    def sparql_macro(self, clause):
+    def sparql_macro(self, module_name, clause, user_data):
 
         args = clause.head.args
 
@@ -171,122 +185,107 @@ class PrologCompiler(object):
 
         self.macro_engine.define_named_macro(name, mappings)
 
-    def nlp_gen(self, module_name, clause):
+    # nlp_gen(de, 
+    #         '@HI:w @ADDRESSEE:w @VERB:w @PLEASE:w @MAL:w @WHAT:w @VERB:v',
+    #         @WHAT:p, @VERB:p).
 
+    def nlp_gen(self, module_name, clause, user_data):
+
+        logging.debug (u'nlp_gen: %s' % clause)
+
+        # import pdb; pdb.set_trace()
+        
         args = clause.head.args
+
+        if len(args) < 3:
+            raise PrologError (u'nlp_gen: at least 3 arguments expected: lang, input, response(s) (got: %s)' % clause)
 
         lang = args[0].name
 
         # extract arguments
 
-        nlps  = []
-        preds = []
+        nlp_input = args[1].s
+        response = u''
 
-        argc = 1
+        argc = 2
+
         while argc < len(args):
 
-            logging.debug ('arg[%d]: %s' % (argc, repr(args[argc])))
-            argc += 1
+            a = args[argc]
 
-        argc = 1
-        while argc < len(args):
+            if isinstance (a, Predicate):
+                if len(response)>0:
+                    response += u';'
+                response += unicode(a)
 
-            n = args[argc].s
-            argc += 1
+            elif isinstance (a, StringLiteral):
 
-            p = u''
+                if self.split_utterances:
 
-            while argc < len(args):
+                    # split strings into individual words
+                    # generate one say(lang, word) predicate per word
+                    # plus one eou at the end to mark the end of the utterance
 
-                a = args[argc]
+                    # make sure we keep punctuation when tokenizing
+                    # so tts has a better chance at getting prosody right
 
-                if isinstance (a, Predicate):
-                    if a.name == 'nnr':
-                        argc += 1
-                        break
+                    for token in tokenize(a.s, lang=lang, keep_punctuation=True):
 
-                    if len(p)>0:
-                        p += u';'
-                    p += unicode(a)
+                        t = token.strip()
 
-                elif isinstance (a, StringLiteral):
+                        if len(t) == 0:
+                            continue
 
-                    if self.split_utterances:
+                        if len(response)>0:
+                            response += u';'
+                        response += u'say(%s, "%s")' % (lang, t)
 
-                        # split strings into individual words
-                        # generate one say(lang, word) predicate per word
-                        # plus one eou at the end to mark the end of the utterance
-
-                        # make sure we keep punctuation when tokenizing
-                        # so tts has a better chance at getting prosody right
-
-                        for token in tokenize(a.s, lang=lang, keep_punctuation=True):
-
-                            t = token.strip()
-
-                            if len(t) == 0:
-                                continue
-
-                            if len(p)>0:
-                                p += u';'
-                            p += u'say(%s, "%s")' % (lang, t)
-
-                        if len(p)>0:
-                            p += u';'
-                        p += u'eou'
-
-                    else:
-                        if len(p)>0:
-                            p += u';'
-                        p += u'say_eou(%s, "%s")' % (lang, a.s)
-
-
-                elif isinstance (a, NLPMacroCall):
-
-                    if len(p)>0:
-                        p += u';'
-                    p += u'@%s:%s' % (a.name, a.pred)
+                    if len(response)>0:
+                        response += u';'
+                    response += u'eou'
 
                 else:
+                    if len(response)>0:
+                        response += u';'
+                    response += u'say_eou(%s, "%s")' % (lang, a.s)
 
-                    raise PrologError (u'nlp_gen: unexpected argument: %s' % unicode(a))
-                    
 
-                logging.debug (u'arg[%d]: %s p: %s' % (argc, repr(args[argc]), p))
-                argc += 1
+            elif isinstance (a, MacroCall):
 
-            nlps.append(n)
-            preds.append(p)
+                if len(response)>0:
+                    response += u';'
+                response += u'@%s:%s' % (a.name, a.pred)
+
+            else:
+
+                raise PrologError (u'nlp_gen: unexpected argument: %s' % unicode(a))
+                
+
+            logging.debug (u'arg[%d]: %s response: %s' % (argc, repr(args[argc]), response))
+            argc += 1
 
         # generate all macro-expansions
 
-        ds = self.macro_engine.macro_expand(lang, nlps, preds)
+        ds = self.macro_engine.macro_expand(lang, nlp_input, response)
 
-        for d in ds:
+        for inp, resp in ds:
 
-            discourse = model.Discourse(num_participants = 2,
-                                        lang             = lang,
-                                        module           = module_name)
-            self.session.add(discourse)
+            if len(inp.strip()) == 0:
+                raise PrologError ('nlp_gen: empty input generated.')
 
-            round_num = 0
-            for inp, resp in d:
+            if self.print_utterances:
+                logging.info(u'inp: %s' % inp)
 
-                if len(inp.strip()) == 0:
-                    raise PrologError ('nlp_gen: empty input generated.')
+            dr = model.DiscourseRound( lang      = lang,
+                                       module    = module_name,
+                                       inp       = inp, 
+                                       resp      = resp)
+            self.db.session.add(dr)
 
-                if self.print_utterances:
-                    logging.info(u'inp: %s' % inp)
+    def nlp_test(self, module_name, clause, user_data):
 
-                dr = model.DiscourseRound(inp       = inp, 
-                                          resp      = resp,  
-                                          discourse = discourse, 
-                                          round_num = round_num)
-                self.session.add(dr)
-
-                round_num += 1
-
-    def nlp_test(self, clause):
+        if not self.run_tests:
+            return
 
         args = clause.head.args
 
@@ -324,8 +323,8 @@ class PrologCompiler(object):
 
             d_ids = set()
             
-            for dr in self.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp_tokenized==test_in) \
-                                                              .filter(model.DiscourseRound.round_num==round_num).all():
+            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp_tokenized==test_in) \
+                                                                 .filter(model.DiscourseRound.round_num==round_num).all():
                 d_ids.add(dr.discourse_id)
 
             if round_num==0:
@@ -344,11 +343,11 @@ class PrologCompiler(object):
 
         # run the test(s): look up reaction to input in db, execute it, check result
         for did in discourse_ids:
-            self.nlp_test_engine.reset_context()
+            self.ai_rt.reset_context()
 
             round_num = 0
-            for dr in self.session.query(model.DiscourseRound).filter(model.DiscourseRound.discourse_id==did) \
-                                                              .order_by(model.DiscourseRound.round_num):
+            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.discourse_id==did) \
+                                                                 .order_by(model.DiscourseRound.round_num):
             
                 prolog_s = ','.join(dr.resp.split(';'))
 
@@ -359,14 +358,14 @@ class PrologCompiler(object):
 
                 # logging.debug( "Searching for c: %s" % c )
 
-                self.nlp_test_engine.reset_utterances()
-                self.nlp_test_engine.reset_actions()
-                solutions = self.nlp_test_engine.search(c)
+                self.ai_rt.reset_utterances()
+                self.ai_rt.reset_actions()
+                solutions = self.ai_rt.search(c)
 
                 if len(solutions) == 0:
                     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
             
-                # print "round %d utterances: %s" % (round_num, repr(nlp_test_engine.get_utterances())) 
+                # print "round %d utterances: %s" % (round_num, repr(ai_rt.get_utterances())) 
 
                 # check actual utterances vs expected one
 
@@ -374,7 +373,7 @@ class PrologCompiler(object):
 
                 utterance_matched = False
                 actual_out = ''
-                utts = self.nlp_test_engine.get_utterances()
+                utts = self.ai_rt.get_utterances()
 
                 if len(utts) > 0:
                     for utt in utts:
@@ -398,7 +397,7 @@ class PrologCompiler(object):
                     # print repr(test_actions)
 
                     actions_matched = True
-                    acts = self.nlp_test_engine.get_actions()
+                    acts = self.ai_rt.get_actions()
                     for action in test_actions:
                         for act in acts:
                             # print "    check action match: %s vs %s" % (repr(action), repr(act))
@@ -416,9 +415,9 @@ class PrologCompiler(object):
 
                 round_num += 1
 
-    def set_context_default(self, clause):
+    def set_context_default(self, module_name, clause, user_data):
 
-        solutions = self.nlp_test_engine.search(clause)
+        solutions = self.ai_rt.search(clause)
 
         # print "set_context_default: solutions=%s" % repr(solutions)
 
@@ -436,68 +435,19 @@ class PrologCompiler(object):
 
         value = unicode(value)
 
-        self.db.set_context_default(name, key, value)
+        self.ai_rt.set_context_default(name, key, value)
 
-    def do_compile (self, pl_fn, module_name):
-
-        # quick source line count for progress output below
-
-        linecnt = 0
-        with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
-            while f.readline():
-                linecnt += 1
-        logging.info("%s: %d lines." % (pl_fn, linecnt))
+    def compile_file (self, filename, module_name, db):
 
         # setup compiler / test environment
 
-        self.db           = LogicDB(self.session)
-
-        parser            = PrologParser()
-
         self.macro_engine = NLPMacroEngine()
         self.kb           = HALKB()
+        self.db           = db
 
-        self.nlp_test_engine = PrologAIEngine(self.db)
-        self.nlp_test_engine.set_trace(self.trace)
-        self.nlp_test_engine.set_context_name('test')
+        self.ai_rt = AIPrologRuntime(db)
+        self.ai_rt.set_trace(self.trace)
+        self.ai_rt.set_context_name('test')
 
-
-        with codecs.open(pl_fn, encoding='utf-8', errors='ignore', mode='r') as f:
-            parser.start(f, pl_fn)
-
-            while parser.cur_sym != SYM_EOF:
-                clauses = parser.clause()
-
-                for clause in clauses:
-                    logging.debug(u"%7d / %7d (%3d%%) > %s" % (parser.cur_line, linecnt, parser.cur_line * 100 / linecnt, unicode(clause)))
-
-                    # compiler directive?
-
-                    if clause.head.name == 'nlp_macro':
-                        self.nlp_macro(clause)
-
-                    elif clause.head.name == 'sparql_macro':
-                        self.sparql_macro(clause)
-
-                    elif clause.head.name == 'nlp_gen':
-                        self.nlp_gen(module_name, clause)
-
-                    elif clause.head.name == 'nlp_test':
-                        if self.run_tests:
-                            self.nlp_test(clause)
-
-                    elif clause.head.name == 'set_context_default':
-                        self.set_context_default(clause)
-
-                    else:
-                        self.db.store (module_name, clause)
-
-                if parser.comment_pred:
-
-                    self.db.store_doc (module_name, parser.comment_pred, parser.comment)
-
-                    parser.comment_pred = None
-                    parser.comment = ''
-
-        logging.info("Compilation succeeded.")
+        super(AIPrologParser, self).compile_file(filename, module_name, db)
 

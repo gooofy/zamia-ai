@@ -58,9 +58,11 @@ COMMON_PREFIXES = {
             'geo':     'http://www.opengis.net/ont/geosparql#',
             'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
             'geof':    'http://www.opengis.net/def/function/geosparql/',
+            'owl':     'http://www.w3.org/2002/07/owl#',
             'schema':  'http://schema.org/',
             'wd':      'http://www.wikidata.org/entity/',
             'wdt':     'http://www.wikidata.org/prop/direct/',
+            'wdp':     'http://www.wikidata.org/prop/',
     }
 
 #
@@ -192,9 +194,9 @@ class HALKB(object):
     # LDF support
     #
 
-    def ldf_fetch (self, ldf_endpoint, resource):
+    def ldf_fetch (self, ldf_endpoint, resource, context):
 
-        res = []
+        quads = []
 
         for pfx in COMMON_PREFIXES:
 
@@ -231,18 +233,29 @@ class HALKB(object):
                 if response.status_code != 200:
                     break
 
-                res.append(response.text)
-
-                # paged resource?
+                # extract quads
 
                 logging.debug('parsing to memory...')
 
-                memg = rdflib.Graph()
+                cj = rdflib.ConjunctiveGraph()
+                memg = cj.get_context(context)
+                # memg = rdflib.Graph()
                 memg.parse(data=response.text, format='turtle')
-               
+                
+                if do_subject:
+                    for s,p,o in memg.triples((rdflib.URIRef(resource), None, None )):
+                        quads.append((s,p,o,context))
+                else:
+                    for s,p,o in memg.triples((None, None, (rdflib.URIRef(resource)) )):
+                        quads.append((s,p,o,context))
+
+                # paged resource?
                 url = None
                 for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
-
+                    logging.debug ('got next page ref: %s' % repr(o))
+                    url = str(o)
+                    logging.debug ('got next page url: %s' % url)
+                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
                     logging.debug ('got next page ref: %s' % repr(o))
                     url = str(o)
                     logging.debug ('got next page url: %s' % url)
@@ -250,8 +263,7 @@ class HALKB(object):
                 if not url:
                     break
 
-
-        return res
+        return quads
 
 
 if __name__ == "__main__":
@@ -277,15 +289,13 @@ if __name__ == "__main__":
     ldf_endpoint = 'http://fragments.dbpedia.org/2016-04/en'
     r =  'dbr:Linus_Torvalds'
 
-    docs = kb.ldf_fetch(ldf_endpoint, r)
+    quads = kb.ldf_fetch(ldf_endpoint, r, rdflib.Graph(identifier=gn))
 
-    logging.debug ('wikidata query for %s yielded %d documents' % (r, len(docs)))
+    logging.debug ('wikidata query for %s yielded %d quads' % (r, len(quads)))
 
-    for d in docs:
-        logging.debug ('adding doc...')
-        print d
-        kb.parse (gn, 'turtle', d)
+    kb.addN(quads)
 
+    sys.exit(0)
     # angela merkel in wikidata
 
     ldf_endpoint = 'https://query.wikidata.org/bigdata/ldf'

@@ -90,11 +90,11 @@ class NLPMacroEngine(object):
 
         # print nlp_input
 
-        for pos, char in enumerate(nlp_input):
+        for pos, char in enumerate(nlp_input2):
 
             if char == '@':
 
-                macro = re.match(r'@([A-Z0-9_]+):', nlp_input[pos:])
+                macro = re.match(r'@([A-Z0-9_]+):', nlp_input2[pos:])
 
                 # print "MACRO:", macro.group(1)
 

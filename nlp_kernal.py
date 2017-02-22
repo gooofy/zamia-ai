@@ -31,6 +31,7 @@ import imp
 import time
 import random
 import codecs
+import rdflib
 
 import numpy as np
 
@@ -305,14 +306,11 @@ class NLPKernal(object):
 
                     # self.kb.parse(context=graph, format='n3', data=res.text)
             
-                    docs = self.kb.ldf_fetch(endpoint, node)
+                    quads = self.kb.ldf_fetch(endpoint, node, rdflib.Graph(identifier=graph))
 
-                    logging.debug ('%s query for %s yielded %d documents' % (endpoint, node, len(docs)))
+                    logging.debug ('%s query for %s yielded %d quads' % (endpoint, node, len(quads)))
 
-                    for d in docs:
-                        logging.debug ('   parsing %d bytes...' % len(d))
-                        self.kb.parse (context=graph, format='turtle', data=d)
-
+                    self.kb.addN(quads)
 
     def import_kb_multi (self, module_names):
 

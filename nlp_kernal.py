@@ -334,11 +334,6 @@ class NLPKernal(object):
 
         m = self.modules[module_name]
 
-        self.db.clear_module(module_name)
-
-        logging.debug ('clearing discourses...')
-        self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
-
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
         compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances)

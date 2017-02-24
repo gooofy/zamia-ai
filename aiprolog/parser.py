@@ -44,6 +44,8 @@ from runtime          import AIPrologRuntime
 # from prolog_ai_engine import PrologAIEngine
 # from nlp_macros import NLPMacroEngine
 
+TEST_CONTEXT_NAME = 'test'
+
 class AIPrologParser(PrologParser):
 
     def __init__(self, trace = False, run_tests = False, print_utterances=False, split_utterances=False):
@@ -291,12 +293,11 @@ class AIPrologParser(PrologParser):
 
         lang = args[0].name
 
-        # extract test rounds, look up matching discourses
+        # extract test rounds, look up matching discourse_rounds, execute them
 
-        rounds        = [] # [ (in, out, actions), ...]
-        round_num     = 0
-        discourse_ids = set()
-
+        nlp_test_parser = PrologParser()
+        self.ai_rt.reset_context(TEST_CONTEXT_NAME)
+        round_num = 0
         for ivr in args[1:]:
 
             if ivr.name != 'ivr':
@@ -317,42 +318,12 @@ class AIPrologParser(PrologParser):
                 else:
                     raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
                
-            rounds.append((test_in, test_out, test_actions))
-
-            # look up matching discourse_ids:
-
-            d_ids = set()
-            
-            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp_tokenized==test_in) \
-                                                                 .filter(model.DiscourseRound.round_num==round_num).all():
-                d_ids.add(dr.discourse_id)
-
-            if round_num==0:
-                discourse_ids = d_ids
-            else:
-                discourse_ids = discourse_ids & d_ids
-
-            # print 'discourse_ids:', repr(discourse_ids)
-
-            round_num += 1
-
-        if len(discourse_ids) == 0:
-            raise PrologError ('nlp_test: %s: no matching discourse found.' % clause.location)
-
-        nlp_test_parser = PrologParser()
-
-        # run the test(s): look up reaction to input in db, execute it, check result
-        for did in discourse_ids:
-            self.ai_rt.reset_context()
-
-            round_num = 0
-            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.discourse_id==did) \
-                                                                 .order_by(model.DiscourseRound.round_num):
+            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==test_in, lang==lang):
             
                 prolog_s = ','.join(dr.resp.split(';'))
 
-                logging.info("nlp_test: %s round=%3d, %s => %s" % (clause.location, round_num, dr.inp_tokenized, prolog_s) )
-
+                logging.info("nlp_test: %s %s => %s" % (clause.location, dr.inp, prolog_s) )
+                
                 c = nlp_test_parser.parse_line_clause_body(prolog_s)
                 # logging.debug( "Parse result: %s" % c)
 
@@ -415,6 +386,7 @@ class AIPrologParser(PrologParser):
 
                 round_num += 1
 
+
     def set_context_default(self, module_name, clause, user_data):
 
         solutions = self.ai_rt.search(clause)
@@ -447,7 +419,10 @@ class AIPrologParser(PrologParser):
 
         self.ai_rt = AIPrologRuntime(db)
         self.ai_rt.set_trace(self.trace)
-        self.ai_rt.set_context_name('test')
+        self.ai_rt.set_context_name(TEST_CONTEXT_NAME)
+
+        logging.debug ('clearing discourses...')
+        self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
 
         super(AIPrologParser, self).compile_file(filename, module_name, db)
 

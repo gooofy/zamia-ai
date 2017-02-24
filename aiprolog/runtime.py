@@ -39,7 +39,7 @@ def builtin_context(g, pe):
 
     pe._trace ('CALLED BUILTIN context', g)
 
-    pred = g.clause.body[g.inx]
+    pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
         raise PrologRuntimeError('context: 2 args expected.')
@@ -61,7 +61,7 @@ def builtin_set_context(g, pe):
 
     pe._trace ('CALLED BUILTIN set_context', g)
 
-    pred = g.clause.body[g.inx]
+    pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
         raise PrologRuntimeError('context: 2 args expected.')
@@ -78,7 +78,7 @@ def builtin_say(g, pe):
 
     pe._trace ('CALLED BUILTIN say', g)
 
-    pred = g.clause.body[g.inx]
+    pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
         raise PrologRuntimeError('say: 2 args expected.')
@@ -111,7 +111,7 @@ def builtin_action(g, pe):
 
     pe._trace ('CALLED BUILTIN action', g)
 
-    pred = g.clause.body[g.inx]
+    pred = g.terms[g.inx]
     args = pred.args
 
     evaluated_args = map (lambda v: pe.prolog_eval(v, g.env), args)
@@ -124,7 +124,7 @@ def builtin_sparql_query(g, pe):
 
     pe._trace ('CALLED BUILTIN sparql_query', g)
 
-    pred = g.clause.body[g.inx]
+    pred = g.terms[g.inx]
     args = pred.args
     if len(args) < 1:
         raise PrologRuntimeError('say: at least 1 argument expected.')

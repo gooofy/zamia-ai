@@ -340,8 +340,6 @@ class AIPrologParser(PrologParser):
 
                 # check actual utterances vs expected one
 
-                test_in, test_out, test_actions = rounds[round_num]
-
                 utterance_matched = False
                 actual_out = ''
                 utts = self.ai_rt.get_utterances()

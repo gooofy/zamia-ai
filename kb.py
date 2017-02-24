@@ -60,8 +60,10 @@ COMMON_PREFIXES = {
             'geof':    'http://www.opengis.net/def/function/geosparql/',
             'owl':     'http://www.w3.org/2002/07/owl#',
             'schema':  'http://schema.org/',
-            'wd':      'http://www.wikidata.org/entity/',
-            'wdt':     'http://www.wikidata.org/prop/direct/',
+            'wde':     'http://www.wikidata.org/entity/',
+            'wdes':    'http://www.wikidata.org/entity/statement',
+            'wdpd':    'http://www.wikidata.org/prop/direct/',
+            'wdps':    'http://www.wikidata.org/prop/statement/',
             'wdp':     'http://www.wikidata.org/prop/',
     }
 

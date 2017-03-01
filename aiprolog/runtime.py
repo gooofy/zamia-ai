@@ -28,8 +28,9 @@ import time
 import pytz # $ pip install pytz
 from tzlocal import get_localzone # $ pip install tzlocal
 
-from halprolog.runtime import PrologRuntime
-from halprolog.errors  import PrologRuntimeError
+from zamiaprolog.runtime import PrologRuntime
+from zamiaprolog.errors  import PrologRuntimeError
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral
 
 import model
 
@@ -167,7 +168,10 @@ def builtin_sparql_query(g, pe):
                     raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
            
             else:
-                value = StringLiteral(value)
+                if l.value is None:
+                    value = ListLiteral([])
+                else:
+                    value = StringLiteral(value)
 
             if not v in res_map:
                 res_map[v] = []

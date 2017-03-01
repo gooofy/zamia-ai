@@ -64,6 +64,7 @@ COMMON_PREFIXES = {
             'wdes':    'http://www.wikidata.org/entity/statement',
             'wdpd':    'http://www.wikidata.org/prop/direct/',
             'wdps':    'http://www.wikidata.org/prop/statement/',
+            'wdpq':    'http://www.wikidata.org/prop/qualifier/',
             'wdp':     'http://www.wikidata.org/prop/',
     }
 
@@ -144,6 +145,9 @@ class HALKB(object):
 
     def addN (self, quads):
         self.sas.addN(quads)
+
+    def filter_quads(self, s=None, p=None, o=None, context=None):
+        return self.sas.filter_quads(s=s, p=p, o=o, context=context)
 
     #
     # local sparql queries
@@ -268,6 +272,102 @@ class HALKB(object):
         return quads
 
 
+    def ldf_fetch_rec (self, ldf_endpoint, resources, max_depth, context):
+
+        quads = []
+
+        todo = []
+
+        for resource in resources:
+
+            for pfx in COMMON_PREFIXES:
+
+                prefix = pfx + ':'
+
+                if resource.startswith(prefix):
+                    resource = COMMON_PREFIXES[pfx] + resource[len(prefix):]
+
+            todo.append((resource, 0))
+
+        logging.debug ('LDF: todo with prefixes resolved: "%s"' % repr(todo))
+      
+        done = set()
+
+        while len(todo)>0:
+
+            resource, depth = todo.pop()
+
+            logging.debug ('LDF: ')
+            logging.debug ('LDF: *****************************')
+            logging.debug ('LDF: %5d:%5d resource=%s, depth=%d' % (len(todo), len(done), resource, depth))
+
+            if resource in done:
+                continue
+            if not u'wikidata.org' in unicode(resource):
+                continue
+            done.add(resource)
+
+            url = ldf_endpoint + '?' + urllib.urlencode({'subject': resource})
+
+            # logging.debug ('url: %s' % url)
+
+            todo_new = set()
+
+            while True:
+
+                response = requests.get(
+                  url,
+                  # data    = '',
+                  # params  = {'subject': resource, 'page': page} if do_subject else {'object':resource, 'page': page},
+                  headers = {"accept": 'text/turtle'},
+                )
+
+                logging.debug ('%s response: %d' % (url, response.status_code))
+
+                # for h in response.headers:
+                #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
+
+                if response.status_code != 200:
+                    break
+
+                # extract quads
+
+                # logging.debug('parsing to memory...')
+
+                cj = rdflib.ConjunctiveGraph()
+                memg = cj.get_context(context)
+                # memg = rdflib.Graph()
+                memg.parse(data=response.text, format='turtle')
+               
+                for s,p,o in memg.triples((rdflib.URIRef(resource), None, None )):
+                    quads.append((s,p,o,context))
+                    if isinstance(o, rdflib.URIRef):
+                        todo_new.add(o)
+
+
+                # paged resource?
+                url = None
+                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
+                    # logging.debug ('got next page ref: %s' % repr(o))
+                    url = str(o)
+                    # logging.debug ('got next page url: %s' % url)
+                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
+                    # logging.debug ('got next page ref: %s' % repr(o))
+                    url = str(o)
+                    # logging.debug ('got next page url: %s' % url)
+
+                if not url:
+                    break
+
+            if depth < max_depth:
+                for o in todo_new:
+                    todo.append((o, depth+1))
+
+                
+        return quads
+
+
+
 if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
@@ -286,34 +386,28 @@ if __name__ == "__main__":
     # LDF import test
     #
 
-    # Linus Torvalds in dbpedia
+    # # Linus Torvalds in dbpedia
 
-    ldf_endpoint = 'http://fragments.dbpedia.org/2016-04/en'
-    r =  'dbr:Linus_Torvalds'
+    # ldf_endpoint = 'http://fragments.dbpedia.org/2016-04/en'
+    # r =  'dbr:Linus_Torvalds'
 
-    quads = kb.ldf_fetch(ldf_endpoint, r, rdflib.Graph(identifier=gn))
+    # quads = kb.ldf_fetch_rec(ldf_endpoint, [r], 2, rdflib.Graph(identifier=gn))
+
+    # logging.debug ('dbpedia query for %s yielded %d quads' % (r, len(quads)))
+
+    # kb.addN(quads)
+
+    # sys.exit(0)
+    # angela merkel in wikidata
+
+    ldf_endpoint = 'https://query.wikidata.org/bigdata/ldf'
+    r =  'wde:Q567'
+
+    quads = kb.ldf_fetch_rec(ldf_endpoint, [r], 2, rdflib.Graph(identifier=gn))
 
     logging.debug ('wikidata query for %s yielded %d quads' % (r, len(quads)))
 
     kb.addN(quads)
-
-    sys.exit(0)
-    # angela merkel in wikidata
-
-    ldf_endpoint = 'https://query.wikidata.org/bigdata/ldf'
-    r =  'wd:Q567'
-
-    docs = kb.ldf_fetch(ldf_endpoint, r)
-
-    logging.debug ('wikidata query for %s yielded %d documents' % (r, len(docs)))
-
-    for d in docs:
-
-        print d
-
-        logging.debug ('parsing doc...')
-        kb.parse (gn, 'turtle', d)
-
 
     sys.exit(0)
 

@@ -34,11 +34,11 @@ import model
 from nltools.tokenizer import tokenize
 from kb import HALKB
 
-from halprolog.parser import PrologParser
-from halprolog.errors import PrologError
-from halprolog.logic  import *
-from nlp_macro_engine import NLPMacroEngine
-from runtime          import AIPrologRuntime
+from zamiaprolog.parser import PrologParser
+from zamiaprolog.errors import PrologError
+from zamiaprolog.logic  import *
+from nlp_macro_engine   import NLPMacroEngine
+from runtime            import AIPrologRuntime
 
 # from prolog_parser import PrologParser, SYM_EOF, PrologError
 # from prolog_ai_engine import PrologAIEngine
@@ -407,7 +407,14 @@ class AIPrologParser(PrologParser):
 
         self.ai_rt.set_context_default(name, key, value)
 
-    def compile_file (self, filename, module_name, db):
+    def clear_module (self, module_name, db):
+
+        logging.debug ('clearing discourses...')
+        db.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
+
+        super(AIPrologParser, self).clear_module(module_name, db)
+
+    def compile_file (self, filename, module_name, db, clear_module=False):
 
         # setup compiler / test environment
 
@@ -419,8 +426,8 @@ class AIPrologParser(PrologParser):
         self.ai_rt.set_trace(self.trace)
         self.ai_rt.set_context_name(TEST_CONTEXT_NAME)
 
-        logging.debug ('clearing discourses...')
-        self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
+        if clear_module:
+            self.clear_module(module_name, db)
 
         super(AIPrologParser, self).compile_file(filename, module_name, db)
 

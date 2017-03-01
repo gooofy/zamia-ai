@@ -38,15 +38,9 @@ import numpy as np
 from sqlalchemy.orm import sessionmaker
 import model
 
-from halprolog.logicdb   import LogicDB
+from zamiaprolog.logicdb import LogicDB
 from aiprolog.runtime    import AIPrologRuntime
 from aiprolog.parser     import AIPrologParser
-
-# from logic import *
-# from logicdb import *
-# from prolog_parser import PrologParser, SYM_EOF, PrologError
-# from prolog_ai_engine import PrologAIEngine
-# from prolog_compiler import PrologCompiler
 
 from kb import HALKB
 from nltools import misc
@@ -337,6 +331,8 @@ class NLPKernal(object):
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
         compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances)
+
+        compiler.clear_module(module_name, self.db)
 
         for pl_fn in getattr (m, 'PL_SOURCES'):
             

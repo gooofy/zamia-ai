@@ -1,0 +1,169 @@
+@prefix rdf:	  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#>.
+@prefix dbc:      <http://dbpedia.org/resource/Category:> .
+@prefix dbr:	  <http://dbpedia.org/resource/> .
+@prefix dbp:	  <http://dbpedia.org/property/> .
+@prefix dbo:	  <http://dbpedia.org/ontology/> .
+@prefix yago:	  <http://dbpedia.org/class/yago/> .
+@prefix foaf:	  <http://xmlns.com/foaf/0.1/> .
+@prefix schema:   <http://schema.org/> .
+@prefix umbel-rc: <http://umbel.org/umbel/rc/> .
+@prefix wikidata: <http://www.wikidata.org/entity/> .
+@prefix wd:       <http://www.wikidata.org/entity/> .
+@prefix wdt:      <http://www.wikidata.org/prop/direct/> .
+@prefix owl:	  <http://www.w3.org/2002/07/owl#> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix hal:      <http://hal.zamia.org/kb/> .
+
+#
+# some random data on german chancellors
+#
+
+#
+# what we need for our tests to work:
+#
+# ?chancellor rdfs:label ?label.
+# ?chancellor rdf:type schema:Person.
+# ?chancellor dbp:office dbr:Chancellor_of_Germany.
+# ?chancellor dbo:birthPlace ?birthPlace.
+# ?chancellor owl:sameAs	dbpedia-wikidata:Q567.
+# ?leaderof dbo:leader ?chancellor 
+# ?birthPlace rdf:type dbo:Settlement.
+
+
+
+#
+# Helmut Kohl
+#
+
+dbr:Helmut_Kohl	rdf:type	yago:Official110372373 .
+dbr:Helmut_Kohl	rdf:type	dbo:OfficeHolder .
+dbr:Helmut_Kohl	rdf:type	foaf:Person .
+dbr:Helmut_Kohl	rdf:type	umbel-rc:Politician .
+dbr:Helmut_Kohl	rdf:type	wikidata:Q5 .
+dbr:Helmut_Kohl	rdf:type	schema:Person .
+dbr:Helmut_Kohl	rdf:type	owl:Thing .
+
+dbr:Helmut_Kohl
+    dbo:birthPlace  dbr:Weimar_Republic ,
+                    dbr:Ludwigshafen ;
+    dbp:birthPlace  dbr:Weimar_Republic ,
+                    dbr:Ludwigshafen .
+dbr:Ludwigshafen rdf:type dbo:Settlement.
+
+dbr:Helmut_Kohl rdfs:label  "Helmut Kohl"@es ,
+        "Helmut Kohl"@fr ,
+        "\u8D6B\u5C14\u7A46\u7279\u00B7\u79D1\u5C14"@zh ,
+        "Helmut Kohl"@pt ,
+        "Helmut Kohl"@it ,
+        "\u30D8\u30EB\u30E0\u30FC\u30C8\u30FB\u30B3\u30FC\u30EB"@ja ,
+        "Helmut Kohl"@en ,
+        "\u0647\u0644\u0645\u0648\u062A \u0643\u0648\u0644"@ar ,
+        "Helmut Kohl"@de ,
+        "Helmut Kohl"@nl ,
+        "\u041A\u043E\u043B\u044C, \u0413\u0435\u043B\u044C\u043C\u0443\u0442"@ru ,
+        "Helmut Kohl"@pl ;
+    rdfs:seeAlso    dbr:Awards_received_by_Helmut_Kohl ,
+        dbr:List_of_honors .
+dbr:Helmut_Kohl dbo:birthDate   "1930-04-03"^^xsd:date .
+dbr:Helmut_Kohl dct:subject dbc:Members_of_the_Bundestag ,
+        dbc:German_Roman_Catholics ,
+        dbc:German_anti-communists ,
+        dbc:Recipients_of_the_Order_of_Merit_of_the_Federal_Republic_of_Germany ,
+        dbc:Living_people ,
+        dbc:Members_of_the_Landtag_of_Rhineland-Palatinate ,
+        <http://dbpedia.org/resource/Category:1930_births> ,
+        <http://dbpedia.org/resource/Category:Christian_Democratic_Union_(Germany)_politicians> ,
+        dbc:Presidents_of_the_European_Council ,
+        dbc:Jawaharlal_Nehru_Award_laureates ,
+        dbc:Heidelberg_University_alumni ,
+        dbc:Chancellors_of_Germany ,
+        dbc:Conservatism_in_Germany ,
+        dbc:Presidential_Medal_of_Freedom_recipients ,
+        dbc:Honorary_Knights_Grand_Cross_of_the_Order_of_St_Michael_and_St_George ,
+        <http://dbpedia.org/resource/Category:People_from_the_Palatinate_(region)> ,
+        dbc:Helmut_Kohl ,
+        dbc:People_from_Ludwigshafen ,
+        dbc:German_military_personnel_of_World_War_II ,
+        dbc:Grand_Order_of_Queen_Jelena_recipients ;
+    dbo:wikiPageID  41896 ;
+    dbo:wikiPageRevisionID  708239561 ;
+    dbp:almaMater   dbr:Heidelberg_University ;
+    dbp:birthDate   "1930-04-03"^^xsd:date ;
+    dbp:birthname   "Helmut Josef Michael Kohl"@en ;
+    dbp:deputy  dbr:Klaus_Kinkel ,
+        dbr:Hans-Dietrich_Genscher ,
+        dbr:Jürgen_Möllemann ;
+    dbp:office  dbr:Chancellor_of_Germany ,
+        "Minister-President of Rhineland-Palatinate"@en ;
+    dbp:party   "Christian Democratic Union"@en ;
+    dbp:predecessor dbr:Peter_Altmeier ,
+        dbr:Helmut_Schmidt ;
+    dbp:president   dbr:Roman_Herzog ,
+        dbr:Richard_von_Weizsäcker ,
+        dbr:Karl_Carstens ;
+    dbp:religion    dbr:Catholic_Church ;
+    dbp:signature   "Helmut Kohl Signature.svg"@en ;
+    dbp:spouse  "Maike Richter"@en ,
+        "Hannelore Renner"@en ;
+    dbp:successor   <http://dbpedia.org/resource/Bernhard_Vogel_(politician)> ,
+        dbr:Gerhard_Schröder ;
+    dbp:termEnd "1976-12-02"^^xsd:date ,
+        "1998-10-27"^^xsd:date ;
+    dbp:termStart   "1969-05-19"^^xsd:date ,
+        "1982-10-01"^^xsd:date .
+dbr:Helmut_Kohl owl:sameAs	wikidata:Q2518.
+wikidata:Q2518 wdt:P21 wd:Q6581097.
+
+wikidata:Q6581097 rdfs:label "männlich"@de.
+wikidata:Q6581097 rdfs:label "male"@en.
+
+#
+# Angela Merkel
+#
+
+dbr:Germany	        dbo:leader	dbr:Angela_Merkel .
+
+dbr:Angela_Merkel	rdf:type	yago:WikicatGermanPhysicists .
+dbr:Angela_Merkel	rdf:type	dbo:OfficeHolder .
+dbr:Angela_Merkel	rdf:type	foaf:Person .
+dbr:Angela_Merkel	rdf:type	schema:Person .
+dbr:Angela_Merkel   dbp:birthDate   "1954-07-17"^^xsd:date .
+dbr:Angela_Merkel	rdfs:label	"Angela Merkel"@fr ,
+		"\u041C\u0435\u0440\u043A\u0435\u043B\u044C, \u0410\u043D\u0433\u0435\u043B\u0430"@ru ,
+		"\u5B89\u683C\u62C9\u00B7\u9ED8\u514B\u723E"@zh ,
+		"Angela Merkel"@es ,
+		"Angela Merkel"@en ,
+		"Angela Merkel"@de ,
+		"Angela Merkel"@it ,
+		"\u30A2\u30F3\u30B2\u30E9\u30FB\u30E1\u30EB\u30B1\u30EB"@ja ,
+		"Angela Merkel"@pl ,
+		"\u0623\u0646\u063A\u064A\u0644\u0627 \u0645\u064A\u0631\u0643\u0644"@ar ,
+		"Angela Merkel"@pt ,
+		"Angela Merkel"@nl ;
+	rdfs:comment	"\u5B89\u683C\u62C9\u00B7\u591A\u7F85\u7279\u5A6D\u00B7\u9ED8\u514B\u723E\uFF08\u5173\u4E8E\u8FD9\u4E2A\u97F3\u9891\u6587\u4EF6 Angela Dorothea Merkel\uFF0C1954\u5E747\u670817\u65E5\uFF0D\uFF09\uFF0C\u5A5A\u524D\u59D3\u5361\u65AF\u7D0D\uFF08Kasner\uFF09\uFF0C\u5FB7\u56FD\u653F\u6CBB\u5BB6\uFF0C\u6709\u9435\u5A18\u5B50\u4E4B\u79F0\uFF0C\u662F\u6B50\u6D32\u7E7C\u6234\u5353\u723E\u592B\u4EBA\u5F8C\uFF0C\u6700\u5177\u5F71\u97FF\u529B\u7684\u5973\u6027\u9818\u5C0E\u4EBA\u30022005\u5E74\uFF0C\u5979\u6210\u4E3A\u5FB7\u56FD\u5386\u53F2\u4E0A\u9996\u4F4D\u5973\u6027\u806F\u90A6\u603B\u7406\uFF0C\u5979\u4E5F\u662F\u5169\u5FB7\u7D71\u4E00\u5F8C\u9996\u4F4D\u51FA\u8EAB\u524D\u6771\u5FB7\u5730\u5340\u7684\u806F\u90A6\u603B\u7406\u30022015\u5E7412\u6708\uFF0C\u9ED8\u514B\u5C14\u5F53\u9009\u300A\u65F6\u4EE3\u5468\u520A\u300B2015\u5E74\u5EA6\u98CE\u4E91\u4EBA\u7269\uFF0C\u300A\u65F6\u4EE3\u5468\u520A\u300B\u603B\u7F16\u8D5E\u626C\u5979\u5728\u6B27\u6D32\u4E3B\u6743\u503A\u52A1\u3001\u4E2D\u4E1C\u96BE\u6C11\u53CA\u4FC4\u7F57\u65AF\u5E72\u9884\u4E4C\u514B\u5170\u7B49\u5371\u673A\u671F\u95F4\u6240\u5C55\u73B0\u7684\u975E\u51E1\u9886\u5BFC\u80FD\u529B\u3002"@zh ,
+		"Angela Dorothea Merkel  (Hamburgo, 17 de julho de 1954) \u00E9 uma cientista e pol\u00EDtica alem\u00E3, desde 2005 chefe de governo de seu pa\u00EDs (chanceler) e l\u00EDder do partido Uni\u00E3o Democrata-Crist\u00E3 (CDU) desde 2000. Foi descrita como a l\u00EDder de facto da Uni\u00E3o Europeia e atualmente \u00E9 referida pela revista Forbes como a segunda pessoa mais poderosa do mundo, a mais alta posi\u00E7\u00E3o j\u00E1 alcan\u00E7ada por uma mulher.Em setembro de 2013 sua coliga\u00E7\u00E3o venceu por ampla maioria as elei\u00E7\u00F5es legislativas, sem contudo obter a maioria absoluta que lhe permitiria formar um terceiro mandato sem outras coliga\u00E7\u00F5es."@pt ,
+		"Angela Dorothea Merkel (* 17. Juli 1954 in Hamburg als Angela Dorothea Kasner) ist eine deutsche Politikerin (CDU) und seit dem 22. November 2005 Bundeskanzlerin der Bundesrepublik Deutschland.Bei der Bundestagswahl am 2. Dezember 1990 errang Merkel, die in der DDR aufgewachsen und als Physikerin wissenschaftlich t\u00E4tig war, erstmals ein Bundestagsmandat; in allen darauffolgenden sechs Bundestagswahlen wurde sie in ihrem Wahlkreis in Vorpommern direkt gew\u00E4hlt.Von 1991 bis 1994 war Merkel Bundesministerin f\u00FCr Frauen und Jugend im Kabinett Kohl IV und von 1994 bis 1998 Bundesministerin f\u00FCr Umwelt, Naturschutz und Reaktorsicherheit im Kabinett Kohl V. Von 1998 bis 2000 amtierte sie als Generalsekret\u00E4rin der CDU und ist seit dem 10. April 2000 deren Bundesvorsitzende."@de ,
+		"Dal 22 novembre 2005 ricopre la carica di Cancelliera della Germania.Eletta al Parlamento tedesco nel Meclemburgo-Pomerania Anteriore, \u00E8 Presidente dell'Unione Cristiano-Democratica (CDU) dal 9 aprile 2000 e Presidente del gruppo parlamentare CDU-CSU dal 2002 al 2005. Nominata per la prima volta Cancelliera a seguito delle elezioni federali del 2005, ha guidato una grande coalizione con il partito consociato, l'Unione Cristiano-Sociale (CSU), e con il Partito Socialdemocratico (SPD) sino al termine della legislatura (2009)."@it ,
+		"Angela Dorothea Merkel (wym. [\u02C8a\u014B\u0261ela do\u0280o\u02C8te\u02D0a \u02C8m\u025B\u0281kl\u0329]) z domu Kasner (ur. 17 lipca 1954 w Hamburgu, Niemcy) \u2013 niemiecka polityk, od 2000 przewodnicz\u0105ca Unii Chrze\u015Bcija\u0144sko-Demokratycznej, kanclerz Niemiec (niem. Bundeskanzlerin) od 22 listopada 2005. Pos\u0142anka do niemieckiego parlamentu (Bundestagu) z powiatu Vorpommern-R\u00FCgen w kraju zwi\u0105zkowym Meklemburgia-Pomorze Przednie.Wed\u0142ug czasopisma \u201EForbes\u201D jest najbardziej wp\u0142ywow\u0105 kobiet\u0105 \u015Bwiata (2011). Cz\u0142owiek Roku 2015 wed\u0142ug magazynu Time."@pl ,
+		"\u0410\u0301\u043D\u0433\u0435\u043B\u0430 \u0414\u043E\u0440\u043E\u0442\u0435\u0301\u044F \u041C\u0435\u0301\u0440\u043A\u0435\u043B\u044C (\u043D\u0435\u043C. Angela Dorothea Merkel, \u0443\u0440\u043E\u0436\u0434\u0451\u043D\u043D\u0430\u044F \u041A\u0430\u0441\u043D\u0435\u0440 (\u043D\u0435\u043C. Kasner); \u0440\u043E\u0434. 17 \u0438\u044E\u043B\u044F 1954(19540717), \u0413\u0430\u043C\u0431\u0443\u0440\u0433) \u2014 \u043D\u0435\u043C\u0435\u0446\u043A\u0438\u0439 \u0433\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439 \u0438 \u043F\u043E\u043B\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u044F\u0442\u0435\u043B\u044C. \u0421 21 \u043D\u043E\u044F\u0431\u0440\u044F 2005 \u0433\u043E\u0434\u0430 \u2014 \u043A\u0430\u043D\u0446\u043B\u0435\u0440 \u0413\u0435\u0440\u043C\u0430\u043D\u0438\u0438. \u041F\u0435\u0440\u0432\u0430\u044F \u0436\u0435\u043D\u0449\u0438\u043D\u0430 \u043D\u0430 \u043F\u043E\u0441\u0442\u0443 \u043A\u0430\u043D\u0446\u043B\u0435\u0440\u0430 \u0432 \u0438\u0441\u0442\u043E\u0440\u0438\u0438 \u0413\u0435\u0440\u043C\u0430\u043D\u0438\u0438. \u041B\u0438\u0434\u0435\u0440 \u043F\u0430\u0440\u0442\u0438\u0438 \u0425\u0440\u0438\u0441\u0442\u0438\u0430\u043D\u0441\u043A\u043E-\u0434\u0435\u043C\u043E\u043A\u0440\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0441\u043E\u044E\u0437 \u0441 10 \u0430\u043F\u0440\u0435\u043B\u044F 2000 \u0433\u043E\u0434\u0430. \u041C\u043D\u043E\u0433\u043E\u043A\u0440\u0430\u0442\u043D\u043E \u0432\u043E\u0437\u0433\u043B\u0430\u0432\u043B\u044F\u043B\u0430 \u0441\u043F\u0438\u0441\u043E\u043A \u0441\u0430\u043C\u044B\u0445 \u0432\u043B\u0438\u044F\u0442\u0435\u043B\u044C\u043D\u044B\u0445 \u0436\u0435\u043D\u0449\u0438\u043D \u0432 \u043C\u0438\u0440\u0435 \u043F\u043E \u0432\u0435\u0440\u0441\u0438\u0438 \u0436\u0443\u0440\u043D\u0430\u043B\u0430 Forbes. \u0412 2015 \u0433\u043E\u0434\u0443 \u043F\u043E \u0432\u0435\u0440\u0441\u0438\u0438 \u0436\u0443\u0440\u043D\u0430\u043B\u0430 Time \u043D\u0430\u0437\u0432\u0430\u043D\u0430 \u0427\u0435\u043B\u043E\u0432\u0435\u043A\u043E\u043C \u0433\u043E\u0434\u0430."@ru ,
+		"Angela Dorothea Merkel, geboren als Angela Dorothea Kasner, (Hamburg, 17 juli 1954) is een Duitse christendemocratische politica. Sinds 22 november 2005 is ze bondskanselier van Duitsland en daarmee de eerste vrouwelijke regeringsleider van dat land. Ze is tevens enige tijd de invloedrijkste vrouw van de wereld geweest. In oktober 2013 maakte Forbes bekend dat Angela Merkel na Paus Franciscus de machtigste persoon van Europa is."@nl ,
+		"Angela Dorothea Merkel (Acerca de este sonido audio ) (Hamburgo, entonces en la Alemania Occidental, 17 de julio de 1954) nacida con el nombre de Angela Dorothea Kasner, es una f\u00EDsica y pol\u00EDtica alemana que desempe\u00F1a las funciones de canciller de su pa\u00EDs desde 2005. Seg\u00FAn la Revista Forbes, Angela Merkel para el a\u00F1o 2015 fue catalogada como la mujer m\u00E1s poderosa del mundo.Domina el ruso y el ingl\u00E9s. Su oficina particular est\u00E1 adornada con una imagen de la zarina de origen alem\u00E1n Catalina la Grande. La revista Forbes la considera la mujer m\u00E1s poderosa del mundo."@es ,
+		"\u0623\u0646\u063A\u064A\u0644\u0627 \u062F\u0648\u0631\u0648\u062A\u064A\u0627 \u0645\u064A\u0631\u0643\u0644 (\u0628\u0627\u0644\u0623\u0644\u0645\u0627\u0646\u064A\u0629: Angela Merkel)\u061B (17 \u064A\u0648\u0644\u064A\u0648 1954 -)\u060C \u0633\u064A\u0627\u0633\u064A\u0629 \u0623\u0644\u0645\u0627\u0646\u064A\u0629 \u0648\u0632\u0639\u064A\u0645\u0629 \u0627\u0644\u0627\u062A\u062D\u0627\u062F \u0627\u0644\u062F\u064A\u0645\u0642\u0631\u0627\u0637\u064A \u0627\u0644\u0645\u0633\u064A\u062D\u064A \u0623\u062D\u062F \u0623\u0628\u0631\u0632 \u0627\u0644\u0623\u062D\u0632\u0627\u0628 \u0627\u0644\u0633\u064A\u0627\u0633\u064A\u0629 \u0641\u064A \u0623\u0644\u0645\u0627\u0646\u064A\u0627\u060C \u0648\u062A\u062A\u0648\u0644\u0649 \u0645\u0646\u0630 22 \u0646\u0648\u0641\u0645\u0628\u0631 2005 \u0645\u0646\u0635\u0628 \u0627\u0644\u0645\u0633\u062A\u0634\u0627\u0631 \u0641\u064A \u0623\u0644\u0645\u0627\u0646\u064A\u0627\u060C \u0648\u0647\u064A \u0623\u0648\u0644 \u0627\u0645\u0631\u0623\u0629 \u062A\u062A\u0648\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0645\u0646\u0635\u0628 \u0641\u064A\u0647\u0627.\u062D\u0633\u0628 \u0645\u062C\u0644\u0629 \u0641\u0648\u0631\u0628\u0633 \u062A\u0639\u062F \u0645\u064A\u0631\u0643\u0644 \u0623\u0642\u0648\u0649 \u0627\u0645\u0631\u0623\u0629 \u0641\u064A \u0627\u0644\u0639\u0627\u0644\u0645 \u0644\u0639\u0627\u0645 2011\u060C \u0648\u0647\u064A \u0628\u0630\u0644\u0643 \u062D\u0627\u0632\u062A \u0639\u0644\u0649 \u0627\u0644\u0635\u062F\u0627\u0631\u0629 \u0641\u064A \u0642\u0627\u0626\u0645\u0629 \u0623\u0642\u0648\u0649 \u0627\u0645\u0631\u0623\u0629 \u0641\u064A \u0627\u0644\u0639\u0627\u0644\u0645 \u0641\u064A \u062E\u0645\u0633 \u0633\u0646\u0648\u0627\u062A."@ar ,
+		"\u30A2\u30F3\u30B2\u30E9\u30FB\u30C9\u30ED\u30C6\u30A2\u30FB\u30E1\u30EB\u30B1\u30EB\uFF08\u30C9\u30A4\u30C4\u8A9E: Angela Dorothea Merkel\u3001\u51FA\u751F\u540D\uFF1A\u30A2\u30F3\u30B2\u30E9\u30FB\u30C9\u30ED\u30C6\u30A2\u30FB\u30AB\u30B9\u30CA\u30FC\uFF0FAngela Dorothea Kasner\u30011954\u5E747\u670817\u65E5 - \uFF09\u306F\u3001\u30C9\u30A4\u30C4\u306E\u653F\u6CBB\u5BB6\u30022000\u5E74\u3088\u308A\u30AD\u30EA\u30B9\u30C8\u6559\u6C11\u4E3B\u540C\u76DF (CDU) \u515A\u9996\u3002\u7B2C8\u4EE3\u30C9\u30A4\u30C4\u9023\u90A6\u5171\u548C\u56FD\u9996\u76F8\u3002\u30C9\u30A4\u30C4\u56FD\u5185\u306B\u304A\u3044\u3066\u3001\u5973\u6027\u3068\u3057\u3066\u306F\u521D\u306E\u5927\u653F\u515A\u515A\u9996\u30FB\u9996\u76F8\u3067\u3042\u308B\u3002"@ja ,
+		"Angela Dorothea Merkel (API : /\u02C8a\u014B\u0261ela (aussi: a\u014B\u02C8\u0261e\u02D0la) do\u0280o\u02C8te\u02D0a \u02C8m\u025B\u0281kl\u0329/), n\u00E9e Kasner, le  \u00E0 Hambourg, est une femme d'\u00C9tat allemande, chanceli\u00E8re f\u00E9d\u00E9rale depuis 2005.Physicienne de formation, membre de l'Union chr\u00E9tienne-d\u00E9mocrate (CDU), elle assume la charge de ministre f\u00E9d\u00E9ral des Femmes et de la Jeunesse au sein du cabinet Kohl IV, de 1991 \u00E0 1994, avant de se voir confier, le minist\u00E8re f\u00E9d\u00E9ral de l'Environnement, de la Protection de la Nature et de la S\u00E9curit\u00E9 nucl\u00E9aire du cabinet Kohl V, jusqu'en 1998. Angela Merkel devient, en 2000, la premi\u00E8re femme pr\u00E9sidente de la CDU."@fr ,
+		"Angela Dorothea Merkel (n\u00E9e Kasner; born 17 July 1954) is a German politician and former research scientist who has been the Chancellor of Germany since 2005 and the Leader of the Christian Democratic Union (CDU) since 2000."@en .
+dbr:Angela_Merkel
+    dbo:birthPlace  dbr:West_Germany ,
+        dbr:Hamburg ;
+    dbp:birthPlace  dbr:Hamburg ,
+        dbr:West_Germany ;
+    dbp:office  dbr:Chancellor_of_Germany .
+dbr:Hamburg rdf:type dbo:Settlement.
+dbr:Angela_Merkel owl:sameAs	wikidata:Q567.
+wikidata:Q567 wdt:P21 wd:Q6581072.
+
+wikidata:Q6581072 rdfs:label "weiblich"@de.
+wikidata:Q6581072 rdfs:label "female"@en.
+

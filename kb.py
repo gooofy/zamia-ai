@@ -68,13 +68,59 @@ COMMON_PREFIXES = {
             'wdp':     'http://www.wikidata.org/prop/',
     }
 
+ENDPOINTS = {
+                'www.wikidata.org': 'https://query.wikidata.org/bigdata/ldf',
+            }
+
+RESOURCE_ALIASES = {
+                      u'wde:AngelaMerkel'               : u'http://www.wikidata.org/entity/Q567',
+                      u'wde:GerhardSchröder'            : u'http://www.wikidata.org/entity/Q2530',
+                      u'wde:PresidentOfGermany'         : u'http://www.wikidata.org/entity/Q25223',
+                      u'wde:ComputerScientist'          : u'http://www.wikidata.org/entity/Q82594',
+                      u'wde:FederalChancellorOfGermany' : u'http://www.wikidata.org/entity/Q4970706',
+                      u'wde:Female'                     : u'http://www.wikidata.org/entity/Q6581072',
+                      u'wde:Male'                       : u'http://www.wikidata.org/entity/Q6581097',
+                   }
+
+# wikidata properties
+
+for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
+                    ('wdps',    'http://www.wikidata.org/prop/statement/'),
+                    ('wdpq',    'http://www.wikidata.org/prop/qualifier/'),
+                    ('wdp',     'http://www.wikidata.org/prop/')]:
+
+    for proplabel, propid in [(u'PlaceOfBirth'               , u'P19'),
+                              (u'SexOrGender'                , u'P21'),
+                              (u'PositionHeld'               , u'P39'),
+                              (u'Occupation'                 , u'P106'),
+                              (u'StartTime'                  , u'P580'),
+                              (u'EndTime'                    , u'P582'), ]:
+
+        RESOURCE_ALIASES[prefix + ':' + proplabel] = iri + propid
+
+
+# helper functions
+
+def resolve_aliases_prefixes (resource):
+
+    if resource in RESOURCE_ALIASES:
+        return RESOURCE_ALIASES[resource]
+
+    parts = resource.split(':')
+    assert len(parts) == 2
+
+    prefix, tail = parts
+
+    return COMMON_PREFIXES[prefix] + tail
+
+
 #
 # essentially we have two graphs: dbpedia subset + our own entries
 #
 
 class HALKB(object):
 
-    def __init__(self):
+    def __init__(self, kbname='kb'):
 
         #
         # prepare our lightweight sparql wrapper
@@ -92,7 +138,7 @@ class HALKB(object):
 
         db_url = config.get('db', 'url')
 
-        self.sas = SPARQLAlchemyStore(db_url, 'halkb', echo=False)
+        self.sas = SPARQLAlchemyStore(db_url, kbname, echo=False)
 
 
     def register_graph(self, c):
@@ -166,6 +212,9 @@ class HALKB(object):
         query  = self.query_prefixes + query
 
         return self.sas.query(query)
+
+    def query_algebra(self, algebra):
+        return self.sas.query_algebra(algebra)
 
     #
     # remote sparql utilities

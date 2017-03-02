@@ -414,15 +414,15 @@ class AIPrologParser(PrologParser):
 
         super(AIPrologParser, self).clear_module(module_name, db)
 
-    def compile_file (self, filename, module_name, db, clear_module=False):
+    def compile_file (self, filename, module_name, db, kb, clear_module=False):
 
         # setup compiler / test environment
 
         self.macro_engine = NLPMacroEngine()
-        self.kb           = HALKB()
+        self.kb           = kb
         self.db           = db
 
-        self.ai_rt = AIPrologRuntime(db)
+        self.ai_rt = AIPrologRuntime(db, kb)
         self.ai_rt.set_trace(self.trace)
         self.ai_rt.set_context_name(TEST_CONTEXT_NAME)
 

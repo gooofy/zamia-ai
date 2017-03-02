@@ -95,7 +95,7 @@ class NLPKernal(object):
         # prolog environment setup
         #
 
-        self.prolog_rt = AIPrologRuntime(self.db)
+        self.prolog_rt = AIPrologRuntime(self.db, self.kb)
         self.parser    = AIPrologParser()
 
 
@@ -339,7 +339,7 @@ class NLPKernal(object):
             pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
 
             logging.debug('   parsing %s ...' % pl_pathname)
-            compiler.compile_file (pl_pathname, module_name, self.db)
+            compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
 
     def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False):
 

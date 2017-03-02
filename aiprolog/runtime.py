@@ -26,15 +26,19 @@ import datetime
 import dateutil.parser
 import time
 import pytz # $ pip install pytz
+import rdflib
+from rdflib.plugins.sparql.parserutils import CompValue
+import logging
+
 from tzlocal import get_localzone # $ pip install tzlocal
 
 from zamiaprolog.runtime import PrologRuntime
 from zamiaprolog.errors  import PrologRuntimeError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
 
 import model
 
-from kb import HALKB
+from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES, resolve_aliases_prefixes
 
 def builtin_context(g, pe):
 
@@ -121,6 +125,156 @@ def builtin_action(g, pe):
 
     return True
 
+def _arg_to_rdf(term, env, pe, var_map):
+
+    a = pe.prolog_eval(term, env)
+
+    if not a and isinstance (term, Variable):
+        if not term.name in var_map:
+            var_map[term.name] = rdflib.term.Variable(term.name)
+        return var_map[term.name]
+
+    if isinstance (a, Predicate):
+        return rdflib.term.URIRef(resolve_aliases_prefixes(a.name))
+
+    if isinstance (a, NumberLiteral):
+        return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
+
+    if isinstance (a, StringLiteral):
+        if a.s.startswith('http://'): # a URL/URI/IRI, apparently
+            return rdflib.term.URIRef (a.s)
+        return rdflib.term.Literal (a.s)
+        
+    raise PrologRuntimeError('_arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
+
+
+def builtin_rdf(g, pe):
+
+    pe._trace ('CALLED BUILTIN rdf', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) == 0 or len(args) % 3 != 0:
+        raise PrologRuntimeError('rdf: one or more argument triple(s) expected, got %d args' % len(args))
+
+
+    # rdflib.plugins.sparql.parserutils.CompValue
+    #
+    # class CompValue(OrderedDict):
+    #     def __init__(self, name, **values):
+    #
+    # SelectQuery(
+    #   p =
+    #     Project(
+    #       p =
+    #         LeftJoin(
+    #           p2 =
+    #             BGP(
+    #               triples = [(rdflib.term.Variable(u'leaderobj'), rdflib.term.URIRef(u'http://dbpedia.org/ontology/leader'), rdflib.term.Variable(u'leader'))]
+    #               _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'leader')])
+    #             )
+    #           expr =
+    #             TrueFilter(
+    #               _vars = set([])
+    #             )
+    #           p1 =
+    #             BGP(
+    #               triples = [(rdflib.term.Variable(u'leader'), rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), rdflib.term.URIRef(u'http://schema.org/Person')), (rdflib.term.Variable(u'leader'), rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Variable(u'label'))]
+    #               _vars = set([rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
+    #             )
+    #           _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
+    #         )
+    #       PV = [rdflib.term.Variable(u'leader'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leaderobj')]
+    #       _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
+    #     )
+    #   datasetClause = None
+    #   PV = [rdflib.term.Variable(u'leader'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leaderobj')]
+    #   _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
+    # )
+
+    triples = []
+
+    arg_idx     = 0
+    var_map     = {} # string -> rdflib.term.Variable
+
+    while True:
+
+        arg_s = args[arg_idx]
+        arg_p = args[arg_idx+1]
+        arg_o = args[arg_idx+2]
+
+        logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+
+        triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
+                        _arg_to_rdf(arg_p, g.env, pe, var_map), 
+                        _arg_to_rdf(arg_o, g.env, pe, var_map)))
+
+        arg_idx += 3
+        if arg_idx >= len(args):
+            break
+
+    logging.debug ('rdf: triples: %s' % repr(triples))
+
+    var_list = var_map.values()
+    var_set  = set(var_list)
+
+    algebra = CompValue ('SelectQuery', p = CompValue('BGP', triples=triples, _vars=var_set),
+                                        datasetClause = None, PV = var_list, _vars = var_set)
+    
+    result = pe.kb.query_algebra (algebra)
+
+    logging.debug ('rdf: result (len: %d): %s' % (len(result), repr(result)))
+
+    if len(result) == 0:
+        return False
+
+    # turn result into list of bindings
+
+    res_bindings = []
+    for binding in result:
+
+        res_binding = {}
+
+        for v in binding.labels:
+
+            l = binding[v]
+
+            value    = unicode(l)
+
+            if isinstance (l, rdflib.Literal) :
+                if l.datatype:
+
+                    datatype = str(l.datatype)
+
+                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                        value = NumberLiteral(float(value))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                        value = NumberLiteral(float(value))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                        dt = dateutil.parser.parse(value)
+                        value = NumberLiteral(time.mktime(dt.timetuple()))
+                    else:
+                        raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
+                else:
+                    if l.value is None:
+                        value = ListLiteral([])
+                    else:
+                        value = StringLiteral(value)
+           
+            else:
+                value = StringLiteral(value)
+
+            res_binding[v] = value
+
+        res_bindings.append(res_binding)
+
+    if len(res_bindings) == 0 and len(result)>0:
+        res_bindings.append({}) # signal success
+
+    logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
+
+    return res_bindings
+
 def builtin_sparql_query(g, pe):
 
     pe._trace ('CALLED BUILTIN sparql_query', g)
@@ -128,7 +282,7 @@ def builtin_sparql_query(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) < 1:
-        raise PrologRuntimeError('say: at least 1 argument expected.')
+        raise PrologRuntimeError('sparql_query: at least 1 argument expected.')
 
     query = pe.prolog_get_string(args[0], g.env)
 
@@ -139,6 +293,9 @@ def builtin_sparql_query(g, pe):
     result = pe.kb.query (query)
 
     # logging.debug("builtin_sparql_query result: '%s'" % repr(result))
+
+    if len(result) == 0:
+        return False
 
     # turn result into lists of literals we can then bind to prolog variables
 
@@ -153,25 +310,28 @@ def builtin_sparql_query(g, pe):
 
             value    = unicode(l)
 
-            if l.datatype:
+            if isinstance (l, rdflib.Literal) :
+                if l.datatype:
 
-                datatype = str(l.datatype)
+                    datatype = str(l.datatype)
 
-                if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                    value = NumberLiteral(float(value))
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                    value = NumberLiteral(float(value))
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                    dt = dateutil.parser.parse(value)
-                    value = NumberLiteral(time.mktime(dt.timetuple()))
+                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                        value = NumberLiteral(float(value))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                        value = NumberLiteral(float(value))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                        dt = dateutil.parser.parse(value)
+                        value = NumberLiteral(time.mktime(dt.timetuple()))
+                    else:
+                        raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
                 else:
-                    raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
+                    if l.value is None:
+                        value = ListLiteral([])
+                    else:
+                        value = StringLiteral(value)
            
             else:
-                if l.value is None:
-                    value = ListLiteral([])
-                else:
-                    value = StringLiteral(value)
+                value = StringLiteral(value)
 
             if not v in res_map:
                 res_map[v] = []
@@ -202,13 +362,13 @@ def builtin_sparql_query(g, pe):
 
 class AIPrologRuntime(PrologRuntime):
 
-    def __init__(self, db):
+    def __init__(self, db, kb):
 
         super(AIPrologRuntime, self).__init__(db)
 
         # our knowledge base
 
-        self.kb = HALKB()
+        self.kb = kb
 
         # contexts
 
@@ -226,8 +386,9 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin('action',          builtin_action)
 
-        # sparql
+        # sparql / rdf
         self.register_builtin('sparql_query',    builtin_sparql_query)
+        self.register_builtin('rdf',             builtin_rdf)
 
     def set_context_name(self, context_name):
         self.context_name = context_name

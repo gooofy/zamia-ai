@@ -110,6 +110,21 @@ class TestAIProlog (unittest.TestCase):
         logging.debug('solutions: %s' % repr(solutions))
         self.assertEqual (len(solutions), 2)
 
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_filter_expr(self):
+
+        clause = self.parser.parse_line_clause_body('rdf (X, dbp:termEnd, TE, filter(and(TE =< "1998-10-27", TE >= "1998-10-27")))')
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 1)
+
+        clause = self.parser.parse_line_clause_body('rdf (X, dbp:termEnd, TE, filter(or(TE =< "1998-10-27", TE >= "1998-10-27")))')
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 2)
+
 
 if __name__ == "__main__":
 

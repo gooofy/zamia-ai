@@ -158,6 +158,16 @@ def _prolog_relational_expression (op, args, env, pe, var_map):
                       other = _prolog_to_filter_expression (args[1], env, pe, var_map),
                       _vars = set(var_map.values()))
 
+def _prolog_conditional_expression (name, args, env, pe, var_map):
+
+    if len(args) != 2:
+        raise PrologRuntimeError ('_prolog_conditional_expression %s: 2 args expected.' % name)
+
+    return CompValue (name, 
+                      expr  = _prolog_to_filter_expression (args[0], env, pe, var_map),
+                      other = [ _prolog_to_filter_expression (args[1], env, pe, var_map) ],
+                      _vars = set(var_map.values()))
+
 def _prolog_to_filter_expression(e, env, pe, var_map):
 
     if isinstance (e, Predicate):
@@ -174,6 +184,10 @@ def _prolog_to_filter_expression(e, env, pe, var_map):
             return _prolog_relational_expression ('<=', e.args, env, pe, var_map)
         elif e.name == '>=':
             return _prolog_relational_expression ('>=', e.args, env, pe, var_map)
+        elif e.name == 'and':
+            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map)
+        elif e.name == 'or':
+            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map)
         elif e.name == 'lang':
             if len(e.args) != 1:
                 raise PrologRuntimeError ('lang filter expression: one argument expected.')
@@ -412,6 +426,9 @@ def builtin_sparql_query(g, pe):
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
                         value = NumberLiteral(float(value))
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                        dt = dateutil.parser.parse(value)
+                        value = NumberLiteral(time.mktime(dt.timetuple()))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
                         dt = dateutil.parser.parse(value)
                         value = NumberLiteral(time.mktime(dt.timetuple()))
                     else:

@@ -99,6 +99,17 @@ class TestAIProlog (unittest.TestCase):
         logging.debug('solutions: %s' % repr(solutions))
         self.assertEqual (len(solutions), 1)
 
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_filter(self):
+
+        self.parser.compile_file('tests/chancellors_rdf.pl', UNITTEST_MODULE, self.db, self.kb)
+
+        clause = self.parser.parse_line_clause_body("chancellor_labels (X, Y)")
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 2)
+
 
 if __name__ == "__main__":
 

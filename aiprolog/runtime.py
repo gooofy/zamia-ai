@@ -147,6 +147,42 @@ def _arg_to_rdf(term, env, pe, var_map):
         
     raise PrologRuntimeError('_arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
 
+def _prolog_relational_expression (op, args, env, pe, var_map):
+
+    if len(args) != 2:
+        raise PrologRuntimeError ('_prolog_relational_expression: 2 args expected.')
+
+    return CompValue ('RelationalExpression', 
+                      op=op, 
+                      expr  = _prolog_to_filter_expression (args[0], env, pe, var_map),
+                      other = _prolog_to_filter_expression (args[1], env, pe, var_map),
+                      _vars = set(var_map.values()))
+
+def _prolog_to_filter_expression(e, env, pe, var_map):
+
+    if isinstance (e, Predicate):
+    
+        if e.name == '=':
+            return _prolog_relational_expression ('=', e.args, env, pe, var_map)
+        elif e.name == '\=':
+            return _prolog_relational_expression ('!=', e.args, env, pe, var_map)
+        elif e.name == '<':
+            return _prolog_relational_expression ('<', e.args, env, pe, var_map)
+        elif e.name == '>':
+            return _prolog_relational_expression ('>', e.args, env, pe, var_map)
+        elif e.name == '=<':
+            return _prolog_relational_expression ('<=', e.args, env, pe, var_map)
+        elif e.name == '>=':
+            return _prolog_relational_expression ('>=', e.args, env, pe, var_map)
+        elif e.name == 'lang':
+            if len(e.args) != 1:
+                raise PrologRuntimeError ('lang filter expression: one argument expected.')
+
+            return CompValue ('Builtin_LANG', 
+                              arg  = _prolog_to_filter_expression (e.args[0], env, pe, var_map),
+                              _vars = set(var_map.values()))
+
+    return _arg_to_rdf (e, env, pe, var_map)
 
 def builtin_rdf(g, pe):
 
@@ -194,6 +230,7 @@ def builtin_rdf(g, pe):
 
     triples          = []
     optional_triples = []
+    filters          = []
 
     arg_idx          = 0
     var_map          = {} # string -> rdflib.term.Variable
@@ -203,7 +240,6 @@ def builtin_rdf(g, pe):
         arg_s = args[arg_idx]
 
         # check for optional structure
-
         if isinstance(arg_s, Predicate) and arg_s.name == 'optional':
 
             s_args = arg_s.args
@@ -221,6 +257,20 @@ def builtin_rdf(g, pe):
                                      _arg_to_rdf(arg_p, g.env, pe, var_map), 
                                      _arg_to_rdf(arg_o, g.env, pe, var_map)))
 
+            arg_idx += 1
+
+        # check for filter structure
+        elif isinstance(arg_s, Predicate) and arg_s.name == 'filter':
+
+            logging.debug ('rdf: filter structure detected: %s' % repr(arg_s.args))
+
+            s_args = arg_s.args
+
+            if len(s_args) != 1:
+                raise PrologRuntimeError('rdf: filter: single expression expected')
+
+            filters.append(_prolog_to_filter_expression(s_args[0], g.env, pe, var_map))
+            
             arg_idx += 1
 
         else:
@@ -241,6 +291,7 @@ def builtin_rdf(g, pe):
 
     logging.debug ('rdf: triples: %s' % repr(triples))
     logging.debug ('rdf: optional_triples: %s' % repr(optional_triples))
+    logging.debug ('rdf: filters: %s' % repr(filters))
 
     if len(triples) == 0:
         raise PrologRuntimeError('rdf: at least one non-optional triple expected')
@@ -253,6 +304,9 @@ def builtin_rdf(g, pe):
     for t in optional_triples:
         p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
                                   expr = CompValue('TrueFilter', _vars=set([])))
+
+    for f in filters:
+        p = CompValue('Filter', p=p, expr = f, _vars=var_set)
 
     algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
     

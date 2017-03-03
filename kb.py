@@ -73,6 +73,7 @@ ENDPOINTS = {
             }
 
 RESOURCE_ALIASES = {
+                      u'wde:Human'                      : u'http://www.wikidata.org/entity/Q5',
                       u'wde:AngelaMerkel'               : u'http://www.wikidata.org/entity/Q567',
                       u'wde:GerhardSchröder'            : u'http://www.wikidata.org/entity/Q2530',
                       u'wde:PresidentOfGermany'         : u'http://www.wikidata.org/entity/Q25223',
@@ -91,6 +92,7 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
 
     for proplabel, propid in [(u'PlaceOfBirth'               , u'P19'),
                               (u'SexOrGender'                , u'P21'),
+                              (u'InstanceOf'                 , u'P31'),
                               (u'PositionHeld'               , u'P39'),
                               (u'Occupation'                 , u'P106'),
                               (u'StartTime'                  , u'P580'),

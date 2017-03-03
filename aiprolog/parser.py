@@ -148,6 +148,7 @@ class AIPrologParser(PrologParser):
 
         name             = args[0].s
 
+        distinct         = False
         triples          = []
         optional_triples = []
         filters          = []
@@ -195,6 +196,12 @@ class AIPrologParser(PrologParser):
                 
                 arg_idx += 1
 
+            # check for distinct
+            elif isinstance(arg_s, Predicate) and arg_s.name == 'distinct':
+
+                distinct = True
+                arg_idx += 1
+
             else:
 
                 if arg_idx > len(args)-3:
@@ -230,8 +237,11 @@ class AIPrologParser(PrologParser):
         for f in filters:
             p = CompValue('Filter', p=p, expr = f, _vars=var_set)
 
+        if distinct:
+            p = CompValue('Distinct', p=p, _vars=var_set)
+
         algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
-        
+       
         result = self.kb.query_algebra (algebra)
 
         logging.debug ('rdf_macro: result (len: %d): %s' % (len(result), repr(result)))

@@ -242,9 +242,12 @@ def builtin_rdf(g, pe):
     # if len(args) == 0 or len(args) % 3 != 0:
     #     raise PrologRuntimeError('rdf: one or more argument triple(s) expected, got %d args' % len(args))
 
+    distinct         = False
     triples          = []
     optional_triples = []
     filters          = []
+    limit            = 0
+    offset           = 0
 
     arg_idx          = 0
     var_map          = {} # string -> rdflib.term.Variable
@@ -287,6 +290,36 @@ def builtin_rdf(g, pe):
             
             arg_idx += 1
 
+
+        # check for distinct
+        elif isinstance(arg_s, Predicate) and arg_s.name == 'distinct':
+
+            s_args = arg_s.args
+            if len(s_args) != 0:
+                raise PrologRuntimeError('rdf: distinct: unexpected arguments.')
+
+            distinct = True
+            arg_idx += 1
+
+        # check for limit/offset
+        elif isinstance(arg_s, Predicate) and arg_s.name == 'limit':
+
+            s_args = arg_s.args
+            if len(s_args) != 1:
+                raise PrologRuntimeError('rdf: limit: one argument expected.')
+
+            limit = pe.prolog_get_int(s_args[0], g.env)
+            arg_idx += 1
+
+        elif isinstance(arg_s, Predicate) and arg_s.name == 'offset':
+
+            s_args = arg_s.args
+            if len(s_args) != 1:
+                raise PrologRuntimeError('rdf: offset: one argument expected.')
+
+            offset = pe.prolog_get_int(s_args[0], g.env)
+            arg_idx += 1
+
         else:
 
             if arg_idx > len(args)-3:
@@ -321,6 +354,12 @@ def builtin_rdf(g, pe):
 
     for f in filters:
         p = CompValue('Filter', p=p, expr = f, _vars=var_set)
+
+    if limit>0:
+        p = CompValue('Slice', start=offset, length=limit, p=p, _vars=var_set)
+
+    if distinct:
+        p = CompValue('Distinct', p=p, _vars=var_set)
 
     algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
     
@@ -378,6 +417,8 @@ def builtin_rdf(g, pe):
         res_bindings.append({}) # signal success
 
     logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
+
+    # import pdb; pdb.set_trace()
 
     return res_bindings
 

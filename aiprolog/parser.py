@@ -27,6 +27,7 @@ import logging
 import codecs
 import re
 import rdflib
+from rdflib.plugins.sparql.parserutils import CompValue
 
 from copy import copy
 
@@ -39,10 +40,7 @@ from zamiaprolog.errors import PrologError
 from zamiaprolog.logic  import *
 from nlp_macro_engine   import NLPMacroEngine
 from runtime            import AIPrologRuntime
-
-# from prolog_parser import PrologParser, SYM_EOF, PrologError
-# from prolog_ai_engine import PrologAIEngine
-# from nlp_macros import NLPMacroEngine
+from pl2algebra         import prolog_to_filter_expression, arg_to_rdf
 
 TEST_CONTEXT_NAME = 'test'
 
@@ -60,6 +58,7 @@ class AIPrologParser(PrologParser):
         # register directives
 
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
+        self.register_directive('rdf_macro',           self.rdf_macro,           None)
         self.register_directive('sparql_macro',        self.sparql_macro,        None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
@@ -93,21 +92,7 @@ class AIPrologParser(PrologParser):
 
         self.macro_engine.define_named_macro(name, mappings)
 
-    def sparql_macro(self, module_name, clause, user_data):
-
-        args = clause.head.args
-
-        if not isinstance (args[0], StringLiteral):
-            raise PrologError (u'sparql_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
-        if not isinstance (args[1], StringLiteral):
-            raise PrologError (u'sparql_macro: arg 1 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
-
-        name  = args[0].s
-        query = args[1].s
-
-        result = self.kb.query (query)
-
-        logging.debug ('ran query. resulting bindings: %s' % repr(result.bindings))
+    def _query_result_to_strings(self, result):
 
         # turn result into lists of strings we can then bind to macro variables
 
@@ -149,24 +134,156 @@ class AIPrologParser(PrologParser):
 
                 res_map[v].append(value)
 
-        logging.debug("sparql_macro: res_map : '%s'" % repr(res_map))
-        logging.debug("sparql_macro: res_vars: '%s'" % repr(res_vars))
+        logging.debug("res_map : '%s'" % repr(res_map))
+        logging.debug("res_vars: '%s'" % repr(res_vars))
+
+        return res_map, res_vars
+
+    def rdf_macro(self, module_name, clause, user_data):
+
+        args = clause.head.args
+
+        if not isinstance (args[0], StringLiteral):
+            raise PrologError (u'rdf_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
+
+        name             = args[0].s
+
+        triples          = []
+        optional_triples = []
+        filters          = []
+
+        arg_idx          = 1
+        var_map          = {}   # string -> rdflib.term.Variable
+        env              = {}   # we do not have bindings at compile time
+        pe               = None # we do not have a runtime at compile time either
+
+        while arg_idx < len(args):
+
+            arg_s = args[arg_idx]
+
+            # check for optional structure
+            if isinstance(arg_s, Predicate) and arg_s.name == 'optional':
+
+                s_args = arg_s.args
+
+                if len(s_args) != 3:
+                    raise PrologError('rdf: optional: triple arg expected')
+
+                arg_s = s_args[0]
+                arg_p = s_args[1]
+                arg_o = s_args[2]
+
+                logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+
+                optional_triples.append((arg_to_rdf(arg_s, env, pe, var_map), 
+                                         arg_to_rdf(arg_p, env, pe, var_map), 
+                                         arg_to_rdf(arg_o, env, pe, var_map)))
+
+                arg_idx += 1
+
+            # check for filter structure
+            elif isinstance(arg_s, Predicate) and arg_s.name == 'filter':
+
+                logging.debug ('rdf: filter structure detected: %s' % repr(arg_s.args))
+
+                s_args = arg_s.args
+
+                if len(s_args) != 1:
+                    raise PrologError('rdf: filter: single expression expected')
+
+                filters.append(prolog_to_filter_expression(s_args[0], env, pe, var_map))
+                
+                arg_idx += 1
+
+            else:
+
+                if arg_idx > len(args)-3:
+                    raise PrologError('rdf: not enough arguments for triple')
+
+                arg_p = args[arg_idx+1]
+                arg_o = args[arg_idx+2]
+
+                logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+
+                triples.append((arg_to_rdf(arg_s, env, pe, var_map), 
+                                arg_to_rdf(arg_p, env, pe, var_map), 
+                                arg_to_rdf(arg_o, env, pe, var_map)))
+
+                arg_idx += 3
+
+        logging.debug ('rdf: triples: %s' % repr(triples))
+        logging.debug ('rdf: optional_triples: %s' % repr(optional_triples))
+        logging.debug ('rdf: filters: %s' % repr(filters))
+
+        if len(triples) == 0:
+            raise PrologError('rdf: at least one non-optional triple expected')
+
+        var_list = var_map.values()
+        var_set  = set(var_list)
+
+        p = CompValue('BGP', triples=triples, _vars=var_set)
+
+        for t in optional_triples:
+            p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
+                                      expr = CompValue('TrueFilter', _vars=set([])))
+
+        for f in filters:
+            p = CompValue('Filter', p=p, expr = f, _vars=var_set)
+
+        algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
+        
+        result = self.kb.query_algebra (algebra)
+
+        logging.debug ('rdf_macro: result (len: %d): %s' % (len(result), repr(result)))
+
+        res_map, res_vars = self._query_result_to_strings(result)
 
         # transform bindings into macro mappings
 
-        # v_idx = 0
+        res_var_names = res_map.keys()
 
-        # for arg in args[1:]:
+        # [ {u'PERSON': u'http://www.wikidata.org/entity/Q2571', 
+        #    u'LABEL': u'Walter Scheel'}, 
+        #   {u'PERSON': u'http://www.wikidata.org/entity/Q2518', 
+        #    u'LABEL': u'Helmut Kohl'}, 
+        #   {u'PERSON': u'http://www.wikidata.org/entity/Q2516', 
+        #    u'LABEL': u'Helmut Schmidt'} ...]
 
-        #     sparql_var = res_vars[v_idx]
-        #     prolog_var = pe.prolog_get_variable(arg, g.env)
-        #     value      = res_map[sparql_var]
+        mappings = []
 
-        #     # logging.debug("builtin_sparql_query mapping %s -> %s: '%s'" % (sparql_var, prolog_var, value))
+        for binding_idx in range(len(res_map[res_vars[0]])):
 
-        #     g.env[prolog_var] = ListLiteral(value)
+            mapping = {}
 
-        #     v_idx += 1
+            for res_var_name in res_var_names:
+
+                mapping[res_var_name] = res_map[res_var_name][binding_idx]
+
+            mappings.append(mapping)
+
+        logging.debug ('rdf_macro: resulting mappings: %s' % repr(mappings))
+
+        self.macro_engine.define_named_macro(name, mappings)
+
+    def sparql_macro(self, module_name, clause, user_data):
+
+        args = clause.head.args
+
+        if not isinstance (args[0], StringLiteral):
+            raise PrologError (u'sparql_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
+        if not isinstance (args[1], StringLiteral):
+            raise PrologError (u'sparql_macro: arg 1 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
+
+        name  = args[0].s
+        query = args[1].s
+
+        result = self.kb.query (query)
+
+        logging.debug ('ran query. resulting bindings: %s' % repr(result.bindings))
+
+        res_map, res_vars = self._query_result_to_strings(result)
+
+        # transform bindings into macro mappings
 
         mappings = []
 
@@ -195,8 +312,6 @@ class AIPrologParser(PrologParser):
 
         logging.debug (u'nlp_gen: %s' % clause)
 
-        # import pdb; pdb.set_trace()
-        
         args = clause.head.args
 
         if len(args) < 3:

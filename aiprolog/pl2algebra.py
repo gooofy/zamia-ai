@@ -62,23 +62,33 @@ def arg_to_rdf(term, env, pe, var_map):
             return rdflib.term.URIRef (a.s)
         return rdflib.term.Literal (a.s)
         
-    raise PrologRuntimeError('arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
+    if isinstance (a, ListLiteral):
+        if len(a.l) == 0:
+            rl = rdflib.term.Literal(None)
+            return rl
+
+        raise PrologError('arg_to_rdf: for list literals, only the empty list (representing NULL) is supported.')
+
+    raise PrologError('arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
 
 def _prolog_relational_expression (op, args, env, pe, var_map):
 
     if len(args) != 2:
-        raise PrologRuntimeError ('_prolog_relational_expression: 2 args expected.')
+        raise PrologError ('_prolog_relational_expression: 2 args expected.')
+
+    expr  = prolog_to_filter_expression (args[0], env, pe, var_map)
+    other = prolog_to_filter_expression (args[1], env, pe, var_map)
 
     return CompValue ('RelationalExpression', 
                       op=op, 
-                      expr  = prolog_to_filter_expression (args[0], env, pe, var_map),
-                      other = prolog_to_filter_expression (args[1], env, pe, var_map),
+                      expr  = expr,
+                      other = other,
                       _vars = set(var_map.values()))
 
 def _prolog_conditional_expression (name, args, env, pe, var_map):
 
     if len(args) != 2:
-        raise PrologRuntimeError ('_prolog_conditional_expression %s: 2 args expected.' % name)
+        raise PrologError ('_prolog_conditional_expression %s: 2 args expected.' % name)
 
     return CompValue (name, 
                       expr  = prolog_to_filter_expression (args[0], env, pe, var_map),
@@ -101,13 +111,16 @@ def prolog_to_filter_expression(e, env, pe, var_map):
             return _prolog_relational_expression ('<=', e.args, env, pe, var_map)
         elif e.name == '>=':
             return _prolog_relational_expression ('>=', e.args, env, pe, var_map)
+        elif e.name == 'is':
+            pre = _prolog_relational_expression ('is', e.args, env, pe, var_map)
+            return pre
         elif e.name == 'and':
             return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map)
         elif e.name == 'or':
             return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map)
         elif e.name == 'lang':
             if len(e.args) != 1:
-                raise PrologRuntimeError ('lang filter expression: one argument expected.')
+                raise PrologError ('lang filter expression: one argument expected.')
 
             return CompValue ('Builtin_LANG', 
                               arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map),

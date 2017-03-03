@@ -35,6 +35,7 @@ from tzlocal import get_localzone # $ pip install tzlocal
 from zamiaprolog.runtime import PrologRuntime
 from zamiaprolog.errors  import PrologRuntimeError
 from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
+from pl2algebra          import arg_to_rdf, prolog_to_filter_expression
 
 import model
 
@@ -125,79 +126,6 @@ def builtin_action(g, pe):
 
     return True
 
-def _arg_to_rdf(term, env, pe, var_map):
-
-    a = pe.prolog_eval(term, env)
-
-    if not a and isinstance (term, Variable):
-        if not term.name in var_map:
-            var_map[term.name] = rdflib.term.Variable(term.name)
-        return var_map[term.name]
-
-    if isinstance (a, Predicate):
-        return rdflib.term.URIRef(resolve_aliases_prefixes(a.name))
-
-    if isinstance (a, NumberLiteral):
-        return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
-
-    if isinstance (a, StringLiteral):
-        if a.s.startswith('http://'): # a URL/URI/IRI, apparently
-            return rdflib.term.URIRef (a.s)
-        return rdflib.term.Literal (a.s)
-        
-    raise PrologRuntimeError('_arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
-
-def _prolog_relational_expression (op, args, env, pe, var_map):
-
-    if len(args) != 2:
-        raise PrologRuntimeError ('_prolog_relational_expression: 2 args expected.')
-
-    return CompValue ('RelationalExpression', 
-                      op=op, 
-                      expr  = _prolog_to_filter_expression (args[0], env, pe, var_map),
-                      other = _prolog_to_filter_expression (args[1], env, pe, var_map),
-                      _vars = set(var_map.values()))
-
-def _prolog_conditional_expression (name, args, env, pe, var_map):
-
-    if len(args) != 2:
-        raise PrologRuntimeError ('_prolog_conditional_expression %s: 2 args expected.' % name)
-
-    return CompValue (name, 
-                      expr  = _prolog_to_filter_expression (args[0], env, pe, var_map),
-                      other = [ _prolog_to_filter_expression (args[1], env, pe, var_map) ],
-                      _vars = set(var_map.values()))
-
-def _prolog_to_filter_expression(e, env, pe, var_map):
-
-    if isinstance (e, Predicate):
-    
-        if e.name == '=':
-            return _prolog_relational_expression ('=', e.args, env, pe, var_map)
-        elif e.name == '\=':
-            return _prolog_relational_expression ('!=', e.args, env, pe, var_map)
-        elif e.name == '<':
-            return _prolog_relational_expression ('<', e.args, env, pe, var_map)
-        elif e.name == '>':
-            return _prolog_relational_expression ('>', e.args, env, pe, var_map)
-        elif e.name == '=<':
-            return _prolog_relational_expression ('<=', e.args, env, pe, var_map)
-        elif e.name == '>=':
-            return _prolog_relational_expression ('>=', e.args, env, pe, var_map)
-        elif e.name == 'and':
-            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map)
-        elif e.name == 'or':
-            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map)
-        elif e.name == 'lang':
-            if len(e.args) != 1:
-                raise PrologRuntimeError ('lang filter expression: one argument expected.')
-
-            return CompValue ('Builtin_LANG', 
-                              arg  = _prolog_to_filter_expression (e.args[0], env, pe, var_map),
-                              _vars = set(var_map.values()))
-
-    return _arg_to_rdf (e, env, pe, var_map)
-
 def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
@@ -270,9 +198,9 @@ def builtin_rdf(g, pe):
 
             logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            optional_triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
-                                     _arg_to_rdf(arg_p, g.env, pe, var_map), 
-                                     _arg_to_rdf(arg_o, g.env, pe, var_map)))
+            optional_triples.append((arg_to_rdf(arg_s, g.env, pe, var_map), 
+                                     arg_to_rdf(arg_p, g.env, pe, var_map), 
+                                     arg_to_rdf(arg_o, g.env, pe, var_map)))
 
             arg_idx += 1
 
@@ -286,7 +214,7 @@ def builtin_rdf(g, pe):
             if len(s_args) != 1:
                 raise PrologRuntimeError('rdf: filter: single expression expected')
 
-            filters.append(_prolog_to_filter_expression(s_args[0], g.env, pe, var_map))
+            filters.append(prolog_to_filter_expression(s_args[0], g.env, pe, var_map))
             
             arg_idx += 1
 
@@ -330,9 +258,9 @@ def builtin_rdf(g, pe):
 
             logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
-                            _arg_to_rdf(arg_p, g.env, pe, var_map), 
-                            _arg_to_rdf(arg_o, g.env, pe, var_map)))
+            triples.append((arg_to_rdf(arg_s, g.env, pe, var_map), 
+                            arg_to_rdf(arg_p, g.env, pe, var_map), 
+                            arg_to_rdf(arg_o, g.env, pe, var_map)))
 
             arg_idx += 3
 

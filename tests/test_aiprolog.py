@@ -64,6 +64,8 @@ class TestAIProlog (unittest.TestCase):
         self.prolog_rt = AIPrologRuntime(self.db, self.kb)
         self.parser    = AIPrologParser()
 
+        self.prolog_rt.set_trace(True)
+
         self.db.clear_module(UNITTEST_MODULE)
 
     # @unittest.skip("temporarily disabled")
@@ -81,6 +83,17 @@ class TestAIProlog (unittest.TestCase):
     def test_rdf_exists(self):
 
         clause = self.parser.parse_line_clause_body("rdf ('http://www.wikidata.org/entity/Q567', 'http://www.wikidata.org/prop/direct/P21', 'http://www.wikidata.org/entity/Q6581072')")
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 1)
+
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_optional(self):
+
+        self.parser.compile_file('tests/chancellors_rdf.pl', UNITTEST_MODULE, self.db, self.kb)
+
+        clause = self.parser.parse_line_clause_body("is_current_chancellor (X)")
         logging.debug('clause: %s' % clause)
         solutions = self.prolog_rt.search(clause)
         logging.debug('solutions: %s' % repr(solutions))

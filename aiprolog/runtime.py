@@ -152,11 +152,6 @@ def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
 
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) == 0 or len(args) % 3 != 0:
-        raise PrologRuntimeError('rdf: one or more argument triple(s) expected, got %d args' % len(args))
-
 
     # rdflib.plugins.sparql.parserutils.CompValue
     #
@@ -192,34 +187,74 @@ def builtin_rdf(g, pe):
     #   _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
     # )
 
-    triples = []
+    pred = g.terms[g.inx]
+    args = pred.args
+    # if len(args) == 0 or len(args) % 3 != 0:
+    #     raise PrologRuntimeError('rdf: one or more argument triple(s) expected, got %d args' % len(args))
 
-    arg_idx     = 0
-    var_map     = {} # string -> rdflib.term.Variable
+    triples          = []
+    optional_triples = []
 
-    while True:
+    arg_idx          = 0
+    var_map          = {} # string -> rdflib.term.Variable
+
+    while arg_idx < len(args):
 
         arg_s = args[arg_idx]
-        arg_p = args[arg_idx+1]
-        arg_o = args[arg_idx+2]
 
-        logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+        # check for optional structure
 
-        triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
-                        _arg_to_rdf(arg_p, g.env, pe, var_map), 
-                        _arg_to_rdf(arg_o, g.env, pe, var_map)))
+        if isinstance(arg_s, Predicate) and arg_s.name == 'optional':
 
-        arg_idx += 3
-        if arg_idx >= len(args):
-            break
+            s_args = arg_s.args
+
+            if len(s_args) != 3:
+                raise PrologRuntimeError('rdf: optional: triple arg expected')
+
+            arg_s = s_args[0]
+            arg_p = s_args[1]
+            arg_o = s_args[2]
+
+            logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+
+            optional_triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
+                                     _arg_to_rdf(arg_p, g.env, pe, var_map), 
+                                     _arg_to_rdf(arg_o, g.env, pe, var_map)))
+
+            arg_idx += 1
+
+        else:
+
+            if arg_idx > len(args)-3:
+                raise PrologRuntimeError('rdf: not enough arguments for triple')
+
+            arg_p = args[arg_idx+1]
+            arg_o = args[arg_idx+2]
+
+            logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
+
+            triples.append((_arg_to_rdf(arg_s, g.env, pe, var_map), 
+                            _arg_to_rdf(arg_p, g.env, pe, var_map), 
+                            _arg_to_rdf(arg_o, g.env, pe, var_map)))
+
+            arg_idx += 3
 
     logging.debug ('rdf: triples: %s' % repr(triples))
+    logging.debug ('rdf: optional_triples: %s' % repr(optional_triples))
+
+    if len(triples) == 0:
+        raise PrologRuntimeError('rdf: at least one non-optional triple expected')
 
     var_list = var_map.values()
     var_set  = set(var_list)
 
-    algebra = CompValue ('SelectQuery', p = CompValue('BGP', triples=triples, _vars=var_set),
-                                        datasetClause = None, PV = var_list, _vars = var_set)
+    p = CompValue('BGP', triples=triples, _vars=var_set)
+
+    for t in optional_triples:
+        p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
+                                  expr = CompValue('TrueFilter', _vars=set([])))
+
+    algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
     
     result = pe.kb.query_algebra (algebra)
 
@@ -253,8 +288,11 @@ def builtin_rdf(g, pe):
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
                         dt = dateutil.parser.parse(value)
                         value = NumberLiteral(time.mktime(dt.timetuple()))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
+                        dt = dateutil.parser.parse(value)
+                        value = NumberLiteral(time.mktime(dt.timetuple()))
                     else:
-                        raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
+                        raise PrologRuntimeError('rdf: unknown datatype %s  (value: %s).' % (datatype, value))
                 else:
                     if l.value is None:
                         value = ListLiteral([])

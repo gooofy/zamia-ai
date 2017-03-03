@@ -159,7 +159,9 @@ dbr:Angela_Merkel
         dbr:Hamburg ;
     dbp:birthPlace  dbr:Hamburg ,
         dbr:West_Germany ;
-    dbp:office  dbr:Chancellor_of_Germany .
+    dbp:office  dbr:Chancellor_of_Germany;
+    dbp:termStart   "2005-10-18"^^xsd:date.
+
 dbr:Hamburg rdf:type dbo:Settlement.
 dbr:Angela_Merkel owl:sameAs	wikidata:Q567.
 wikidata:Q567 wdt:P21 wd:Q6581072.

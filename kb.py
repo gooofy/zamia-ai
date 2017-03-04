@@ -35,15 +35,12 @@ from requests.auth import HTTPDigestAuth
 
 import rdflib
 
-from nltools import misc
+from nltools                     import misc
 from sparqlalchemy.sparqlalchemy import SPARQLAlchemyStore
-
-# # our sleepycat graph store
-# 
-# RDF_LIB_STORE_PATH = 'data/dst/HALRDFLibStore'
+from sparqlalchemy.ldfmirror     import LDFMirror
 
 #
-# common prefixes we use in our queries
+# common prefixes we use in our queries (FIXME: make configurable)
 #
 
 COMMON_PREFIXES = {
@@ -81,6 +78,27 @@ RESOURCE_ALIASES = {
                       u'wde:FederalChancellorOfGermany' : u'http://www.wikidata.org/entity/Q4970706',
                       u'wde:Female'                     : u'http://www.wikidata.org/entity/Q6581072',
                       u'wde:Male'                       : u'http://www.wikidata.org/entity/Q6581097',
+
+                      u'wde:Freudental'                 : u'http://www.wikidata.org/entity/Q61656',
+                      u'wde:Ludwigsburg'                : u'http://www.wikidata.org/entity/Q622',
+                      u'wde:Stuttgart'                  : u'http://www.wikidata.org/entity/Q1022',
+                      u'wde:Tallinn'                    : u'http://www.wikidata.org/entity/Q1770',
+                      u'wde:San_Francisco'              : u'http://www.wikidata.org/entity/Q62',
+                      u'wde:Los_Angeles'                : u'http://www.wikidata.org/entity/Q65',
+                      u'wde:New_York_City'              : u'http://www.wikidata.org/entity/Q60',
+                      u'wde:London'                     : u'http://www.wikidata.org/entity/Q84',
+                      u'wde:Paris'                      : u'http://www.wikidata.org/entity/Q90',
+                      u'wde:Reykjavík'                  : u'http://www.wikidata.org/entity/Q1764',
+                      u'wde:Oberwiesenthal'             : u'http://www.wikidata.org/entity/Q57926',
+                      u'wde:Arnstorf'                   : u'http://www.wikidata.org/entity/Q582608',
+                      u'wde:Hamburg'                    : u'http://www.wikidata.org/entity/Q1055',
+                      u'wde:Brackenheim'                : u'http://www.wikidata.org/entity/Q53751',
+                      u'wde:Heilbronn'                  : u'http://www.wikidata.org/entity/Q715',
+                      u'wde:Ludwigshafen'               : u'http://www.wikidata.org/entity/Q2910',
+                      u'wde:Biberach_an_der_Riss'       : u'http://www.wikidata.org/entity/Q16069',
+                      u'wde:BlombergNRW'                : u'http://www.wikidata.org/entity/Q168646',
+                      u'wde:WashingtonDC'               : u'http://www.wikidata.org/entity/Q61',
+                      u'wde:Fairbanks'                  : u'http://www.wikidata.org/entity/Q79638',
                    }
 
 # wikidata properties
@@ -99,21 +117,6 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'EndTime'                    , u'P582'), ]:
 
         RESOURCE_ALIASES[prefix + ':' + proplabel] = iri + propid
-
-
-# helper functions
-
-def resolve_aliases_prefixes (resource):
-
-    if resource in RESOURCE_ALIASES:
-        return RESOURCE_ALIASES[resource]
-
-    parts = resource.split(':')
-    assert len(parts) == 2
-
-    prefix, tail = parts
-
-    return COMMON_PREFIXES[prefix] + tail
 
 
 #
@@ -140,7 +143,7 @@ class HALKB(object):
 
         db_url = config.get('db', 'url')
 
-        self.sas = SPARQLAlchemyStore(db_url, kbname, echo=False)
+        self.sas = SPARQLAlchemyStore(db_url, kbname, echo=False, prefixes=COMMON_PREFIXES, aliases=RESOURCE_ALIASES)
 
 
     def register_graph(self, c):
@@ -197,6 +200,9 @@ class HALKB(object):
     def filter_quads(self, s=None, p=None, o=None, context=None):
         return self.sas.filter_quads(s=s, p=p, o=o, context=context)
 
+    def resolve_aliases_prefixes(resource):
+        return self.sas.resolve_aliases_prefixes(resource)
+
     #
     # local sparql queries
     #
@@ -251,172 +257,11 @@ class HALKB(object):
     # LDF support
     #
 
-    def ldf_fetch (self, ldf_endpoint, resource, context):
+    def ldf_mirror(self, res_paths, context):
 
-        quads = []
+        ldfmirror = LDFMirror (self.sas, ENDPOINTS)
 
-        for pfx in COMMON_PREFIXES:
-
-            prefix = pfx + ':'
-
-            if resource.startswith(prefix):
-                resource = COMMON_PREFIXES[pfx] + resource[len(prefix):]
-
-        logging.debug ('LDF: r with prefixes resolved: "%s"' % resource)
-      
-        for do_subject in (True, False):
-
-            if do_subject:
-                url = ldf_endpoint + '?' + urllib.urlencode({'subject': resource})
-            else:
-                url = ldf_endpoint + '?' + urllib.urlencode({'object': resource})
-
-            logging.debug ('url: %s' % url)
-
-            while True:
-
-                response = requests.get(
-                  url,
-                  # data    = '',
-                  # params  = {'subject': resource, 'page': page} if do_subject else {'object':resource, 'page': page},
-                  headers = {"accept": 'text/turtle'},
-                )
-
-                logging.debug ('%s response: %d' % (url, response.status_code))
-
-                # for h in response.headers:
-                #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
-
-                if response.status_code != 200:
-                    break
-
-                # extract quads
-
-                logging.debug('parsing to memory...')
-
-                cj = rdflib.ConjunctiveGraph()
-                memg = cj.get_context(context)
-                # memg = rdflib.Graph()
-                memg.parse(data=response.text, format='turtle')
-                
-                if do_subject:
-                    for s,p,o in memg.triples((rdflib.URIRef(resource), None, None )):
-                        quads.append((s,p,o,context))
-                else:
-                    for s,p,o in memg.triples((None, None, (rdflib.URIRef(resource)) )):
-                        quads.append((s,p,o,context))
-
-                # paged resource?
-                url = None
-                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
-                    logging.debug ('got next page ref: %s' % repr(o))
-                    url = str(o)
-                    logging.debug ('got next page url: %s' % url)
-                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
-                    logging.debug ('got next page ref: %s' % repr(o))
-                    url = str(o)
-                    logging.debug ('got next page url: %s' % url)
-
-                if not url:
-                    break
-
-        return quads
-
-
-    def ldf_fetch_rec (self, ldf_endpoint, resources, max_depth, context):
-
-        quads = []
-
-        todo = []
-
-        for resource in resources:
-
-            for pfx in COMMON_PREFIXES:
-
-                prefix = pfx + ':'
-
-                if resource.startswith(prefix):
-                    resource = COMMON_PREFIXES[pfx] + resource[len(prefix):]
-
-            todo.append((resource, 0))
-
-        logging.debug ('LDF: todo with prefixes resolved: "%s"' % repr(todo))
-      
-        done = set()
-
-        while len(todo)>0:
-
-            resource, depth = todo.pop()
-
-            logging.debug ('LDF: ')
-            logging.debug ('LDF: *****************************')
-            logging.debug ('LDF: %5d:%5d resource=%s, depth=%d' % (len(todo), len(done), resource, depth))
-
-            if resource in done:
-                continue
-            if not u'wikidata.org' in unicode(resource):
-                continue
-            done.add(resource)
-
-            url = ldf_endpoint + '?' + urllib.urlencode({'subject': resource})
-
-            # logging.debug ('url: %s' % url)
-
-            todo_new = set()
-
-            while True:
-
-                response = requests.get(
-                  url,
-                  # data    = '',
-                  # params  = {'subject': resource, 'page': page} if do_subject else {'object':resource, 'page': page},
-                  headers = {"accept": 'text/turtle'},
-                )
-
-                logging.debug ('%s response: %d' % (url, response.status_code))
-
-                # for h in response.headers:
-                #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
-
-                if response.status_code != 200:
-                    break
-
-                # extract quads
-
-                # logging.debug('parsing to memory...')
-
-                cj = rdflib.ConjunctiveGraph()
-                memg = cj.get_context(context)
-                # memg = rdflib.Graph()
-                memg.parse(data=response.text, format='turtle')
-               
-                for s,p,o in memg.triples((rdflib.URIRef(resource), None, None )):
-                    quads.append((s,p,o,context))
-                    if isinstance(o, rdflib.URIRef):
-                        todo_new.add(o)
-
-
-                # paged resource?
-                url = None
-                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
-                    # logging.debug ('got next page ref: %s' % repr(o))
-                    url = str(o)
-                    # logging.debug ('got next page url: %s' % url)
-                for s,p,o in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
-                    # logging.debug ('got next page ref: %s' % repr(o))
-                    url = str(o)
-                    # logging.debug ('got next page url: %s' % url)
-
-                if not url:
-                    break
-
-            if depth < max_depth:
-                for o in todo_new:
-                    todo.append((o, depth+1))
-
-                
-        return quads
-
+        ldfmirror.mirror (res_paths, context)
 
 
 if __name__ == "__main__":

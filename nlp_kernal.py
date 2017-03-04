@@ -246,6 +246,8 @@ class NLPKernal(object):
 
         m = self.modules[module_name]
 
+        res_paths = []
+
         for kb_entry in getattr (m, 'KB_SOURCES'):
 
             if isinstance(kb_entry, basestring):
@@ -258,53 +260,11 @@ class NLPKernal(object):
 
             else:
 
-                endpoint, nodes = kb_entry
+                res_paths.append(kb_entry)
 
-                logging.info('importing nodes from %s...' % endpoint)
-
-                for node in nodes:
-
-                    logging.debug('importing %s from %s...' % (node, endpoint))
-
-                    # query = u"""
-                    #          CONSTRUCT {
-                    #             %s ?r ?n .
-                    #          }
-                    #          WHERE {
-                    #             %s ?r ?n .
-                    #          }
-                    #          """ % (node, node)
-
-                    # logging.debug('query: %s' % (query))
-
-                    # res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
-
-                    # if res.status_code != 200:
-                    #     raise Exception ('%d: SPARQL request failed: %s query was: %s' % (res.status_code, res.text, query))
-
-                    # logging.debug("importing %s ?r ?n from %s: %d bytes." % (node, endpoint, len(res.text)))
-
-                    # self.kb.parse(context=graph, format='n3', data=res.text) 
-
-                    # query = u"""
-                    #          CONSTRUCT {
-                    #             ?n ?r %s .
-                    #          }
-                    #          WHERE {
-                    #             ?n ?r %s .
-                    #          }
-                    #          """ % (node, node)
-
-                    # res = self.kb.remote_sparql(endpoint, query, response_format='text/n3')
-                    # logging.debug("importing ?n ?r %s from %s: %d bytes" % (node, endpoint, len(res.text)))
-
-                    # self.kb.parse(context=graph, format='n3', data=res.text)
-            
-                    quads = self.kb.ldf_fetch(endpoint, node, rdflib.Graph(identifier=graph))
-
-                    logging.debug ('%s query for %s yielded %d quads' % (endpoint, node, len(quads)))
-
-                    self.kb.addN(quads)
+        if len(kb_entry)>0:
+            logging.info('mirroring from LDF endpoints, target graph: %s ...' % graph)
+            quads = self.kb.ldf_mirror(res_paths, graph)
 
     def import_kb_multi (self, module_names):
 

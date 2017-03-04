@@ -39,7 +39,7 @@ from pl2algebra          import arg_to_rdf, prolog_to_filter_expression
 
 import model
 
-from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES, resolve_aliases_prefixes
+from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES
 
 def builtin_context(g, pe):
 

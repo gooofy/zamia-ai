@@ -37,7 +37,7 @@ from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Varia
 
 import model
 
-from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES, resolve_aliases_prefixes
+from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES
 
 def arg_to_rdf(term, env, pe, var_map):
 
@@ -52,7 +52,7 @@ def arg_to_rdf(term, env, pe, var_map):
         return var_map[term.name]
 
     if isinstance (a, Predicate):
-        return rdflib.term.URIRef(resolve_aliases_prefixes(a.name))
+        return rdflib.term.URIRef(pe.kb.resolve_aliases_prefixes(a.name))
 
     if isinstance (a, NumberLiteral):
         return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)

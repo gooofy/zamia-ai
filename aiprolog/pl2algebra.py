@@ -39,7 +39,7 @@ import model
 
 from kb import HALKB
 
-def arg_to_rdf(term, env, pe, var_map):
+def arg_to_rdf(term, env, pe, var_map, kb):
 
     if pe:
         a = pe.prolog_eval(term, env)
@@ -52,7 +52,7 @@ def arg_to_rdf(term, env, pe, var_map):
         return var_map[term.name]
 
     if isinstance (a, Predicate):
-        return rdflib.term.URIRef(pe.kb.resolve_aliases_prefixes(a.name))
+        return rdflib.term.URIRef(kb.resolve_aliases_prefixes(a.name))
 
     if isinstance (a, NumberLiteral):
         return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
@@ -71,13 +71,13 @@ def arg_to_rdf(term, env, pe, var_map):
 
     raise PrologError('arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
 
-def _prolog_relational_expression (op, args, env, pe, var_map):
+def _prolog_relational_expression (op, args, env, pe, var_map, kb):
 
     if len(args) != 2:
         raise PrologError ('_prolog_relational_expression: 2 args expected.')
 
-    expr  = prolog_to_filter_expression (args[0], env, pe, var_map)
-    other = prolog_to_filter_expression (args[1], env, pe, var_map)
+    expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb)
+    other = prolog_to_filter_expression (args[1], env, pe, var_map, kb)
 
     return CompValue ('RelationalExpression', 
                       op=op, 
@@ -85,34 +85,34 @@ def _prolog_relational_expression (op, args, env, pe, var_map):
                       other = other,
                       _vars = set(var_map.values()))
 
-def _prolog_conditional_expression (name, args, env, pe, var_map):
+def _prolog_conditional_expression (name, args, env, pe, var_map, kb):
 
     if len(args) != 2:
         raise PrologError ('_prolog_conditional_expression %s: 2 args expected.' % name)
 
     return CompValue (name, 
-                      expr  = prolog_to_filter_expression (args[0], env, pe, var_map),
-                      other = [ prolog_to_filter_expression (args[1], env, pe, var_map) ],
+                      expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb),
+                      other = [ prolog_to_filter_expression (args[1], env, pe, var_map, kb) ],
                       _vars = set(var_map.values()))
 
-def prolog_to_filter_expression(e, env, pe, var_map):
+def prolog_to_filter_expression(e, env, pe, var_map, kb):
 
     if isinstance (e, Predicate):
     
         if e.name == '=':
-            return _prolog_relational_expression ('=', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('=', e.args, env, pe, var_map, kb)
         elif e.name == '\=':
-            return _prolog_relational_expression ('!=', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('!=', e.args, env, pe, var_map, kb)
         elif e.name == '<':
-            return _prolog_relational_expression ('<', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('<', e.args, env, pe, var_map, kb)
         elif e.name == '>':
-            return _prolog_relational_expression ('>', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('>', e.args, env, pe, var_map, kb)
         elif e.name == '=<':
-            return _prolog_relational_expression ('<=', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('<=', e.args, env, pe, var_map, kb)
         elif e.name == '>=':
-            return _prolog_relational_expression ('>=', e.args, env, pe, var_map)
+            return _prolog_relational_expression ('>=', e.args, env, pe, var_map, kb)
         elif e.name == 'is':
-            pre = _prolog_relational_expression ('is', e.args, env, pe, var_map)
+            pre = _prolog_relational_expression ('is', e.args, env, pe, var_map, kb)
             return pre
         elif e.name == 'and':
             return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map)
@@ -123,8 +123,8 @@ def prolog_to_filter_expression(e, env, pe, var_map):
                 raise PrologError ('lang filter expression: one argument expected.')
 
             return CompValue ('Builtin_LANG', 
-                              arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map),
+                              arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map, kb),
                               _vars = set(var_map.values()))
 
-    return arg_to_rdf (e, env, pe, var_map)
+    return arg_to_rdf (e, env, pe, var_map, kb)
 

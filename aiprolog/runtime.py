@@ -198,9 +198,9 @@ def builtin_rdf(g, pe):
 
             logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            optional_triples.append((arg_to_rdf(arg_s, g.env, pe, var_map), 
-                                     arg_to_rdf(arg_p, g.env, pe, var_map), 
-                                     arg_to_rdf(arg_o, g.env, pe, var_map)))
+            optional_triples.append((arg_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
+                                     arg_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
+                                     arg_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
 
             arg_idx += 1
 
@@ -214,7 +214,7 @@ def builtin_rdf(g, pe):
             if len(s_args) != 1:
                 raise PrologRuntimeError('rdf: filter: single expression expected')
 
-            filters.append(prolog_to_filter_expression(s_args[0], g.env, pe, var_map))
+            filters.append(prolog_to_filter_expression(s_args[0], g.env, pe, var_map, pe.kb))
             
             arg_idx += 1
 
@@ -258,9 +258,9 @@ def builtin_rdf(g, pe):
 
             logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            triples.append((arg_to_rdf(arg_s, g.env, pe, var_map), 
-                            arg_to_rdf(arg_p, g.env, pe, var_map), 
-                            arg_to_rdf(arg_o, g.env, pe, var_map)))
+            triples.append((arg_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
+                            arg_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
+                            arg_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
 
             arg_idx += 3
 

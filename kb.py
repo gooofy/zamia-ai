@@ -131,8 +131,8 @@ class HALKB(object):
     def filter_quads(self, s=None, p=None, o=None, context=None):
         return self.sas.filter_quads(s=s, p=p, o=o, context=context)
 
-    def resolve_aliases_prefixes(resource):
-        return self.sas.resolve_aliases_prefixes(resource)
+    def resolve_aliases_prefixes(self, resource):
+        return self.sas.resolve_shortcuts(resource)
 
     #
     # local sparql queries

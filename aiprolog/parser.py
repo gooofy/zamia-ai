@@ -192,7 +192,7 @@ class AIPrologParser(PrologParser):
                 if len(s_args) != 1:
                     raise PrologError('rdf: filter: single expression expected')
 
-                filters.append(prolog_to_filter_expression(s_args[0], env, pe, var_map))
+                filters.append(prolog_to_filter_expression(s_args[0], env, pe, var_map, self.kb))
                 
                 arg_idx += 1
 
@@ -212,9 +212,9 @@ class AIPrologParser(PrologParser):
 
                 logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-                triples.append((arg_to_rdf(arg_s, env, pe, var_map), 
-                                arg_to_rdf(arg_p, env, pe, var_map), 
-                                arg_to_rdf(arg_o, env, pe, var_map)))
+                triples.append((arg_to_rdf(arg_s, env, pe, var_map, self.kb), 
+                                arg_to_rdf(arg_p, env, pe, var_map, self.kb), 
+                                arg_to_rdf(arg_o, env, pe, var_map, self.kb)))
 
                 arg_idx += 3
 

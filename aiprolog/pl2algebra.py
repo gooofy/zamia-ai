@@ -37,7 +37,7 @@ from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Varia
 
 import model
 
-from kb import HALKB, COMMON_PREFIXES, ENDPOINTS, RESOURCE_ALIASES
+from kb import HALKB
 
 def arg_to_rdf(term, env, pe, var_map):
 

@@ -40,86 +40,6 @@ from sparqlalchemy.sparqlalchemy import SPARQLAlchemyStore
 from sparqlalchemy.ldfmirror     import LDFMirror
 
 #
-# common prefixes we use in our queries (FIXME: make configurable)
-#
-
-COMMON_PREFIXES = {
-            'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-            'rdfs':    'http://www.w3.org/2000/01/rdf-schema#',
-            'hal':     'http://hal.zamia.org/kb/',
-            'dbo':     'http://dbpedia.org/ontology/',
-            'dbr':     'http://dbpedia.org/resource/',
-            'dbp':     'http://dbpedia.org/property/',
-            'xml':     'http://www.w3.org/XML/1998/namespace',
-            'xsd':     'http://www.w3.org/2001/XMLSchema#',
-            'geo':     'http://www.opengis.net/ont/geosparql#',
-            'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
-            'geof':    'http://www.opengis.net/def/function/geosparql/',
-            'owl':     'http://www.w3.org/2002/07/owl#',
-            'schema':  'http://schema.org/',
-            'wde':     'http://www.wikidata.org/entity/',
-            'wdes':    'http://www.wikidata.org/entity/statement',
-            'wdpd':    'http://www.wikidata.org/prop/direct/',
-            'wdps':    'http://www.wikidata.org/prop/statement/',
-            'wdpq':    'http://www.wikidata.org/prop/qualifier/',
-            'wdp':     'http://www.wikidata.org/prop/',
-    }
-
-ENDPOINTS = {
-                'www.wikidata.org': 'https://query.wikidata.org/bigdata/ldf',
-            }
-
-RESOURCE_ALIASES = {
-                      u'wde:Human'                      : u'http://www.wikidata.org/entity/Q5',
-                      u'wde:AngelaMerkel'               : u'http://www.wikidata.org/entity/Q567',
-                      u'wde:GerhardSchröder'            : u'http://www.wikidata.org/entity/Q2530',
-                      u'wde:PresidentOfGermany'         : u'http://www.wikidata.org/entity/Q25223',
-                      u'wde:ComputerScientist'          : u'http://www.wikidata.org/entity/Q82594',
-                      u'wde:FederalChancellorOfGermany' : u'http://www.wikidata.org/entity/Q4970706',
-                      u'wde:Female'                     : u'http://www.wikidata.org/entity/Q6581072',
-                      u'wde:Male'                       : u'http://www.wikidata.org/entity/Q6581097',
-
-                      u'wde:Freudental'                 : u'http://www.wikidata.org/entity/Q61656',
-                      u'wde:Ludwigsburg'                : u'http://www.wikidata.org/entity/Q622',
-                      u'wde:Stuttgart'                  : u'http://www.wikidata.org/entity/Q1022',
-                      u'wde:Tallinn'                    : u'http://www.wikidata.org/entity/Q1770',
-                      u'wde:SanFrancisco'               : u'http://www.wikidata.org/entity/Q62',
-                      u'wde:LosAngeles'                 : u'http://www.wikidata.org/entity/Q65',
-                      u'wde:NewYorkCity'                : u'http://www.wikidata.org/entity/Q60',
-                      u'wde:London'                     : u'http://www.wikidata.org/entity/Q84',
-                      u'wde:Paris'                      : u'http://www.wikidata.org/entity/Q90',
-                      u'wde:Reykjavík'                  : u'http://www.wikidata.org/entity/Q1764',
-                      u'wde:Oberwiesenthal'             : u'http://www.wikidata.org/entity/Q57926',
-                      u'wde:Arnstorf'                   : u'http://www.wikidata.org/entity/Q582608',
-                      u'wde:Hamburg'                    : u'http://www.wikidata.org/entity/Q1055',
-                      u'wde:Brackenheim'                : u'http://www.wikidata.org/entity/Q53751',
-                      u'wde:Heilbronn'                  : u'http://www.wikidata.org/entity/Q715',
-                      u'wde:Ludwigshafen'               : u'http://www.wikidata.org/entity/Q2910',
-                      u'wde:BiberachRiss'               : u'http://www.wikidata.org/entity/Q16069',
-                      u'wde:BlombergNRW'                : u'http://www.wikidata.org/entity/Q168646',
-                      u'wde:WashingtonDC'               : u'http://www.wikidata.org/entity/Q61',
-                      u'wde:Fairbanks'                  : u'http://www.wikidata.org/entity/Q79638',
-                   }
-
-# wikidata properties
-
-for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
-                    ('wdps',    'http://www.wikidata.org/prop/statement/'),
-                    ('wdpq',    'http://www.wikidata.org/prop/qualifier/'),
-                    ('wdp',     'http://www.wikidata.org/prop/')]:
-
-    for proplabel, propid in [(u'PlaceOfBirth'               , u'P19'),
-                              (u'SexOrGender'                , u'P21'),
-                              (u'InstanceOf'                 , u'P31'),
-                              (u'PositionHeld'               , u'P39'),
-                              (u'Occupation'                 , u'P106'),
-                              (u'StartTime'                  , u'P580'),
-                              (u'EndTime'                    , u'P582'), ]:
-
-        RESOURCE_ALIASES[prefix + ':' + proplabel] = iri + propid
-
-
-#
 # essentially we have two graphs: dbpedia subset + our own entries
 #
 
@@ -131,7 +51,7 @@ class HALKB(object):
         # prepare our lightweight sparql wrapper
         #
 
-        self.query_prefixes = ''.join(map(lambda k: "PREFIX %s: <%s>\n" % (k, COMMON_PREFIXES[k]), COMMON_PREFIXES))
+        self.query_prefixes = ''
 
         #
         # set up graph store
@@ -143,8 +63,19 @@ class HALKB(object):
 
         db_url = config.get('db', 'url')
 
-        self.sas = SPARQLAlchemyStore(db_url, kbname, echo=False, prefixes=COMMON_PREFIXES, aliases=RESOURCE_ALIASES)
+        self.sas = SPARQLAlchemyStore(db_url, kbname, echo=False)
 
+        self.endpoints = {} # host name -> LDF endpoint
+
+    def register_prefix(self, prefix, uri):
+        self.query_prefixes += "PREFIX %s: <%s>\n" % (prefix, uri)
+        self.sas.register_prefix(prefix, uri)
+
+    def register_endpoint (self, endpoint, uri):
+        self.endpoints[endpoint] = uri
+
+    def register_alias (self, alias, uri):
+        self.sas.register_alias (alias, uri)
 
     def register_graph(self, c):
 
@@ -259,7 +190,7 @@ class HALKB(object):
 
     def ldf_mirror(self, res_paths, context):
 
-        ldfmirror = LDFMirror (self.sas, ENDPOINTS)
+        ldfmirror = LDFMirror (self.sas, self.endpoints)
 
         ldfmirror.mirror (res_paths, context)
 

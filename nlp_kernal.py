@@ -257,7 +257,7 @@ class NLPKernal(object):
 
         self.kb.register_graph(graph)
 
-        self.kb.clear_graph(graph)
+        # disabled to enable incremental kb updates self.kb.clear_graph(graph)
 
         m = self.modules[module_name]
 

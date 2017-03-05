@@ -149,6 +149,7 @@ class HALKB(object):
     def query(self, query):
 
         query  = self.query_prefixes + query
+        logging.debug (query)
 
         return self.sas.query(query)
 

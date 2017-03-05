@@ -7,24 +7,44 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix wde: <http://www.wikidata.org/entity/>.
 
-wde:Freudental                 hal:cityid 2924888 .
-wde:Ludwigsburg                hal:cityid 2875392 .
-wde:Stuttgart                  hal:cityid 2825297 .
-wde:Tallinn                    hal:cityid 588409 .
-wde:SanFrancisco               hal:cityid 5391959 .
-wde:LosAngeles                 hal:cityid 5368361 .
-wde:NewYorkCity                hal:cityid 5128581 .
-wde:London                     hal:cityid 2643743 .
-wde:Paris                      hal:cityid 2988507 .
-wde:Reykjavík                  hal:cityid 3413829 .
-wde:Oberwiesenthal             hal:cityid 2882332 .
-wde:Arnstorf                   hal:cityid 2854179 .
-wde:Hamburg                    hal:cityid 2911298 .
-wde:Brackenheim                hal:cityid 2945591 .
-wde:Heilbronn                  hal:cityid 2907669 .
-wde:Ludwigshafen               hal:cityid 2875377 .
-wde:BiberachRiss               hal:cityid 2949426 .
-wde:BlombergNRW                hal:cityid 2947641 .
-wde:WashingtonDC               hal:cityid 4140963 .
-wde:Fairbanks                  hal:cityid 5861897 .
+# wde:Freudental'                 
+<http://www.wikidata.org/entity/Q61656> hal:cityid 2924888 .
+# wde:Ludwigsburg'                
+<http://www.wikidata.org/entity/Q622> hal:cityid 2875392 .
+# wde:Stuttgart'                  
+<http://www.wikidata.org/entity/Q1022> hal:cityid 2825297 .
+# wde:Tallinn'                    
+<http://www.wikidata.org/entity/Q1770> hal:cityid 588409 .
+# wde:SanFrancisco'               
+<http://www.wikidata.org/entity/Q62> hal:cityid 5391959 .
+# wde:LosAngeles'                 
+<http://www.wikidata.org/entity/Q65> hal:cityid 5368361 .
+# wde:NewYorkCity'                
+<http://www.wikidata.org/entity/Q60> hal:cityid 5128581 .
+# wde:London'                     
+<http://www.wikidata.org/entity/Q84> hal:cityid 2643743 .
+# wde:Paris'                      
+<http://www.wikidata.org/entity/Q90> hal:cityid 2988507 .
+# wde:Reykjavík'                  
+<http://www.wikidata.org/entity/Q1764> hal:cityid 3413829 .
+# wde:Oberwiesenthal'             
+<http://www.wikidata.org/entity/Q57926> hal:cityid 2882332 .
+# wde:Arnstorf'                   
+<http://www.wikidata.org/entity/Q582608> hal:cityid 2854179 .
+# wde:Hamburg'                    
+<http://www.wikidata.org/entity/Q1055> hal:cityid 2911298 .
+# wde:Brackenheim'                
+<http://www.wikidata.org/entity/Q53751> hal:cityid 2945591 .
+# wde:Heilbronn'                  
+<http://www.wikidata.org/entity/Q715> hal:cityid 2907669 .
+# wde:Ludwigshafen'               
+<http://www.wikidata.org/entity/Q2910> hal:cityid 2875377 .
+# wde:BiberachRiss'               
+<http://www.wikidata.org/entity/Q16069> hal:cityid 2949426 .
+# wde:BlombergNRW'                
+<http://www.wikidata.org/entity/Q168646> hal:cityid 2947641 .
+# wde:WashingtonDC'               
+<http://www.wikidata.org/entity/Q61> hal:cityid 4140963 .
+# wde:Fairbanks'                  
+<http://www.wikidata.org/entity/Q79638> hal:cityid 5861897 .
 

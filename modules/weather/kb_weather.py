@@ -35,10 +35,11 @@ import pytz
 import json
 import urllib2
 from tzlocal import get_localzone
-import astral
 
+from nltools import misc
 from kb import HALKB
 
+import astral
 import model
 
 KELVIN          = 273.15
@@ -61,11 +62,20 @@ def fetch_weather_forecast(config, kb):
                       ?location hal:cityid ?cityid .
                       ?location hal:timezone ?timezone .
                       ?location rdfs:label ?label .
-                      ?location geo1:long ?long .
-                      ?location geo1:lat ?lat .
-                      FILTER(LANGMATCHES(LANG(?label), "en")) .
+                      ?location hal:GeoNames ?gid .
+                      ?gid <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
+                      ?gid <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+                      FILTER(lang(?label) = 'en') .
             }
             """
+
+    # query = """
+    #         SELECT DISTINCT ?location ?cityid ?timezone
+    #         WHERE {
+    #            ?location hal:cityid ?cityid .
+    #            ?location hal:timezone ?timezone .
+    #         }
+    #         """
 
     try:
         results = kb.query(query)
@@ -102,6 +112,8 @@ def fetch_weather_forecast(config, kb):
 
     def mangle_uri(label):
         return ''.join(map(lambda c: c if c.isalnum() else '_', label))
+
+    sys.exit(0)
 
     #
     # generate triples of weather and astronomical data
@@ -234,4 +246,24 @@ def fetch_weather_forecast(config, kb):
 
             # print query
             result = kb.sparql(query)
+
+if __name__ == "__main__":
+
+    logging.basicConfig(level=logging.DEBUG)
+
+    config = misc.load_config('.nlprc')
+    
+    kb = HALKB()
+
+    kb.register_prefix('hal', 'http://hal.zamia.org/kb/')
+    kb.register_prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
+
+    fetch_weather_forecast (config, kb)
+
+    # gn = u'http://hal.zamia.org/benchmark'
+
+    # start_time = time.time()
+    # kb = HALKB()
+    # logging.debug ('HALKB init took %fs' % (time.time() - start_time))
+
 

@@ -3,7 +3,7 @@
 
 from kb_weather import fetch_weather_forecast
 
-DEPENDS = [ 'common_sense' ]
+DEPENDS = [ 'base' ]
 
 PL_SOURCES = [
               'weather.pl',

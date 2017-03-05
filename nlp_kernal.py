@@ -164,7 +164,7 @@ class NLPKernal(object):
                     self.kb.clear_all_graphs()
                 else:
                     graph = self._module_graph_name(module_name)
-                    self.kb.clear_graphs(graph)
+                    self.kb.clear_graph(graph)
 
         self.session.commit()
 
@@ -277,7 +277,7 @@ class NLPKernal(object):
 
                 res_paths.append(kb_entry)
 
-        if len(kb_entry)>0:
+        if len(res_paths)>0:
             logging.info('mirroring from LDF endpoints, target graph: %s ...' % graph)
             quads = self.kb.ldf_mirror(res_paths, graph)
 

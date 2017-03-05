@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
+import rdflib
+
 DEPENDS    = [ ]
 
 PL_SOURCES = [
@@ -33,6 +35,7 @@ RDF_PREFIXES = {
 
 LDF_ENDPOINTS = {
                   'www.wikidata.org': 'https://query.wikidata.org/bigdata/ldf',
+                  'sws.geonames.org': 'http://data.linkeddatafragments.org/geonames',
                 }
 
 RDF_ALIASES = {
@@ -80,7 +83,9 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'PositionHeld'               , u'P39'),
                               (u'Occupation'                 , u'P106'),
                               (u'StartTime'                  , u'P580'),
-                              (u'EndTime'                    , u'P582'), ]:
+                              (u'EndTime'                    , u'P582'),
+                              (u'GeoNamesID'                 , u'P1566'),
+                             ]:
 
         RDF_ALIASES[prefix + ':' + proplabel] = iri + propid
 
@@ -129,7 +134,11 @@ KB_SOURCES = [
                   u'wde:WashingtonDC',
                   u'wde:Fairbanks',
                 ],
-                [[]]
+                [
+                
+                  [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('hal:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
+                
+                ]
               )
             ]
 

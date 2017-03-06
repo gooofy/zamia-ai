@@ -353,7 +353,7 @@ class NLPKernal(object):
             if force or t > next_run:
 
                 logging.debug ('running cronjob %s' %name)
-                f (self.config, self.kb)
+                f (self.config, self.kb, graph)
 
                 cronjob.last_run = t
 

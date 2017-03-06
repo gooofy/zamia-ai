@@ -71,6 +71,7 @@ class Context(Base):
     key               = Column(Unicode, index=True)
     value             = Column(UnicodeText)
     default_value     = Column(UnicodeText)
+    prolog_type       = Column(Enum('string', 'number', 'constant', name='prolog_types'))
 
 class Cronjob(Base):
 

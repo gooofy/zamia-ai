@@ -528,8 +528,6 @@ class AIPrologParser(PrologParser):
         if isinstance (value, Variable):
             value = solutions[0][value.name]
 
-        value = unicode(value)
-
         self.ai_rt.set_context_default(name, key, value)
 
     def clear_module (self, module_name, db):

@@ -59,7 +59,8 @@ def builtin_context(g, pe):
 
     # print u"builtin_context: %s -> %s" % (key, unicode(v.body))
 
-    g.env[arg_v] = v.body[0]
+    # FIXME: remove old code g.env[arg_v] = v.body[0]
+    g.env[arg_v] = v
 
     return True
 
@@ -501,6 +502,7 @@ class AIPrologRuntime(PrologRuntime):
 
     def get_actions(self):
         return self.actions
+
     #
     # manage stored contexts in db
     #
@@ -511,32 +513,59 @@ class AIPrologRuntime(PrologRuntime):
         if not ctx:
             return None
 
-        return self.parser.parse_line_clause_body(ctx.value)
+        if ctx.prolog_type == 'string':
+            return StringLiteral(ctx.value)
+
+        if ctx.prolog_type == 'number':
+            return NumberLiteral(float(ctx.value))
+        
+        if ctx.prolog_type == 'constant':
+            return Predicate (ctx.value)
+
+        raise PrologRuntimeError ('Internal error: unknown context type "%s" stored in db.' % ctx.prolog_type)
+
+    def _value_pt(self, value):
+        if isinstance(value, StringLiteral):
+            pt = 'string'
+        elif isinstance(value, NumberLiteral):
+            pt = 'number'
+        elif isinstance(value, Predicate):
+            if len(value.args)>0:
+                raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
+            pt = 'constant'
+        else:
+            raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
+        return pt
 
     def write_context (self, name, key, value):
 
-        v = unicode(value)
+        v  = unicode(value)
+        pt = self._value_pt(value)
 
         ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
         if not ctx:
-            ctx = model.Context(name=name, key=key, value=v, default_value=v)
+            ctx = model.Context(name=name, key=key, value=v, default_value=v, prolog_type=pt)
             self.db.session.add(ctx)
         else:
-            ctx.value = v
+            ctx.value       = v
+            ctx.prolog_type = pt
 
     def set_context_default(self, name, key, value):
 
+        v  = unicode(value)
+        pt = self._value_pt(value)
+
         ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
 
         if not ctx:
-            ctx = model.Context(name=name, key=key, value=value, default_value=value)
+            ctx = model.Context(name=name, key=key, value=v, default_value=v, prolog_type=pt)
             self.db.session.add(ctx)
         else:
-            ctx.default_value = value
+            ctx.default_value = v
+            ctx.prolog_type   = pt
 
     def reset_context(self, name):
 
         for ctx in self.db.session.query(model.Context).filter(model.Context.name==name).all():
             ctx.value = ctx.default_value
         
-

@@ -134,6 +134,18 @@ class HALKB(object):
     def resolve_aliases_prefixes(self, resource):
         return self.sas.resolve_shortcuts(resource)
 
+    def addN_resolve (self, quads):
+
+        quads_resolved = []
+
+        for s,p,o,c in quads:
+            quads_resolved.append((self.resolve_aliases_prefixes(s),
+                                   self.resolve_aliases_prefixes(p),
+                                   self.resolve_aliases_prefixes(o), c))
+
+
+        self.addN(quads_resolved)
+
     #
     # local sparql queries
     #
@@ -149,7 +161,7 @@ class HALKB(object):
     def query(self, query):
 
         query  = self.query_prefixes + query
-        logging.debug (query)
+        # logging.debug (query)
 
         return self.sas.query(query)
 

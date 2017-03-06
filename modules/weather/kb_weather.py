@@ -29,24 +29,28 @@ import traceback
 import codecs
 import logging
 
-from urllib2 import HTTPError
-from datetime import datetime, timedelta
+from urllib2          import HTTPError
+from datetime         import datetime, timedelta
 import pytz
 import json
 import urllib2
-from tzlocal import get_localzone
+import rdflib
 
-from nltools import misc
-from kb import HALKB
+from rdflib.namespace import XSD
+from tzlocal          import get_localzone
+
+from nltools          import misc
+from kb               import HALKB
 
 import astral
 import model
 
 KELVIN          = 273.15
 
-def fetch_weather_forecast(config, kb):
+def fetch_weather_forecast(config, kb, graph_name):
 
     api_key    = config.get("weather", "api_key")
+    graph      = rdflib.Graph(identifier=graph_name)
 
     #
     # fetch city ids, timezones
@@ -113,11 +117,11 @@ def fetch_weather_forecast(config, kb):
     def mangle_uri(label):
         return ''.join(map(lambda c: c if c.isalnum() else '_', label))
 
-    sys.exit(0)
-
     #
     # generate triples of weather and astronomical data
     #
+
+    quads = []
 
     for location in locations:
 
@@ -153,32 +157,15 @@ def fetch_weather_forecast(config, kb):
 
             sun = l.sun(date=cur_date, local=True)
 
-            sun_uri = 'hal:sun_%s_%s' % (loc_label, cur_date.strftime('%Y%m%d'))
+            sun_uri = u'hal:sun_%s_%s' % (loc_label, cur_date.strftime('%Y%m%d'))
 
-            query = """
-                    INSERT DATA {
-                       GRAPH <http://hal.zamia.org>
-                       { 
-                           %s hal:location <%s> .
-                           %s hal:date "%s"^^xsd:date .
-                           %s hal:dawn "%s"^^xsd:dateTime   .
-                           %s hal:sunrise "%s"^^xsd:dateTime   .
-                           %s hal:noon "%s"^^xsd:dateTime   .
-                           %s hal:sunset "%s"^^xsd:dateTime   .
-                           %s hal:dusk "%s"^^xsd:dateTime   .
-                       }
-                    }
-                    """ % ( sun_uri, location, \
-                            sun_uri, cur_date.isoformat(), \
-                            sun_uri, sun['dawn'].isoformat(), \
-                            sun_uri, sun['sunrise'].isoformat(), \
-                            sun_uri, sun['noon'].isoformat(), \
-                            sun_uri, sun['sunset'].isoformat(), \
-                            sun_uri, sun['dusk'].isoformat())
-
-            # print query
-
-            kb.sparql(query)
+            quads.append(( sun_uri, u'hal:location', location, graph ))
+            quads.append(( sun_uri, u'hal:date',     rdflib.Literal(cur_date.isoformat(), datatype=XSD.date), graph ))
+            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'].isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'].isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'].isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'].isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'].isoformat(), datatype=XSD.datetime), graph ))
 
             logging.debug ("astral %s %s %s -> %s" % (location, cur_date.isoformat(), sun['sunrise'], sun['sunset']) )
 
@@ -216,36 +203,22 @@ def fetch_weather_forecast(config, kb):
 
             fc_uri = 'hal:fc_%s_%s' % (loc_label, dt_from.strftime('%Y%m%d_%H%M%S'))
 
-            query = """
-                    WITH <http://hal.zamia.org>
-                    DELETE { %s ?p ?v }
-                    WHERE { %s ?p ?v }
-                    """ % (fc_uri, fc_uri)
+            quads.append(( fc_uri, u'hal:location',      location, graph ))
+            quads.append(( fc_uri, u'hal:temp_min',      rdflib.Literal(unicode(temp_min), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'hal:temp_max',      rdflib.Literal(unicode(temp_max), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'hal:precipitation', rdflib.Literal(unicode(precipitation), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'hal:clouds',        rdflib.Literal(unicode(clouds), datatype=XSD.float), graph ))
 
-            # print query
-            kb.sparql(query)
+            quads.append(( fc_uri, u'hal:icon',          rdflib.Literal(icon), graph ))
+            quads.append(( fc_uri, u'hal:description',   rdflib.Literal(description), graph ))
 
-            query = """
-                    INSERT DATA {
-                       GRAPH <http://hal.zamia.org>
-                       { 
-                           %s hal:location <%s> .
-                           %s hal:temp_min      "%f"^^xsd:float .
-                           %s hal:temp_max      "%f"^^xsd:float .
-                           %s hal:precipitation "%f"^^xsd:float .
-                           %s hal:clouds        "%f"^^xsd:float .
-                           %s hal:icon "%s" .
-                           %s hal:description "%s" .
-                           %s hal:dt_start "%s"^^xsd:dateTime .
-                           %s hal:dt_end "%s"^^xsd:dateTime .
-                       }
-                    }
-                    """ % ( fc_uri, location, fc_uri, temp_min, fc_uri, temp_max, \
-                            fc_uri, precipitation, fc_uri, clouds, fc_uri, icon,  \
-                            fc_uri, description, fc_uri, dt_from.isoformat(), fc_uri, dt_to.isoformat())
+            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from.isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to.isoformat(), datatype=XSD.datetime), graph ))
 
-            # print query
-            result = kb.sparql(query)
+
+        # logging.debug(repr(quads))
+
+    kb.addN_resolve(quads)
 
 if __name__ == "__main__":
 
@@ -254,13 +227,13 @@ if __name__ == "__main__":
     config = misc.load_config('.nlprc')
     
     kb = HALKB()
+    gn = u'http://hal.zamia.org/benchmark'
 
     kb.register_prefix('hal', 'http://hal.zamia.org/kb/')
     kb.register_prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
 
-    fetch_weather_forecast (config, kb)
+    fetch_weather_forecast (config, kb, gn)
 
-    # gn = u'http://hal.zamia.org/benchmark'
 
     # start_time = time.time()
     # kb = HALKB()

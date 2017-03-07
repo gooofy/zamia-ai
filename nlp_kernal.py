@@ -261,25 +261,25 @@ class NLPKernal(object):
 
         m = self.modules[module_name]
 
+        # import LDF first as it is incremental
+
         res_paths = []
-
         for kb_entry in getattr (m, 'KB_SOURCES'):
-
-            if isinstance(kb_entry, basestring):
-        
-                kb_pathname = 'modules/%s/%s' % (module_name, kb_entry)
-
-                logging.info('importing %s ...' % kb_pathname)
-                
-                self.kb.parse_file(graph, 'n3', kb_pathname)
-
-            else:
-
+            if not isinstance(kb_entry, basestring):
                 res_paths.append(kb_entry)
 
         if len(res_paths)>0:
             logging.info('mirroring from LDF endpoints, target graph: %s ...' % graph)
             quads = self.kb.ldf_mirror(res_paths, graph)
+
+        # now import files, if any
+
+        for kb_entry in getattr (m, 'KB_SOURCES'):
+            if isinstance(kb_entry, basestring):
+                kb_pathname = 'modules/%s/%s' % (module_name, kb_entry)
+                logging.info('importing %s ...' % kb_pathname)
+                self.kb.parse_file(graph, 'n3', kb_pathname)
+
 
     def import_kb_multi (self, module_names):
 

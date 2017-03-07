@@ -159,15 +159,17 @@ def fetch_weather_forecast(config, kb, graph_name):
 
             sun_uri = u'hal:sun_%s_%s' % (loc_label, cur_date.strftime('%Y%m%d'))
 
-            quads.append(( sun_uri, u'hal:location', location, graph ))
-            quads.append(( sun_uri, u'hal:date',     rdflib.Literal(cur_date.isoformat(), datatype=XSD.date), graph ))
-            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'].isoformat(), datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'].isoformat(), datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'].isoformat(), datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'].isoformat(), datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'].isoformat(), datatype=XSD.datetime), graph ))
+            kb.remove ((sun_uri, None, None, graph))
 
-            logging.debug ("astral %s %s %s -> %s" % (location, cur_date.isoformat(), sun['sunrise'], sun['sunset']) )
+            quads.append(( sun_uri, u'hal:location', location, graph ))
+            quads.append(( sun_uri, u'hal:date',     rdflib.Literal(cur_date, datatype=XSD.date), graph ))
+            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'], datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'], datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'], datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'], datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'], datatype=XSD.datetime), graph ))
+
+            logging.debug ("astral %s %s %s -> %s" % (location, cur_date, sun['sunrise'], sun['sunset']) )
 
         #
         # fetch json forecast data from OpenWeatherMap
@@ -203,6 +205,8 @@ def fetch_weather_forecast(config, kb, graph_name):
 
             fc_uri = 'hal:fc_%s_%s' % (loc_label, dt_from.strftime('%Y%m%d_%H%M%S'))
 
+            kb.remove ((fc_uri, None, None, graph))
+
             quads.append(( fc_uri, u'hal:location',      location, graph ))
             quads.append(( fc_uri, u'hal:temp_min',      rdflib.Literal(unicode(temp_min), datatype=XSD.float), graph ))
             quads.append(( fc_uri, u'hal:temp_max',      rdflib.Literal(unicode(temp_max), datatype=XSD.float), graph ))
@@ -212,11 +216,15 @@ def fetch_weather_forecast(config, kb, graph_name):
             quads.append(( fc_uri, u'hal:icon',          rdflib.Literal(icon), graph ))
             quads.append(( fc_uri, u'hal:description',   rdflib.Literal(description), graph ))
 
-            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from.isoformat(), datatype=XSD.datetime), graph ))
-            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to.isoformat(), datatype=XSD.datetime), graph ))
+            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from, datatype=XSD.datetime), graph ))
+            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to, datatype=XSD.datetime), graph ))
+
+        # break
 
 
         # logging.debug(repr(quads))
+
+    # import pdb; pdb.set_trace()
 
     kb.addN_resolve(quads)
 

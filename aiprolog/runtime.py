@@ -321,6 +321,8 @@ def builtin_rdf(g, pe):
                         value = NumberLiteral(float(value))
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
                         value = NumberLiteral(float(value))
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
+                        value = NumberLiteral(float(value))
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
                         dt = dateutil.parser.parse(value)
                         value = NumberLiteral(time.mktime(dt.timetuple()))

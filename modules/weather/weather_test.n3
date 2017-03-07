@@ -12,7 +12,7 @@ hal:fc_Arnstorf_20161205_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.81"^^xsd:float ;
     hal:temp_min "-8.266"^^xsd:float .
@@ -22,7 +22,7 @@ hal:fc_Arnstorf_20161205_210000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.53"^^xsd:float ;
     hal:temp_min "-9.374"^^xsd:float .
@@ -32,7 +32,7 @@ hal:fc_Arnstorf_20161206_000000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.27"^^xsd:float ;
     hal:temp_min "-8.494"^^xsd:float .
@@ -42,7 +42,7 @@ hal:fc_Arnstorf_20161206_030000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.62"^^xsd:float ;
     hal:temp_min "-7.234"^^xsd:float .
@@ -52,7 +52,7 @@ hal:fc_Arnstorf_20161206_060000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.493"^^xsd:float ;
     hal:temp_min "-5.493"^^xsd:float .
@@ -62,7 +62,7 @@ hal:fc_Arnstorf_20161206_090000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.501"^^xsd:float ;
     hal:temp_min "-2.501"^^xsd:float .
@@ -72,7 +72,7 @@ hal:fc_Arnstorf_20161206_120000 hal:clouds "32.0"^^xsd:float ;
     hal:dt_end "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.175"^^xsd:float ;
     hal:temp_min "-3.175"^^xsd:float .
@@ -82,7 +82,7 @@ hal:fc_Arnstorf_20161206_150000 hal:clouds "32.0"^^xsd:float ;
     hal:dt_end "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.796"^^xsd:float ;
     hal:temp_min "-5.796"^^xsd:float .
@@ -92,7 +92,7 @@ hal:fc_Arnstorf_20161206_180000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.335"^^xsd:float ;
     hal:temp_min "-6.335"^^xsd:float .
@@ -102,7 +102,7 @@ hal:fc_Arnstorf_20161206_210000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.169"^^xsd:float ;
     hal:temp_min "-6.169"^^xsd:float .
@@ -112,7 +112,7 @@ hal:fc_Arnstorf_20161207_000000 hal:clouds "56.0"^^xsd:float ;
     hal:dt_end "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.395"^^xsd:float ;
     hal:temp_min "-6.395"^^xsd:float .
@@ -122,7 +122,7 @@ hal:fc_Arnstorf_20161207_030000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.125"^^xsd:float ;
     hal:temp_min "-7.125"^^xsd:float .
@@ -132,7 +132,7 @@ hal:fc_Arnstorf_20161207_060000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.345"^^xsd:float ;
     hal:temp_min "-6.345"^^xsd:float .
@@ -142,7 +142,7 @@ hal:fc_Arnstorf_20161207_090000 hal:clouds "36.0"^^xsd:float ;
     hal:dt_end "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.29"^^xsd:float ;
     hal:temp_min "-3.29"^^xsd:float .
@@ -152,7 +152,7 @@ hal:fc_Arnstorf_20161207_120000 hal:clouds "32.0"^^xsd:float ;
     hal:dt_end "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.465"^^xsd:float ;
     hal:temp_min "-3.465"^^xsd:float .
@@ -162,7 +162,7 @@ hal:fc_Arnstorf_20161207_150000 hal:clouds "56.0"^^xsd:float ;
     hal:dt_end "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.562"^^xsd:float ;
     hal:temp_min "-5.562"^^xsd:float .
@@ -172,7 +172,7 @@ hal:fc_Arnstorf_20161207_180000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.18"^^xsd:float ;
     hal:temp_min "-6.18"^^xsd:float .
@@ -182,7 +182,7 @@ hal:fc_Arnstorf_20161207_210000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.099"^^xsd:float ;
     hal:temp_min "-7.099"^^xsd:float .
@@ -192,7 +192,7 @@ hal:fc_Arnstorf_20161208_000000 hal:clouds "36.0"^^xsd:float ;
     hal:dt_end "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-8.027"^^xsd:float ;
     hal:temp_min "-8.027"^^xsd:float .
@@ -202,7 +202,7 @@ hal:fc_Arnstorf_20161208_030000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-8.516"^^xsd:float ;
     hal:temp_min "-8.516"^^xsd:float .
@@ -212,7 +212,7 @@ hal:fc_Arnstorf_20161208_060000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.396"^^xsd:float ;
     hal:temp_min "-6.396"^^xsd:float .
@@ -222,7 +222,7 @@ hal:fc_Arnstorf_20161208_090000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.137"^^xsd:float ;
     hal:temp_min "-2.137"^^xsd:float .
@@ -232,7 +232,7 @@ hal:fc_Arnstorf_20161208_120000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.277"^^xsd:float ;
     hal:temp_min "-2.277"^^xsd:float .
@@ -242,7 +242,7 @@ hal:fc_Arnstorf_20161208_150000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.338"^^xsd:float ;
     hal:temp_min "-4.338"^^xsd:float .
@@ -252,7 +252,7 @@ hal:fc_Arnstorf_20161208_180000 hal:clouds "8.0"^^xsd:float ;
     hal:dt_end "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.584"^^xsd:float ;
     hal:temp_min "-5.584"^^xsd:float .
@@ -262,7 +262,7 @@ hal:fc_Arnstorf_20161208_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.529"^^xsd:float ;
     hal:temp_min "-6.529"^^xsd:float .
@@ -272,7 +272,7 @@ hal:fc_Arnstorf_20161209_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.698"^^xsd:float ;
     hal:temp_min "-6.698"^^xsd:float .
@@ -282,7 +282,7 @@ hal:fc_Arnstorf_20161209_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.826"^^xsd:float ;
     hal:temp_min "-6.826"^^xsd:float .
@@ -292,7 +292,7 @@ hal:fc_Arnstorf_20161209_060000 hal:clouds "12.0"^^xsd:float ;
     hal:dt_end "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.61"^^xsd:float ;
     hal:temp_min "-3.61"^^xsd:float .
@@ -302,7 +302,7 @@ hal:fc_Arnstorf_20161209_090000 hal:clouds "20.0"^^xsd:float ;
     hal:dt_end "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.814"^^xsd:float ;
     hal:temp_min "2.814"^^xsd:float .
@@ -312,7 +312,7 @@ hal:fc_Arnstorf_20161209_120000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.846"^^xsd:float ;
     hal:temp_min "0.846"^^xsd:float .
@@ -322,7 +322,7 @@ hal:fc_Arnstorf_20161209_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.042"^^xsd:float ;
     hal:temp_min "-3.042"^^xsd:float .
@@ -332,7 +332,7 @@ hal:fc_Arnstorf_20161209_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.47"^^xsd:float ;
     hal:temp_min "-4.47"^^xsd:float .
@@ -342,7 +342,7 @@ hal:fc_Arnstorf_20161209_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.397"^^xsd:float ;
     hal:temp_min "-5.397"^^xsd:float .
@@ -352,7 +352,7 @@ hal:fc_Arnstorf_20161210_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.355"^^xsd:float ;
     hal:temp_min "-6.355"^^xsd:float .
@@ -362,7 +362,7 @@ hal:fc_Arnstorf_20161210_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.888"^^xsd:float ;
     hal:temp_min "-6.888"^^xsd:float .
@@ -372,7 +372,7 @@ hal:fc_Arnstorf_20161210_060000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.59"^^xsd:float ;
     hal:temp_min "-3.59"^^xsd:float .
@@ -382,7 +382,7 @@ hal:fc_Arnstorf_20161210_090000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.874"^^xsd:float ;
     hal:temp_min "2.874"^^xsd:float .
@@ -392,7 +392,7 @@ hal:fc_Arnstorf_20161210_120000 hal:clouds "56.0"^^xsd:float ;
     hal:dt_end "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04d" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.743"^^xsd:float ;
     hal:temp_min "0.743"^^xsd:float .
@@ -402,7 +402,7 @@ hal:fc_Arnstorf_20161210_150000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-10T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-1.194"^^xsd:float ;
     hal:temp_min "-1.194"^^xsd:float .
@@ -1612,7 +1612,7 @@ hal:fc_Freudental_20161205_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.45"^^xsd:float ;
     hal:temp_min "-6.666"^^xsd:float .
@@ -1622,7 +1622,7 @@ hal:fc_Freudental_20161205_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.96"^^xsd:float ;
     hal:temp_min "-7.099"^^xsd:float .
@@ -1632,7 +1632,7 @@ hal:fc_Freudental_20161206_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.27"^^xsd:float ;
     hal:temp_min "-7.344"^^xsd:float .
@@ -1642,7 +1642,7 @@ hal:fc_Freudental_20161206_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.584"^^xsd:float ;
     hal:temp_min "-7.584"^^xsd:float .
@@ -1652,7 +1652,7 @@ hal:fc_Freudental_20161206_060000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.543"^^xsd:float ;
     hal:temp_min "-4.543"^^xsd:float .
@@ -1662,7 +1662,7 @@ hal:fc_Freudental_20161206_090000 hal:clouds "12.0"^^xsd:float ;
     hal:dt_end "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.174"^^xsd:float ;
     hal:temp_min "2.174"^^xsd:float .
@@ -1672,7 +1672,7 @@ hal:fc_Freudental_20161206_120000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.925"^^xsd:float ;
     hal:temp_min "0.925"^^xsd:float .
@@ -1682,7 +1682,7 @@ hal:fc_Freudental_20161206_150000 hal:clouds "8.0"^^xsd:float ;
     hal:dt_end "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.696"^^xsd:float ;
     hal:temp_min "-4.696"^^xsd:float .
@@ -1692,7 +1692,7 @@ hal:fc_Freudental_20161206_180000 hal:clouds "8.0"^^xsd:float ;
     hal:dt_end "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.41"^^xsd:float ;
     hal:temp_min "-6.41"^^xsd:float .
@@ -1702,7 +1702,7 @@ hal:fc_Freudental_20161206_210000 hal:clouds "20.0"^^xsd:float ;
     hal:dt_end "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.094"^^xsd:float ;
     hal:temp_min "-7.094"^^xsd:float .
@@ -1712,7 +1712,7 @@ hal:fc_Freudental_20161207_000000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-7.02"^^xsd:float ;
     hal:temp_min "-7.02"^^xsd:float .
@@ -1722,7 +1722,7 @@ hal:fc_Freudental_20161207_030000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.15"^^xsd:float ;
     hal:temp_min "-6.15"^^xsd:float .
@@ -1732,7 +1732,7 @@ hal:fc_Freudental_20161207_060000 hal:clouds "36.0"^^xsd:float ;
     hal:dt_end "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.62"^^xsd:float ;
     hal:temp_min "-5.62"^^xsd:float .
@@ -1742,7 +1742,7 @@ hal:fc_Freudental_20161207_090000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.34"^^xsd:float ;
     hal:temp_min "-2.34"^^xsd:float .
@@ -1752,7 +1752,7 @@ hal:fc_Freudental_20161207_120000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.015"^^xsd:float ;
     hal:temp_min "-2.015"^^xsd:float .
@@ -1762,7 +1762,7 @@ hal:fc_Freudental_20161207_150000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.037"^^xsd:float ;
     hal:temp_min "-4.037"^^xsd:float .
@@ -1772,7 +1772,7 @@ hal:fc_Freudental_20161207_180000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.605"^^xsd:float ;
     hal:temp_min "-5.605"^^xsd:float .
@@ -1782,7 +1782,7 @@ hal:fc_Freudental_20161207_210000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.574"^^xsd:float ;
     hal:temp_min "-6.574"^^xsd:float .
@@ -1792,7 +1792,7 @@ hal:fc_Freudental_20161208_000000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.727"^^xsd:float ;
     hal:temp_min "-6.727"^^xsd:float .
@@ -1802,7 +1802,7 @@ hal:fc_Freudental_20161208_030000 hal:clouds "80.0"^^xsd:float ;
     hal:dt_end "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-6.241"^^xsd:float ;
     hal:temp_min "-6.241"^^xsd:float .
@@ -1812,7 +1812,7 @@ hal:fc_Freudental_20161208_060000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.496"^^xsd:float ;
     hal:temp_min "-4.496"^^xsd:float .
@@ -1822,7 +1822,7 @@ hal:fc_Freudental_20161208_090000 hal:clouds "68.0"^^xsd:float ;
     hal:dt_end "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.138"^^xsd:float ;
     hal:temp_min "0.138"^^xsd:float .
@@ -1832,7 +1832,7 @@ hal:fc_Freudental_20161208_120000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "1.098"^^xsd:float ;
     hal:temp_min "1.098"^^xsd:float .
@@ -1842,7 +1842,7 @@ hal:fc_Freudental_20161208_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.038"^^xsd:float ;
     hal:temp_min "-2.038"^^xsd:float .
@@ -1852,7 +1852,7 @@ hal:fc_Freudental_20161208_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.709"^^xsd:float ;
     hal:temp_min "-3.709"^^xsd:float .
@@ -1862,7 +1862,7 @@ hal:fc_Freudental_20161208_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.729"^^xsd:float ;
     hal:temp_min "-4.729"^^xsd:float .
@@ -1872,7 +1872,7 @@ hal:fc_Freudental_20161209_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.048"^^xsd:float ;
     hal:temp_min "-5.048"^^xsd:float .
@@ -1882,7 +1882,7 @@ hal:fc_Freudental_20161209_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.276"^^xsd:float ;
     hal:temp_min "-5.276"^^xsd:float .
@@ -1892,7 +1892,7 @@ hal:fc_Freudental_20161209_060000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.485"^^xsd:float ;
     hal:temp_min "-2.485"^^xsd:float .
@@ -1902,7 +1902,7 @@ hal:fc_Freudental_20161209_090000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "5.814"^^xsd:float ;
     hal:temp_min "5.814"^^xsd:float .
@@ -1912,7 +1912,7 @@ hal:fc_Freudental_20161209_120000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "3.471"^^xsd:float ;
     hal:temp_min "3.471"^^xsd:float .
@@ -1922,7 +1922,7 @@ hal:fc_Freudental_20161209_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.692"^^xsd:float ;
     hal:temp_min "-2.692"^^xsd:float .
@@ -1932,7 +1932,7 @@ hal:fc_Freudental_20161209_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.945"^^xsd:float ;
     hal:temp_min "-4.945"^^xsd:float .
@@ -1942,7 +1942,7 @@ hal:fc_Freudental_20161209_210000 hal:clouds "8.0"^^xsd:float ;
     hal:dt_end "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.822"^^xsd:float ;
     hal:temp_min "-5.822"^^xsd:float .
@@ -1952,7 +1952,7 @@ hal:fc_Freudental_20161210_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.755"^^xsd:float ;
     hal:temp_min "-5.755"^^xsd:float .
@@ -1962,7 +1962,7 @@ hal:fc_Freudental_20161210_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.338"^^xsd:float ;
     hal:temp_min "-4.338"^^xsd:float .
@@ -1972,7 +1972,7 @@ hal:fc_Freudental_20161210_060000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-1.14"^^xsd:float ;
     hal:temp_min "-1.14"^^xsd:float .
@@ -1982,7 +1982,7 @@ hal:fc_Freudental_20161210_090000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.03"^^xsd:float ;
     hal:temp_max "4.424"^^xsd:float ;
     hal:temp_min "4.424"^^xsd:float .
@@ -1992,7 +1992,7 @@ hal:fc_Freudental_20161210_120000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.17"^^xsd:float ;
     hal:temp_max "4.268"^^xsd:float ;
     hal:temp_min "4.268"^^xsd:float .
@@ -2002,7 +2002,7 @@ hal:fc_Freudental_20161210_150000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-10T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:precipitation "0.23"^^xsd:float ;
     hal:temp_max "3.73"^^xsd:float ;
     hal:temp_min "3.73"^^xsd:float .
@@ -6412,7 +6412,7 @@ hal:fc_Washington__D_C__20161205_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "10.084"^^xsd:float ;
     hal:temp_min "9.96"^^xsd:float .
@@ -6422,7 +6422,7 @@ hal:fc_Washington__D_C__20161205_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-05T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "5.576"^^xsd:float ;
     hal:temp_min "5.48"^^xsd:float .
@@ -6432,7 +6432,7 @@ hal:fc_Washington__D_C__20161206_000000 hal:clouds "12.0"^^xsd:float ;
     hal:dt_end "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "3.431"^^xsd:float ;
     hal:temp_min "3.37"^^xsd:float .
@@ -6442,7 +6442,7 @@ hal:fc_Washington__D_C__20161206_030000 hal:clouds "48.0"^^xsd:float ;
     hal:dt_end "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.791"^^xsd:float ;
     hal:temp_min "0.76"^^xsd:float .
@@ -6452,7 +6452,7 @@ hal:fc_Washington__D_C__20161206_060000 hal:clouds "88.0"^^xsd:float ;
     hal:dt_end "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "1.557"^^xsd:float ;
     hal:temp_min "1.557"^^xsd:float .
@@ -6462,7 +6462,7 @@ hal:fc_Washington__D_C__20161206_090000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "3.449"^^xsd:float ;
     hal:temp_min "3.449"^^xsd:float .
@@ -6472,7 +6472,7 @@ hal:fc_Washington__D_C__20161206_120000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "5.725"^^xsd:float ;
     hal:temp_min "5.725"^^xsd:float .
@@ -6482,7 +6482,7 @@ hal:fc_Washington__D_C__20161206_150000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "2.47"^^xsd:float ;
     hal:temp_max "5.679"^^xsd:float ;
     hal:temp_min "5.679"^^xsd:float .
@@ -6492,7 +6492,7 @@ hal:fc_Washington__D_C__20161206_180000 hal:clouds "100.0"^^xsd:float ;
     hal:dt_end "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "5.54"^^xsd:float ;
     hal:temp_max "6.815"^^xsd:float ;
     hal:temp_min "6.815"^^xsd:float .
@@ -6502,7 +6502,7 @@ hal:fc_Washington__D_C__20161206_210000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-06T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "6.12"^^xsd:float ;
     hal:temp_max "7.331"^^xsd:float ;
     hal:temp_min "7.331"^^xsd:float .
@@ -6512,7 +6512,7 @@ hal:fc_Washington__D_C__20161207_000000 hal:clouds "100.0"^^xsd:float ;
     hal:dt_end "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "3.31"^^xsd:float ;
     hal:temp_max "6.98"^^xsd:float ;
     hal:temp_min "6.98"^^xsd:float .
@@ -6522,7 +6522,7 @@ hal:fc_Washington__D_C__20161207_030000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.72"^^xsd:float ;
     hal:temp_max "6.7"^^xsd:float ;
     hal:temp_min "6.7"^^xsd:float .
@@ -6532,7 +6532,7 @@ hal:fc_Washington__D_C__20161207_060000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.39"^^xsd:float ;
     hal:temp_max "6.13"^^xsd:float ;
     hal:temp_min "6.13"^^xsd:float .
@@ -6542,7 +6542,7 @@ hal:fc_Washington__D_C__20161207_090000 hal:clouds "88.0"^^xsd:float ;
     hal:dt_end "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.15"^^xsd:float ;
     hal:temp_max "5.285"^^xsd:float ;
     hal:temp_min "5.285"^^xsd:float .
@@ -6552,7 +6552,7 @@ hal:fc_Washington__D_C__20161207_120000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.02"^^xsd:float ;
     hal:temp_max "6.56"^^xsd:float ;
     hal:temp_min "6.56"^^xsd:float .
@@ -6562,7 +6562,7 @@ hal:fc_Washington__D_C__20161207_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "7.338"^^xsd:float ;
     hal:temp_min "7.338"^^xsd:float .
@@ -6572,7 +6572,7 @@ hal:fc_Washington__D_C__20161207_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "6.22"^^xsd:float ;
     hal:temp_min "6.22"^^xsd:float .
@@ -6582,7 +6582,7 @@ hal:fc_Washington__D_C__20161207_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-07T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.176"^^xsd:float ;
     hal:temp_min "2.176"^^xsd:float .
@@ -6592,7 +6592,7 @@ hal:fc_Washington__D_C__20161208_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.102"^^xsd:float ;
     hal:temp_min "-0.102"^^xsd:float .
@@ -6602,7 +6602,7 @@ hal:fc_Washington__D_C__20161208_030000 hal:clouds "64.0"^^xsd:float ;
     hal:dt_end "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-1.966"^^xsd:float ;
     hal:temp_min "-1.966"^^xsd:float .
@@ -6612,7 +6612,7 @@ hal:fc_Washington__D_C__20161208_060000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.446"^^xsd:float ;
     hal:temp_min "-0.446"^^xsd:float .
@@ -6622,7 +6622,7 @@ hal:fc_Washington__D_C__20161208_090000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "04n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.213"^^xsd:float ;
     hal:temp_min "0.213"^^xsd:float .
@@ -6632,7 +6632,7 @@ hal:fc_Washington__D_C__20161208_120000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.05"^^xsd:float ;
     hal:temp_max "1.323"^^xsd:float ;
     hal:temp_min "1.323"^^xsd:float .
@@ -6642,7 +6642,7 @@ hal:fc_Washington__D_C__20161208_150000 hal:clouds "92.0"^^xsd:float ;
     hal:dt_end "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.04"^^xsd:float ;
     hal:temp_max "1.612"^^xsd:float ;
     hal:temp_min "1.612"^^xsd:float .
@@ -6652,7 +6652,7 @@ hal:fc_Washington__D_C__20161208_180000 hal:clouds "88.0"^^xsd:float ;
     hal:dt_end "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "10d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.03"^^xsd:float ;
     hal:temp_max "1.316"^^xsd:float ;
     hal:temp_min "1.316"^^xsd:float .
@@ -6662,7 +6662,7 @@ hal:fc_Washington__D_C__20161208_210000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-08T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.979"^^xsd:float ;
     hal:temp_min "-0.979"^^xsd:float .
@@ -6672,7 +6672,7 @@ hal:fc_Washington__D_C__20161209_000000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-1.073"^^xsd:float ;
     hal:temp_min "-1.073"^^xsd:float .
@@ -6682,7 +6682,7 @@ hal:fc_Washington__D_C__20161209_030000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.151"^^xsd:float ;
     hal:temp_min "-2.151"^^xsd:float .
@@ -6692,7 +6692,7 @@ hal:fc_Washington__D_C__20161209_060000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-2.81"^^xsd:float ;
     hal:temp_min "-2.81"^^xsd:float .
@@ -6702,7 +6702,7 @@ hal:fc_Washington__D_C__20161209_090000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-3.162"^^xsd:float ;
     hal:temp_min "-3.162"^^xsd:float .
@@ -6712,7 +6712,7 @@ hal:fc_Washington__D_C__20161209_120000 hal:clouds "44.0"^^xsd:float ;
     hal:dt_end "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.404"^^xsd:float ;
     hal:temp_min "-0.404"^^xsd:float .
@@ -6722,7 +6722,7 @@ hal:fc_Washington__D_C__20161209_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.308"^^xsd:float ;
     hal:temp_min "2.308"^^xsd:float .
@@ -6732,7 +6732,7 @@ hal:fc_Washington__D_C__20161209_180000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T18:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "1.805"^^xsd:float ;
     hal:temp_min "1.805"^^xsd:float .
@@ -6742,7 +6742,7 @@ hal:fc_Washington__D_C__20161209_210000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-09T21:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.022"^^xsd:float ;
     hal:temp_min "-0.022"^^xsd:float .
@@ -6752,7 +6752,7 @@ hal:fc_Washington__D_C__20161210_000000 hal:clouds "36.0"^^xsd:float ;
     hal:dt_end "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T00:00:00+00:00"^^xsd:dateTime ;
     hal:icon "03n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-0.48"^^xsd:float ;
     hal:temp_min "-0.48"^^xsd:float .
@@ -6762,7 +6762,7 @@ hal:fc_Washington__D_C__20161210_030000 hal:clouds "20.0"^^xsd:float ;
     hal:dt_end "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T03:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-1.013"^^xsd:float ;
     hal:temp_min "-1.013"^^xsd:float .
@@ -6772,7 +6772,7 @@ hal:fc_Washington__D_C__20161210_060000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T06:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-4.59"^^xsd:float ;
     hal:temp_min "-4.59"^^xsd:float .
@@ -6782,7 +6782,7 @@ hal:fc_Washington__D_C__20161210_090000 hal:clouds "24.0"^^xsd:float ;
     hal:dt_end "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T09:00:00+00:00"^^xsd:dateTime ;
     hal:icon "02n" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "-5.351"^^xsd:float ;
     hal:temp_min "-5.351"^^xsd:float .
@@ -6792,7 +6792,7 @@ hal:fc_Washington__D_C__20161210_120000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T12:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "0.018"^^xsd:float ;
     hal:temp_min "0.018"^^xsd:float .
@@ -6802,7 +6802,7 @@ hal:fc_Washington__D_C__20161210_150000 hal:clouds "0.0"^^xsd:float ;
     hal:dt_end "2016-12-10T18:00:00+00:00"^^xsd:dateTime ;
     hal:dt_start "2016-12-10T15:00:00+00:00"^^xsd:dateTime ;
     hal:icon "01d" ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:precipitation "0.0"^^xsd:float ;
     hal:temp_max "2.605"^^xsd:float ;
     hal:temp_min "2.605"^^xsd:float .
@@ -6810,7 +6810,7 @@ hal:fc_Washington__D_C__20161210_150000 hal:clouds "0.0"^^xsd:float ;
 hal:sun_Arnstorf_20161205 hal:date "2016-12-05"^^xsd:date ;
     hal:dawn "2016-12-05T07:08:51+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-05T16:50:21+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-05T11:59:31+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-05T07:45:13+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-05T16:13:58+01:00"^^xsd:dateTime .
@@ -6818,7 +6818,7 @@ hal:sun_Arnstorf_20161205 hal:date "2016-12-05"^^xsd:date ;
 hal:sun_Arnstorf_20161206 hal:date "2016-12-06"^^xsd:date ;
     hal:dawn "2016-12-06T07:09:53+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-06T16:50:09+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-06T11:59:57+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-06T07:46:20+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-06T16:13:42+01:00"^^xsd:dateTime .
@@ -6826,7 +6826,7 @@ hal:sun_Arnstorf_20161206 hal:date "2016-12-06"^^xsd:date ;
 hal:sun_Arnstorf_20161207 hal:date "2016-12-07"^^xsd:date ;
     hal:dawn "2016-12-07T07:10:54+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-07T16:50:00+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-07T12:00:23+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-07T07:47:25+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-07T16:13:29+01:00"^^xsd:dateTime .
@@ -6834,7 +6834,7 @@ hal:sun_Arnstorf_20161207 hal:date "2016-12-07"^^xsd:date ;
 hal:sun_Arnstorf_20161208 hal:date "2016-12-08"^^xsd:date ;
     hal:dawn "2016-12-08T07:11:53+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-08T16:49:54+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-08T12:00:49+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-08T07:48:28+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-08T16:13:19+01:00"^^xsd:dateTime .
@@ -6842,7 +6842,7 @@ hal:sun_Arnstorf_20161208 hal:date "2016-12-08"^^xsd:date ;
 hal:sun_Arnstorf_20161209 hal:date "2016-12-09"^^xsd:date ;
     hal:dawn "2016-12-09T07:12:50+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-09T16:49:51+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-09T12:01:16+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-09T07:49:29+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-09T16:13:12+01:00"^^xsd:dateTime .
@@ -6850,7 +6850,7 @@ hal:sun_Arnstorf_20161209 hal:date "2016-12-09"^^xsd:date ;
 hal:sun_Arnstorf_20161210 hal:date "2016-12-10"^^xsd:date ;
     hal:dawn "2016-12-10T07:13:45+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-10T16:49:50+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-10T12:01:43+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-10T07:50:27+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-10T16:13:08+01:00"^^xsd:dateTime .
@@ -6858,7 +6858,7 @@ hal:sun_Arnstorf_20161210 hal:date "2016-12-10"^^xsd:date ;
 hal:sun_Arnstorf_20161211 hal:date "2016-12-11"^^xsd:date ;
     hal:dawn "2016-12-11T07:14:39+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-11T16:49:52+01:00"^^xsd:dateTime ;
-    hal:location wde:Arnstorf ;
+    hal:location wde:Q582608 ;
     hal:noon "2016-12-11T12:02:11+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-11T07:51:24+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-11T16:13:07+01:00"^^xsd:dateTime .
@@ -7034,7 +7034,7 @@ hal:sun_Fairbanks__Alaska_20161211 hal:date "2016-12-11"^^xsd:date ;
 hal:sun_Freudental_20161205 hal:date "2016-12-05"^^xsd:date ;
     hal:dawn "2016-12-05T07:25:17+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-05T17:03:58+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-05T12:14:33+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-05T08:02:06+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-05T16:27:10+01:00"^^xsd:dateTime .
@@ -7042,7 +7042,7 @@ hal:sun_Freudental_20161205 hal:date "2016-12-05"^^xsd:date ;
 hal:sun_Freudental_20161206 hal:date "2016-12-06"^^xsd:date ;
     hal:dawn "2016-12-06T07:26:21+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-06T17:03:46+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-06T12:14:59+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-06T08:03:13+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-06T16:26:53+01:00"^^xsd:dateTime .
@@ -7050,7 +7050,7 @@ hal:sun_Freudental_20161206 hal:date "2016-12-06"^^xsd:date ;
 hal:sun_Freudental_20161207 hal:date "2016-12-07"^^xsd:date ;
     hal:dawn "2016-12-07T07:27:22+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-07T17:03:36+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-07T12:15:25+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-07T08:04:19+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-07T16:26:39+01:00"^^xsd:dateTime .
@@ -7058,7 +7058,7 @@ hal:sun_Freudental_20161207 hal:date "2016-12-07"^^xsd:date ;
 hal:sun_Freudental_20161208 hal:date "2016-12-08"^^xsd:date ;
     hal:dawn "2016-12-08T07:28:21+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-08T17:03:30+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-08T12:15:51+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-08T08:05:23+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-08T16:26:29+01:00"^^xsd:dateTime .
@@ -7066,7 +7066,7 @@ hal:sun_Freudental_20161208 hal:date "2016-12-08"^^xsd:date ;
 hal:sun_Freudental_20161209 hal:date "2016-12-09"^^xsd:date ;
     hal:dawn "2016-12-09T07:29:19+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-09T17:03:26+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-09T12:16:18+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-09T08:06:24+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-09T16:26:21+01:00"^^xsd:dateTime .
@@ -7074,7 +7074,7 @@ hal:sun_Freudental_20161209 hal:date "2016-12-09"^^xsd:date ;
 hal:sun_Freudental_20161210 hal:date "2016-12-10"^^xsd:date ;
     hal:dawn "2016-12-10T07:30:15+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-10T17:03:25+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-10T12:16:45+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-10T08:07:23+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-10T16:26:16+01:00"^^xsd:dateTime .
@@ -7082,7 +7082,7 @@ hal:sun_Freudental_20161210 hal:date "2016-12-10"^^xsd:date ;
 hal:sun_Freudental_20161211 hal:date "2016-12-11"^^xsd:date ;
     hal:dawn "2016-12-11T07:31:08+01:00"^^xsd:dateTime ;
     hal:dusk "2016-12-11T17:03:27+01:00"^^xsd:dateTime ;
-    hal:location wde:Freudental ;
+    hal:location wde:Q61656 ;
     hal:noon "2016-12-11T12:17:13+01:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-11T08:08:20+01:00"^^xsd:dateTime ;
     hal:sunset "2016-12-11T16:26:15+01:00"^^xsd:dateTime .
@@ -7712,7 +7712,7 @@ hal:sun_Tallinn_20161211 hal:date "2016-12-11"^^xsd:date ;
 hal:sun_Washington__D_C__20161205 hal:date "2016-12-05"^^xsd:date ;
     hal:dawn "2016-12-05T06:42:36-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-05T17:15:29-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-05T11:58:58-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-05T07:12:15-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-05T16:45:50-05:00"^^xsd:dateTime .
@@ -7720,7 +7720,7 @@ hal:sun_Washington__D_C__20161205 hal:date "2016-12-05"^^xsd:date ;
 hal:sun_Washington__D_C__20161206 hal:date "2016-12-06"^^xsd:date ;
     hal:dawn "2016-12-06T06:43:26-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-06T17:15:30-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-06T11:59:23-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-06T07:13:08-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-06T16:45:48-05:00"^^xsd:dateTime .
@@ -7728,7 +7728,7 @@ hal:sun_Washington__D_C__20161206 hal:date "2016-12-06"^^xsd:date ;
 hal:sun_Washington__D_C__20161207 hal:date "2016-12-07"^^xsd:date ;
     hal:dawn "2016-12-07T06:44:16-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-07T17:15:33-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-07T11:59:49-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-07T07:14:00-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-07T16:45:48-05:00"^^xsd:dateTime .
@@ -7736,7 +7736,7 @@ hal:sun_Washington__D_C__20161207 hal:date "2016-12-07"^^xsd:date ;
 hal:sun_Washington__D_C__20161208 hal:date "2016-12-08"^^xsd:date ;
     hal:dawn "2016-12-08T06:45:04-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-08T17:15:37-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-08T12:00:16-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-08T07:14:51-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-08T16:45:51-05:00"^^xsd:dateTime .
@@ -7744,7 +7744,7 @@ hal:sun_Washington__D_C__20161208 hal:date "2016-12-08"^^xsd:date ;
 hal:sun_Washington__D_C__20161209 hal:date "2016-12-09"^^xsd:date ;
     hal:dawn "2016-12-09T06:45:51-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-09T17:15:44-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-09T12:00:43-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-09T07:15:40-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-09T16:45:56-05:00"^^xsd:dateTime .
@@ -7752,7 +7752,7 @@ hal:sun_Washington__D_C__20161209 hal:date "2016-12-09"^^xsd:date ;
 hal:sun_Washington__D_C__20161210 hal:date "2016-12-10"^^xsd:date ;
     hal:dawn "2016-12-10T06:46:37-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-10T17:15:53-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-10T12:01:10-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-10T07:16:28-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-10T16:46:03-05:00"^^xsd:dateTime .
@@ -7760,7 +7760,7 @@ hal:sun_Washington__D_C__20161210 hal:date "2016-12-10"^^xsd:date ;
 hal:sun_Washington__D_C__20161211 hal:date "2016-12-11"^^xsd:date ;
     hal:dawn "2016-12-11T06:47:22-05:00"^^xsd:dateTime ;
     hal:dusk "2016-12-11T17:16:04-05:00"^^xsd:dateTime ;
-    hal:location wde:WashingtonDC ;
+    hal:location wde:Q61 ;
     hal:noon "2016-12-11T12:01:38-05:00"^^xsd:dateTime ;
     hal:sunrise "2016-12-11T07:17:14-05:00"^^xsd:dateTime ;
     hal:sunset "2016-12-11T16:46:12-05:00"^^xsd:dateTime .

@@ -128,6 +128,9 @@ class HALKB(object):
     def addN (self, quads):
         self.sas.addN(quads)
 
+    def remove (self, quad):
+        self.sas.remove(quad)
+
     def filter_quads(self, s=None, p=None, o=None, context=None):
         return self.sas.filter_quads(s=s, p=p, o=o, context=context)
 

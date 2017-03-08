@@ -36,6 +36,20 @@ from kb import HALKB
 UNITTEST_MODULE  = 'unittests'
 UNITTEST_CONTEXT = 'unittests'
 
+COMMON_PREFIXES = {
+            'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'rdfs':    'http://www.w3.org/2000/01/rdf-schema#',
+            'hal':     'http://hal.zamia.org/kb/',
+            'dbo':     'http://dbpedia.org/ontology/',
+            'dbr':     'http://dbpedia.org/resource/',
+            'dbp':     'http://dbpedia.org/property/',
+            'xml':     'http://www.w3.org/XML/1998/namespace',
+            'xsd':     'http://www.w3.org/2001/XMLSchema#',
+            'geo':     'http://www.opengis.net/ont/geosparql#',
+            'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
+            'geof':    'http://www.opengis.net/def/function/geosparql/',
+    }
+
 class TestAIProlog (unittest.TestCase):
 
     def setUp(self):
@@ -53,6 +67,10 @@ class TestAIProlog (unittest.TestCase):
         #
 
         self.kb = HALKB(UNITTEST_MODULE)
+
+        for prefix in COMMON_PREFIXES:
+            self.kb.register_prefix(prefix, COMMON_PREFIXES[prefix])
+
         self.kb.clear_all_graphs()
 
         self.kb.parse_file (UNITTEST_CONTEXT, 'n3', 'tests/chancellors.n3')

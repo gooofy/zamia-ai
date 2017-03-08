@@ -115,9 +115,9 @@ def prolog_to_filter_expression(e, env, pe, var_map, kb):
             pre = _prolog_relational_expression ('is', e.args, env, pe, var_map, kb)
             return pre
         elif e.name == 'and':
-            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map)
+            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map, kb)
         elif e.name == 'or':
-            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map)
+            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map, kb)
         elif e.name == 'lang':
             if len(e.args) != 1:
                 raise PrologError ('lang filter expression: one argument expected.')

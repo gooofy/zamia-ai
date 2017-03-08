@@ -40,7 +40,9 @@ class NLPMacroEngine(object):
         self.named_macros = {}
 
     def define_named_macro(self, name, mappings):
-        self.named_macros[name] = mappings
+        if not name in self.named_macros:
+            self.named_macros[name] = []
+        self.named_macros[name].extend(mappings)
 
     def macro_expand(self, lang, nlp_input, response):
 

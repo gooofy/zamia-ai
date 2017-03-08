@@ -127,10 +127,53 @@ def builtin_action(g, pe):
 
     return True
 
+def _literal_rdf2pl(l):
+
+    value    = unicode(l)
+
+    if isinstance (l, rdflib.Literal) :
+        if l.datatype:
+
+            datatype = str(l.datatype)
+
+            if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                dt = dateutil.parser.parse(value)
+                value = NumberLiteral(time.mktime(dt.timetuple()))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
+                dt = dateutil.parser.parse(value)
+                value = NumberLiteral(time.mktime(dt.timetuple()))
+            else:
+                raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
+        else:
+            if l.value is None:
+                value = ListLiteral([])
+            else:
+                value = StringLiteral(value)
+   
+    else:
+        value = StringLiteral(value)
+
+    return value
+    
 def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
 
+    return _rdf_exec (g, pe)
+
+def builtin_rdf_lists(g, pe):
+
+    pe._trace ('CALLED BUILTIN rdf_lists', g)
+
+    return _rdf_exec (g, pe, generate_lists=True)
+
+def _rdf_exec (g, pe, generate_lists=False):
 
     # rdflib.plugins.sparql.parserutils.CompValue
     #
@@ -212,10 +255,13 @@ def builtin_rdf(g, pe):
 
             s_args = arg_s.args
 
-            if len(s_args) != 1:
-                raise PrologRuntimeError('rdf: filter: single expression expected')
+            # transform multiple arguments into explicit and-tree
 
-            filters.append(prolog_to_filter_expression(s_args[0], g.env, pe, var_map, pe.kb))
+            pl_expr = s_args[0]
+            for a in s_args[1:]:
+                pl_expr = Predicate('and', [pl_expr, a])
+
+            filters.append(prolog_to_filter_expression(pl_expr, g.env, pe, var_map, pe.kb))
             
             arg_idx += 1
 
@@ -299,59 +345,50 @@ def builtin_rdf(g, pe):
     if len(result) == 0:
         return False
 
-    # turn result into list of bindings
+    if generate_lists:
 
-    res_bindings = []
-    for binding in result:
+        # bind each variable to list of values
 
-        res_binding = {}
+        for binding in result:
 
-        for v in binding.labels:
+            for v in binding.labels:
 
-            l = binding[v]
+                l = binding[v]
 
-            value    = unicode(l)
+                value = _literal_rdf2pl(l)
 
-            if isinstance (l, rdflib.Literal) :
-                if l.datatype:
+                if not v in g.env:
+                    g.env[v] = ListLiteral([])
 
-                    datatype = str(l.datatype)
+                g.env[v].l.append(value)
 
-                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                        value = NumberLiteral(float(value))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                        value = NumberLiteral(float(value))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
-                        value = NumberLiteral(float(value))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                        dt = dateutil.parser.parse(value)
-                        value = NumberLiteral(time.mktime(dt.timetuple()))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                        dt = dateutil.parser.parse(value)
-                        value = NumberLiteral(time.mktime(dt.timetuple()))
-                    else:
-                        raise PrologRuntimeError('rdf: unknown datatype %s  (value: %s).' % (datatype, value))
-                else:
-                    if l.value is None:
-                        value = ListLiteral([])
-                    else:
-                        value = StringLiteral(value)
-           
-            else:
-                value = StringLiteral(value)
+        return True
 
-            res_binding[v] = value
+    else:
 
-        res_bindings.append(res_binding)
+        # turn result into list of bindings
 
-    if len(res_bindings) == 0 and len(result)>0:
-        res_bindings.append({}) # signal success
+        res_bindings = []
+        for binding in result:
 
-    logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
+            res_binding = {}
 
-    # import pdb; pdb.set_trace()
+            for v in binding.labels:
 
-    return res_bindings
+                l = binding[v]
+
+                value = _literal_rdf2pl(l)
+
+                res_binding[v] = value
+
+            res_bindings.append(res_binding)
+
+        if len(res_bindings) == 0 and len(result)>0:
+            res_bindings.append({}) # signal success
+
+        logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
+
+        return res_bindings
 
 def builtin_uriref(g, pe):
 
@@ -405,33 +442,7 @@ def builtin_sparql_query(g, pe):
 
             l = binding[v]
 
-            value    = unicode(l)
-
-            if isinstance (l, rdflib.Literal) :
-                if l.datatype:
-
-                    datatype = str(l.datatype)
-
-                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                        value = NumberLiteral(float(value))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                        value = NumberLiteral(float(value))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                        dt = dateutil.parser.parse(value)
-                        value = NumberLiteral(time.mktime(dt.timetuple()))
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                        dt = dateutil.parser.parse(value)
-                        value = NumberLiteral(time.mktime(dt.timetuple()))
-                    else:
-                        raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
-                else:
-                    if l.value is None:
-                        value = ListLiteral([])
-                    else:
-                        value = StringLiteral(value)
-           
-            else:
-                value = StringLiteral(value)
+            value = _literal_rdf2pl(l)
 
             if not v in res_map:
                 res_map[v] = []
@@ -489,6 +500,7 @@ class AIPrologRuntime(PrologRuntime):
         # sparql / rdf
         self.register_builtin('sparql_query',    builtin_sparql_query)
         self.register_builtin('rdf',             builtin_rdf)
+        self.register_builtin('rdf_lists',       builtin_rdf_lists)
         self.register_builtin('uriref',          builtin_uriref)
 
     def set_context_name(self, context_name):
@@ -559,9 +571,22 @@ class AIPrologRuntime(PrologRuntime):
             raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
         return pt
 
+    def _value_v(self, value):
+        if isinstance(value, StringLiteral):
+            v = value.s
+        elif isinstance(value, NumberLiteral):
+            v = unicode(value.f)
+        elif isinstance(value, Predicate):
+            if len(value.args)>0:
+                raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
+            v = value.name
+        else:
+            raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
+        return v
+
     def write_context (self, name, key, value):
 
-        v  = unicode(value)
+        v  = self._value_v(value)
         pt = self._value_pt(value)
 
         ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
@@ -574,7 +599,7 @@ class AIPrologRuntime(PrologRuntime):
 
     def set_context_default(self, name, key, value):
 
-        v  = unicode(value)
+        v  = self._value_v(value)
         pt = self._value_pt(value)
 
         ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()

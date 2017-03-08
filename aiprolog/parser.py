@@ -58,7 +58,6 @@ class AIPrologParser(PrologParser):
         # register directives
 
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
-        self.register_directive('sparql_macro',        self.sparql_macro,        None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
         self.register_directive('set_context_default', self.set_context_default, None)
@@ -107,92 +106,6 @@ class AIPrologParser(PrologParser):
         #     mappings.append(mapping)
 
         # import pdb; pdb.set_trace()
-
-        self.macro_engine.define_named_macro(name, mappings)
-
-    def _query_result_to_strings(self, result):
-
-        # turn result into lists of strings we can then bind to macro variables
-
-        res_map  = {} 
-        res_vars = {} # variable idx -> variable name
-
-        for binding in result:
-
-            logging.debug(' binding labels: %s' % repr(binding.labels))
-
-            for v in binding.labels:
-
-                l = binding[v]
-
-                value = unicode(l)
-
-                if isinstance (l, rdflib.term.Literal):
-
-                    if l.datatype:
-
-                        datatype = str(l.datatype)
-
-                        if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                            value = unicode(value)
-                        elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                            value = unicode(value)
-                        # FIXME elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                        # FIXME     dt = dateutil.parser.parse(value)
-                        # FIXME     value = NumberLiteral(time.mktime(dt.timetuple()))
-                        else:
-                            raise PrologError('sparql_macro: unknown datatype %s .' % datatype)
-                   
-                    else:
-                        value = unicode(value)
-
-                if not v in res_map:
-                    res_map[v] = []
-                    res_vars[binding.labels[v]] = v
-
-                res_map[v].append(value)
-
-        logging.debug("res_map : '%s'" % repr(res_map))
-        logging.debug("res_vars: '%s'" % repr(res_vars))
-
-        return res_map, res_vars
-
-    def sparql_macro(self, module_name, clause, user_data):
-
-        args = clause.head.args
-
-        if not isinstance (args[0], StringLiteral):
-            raise PrologError (u'sparql_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
-        if not isinstance (args[1], StringLiteral):
-            raise PrologError (u'sparql_macro: arg 1 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
-
-        name  = args[0].s
-        query = args[1].s
-
-        result = self.kb.query (query)
-
-        logging.debug ('ran query. resulting bindings: %s' % repr(result.bindings))
-
-        res_map, res_vars = self._query_result_to_strings(result)
-
-        # transform bindings into macro mappings
-
-        mappings = []
-
-        for binding_idx in range(len(res_map[res_vars[0]])):
-
-            mapping = {}
-
-            for i, m in enumerate(args[2:]):
-
-                if not isinstance (m, Variable):
-                    raise PrologError (u'sparql_macro: arg %d unexpected type: %s. Variable expected.' % (i+2, m.__class__))
-
-                mapping[m.name] = res_map[res_vars[i]][binding_idx]
-
-            mappings.append(mapping)
-
-        logging.debug ('sparql_macro: resulting mappings: %s' % repr(mappings))
 
         self.macro_engine.define_named_macro(name, mappings)
 

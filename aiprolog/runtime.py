@@ -353,6 +353,25 @@ def builtin_rdf(g, pe):
 
     return res_bindings
 
+def builtin_uriref(g, pe):
+
+    pe._trace ('CALLED BUILTIN uriref', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('uriref: 2 args expected.')
+
+    if not isinstance(args[0], Predicate):
+        raise PrologRuntimeError('uriref: first argument: predicate expected, %s found instead.' % repr(args[0]))
+
+    if not isinstance(args[1], Variable):
+        raise PrologRuntimeError('uriref: second argument: variable expected, %s found instead.' % repr(args[1]))
+
+    g.env[args[1].name] = StringLiteral(pe.kb.resolve_aliases_prefixes(args[0].name))
+
+    return True
+
 def builtin_sparql_query(g, pe):
 
     pe._trace ('CALLED BUILTIN sparql_query', g)
@@ -470,6 +489,7 @@ class AIPrologRuntime(PrologRuntime):
         # sparql / rdf
         self.register_builtin('sparql_query',    builtin_sparql_query)
         self.register_builtin('rdf',             builtin_rdf)
+        self.register_builtin('uriref',          builtin_uriref)
 
     def set_context_name(self, context_name):
         self.context_name = context_name

@@ -58,7 +58,6 @@ class AIPrologParser(PrologParser):
         # register directives
 
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
-        self.register_directive('rdf_macro',           self.rdf_macro,           None)
         self.register_directive('sparql_macro',        self.sparql_macro,        None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
@@ -76,19 +75,38 @@ class AIPrologParser(PrologParser):
 
         name = args[0].s
 
+        macro_vars = map (lambda v: self.ai_rt.prolog_get_variable (v, {}), args[1:])
+        # for v in args[1:]:
+        #     if not isinstance(v, Variable):
+        #         raise PrologError('nlp_macro: variable arg expected, %s found instead.' % v)
+        #         
+        #     macro_vars.append(v.name)
+
+        solutions = self.ai_rt.search(clause)
+
         mappings = []
 
-        for m in args[1:]:
-
-            if m.name != 'map':
-                raise Exception ('map structure expected in nlp_macro %s' % name)
+        for solution in solutions:
 
             mapping = {}
-
-            for p in m.args:
-                mapping[p.name] = p.args[0].s
-
+            for v in macro_vars:
+                mapping[v] = self.ai_rt.prolog_get_string (solution[v], {})
+        
             mappings.append(mapping)
+
+        # for m in args[1:]:
+
+        #     if m.name != 'map':
+        #         raise Exception ('map structure expected in nlp_macro %s' % name)
+
+        #     mapping = {}
+
+        #     for p in m.args:
+        #         mapping[p.name] = p.args[0].s
+
+        #     mappings.append(mapping)
+
+        # import pdb; pdb.set_trace()
 
         self.macro_engine.define_named_macro(name, mappings)
 
@@ -138,142 +156,6 @@ class AIPrologParser(PrologParser):
         logging.debug("res_vars: '%s'" % repr(res_vars))
 
         return res_map, res_vars
-
-    def rdf_macro(self, module_name, clause, user_data):
-
-        args = clause.head.args
-
-        if not isinstance (args[0], StringLiteral):
-            raise PrologError (u'rdf_macro: arg 0 unexpected type: %s. StringLiteral expected.' % args[0].__class__)
-
-        name             = args[0].s
-
-        distinct         = False
-        triples          = []
-        optional_triples = []
-        filters          = []
-
-        arg_idx          = 1
-        var_map          = {}   # string -> rdflib.term.Variable
-        env              = {}   # we do not have bindings at compile time
-        pe               = None # we do not have a runtime at compile time either
-
-        while arg_idx < len(args):
-
-            arg_s = args[arg_idx]
-
-            # check for optional structure
-            if isinstance(arg_s, Predicate) and arg_s.name == 'optional':
-
-                s_args = arg_s.args
-
-                if len(s_args) != 3:
-                    raise PrologError('rdf: optional: triple arg expected')
-
-                arg_s = s_args[0]
-                arg_p = s_args[1]
-                arg_o = s_args[2]
-
-                logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
-
-                optional_triples.append((arg_to_rdf(arg_s, env, pe, var_map), 
-                                         arg_to_rdf(arg_p, env, pe, var_map), 
-                                         arg_to_rdf(arg_o, env, pe, var_map)))
-
-                arg_idx += 1
-
-            # check for filter structure
-            elif isinstance(arg_s, Predicate) and arg_s.name == 'filter':
-
-                logging.debug ('rdf: filter structure detected: %s' % repr(arg_s.args))
-
-                s_args = arg_s.args
-
-                if len(s_args) != 1:
-                    raise PrologError('rdf: filter: single expression expected')
-
-                filters.append(prolog_to_filter_expression(s_args[0], env, pe, var_map, self.kb))
-                
-                arg_idx += 1
-
-            # check for distinct
-            elif isinstance(arg_s, Predicate) and arg_s.name == 'distinct':
-
-                distinct = True
-                arg_idx += 1
-
-            else:
-
-                if arg_idx > len(args)-3:
-                    raise PrologError('rdf: not enough arguments for triple')
-
-                arg_p = args[arg_idx+1]
-                arg_o = args[arg_idx+2]
-
-                logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
-
-                triples.append((arg_to_rdf(arg_s, env, pe, var_map, self.kb), 
-                                arg_to_rdf(arg_p, env, pe, var_map, self.kb), 
-                                arg_to_rdf(arg_o, env, pe, var_map, self.kb)))
-
-                arg_idx += 3
-
-        logging.debug ('rdf: triples: %s' % repr(triples))
-        logging.debug ('rdf: optional_triples: %s' % repr(optional_triples))
-        logging.debug ('rdf: filters: %s' % repr(filters))
-
-        if len(triples) == 0:
-            raise PrologError('rdf: at least one non-optional triple expected')
-
-        var_list = var_map.values()
-        var_set  = set(var_list)
-
-        p = CompValue('BGP', triples=triples, _vars=var_set)
-
-        for t in optional_triples:
-            p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
-                                      expr = CompValue('TrueFilter', _vars=set([])))
-
-        for f in filters:
-            p = CompValue('Filter', p=p, expr = f, _vars=var_set)
-
-        if distinct:
-            p = CompValue('Distinct', p=p, _vars=var_set)
-
-        algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
-       
-        result = self.kb.query_algebra (algebra)
-
-        logging.debug ('rdf_macro: result (len: %d): %s' % (len(result), repr(result)))
-
-        res_map, res_vars = self._query_result_to_strings(result)
-
-        # transform bindings into macro mappings
-
-        res_var_names = res_map.keys()
-
-        # [ {u'PERSON': u'http://www.wikidata.org/entity/Q2571', 
-        #    u'LABEL': u'Walter Scheel'}, 
-        #   {u'PERSON': u'http://www.wikidata.org/entity/Q2518', 
-        #    u'LABEL': u'Helmut Kohl'}, 
-        #   {u'PERSON': u'http://www.wikidata.org/entity/Q2516', 
-        #    u'LABEL': u'Helmut Schmidt'} ...]
-
-        mappings = []
-
-        for binding_idx in range(len(res_map[res_vars[0]])):
-
-            mapping = {}
-
-            for res_var_name in res_var_names:
-
-                mapping[res_var_name] = res_map[res_var_name][binding_idx]
-
-            mappings.append(mapping)
-
-        logging.debug ('rdf_macro: resulting mappings: %s' % repr(mappings))
-
-        self.macro_engine.define_named_macro(name, mappings)
 
     def sparql_macro(self, module_name, clause, user_data):
 

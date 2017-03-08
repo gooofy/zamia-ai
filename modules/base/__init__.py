@@ -6,7 +6,6 @@ import rdflib
 DEPENDS    = [ ]
 
 PL_SOURCES = [
-              'geo.pl',
               'people.pl',
               'time.pl',
              ]
@@ -91,7 +90,6 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
 
 
 KB_SOURCES = [
-              'tz.n3',
 
               # people
 
@@ -139,6 +137,7 @@ KB_SOURCES = [
                   [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('hal:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
                 
                 ]
-              )
+              ),
+              'tz.n3',
             ]
 

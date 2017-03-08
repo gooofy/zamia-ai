@@ -9,50 +9,24 @@ is_german_chancellor(PERSON) :-
         optional(OFFICE_STMT, wdpq:EndTime, END_TIME),
         filter(END_TIME is []), limit(1)).
 
-% is_german_chancellor(PERSON) :- 
-%     rdf(PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
-%         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany, 
-%         optional(OFFICE_STMT, wdpq:EndTime, END_TIME)),
-%     END_TIME is [].
-
 was_german_chancellor(PERSON) :- 
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany).
 
-rdf_macro ('KNOWN_PERSONS', 
-           distinct,
-           PERSON, wdpd:InstanceOf,   wde:Human,
-           PERSON, rdfs:label,        LABEL,
-           PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
-           filter (lang(LABEL) = 'de')).
-               
+% rdf_macro ('KNOWN_PERSONS', 
+%            distinct,
+%            PERSON, wdpd:InstanceOf,   wde:Human,
+%            PERSON, rdfs:label,        LABEL,
+%            PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
+%            filter (lang(LABEL) = 'de')).
 
-% sparql_macro ('KNOWN_PERSONS', "SELECT DISTINCT ?person ?label
-%                                 WHERE {
-%                                  ?person wdpd:P31 wde:Q5. # instanceof human
-%                                  ?person rdfs:label ?label.
-%                                  ?person wdpd:P39 wde:Q4970706. # position held Federal Chancellor of Germany
-%                                  FILTER (lang(?label) = 'de')
-%                                 }
-%                                ", PERSON, LABEL).
-
-% is_german_chancellor(PERSON) :-
-%    sparql_query (format_str("SELECT ?endTime 
-%                              WHERE {
-%                                  <%s> wdp:P39 ?officeStmt.                   # position held
-%                                  ?officeStmt wdps:P39 wde:Q4970706.          # position held Federal Chancellor of Germany
-%                                  OPTIONAL {?officeStmt wdpq:P582 ?endTime}   # end time
-%                              }", PERSON), ENDTIMES),
-%    list_contains(ENDTIMES, []).
-
-% was_german_chancellor(PERSON) :-
-%    sparql_query (format_str("SELECT ?officeStmt
-%                              WHERE {
-%                                  <%s> wdp:P39 ?officeStmt.                   # position held
-%                                  ?officeStmt wdps:P39 wde:Q4970706.          # position held Federal Chancellor of Germany
-%                              }", PERSON), STMT).
-
+nlp_macro ('KNOWN_PERSONS', PERSON, LABEL) :-
+    rdf (distinct,
+         PERSON, wdpd:InstanceOf,   wde:Human,
+         PERSON, rdfs:label,        LABEL,
+         PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
+         filter (lang(LABEL) = 'de')).
 
 answer (knownPerson, de, PERSON, LABEL) :-
     

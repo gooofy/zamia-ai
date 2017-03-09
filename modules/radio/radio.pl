@@ -4,59 +4,51 @@
 % test setup and context
 %
 
-set_context_default('test', channel, 'media:B5_aktuell').
+set_context_default('test', channel, URI) :- uriref(wde:Q795291, URI).
+
+%
+% media_tune: set context, look up slot and title in RDF, generate action
+%
+
+media_tune (C) :-
+
+    set_context(channel, C),
+
+    rdf(distinct, limit(1),
+        C, hal:MediaSlot, SLOT,
+        optional(C, hal:MediaTitle, TITLE)),
+    
+    action (media, tune, SLOT, TITLE).
+
 
 %
 % natural language part
 %
 
-nlp_macro('HI',        map(w(''         )),
-                       map(w('Hallo'    )),
-                       map(w('Hi'       ))).
+nlp_macro('VERB', W, V, P) :- W is 'schalte'   , V is 'ein', P is 'media_tune(C)'.
+nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'an',  P is 'media_tune(C)'.
+nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'aus', P is 'action(media, off)'.
+nlp_macro('VERB', W, V, P) :- W is 'schalte '  , V is 'aus', P is 'action(media, off)'.
 
-nlp_macro('ADDRESSEE', map(w(''         )),
-                       map(w('Computer' )),
-                       map(w('HAL'      ))).
-
-nlp_macro('PLEASE',    map(w(''         )),
-                       map(w('bitte'    ))).
-
-nlp_macro('MAL',       map(w(''         )),
-                       map(w('mal'      ))).
-
-nlp_macro('VERB',      map(w('schalte'   ), v('ein'), p('set_context(channel, C); action(media, tune, C)')),
-                       map(w('mach '     ), v('an'),  p('set_context(channel, C); action(media, tune, C)')),
-                       map(w('mach '     ), v('aus'), p('action(media, off)')),
-                       map(w('schalte '  ), v('aus'), p('action(media, off)'))).
-
-nlp_macro('WHAT',      map(w('Musik'           ), p('C is "media:Music"')),
-                       map(w('das Radio '      ), p('context(channel, C)')),
-                       map(w('B5 aktuell'      ), p('C is "media:B5_aktuell"')),
-                       map(w('Deutschlandfunk' ), p('C is "media:Deutschlandfunk"')),
-                       map(w('SWR Info'        ), p('C is "media:SWRinfo"')),
-                       map(w('SWR 3'           ), p('C is "media:SWR3"')),
-                       map(w('Aktuelles'       ), p('C is "media:News"')),
-                       map(w('Newstalk'        ), p('C is "media:NewsTalk"')),
-                       map(w('Power Hit Radio' ), p('C is "media:Power_Hit_Radio"')),
-                       map(w('RTL'             ), p('C is "media:104.6_RTL"')),
-                       map(w('NEW ROCK'        ), p('C is "media:New_Rock"')),
-                       map(w('ROCK'            ), p('C is "media:Rock"')),
-                       map(w('POP'             ), p('C is "media:Pop"')),
-                       map(w('DANCE'           ), p('C is "media:Dance"')),
-                       map(w('Tech News'       ), p('C is "media:Tech_News"')),
-                       map(w('Workout'         ), p('C is "media:Workout"'))).
+nlp_macro('STATION', W, P) :- W is 'das Radio' , P is 'context(channel, C)'.
+nlp_macro('STATION', W, P) :-
+    rdf (STATION, hal:MediaSlot, SLOT,
+         STATION, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'de')),
+    W is LABEL,
+    P is format_str('C is "%s"', STATION).
 
 nlp_gen(de, 
-        '@HI:w @ADDRESSEE:w @VERB:w @PLEASE:w @MAL:w @WHAT:w @VERB:v',
-        @WHAT:p, @VERB:p).
+        '(Hallo|Hi|) (HAL|Computer|) @VERB:W (bitte|) (mal|) @STATION:W @VERB:V',
+        @STATION:P, @VERB:P).
 
 nlp_test(de,
          ivr(in('HAL, schalte bitte das Radio ein'),
-             action(media, tune, 'media:B5_aktuell'))).
+             action(media, tune, 9, 1))).
 
 nlp_test(de,
          ivr(in('computer schalte bitte new rock ein'),
-             action(media, tune, "media:New_Rock"))).
+             action(media, tune, 3, []))).
 
 
 nlp_test(de,
@@ -64,12 +56,11 @@ nlp_test(de,
              action(media, off))).
 
 
-% FIXME
-% nlp_test(de,
-%          ivr(in('computer schalte bitte new rock ein'),
-%              action(media, tune, newrock)),
-%          ivr(in('hal mach das radio aus'),
-%              action(media, off)),
-%          ivr(in('schalte bitte das radio ein'),
-%              action(media, tune, newrock))). 
+nlp_test(de,
+         ivr(in('computer schalte bitte new rock ein'),
+             action(media, tune, 3, [])),
+         ivr(in('hal mach das radio aus'),
+             action(media, off)),
+         ivr(in('schalte bitte das radio ein'),
+             action(media, tune, 3, []))). 
 

@@ -163,11 +163,11 @@ def fetch_weather_forecast(config, kb, graph_name):
 
             quads.append(( sun_uri, u'hal:location', location, graph ))
             quads.append(( sun_uri, u'hal:date',     rdflib.Literal(cur_date, datatype=XSD.date), graph ))
-            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'], datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'], datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'], datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'], datatype=XSD.datetime), graph ))
-            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'], datatype=XSD.datetime), graph ))
+            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'], datatype=XSD.dateTime), graph ))
 
             logging.debug ("astral %s %s %s -> %s" % (location, cur_date, sun['sunrise'], sun['sunset']) )
 
@@ -216,8 +216,8 @@ def fetch_weather_forecast(config, kb, graph_name):
             quads.append(( fc_uri, u'hal:icon',          rdflib.Literal(icon), graph ))
             quads.append(( fc_uri, u'hal:description',   rdflib.Literal(description), graph ))
 
-            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from, datatype=XSD.datetime), graph ))
-            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to, datatype=XSD.datetime), graph ))
+            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from, datatype=XSD.dateTime), graph ))
+            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to, datatype=XSD.dateTime), graph ))
 
         # break
 

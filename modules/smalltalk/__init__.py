@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS    = [ 'common_sense' ]
+DEPENDS    = [ 'base' ]
 
 PL_SOURCES = [
               'greetings.pl',

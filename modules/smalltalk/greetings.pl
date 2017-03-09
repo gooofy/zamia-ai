@@ -44,31 +44,31 @@ answer(goodbye, de, personal) :-
     say_eou(de, "Ciao"),
     action(attention,off).
 
-nlp_macro('GREETING',  map(w('guten morgen')     , p('answer (greeting, de, S)')),
-                       map(w('hallo')            , p('answer (greeting, de, S)')),
-                       map(w('hi')               , p('answer (greeting, de, S)')),
-                       map(w('guten tag')        , p('answer (greeting, de, S)')),
-                       map(w('tag')              , p('answer (greeting, de, S)')),
-                       map(w('morgen')           , p('answer (greeting, de, S)')),
-                       map(w('guten abend')      , p('answer (greeting, de, S)')),
-                       map(w('gute nacht')       , p('answer (greeting, de, S)')),
-                       map(w('huhu')             , p('answer (greeting, de, S)')),
-                       map(w('auf wiedersehen')  , p('answer (goodbye,  de, S)')),
-                       map(w('tschüss')          , p('answer (goodbye,  de, S)')),
-                       map(w('ciao')             , p('answer (goodbye,  de, S)')),
-                       map(w('ade')              , p('answer (goodbye,  de, S)'))).
+nlp_macro('GREETING', W, P) :- W is 'guten morgen'     , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'hallo'            , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'hi'               , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'guten tag'        , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'tag'              , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'morgen'           , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'guten abend'      , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'gute nacht'       , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'huhu'             , P is 'answer (greeting, de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'auf wiedersehen'  , P is 'answer (goodbye,  de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'tschüss'          , P is 'answer (goodbye,  de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'ciao'             , P is 'answer (goodbye,  de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'ade'              , P is 'answer (goodbye,  de, S)'.
 
-nlp_macro('ADDRESSEE', map(w('Computer '), p('S is personal')),
-                       map(w('HAL '     ), p('S is personal'))).
+nlp_macro('ADDRESSEE', W, P) :- W is 'Computer ', P is 'S is personal'.
+nlp_macro('ADDRESSEE', W, P) :- W is 'HAL '     , P is 'S is personal'.
 
-nlp_gen(de,'@GREETING:w',
-           S is anonymous, @GREETING:p).
+nlp_gen(de,'@GREETING:W',
+           S is anonymous, @GREETING:P).
 
-nlp_gen(de,'@GREETING:w @ADDRESSEE:w',
-           @ADDRESSEE:p, @GREETING:p).
+nlp_gen(de,'@GREETING:W @ADDRESSEE:W',
+           @ADDRESSEE:P, @GREETING:P).
 
-nlp_gen(de,'@ADDRESSEE:w @GREETING:w',
-           @ADDRESSEE:p, @GREETING:p).
+nlp_gen(de,'@ADDRESSEE:W @GREETING:W',
+           @ADDRESSEE:P, @GREETING:P).
 
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
 nlp_test(de,
@@ -100,9 +100,9 @@ nlp_test(de,
          ivr(in('Ciao'),
              out('Auf Wiedersehen!'))).
 
-nlp_macro('ADDRESSEE2', map(w('')),
-                        map(w('Computer ')),
-                        map(w('HAL '     ))).
+nlp_macro('ADDRESSEE2', W) :- W is ''.
+nlp_macro('ADDRESSEE2', W) :- W is 'Computer '.
+nlp_macro('ADDRESSEE2', W) :- W is 'HAL '.
 
 answer(howdy, de) :-
     say_eou(de, "Sehr gut, danke. Und selber?"),
@@ -112,15 +112,15 @@ answer(howdy, de) :-
     say_eou(de, "Super, wie immer!"),
     say_eou(de, "Gut, danke der Nachfrage. Wie geht es Dir?").
 
-nlp_gen(de,'@ADDRESSEE2:w wie geht es dir?',
+nlp_gen(de,'@ADDRESSEE2:W wie geht es dir?',
            answer (howdy, de)).
 
-nlp_gen(de,'@ADDRESSEE2:w wie gehts',
+nlp_gen(de,'@ADDRESSEE2:W wie gehts',
            answer (howdy, de)).
 
-nlp_gen(de,'@ADDRESSEE2:w was geht',
+nlp_gen(de,'@ADDRESSEE2:W was geht',
            answer (howdy, de)).
 
-nlp_gen(de,'@ADDRESSEE2:w wie fühlst du dich',
+nlp_gen(de,'@ADDRESSEE2:W wie fühlst du dich',
            answer (howdy, de)).
 

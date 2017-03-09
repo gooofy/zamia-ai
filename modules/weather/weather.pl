@@ -286,20 +286,10 @@ nlp_test(de,
          ivr(in('Wie sind die Wetteraussichten für übermorgen?'),
              out('übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen -9 und 1 grad warm'))).
 
-% multiple iteraction steps
-% FIXME: many more examples needed
-
-% nlp_gen(de,
-%         '@HELLO:W wie wird das Wetter @PLACE:W ?', 
-%         near_future(weather, EvT), @PLACE:P, answer (weather, de, EvT, P), set_context(place, P), set_context(time, EvT), nnr,
-%         'und in den nächsten Tagen?',
-%         EvT is nextThreeDays, context(place, P), answer (weather, de, EvT, P), set_context(time, EvT), nnr,
-%         'und in Freudental?',
-%         context(time, EvT), P is "dbr:Freudental", answer (weather, de, EvT, P), set_context(playe, P) 
-%         ).
-
 %
-% tests (german)
+% test multiple iteraction steps
+%
+% FIXME: many more examples needed
 %
 
 nlp_test(de,
@@ -311,7 +301,7 @@ nlp_test(de,
              out('in den nächsten drei Tagen zeigt sich ab und an die Sonne in Freudental und es wird zwischen -7 und 5 Grad warm.'))). 
 
 
-% FIXME: sunset time missing in DB
+% FIXME: implement
 % Wann geht die Sonne unter?
 
 %

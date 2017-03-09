@@ -67,9 +67,9 @@ CKPT_FN      = 'data/nlp_model.ckpt'
 #           ]
 BUCKETS = [
            ( 8, 4), 
-           ( 8, 8), 
+           ( 8, 9), 
 #           (16, 4), 
-           (16, 8), 
+           (16, 9), 
           ]
 
 
@@ -381,7 +381,7 @@ class NLPModel(object):
                     break
 
             if not bucket_found:
-                raise Exception ('ERROR: no bucket found for %d -> %d (%s)' % (len(x), len(y), dr.inp))
+                raise Exception ('ERROR: no bucket found for %d -> %d (%s -> %s)' % (len(x), len(y), dr.inp, dr.resp))
 
             cnt += 1
 

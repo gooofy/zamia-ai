@@ -41,11 +41,11 @@ nlp_test(de,
 
 nlp_gen(de,
            '(das ist|oh wie|achje|) Schlecht.',
-           'Das ist schade!', nnr,
+           'Das ist schade!', 
            'Was geht Dich das an?',
-           'Sag Du es mir?', nnr,
+           'Sag Du es mir?', 
            'Nein!',
-           'Warum denn nicht?', nnr,
+           'Warum denn nicht?', 
            'Weil ich dazu keine Lust habe',
            'Verstehe.'
            ).

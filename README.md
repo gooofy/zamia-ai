@@ -3,7 +3,7 @@
 If you're looking for the scripts that I am using to build my VoxForge models, those
 are over at [https://github.com/gooofy/speech](https://github.com/gooofy/speech).
 
-# NLP
+# Zamia AI
 
 Various scripts that one day could form a complete A.I. system. 
 
@@ -22,7 +22,7 @@ generation of language examples along with RDF triples for data and prolog code 
 Links
 =====
 
-* [Code](https://github.com/gooofy/nlp "github")
+* [Code](https://github.com/gooofy/zamia-ai "github")
 
 Requirements
 ============

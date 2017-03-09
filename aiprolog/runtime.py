@@ -53,13 +53,16 @@ def builtin_context(g, pe):
     key     = args[0].name
     arg_v   = pe.prolog_get_variable(args[1], g.env)
 
-    v = pe.read_context(pe.context_name, key)
-    if not v:
-        return False
+    # currentTime is special in production contexts
+    if key=='currentTime' and pe.context_name != 'test':
+        v = NumberLiteral(time.time())
+    else:
+        v = pe.read_context(pe.context_name, key)
+        if not v:
+            return False
 
     # print u"builtin_context: %s -> %s" % (key, unicode(v.body))
 
-    # FIXME: remove old code g.env[arg_v] = v.body[0]
     g.env[arg_v] = v
 
     return True
@@ -485,6 +488,7 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin('context',         builtin_context)
         self.register_builtin('set_context',     builtin_set_context)
+        self.context_name = 'production'
 
         # TTS
 

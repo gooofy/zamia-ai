@@ -39,6 +39,7 @@ from sqlalchemy.orm import sessionmaker
 import model
 
 from zamiaprolog.logicdb import LogicDB
+from zamiaprolog.errors  import PrologError
 from aiprolog.runtime    import AIPrologRuntime
 from aiprolog.parser     import AIPrologParser
 

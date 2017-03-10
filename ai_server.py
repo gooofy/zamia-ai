@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# simple nlp http api server
+# simple ai http api server
 #
 # WARNING: 
 #     right now, this supports a single client only - needs a lot more work
@@ -58,7 +58,7 @@ import model
 
 from nlp_kernal import NLPKernal
 
-PROC_TITLE        = 'nlp_server'
+PROC_TITLE        = 'ai_server'
 
 class NLPHandler(BaseHTTPRequestHandler):
 	

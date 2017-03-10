@@ -26,7 +26,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from nltools import misc
 
-config = misc.load_config('.nlprc')
+config = misc.load_config('.airc')
 
 # db_server = config.get("semantics", "dbserver")
 # db_name   = config.get("semantics", "dbname")

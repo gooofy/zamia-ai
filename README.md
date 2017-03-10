@@ -39,11 +39,11 @@ Setup Notes
 Just some rough notes on the environment needed to get these scripts to run. This is in no way a complete set of
 instructions, just some hints to get you started.
 
-`~/.nlprc`:
+`~/.airc`:
 
 ```ini
 [db]
-url                 = postgresql://semantics:password@dagobert:5432/nlp
+url                 = postgresql://semantics:password@dagobert:5432/zamia_ai
 
 [semantics]
 modules             = common_sense, weather, smalltalk, radio
@@ -62,13 +62,13 @@ Language Model
 dump sentences from training data for LM generation:
 
 ```bash
-./nlp_cli.py utterances 
+./ai_cli.py utterances 
 ```
 
 or to dump out a set of 20 random utterances which contain words not covered by the dictionary:
 
 ```bash
-./nlp_cli.py utterances -d ../speech/data/src/speech/de/dict.ipa -n 20
+./ai_cli.py utterances -d ../speech/data/src/speech/de/dict.ipa -n 20
 ```
 
 License

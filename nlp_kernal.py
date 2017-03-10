@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# nlp kernal, central hub for all the other components to hook into
+# ai kernal, central hub for all the other components to hook into
 #
 # natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> prolog -> [ prolog engine ] -> say/action preds
 #
@@ -53,7 +53,7 @@ class NLPKernal(object):
 
     def __init__(self):
 
-        self.config = misc.load_config('.nlprc')
+        self.config = misc.load_config('.airc')
 
         #
         # database

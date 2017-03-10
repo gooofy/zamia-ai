@@ -54,7 +54,7 @@ class TestAIProlog (unittest.TestCase):
 
     def setUp(self):
 
-        config = misc.load_config('.nlprc')
+        config = misc.load_config('.airc')
 
         #
         # logic DB

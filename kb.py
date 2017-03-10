@@ -57,7 +57,7 @@ class HALKB(object):
         # set up graph store
         #
 
-        config = misc.load_config('.nlprc')
+        config = misc.load_config('.airc')
 
         # DB, SPARQLAlchemyStore
 

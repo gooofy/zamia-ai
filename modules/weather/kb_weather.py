@@ -232,7 +232,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
 
-    config = misc.load_config('.nlprc')
+    config = misc.load_config('.airc')
     
     kb = HALKB()
     gn = u'http://hal.zamia.org/benchmark'

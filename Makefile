@@ -3,16 +3,16 @@ SHELL := /bin/bash
 all:	prolog 
 
 kb:
-	./nlp_cli.py kb_import all
+	./ai_cli.py kb_import all
 
 cron:
-	./nlp_cli.py cron all
+	./ai_cli.py cron all
 
 prolog:
-	./nlp_cli.py compile common_sense weather smalltalk radio knowledge
+	./ai_cli.py compile common_sense weather smalltalk radio knowledge
 
 train:
-	./nlp_cli.py train -n 50000
+	./ai_cli.py train -n 50000
 
 clean:
-	./nlp_cli.py clean -a all
+	./ai_cli.py clean -a all

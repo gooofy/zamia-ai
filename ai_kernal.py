@@ -49,7 +49,7 @@ from nltools.tokenizer import tokenize
 
 GRAPH_PREFIX       = u'http://hal.zamia.org/kb/'
 
-class NLPKernal(object):
+class AIKernal(object):
 
     def __init__(self):
 

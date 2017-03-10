@@ -56,11 +56,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 import model
 
-from nlp_kernal import NLPKernal
+from ai_kernal import AIKernal
 
 PROC_TITLE        = 'ai_server'
 
-class NLPHandler(BaseHTTPRequestHandler):
+class AIHandler(BaseHTTPRequestHandler):
 	
     def do_GET(self):
         self.send_error(400, 'Invalid request')
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     # setup nlp kernal
     #
 
-    kernal = NLPKernal()
+    kernal = AIKernal()
     kernal.setup_tf_model (True, True)
 
     #
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     #
 
     try:
-        server = HTTPServer((options.host, options.port), NLPHandler)
+        server = HTTPServer((options.host, options.port), AIHandler)
         logging.info('listening for HTTP requests on %s:%d' % (options.host, options.port))
         
         # wait forever for incoming http requests

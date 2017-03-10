@@ -35,12 +35,12 @@ import psycopg2
 
 import model
 
-from nlp_kernal import NLPKernal
+from ai_kernal import AIKernal
 
 DEFAULT_LOGLEVEL   = logging.INFO
 RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
 
-class NLPCli(cmdln.Cmdln):
+class AICli(cmdln.Cmdln):
 
     name = "ai_cli"
 
@@ -48,7 +48,7 @@ class NLPCli(cmdln.Cmdln):
        
         cmdln.Cmdln.__init__(self)
 
-        self.kernal = NLPKernal()
+        self.kernal = AIKernal()
 
     @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
            help="clean predicates from logicdb")
@@ -274,7 +274,7 @@ class NLPCli(cmdln.Cmdln):
         """
 
         if len(paths)==0:
-            logging.error ('specify at least one module name')
+            logging.error ('specify at least one module name (or "all" to run all module cronjobs)')
             return
 
         if opts.verbose:
@@ -374,6 +374,6 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 # run cli
 #
 
-ncli = NLPCli()
-sys.exit(ncli.main(loop=cmdln.LOOP_IF_EMPTY))
+aicli = AICli()
+sys.exit(aicli.main(loop=cmdln.LOOP_IF_EMPTY))
 

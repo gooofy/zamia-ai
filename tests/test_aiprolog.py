@@ -48,6 +48,14 @@ COMMON_PREFIXES = {
             'geo':     'http://www.opengis.net/ont/geosparql#',
             'geo1':    'http://www.w3.org/2003/01/geo/wgs84_pos#',
             'geof':    'http://www.opengis.net/def/function/geosparql/',
+            'owl':     'http://www.w3.org/2002/07/owl#',
+            'schema':  'http://schema.org/',
+            'wde':     'http://www.wikidata.org/entity/',
+            'wdes':    'http://www.wikidata.org/entity/statement',
+            'wdpd':    'http://www.wikidata.org/prop/direct/',
+            'wdps':    'http://www.wikidata.org/prop/statement/',
+            'wdpq':    'http://www.wikidata.org/prop/qualifier/',
+            'wdp':     'http://www.wikidata.org/prop/',
     }
 
 class TestAIProlog (unittest.TestCase):
@@ -74,6 +82,7 @@ class TestAIProlog (unittest.TestCase):
         self.kb.clear_all_graphs()
 
         self.kb.parse_file (UNITTEST_CONTEXT, 'n3', 'tests/chancellors.n3')
+        self.kb.parse_file (UNITTEST_CONTEXT, 'n3', 'tests/wev.n3')
 
         #
         # aiprolog environment setup
@@ -148,6 +157,37 @@ class TestAIProlog (unittest.TestCase):
         solutions = self.prolog_rt.search(clause)
         logging.debug('solutions: %s' % repr(solutions))
         self.assertEqual (len(solutions), 1)
+
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_joins(self):
+
+        clause = self.parser.parse_line_clause_body("""
+         uriref(wde:Q61656, P),
+         Lang is de,
+         atom_chars(Lang, L2),
+         date_time_stamp(date(2016,12,6,0,0,0,\'local\'), EvTS),
+         date_time_stamp(date(2016,12,7,0,0,0,\'local\'), EvTE),
+         rdf (distinct,
+              WEV, hal:dt_end,        DT_END,
+              WEV, hal:dt_start,      DT_START,
+              WEV, hal:location,      P,
+              P,   rdfs:label,        Label,
+              WEV, hal:temp_min,      TempMin,
+              WEV, hal:temp_max,      TempMax,
+              WEV, hal:precipitation, Precipitation,
+              WEV, hal:clouds,        Clouds,
+              WEV, hal:icon,          Icon,
+              filter (DT_START >= isoformat(EvTS, 'local'),
+                      DT_END   =< isoformat(EvTE, 'local'),
+                      lang(Label) = L2)
+              )
+         """)
+
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 7)
+
 
 
 if __name__ == "__main__":

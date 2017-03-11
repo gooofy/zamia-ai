@@ -8,41 +8,50 @@ set_context_default('test', time, today).
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 
 answer(greeting, de, personal) :-
-    say_eou(de, "Hallo!"),
-    say_eou(de, "Hi!"),
-    say_eou(de, "Grüß Dich!"),
-    say_eou(de, "Hey!"),
-    action(attention,on).
+    action(attention, on),
+    say_eoa(de, "Hallo!"),
+
+    action(attention, on),
+    say_eoa(de, "Hi!"),
+
+    action(attention, on),
+    say_eoa(de, "Grüß Dich!"),
+
+    action(attention, on),
+    say_eoa(de, "Hey!").
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     before_noon(TS),
-    say_eou(de, "Guten Morgen!"),
-    action(attention,on).
+    action(attention, on),
+    say_eoa(de, "Guten Morgen!").
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     before_evening(TS),
     after_noon(TS),
-    say_eou(de, "Guten Tag!"),
-    say_eou(de, "Hallo!"),
-    action(attention,on).
+    action(attention, on),
+    say_eoa(de, "Guten Tag!"),
+    action(attention, on),
+    say_eoa(de, "Hallo!").
 
 answer(greeting, de, anonymous) :-
     context(currentTime, TS),
     after_evening(TS),
-    say_eou(de, "Guten Abend!"),
-    action(attention,on).
+    action(attention, on),
+    say_eoa(de, "Guten Abend!").
 
 answer(goodbye, de, anonymous) :-
-    say_eou(de, "Auf Wiedersehen!"),
-    action(attention,off).
+    action(attention,off),
+    say_eoa(de, "Auf Wiedersehen!").
 
 answer(goodbye, de, personal) :-
-    say_eou(de, "Ade"),
-    say_eou(de, "Tschüss"),
-    say_eou(de, "Ciao"),
-    action(attention,off).
+    action(attention, off),
+    say_eoa(de, "Ade"),
+    action(attention, off),
+    say_eoa(de, "Tschüss"),
+    action(attention, off),
+    say_eoa(de, "Ciao").
 
 nlp_macro('GREETING', W, P) :- W is 'guten morgen'     , P is 'answer (greeting, de, S)'.
 nlp_macro('GREETING', W, P) :- W is 'hallo'            , P is 'answer (greeting, de, S)'.
@@ -78,39 +87,45 @@ nlp_test(de,
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 nlp_test(de,
          ivr(in('hi'),
-             out('Guten Tag!'))).
+             out('Guten Tag!'),
+             action(attention, on))).
 nlp_test(de,
          ivr(in('hi'),
-             out('Hallo!'))).
+             out('Hallo!'),
+             action(attention, on))).
 
 set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,19,28,6,'local'), T).
 nlp_test(de,
          ivr(in('guten abend'),
-             out('Guten Abend!'))).
+             out('Guten Abend!'),
+             action(attention, on))).
 
 nlp_test(de,
          ivr(in('hallo computer'),
-             out('Hi!'))).
+             out('Hi!'),
+             action(attention, on))).
 
 nlp_test(de,
          ivr(in('Tschüss computer'),
-             out('Tschüss!'))).
+             out('Tschüss!'),
+             action(attention, off))).
 
 nlp_test(de,
          ivr(in('Ciao'),
-             out('Auf Wiedersehen!'))).
+             out('Auf Wiedersehen!'),
+             action(attention, off))).
 
 nlp_macro('ADDRESSEE2', W) :- W is ''.
 nlp_macro('ADDRESSEE2', W) :- W is 'Computer '.
 nlp_macro('ADDRESSEE2', W) :- W is 'HAL '.
 
 answer(howdy, de) :-
-    say_eou(de, "Sehr gut, danke. Und selber?"),
-    say_eou(de, "Gut, danke. Wie geht es Dir?"),
-    say_eou(de, "Mir geht's prima, und Dir?"),
-    say_eou(de, "Mir geht's gut, und selber?"),
-    say_eou(de, "Super, wie immer!"),
-    say_eou(de, "Gut, danke der Nachfrage. Wie geht es Dir?").
+    say_eoa(de, "Sehr gut, danke. Und selber?"),
+    say_eoa(de, "Gut, danke. Wie geht es Dir?"),
+    say_eoa(de, "Mir geht's prima, und Dir?"),
+    say_eoa(de, "Mir geht's gut, und selber?"),
+    say_eoa(de, "Super, wie immer!"),
+    say_eoa(de, "Gut, danke der Nachfrage. Wie geht es Dir?").
 
 nlp_gen(de,'@ADDRESSEE2:W wie geht es dir?',
            answer (howdy, de)).

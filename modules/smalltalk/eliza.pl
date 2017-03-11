@@ -51,11 +51,11 @@ nlp_gen(de,
            ).
 
 answer (feel_sorry, de) :-
-    say_eou(de, "Das tut mir leid."),
-    say_eou(de, "Kann ich dir irgendwie helfen?"),
-    say_eou(de, "Ich wuerde Dir gern helfen."),
-    say_eou(de, "Erzähle mir mehr von Deinen Gefühlen."),
-    say_eou(de, "Das ist schade.").
+    say_eoa(de, "Das tut mir leid."),
+    say_eoa(de, "Kann ich dir irgendwie helfen?"),
+    say_eoa(de, "Ich wuerde Dir gern helfen."),
+    say_eoa(de, "Erzähle mir mehr von Deinen Gefühlen."),
+    say_eoa(de, "Das ist schade.").
 
 nlp_gen(de, '(HAL,|Computer,|Du,|) ich bin (so|) (traurig|enttäuscht|betrübt|verletzt|matt|bedrückt|schlapp).',
             answer(feel_sorry, de)).
@@ -71,12 +71,12 @@ nlp_gen(de, '(HAL,|Computer,|Du,|) (Ich fühle mich|Mir geht es) (nicht so gut|s
             answer(feel_sorry, de)).
 
 answer (feel_happy, de) :-
-    say_eou(de, "Das freut mich sehr."),
-    say_eou(de, "Das ist ja toll!"),
-    say_eou(de, "Das ist prima!"),
-    say_eou(de, "Freut mich, das zu hören!"),
-    say_eou(de, "Erzähle mir mehr von Deinen Gefühlen."),
-    say_eou(de, "Wie schön für Dich!").
+    say_eoa(de, "Das freut mich sehr."),
+    say_eoa(de, "Das ist ja toll!"),
+    say_eoa(de, "Das ist prima!"),
+    say_eoa(de, "Freut mich, das zu hören!"),
+    say_eoa(de, "Erzähle mir mehr von Deinen Gefühlen."),
+    say_eoa(de, "Wie schön für Dich!").
 
 nlp_gen(de, '(HAL,|Computer,|Du,|) (Ich bin|Ich fühle mich|Man bin ich|Da bin ich) (gut|so gut|zufrieden|sehr zufrieden|so zufrieden|glücklich|so glücklich|froh|so froh)',
             answer(feel_happy, de)).
@@ -86,11 +86,11 @@ nlp_gen(de, '(Sehr|ganz) (wunderbar|schön|wunderschön)',
             answer(feel_happy, de)).
 
 answer (are_you_sure, de) :-
-    say_eou(de, "Bist Du Dir ganz sicher?"),
-    say_eou(de, "Wie kommst Du darauf?"),
-    say_eou(de, "Glaubst Du?"),
-    say_eou(de, "Davon bist Du überzeugt?"),
-    say_eou(de, "Ganz sicher?").
+    say_eoa(de, "Bist Du Dir ganz sicher?"),
+    say_eoa(de, "Wie kommst Du darauf?"),
+    say_eoa(de, "Glaubst Du?"),
+    say_eoa(de, "Davon bist Du überzeugt?"),
+    say_eoa(de, "Ganz sicher?").
 
 
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) (ganz|) (bestimmt|sicher|unbedingt|genau)',
@@ -101,14 +101,14 @@ nlp_gen(de, '(HAL,|Computer,|Du,|aber|) ja',
             answer(are_you_sure, de)).
 
 answer (i_am_a_computer, de) :-
-    say_eou(de, "Ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
-    say_eou(de, "Ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
-    say_eou(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
-    say_eou(de, "Fürchtest Du Dich vor Maschinen?"),
-    say_eou(de, "Warum führst Du Computer an?"),
-    say_eou(de, "Glaubst Du nicht, dass Computer den Menschen helfen können?"),
-    say_eou(de, "Was besorgt Dich besonders an Maschinen?"),
-    say_eou(de, "Was weißt Du über Computer?").
+    say_eoa(de, "Ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
+    say_eoa(de, "Ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
+    say_eoa(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
+    say_eoa(de, "Fürchtest Du Dich vor Maschinen?"),
+    say_eoa(de, "Warum führst Du Computer an?"),
+    say_eoa(de, "Glaubst Du nicht, dass Computer den Menschen helfen können?"),
+    say_eoa(de, "Was besorgt Dich besonders an Maschinen?"),
+    say_eoa(de, "Was weißt Du über Computer?").
 
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) bist Du (ein|eine|) (Computer|Maschine|Rechner|Elektronengehirn|künstliche Intelligenz|Eliza)?',
             answer(i_am_a_computer, de)).
@@ -141,20 +141,20 @@ nlp_gen(de, '(HAL,|Computer,|Du|) ich (möchte|will) so viel (wie möglich|wie e
             'Was würde Dir das bedeuten?', 'Hoffentlich kann ich Deine Erwartungen erfüllen.').
 
 answer(dodge_question, de) :-
-    say_eou(de, "Warum fragst Du?"),
-    say_eou(de, "Interessiert Dich diese Frage?"),
-    say_eou(de, "Welche Antwort würde Dir am besten gefallen?"),
-    say_eou(de, "Was glaubst Du?"),
-    say_eou(de, "Ich weiss nicht, ob ich Dich ganz verstanden habe."),
-    say_eou(de, "Befasst Du Dich oft mit solchen Fragen?"),
-    say_eou(de, "Was möchtest Du denn wirklich wissen?"),
-    say_eou(de, "Hast Du schon jemand anderes gefragt?"),
-    say_eou(de, "Hast Du solche Fragen schon mal gestellt?"),
-    say_eou(de, "Woran denkst Du?"),
-    say_eou(de, "Das finde ich ziemlich interessant."),
-    say_eou(de, "Kannst Du das noch etwas näher ausführen?"),
-    say_eou(de, "Sag mir bitte, wie ich Dir helfen kann"),
-    say_eou(de, "Was fällt Dir bei dieser Frage noch ein?").
+    say_eoa(de, "Warum fragst Du?"),
+    say_eoa(de, "Interessiert Dich diese Frage?"),
+    say_eoa(de, "Welche Antwort würde Dir am besten gefallen?"),
+    say_eoa(de, "Was glaubst Du?"),
+    say_eoa(de, "Ich weiss nicht, ob ich Dich ganz verstanden habe."),
+    say_eoa(de, "Befasst Du Dich oft mit solchen Fragen?"),
+    say_eoa(de, "Was möchtest Du denn wirklich wissen?"),
+    say_eoa(de, "Hast Du schon jemand anderes gefragt?"),
+    say_eoa(de, "Hast Du solche Fragen schon mal gestellt?"),
+    say_eoa(de, "Woran denkst Du?"),
+    say_eoa(de, "Das finde ich ziemlich interessant."),
+    say_eoa(de, "Kannst Du das noch etwas näher ausführen?"),
+    say_eoa(de, "Sag mir bitte, wie ich Dir helfen kann"),
+    say_eoa(de, "Was fällt Dir bei dieser Frage noch ein?").
 
 nlp_gen(de, '(HAL,|Computer,|Du|) was soll das (bedeuten|heissen|sagen)?',
             answer(dodge_question, de)).

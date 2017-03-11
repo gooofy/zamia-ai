@@ -25,31 +25,31 @@ near_future(weather, tomorrow) :-
 %
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "01", say_eou(de, format_str("%s wird es der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+    Code is "01", say_eoa(de, format_str("%s wird es der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "02", say_eou(de, format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+    Code is "02", say_eoa(de, format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "03", say_eou(de, format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+    Code is "03", say_eoa(de, format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "04", say_eou(de, format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+    Code is "04", say_eoa(de, format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "09", say_eou(de, format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+    Code is "09", say_eoa(de, format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "10", say_eou(de, format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+    Code is "10", say_eoa(de, format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "11", say_eou(de, format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+    Code is "11", say_eoa(de, format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "13", say_eou(de, format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+    Code is "13", say_eoa(de, format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "50", say_eou(de, format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax)).
+    Code is "50", say_eoa(de, format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax)).
 
 weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc) :-
     time_span(EvT, EvTS, EvTE),
@@ -107,22 +107,22 @@ answer(weatherPrecCloud, Lang, EvT, P) :-
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
     PREC < 0.5,
     CLDS < 50,
-    say_eou(de, format_str("%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP)).
+    say_eoa(de, format_str("%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
     PREC >= 0.5,
     CLDS < 50,
-    say_eou(de, format_str("%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
+    say_eoa(de, format_str("%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
     PREC < 0.5,
     CLDS >= 50,
-    say_eou(de, format_str("%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP)).
+    say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
     PREC >= 0.5,
     CLDS >= 50,
-    say_eou(de, format_str("%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
+    say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 %
 % nlp processing (german)

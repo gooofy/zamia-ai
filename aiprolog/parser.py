@@ -146,7 +146,7 @@ class AIPrologParser(PrologParser):
 
                     # split strings into individual words
                     # generate one say(lang, word) predicate per word
-                    # plus one eou at the end to mark the end of the utterance
+                    # plus one eoa at the end to mark the end of the utterance
 
                     # make sure we keep punctuation when tokenizing
                     # so tts has a better chance at getting prosody right
@@ -164,12 +164,12 @@ class AIPrologParser(PrologParser):
 
                     if len(response)>0:
                         response += u';'
-                    response += u'eou'
+                    response += u'eoa'
 
                 else:
                     if len(response)>0:
                         response += u';'
-                    response += u'say_eou(%s, "%s")' % (lang, a.s)
+                    response += u'say_eoa(%s, "%s")' % (lang, a.s)
 
 
             elif isinstance (a, MacroCall):
@@ -249,7 +249,6 @@ class AIPrologParser(PrologParser):
 
                 # logging.debug( "Searching for c: %s" % c )
 
-                self.ai_rt.reset_utterances()
                 self.ai_rt.reset_actions()
                 solutions = self.ai_rt.search(c)
 
@@ -258,50 +257,61 @@ class AIPrologParser(PrologParser):
             
                 # print "round %d utterances: %s" % (round_num, repr(ai_rt.get_utterances())) 
 
-                # check actual utterances vs expected one
+                # check actual actions vs expected ones
 
                 utterance_matched = False
-                actual_out = ''
-                utts = self.ai_rt.get_utterances()
+                actual_out        = ''
 
-                if len(utts) > 0:
-                    for utt in utts:
-                        actual_out = ' '.join(tokenize(utt['utterance'], utt['lang']))
+                action_buffers = self.ai_rt.get_actions()
+
+                actual_out = u''
+                for abuf in action_buffers:
+
+                    # check utterance
+
+                    actual_out = u''
+                    utt_lang   = u'en'
+                    for action in abuf['actions']:
+                        p = action[0].name
+                        if p == 'say':
+                            utt_lang = unicode(action[1])
+                            actual_out += u' ' + unicode(action[2])
+
+                    if len(actual_out)>0:
+                        actual_out = u' '.join(tokenize(actual_out, utt_lang))
                         if actual_out == test_out:
                             utterance_matched = True
-                            break
-                else:
-                    utterance_matched = len(test_out) == 0
 
-                if utterance_matched:
-                    if len(utts) > 0:
-                        logging.info("nlp_test: %s round=%3d *** UTTERANCE MATCHED!" % (clause.location, round_num))
-                else:
-                    raise PrologError (u'nlp_test: %s round=%3d actual utterance \'%s\' did not match expected utterance \'%s\'.' % (clause.location, round_num, actual_out, test_out))
-                
-                # check actions
+                    # check actions
 
-                if len(test_actions)>0:
+                    if len(test_actions)>0:
 
-                    # print repr(test_actions)
+                        # import pdb; pdb.set_trace()
 
-                    actions_matched = True
-                    acts = self.ai_rt.get_actions()
-                    for action in test_actions:
-                        for act in acts:
-                            # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                            if action == act:
+                        # print repr(test_actions)
+
+                        actions_matched = True
+                        acts = self.ai_rt.get_actions()
+                        for action in test_actions:
+                            for act in abuf['actions']:
+                                # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                if action == act:
+                                    break
+                            if action != act:
+                                actions_matched = False
                                 break
-                        if action != act:
-                            actions_matched = False
-                            break
 
-                    if actions_matched:
-                        logging.info("nlp_test: %s round=%3d *** ACTIONS MATCHED!" % (clause.location, round_num))
-                        
+                        if actions_matched:
+                            logging.info("nlp_test: %s round=%3d *** ACTIONS MATCHED!" % (clause.location, round_num))
+                        else:
+                            raise PrologError (u'nlp_test: %s round=%3d ACTIONS MISMATCH.' % (clause.location, round_num))
+
+                if len(test_out) > 0:
+                    if utterance_matched:
+                        logging.info("nlp_test: %s round=%3d *** UTTERANCE MATCHED!" % (clause.location, round_num))
                     else:
-                        raise PrologError (u'nlp_test: %s round=%3d ACTIONS MISMATCH.' % (clause.location, round_num))
-
+                        raise PrologError (u'nlp_test: %s round=%3d actual utterance \'%s\' did not match expected utterance \'%s\'.' % (clause.location, round_num, actual_out, test_out))
+                
                 round_num += 1
 
 

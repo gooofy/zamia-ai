@@ -96,24 +96,24 @@ def builtin_say(g, pe):
     arg_L   = args[0].name
     arg_S   = pe.prolog_get_string(args[1], g.env)
 
-    pe.add_utterance(arg_L, arg_S)
+    pe.add_action([Predicate('say'), arg_L, arg_S])
 
     return True
 
-def builtin_eou(g, pe):
+def builtin_eoa(g, pe):
 
-    pe._trace ('CALLED BUILTIN eou', g)
+    pe._trace ('CALLED BUILTIN eoa', g)
 
-    pe.end_utterance()
+    pe.end_action()
 
     return True
 
-def builtin_say_eou(g, pe):
+def builtin_say_eoa(g, pe):
 
-    pe._trace ('CALLED BUILTIN say_eou', g)
+    pe._trace ('CALLED BUILTIN say_eoa', g)
 
     builtin_say(g, pe)
-    builtin_eou(g, pe)
+    builtin_eoa(g, pe)
 
     return True
 
@@ -484,24 +484,32 @@ class AIPrologRuntime(PrologRuntime):
 
         self.kb = kb
 
-        # contexts
+        # contexts (i.e. global settings stored in DB)
 
         self.register_builtin('context',         builtin_context)
         self.register_builtin('set_context',     builtin_set_context)
         self.context_name = 'production'
 
-        # TTS
+        # topic stack, useful in disambiguation
 
-        self.register_builtin('say',             builtin_say)
-        self.register_builtin('eou',             builtin_eou)      # eou: End Of Utterance
-        self.register_builtin('say_eou',         builtin_say_eou)
-        self.utterance_buffer = []
+        # FIXME self.topic_stack   = []
+        self.action_score  = 0
+
+        # FIXME self.register_builtin('push_topic',      builtin_push_topic)
+        # FIXME self.register_builtin('check_topic',     builtin_check_topic)
 
         # actions
 
+        self.action_buffer = []
+
         self.register_builtin('action',          builtin_action)
+        self.register_builtin('eoa',             builtin_eoa)      # eoa: End Of Action
+
+        self.register_builtin('say',             builtin_say)      # shortcut for action(say, lang, str)
+        self.register_builtin('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa
 
         # sparql / rdf
+
         self.register_builtin('sparql_query',    builtin_sparql_query)
         self.register_builtin('rdf',             builtin_rdf)
         self.register_builtin('rdf_lists',       builtin_rdf_lists)
@@ -510,36 +518,47 @@ class AIPrologRuntime(PrologRuntime):
     def set_context_name(self, context_name):
         self.context_name = context_name
 
-    def reset_utterances(self):
-        self.utterance_buffer = []
-
-    def get_utterances(self):
-        return self.utterance_buffer
-
-    def add_utterance(self, lang, utterance):
-        
-        n = len(self.utterance_buffer)
-
-        # do we have an open utterance?
-        if n>0 and not self.utterance_buffer[n-1]['finished']:
-            self.utterance_buffer[n-1]['utterance'] += ' ' + utterance
-        else:
-            self.utterance_buffer.append({'finished' : False, 
-                                          'lang'     : lang,
-                                          'utterance': utterance})
-    def end_utterance(self):
-        n = len(self.utterance_buffer)
-        if n>0:
-            self.utterance_buffer[n-1]['finished'] = True
-
     def reset_actions(self):
-        self.actions = []
+        self.action_buffer = []
+
+    def get_actions(self, highscore_only=True):
+
+        if not highscore_only:
+            return self.action_buffer
+
+        # determine highest score
+
+        highscore = 0
+        for ab in self.action_buffer:
+            if ab['score'] > highscore:
+                highscore = ab[score]
+
+        # filter out any lower scoring action:
+
+        hs_actions = []
+        for ab in self.action_buffer:
+            if ab['score'] < highscore:
+                continue
+            hs_actions.append(ab)
+        return hs_actions
+
 
     def add_action(self, args):
-        self.actions.append(args)
-
-    def get_actions(self):
-        return self.actions
+        
+        # do we have an open action?
+        n = len(self.action_buffer)
+        if n>0 and not self.action_buffer[n-1]['finished']:
+            self.action_buffer[n-1]['actions'].append(args)
+        else:
+            self.action_buffer.append({'finished' : False, 
+                                       'actions'  : [args],
+                                       'score'    : 0       })
+    def end_action(self):
+        n = len(self.action_buffer)
+        if n>0:
+            self.action_buffer[n-1]['finished'] = True
+            self.action_buffer[n-1]['score']    = self.action_score
+        self.action_score = 0
 
     #
     # manage stored contexts in db

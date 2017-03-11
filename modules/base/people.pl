@@ -32,35 +32,35 @@ answer (knownPerson, de, PERSON, LABEL) :-
     
     is_german_chancellor(PERSON),
     is_male(PERSON),
-    say_eou(de, 'Ja klar, der ist doch gerade Bundeskanzler!').
+    say_eoa(de, 'Der ist doch gerade Bundeskanzler!').
 
 answer (knownPerson, de, PERSON, LABEL) :-
     is_german_chancellor(PERSON),
     is_female(PERSON),
-    say_eou(de, 'Ja klar, die ist doch gerade Bundeskanzler!').
+    say_eoa(de, 'Die ist doch gerade Bundeskanzler!').
 
 answer (knownPerson, de, PERSON, LABEL) :-
     was_german_chancellor(PERSON), 
     not (is_german_chancellor(PERSON)),
     is_male(PERSON),
-    say_eou(de, 'Ja, der war doch mal Bundeskanzler.').
+    say_eoa(de, 'Der war doch mal Bundeskanzler.').
 
 answer (knownPerson, de, PERSON, LABEL) :-
     was_german_chancellor(PERSON), 
     not (is_german_chancellor(PERSON)),
     is_female(PERSON),
-    say_eou(de, 'Ja, die war doch mal Bundeskanzler.').
+    say_eoa(de, 'Die war doch mal Bundeskanzler.').
 
 nlp_gen (de, '(HAL,|Computer,|) (kennst du|wer ist) (eigentlich|) @KNOWN_PERSONS:LABEL',
              answer(knownPerson, de, '@KNOWN_PERSONS:PERSON', "@KNOWN_PERSONS:LABEL")). 
 
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Angela Merkel?'),
-             out('ja klar die ist doch gerade bundeskanzler'))).
+             out('die ist doch gerade bundeskanzler'))).
 
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Helmut Kohl?'),
-             out('Ja, der war doch mal Bundeskanzler.'))).
+             out('der war doch mal Bundeskanzler.'))).
 
 
 % sparql_macro ('GERMAN_CHANCELLORS', "SELECT DISTINCT ?label ?birthPlaceLabel ?wdgender

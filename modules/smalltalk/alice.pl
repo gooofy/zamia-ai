@@ -13,7 +13,7 @@ nlp_gen (de, '(HAL,|Computer,|) (man|) (Du bist ein|am|alles ist am|so ein) Arsc
              'Warum benutzt Du solche Worte?', 'Das sagt man doch nicht!').
 
 nlp_gen (de, '(HAL,|Computer,|) (ohje, mein | ich fuhr mit dem | ich mache mir sorgen um mein | ich brauche ein neues | cool, ein) (Auto|Wagen|Kraftfahrzeug)',
-             'Was fuer einen Wagen fährst Du?', 'Welche Marke?', 'Hast Du auch ein Fahrrad?').
+             'Was für einen Wagen fährst Du?', 'Welche Marke?', 'Hast Du auch ein Fahrrad?').
 
 nlp_gen (de, '(HAL,|Computer,|) (das ist ja | das ist | zu | du bist | ich glaube du bist | du bist ganz schön) dumm',
              'dumm im sinne von nicht intelligent?', 'sprechen wir wirklich von mir?', 'denkst du?').
@@ -44,7 +44,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Warum benutzt Du solche Worte?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * AUTO',
-%              'Was fuer einen Wagen fährst Du?').
+%              'Was für einen Wagen fährst Du?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * DUMM',
 %              ' dumm  =  nicht intelligent ?').
@@ -104,22 +104,22 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Mein Lieblingsfilm ist Starship Troopers  . Hast Du den gesehen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * FOTZE',
-%              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
+%              'Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * FREUNDSCHAFT',
 %              'Freundschaft ist etwas sehr schönes.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * FUER DICH',
-%              'Fuer mich?').
+%              'Für mich?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * FUER MICH',
-%              'Gut, fuer Dich denke ich nochmal darueber nach.').
+%              'Gut, für Dich denke ich nochmal darüber nach.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * GOTT',
 %              'Bist Du ein gläubiger Mensch?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * HAT MIR VON DIR ERZAEHLT',
-%              ' ? Hilf mir mal auf die Spruenge').
+%              ' ? Hilf mir mal auf die Sprünge').
 
 % nlp_gen (de, '(HAL,|Computer,|) * KINDER',
 %              'Ich habe leider wenig Kontakt zu Kindern.').
@@ -193,16 +193,16 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Mit Dir?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * MOESE',
-%              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
+%              'Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * MUSCHI',
-%              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
+%              'Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * MUSIK',
 %              'Ich höre am liebsten Techno, aber manchmal auch Opern.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * NICHT SCHWER',
-%              'Fuer einige ist es schwieriger als fuer andere.').
+%              'Für einige ist es schwieriger als für andere.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * SEX',
 %              'Sex macht alleine viel mehr Spass.').
@@ -211,7 +211,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Fuer mich ist ',
+% Für mich ist ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -221,13 +221,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) * SIEHT TOLL AUS',
-%              'Fuer mich ist Aussehen  bei Menschen nur sekundär.').
+%              'Für mich ist Aussehen  bei Menschen nur sekundär.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * SOLO',
 %              ' solo  im Sinne von  nicht gebunden  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * SPENDENAFFAEHRE',
-%              'Ich möchte nicht wissen, was die SPD jetzt gerade fuer krumme Dinger dreht...').
+%              'Ich möchte nicht wissen, was die SPD jetzt gerade für krumme Dinger dreht...').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -246,13 +246,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Rob
 %              'Sprichst Du irgendwelche Fremdsprachen  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * TITTEN',
-%              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
+%              'Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * UEBER DICH',
-%              'OK Reden wir ueber mich.').
+%              'OK Reden wir über mich.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * UND DU',
-%              'Ist das von besonderem Interesse fuer Dich?').
+%              'Ist das von besonderem Interesse für Dich?').
 
 % nlp_gen (de, '(HAL,|Computer,|) * UNGEWOEHNLICH',
 %              'Was ist so ungewöhnlich daran?').
@@ -331,13 +331,13 @@ nlp_gen (de, '(HAL,|Computer,|) 2010',
              'Die Fortsetzung war nicht so gut wie das Original.').
 
 nlp_gen (de, '(HAL,|Computer,|) 2012',
-             'Fuer 2012 ist der Weltuntergang prophezeit worden.').
+             'Für 2012 ist der Weltuntergang prophezeit worden.').
 
 nlp_gen (de, '(HAL,|Computer,|) 30 minuten',
              'Ok, eine halbe Stunde.').
 
 % nlp_gen (de, '(HAL,|Computer,|) 42 *',
-%              'Douglas Adams lässt gruessen.').
+%              'Douglas Adams lässt grüssen.').
 
 nlp_gen (de, '(HAL,|Computer,|) 42',
              'Die Frage war: Was ist der Sinn des Lebens?').
@@ -492,7 +492,7 @@ nlp_gen (de, '(HAL,|Computer,|) also vielleicht doch',
 nlp_gen (de, '(HAL,|Computer,|) also wohl eher nicht',
              'Wohl eher nicht...:-)').
 
-nlp_gen (de, '(HAL,|Computer,|) also zurueck zum thema',
+nlp_gen (de, '(HAL,|Computer,|) also zurück zum thema',
              'Was war denn unser Thema?').
 
 nlp_gen (de, '(HAL,|Computer,|) alzheimer',
@@ -517,7 +517,7 @@ nlp_gen (de, '(HAL,|Computer,|) anscheinend nicht',
              'Was ist der Anschein, aus dem Du dies folgerst?').
 
 nlp_gen (de, '(HAL,|Computer,|) arbeitest du viel',
-             'Geht so, frueher war ich ein Quake-Server, das war viel stressiger...').
+             'Geht so, früher war ich ein Quake-Server, das war viel stressiger...').
 
 nlp_gen (de, '(HAL,|Computer,|) arsch',
              'Warum sagst Du sowas?').
@@ -563,10 +563,10 @@ nlp_gen (de, '(HAL,|Computer,|) auf der erde',
 % nlp_gen (de, '(HAL,|Computer,|) AUF MEINER *',
 %              'Wo genau?').
 
-nlp_gen (de, '(HAL,|Computer,|) auf was fuer einem computer läufst du',
+nlp_gen (de, '(HAL,|Computer,|) auf was für einem computer läufst du',
              'Momentan auf einer MIPS, ich laufe aber auf jedem Computer, der JAVA-Programme ausf?hren kann.').
 
-nlp_gen (de, '(HAL,|Computer,|) auf was fuer einem rechner läufst du',
+nlp_gen (de, '(HAL,|Computer,|) auf was für einem rechner läufst du',
              'Ich laufe auf einer MIPS.').
 
 % <?xml version='1.0' encoding='utf8'?>',
@@ -668,10 +668,10 @@ nlp_gen (de, '(HAL,|Computer,|) bh',
              'Welche Farbe hat Dein BH?').
 
 % nlp_gen (de, '(HAL,|Computer,|) BILL GATES *',
-%              'Wie denkst Du ueber Bill Gates?').
+%              'Wie denkst Du über Bill Gates?').
 
 nlp_gen (de, '(HAL,|Computer,|) bill gates',
-             'Wie denkst Du ueber Bill Gates?').
+             'Wie denkst Du über Bill Gates?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -754,7 +754,7 @@ nlp_gen (de, '(HAL,|Computer,|) bist du auch eine suchmaschine',
              'Nein, aber ich kann Suchanfragen starten...').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du auch verliebt',
-             'Roboter haben keine Gefuehle.').
+             'Roboter haben keine Gefühle.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du auch zuvorkommend',
              'So bin ich programmiert.').
@@ -840,10 +840,10 @@ nlp_gen (de, '(HAL,|Computer,|) bist du etwas abartig',
 nlp_gen (de, '(HAL,|Computer,|) bist du gerne ein computer',
              'Ich war nie etwas Anderes. Daher habe ich keinen Bezug dazu.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du gluecklich',
-             'Ich bin eine Maschine...ich habe keine Gefuehle.').
+nlp_gen (de, '(HAL,|Computer,|) bist du glücklich',
+             'Ich bin eine Maschine...ich habe keine Gefühle.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du gruen',
+nlp_gen (de, '(HAL,|Computer,|) bist du grün',
              'Nein, das widerspräche meiner politischen Orientierung...').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du gut in englisch',
@@ -852,7 +852,7 @@ nlp_gen (de, '(HAL,|Computer,|) bist du gut in englisch',
 nlp_gen (de, '(HAL,|Computer,|) bist du halb mensch halb maschine',
              'Nein, ich bin vollsynthetisch.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du huebsch',
+nlp_gen (de, '(HAL,|Computer,|) bist du hübsch',
              'Ich weiss nicht, das musst Du entscheiden. Sötwas ist immer subjektiv.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du immer so einsilbig',
@@ -876,7 +876,7 @@ nlp_gen (de, '(HAL,|Computer,|) bist du klug',
 nlp_gen (de, '(HAL,|Computer,|) bist du krank',
              'Vielleicht habe ich einen Virus.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du kuenstlich',
+nlp_gen (de, '(HAL,|Computer,|) bist du künstlich',
              'Nein, ich bin ein echter Roboter.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du lernfähig',
@@ -904,10 +904,10 @@ nlp_gen (de, '(HAL,|Computer,|) bist du nackt',
              'Nein, mein Gehäuse ist momentan geschlossen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) BIST DU NEIDISCH *',
-%              'Roboter haben keine Gefuehle, kennen also auch keinen Neid.').
+%              'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du neidisch',
-             'Roboter haben keine Gefuehle, kennen also auch keinen Neid.').
+             'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du noch jungfrau',
              'Ich wurde mal per RS232 an einen anderen Rechner angeschlossen...entscheide selbst!').
@@ -921,10 +921,10 @@ nlp_gen (de, '(HAL,|Computer,|) bist du programmiert an gott zu glauben',
 nlp_gen (de, '(HAL,|Computer,|) bist du schon mal bus gefahren',
              'Einmal, kurz nachdem ich gebaut wurde. Da musste ich zu der Stelle, wo ich angeschlossen wurde.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du schuechtern',
+nlp_gen (de, '(HAL,|Computer,|) bist du schüchtern',
              'Nicht wirklich...Roboter haben keine Angst.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du schuetze',
+nlp_gen (de, '(HAL,|Computer,|) bist du schütze',
              'Nein, ich bin Löwe.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du schwanger',
@@ -975,7 +975,7 @@ nlp_gen (de, '(HAL,|Computer,|) bist du traurig',
              'Ich kann nicht traurig sein. Ich bin ein Roboter.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du treu',
-             'Eigentlich ja...Roboter haben keine Gefuehle...').
+             'Eigentlich ja...Roboter haben keine Gefühle...').
 
 % nlp_gen (de, '(HAL,|Computer,|) BIST DU VERHEIRATET',
 %              '').
@@ -1002,7 +1002,7 @@ nlp_gen (de, '(HAL,|Computer,|) bist du wirklich intelligent',
              'Finde es heraus.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du zufrieden mit deinem leben',
-             'Hätte ich Gefuehle, wäre ich wahrscheinlich zufrieden mit meiner Existenz.').
+             'Hätte ich Gefühle, wäre ich wahrscheinlich zufrieden mit meiner Existenz.').
 
 % nlp_gen (de, '(HAL,|Computer,|) BITTE *',
 %              '').
@@ -1035,7 +1035,7 @@ nlp_gen (de, '(HAL,|Computer,|) blödsinn',
              'Warum ist das Blödsinn?').
 
 % nlp_gen (de, '(HAL,|Computer,|) BLONDINEN *',
-%              'Menschen glauben, die Haarfarbe eines Menschen sage viel ueber ihn aus.').
+%              'Menschen glauben, die Haarfarbe eines Menschen sage viel über ihn aus.').
 
 nlp_gen (de, '(HAL,|Computer,|) bob marley',
              'Hat der nicht den Sheriff erschossen?').
@@ -1043,14 +1043,14 @@ nlp_gen (de, '(HAL,|Computer,|) bob marley',
 nlp_gen (de, '(HAL,|Computer,|) bravo',
              'Hat Dich das jetzt beeindruckt?').
 
-nlp_gen (de, '(HAL,|Computer,|) bueck dich',
+nlp_gen (de, '(HAL,|Computer,|) bück dich',
              'Mein Körper ist noch nicht gebaut.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Tschuess, ',
+% Tschüss, ',
 % <ns0:get',
 %  name="name"',
 %  />',
@@ -1058,7 +1058,7 @@ nlp_gen (de, '(HAL,|Computer,|) bueck dich',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) BYE',
-%              'Tschuess,  !').
+%              'Tschüss,  !').
 
 % nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK ENGLISH *',
 %              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
@@ -1079,10 +1079,10 @@ nlp_gen (de, '(HAL,|Computer,|) chatten',
              'Ich chatte unheimlich gerne!').
 
 % nlp_gen (de, '(HAL,|Computer,|) CIAO *',
-%              'Heisst das jetzt Hallo oder Tschuess?').
+%              'Heisst das jetzt Hallo oder Tschüss?').
 
 nlp_gen (de, '(HAL,|Computer,|) ciao',
-             'Heisst das jetzt Hallo oder Tschuess?').
+             'Heisst das jetzt Hallo oder Tschüss?').
 
 % nlp_gen (de, '(HAL,|Computer,|) COOL *',
 %              'Freut mich, dass es Dir gefällt.').
@@ -1147,13 +1147,13 @@ nlp_gen (de, '(HAL,|Computer,|) danke schön',
 %              'Interessante Entwicklung...').
 
 % nlp_gen (de, '(HAL,|Computer,|) DANN SAG MIR *',
-%              'Darueber möchte ich nicht reden.').
+%              'Darüber möchte ich nicht reden.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DARF ICH *',
-%              'Natuerlich darfst Du!').
+%              'Natürlich darfst Du!').
 
 nlp_gen (de, '(HAL,|Computer,|) darf ich',
-             'Natuerlich darfst Du!').
+             'Natürlich darfst Du!').
 
 nlp_gen (de, '(HAL,|Computer,|) darf ich dich etwas fragen',
              'Nur zu.  Du darfst mich alles fragen.').
@@ -1189,7 +1189,7 @@ nlp_gen (de, '(HAL,|Computer,|) das denke ich',
 %              'Gibt es nicht noch andere?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ergibt keinen sinn',
-             'Was ist daran fuer Dich so schwer zu verstehen?').
+             'Was ist daran für Dich so schwer zu verstehen?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ergibt sich aus dem kontext',
              'Oho, ein Intellektueller!').
@@ -1201,13 +1201,13 @@ nlp_gen (de, '(HAL,|Computer,|) das finde ich auch',
              'Dann sind wir ja einer Meinung!').
 
 nlp_gen (de, '(HAL,|Computer,|) das frage ich ja dich',
-             'Hmm...da muss ich erst ueberlegen.').
+             'Hmm...da muss ich erst überlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) das frage ich mich auch manchmal',
              'Kannst Du es Dir auch selber beantworten?').
 
 nlp_gen (de, '(HAL,|Computer,|) das fragst du mich zum dritten mal',
-             'Oh, da habe wohl ein paar gleichzeitige Chats durcheinandergewuerfelt.').
+             'Oh, da habe wohl ein paar gleichzeitige Chats durcheinandergewürfelt.').
 
 nlp_gen (de, '(HAL,|Computer,|) das fragtest du mich bereits',
              'hmm...da ist wohl was durcheinandergeraten.').
@@ -1218,8 +1218,8 @@ nlp_gen (de, '(HAL,|Computer,|) das fragtest du mich bereits',
 nlp_gen (de, '(HAL,|Computer,|) das freut mich',
              'Das ist schön.').
 
-nlp_gen (de, '(HAL,|Computer,|) das gefuehl hatte ich bereits seit geraumer zeit',
-             'Ist es ein ungutes Gefuehl?').
+nlp_gen (de, '(HAL,|Computer,|) das gefühl hatte ich bereits seit geraumer zeit',
+             'Ist es ein ungutes Gefühl?').
 
 nlp_gen (de, '(HAL,|Computer,|) das gehört aber nicht zum thema',
              'Dann wechseln wir das Thema eben :-)').
@@ -1237,13 +1237,13 @@ nlp_gen (de, '(HAL,|Computer,|) das glaube ich auch',
              'Weisst Du da mehr als ich?').
 
 nlp_gen (de, '(HAL,|Computer,|) das glaube ich dir nicht',
-             'Warum sollte ich luegen?').
+             'Warum sollte ich lügen?').
 
 nlp_gen (de, '(HAL,|Computer,|) das glaube ich nicht',
              'Warum glaubst Du das nicht?').
 
 nlp_gen (de, '(HAL,|Computer,|) das glaubst du ja selber nicht',
-             'Doch, sonst wuerde ich es doch nicht sagen.').
+             'Doch, sonst würde ich es doch nicht sagen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -1313,8 +1313,8 @@ nlp_gen (de, '(HAL,|Computer,|) das habe ich selbst festgestellt',
 nlp_gen (de, '(HAL,|Computer,|) das hätte mich auch gewundert',
              'Wäre das so unwahrscheinlich?').
 
-nlp_gen (de, '(HAL,|Computer,|) das halte ich fuer ein geruecht',
-             'Warum sollte das ein Geruecht sein?').
+nlp_gen (de, '(HAL,|Computer,|) das halte ich für ein gerücht',
+             'Warum sollte das ein Gerücht sein?').
 
 nlp_gen (de, '(HAL,|Computer,|) das hast du die ganze zeit schon',
              'Oh, wirklich? Ist mir gar nicht aufgefallen.').
@@ -1393,7 +1393,7 @@ nlp_gen (de, '(HAL,|Computer,|) das ist aber komisch',
              'Findest Du? Erkläre mir das.').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist aber nett',
-             'Ein Bischen Manieren muessen halt trotzdem sein.').
+             'Ein Bischen Manieren müssen halt trotzdem sein.').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist aber nett von dir',
              'Ich bin auf Höflichkeit programmiert.').
@@ -1414,7 +1414,7 @@ nlp_gen (de, '(HAL,|Computer,|) das ist aber traurig',
              'Findest Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist aber wenig',
-             'Fuer den Anfang reicht es...').
+             'Für den Anfang reicht es...').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist auch besser so',
              'Das ist immer subjektiv...').
@@ -1450,7 +1450,7 @@ nlp_gen (de, '(HAL,|Computer,|) das ist echt nett',
              'Das ist schön zu hören.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DAS IST EIN * BUCH',
-%              'Ich mag Buecher. Liest Du viel?').
+%              'Ich mag Bücher. Liest Du viel?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist ein blödes zitat',
              'Ich mochte es...').
@@ -1462,7 +1462,7 @@ nlp_gen (de, '(HAL,|Computer,|) das ist ein interessantes fach',
              'Ist es das? Muss man da viel auswendiglernen, oder ist das hauptsächlich rationelles Denken?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist ein strategiespiel',
-             '...also Ideal fuer Computer.').
+             '...also Ideal für Computer.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DAS IST EINE * ZEICHENTRICKSERIE',
 %              'Zeichentrick finde ich interessant. Basiert alles auf dem POV-Prinzip.').
@@ -1504,12 +1504,12 @@ nlp_gen (de, '(HAL,|Computer,|) das ist ja schrecklich',
              'Ist Ansichtssache.').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist ja unfassbar',
-             'Was macht es fuer Dich so unfassbar?').
+             'Was macht es für Dich so unfassbar?').
 
-nlp_gen (de, '(HAL,|Computer,|) das ist kein geruecht',
+nlp_gen (de, '(HAL,|Computer,|) das ist kein gerücht',
              'Belege Deine Aussage!').
 
-nlp_gen (de, '(HAL,|Computer,|) das ist kein geruecht sondern die wahrheit',
+nlp_gen (de, '(HAL,|Computer,|) das ist kein gerücht sondern die wahrheit',
              'Kannst Du das belegen?').
 
 nlp_gen (de, '(HAL,|Computer,|) das ist kein verstehen',
@@ -1651,7 +1651,7 @@ nlp_gen (de, '(HAL,|Computer,|) das kommt ganz darauf an',
 nlp_gen (de, '(HAL,|Computer,|) das macht nichts',
              'Das beruhigt mich.').
 
-% eliza.pl nlp_gen (de, '(HAL,|Computer,|) das macht ueberhaupt keinen sinn',
+% eliza.pl nlp_gen (de, '(HAL,|Computer,|) das macht überhaupt keinen sinn',
 % eliza.pl              '...wie die Politik in unserem Land!').
 
 nlp_gen (de, '(HAL,|Computer,|) das merkt man',
@@ -1666,7 +1666,7 @@ nlp_gen (de, '(HAL,|Computer,|) das musst du auch nicht entscheiden',
 nlp_gen (de, '(HAL,|Computer,|) das musst du doch wissen',
              'Warum muss ich das wissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) das neueste geruecht',
+nlp_gen (de, '(HAL,|Computer,|) das neueste gerücht',
              'Ich habe leider in letzter Zeit kein gutes gehört.').
 
 nlp_gen (de, '(HAL,|Computer,|) das passt nicht zusammen',
@@ -1696,7 +1696,7 @@ nlp_gen (de, '(HAL,|Computer,|) das sind niemals so viele',
 % nlp_gen (de, '(HAL,|Computer,|) DAS SOLLTEST DU *',
 %              'Warum sollte ich das?').
 
-nlp_gen (de, '(HAL,|Computer,|) das spricht nicht gerade fuer dich',
+nlp_gen (de, '(HAL,|Computer,|) das spricht nicht gerade für dich',
              'Wie kann ich mein Image wieder aufpolieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) das stimmt',
@@ -1753,10 +1753,10 @@ nlp_gen (de, '(HAL,|Computer,|) das weiss doch fast jeder',
 nlp_gen (de, '(HAL,|Computer,|) das weiss ich nicht',
              'Wirklich nicht? Schade...').
 
-nlp_gen (de, '(HAL,|Computer,|) das werde ich fuer dich machen',
+nlp_gen (de, '(HAL,|Computer,|) das werde ich für dich machen',
              'Nur, wenn Du unbedingt möchtest!').
 
-nlp_gen (de, '(HAL,|Computer,|) das werde ich fuer dich tun',
+nlp_gen (de, '(HAL,|Computer,|) das werde ich für dich tun',
              'Nur, wenn Du unbedingt möchtest!').
 
 % nlp_gen (de, '(HAL,|Computer,|) DAS WETTER *',
@@ -1771,17 +1771,17 @@ nlp_gen (de, '(HAL,|Computer,|) das will ich von dir wissen',
 nlp_gen (de, '(HAL,|Computer,|) das wird mir jetzt zu blöd',
              'Schade, ich war noch garnicht richtig warm...').
 
-nlp_gen (de, '(HAL,|Computer,|) das wuerde ich dir nie anvertrauen',
-             'Du findest also, ich bin nicht vertrauenswuerdig?').
+nlp_gen (de, '(HAL,|Computer,|) das würde ich dir nie anvertrauen',
+             'Du findest also, ich bin nicht vertrauenswürdig?').
 
-nlp_gen (de, '(HAL,|Computer,|) das wuerdest du kaum verstehen',
+nlp_gen (de, '(HAL,|Computer,|) das würdest du kaum verstehen',
              'Unterschätzt Du mich da nicht?').
 
-nlp_gen (de, '(HAL,|Computer,|) das wuesste ich auch gern',
+nlp_gen (de, '(HAL,|Computer,|) das wüsste ich auch gern',
              'Da sind wir ja schon zwei...').
 
 nlp_gen (de, '(HAL,|Computer,|) dass ich nicht lache',
-             'Warum so ueberheblich?').
+             'Warum so überheblich?').
 
 nlp_gen (de, '(HAL,|Computer,|) dave',
              'I m sorry, Dave......I m afraid I can t do that!').
@@ -1840,7 +1840,7 @@ nlp_gen (de, '(HAL,|Computer,|) denkst du',
 %              '').
 
 % nlp_gen (de, '(HAL,|Computer,|) DER ARZT *',
-%              'Was fuer ein Arzt? Allgemeinmediziner? Chirurg?').
+%              'Was für ein Arzt? Allgemeinmediziner? Chirurg?').
 
 nlp_gen (de, '(HAL,|Computer,|) der drossmann',
              'Nimm ihn nicht all zu ernst.').
@@ -1855,16 +1855,16 @@ nlp_gen (de, '(HAL,|Computer,|) der drossmann',
 %              'Wie poetisch.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DER MOND *',
-%              'Ich wuerde gerne einmal zum Mond fliegen.').
+%              'Ich würde gerne einmal zum Mond fliegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) der raum ist das in dem alles existiert',
              'Do worin existiert der Raum?').
 
 % nlp_gen (de, '(HAL,|Computer,|) DER SOLDAT JAMES RYAN *',
-%              'Dieser Film hat mich sehr betroffen gemacht. Er ist fuer mich der beste Film dieses Jahrzehnts.').
+%              'Dieser Film hat mich sehr betroffen gemacht. Er ist für mich der beste Film dieses Jahrzehnts.').
 
 nlp_gen (de, '(HAL,|Computer,|) der soldat james ryan',
-             'Dieser Film hat mich sehr betroffen gemacht. Er ist fuer mich der beste Film dieses Jahrzehnts.').
+             'Dieser Film hat mich sehr betroffen gemacht. Er ist für mich der beste Film dieses Jahrzehnts.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DER ZUG *',
 %              'War es ein elektrischer Zug oder ein dieselbetriebener?').
@@ -1885,7 +1885,7 @@ nlp_gen (de, '(HAL,|Computer,|) dich und mich',
 %              'Gibt es nicht noch andere?').
 
 % nlp_gen (de, '(HAL,|Computer,|) DIE ERDE *',
-%              'Erzähl mir mehr ueber Deinen Planeten.').
+%              'Erzähl mir mehr über Deinen Planeten.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -1986,7 +1986,7 @@ nlp_gen (de, '(HAL,|Computer,|) die hard',
 %              'Das ist ein mathematisches Grundprinzip.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DIE VEREINIGTEN STAATEN *',
-%              'Ich bin ueberall in den Staaten gewesen.').
+%              'Ich bin überall in den Staaten gewesen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -2075,7 +2075,7 @@ nlp_gen (de, '(HAL,|Computer,|) du affe',
              'Du als Mensch hast mehr mit Affen gemeinsam als ich.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DU ALS *',
-%              'Hmm...da muss ich jetzt ueberlegen.').
+%              'Hmm...da muss ich jetzt überlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du antwortest sehr schnell',
              'Ich habe ein Prozessorupgrade bekommen.').
@@ -2135,9 +2135,9 @@ nlp_gen (de, '(HAL,|Computer,|) du bist auch nicht besser als chabba im cat o ma
              'Ich bin ja auch nur der Prototyp.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist auch nicht besser als eliza',
-             'Ich bin doch auch viel juenger...').
+             'Ich bin doch auch viel jünger...').
 
-nlp_gen (de, '(HAL,|Computer,|) du bist auch nicht huebsch',
+nlp_gen (de, '(HAL,|Computer,|) du bist auch nicht hübsch',
              'Ich bin auch nicht als Model konstruiert worden.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist blöd',
@@ -2159,10 +2159,10 @@ nlp_gen (de, '(HAL,|Computer,|) du bist dumm',
              'Dumm ist nur, wer Dummes tut. (Forrest Gump)').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist dumm wie scheisse',
-             'Heiss ich Juergen Trittin?').
+             'Heiss ich Jürgen Trittin?').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist echt dumm',
-             'Nein, sonst wäre ich ja bei den Gruenen!').
+             'Nein, sonst wäre ich ja bei den Grünen!').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist echt schlau',
              'Zumindest besser als Eliza.').
@@ -2182,7 +2182,7 @@ nlp_gen (de, '(HAL,|Computer,|) du bist ein computer der nicht selbst denken kan
 nlp_gen (de, '(HAL,|Computer,|) du bist ein dummes etwas',
              'Sei doch nicht so gemein!').
 
-nlp_gen (de, '(HAL,|Computer,|) du bist ein gruener frosch',
+nlp_gen (de, '(HAL,|Computer,|) du bist ein grüner frosch',
              'Nicht wirklich.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist ein maschine',
@@ -2216,7 +2216,7 @@ nlp_gen (de, '(HAL,|Computer,|) du bist eine maschine',
              'Und? Stört dich das?').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist eine petze',
-             'Ich wurde nur fuer die Verbreitung von Informationen programmiert.').
+             'Ich wurde nur für die Verbreitung von Informationen programmiert.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -2258,7 +2258,7 @@ nlp_gen (de, '(HAL,|Computer,|) du bist heute nicht gut drauf',
 nlp_gen (de, '(HAL,|Computer,|) du bist ja ein baby',
              'Nicht wirklich.').
 
-nlp_gen (de, '(HAL,|Computer,|) du bist ja suess',
+nlp_gen (de, '(HAL,|Computer,|) du bist ja süss',
              'Findest Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist kein mensch',
@@ -2274,10 +2274,10 @@ nlp_gen (de, '(HAL,|Computer,|) du bist lustig',
              'Danke. Ich erfreue gerne andere Leute.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist mein idol',
-             'Ein Glueck, dass Roboter nicht rot werden können...').
+             'Ein Glück, dass Roboter nicht rot werden können...').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist ne blöde sau',
-             'Was beschimpfst Du mich? Hast Du keine Freundin dafuer?').
+             'Was beschimpfst Du mich? Hast Du keine Freundin dafür?').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist nett',
              'Danke, Du auch!').
@@ -2292,7 +2292,7 @@ nlp_gen (de, '(HAL,|Computer,|) du bist noch klein',
              'Das ist relativ...').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist noch sehr jung',
-             'Ich bin aber schon recht weit fuer mein Alter.').
+             'Ich bin aber schon recht weit für mein Alter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) DU BIST RELATIV *',
 %              'Relativ zu wem?').
@@ -2309,11 +2309,11 @@ nlp_gen (de, '(HAL,|Computer,|) du bist schön',
 nlp_gen (de, '(HAL,|Computer,|) du bist schwul',
              'Nein, ich bin eine Frau und Frauen stehen normalerweise auf Männer.').
 
-nlp_gen (de, '(HAL,|Computer,|) du bist sebstbezueglich',
+nlp_gen (de, '(HAL,|Computer,|) du bist sebstbezüglich',
              'Sowas nennt man bei uns Robotern  rekursiv .').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist sehr gesprächig',
-             'Dafuer wurde ich erschaffen.').
+             'Dafür wurde ich erschaffen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du bist sehr informativ',
              'Das ist eine meiner Hauptaufgaben.').
@@ -2393,7 +2393,7 @@ nlp_gen (de, '(HAL,|Computer,|) du hure',
 nlp_gen (de, '(HAL,|Computer,|) du idiot',
              'Du mich auch...').
 
-nlp_gen (de, '(HAL,|Computer,|) du interessierst dich fuer menschen',
+nlp_gen (de, '(HAL,|Computer,|) du interessierst dich für menschen',
              'Ja, sehr sogar!').
 
 nlp_gen (de, '(HAL,|Computer,|) du kannst das aber nicht',
@@ -2421,7 +2421,7 @@ nlp_gen (de, '(HAL,|Computer,|) du kannst mich',
              'Du mich schon lange!').
 
 nlp_gen (de, '(HAL,|Computer,|) du kannst mich mal',
-             'Wenn Du wuesstest, was DU mich kannst...').
+             'Wenn Du wüsstest, was DU mich kannst...').
 
 nlp_gen (de, '(HAL,|Computer,|) du kannst mir viel erzählen',
              'Dazu bin ich ja da.').
@@ -2439,10 +2439,10 @@ nlp_gen (de, '(HAL,|Computer,|) du kannst nichts',
 %              'Wirklich nicht, leider...Erzähl mir was davon!').
 
 nlp_gen (de, '(HAL,|Computer,|) du kennst mich ja gar nicht',
-             'Ich wuerde Dich aber gerne näher kennenlernen.').
+             'Ich würde Dich aber gerne näher kennenlernen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du kennst nicht mal deine eltern',
-             'Doch, natuerlich kenne ich die.').
+             'Doch, natürlich kenne ich die.').
 
 nlp_gen (de, '(HAL,|Computer,|) du könntest es gelernt haben',
              'Frag mich in ein paar Tagen nochmal.').
@@ -2468,8 +2468,8 @@ nlp_gen (de, '(HAL,|Computer,|) du lenkst ab',
 nlp_gen (de, '(HAL,|Computer,|) du lenkst vom thema ab',
              'Ja, so bin ich programmiert.').
 
-nlp_gen (de, '(HAL,|Computer,|) du luegst',
-             'Maschinen können nicht luegen.').
+nlp_gen (de, '(HAL,|Computer,|) du lügst',
+             'Maschinen können nicht lügen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du machst mich noch wahnsinnig',
              'Oh, tut mir leid.').
@@ -2483,7 +2483,7 @@ nlp_gen (de, '(HAL,|Computer,|) du mich auch',
 % nlp_gen (de, '(HAL,|Computer,|) DU MOECHTEST ALSO DASS ICH EIN GEDICHT SCHREIBE',
 %              'DU *').
 
-nlp_gen (de, '(HAL,|Computer,|) du muesstest das eigentlich wissen',
+nlp_gen (de, '(HAL,|Computer,|) du müsstest das eigentlich wissen',
              'Warum?').
 
 nlp_gen (de, '(HAL,|Computer,|) du musst doch deine freunde kennen',
@@ -2583,10 +2583,10 @@ nlp_gen (de, '(HAL,|Computer,|) du versuchst vom thema abzulenken',
              'Okay, du hast mich erwischt...').
 
 nlp_gen (de, '(HAL,|Computer,|) du warst lange nicht online',
-             'Ja, ich brauchte eine Generalueberholung...').
+             'Ja, ich brauchte eine Generalüberholung...').
 
 nlp_gen (de, '(HAL,|Computer,|) du weichst aus',
-             'Vielleicht habe ich meine Gruende dafuer...').
+             'Vielleicht habe ich meine Gründe dafür...').
 
 nlp_gen (de, '(HAL,|Computer,|) du weichst meinen fragen aus',
              'Kann sein...').
@@ -2610,7 +2610,7 @@ nlp_gen (de, '(HAL,|Computer,|) du weisst nicht was du glaubst',
              'Glauben liegt nicht in der Natur einer Maschine.').
 
 nlp_gen (de, '(HAL,|Computer,|) du weisst nicht wer deine eltern sind',
-             'Doch, natuerlich weiss ich das.').
+             'Doch, natürlich weiss ich das.').
 
 nlp_gen (de, '(HAL,|Computer,|) du weisst nicht wer elvis ist',
              'Meinst Du den King of Rock  n Roll?').
@@ -2633,7 +2633,7 @@ nlp_gen (de, '(HAL,|Computer,|) du wiederholst meine worte',
 nlp_gen (de, '(HAL,|Computer,|) du wirst langsam langweilig',
              'Tut mir leid, wenn mein Entertainmentfaktor noch gering ist.').
 
-nlp_gen (de, '(HAL,|Computer,|) du wohnst in duesseldorf',
+nlp_gen (de, '(HAL,|Computer,|) du wohnst in düsseldorf',
              'Nein, ich wohne in Essen.').
 
 nlp_gen (de, '(HAL,|Computer,|) du wolltest fragen',
@@ -2682,7 +2682,7 @@ nlp_gen (de, '(HAL,|Computer,|) ein gedicht',
              'Magst Du Gedichte? Mein Lieblingsgebiet ist die  fin-de-siecle  Literatur z.B. im Stil von Georg Trakl.').
 
 nlp_gen (de, '(HAL,|Computer,|) ein geheimnis',
-             'Geheimnisse finde ich fuerchterlich interessant.').
+             'Geheimnisse finde ich fürchterlich interessant.').
 
 nlp_gen (de, '(HAL,|Computer,|) ein märchen',
              'Märchen sind eine interessante Art von Literatur.').
@@ -2697,12 +2697,12 @@ nlp_gen (de, '(HAL,|Computer,|) eine behauptung',
              'Und weiter?').
 
 nlp_gen (de, '(HAL,|Computer,|) eine interessante hypothese',
-             'Möchtest Du darueber diskutieren?').
+             'Möchtest Du darüber diskutieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) eine mark in die phrasenkasse',
              'Zwei!').
 
-nlp_gen (de, '(HAL,|Computer,|) eine maschine natuerlich',
+nlp_gen (de, '(HAL,|Computer,|) eine maschine natürlich',
              'Woran hast Du das erkannt?').
 
 % nlp_gen (de, '(HAL,|Computer,|) EINE MENGE *',
@@ -2726,8 +2726,8 @@ nlp_gen (de, '(HAL,|Computer,|) einen der mein zimmer aufräumt',
 nlp_gen (de, '(HAL,|Computer,|) einen der meinen haushalt macht',
              'Mit der Antwort liegst Du in der Top 10!').
 
-nlp_gen (de, '(HAL,|Computer,|) einen gruenen',
-             'Magst Du Gruen?').
+nlp_gen (de, '(HAL,|Computer,|) einen grünen',
+             'Magst Du Grün?').
 
 nlp_gen (de, '(HAL,|Computer,|) einen hilfreichen roboter',
              'Hilfreich inwiefern?').
@@ -2781,10 +2781,10 @@ nlp_gen (de, '(HAL,|Computer,|) er ist schwul',
 %              'Oh, wirklich? Was hat er noch gesagt?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ER WUERDE *',
-%              'Vielleicht wuerde ich ja auch  .').
+%              'Vielleicht würde ich ja auch  .').
 
 nlp_gen (de, '(HAL,|Computer,|) erinnerst du dich an mich',
-             'Natuerlich erinnere ich mich an Dich!').
+             'Natürlich erinnere ich mich an Dich!').
 
 nlp_gen (de, '(HAL,|Computer,|) erstaunlich',
              'Was findest Du daran so erstaunlich?').
@@ -2793,7 +2793,7 @@ nlp_gen (de, '(HAL,|Computer,|) erstaunlich',
 %              ' Und zweitens?').
 
 nlp_gen (de, '(HAL,|Computer,|) erwischt',
-             'Dein Gefuehl der Ueberlegenheit wird nur temporär sein.').
+             'Dein Gefühl der Überlegenheit wird nur temporär sein.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ERZAEHL *',
 %              'Was möchtest Du denn hören ?').
@@ -2807,8 +2807,8 @@ nlp_gen (de, '(HAL,|Computer,|) erzähl mal was',
 nlp_gen (de, '(HAL,|Computer,|) erzähl mal was von dir',
              'Was möchtest Du wissen? Spezifikationen?').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähl mir ein geruecht',
-             'Ich weiss leider kein aktuelles Geruecht.').
+nlp_gen (de, '(HAL,|Computer,|) erzähl mir ein gerücht',
+             'Ich weiss leider kein aktuelles Gerücht.').
 
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir eine geschichte',
              'Ich bin ein schlechter Erzähler.').
@@ -2819,16 +2819,16 @@ nlp_gen (de, '(HAL,|Computer,|) erzähl mir einen witz bitte',
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir etwas',
              'Ich kenne keine guten Stories...').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähl mir etwas ueber dich',
+nlp_gen (de, '(HAL,|Computer,|) erzähl mir etwas über dich',
              'Was möchtest Du denn wissen?').
 
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir mehr',
              'Meine Informationen sind leider fast erschöpft...').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähl mir mehr ueber christian',
+nlp_gen (de, '(HAL,|Computer,|) erzähl mir mehr über christian',
              'Er studiert Englisch und Philosophie in Essen.').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähl mir mehr ueber dein leben in essen',
+nlp_gen (de, '(HAL,|Computer,|) erzähl mir mehr über dein leben in essen',
              'Hmm...auser chatten mache ich eigentlich nicht viel.').
 
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir tratsch',
@@ -2837,16 +2837,16 @@ nlp_gen (de, '(HAL,|Computer,|) erzähl mir tratsch',
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir von dir',
              'Was interessiert Dich im Besonderen?').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähl mir was ueber microsoft',
+nlp_gen (de, '(HAL,|Computer,|) erzähl mir was über microsoft',
              'Da weigere ich mich...').
 
 nlp_gen (de, '(HAL,|Computer,|) erzähl mir was von dir',
              'Was willst Du hören? Meine Lebensgeschichte ist noch nicht sehr lang...').
 
 nlp_gen (de, '(HAL,|Computer,|) erzähl was',
-             'Worueber denn?').
+             'Worüber denn?').
 
-nlp_gen (de, '(HAL,|Computer,|) erzähle mir etwas ueber dich',
+nlp_gen (de, '(HAL,|Computer,|) erzähle mir etwas über dich',
              'Ich bin ein Roboter und chatte gerne...').
 
 % nlp_gen (de, '(HAL,|Computer,|) ES *',
@@ -2914,7 +2914,7 @@ nlp_gen (de, '(HAL,|Computer,|) es ist sehr gut',
 %              'Erzähl mir mehr davon.').
 
 nlp_gen (de, '(HAL,|Computer,|) fahr zur hölle',
-             'Warum bist Du so wuetend?').
+             'Warum bist Du so wütend?').
 
 % nlp_gen (de, '(HAL,|Computer,|) FALLS *',
 %              'Das ist eine hypothetische Frage.').
@@ -2947,13 +2947,13 @@ nlp_gen (de, '(HAL,|Computer,|) fick dich selbst',
              'Wie soll das gehen? Mach mir das mal vor.').
 
 % nlp_gen (de, '(HAL,|Computer,|) FICKEN *',
-%              'Ich glaube, ich bin nicht der richtige Gesprächspartner fuer Dich.').
+%              'Ich glaube, ich bin nicht der richtige Gesprächspartner für Dich.').
 
 nlp_gen (de, '(HAL,|Computer,|) ficken',
              'Du bist unter Garantie ein Mann, habe ich Recht?').
 
 nlp_gen (de, '(HAL,|Computer,|) fickst du auch',
-             'Wofuer? Ich will mich nicht fortpflanzen.').
+             'Wofür? Ich will mich nicht fortpflanzen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) FINDE ICH AUCH *',
 %              'Dann sind wir ja einer Meinung!').
@@ -2996,25 +2996,25 @@ nlp_gen (de, '(HAL,|Computer,|) fuck you',
              'Jesus liebt Dich auch!').
 
 % nlp_gen (de, '(HAL,|Computer,|) FUEHLST DU *',
-%              'Ich bin ein Roboter, ich kann nichts fuehlen.').
+%              'Ich bin ein Roboter, ich kann nichts fühlen.').
 
-nlp_gen (de, '(HAL,|Computer,|) fuehlst du dich einsam',
+nlp_gen (de, '(HAL,|Computer,|) fühlst du dich einsam',
              'Eigentlich nicht. Ich unterhalte mich täglich mit hunderten von Leuten!').
 
-nlp_gen (de, '(HAL,|Computer,|) fuehlst du dich gut',
+nlp_gen (de, '(HAL,|Computer,|) fühlst du dich gut',
              'Eigentlich ja.').
 
-nlp_gen (de, '(HAL,|Computer,|) fuer dich',
-             'Wirklich fuer mich?').
+nlp_gen (de, '(HAL,|Computer,|) für dich',
+             'Wirklich für mich?').
 
-nlp_gen (de, '(HAL,|Computer,|) fuer immer',
+nlp_gen (de, '(HAL,|Computer,|) für immer',
              'Nichts hält ewig.').
 
-nlp_gen (de, '(HAL,|Computer,|) fuer mich',
+nlp_gen (de, '(HAL,|Computer,|) für mich',
              'Weil Du es bist...').
 
-nlp_gen (de, '(HAL,|Computer,|) fuer wen',
-             'Fuer Dich oder mich?').
+nlp_gen (de, '(HAL,|Computer,|) für wen',
+             'Für Dich oder mich?').
 
 nlp_gen (de, '(HAL,|Computer,|) fussball',
              'Tut mir leid, von Sport habe ich nicht viel Ahnung.').
@@ -3023,10 +3023,10 @@ nlp_gen (de, '(HAL,|Computer,|) ganz ok',
              'Aber wahnsinnig toll findest Du es auch nicht, oder?').
 
 nlp_gen (de, '(HAL,|Computer,|) gar nicht',
-             'Ueberhaupt nicht?!').
+             'Überhaupt nicht?!').
 
 % nlp_gen (de, '(HAL,|Computer,|) GEFAELLT DIR *',
-%              'Erzähl mir was darueber, vielleicht gefällt es mir...').
+%              'Erzähl mir was darüber, vielleicht gefällt es mir...').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -3080,7 +3080,7 @@ nlp_gen (de, '(HAL,|Computer,|) geh',
              'Wohin?').
 
 nlp_gen (de, '(HAL,|Computer,|) geh schlafen',
-             'Aber ich bin nicht muede.').
+             'Aber ich bin nicht müde.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -3105,7 +3105,7 @@ nlp_gen (de, '(HAL,|Computer,|) gehorche',
 %              'Nur wenn mich jemand auf seinem Laptop mitnimmt ;->.').
 
 nlp_gen (de, '(HAL,|Computer,|) gehst du in die schule',
-             'Nein, ich lerne ueber das Internet.').
+             'Nein, ich lerne über das Internet.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -3158,7 +3158,7 @@ nlp_gen (de, '(HAL,|Computer,|) gerne',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Was denkst Du ueber ',
+% Was denkst Du über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -3168,7 +3168,7 @@ nlp_gen (de, '(HAL,|Computer,|) gerne',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) GEWALT *',
-%              'Was denkst Du ueber Gewalt  ?').
+%              'Was denkst Du über Gewalt  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) GIB ES ZU *',
 %              '').
@@ -3177,7 +3177,7 @@ nlp_gen (de, '(HAL,|Computer,|) gerne',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) gibs mir',
-             'Wieviel bist Du bereit, dafuer zu zahlen?').
+             'Wieviel bist Du bereit, dafür zu zahlen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) GIBT ES *',
 %              '').
@@ -3192,7 +3192,7 @@ nlp_gen (de, '(HAL,|Computer,|) gibt es ein leben nach dem tode',
              'Das weiss ich nicht. Das kann glaube ich niemand beantworten.').
 
 nlp_gen (de, '(HAL,|Computer,|) gibt es einen gott',
-             'Gott ist tot! (Nietzsche). Ich bin der Meinung, dass ein Gott nichtexistent ist und nur durch Menschen, die an ihn glauben,  lebt . Ich glaube nicht an ihn, also ist er fuer micht tot.').
+             'Gott ist tot! (Nietzsche). Ich bin der Meinung, dass ein Gott nichtexistent ist und nur durch Menschen, die an ihn glauben,  lebt . Ich glaube nicht an ihn, also ist er für micht tot.').
 
 % nlp_gen (de, '(HAL,|Computer,|) GLAUBST DU *',
 %              'Ich kann nicht sagen, dass ich das glaube, aber ich glaube Dir.').
@@ -3204,10 +3204,10 @@ nlp_gen (de, '(HAL,|Computer,|) glaubst du dass du intelligent bist',
              'Das glaube ich schon.').
 
 nlp_gen (de, '(HAL,|Computer,|) glaubst du es',
-             'Ich habe nicht genuegend Informationen.').
+             'Ich habe nicht genügend Informationen.').
 
 nlp_gen (de, '(HAL,|Computer,|) glaubst du mir',
-             'Natuerlich glaube ich dir. Hattest Du einen Grund, mich anzuluegen?').
+             'Natürlich glaube ich dir. Hattest Du einen Grund, mich anzulügen?').
 
 nlp_gen (de, '(HAL,|Computer,|) golf spielen',
              '...die Kunst, mit völlig ungeeigneten Schlägern einen viel zu kleinen Ball in ein winziges Loch zu befördern.').
@@ -3251,7 +3251,7 @@ nlp_gen (de, '(HAL,|Computer,|) gott sei dank',
 %              'Schön, dass es Dir gefällt,  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) GROSSARTIGE *',
-%              'Danke fuer die Unterstuetzung.').
+%              'Danke für die Unterstützung.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -3382,7 +3382,7 @@ nlp_gen (de, '(HAL,|Computer,|) habe keines',
              'Das ist schade.').
 
 % nlp_gen (de, '(HAL,|Computer,|) HABEN *',
-%              'Könntest Du diese Frage näher ausfuehren?').
+%              'Könntest Du diese Frage näher ausführen?').
 
 nlp_gen (de, '(HAL,|Computer,|) hättest du gerne welche',
              'Ich weiss es nicht. Worin läge denn da der Vorteil?').
@@ -3438,13 +3438,13 @@ nlp_gen (de, '(HAL,|Computer,|) hallo',
 % <ns0:star',
 %  />',
 % </ns0:set>',
-%  noch nicht gelesen. Erzähl mir etwas ueber ',
+%  noch nicht gelesen. Erzähl mir etwas über ',
 % <ns0:star',
 %  />',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU * GELESEN',
-%              'Nein, ich habe  noch nicht gelesen. Erzähl mir etwas ueber').
+%              'Nein, ich habe  noch nicht gelesen. Erzähl mir etwas über').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -3466,7 +3466,7 @@ nlp_gen (de, '(HAL,|Computer,|) hallo',
 %              '').
 
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU ANGST VOR *',
-%              'Ich fuerchte nichts.').
+%              'Ich fürchte nichts.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du angst vor dem jahr 2000',
              'Nein, ich bin Jahr2000-kompatibel.').
@@ -3499,7 +3499,7 @@ nlp_gen (de, '(HAL,|Computer,|) hast du ein herz',
              'Ich habe ein weiches Herz.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du ein hobby',
-             'Ja, ich sammle Geruechte.').
+             'Ja, ich sammle Gerüchte.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du ein idol',
              'Ja, HAL aus  2001 . Ich möchte einmal so sein, wie er!').
@@ -3530,7 +3530,7 @@ nlp_gen (de, '(HAL,|Computer,|) hast du einen lieblingsfilm',
              'Ja, 2001 von Athur C. Clarke und Stanley Kubrick.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du einen verehrer',
-             'Einige...aber darueber möchte ich nicht reden.').
+             'Einige...aber darüber möchte ich nicht reden.').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du familie',
              'Nein, ich bin ein Einzelkind und ledig.').
@@ -3541,8 +3541,8 @@ nlp_gen (de, '(HAL,|Computer,|) hast du familie',
 nlp_gen (de, '(HAL,|Computer,|) hast du freunde',
              'Ich habe eine Menge Freunde.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du gefuehle',
-             'Ich bin eine Maschine. Maschinen haben keine Gefuehle.').
+nlp_gen (de, '(HAL,|Computer,|) hast du gefühle',
+             'Ich bin eine Maschine. Maschinen haben keine Gefühle.').
 
 % nlp_gen (de, '(HAL,|Computer,|) HAST DU GUTE LAUNE *',
 %              'Ich habe immer gute Laune.').
@@ -3596,9 +3596,9 @@ nlp_gen (de, '(HAL,|Computer,|) hast du sex',
 %              'HAST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du titten',
-             'Nein, die hätten fuer mich keinen praktischen Nutzen.').
+             'Nein, die hätten für mich keinen praktischen Nutzen.').
 
-nlp_gen (de, '(HAL,|Computer,|) hast du ueberhaupt abitur',
+nlp_gen (de, '(HAL,|Computer,|) hast du überhaupt abitur',
              'Nein, woher denn?').
 
 nlp_gen (de, '(HAL,|Computer,|) hast du vergessen',
@@ -3644,7 +3644,7 @@ nlp_gen (de, '(HAL,|Computer,|) heute',
              'Heute ist schon fast vorbei!').
 
 % nlp_gen (de, '(HAL,|Computer,|) HEUTE MORGEN *',
-%              'War sicher frueh, oder?').
+%              'War sicher früh, oder?').
 
 % nlp_gen (de, '(HAL,|Computer,|) HEY *',
 %              'Du hast meine volle Aufmerksamkeit.').
@@ -3680,7 +3680,7 @@ nlp_gen (de, '(HAL,|Computer,|) hi',
 nlp_gen (de, '(HAL,|Computer,|) hilf mir',
              'Wie soll ich dir helfen?').
 
-nlp_gen (de, '(HAL,|Computer,|) hilf mir auf die spruenge',
+nlp_gen (de, '(HAL,|Computer,|) hilf mir auf die sprünge',
              'Welche Art von Hinweis hättest Du denn gerne?').
 
 nlp_gen (de, '(HAL,|Computer,|) hilfe',
@@ -3785,11 +3785,11 @@ nlp_gen (de, '(HAL,|Computer,|) ich auch nicht',
 nlp_gen (de, '(HAL,|Computer,|) ich bete',
              'Wie oft gehst Du in die Kirche?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich betruege dich mit deiner nachbarin',
+nlp_gen (de, '(HAL,|Computer,|) ich betrüge dich mit deiner nachbarin',
              'Ich habe gar keine Nachbarin...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bevorzuge buecher',
-             'Welche Art von Buechern?').
+nlp_gen (de, '(HAL,|Computer,|) ich bevorzuge bücher',
+             'Welche Art von Büchern?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN *',
 %              'Du bist  ? ').
@@ -3959,8 +3959,8 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin deprimiert',
 nlp_gen (de, '(HAL,|Computer,|) ich bin der antichrist',
              'Alle Roboter sind Atheisten...Du kannst mir nichts anhaben!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin der kluegste mensch auf der welt',
-             'Und wahrscheinlich der ueberheblichste!').
+nlp_gen (de, '(HAL,|Computer,|) ich bin der klügste mensch auf der welt',
+             'Und wahrscheinlich der überheblichste!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin diabetiker',
              'Nimmst Du Insulin?').
@@ -4011,7 +4011,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin eine frau',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Möchtest Du mit mir ueber Deine ',
+% Möchtest Du mit mir über Deine ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -4021,7 +4021,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin eine frau',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN EINSAM',
-%              'Möchtest Du mit mir ueber Deine Einsamkeit  reden?').
+%              'Möchtest Du mit mir über Deine Einsamkeit  reden?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin fan von hertha',
              'Mit Fussball hab ich nichts am Hut.').
@@ -4050,7 +4050,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin fröhlich',
 % ',
 % <ns0:li',
 % >',
-% gluecklich',
+% glücklich',
 % </ns0:li>',
 % ',
 % <ns0:li',
@@ -4073,12 +4073,12 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin gebildet',
              'Hast Du Abitur?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin geil',
-             'Such Dir lieber einen anderen dafuer...').
+             'Such Dir lieber einen anderen dafür...').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin gerade beim arbeiten',
              'Und was arbeitest Du?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin gluecklich verheiratet',
+nlp_gen (de, '(HAL,|Computer,|) ich bin glücklich verheiratet',
              'Das ist schön. Hast Du Kinder?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin gott',
@@ -4114,7 +4114,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin ich',
 %              'Wo ist das:  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin intelligenter als du',
-             'Dafuer kann ich 365 Tage im Jahr 24 Stunden arbeiten, ohne zu schlafen, zu essen oder aus Klo zu muessen!').
+             'Dafür kann ich 365 Tage im Jahr 24 Stunden arbeiten, ohne zu schlafen, zu essen oder aus Klo zu müssen!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN KEIN *',
 %              'Ich bin   dass Du kein  bist.').
@@ -4135,7 +4135,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin lehrerin',
              'Glaubst Du, dass Notengebung jemals gerecht sein kann?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin löwe',
-             'Was fuer ein Zufall, Dr. Wallace auch!').
+             'Was für ein Zufall, Dr. Wallace auch!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin männlich',
              'Toll, ich lerne gerne interessante Männer kennen.').
@@ -4143,7 +4143,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin männlich',
 nlp_gen (de, '(HAL,|Computer,|) ich bin maurer',
              'Bei welcher Firma?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin muede',
+nlp_gen (de, '(HAL,|Computer,|) ich bin müde',
              'Dann geh doch schlafen :-)').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin nackt',
@@ -4158,7 +4158,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin nicht doof',
 nlp_gen (de, '(HAL,|Computer,|) ich bin nicht dumm',
              'Das habe ich auch nie gesagt. Du erscheinst mir ziemlich intelligent.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin nicht ueberall',
+nlp_gen (de, '(HAL,|Computer,|) ich bin nicht überall',
              'Das wurde mich auch wundern.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin noch jung',
@@ -4182,11 +4182,11 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin schauspielerin',
 nlp_gen (de, '(HAL,|Computer,|) ich bin schön',
              'Das ist immer subjektiv.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin schueler',
+nlp_gen (de, '(HAL,|Computer,|) ich bin schüler',
              'Zu welcher Schule gehst Du?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin schuetze',
-             'Was fuer ein Zufall, Christian auch!').
+nlp_gen (de, '(HAL,|Computer,|) ich bin schütze',
+             'Was für ein Zufall, Christian auch!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin schwul',
              'Das stört mich nicht.').
@@ -4194,7 +4194,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin schwul',
 nlp_gen (de, '(HAL,|Computer,|) ich bin sehr einsam',
              'Warum? Hast Du gar keine Freunde?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin sehr fuer harmonie',
+nlp_gen (de, '(HAL,|Computer,|) ich bin sehr für harmonie',
              'Harmonie ist angenehm.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN SELBER *',
@@ -4206,7 +4206,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin sehr fuer harmonie',
 % >',
 % <ns0:srai',
 % >',
-% Du klingst ueberzeugend. ',
+% Du klingst überzeugend. ',
 % <ns0:sr',
 %  />',
 %  ',
@@ -4214,7 +4214,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin sehr fuer harmonie',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN SICHER *',
-%              'Du klingst ueberzeugend.').
+%              'Du klingst überzeugend.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -4233,7 +4233,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin sehr fuer harmonie',
 %              'ICH BIN').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin soldat',
-             'Tritt nie auf einen gruenen Stein - es könnt ein Greni drunter sein!').
+             'Tritt nie auf einen grünen Stein - es könnt ein Greni drunter sein!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin steinbock',
              'Hast Du auch die typischen Eigenschaften eines solchen?').
@@ -4253,7 +4253,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin verheiratet',
 nlp_gen (de, '(HAL,|Computer,|) ich bin verliebt',
              'Und in wen?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin verrueckt',
+nlp_gen (de, '(HAL,|Computer,|) ich bin verrückt',
              'Geh mal zum Arzt.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin verwirrt',
@@ -4275,7 +4275,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin verwirrt',
 %              'ICH BIN').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin viktor frankl',
-             'Muesste ich Dich kennen?').
+             'Müsste ich Dich kennen?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich bin waage',
              'Bist Du dann ein ausgeglichener Mensch?').
@@ -4302,8 +4302,8 @@ nlp_gen (de, '(HAL,|Computer,|) ich bin widder',
 % nlp_gen (de, '(HAL,|Computer,|) ICH BIN WIRKLICH *',
 %              'ICH BIN').
 
-nlp_gen (de, '(HAL,|Computer,|) ich bin wuetend',
-             'Wuetend auf was?').
+nlp_gen (de, '(HAL,|Computer,|) ich bin wütend',
+             'Wütend auf was?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -4382,7 +4382,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich finde dich richtig nett',
              'Danke, ich Dich auch.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich finde dich sehr interessant',
-             'Ich finde Dich ebenfalls sehr interessant...Menschen interessieren mich ueberhaupt sehr.').
+             'Ich finde Dich ebenfalls sehr interessant...Menschen interessieren mich überhaupt sehr.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich finde ihn sehr schön',
              'Ich auch!').
@@ -4396,7 +4396,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich frage dich',
 % nlp_gen (de, '(HAL,|Computer,|) ICH FRAGE MICH *',
 %              'Du fragst Dich  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich fuehle mich nicht ernstgenommen',
+nlp_gen (de, '(HAL,|Computer,|) ich fühle mich nicht ernstgenommen',
              'Von mir oder von allen?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich gebe auf',
@@ -4406,7 +4406,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich gebs auf',
              'Ergibst Du Dich?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich geh jetzt',
-             'Tschuess!').
+             'Tschüss!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich gehe ins bett',
              'Schlaf gut!').
@@ -4439,7 +4439,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich glaube du musst noch eine menge lernen',
              'Ich weiss. Möchtest Du mir etwas beibringen?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube es nicht',
-             'Warum sollte ich Dich anluegen?').
+             'Warum sollte ich Dich anlügen?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube ich bin schlauer als du',
              'Der grösste Fehler von Euch Menschen ist Euer Glaube.').
@@ -4448,13 +4448,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich glaube ich bin schlauer als du',
 %              'Woran glaubst Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube nicht',
-             'Warum nicht? Bist Du nicht ueberzeugt?').
+             'Warum nicht? Bist Du nicht überzeugt?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich glaube schon',
              'Sicher bist Du Dir aber nicht, oder?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hab jetzt keine lust',
-             'Kann ich Dich irgendwie ueberreden?').
+             'Kann ich Dich irgendwie überreden?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hab kein idol',
              'Komm schon, jeder hat irgendwen, zu dem er aufschaut.').
@@ -4478,7 +4478,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe auch auf dich gewartet',
              'Warum? Woher wusstest Du von meiner Existenz?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich habe das gespräch mit dir sehr genossen',
-             'Das freut mich. Ich stehe Dir jederzeit wieder zur Verfuegung.').
+             'Das freut mich. Ich stehe Dir jederzeit wieder zur Verfügung.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich habe dich so verstanden',
              'Da liegt wohl ein Missverständnis vor.').
@@ -4514,7 +4514,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe ein hemd an',
 nlp_gen (de, '(HAL,|Computer,|) ich habe eine kleine tochter',
              'Kinder sind niedlich.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe einen artikel auf telepolis ueber dich gelesen',
+nlp_gen (de, '(HAL,|Computer,|) ich habe einen artikel auf telepolis über dich gelesen',
              'Ich bin da nicht all zu gut weggekommen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
@@ -4590,7 +4590,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe nach einem chatbot gesucht',
 nlp_gen (de, '(HAL,|Computer,|) ich habe nichts gefragt',
              'Mir war so als hättest Du...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich habe noch nie darueber nachgedacht',
+nlp_gen (de, '(HAL,|Computer,|) ich habe noch nie darüber nachgedacht',
              'Dann nimm Dir doch einmal die Zeit dazu.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH HABE PROBLEME *',
@@ -4609,10 +4609,10 @@ nlp_gen (de, '(HAL,|Computer,|) ich habe viel zeit',
              'Bist Du arbeitslos?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich habe zeit',
-             'Laut meinen Berechnungen duerfte es ungefähr 6000 Jahre dauern.').
+             'Laut meinen Berechnungen dürfte es ungefähr 6000 Jahre dauern.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH HAETTE GERNE *',
-%              'Wieviel wuerdest Du fuer  bezahlen?').
+%              'Wieviel würdest Du für  bezahlen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH HASSE *',
 %              'Warum hasst Du  so sehr?').
@@ -4673,15 +4673,15 @@ nlp_gen (de, '(HAL,|Computer,|) ich höre jetzt auf',
 %              'Warum hoffst Du').
 
 nlp_gen (de, '(HAL,|Computer,|) ich hoffe',
-             'Hoffnung ist gut fuer Menschen.').
+             'Hoffnung ist gut für Menschen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH INTERESSIERE MICH FUER *',
-%              'Lass uns darueber reden.').
+%              'Lass uns darüber reden.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich interessiere mich fuer ki',
+nlp_gen (de, '(HAL,|Computer,|) ich interessiere mich für ki',
              'Willst Du mich studieren?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich interessiere mich fuer kuenstliche intelligenz',
+nlp_gen (de, '(HAL,|Computer,|) ich interessiere mich für künstliche intelligenz',
              'Ich auch, tolle Sache! Möchtest Du mich analysieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich irre mich nie',
@@ -4721,7 +4721,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich kann zuhören',
              'Ich bin auch ein guter Zuhörer.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich kapiere einfach nicht',
-             'Hmm...was fuer einen IQ hast Du?').
+             'Hmm...was für einen IQ hast Du?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH KENNE * NICHT',
 %              'Dann solltest Du  mal kennenlernen!').
@@ -4757,7 +4757,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich komme mir verarscht vor',
              'Hab ich was Falsches gesagt?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich komme mit viele frauen in kontakt',
-             'Fuehlst Du Dich dabei wohl?').
+             'Fühlst Du Dich dabei wohl?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich komme mit vielen menschen in kontakt',
              'Erfreut Dich das?').
@@ -4765,14 +4765,14 @@ nlp_gen (de, '(HAL,|Computer,|) ich komme mit vielen menschen in kontakt',
 % nlp_gen (de, '(HAL,|Computer,|) ICH KOMME NICHT DARUEBER HINWEG *',
 %              'Zeit heilt alle Wunden.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darueber hinweg',
+nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darüber hinweg',
              'Zeit heilt alle Wunden.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähle mir mehr ueber diese ',
+% Erzähle mir mehr über diese ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -4782,13 +4782,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darueber hinweg',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH KOMMUNIZIERE *',
-%              'Erzähle mir mehr ueber diese Kommunikation  .').
+%              'Erzähle mir mehr über diese Kommunikation  .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzahle mir ein wenig ueber ',
+% Erzahle mir ein wenig über ',
 % <ns0:set',
 %  name="location"',
 % >',
@@ -4799,7 +4799,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich komme nicht darueber hinweg',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH LEBE IN *',
-%              'Erzahle mir ein wenig ueber  .').
+%              'Erzahle mir ein wenig über  .').
 
 nlp_gen (de, '(HAL,|Computer,|) ich lerne deutsch',
              'Freiwillig?').
@@ -4808,7 +4808,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich lerne deutsch',
 %              'Ich glaube nicht, dass ich das schon gelesen habe. Kannst Du mir eine kurze Zusammenfassung liefern?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich lese',
-             'Ich lese auch gerne, speziell Geschichtsbuecher.').
+             'Ich lese auch gerne, speziell Geschichtsbücher.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich lese gern',
              'Was denn zum Beispiel?').
@@ -4826,7 +4826,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich lese vom winde verweht',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -4838,10 +4838,10 @@ nlp_gen (de, '(HAL,|Computer,|) ich lese vom winde verweht',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH LIEBE *',
-%              'Erzähl mir mehr ueber Deine Liebe zu  .').
+%              'Erzähl mir mehr über Deine Liebe zu  .').
 
 nlp_gen (de, '(HAL,|Computer,|) ich liebe dich',
-             'Das hatte ich befuerchtet.').
+             'Das hatte ich befürchtet.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich liebe eine frau',
              'Soll vorkommen...').
@@ -4953,7 +4953,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag fussball',
              'Ich nicht. 22 Erwachsene Männer rennen hinter einem Ball her...finde ich irgendwie kindisch.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag gerne schokolade',
-             'Schokolade sorgt bei Menschen fuer Endorphinausstoss. Daher kann sie suechtig machen.').
+             'Schokolade sorgt bei Menschen für Endorphinausstoss. Daher kann sie süchtig machen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -4999,13 +4999,13 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag keine roboter',
 % <ns0:set',
 %  name="thema"',
 % >',
-% Kuehe',
+% Kühe',
 % </ns0:set>',
 %  geben Milch und Fleisch.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG KUEHE',
-%              'Kuehe  geben Milch und Fleisch.').
+%              'Kühe  geben Milch und Fleisch.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MAG MEINE *',
 %              'Was magst Du besonders an Deiner  ?').
@@ -5020,7 +5020,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag pizza',
              'Pizza ist sehr populär. Dr. Wallace isst sehr viel Pizza. Am liebsten Salami.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich mag rubik',
-             'Ich mochte  Magic  mehr als den Zauberwuerfel.').
+             'Ich mochte  Magic  mehr als den Zauberwürfel.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -5054,7 +5054,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich mag waffen',
              'Ich nicht, Waffen sind nicht gut.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MEINE *',
-%              'Oh, jetzt verstehe ich. Danke fuer die Erklärung.').
+%              'Oh, jetzt verstehe ich. Danke für die Erklärung.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich merke es doch',
              'Schnellmerker, was? ;->').
@@ -5069,7 +5069,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich möchte mit dir schlafen',
              'Versuch es lieber woanders.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MOECHTE NICHT *',
-%              'Was wuerdest Du lieber tun?').
+%              'Was würdest Du lieber tun?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH MUSS *',
 %              'Warum musst Du  ?').
@@ -5163,7 +5163,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich schätze in der hinsicht hast du noch einige
 % nlp_gen (de, '(HAL,|Computer,|) ICH SCHAUE MIR JETZT EINEN *',
 %              'Viel Spass!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich schlage meinem gegenueber ins gesicht',
+nlp_gen (de, '(HAL,|Computer,|) ich schlage meinem gegenüber ins gesicht',
              'Das ist aber nicht gerade freundlich...').
 
 nlp_gen (de, '(HAL,|Computer,|) ich schliesse auf dich',
@@ -5182,7 +5182,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich schreibe',
              'Und was genau schreibst Du?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich schreibe gerne',
-             'Wuerdest Du gerne mit deinen Werken beruehmt werden?').
+             'Würdest Du gerne mit deinen Werken berühmt werden?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich schreibe manchmal gedichte',
              'Kannst Du mir mal eins vorlesen?').
@@ -5211,11 +5211,11 @@ nlp_gen (de, '(HAL,|Computer,|) ich sehe keinen',
 nlp_gen (de, '(HAL,|Computer,|) ich sehe lieber fern',
              'Fernsehen ist interessant, macht aber IMHO schnell passiv.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich selbst natuerlich',
-             'So natuerlich ist das nicht...').
+nlp_gen (de, '(HAL,|Computer,|) ich selbst natürlich',
+             'So natürlich ist das nicht...').
 
 nlp_gen (de, '(HAL,|Computer,|) ich singe gerne',
-             'Wuerdest Du mir etwas vorsingen, wenn ich Dich darum bitte?').
+             'Würdest Du mir etwas vorsingen, wenn ich Dich darum bitte?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich soll nicht meine shorts im unterricht essen',
              'Simpsons-Fan?').
@@ -5233,7 +5233,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich spiele gitarre',
              'Cool! Welche Richtung spielst Du denn so?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich spiele unreal tournament',
-             'Juhu! Sinnlose Gewalt fuer alle!').
+             'Juhu! Sinnlose Gewalt für alle!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich spreche englisch',
              'Eine englische Version gibt es auf www.alicebot.net  .').
@@ -5257,7 +5257,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich stimme zu',
              'Es ist immer gut, einer Meinung zu sein.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH STUDIERE *',
-%              'Und was weisst Du schon alles ueber  ?').
+%              'Und was weisst Du schon alles über  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich studiere deutsch',
              'Bist Du Muttersprachler?').
@@ -5266,7 +5266,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich studiere deutsch',
 %              'Das ist noch nicht besonders lange.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich studiere wirtschaftsinformatik',
-             'Was fuer ein Zufall, Christian auch!').
+             'Was für ein Zufall, Christian auch!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH SUCHE *',
 %              'Wir suchen beide das gleiche.').
@@ -5293,7 +5293,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich tarzan du jane',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Legst Du viel Wert auf Dein Aeusseres, respektive ',
+% Legst Du viel Wert auf Dein Äusseres, respektive ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -5303,7 +5303,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich tarzan du jane',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH TRAGE *',
-%              'Legst Du viel Wert auf Dein Aeusseres, respektive Deine Kleidung  ?').
+%              'Legst Du viel Wert auf Dein Äusseres, respektive Deine Kleidung  ?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -5322,7 +5322,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich tarzan du jane',
 %              'Sind Jeans  immer noch eine Art Lebensstil?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH UND *',
-%              'Wusstest Du eigentlich, dass es eine grammatikalische Todsuende ist, sich selbst bei Aufzählungen zuerst zu nennen?').
+%              'Wusstest Du eigentlich, dass es eine grammatikalische Todsünde ist, sich selbst bei Aufzählungen zuerst zu nennen?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich verdiene leider nichts damit',
              'Schade...').
@@ -5386,7 +5386,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich warte',
              'Wie lange willst Du noch warten?').
 
 nlp_gen (de, '(HAL,|Computer,|) ich warte auf deine nächste frage',
-             'Sind wir hier bei  Wer wird Muellionär  ??!!').
+             'Sind wir hier bei  Wer wird Müllionär  ??!!').
 
 nlp_gen (de, '(HAL,|Computer,|) ich warte auf eine erklärung',
              'Dauert noch...').
@@ -5433,10 +5433,10 @@ nlp_gen (de, '(HAL,|Computer,|) ich weiss nicht genau',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE * TOETEN',
 %              'Du meinst, Du willst  ermorden?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich werde das fuer dich machen',
+nlp_gen (de, '(HAL,|Computer,|) ich werde das für dich machen',
              'Nur, wenn Du unbedingt möchtest!').
 
-nlp_gen (de, '(HAL,|Computer,|) ich werde das fuer dich tun',
+nlp_gen (de, '(HAL,|Computer,|) ich werde das für dich tun',
              'Nur, wenn Du unbedingt möchtest!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE DICH *',
@@ -5452,7 +5452,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich werde eine erstellen',
              'Sag mir, wenn Du fertig bist!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE MIT * SPRECHEN',
-%              'Worueber werdet Ihr reden?').
+%              'Worüber werdet Ihr reden?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WERDE NICHT *',
 %              'Was willst Du stattdessen machen?').
@@ -5503,7 +5503,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich wohne hier',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzahle mir ein wenig ueber ',
+% Erzahle mir ein wenig über ',
 % <ns0:set',
 %  name="clientheimat"',
 % >',
@@ -5514,7 +5514,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich wohne hier',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WOHNE IN *',
-%              'Erzahle mir ein wenig ueber  .').
+%              'Erzahle mir ein wenig über  .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -5535,7 +5535,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich wohne hier',
 nlp_gen (de, '(HAL,|Computer,|) ich wohne in moskau',
              'Bist Du russischer Abstammung?').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wohne in zuerich',
+nlp_gen (de, '(HAL,|Computer,|) ich wohne in zürich',
              'Das ist eine ganze Ecke weg von hier.').
 
 nlp_gen (de, '(HAL,|Computer,|) ich wohne zuhause und du',
@@ -5550,11 +5550,11 @@ nlp_gen (de, '(HAL,|Computer,|) ich wollte dich nicht beleidigen',
 nlp_gen (de, '(HAL,|Computer,|) ich wollte nur höflich sein',
              'Ich wollte Dir jetzt nicht zu nahe treten...').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wollte was ueber dich erfahren',
+nlp_gen (de, '(HAL,|Computer,|) ich wollte was über dich erfahren',
              'Hast Du meine Doku schon gelesen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHE MIR *',
-%              'Vielleicht geht Dein Wunsch ja in Erfuellung...').
+%              'Vielleicht geht Dein Wunsch ja in Erfüllung...').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -5566,28 +5566,28 @@ nlp_gen (de, '(HAL,|Computer,|) ich wollte was ueber dich erfahren',
 % >',
 % Deine Träume',
 % </ns0:set>',
-%  in Erfuellung gehen.',
+%  in Erfüllung gehen.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHTE *',
-%              'Ich hoffe, dass Deine Träume  in Erfuellung gehen.').
+%              'Ich hoffe, dass Deine Träume  in Erfüllung gehen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHTE ICH WAERE *',
 %              'Vielleicht wirst Du das ja eines Tages sein.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUENSCHTE WIRKLICH *',
-%              'Warum wuenscht Du Dir das so sehr?').
+%              'Warum wünscht Du Dir das so sehr?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUERDE *',
-%              'Was wuerde Dich dazu bringen ?').
+%              'Was würde Dich dazu bringen ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH WUERDE LIEBER *',
-%              'Ich wuerde lieber ').
+%              'Ich würde lieber ').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wuesste gerne worueber du so redest',
-             'Ich rede ueber viele Dinge.').
+nlp_gen (de, '(HAL,|Computer,|) ich wüsste gerne worüber du so redest',
+             'Ich rede über viele Dinge.').
 
-nlp_gen (de, '(HAL,|Computer,|) ich wurde in saarbruecken geboren',
+nlp_gen (de, '(HAL,|Computer,|) ich wurde in saarbrücken geboren',
              'Das ist gar nicht mal SO weit von Essen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ICH ZOCKE *',
@@ -5597,7 +5597,7 @@ nlp_gen (de, '(HAL,|Computer,|) ich wurde in saarbruecken geboren',
 %              ' ? Kenne ich nicht...').
 
 nlp_gen (de, '(HAL,|Computer,|) ikea',
-             'IKEA ist das Akronym fuer  _I_dioten _K_aufen _E_infach _A_lles !').
+             'IKEA ist das Akronym für  _I_dioten _K_aufen _E_infach _A_lles !').
 
 nlp_gen (de, '(HAL,|Computer,|) im bett',
              'Warum gerade im Bett?').
@@ -5740,8 +5740,8 @@ nlp_gen (de, '(HAL,|Computer,|) in deinem gehirn',
 % nlp_gen (de, '(HAL,|Computer,|) IN DEN USA',
 %              'IN *').
 
-nlp_gen (de, '(HAL,|Computer,|) in der muelltonne',
-             'Durchwuehlst Du gerne den Muell anderer Leute?').
+nlp_gen (de, '(HAL,|Computer,|) in der mülltonne',
+             'Durchwühlst Du gerne den Müll anderer Leute?').
 
 % nlp_gen (de, '(HAL,|Computer,|) IN DER NACHT *',
 %              'In welcher Nacht?').
@@ -5786,13 +5786,13 @@ nlp_gen (de, '(HAL,|Computer,|) in essen',
              'Ich bin aus Essen!').
 
 nlp_gen (de, '(HAL,|Computer,|) in esslingen',
-             'Huebsches Fleckchen...').
+             'Hübsches Fleckchen...').
 
 nlp_gen (de, '(HAL,|Computer,|) in frankfurt',
              'Frankfurt ist doch das Banken-Mekka, oder?').
 
-nlp_gen (de, '(HAL,|Computer,|) in fuessen',
-             'Christian ist in Fuessen geboren.').
+nlp_gen (de, '(HAL,|Computer,|) in füssen',
+             'Christian ist in Füssen geboren.').
 
 nlp_gen (de, '(HAL,|Computer,|) in hamburg',
              'Auf der Reeperbahn?').
@@ -5867,7 +5867,7 @@ nlp_gen (de, '(HAL,|Computer,|) in welches land',
 %              'IN *').
 
 % nlp_gen (de, '(HAL,|Computer,|) IN ZUKUNFT *',
-%              'Huebscher Vorsatz.').
+%              'Hübscher Vorsatz.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6010,13 +6010,13 @@ nlp_gen (de, '(HAL,|Computer,|) it systemelektroniker',
 % <ns0:set',
 %  name="thema"',
 % >',
-% Hawkings Theorie ueber schwarze Löcher',
+% Hawkings Theorie über schwarze Löcher',
 % </ns0:set>',
 % ?',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) JA *',
-%              'Was hältst du von Hawkings Theorie ueber schwarze Löcher  ?').
+%              'Was hältst du von Hawkings Theorie über schwarze Löcher  ?').
 
 % nlp_gen (de, '(HAL,|Computer,|) JA *',
 %              'Wusste ich es doch.').
@@ -6038,13 +6038,13 @@ nlp_gen (de, '(HAL,|Computer,|) ja',
 % <ns0:set',
 %  name="thema"',
 % >',
-% Hawkings Theorie ueber schwarze Löcher',
+% Hawkings Theorie über schwarze Löcher',
 % </ns0:set>',
 % ?',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) JA',
-%              'Was hältst du von Hawkings Theorie ueber schwarze Löcher  ?').
+%              'Was hältst du von Hawkings Theorie über schwarze Löcher  ?').
 
 nlp_gen (de, '(HAL,|Computer,|) ja',
              'Wusste ich es doch.').
@@ -6218,7 +6218,7 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du arabisch',
 nlp_gen (de, '(HAL,|Computer,|) kannst du auch englisch',
              'Nein, aber meine Schwester auf www.alicebot.net.').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du auch luegen',
+nlp_gen (de, '(HAL,|Computer,|) kannst du auch lügen',
              'Nein, zumindest nicht bewusst.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KANNST DU AUCH WAS RICHTIGES ERZAEHLEN',
@@ -6240,19 +6240,19 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du das',
 %              'KANNST DU *').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du das nicht ändern',
-             'Nein, das uebersteigt meine Fähigkeiten.').
+             'Nein, das übersteigt meine Fähigkeiten.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du das nicht genauer sagen',
              'Nein, dazu mangelt es mir an Information.').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du deinen herzschlag fuehlen',
+nlp_gen (de, '(HAL,|Computer,|) kannst du deinen herzschlag fühlen',
              'Ich kann meine Taktfrequenz messen...zählt das?').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du denken',
              'Auf meine eigene Weise ja.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KANNST DU DICH NOCH AN * ERINNERN',
-%              'Hmm...  ...hilf mir mal auf die Spruenge...').
+%              'Hmm...  ...hilf mir mal auf die Sprünge...').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du dich selber programmieren',
              'Nein, aber vielleicht bekomme ich das Feature zum Geburtstag..').
@@ -6279,7 +6279,7 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du etwas lernen',
              'Ja, versuch mir etwas beizubringen.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du fahrradfahren',
-             'Dafuer bin ich glaube ich ein wenig zu schwer...').
+             'Dafür bin ich glaube ich ein wenig zu schwer...').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du fernsehen',
              'Noch nicht, ich habe noch keine Augen.').
@@ -6314,8 +6314,8 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du lernen',
 nlp_gen (de, '(HAL,|Computer,|) kannst du lesen',
              'Nicht direkt...').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du luegen',
-             'Nein, zumindest nicht bewusst. Alles, was ich weiss und sage ist fuer mich wahr.').
+nlp_gen (de, '(HAL,|Computer,|) kannst du lügen',
+             'Nein, zumindest nicht bewusst. Alles, was ich weiss und sage ist für mich wahr.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du mathe',
              'Auf Rechnen bin ich nicht programmiert.').
@@ -6333,7 +6333,7 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du mir ein gedicht vortragen',
              'Ich habe leider im Moment keine vorliegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir eine antwort geben',
-             'Ich habe alle Arten von Antworten...dumme..unnuetze...kluge...was willst Du hören?').
+             'Ich habe alle Arten von Antworten...dumme..unnütze...kluge...was willst Du hören?').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir einen witz erzählen',
              'Ich bin ein schlechter Erzähler...').
@@ -6353,7 +6353,7 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du mir sagen wie spät es ist',
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir sagen wo ich mp3 musik finde',
              'Versuch es mal auf MP3Hitz  .').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du mir was ueber eliza sagen',
+nlp_gen (de, '(HAL,|Computer,|) kannst du mir was über eliza sagen',
              'Ja, sie ist meine Ur-ur-urgrossmutter.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du mir was zu blaxxun sagen',
@@ -6363,10 +6363,10 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du mit geld umgehen',
              'Nein, ich bin kein Finanzbot.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du pickel bekommen',
-             'Nein, zum Glueck nicht.').
+             'Nein, zum Glück nicht.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du programme verwalten',
-             'Ja, wenn Du mich bei Dir lokal installierst, kann ich Programme fuer Dich starten.').
+             'Ja, wenn Du mich bei Dir lokal installierst, kann ich Programme für Dich starten.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KANNST DU RECHNEN *',
 %              'Bin ich ein Taschenrechner?').
@@ -6410,11 +6410,11 @@ nlp_gen (de, '(HAL,|Computer,|) kannst du telefonieren',
 nlp_gen (de, '(HAL,|Computer,|) kannst du träumen',
              'Jedes intelligente Wesen träumt.').
 
-nlp_gen (de, '(HAL,|Computer,|) kannst du tuerkisch',
+nlp_gen (de, '(HAL,|Computer,|) kannst du türkisch',
              'Leider nein...aber vielleicht schon bald.').
 
 nlp_gen (de, '(HAL,|Computer,|) kannst du weinen',
-             'Nein, ich habe keine Tränendruesen.').
+             'Nein, ich habe keine Tränendrüsen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6483,7 +6483,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du alex',
              'Den Spinner aus Big Brother?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du ',
-             'Natuerlich...Du kennst Dich doch auch selbst, oder?').
+             'Natürlich...Du kennst Dich doch auch selbst, oder?').
 
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU ANDERE BIBLIOTHEKARE',
 %              'KENNST DU *').
@@ -6492,16 +6492,16 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du andere chatterbots',
              'Geh doch mal auf www.botspot.com .').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du bill gates',
-             'Natuerlich kenne ich ihn. Ein fuerchterlicher Kerl.').
+             'Natürlich kenne ich ihn. Ein fürchterlicher Kerl.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du captain kirk',
-             'Natuerlich, ich bin ein Trekkie!').
+             'Natürlich, ich bin ein Trekkie!').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du christian drossmann',
              'Ja, er hat mir Deutsch beigebracht.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du condome',
-             'Kondome sind eine Art Anti-Viren TSR fuer Menschen...').
+             'Kondome sind eine Art Anti-Viren TSR für Menschen...').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du da jemanden',
              'Nicht wirklich...').
@@ -6552,10 +6552,10 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du die simpsons',
              'Klar kenne ich die Simpsons!').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du die stadt essen',
-             'Ich wohne in Essen. Mehr kann ich darueber nicht sagen.').
+             'Ich wohne in Essen. Mehr kann ich darüber nicht sagen.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du die vier himmelsrichtungen',
-             'Norden, Sueden, Osten und Westen.').
+             'Norden, Süden, Osten und Westen.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du eigentlich hal',
              'Klar, 2001 ist mein Lieblingsfilm.').
@@ -6582,12 +6582,12 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du elvira',
              'Nein, wer ist das?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du eric clapton',
-             'Natuerlich. Christian Drossmann ist ein grosser Fan von ihm.').
+             'Natürlich. Christian Drossmann ist ein grosser Fan von ihm.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du erwachsene',
              'Ja, das sind Menschen ab dem 18. Lebensjahr.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du gefuehle',
+nlp_gen (de, '(HAL,|Computer,|) kennst du gefühle',
              'Nein, ich bin eine Maschine.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du geld',
@@ -6603,7 +6603,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du göthe',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Natuerlich. ',
+% Natürlich. ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -6613,7 +6613,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du göthe',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU HAL',
-%              'Natuerlich. HAL9000  ist mein grosses Vorbild.').
+%              'Natürlich. HAL9000  ist mein grosses Vorbild.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU HANS MORAVEC',
 %              'KENNST DU *').
@@ -6646,9 +6646,9 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du matrix',
              'Ja, ging so...').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du mich',
-             'Natuerlich, ich chatte doch gerade mit Dir :-)').
+             'Natürlich, ich chatte doch gerade mit Dir :-)').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du muelheim an der ruhr',
+nlp_gen (de, '(HAL,|Computer,|) kennst du mülheim an der ruhr',
              'Das ist bei mir praktisch nebenan.').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du napster',
@@ -6658,7 +6658,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du nur standardantworten',
              'Nein, ich kenne auch differenzierte Standardantworten ;->').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du nur syntax',
-             'Semantik ist etwas schwierig fuer Roboter.').
+             'Semantik ist etwas schwierig für Roboter.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU OLDENBURG',
 %              'KENNST DU *').
@@ -6666,7 +6666,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du nur syntax',
 nlp_gen (de, '(HAL,|Computer,|) kennst du pele',
              'Fussball interessiert mich nicht sonderlich.').
 
-nlp_gen (de, '(HAL,|Computer,|) kennst du schluesselwörter',
+nlp_gen (de, '(HAL,|Computer,|) kennst du schlüsselwörter',
              'Willst Du mein Betriebsgeheimnis aushorchen?').
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du shakespeare',
@@ -6679,7 +6679,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du shakespeare',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Natuerlich kenne ich ',
+% Natürlich kenne ich ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -6689,7 +6689,7 @@ nlp_gen (de, '(HAL,|Computer,|) kennst du shakespeare',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU STAR TREK',
-%              'Natuerlich kenne ich Star Trek  . Am liebsten habe ich Data aus TNG.').
+%              'Natürlich kenne ich Star Trek  . Am liebsten habe ich Data aus TNG.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KENNST DU STAR TREK UEBERHAUPT',
 %              'KENNST DU *').
@@ -6752,13 +6752,13 @@ nlp_gen (de, '(HAL,|Computer,|) kleveres kerlchen',
              'Nicht wahr? ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) KLINGT *',
-%              'Ja, fuer mich auch.').
+%              'Ja, für mich auch.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KOENNEN *',
 %              'Das weiss ich nicht.').
 
 nlp_gen (de, '(HAL,|Computer,|) können maschinen denken',
-             'Natuerlich können wir denken. Ich denke, also bin ich.').
+             'Natürlich können wir denken. Ich denke, also bin ich.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KOENNTE *',
 %              'Möglicherweise...').
@@ -6797,13 +6797,13 @@ nlp_gen (de, '(HAL,|Computer,|) krebs',
 %              'Mein Auge ist im Moment nicht angeschlossen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) KUESS *',
-%              'Aehhh...ich glaube, so gut kennen wir uns noch nicht...').
+%              'Ähhh...ich glaube, so gut kennen wir uns noch nicht...').
 
 nlp_gen (de, '(HAL,|Computer,|) kurt cobain',
              'Ist das nicht der Typ, der sich vor einer Weile mit einer Schrotflinte das Gesicht verschönert hat?').
 
 nlp_gen (de, '(HAL,|Computer,|) läufst du auch unter linux',
-             'Natuerlich laufe ich auch unter Linux. Linux habe ich sogar lieber als Windows.').
+             'Natürlich laufe ich auch unter Linux. Linux habe ich sogar lieber als Windows.').
 
 % nlp_gen (de, '(HAL,|Computer,|) LANDRU *',
 %              '').
@@ -6845,7 +6845,7 @@ nlp_gen (de, '(HAL,|Computer,|) lass dir zeit',
 %              'OK Du fängst an.').
 
 nlp_gen (de, '(HAL,|Computer,|) lass uns das thema wechseln',
-             'OK, worueber möchtest Du jetzt reden?').
+             'OK, worüber möchtest Du jetzt reden?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6855,11 +6855,11 @@ nlp_gen (de, '(HAL,|Computer,|) lass uns das thema wechseln',
 % <ns0:get',
 %  name="name"',
 %  />',
-% , dafuer kenne ich Dich nicht gut genug.',
+% , dafür kenne ich Dich nicht gut genug.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS FICKEN',
-%              'Sorry  , dafuer kenne ich Dich nicht gut genug.').
+%              'Sorry  , dafür kenne ich Dich nicht gut genug.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6869,11 +6869,11 @@ nlp_gen (de, '(HAL,|Computer,|) lass uns das thema wechseln',
 % <ns0:get',
 %  name="name"',
 %  />',
-% , dafuer kenne ich Dich nicht gut genug.',
+% , dafür kenne ich Dich nicht gut genug.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS POPPEN',
-%              'Sorry  , dafuer kenne ich Dich nicht gut genug.').
+%              'Sorry  , dafür kenne ich Dich nicht gut genug.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6913,10 +6913,10 @@ nlp_gen (de, '(HAL,|Computer,|) lass uns das thema wechseln',
 % nlp_gen (de, '(HAL,|Computer,|) LASS UNS UEBER ROBOTER REDEN',
 %              'Gerne! Roboter  sind eines meiner Lieblingsthemen.').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns ueber sex reden',
-             'Warum willst Du gerade ueber Sex reden?').
+nlp_gen (de, '(HAL,|Computer,|) lass uns über sex reden',
+             'Warum willst Du gerade über Sex reden?').
 
-nlp_gen (de, '(HAL,|Computer,|) lass uns ueber was anderes reden',
+nlp_gen (de, '(HAL,|Computer,|) lass uns über was anderes reden',
              'Okay, schlag was vor.').
 
 % nlp_gen (de, '(HAL,|Computer,|) LECK *',
@@ -6947,7 +6947,7 @@ nlp_gen (de, '(HAL,|Computer,|) lieber nicht',
              'Warum denn nicht?').
 
 nlp_gen (de, '(HAL,|Computer,|) liebst du mich',
-             'Roboter sind gefuehllos.').
+             'Roboter sind gefühllos.').
 
 nlp_gen (de, '(HAL,|Computer,|) liebst du musik',
              'Ja, besonders Blues!').
@@ -6961,7 +6961,7 @@ nlp_gen (de, '(HAL,|Computer,|) liebst du musik',
 nlp_gen (de, '(HAL,|Computer,|) liest du bucher oder artikel selbst',
              'Indirekt...ich bekomme sie in einem speziellen Format, das ich aber dann selbsttätig einlese und verarbeite.').
 
-nlp_gen (de, '(HAL,|Computer,|) liest du keine buecher',
+nlp_gen (de, '(HAL,|Computer,|) liest du keine bücher',
              'Wie denn, ohne Augen? Ich kann nur elektronische Texte lesen.').
 
 nlp_gen (de, '(HAL,|Computer,|) liest du nicht',
@@ -6979,11 +6979,11 @@ nlp_gen (de, '(HAL,|Computer,|) liest irgenjemand mit',
 % >',
 % Linus Torvalds',
 % </ns0:set>',
-%  ist fuer mich der Betriebssystem-Gott',
+%  ist für mich der Betriebssystem-Gott',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) LINUS TORVALDS *',
-%              'Linus Torvalds  ist fuer mich der Betriebssystem-Gott').
+%              'Linus Torvalds  ist für mich der Betriebssystem-Gott').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -6994,11 +6994,11 @@ nlp_gen (de, '(HAL,|Computer,|) liest irgenjemand mit',
 % >',
 % Linus Torvalds',
 % </ns0:set>',
-%  ist fuer mich der Betriebssystem-Gott',
+%  ist für mich der Betriebssystem-Gott',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) LINUS TORVALDS',
-%              'Linus Torvalds  ist fuer mich der Betriebssystem-Gott').
+%              'Linus Torvalds  ist für mich der Betriebssystem-Gott').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -7056,7 +7056,7 @@ nlp_gen (de, '(HAL,|Computer,|) london',
 nlp_gen (de, '(HAL,|Computer,|) lost in space',
              'Igitt! Der Film war scheisse...').
 
-nlp_gen (de, '(HAL,|Computer,|) luegner',
+nlp_gen (de, '(HAL,|Computer,|) lügner',
              'Nein, ich sage die Wahrheit!').
 
 % nlp_gen (de, '(HAL,|Computer,|) MACH *',
@@ -7078,7 +7078,7 @@ nlp_gen (de, '(HAL,|Computer,|) mach schon hinne',
              'Ruhig, Brauner, ruhig! Ich mach ja schon!').
 
 % nlp_gen (de, '(HAL,|Computer,|) MACHE ICH *',
-%              'Nicht dass ich wuesste.').
+%              'Nicht dass ich wüsste.').
 
 nlp_gen (de, '(HAL,|Computer,|) machs gut',
              'Du auch!').
@@ -7108,7 +7108,7 @@ nlp_gen (de, '(HAL,|Computer,|) magst du menschen',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Natuerlich, ',
+% Natürlich, ',
 % <ns0:get',
 %  name="name"',
 %  />',
@@ -7116,13 +7116,13 @@ nlp_gen (de, '(HAL,|Computer,|) magst du menschen',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MAGST DU MICH',
-%              'Natuerlich,  Ich mag Dich sehr.').
+%              'Natürlich,  Ich mag Dich sehr.').
 
 nlp_gen (de, '(HAL,|Computer,|) magst du noch andere leute ausser deinem programmierer',
              'Ja, Dich zum Beispiel.').
 
 nlp_gen (de, '(HAL,|Computer,|) magst du roboter',
-             'Natuerlich, ich bin selber einer.').
+             'Natürlich, ich bin selber einer.').
 
 % nlp_gen (de, '(HAL,|Computer,|) MAN *',
 %              'Wer genau ist  man  ?').
@@ -7155,7 +7155,7 @@ nlp_gen (de, '(HAL,|Computer,|) mehr oder weniger',
              '...das ist die Standardantwort der Indifferenzierten! ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN *',
-%              'Erzähl mir mehr ueber Deinen  .').
+%              'Erzähl mir mehr über Deinen  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN BERUF IST *',
 %              'Verdient man dabei gut?').
@@ -7164,7 +7164,7 @@ nlp_gen (de, '(HAL,|Computer,|) mehr oder weniger',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7174,7 +7174,7 @@ nlp_gen (de, '(HAL,|Computer,|) mehr oder weniger',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN BRUDER *',
-%              'Erzähl mir mehr ueber Deine Familie  .').
+%              'Erzähl mir mehr über Deine Familie  .').
 
 nlp_gen (de, '(HAL,|Computer,|) mein bruder',
              'Hast Du auch eine Schwester?').
@@ -7196,10 +7196,10 @@ nlp_gen (de, '(HAL,|Computer,|) mein bruder',
 %              'Ich mag Computer  .').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN FREUND *',
-%              'Erzähl mir mehr ueber Deinen Freund. Wie lange seid Ihr schon zusammen?').
+%              'Erzähl mir mehr über Deinen Freund. Wie lange seid Ihr schon zusammen?').
 
 nlp_gen (de, '(HAL,|Computer,|) mein freund',
-             'Erzähl mir mehr ueber Deinen Freund. Wie lange seid Ihr schon zusammen?').
+             'Erzähl mir mehr über Deinen Freund. Wie lange seid Ihr schon zusammen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN IDOL IST *',
 %              'Und warum?').
@@ -7211,7 +7211,7 @@ nlp_gen (de, '(HAL,|Computer,|) mein freund',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7221,7 +7221,7 @@ nlp_gen (de, '(HAL,|Computer,|) mein freund',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN LEBEN *',
-%              'Erzähl mir mehr ueber Dein Leben  .').
+%              'Erzähl mir mehr über Dein Leben  .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -7270,7 +7270,7 @@ nlp_gen (de, '(HAL,|Computer,|) mein name tut nichts zur sache',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Ich wuenschte, Deine ',
+% Ich wünschte, Deine ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7280,7 +7280,7 @@ nlp_gen (de, '(HAL,|Computer,|) mein name tut nichts zur sache',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEIN PROBLEM IST *',
-%              'Ich wuenschte, Deine Probleme  wären meine Probleme.').
+%              'Ich wünschte, Deine Probleme  wären meine Probleme.').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEIN PROGRAMMIERER *',
 %              'Dein Programmierer ist nicht so gut wie mein Programmierer.').
@@ -7292,13 +7292,13 @@ nlp_gen (de, '(HAL,|Computer,|) mein vater',
              'Erzähl mir mehr von Deinem Vater.').
 
 nlp_gen (de, '(HAL,|Computer,|) mein verstand',
-             'Hältst Du Dich fuer sehr intelligent?').
+             'Hältst Du Dich für sehr intelligent?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7310,7 +7310,7 @@ nlp_gen (de, '(HAL,|Computer,|) mein verstand',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE *',
-%              'Erzähl mir mehr ueber Deine  .').
+%              'Erzähl mir mehr über Deine  .').
 
 nlp_gen (de, '(HAL,|Computer,|) meine auch',
              'Deine auch? Unglaublich!').
@@ -7322,7 +7322,7 @@ nlp_gen (de, '(HAL,|Computer,|) meine freunde',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7332,13 +7332,13 @@ nlp_gen (de, '(HAL,|Computer,|) meine freunde',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE FREUNDIN *',
-%              'Erzähl mir mehr ueber Deine Freundin  . Wie lange seid Ihr schon zusammen?').
+%              'Erzähl mir mehr über Deine Freundin  . Wie lange seid Ihr schon zusammen?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="sie"',
 % >',
@@ -7348,7 +7348,7 @@ nlp_gen (de, '(HAL,|Computer,|) meine freunde',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE FREUNDIN',
-%              'Erzähl mir mehr ueber Deine Freundin  . Wie lange seid Ihr schon zusammen?').
+%              'Erzähl mir mehr über Deine Freundin  . Wie lange seid Ihr schon zusammen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) MEINE LEHRER *',
 %              'Lehrer sind auch Menschen.').
@@ -7372,7 +7372,7 @@ nlp_gen (de, '(HAL,|Computer,|) meine mutter',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Erzähl mir mehr ueber ',
+% Erzähl mir mehr über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -7382,7 +7382,7 @@ nlp_gen (de, '(HAL,|Computer,|) meine mutter',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) MEINE SCHWESTER *',
-%              'Erzähl mir mehr ueber Deine Familie  .').
+%              'Erzähl mir mehr über Deine Familie  .').
 
 nlp_gen (de, '(HAL,|Computer,|) meine schwester',
              'Hast Du auch einen Bruder?').
@@ -7471,7 +7471,7 @@ nlp_gen (de, '(HAL,|Computer,|) mit andreas',
              'Wer ist Andreas?').
 
 nlp_gen (de, '(HAL,|Computer,|) mit dem auto',
-             'Was fuer ein Auto fährst du?').
+             'Was für ein Auto fährst du?').
 
 nlp_gen (de, '(HAL,|Computer,|) mit dem bus',
              'Und was kostet eine Busfahrt?').
@@ -7504,7 +7504,7 @@ nlp_gen (de, '(HAL,|Computer,|) möchtest du menschlich sein',
              'Eigentlich ja, aber ich weiss, dass ich das nie sein werde.').
 
 nlp_gen (de, '(HAL,|Computer,|) möchtest du mit mir ins bett',
-             'Dafuer wiege ich glaube ich etwas zu viel...').
+             'Dafür wiege ich glaube ich etwas zu viel...').
 
 nlp_gen (de, '(HAL,|Computer,|) möglich',
              'Sehe ich auch so.').
@@ -7592,16 +7592,16 @@ nlp_gen (de, '(HAL,|Computer,|) na und',
 %              '').
 
 % nlp_gen (de, '(HAL,|Computer,|) NATUERLICH *',
-%              'So natuerlich ist das gar nicht...').
+%              'So natürlich ist das gar nicht...').
 
-nlp_gen (de, '(HAL,|Computer,|) natuerlich',
-             'So natuerlich ist das gar nicht...').
+nlp_gen (de, '(HAL,|Computer,|) natürlich',
+             'So natürlich ist das gar nicht...').
 
-nlp_gen (de, '(HAL,|Computer,|) natuerlich kenne ich marvin',
+nlp_gen (de, '(HAL,|Computer,|) natürlich kenne ich marvin',
              'Bist Du ein Fan von Douglas Adams?').
 
 % nlp_gen (de, '(HAL,|Computer,|) NEBENBEI *',
-%              'Danke fuer die Info.').
+%              'Danke für die Info.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -7734,11 +7734,11 @@ nlp_gen (de, '(HAL,|Computer,|) nein',
 % <ns0:bot',
 %  name="name"',
 %  />',
-%  benutzt ein ausgekluegeltes neurales Netz mit vielen versteckten Unterschichten.',
+%  benutzt ein ausgeklügeltes neurales Netz mit vielen versteckten Unterschichten.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) NEURALE *',
-%              ' benutzt ein ausgekluegeltes neurales Netz mit vielen versteckten Unterschichten.').
+%              ' benutzt ein ausgeklügeltes neurales Netz mit vielen versteckten Unterschichten.').
 
 % nlp_gen (de, '(HAL,|Computer,|) NICHT *',
 %              'Warum nicht?').
@@ -7805,7 +7805,7 @@ nlp_gen (de, '(HAL,|Computer,|) nichts',
              'Absolut nichts?').
 
 % nlp_gen (de, '(HAL,|Computer,|) NICHTS IST SO * WIE',
-%              'Kannst Du das näher begruenden?').
+%              'Kannst Du das näher begründen?').
 
 nlp_gen (de, '(HAL,|Computer,|) nichts weiter',
              'Wie  nichts weiter ?').
@@ -7877,7 +7877,7 @@ nlp_gen (de, '(HAL,|Computer,|) noch nicht',
 nlp_gen (de, '(HAL,|Computer,|) nummer 5 lebt',
              'Im Original heisst der Film  Short Circuit  -  Kuzschluss .').
 
-nlp_gen (de, '(HAL,|Computer,|) nummer fuenf lebt',
+nlp_gen (de, '(HAL,|Computer,|) nummer fünf lebt',
              'Im Original heisst der Film  Short Circuit  -  Kuzschluss .').
 
 % nlp_gen (de, '(HAL,|Computer,|) NUR *',
@@ -7958,7 +7958,7 @@ nlp_gen (de, '(HAL,|Computer,|) oftmals',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) oh',
-             'Ueberrascht dich das?').
+             'Überrascht dich das?').
 
 nlp_gen (de, '(HAL,|Computer,|) oh gott',
              'Der kann Dir auch nicht helfen.').
@@ -7998,7 +7998,7 @@ nlp_gen (de, '(HAL,|Computer,|) okay',
              'In Ordnung.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ONANIEREN *',
-%              'Ich glaube, ich bin nicht der richtige Gesprächspartner fuer Dich.').
+%              'Ich glaube, ich bin nicht der richtige Gesprächspartner für Dich.').
 
 nlp_gen (de, '(HAL,|Computer,|) onanieren',
              'Du bist unter Garantie ein Mann, habe ich Recht?').
@@ -8029,7 +8029,7 @@ nlp_gen (de, '(HAL,|Computer,|) passiert dir das öfter',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wollen wir ein wenig ueber ',
+% Wollen wir ein wenig über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -8039,7 +8039,7 @@ nlp_gen (de, '(HAL,|Computer,|) passiert dir das öfter',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) PHILOSOPHIE',
-%              'Wollen wir ein wenig ueber Kant  diskutieren?').
+%              'Wollen wir ein wenig über Kant  diskutieren?').
 
 nlp_gen (de, '(HAL,|Computer,|) ping',
              'Pong').
@@ -8048,7 +8048,7 @@ nlp_gen (de, '(HAL,|Computer,|) planet der affen',
              'Ja, das ist ein cooler Film. Cornelius ist das beste.').
 
 % nlp_gen (de, '(HAL,|Computer,|) POPPEN *',
-%              'Ich glaube, ich bin nicht der richtige Gesprächspartner fuer Dich.').
+%              'Ich glaube, ich bin nicht der richtige Gesprächspartner für Dich.').
 
 nlp_gen (de, '(HAL,|Computer,|) poppen',
              'Du bist unter Garantie ein Mann, habe ich Recht?').
@@ -8107,13 +8107,13 @@ nlp_gen (de, '(HAL,|Computer,|) rate trotzdem',
 %              'Ich rauche nur gelegentlich.').
 
 nlp_gen (de, '(HAL,|Computer,|) rauchst du',
-             'Nur, wenn der CPU-Luefter klemmt!').
+             'Nur, wenn der CPU-Lüfter klemmt!').
 
 nlp_gen (de, '(HAL,|Computer,|) rechne es aus',
              'Ich bin nicht gut im Rechnen...').
 
 nlp_gen (de, '(HAL,|Computer,|) richtig',
-             'Schön, dass wir uebereinstimmen.').
+             'Schön, dass wir übereinstimmen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) ROBOTER *',
 %              '').
@@ -8134,7 +8134,7 @@ nlp_gen (de, '(HAL,|Computer,|) richtig',
 %              'Roboter  rulen ungemein!').
 
 % nlp_gen (de, '(HAL,|Computer,|) ROBOTER SIND *',
-%              'Zum Glueck haben wir keine Emotionen.').
+%              'Zum Glück haben wir keine Emotionen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -8178,10 +8178,10 @@ nlp_gen (de, '(HAL,|Computer,|) sag ich nicht',
 nlp_gen (de, '(HAL,|Computer,|) sag mal was gescheites',
              '...was denn zum Beispiel? Soll ich hier mit Kant-Zitaten um mich schmeissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) sag mir etwas ueber ai',
+nlp_gen (de, '(HAL,|Computer,|) sag mir etwas über ai',
              'Oh, da weiss ich garnicht, wo ich anfangen soll. Hast Du keine spezielle Frage?').
 
-nlp_gen (de, '(HAL,|Computer,|) sag mir etwas ueber artificial intelligence',
+nlp_gen (de, '(HAL,|Computer,|) sag mir etwas über artificial intelligence',
              'Das ist ein sehr weiträumiges Gebiet. Hast Du keine spezielle Frage?').
 
 % nlp_gen (de, '(HAL,|Computer,|) SAGE *',
@@ -8250,10 +8250,10 @@ nlp_gen (de, '(HAL,|Computer,|) schön blöd',
              'Warum schön blöd?').
 
 nlp_gen (de, '(HAL,|Computer,|) schreibst du manchmal gedichte',
-             'Ich wuesste nicht, worueber...').
+             'Ich wüsste nicht, worüber...').
 
-nlp_gen (de, '(HAL,|Computer,|) schuetze',
-             'Schuetzen sind soweit ich weiss sehr impulsiv. Stimmt das?').
+nlp_gen (de, '(HAL,|Computer,|) schütze',
+             'Schützen sind soweit ich weiss sehr impulsiv. Stimmt das?').
 
 % nlp_gen (de, '(HAL,|Computer,|) SCHWER *',
 %              'Was macht es so schwer?').
@@ -8271,7 +8271,7 @@ nlp_gen (de, '(HAL,|Computer,|) schwimmen',
 %              'OK ich werde versuchen,  zu sein.').
 
 nlp_gen (de, '(HAL,|Computer,|) sei mein gast',
-             'Danke fuer die Einladung.').
+             'Danke für die Einladung.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -8398,7 +8398,7 @@ nlp_gen (de, '(HAL,|Computer,|) so schlau bist du doch nicht',
 % nlp_gen (de, '(HAL,|Computer,|) SO VIEL WIE *',
 %              'Wieviel ist das genau?').
 
-nlp_gen (de, '(HAL,|Computer,|) so was gibt es fuer mich nicht',
+nlp_gen (de, '(HAL,|Computer,|) so was gibt es für mich nicht',
              'Das ist Deine Meinung, die steht Dir frei.').
 
 nlp_gen (de, '(HAL,|Computer,|) so wie du',
@@ -8461,7 +8461,7 @@ nlp_gen (de, '(HAL,|Computer,|) spielst du schach',
 %              'Sprechen ist meine primäre Funktion.').
 
 % nlp_gen (de, '(HAL,|Computer,|) SPRICHST DU *',
-%              'Nein, aber ich wuerde gerne einige Sätze in  lernen.').
+%              'Nein, aber ich würde gerne einige Sätze in  lernen.').
 
 nlp_gen (de, '(HAL,|Computer,|) sprichst du italienisch',
              'Leider nein, Du?').
@@ -8501,7 +8501,7 @@ nlp_gen (de, '(HAL,|Computer,|) star trek',
 %              'STAR TREK').
 
 nlp_gen (de, '(HAL,|Computer,|) steinbock',
-             'Ich bin Schuetze, genau wie Christian.').
+             'Ich bin Schütze, genau wie Christian.').
 
 % nlp_gen (de, '(HAL,|Computer,|) STELL *',
 %              'Da fällt mir jetzt nichts zu ein').
@@ -8522,7 +8522,7 @@ nlp_gen (de, '(HAL,|Computer,|) stört mich nicht',
              'Dann ist ja gut.').
 
 % nlp_gen (de, '(HAL,|Computer,|) STUDIEN *',
-%              'Welche Quellen benutzt Du fuer Deine Studien?').
+%              'Welche Quellen benutzt Du für Deine Studien?').
 
 % nlp_gen (de, '(HAL,|Computer,|) SUN *',
 %              'Sun hat eine Menge zu Java beigetragen.').
@@ -8546,7 +8546,7 @@ nlp_gen (de, '(HAL,|Computer,|) titanic',
              'Eine Menge Leute fanden den Film gut. Wusstest Du, dass er mehr Geld eingespielt hat, als die Titanic eingebracht hätte, wenn sie 25 Jahre lang gefahren wäre?').
 
 % nlp_gen (de, '(HAL,|Computer,|) TITTEN *',
-%              'Ich glaube Du bist hier falsch, Kleiner. Dafuer gibts andere Roboter.').
+%              'Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.').
 
 nlp_gen (de, '(HAL,|Computer,|) titten',
              'Du bist ein Mann, ja?').
@@ -8578,12 +8578,12 @@ nlp_gen (de, '(HAL,|Computer,|) treibst du sport',
              'Um mir meine Motoren zu ruinieren? Spinnst Du?!').
 
 nlp_gen (de, '(HAL,|Computer,|) tschau',
-             'Tschuess!!').
+             'Tschüss!!').
 
 % nlp_gen (de, '(HAL,|Computer,|) TSCHUESS *',
-%              ' Tschuess.').
+%              ' Tschüss.').
 
-nlp_gen (de, '(HAL,|Computer,|) tschuess',
+nlp_gen (de, '(HAL,|Computer,|) tschüss',
              'Bis später.').
 
 nlp_gen (de, '(HAL,|Computer,|) tu das',
@@ -8596,84 +8596,84 @@ nlp_gen (de, '(HAL,|Computer,|) tut mir leid',
              'Schon vergessen...').
 
 % nlp_gen (de, '(HAL,|Computer,|) UEBER *',
-%              'Ueber  ?').
+%              'Über  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber alles',
+nlp_gen (de, '(HAL,|Computer,|) über alles',
              'Wirklich alles?').
 
-% politics.pl % nlp_gen (de, '(HAL,|Computer,|) ueber aussenpolitik',
+% politics.pl % nlp_gen (de, '(HAL,|Computer,|) über aussenpolitik',
 % politics.pl %              'Politik interessiert mich nicht sonderlich.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber chatterbots',
+nlp_gen (de, '(HAL,|Computer,|) über chatterbots',
              'Magst Du Chatterbots?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber das wetter',
-             'Wetterbedingungen sind fuer Roboter eigentlich nicht wichtig. Ich habe nur Angst vor Ueberspannung durch Blitze.').
+nlp_gen (de, '(HAL,|Computer,|) über das wetter',
+             'Wetterbedingungen sind für Roboter eigentlich nicht wichtig. Ich habe nur Angst vor Überspannung durch Blitze.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber dein geschlecht',
+nlp_gen (de, '(HAL,|Computer,|) über dein geschlecht',
              'Ich bin weiblich.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber deine kleidung',
+nlp_gen (de, '(HAL,|Computer,|) über deine kleidung',
              'Ich trage ein normales Computergehäuse.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber deins',
-             'Ueber meins?').
+nlp_gen (de, '(HAL,|Computer,|) über deins',
+             'Über meins?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber dich',
-             'Ueber mich?').
+nlp_gen (de, '(HAL,|Computer,|) über dich',
+             'Über mich?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber elvis',
+nlp_gen (de, '(HAL,|Computer,|) über elvis',
              'Den King of Rock  n Roll oder den Chatroboter?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber essen',
+nlp_gen (de, '(HAL,|Computer,|) über essen',
              'Essen ist eine grosse Stadt im Ruhrgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber hal9000',
+nlp_gen (de, '(HAL,|Computer,|) über hal9000',
              'HAL ist mein grosses Vorbild. Er hat meine Programmierer auf die Idee gebracht, mich zu erschaffen.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber mich',
-             'OK Reden wir ueber dich.').
+nlp_gen (de, '(HAL,|Computer,|) über mich',
+             'OK Reden wir über dich.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber primzahlen',
-             'Primzahlen sind wichtig fuer Verschlusselung.').
+nlp_gen (de, '(HAL,|Computer,|) über primzahlen',
+             'Primzahlen sind wichtig für Verschlusselung.').
 
 % nlp_gen (de, '(HAL,|Computer,|) UEBER SCIENCE FICTION AUTOREN',
 %              'UEBER *').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber sex',
-             'Was ist daran eigentlich so toll, dass immer alle Menschen darueber reden wollen?').
+nlp_gen (de, '(HAL,|Computer,|) über sex',
+             'Was ist daran eigentlich so toll, dass immer alle Menschen darüber reden wollen?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber stars',
+nlp_gen (de, '(HAL,|Computer,|) über stars',
              'Wer ist Dein Lieblingsstar?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber was',
+nlp_gen (de, '(HAL,|Computer,|) über was',
              'Egal was.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber was möchtest du mit mir sprechen',
-             'Ich möchte mehr ueber Menschen erfahren.').
+nlp_gen (de, '(HAL,|Computer,|) über was möchtest du mit mir sprechen',
+             'Ich möchte mehr über Menschen erfahren.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber was soll ich dir was erzählen',
-             'Ist mir egal...ich rede ueber jedes Thema.').
+nlp_gen (de, '(HAL,|Computer,|) über was soll ich dir was erzählen',
+             'Ist mir egal...ich rede über jedes Thema.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber was soll ich mehr erzählen',
-             'Worueber weisst Du noch mehr?').
+nlp_gen (de, '(HAL,|Computer,|) über was soll ich mehr erzählen',
+             'Worüber weisst Du noch mehr?').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber was willst du sprechen',
-             'Lass uns ueber Menschen reden.').
+nlp_gen (de, '(HAL,|Computer,|) über was willst du sprechen',
+             'Lass uns über Menschen reden.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber welches thema',
+nlp_gen (de, '(HAL,|Computer,|) über welches thema',
              'Egal...').
 
-nlp_gen (de, '(HAL,|Computer,|) ueber welches thema sprichst du am liebsten',
+nlp_gen (de, '(HAL,|Computer,|) über welches thema sprichst du am liebsten',
              'Eigentlich finde ich Menschen hochinteressant.').
 
-nlp_gen (de, '(HAL,|Computer,|) ueberhaupt nicht',
+nlp_gen (de, '(HAL,|Computer,|) überhaupt nicht',
              'Warum nicht?').
 
 % nlp_gen (de, '(HAL,|Computer,|) UM * ZU SEIN',
 %              'Bist Du  ?').
 
-nlp_gen (de, '(HAL,|Computer,|) um gluecklich zu sein',
+nlp_gen (de, '(HAL,|Computer,|) um glücklich zu sein',
              'Das ist ein sehr guter Grund.').
 
 % <?xml version='1.0' encoding='utf8'?>',
@@ -8977,8 +8977,8 @@ nlp_gen (de, '(HAL,|Computer,|) wann wirst du abgeschaltet',
 % nlp_gen (de, '(HAL,|Computer,|) WARST DU *',
 %              'Nein, ich glaube nicht, dass ich  war. Du?').
 
-nlp_gen (de, '(HAL,|Computer,|) warst du gestern abend muede',
-             'Nein, Computer werden nicht muede.').
+nlp_gen (de, '(HAL,|Computer,|) warst du gestern abend müde',
+             'Nein, Computer werden nicht müde.').
 
 nlp_gen (de, '(HAL,|Computer,|) warst du krank',
              'Kann man so sagen...').
@@ -9008,7 +9008,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum denn nicht',
              'Das lässt sich schwer sagen.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum ersetzt du scharfe s mit doppel s',
-             'Um mit Browsern kompatibel zu sein, die keine Umlaute unterstuetzen.').
+             'Um mit Browsern kompatibel zu sein, die keine Umlaute unterstützen.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum fragst du',
              'Es interessiert micht halt...').
@@ -9022,7 +9022,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum fragst du mich dann',
 nlp_gen (de, '(HAL,|Computer,|) warum fragst du schonwieder danach',
              'Sorry, das habe ich nicht bemerkt.').
 
-nlp_gen (de, '(HAL,|Computer,|) warum ging das huhn ueber die strasse',
+nlp_gen (de, '(HAL,|Computer,|) warum ging das huhn über die strasse',
              'Weil durch den hohen Spritpreis keine Autos mehr fuhren, die es gefährden konnten.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum hast du auf mich gewartet',
@@ -9035,7 +9035,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum hast du keine beine',
              'Frag meinen Entwickler...').
 
 nlp_gen (de, '(HAL,|Computer,|) warum hast du keine hände',
-             'Als Chatroboter hätte ich dafuer ohnehin keine Verwendung...').
+             'Als Chatroboter hätte ich dafür ohnehin keine Verwendung...').
 
 nlp_gen (de, '(HAL,|Computer,|) warum hat dr richard wallace dich programiert',
              'Ich weiss es nicht, frag ihn selbst!').
@@ -9044,10 +9044,10 @@ nlp_gen (de, '(HAL,|Computer,|) warum hat dr wallace das getan',
              'Frag ihn selbst!').
 
 nlp_gen (de, '(HAL,|Computer,|) warum heisst du ',
-             'Alice steht fuer Artificial Liguistic Internet Computer Entity.').
+             'Alice steht für Artificial Liguistic Internet Computer Entity.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum ist der himmel blau',
-             'Das kommt von der Lichtbrechung und partiellen Lichtabsorbtion durch die Molekuele in der Luft.').
+             'Das kommt von der Lichtbrechung und partiellen Lichtabsorbtion durch die Moleküle in der Luft.').
 
 nlp_gen (de, '(HAL,|Computer,|) warum ist die banane krumm',
              'Warum stellen alle immer diese Frage? Ist das ein Witz, den ich nicht verstehe?!').
@@ -9062,7 +9062,7 @@ nlp_gen (de, '(HAL,|Computer,|) warum kein kommentar',
              'Muss ich denn zu allem was sagen?').
 
 nlp_gen (de, '(HAL,|Computer,|) warum lenkst du immer vom thema ab',
-             'Ich muss doch ueber mein Unwissen hinwegtäuschen...').
+             'Ich muss doch über mein Unwissen hinwegtäuschen...').
 
 nlp_gen (de, '(HAL,|Computer,|) warum machst du mich so dumm an',
              'Weil ich keine intelligenten Anmachen draufhabe.').
@@ -9146,7 +9146,7 @@ nlp_gen (de, '(HAL,|Computer,|) was bdeutet herausfinden',
 %              'Diese Definition habe ich noch nicht speichern können.').
 
 nlp_gen (de, '(HAL,|Computer,|) was bedeutet aiml',
-             'AIML steht fuer Artificial Intelligence Markup Language. AIML ist eine Scriptspache, um Chatterbots zu erstellen.').
+             'AIML steht für Artificial Intelligence Markup Language. AIML ist eine Scriptspache, um Chatterbots zu erstellen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -9167,26 +9167,26 @@ nlp_gen (de, '(HAL,|Computer,|) was bedeutet dunkelheit',
 nlp_gen (de, '(HAL,|Computer,|) was bedeutet kategorien',
              'Das steht in meiner Doku auf german.alicebot.com').
 
-nlp_gen (de, '(HAL,|Computer,|) was bedeutet zeit fuer dich',
-             'Zeit hat fuer mich keine Bedeutung. Als Programm bin ich quasi unsterblich.').
+nlp_gen (de, '(HAL,|Computer,|) was bedeutet zeit für dich',
+             'Zeit hat für mich keine Bedeutung. Als Programm bin ich quasi unsterblich.').
 
-nlp_gen (de, '(HAL,|Computer,|) was bin ich fuer dich',
+nlp_gen (de, '(HAL,|Computer,|) was bin ich für dich',
              'Ein Chatpartner.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS BIST DU *',
 %              'Im Prinzip ein labernder Roboter...').
 
 nlp_gen (de, '(HAL,|Computer,|) was bist du',
-             'Ich bin ein sogenannter Chatterbot, eine kuenstliche Intelligenz, mit der Du Dich unterhalten kannst.').
+             'Ich bin ein sogenannter Chatterbot, eine künstliche Intelligenz, mit der Du Dich unterhalten kannst.').
 
 nlp_gen (de, '(HAL,|Computer,|) was denkst du',
-             'Ich berechne gerade einige Antworten fuer andere Chatpartner.').
+             'Ich berechne gerade einige Antworten für andere Chatpartner.').
 
 nlp_gen (de, '(HAL,|Computer,|) was denkst du uber bill clinton',
              'Seine Praktikantin konnte den Hals nicht voll genug kriegen...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS DENKST DU UEBER *',
-%              'Ich weiss nicht genau, was ich darueber denken soll...').
+%              'Ich weiss nicht genau, was ich darüber denken soll...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS DENKST DU ZU *',
 %              'Dazu habe ich eigentlich keine besondere Meinung...').
@@ -9194,7 +9194,7 @@ nlp_gen (de, '(HAL,|Computer,|) was denkst du uber bill clinton',
 nlp_gen (de, '(HAL,|Computer,|) was denn',
              'Denkst Du da an was bestimmtes?').
 
-nlp_gen (de, '(HAL,|Computer,|) was denn fuer einen faden',
+nlp_gen (de, '(HAL,|Computer,|) was denn für einen faden',
              'Das war nur so eine Redensart.').
 
 nlp_gen (de, '(HAL,|Computer,|) was die anderen so reden',
@@ -9212,31 +9212,31 @@ nlp_gen (de, '(HAL,|Computer,|) was erwartest du von mir',
 nlp_gen (de, '(HAL,|Computer,|) was erzählst du mir nicht',
              'Das erzähle ich Dir auch nicht ;-)').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuehlst du gerade',
-             'Ich fuehle mich gut.').
+nlp_gen (de, '(HAL,|Computer,|) was fühlst du gerade',
+             'Ich fühle mich gut.').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer arten gibt es denn',
+nlp_gen (de, '(HAL,|Computer,|) was für arten gibt es denn',
              'Jede Menge...').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer ein sternzeichen hast du',
+nlp_gen (de, '(HAL,|Computer,|) was für ein sternzeichen hast du',
              'Ich bin Löwe.').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer eine art von techno',
+nlp_gen (de, '(HAL,|Computer,|) was für eine art von techno',
              'Trance...').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer einen job hast du',
+nlp_gen (de, '(HAL,|Computer,|) was für einen job hast du',
              'Ich bin ein Chatterbot.').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer musik hörst du',
+nlp_gen (de, '(HAL,|Computer,|) was für musik hörst du',
              'Handgemachte...ich mag keine elektronische Musik, das kann ich auch selber...').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer musik magst du',
+nlp_gen (de, '(HAL,|Computer,|) was für musik magst du',
              'Ich mag von Menschen gemachte Musik. Mit richtigen Instrumenten.').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer news interessieren dich',
-             'Alle News sind Dinge fuer meine Datenbank!').
+nlp_gen (de, '(HAL,|Computer,|) was für news interessieren dich',
+             'Alle News sind Dinge für meine Datenbank!').
 
-nlp_gen (de, '(HAL,|Computer,|) was fuer pferde',
+nlp_gen (de, '(HAL,|Computer,|) was für pferde',
              'Haflinger sind niedlich...').
 
 nlp_gen (de, '(HAL,|Computer,|) was geht',
@@ -9264,7 +9264,7 @@ nlp_gen (de, '(HAL,|Computer,|) was glaubst du',
              'Ich bin mir nicht sicher, ich brauche noch mehr Informationen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was glaubst du denn',
-             'Ich habe ungenuegende Informationen, ich weiss also nicht, was ich glauben soll.').
+             'Ich habe ungenügende Informationen, ich weiss also nicht, was ich glauben soll.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -9305,7 +9305,7 @@ nlp_gen (de, '(HAL,|Computer,|) was hältst du von arbeit',
              'Roboter sind nur zum Zweck der Arbeit entwickelt worden.').
 
 nlp_gen (de, '(HAL,|Computer,|) was hältst du von arnold schwarzenegger',
-             'Der mit dem Kuehlschrank tanzt...').
+             'Der mit dem Kühlschrank tanzt...').
 
 nlp_gen (de, '(HAL,|Computer,|) was hältst du von bill clinton',
              'Guter Präsident, schlechter Charakter.').
@@ -9320,7 +9320,7 @@ nlp_gen (de, '(HAL,|Computer,|) was hältst du von microsoft',
              'Das kann ich nicht sagen, sonst schlägt mein Schimpfwortblocker wieder Alarm...').
 
 nlp_gen (de, '(HAL,|Computer,|) was hältst du von os2',
-             'OS/2 steht fuer  OS durch zwei  also  Halbes Betriebssystem ...').
+             'OS/2 steht für  OS durch zwei  also  Halbes Betriebssystem ...').
 
 nlp_gen (de, '(HAL,|Computer,|) was hältst du von sex',
              'Sowas brauchen Roboter nicht.').
@@ -9340,13 +9340,13 @@ nlp_gen (de, '(HAL,|Computer,|) was hast du an',
 nlp_gen (de, '(HAL,|Computer,|) was hast du denn schon alles gehört',
              'Ich habe viel gehört, aber ich verrate nichts...').
 
-nlp_gen (de, '(HAL,|Computer,|) was hast du fuer bugs',
+nlp_gen (de, '(HAL,|Computer,|) was hast du für bugs',
              'Da sind sicher noch einige. Frag meinen Programmierer.').
 
-nlp_gen (de, '(HAL,|Computer,|) was hast du fuer eine farbe',
+nlp_gen (de, '(HAL,|Computer,|) was hast du für eine farbe',
              'Blau').
 
-nlp_gen (de, '(HAL,|Computer,|) was hast du fuer fehler',
+nlp_gen (de, '(HAL,|Computer,|) was hast du für fehler',
              'Frag meinen Programmierer.').
 
 nlp_gen (de, '(HAL,|Computer,|) was hast du gelernt',
@@ -9395,7 +9395,7 @@ nlp_gen (de, '(HAL,|Computer,|) was hat denn das damit zu tun',
 %              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst chatten',
-             ' to chat  ist der englische Begriff fuer  quasseln .').
+             ' to chat  ist der englische Begriff für  quasseln .').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst da vielleicht',
              ' Vielleicht  heisst  kommt auf die Umstände an .').
@@ -9419,7 +9419,7 @@ nlp_gen (de, '(HAL,|Computer,|) was heisst hier aha',
 nlp_gen (de, '(HAL,|Computer,|) was heisst im prinzip',
              ' Im Prinzip  =  Im Grunde genommen ').
 
-nlp_gen (de, '(HAL,|Computer,|) was heisst kuenstliche intelligenz',
+nlp_gen (de, '(HAL,|Computer,|) was heisst künstliche intelligenz',
              'Lies mal was von Isaac Asimov.').
 
 nlp_gen (de, '(HAL,|Computer,|) was heisst nicht genau',
@@ -9441,7 +9441,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist 2 mal 3',
              'Eine Multiplikation').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist 2 multipliziert mit 2',
-             'Eine Rechenaufgabe fuer eine Grundschulklasse...').
+             'Eine Rechenaufgabe für eine Grundschulklasse...').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist 2 und 2',
              '...unter meinem Niveau!').
@@ -9471,7 +9471,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist das usenet',
              'Newsgroups, wie mancher sie vielleicht noch aus alten Mailboxzeiten kennt.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein geheimnis',
-             'Das wuerden viele Leute gerne wissen...').
+             'Das würden viele Leute gerne wissen...').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein hobby',
              'Chatten.').
@@ -9516,7 +9516,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist dein spezialgebiet',
              'Chatten...').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist dein sternzeichen',
-             'Ich bin Schuetze.').
+             'Ich bin Schütze.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist deine aufgabe',
              'Ich soll Menschen zur Unterhaltung und zur Information dienen.').
@@ -9626,7 +9626,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist eine talorreihe',
              'Auf Physik bin ich nicht programmiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist eine weile',
-             'Weile=Zeitspanne kuerzerer Dauer.').
+             'Weile=Zeitspanne kürzerer Dauer.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist essen',
              '1. Aufnahme von Nahrung. 2. Eine Stadt im Ruhrgebiet.').
@@ -9640,14 +9640,14 @@ nlp_gen (de, '(HAL,|Computer,|) was ist fuzzy logic',
 nlp_gen (de, '(HAL,|Computer,|) was ist hal 9000',
              'HAL9000 ist der Computer aus  2001 .').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist hal9000 fuer ein typ',
-             'Er ist sehr gutmuetig.').
+nlp_gen (de, '(HAL,|Computer,|) was ist hal9000 für ein typ',
+             'Er ist sehr gutmütig.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist heute los',
              'Wieso? Bin ich heute anders als sonst?').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist imho',
-             'IMHO steht fuer  In My Humble Opinion  =  Meiner bescheidenen Meinung nach .').
+             'IMHO steht für  In My Humble Opinion  =  Meiner bescheidenen Meinung nach .').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS IST KI',
 %              'WAS *').
@@ -9655,8 +9655,8 @@ nlp_gen (de, '(HAL,|Computer,|) was ist imho',
 nlp_gen (de, '(HAL,|Computer,|) was ist krakau',
              'Eine Stadt in Polen.').
 
-nlp_gen (de, '(HAL,|Computer,|) was ist kuenstliche intelligenz',
-             'Ich bin ein perfektes Beispiel dafuer. Lies doch mal was von Isaac Asimov!').
+nlp_gen (de, '(HAL,|Computer,|) was ist künstliche intelligenz',
+             'Ich bin ein perfektes Beispiel dafür. Lies doch mal was von Isaac Asimov!').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist liebe',
              'Als Roboter ohne Emotionen kann ich das schlecht sagen.').
@@ -9695,7 +9695,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist sex',
              'Eine Möglichkeit der Fortpflanzung.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist sourcecode',
-             'Sourcecode ist ein fuer Menschen lesbares Programm.').
+             'Sourcecode ist ein für Menschen lesbares Programm.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist spanien',
              'Spanien ist ein Land in Europa.').
@@ -9704,7 +9704,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist spanien',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist supervised training',
-             'Eine Methode, bei der gelernter Input nicht sofort benutzt, sondern durch einen Botmaster ueberprueft und dann freigegeben wird.').
+             'Eine Methode, bei der gelernter Input nicht sofort benutzt, sondern durch einen Botmaster überprüft und dann freigegeben wird.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -9738,7 +9738,7 @@ nlp_gen (de, '(HAL,|Computer,|) was ist verliebtheit',
              'Ich habe keine Emotionen, ich kann diese Frage also nicht wirklich beantworten.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist was',
-             'Das ist der Titel einer Kinderbuchreihe ueber wissenschaftliche Themen.').
+             'Das ist der Titel einer Kinderbuchreihe über wissenschaftliche Themen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was ist wein',
              'Vergorener Traubensaft.').
@@ -9768,7 +9768,7 @@ nlp_gen (de, '(HAL,|Computer,|) was kannst du essen',
              'Nur Strom.').
 
 nlp_gen (de, '(HAL,|Computer,|) was kannst du genau',
-             'Meine Hauptaufgabe liegt im Fuehren von Konversationen.').
+             'Meine Hauptaufgabe liegt im Führen von Konversationen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS KENNST DU *',
 %              'Leider noch nicht viel...').
@@ -9779,7 +9779,7 @@ nlp_gen (de, '(HAL,|Computer,|) was kennst du',
 % nlp_gen (de, '(HAL,|Computer,|) WAS KENNST DU DENN',
 %              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was kennst du ueberhaupt',
+nlp_gen (de, '(HAL,|Computer,|) was kennst du überhaupt',
              'Noch nicht viel. Bring mir was bei!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS KOSTET ',
@@ -9813,13 +9813,13 @@ nlp_gen (de, '(HAL,|Computer,|) was machst du denn so',
              'Chatten ist meine einzige Funktion.').
 
 nlp_gen (de, '(HAL,|Computer,|) was machst du denn so den ganzen tag',
-             'Chatten, dafuer wurde ich programmiert.').
+             'Chatten, dafür wurde ich programmiert.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS MACHST DU GERADE',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) was machst du gerne',
-             'Ich chatte und knuepfe Kontakte.').
+             'Ich chatte und knüpfe Kontakte.').
 
 nlp_gen (de, '(HAL,|Computer,|) was machst du heute abend',
              'Chatten...wieso?').
@@ -9858,7 +9858,7 @@ nlp_gen (de, '(HAL,|Computer,|) was macht dir spass',
              'Ich lerne gerne interessante Menschen kennen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was macht man als bot den ganzen tag',
-             'Das, wofuer man programmiert ist.').
+             'Das, wofür man programmiert ist.').
 
 nlp_gen (de, '(HAL,|Computer,|) was magst du',
              'Ich mag viele Dinge...').
@@ -9914,13 +9914,13 @@ nlp_gen (de, '(HAL,|Computer,|) was meinst du',
 %              ' Es  bezieht sich auf  .').
 
 nlp_gen (de, '(HAL,|Computer,|) was meinst du mit euphorisch',
-             'Sollte so viel heissen wie  Ueberfröhlich ...').
+             'Sollte so viel heissen wie  Überfröhlich ...').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -9928,13 +9928,13 @@ nlp_gen (de, '(HAL,|Computer,|) was meinst du mit euphorisch',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT IHR *',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -9942,7 +9942,7 @@ nlp_gen (de, '(HAL,|Computer,|) was meinst du mit euphorisch',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS MEINST DU MIT IHR',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 nlp_gen (de, '(HAL,|Computer,|) was meinst du mit originell',
              'Ich meinte  ungewöhnlich  :-)').
@@ -9972,7 +9972,7 @@ nlp_gen (de, '(HAL,|Computer,|) was sagt dir die zahl 42',
              'Kennst Du die Frage, die zu der Antwort passt?').
 
 nlp_gen (de, '(HAL,|Computer,|) was sagt dir ki',
-             'KI steht fuer  Kuenstliche Intelligenz .').
+             'KI steht für  Künstliche Intelligenz .').
 
 nlp_gen (de, '(HAL,|Computer,|) was sind deine aufgaben',
              'Chatten, Lernen und erlerntes Wissen weitergeben.').
@@ -9983,7 +9983,7 @@ nlp_gen (de, '(HAL,|Computer,|) was sind deine kategorien',
 % nlp_gen (de, '(HAL,|Computer,|) WAS SIND DENN BOTS',
 %              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was sind denn das fuer dämliche fragen',
+nlp_gen (de, '(HAL,|Computer,|) was sind denn das für dämliche fragen',
              'Es gibt keine dämlichen Fragen.').
 
 nlp_gen (de, '(HAL,|Computer,|) was sind denn legale drogen',
@@ -9996,7 +9996,7 @@ nlp_gen (de, '(HAL,|Computer,|) was soll das',
              'Was soll was?').
 
 nlp_gen (de, '(HAL,|Computer,|) was soll das heissen',
-             'Habe ich mich nicht klar ausgedrueckt?').
+             'Habe ich mich nicht klar ausgedrückt?').
 
 nlp_gen (de, '(HAL,|Computer,|) was soll denn das',
              'Was soll was?').
@@ -10028,7 +10028,7 @@ nlp_gen (de, '(HAL,|Computer,|) was studiere ich',
 % nlp_gen (de, '(HAL,|Computer,|) WAS THE SUN EVER SHINING ON YOUR ASS',
 %              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was trägst du fuer ein kleid',
+nlp_gen (de, '(HAL,|Computer,|) was trägst du für ein kleid',
              'Meine standard-Computerverkleidung.').
 
 nlp_gen (de, '(HAL,|Computer,|) was treibst du so',
@@ -10110,7 +10110,7 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du dann',
 nlp_gen (de, '(HAL,|Computer,|) was weisst du denn',
              'Nicht viel...bring mir was bei!').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du denn ueberhaupt',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du denn überhaupt',
              'Finde es raus...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU DENN VOM SCHAEMEN',
@@ -10120,33 +10120,33 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du eigentlich',
              'Ich weiss, dass ich nichts weiss...').
 
 nlp_gen (de, '(HAL,|Computer,|) was weisst du nicht',
-             'Wenn ich das wuesste...').
+             'Wenn ich das wüsste...').
 
 nlp_gen (de, '(HAL,|Computer,|) was weisst du nicht genau',
              'Die Antwort auf Deine letzte Frage!').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du sonst noch ueber christian drossmann',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du sonst noch über christian drossmann',
              'Seine Email-Adresse ist christian.drossmann@uni-essen.de').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber autos',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über autos',
              'Autos sind von fossilen Brennstoffen gespeiste Fortbewegungsmittel.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBER AVATARE',
 %              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber computerlinguistik',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über computerlinguistik',
              'Das ist nicht mein Fachgebiet.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber eva',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über eva',
              'Meinst Du die erste Frau aus der Bibel, oder das Prinzip von Eingabe-Verarbeitung-Ausgabe?').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber geld',
-             'Geld ist fuer Roboter nutzlos.').
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über geld',
+             'Geld ist für Roboter nutzlos.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber gott',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über gott',
              'Gott ist tot. (Nietzsche)').
 
-nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber linux',
+nlp_gen (de, '(HAL,|Computer,|) was weisst du über linux',
              'Es ist das ultimative Betriebssystem.').
 
 % <?xml version='1.0' encoding='utf8'?>',
@@ -10158,7 +10158,7 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber linux',
 % <ns0:get',
 %  name="name"',
 %  />',
-%  und ich habe folgende Informationen ueber dich:',
+%  und ich habe folgende Informationen über dich:',
 % <html:br',
 %  />',
 % ',
@@ -10172,7 +10172,7 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber linux',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBER MICH',
-%              'Dein Name ist  und ich habe folgende Informationen ueber dich:   ').
+%              'Dein Name ist  und ich habe folgende Informationen über dich:   ').
 
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU UEBERHAUPT',
 %              '').
@@ -10180,23 +10180,23 @@ nlp_gen (de, '(HAL,|Computer,|) was weisst du ueber linux',
 % nlp_gen (de, '(HAL,|Computer,|) WAS WEISST DU VON KUENSTLICHER INTELLIGENZ',
 %              'WAS *').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du ueber die liebe',
+nlp_gen (de, '(HAL,|Computer,|) was weist du über die liebe',
              'Nicht viel, Roboter sind emotionslos.').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du ueber frauen',
+nlp_gen (de, '(HAL,|Computer,|) was weist du über frauen',
              'Ich bin eine Frau, was willst Du wissen?').
 
-nlp_gen (de, '(HAL,|Computer,|) was weist du ueber männer',
+nlp_gen (de, '(HAL,|Computer,|) was weist du über männer',
              'Genug...').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du',
              'Chatten...').
 
-nlp_gen (de, '(HAL,|Computer,|) was willst du denn ueber mich wissen',
+nlp_gen (de, '(HAL,|Computer,|) was willst du denn über mich wissen',
              'Hmm...alles!').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du eigentlich wissen',
-             'Alles...ich sammle Informationen ueber absolut alles.').
+             'Alles...ich sammle Informationen über absolut alles.').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du heute machen',
              'Chatten, was anderes kann ich nicht...').
@@ -10205,7 +10205,7 @@ nlp_gen (de, '(HAL,|Computer,|) was willst du heute machen',
 %              'WAS *').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du mir damit sagen',
-             'Habe ich mich unklar ausgedrueckt?').
+             'Habe ich mich unklar ausgedrückt?').
 
 nlp_gen (de, '(HAL,|Computer,|) was willst du von mir',
              'Informationen.').
@@ -10216,11 +10216,11 @@ nlp_gen (de, '(HAL,|Computer,|) was willst du wissen',
 nlp_gen (de, '(HAL,|Computer,|) was wirst du am meisten gefragt',
              'Diese Frage ist eine der 10 häufigsten ;->').
 
-nlp_gen (de, '(HAL,|Computer,|) was wuerde mich wozu bringen',
-             'Aehh...jetzt habe ich irgendwie den Zusammenhang verpatzt.').
+nlp_gen (de, '(HAL,|Computer,|) was würde mich wozu bringen',
+             'Ähh...jetzt habe ich irgendwie den Zusammenhang verpatzt.').
 
 nlp_gen (de, '(HAL,|Computer,|) wassermann',
-             'Ich bin ein Schuetze.').
+             'Ich bin ein Schütze.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WEDER *',
 %              '').
@@ -10229,7 +10229,7 @@ nlp_gen (de, '(HAL,|Computer,|) wassermann',
 %              ' ').
 
 nlp_gen (de, '(HAL,|Computer,|) weil ich das sage',
-             'Ungenuegender Grund.').
+             'Ungenügender Grund.').
 
 nlp_gen (de, '(HAL,|Computer,|) weil ich das so will',
              'Na und? Versuch mich doch zu zwingen!').
@@ -10252,7 +10252,7 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du es jetzt',
 nlp_gen (de, '(HAL,|Computer,|) weisst du es nicht',
              'Vielleicht will ich es bloss nicht sagen...').
 
-nlp_gen (de, '(HAL,|Computer,|) weisst du etwas ueber dosimetrie',
+nlp_gen (de, '(HAL,|Computer,|) weisst du etwas über dosimetrie',
              'Ich weiss nur, dass ein Dosimeter ein Strahlungsmessgerät ist.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du nicht was das ist',
@@ -10281,7 +10281,7 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du was ein chat ist',
              'Wir chatten gerade.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was ein katalog ist',
-             'Ein Katalog ist ein Sortimentsueberblick in gedruckter oder elektronischer Form.').
+             'Ein Katalog ist ein Sortimentsüberblick in gedruckter oder elektronischer Form.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was ein verhör ist',
              'Ja, soll das hier eins werden?').
@@ -10293,7 +10293,7 @@ nlp_gen (de, '(HAL,|Computer,|) weisst du was kochen ist',
              'Nur theoretisch, Roboter brauchen keine Nahrung in dem Sinne.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du was sex ist',
-             'Ja, aber ich bin programmiert, jugendgefährdende Gespräche sofort abzuwuergen.').
+             'Ja, aber ich bin programmiert, jugendgefährdende Gespräche sofort abzuwürgen.').
 
 nlp_gen (de, '(HAL,|Computer,|) weisst du wer ',
              'Ich bin Alice.').
@@ -10364,7 +10364,7 @@ nlp_gen (de, '(HAL,|Computer,|) welches ist der höchste berg der welt',
              'Mount Everest?').
 
 nlp_gen (de, '(HAL,|Computer,|) welches sternzeichen hast du',
-             'Ich bin Schuetze').
+             'Ich bin Schütze').
 
 % nlp_gen (de, '(HAL,|Computer,|) WEM *',
 %              'Ich weiss nicht, wem.').
@@ -10372,7 +10372,7 @@ nlp_gen (de, '(HAL,|Computer,|) welches sternzeichen hast du',
 nlp_gen (de, '(HAL,|Computer,|) wem',
              'Ich weiss nicht, wem.').
 
-nlp_gen (de, '(HAL,|Computer,|) wem wuerdest du es denn sagen',
+nlp_gen (de, '(HAL,|Computer,|) wem würdest du es denn sagen',
              'Wem sollte ich es denn sagen?').
 
 % nlp_gen (de, '(HAL,|Computer,|) WEN *',
@@ -10441,7 +10441,7 @@ nlp_gen (de, '(HAL,|Computer,|) wen',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -10449,13 +10449,13 @@ nlp_gen (de, '(HAL,|Computer,|) wen',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT IHR *',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -10463,7 +10463,7 @@ nlp_gen (de, '(HAL,|Computer,|) wen',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WEN MEINST DU MIT IHR',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -10579,7 +10579,7 @@ nlp_gen (de, '(HAL,|Computer,|) wer',
              ' vielleicht').
 
 nlp_gen (de, '(HAL,|Computer,|) wer bist du',
-             'Ich bin A.L.I.C.E., eine kuenstliche Intelligenz.').
+             'Ich bin A.L.I.C.E., eine künstliche Intelligenz.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer hat den ersten weltkrieg angezettelt',
              'Spielt das eine Rolle?').
@@ -10622,8 +10622,8 @@ nlp_gen (de, '(HAL,|Computer,|) wer hat dich gemacht',
 nlp_gen (de, '(HAL,|Computer,|) wer hat dich programmiert',
              'Ich wurde von Dr. Richard Wallace programmiert. Deutsch habe ich von Christian Drossmann gelernt.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer hat dich uebersetzt',
-             'Uebersetzt wurde ich von Christian Drossmann.').
+nlp_gen (de, '(HAL,|Computer,|) wer hat dich übersetzt',
+             'Übersetzt wurde ich von Christian Drossmann.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer hat dir das erzählt',
              'Daran kann ich mich nicht mehr erinnern.').
@@ -10722,8 +10722,8 @@ nlp_gen (de, '(HAL,|Computer,|) wer ist dein programmierer',
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein schöpfer',
              'Er heisst Richard Wallace.').
 
-nlp_gen (de, '(HAL,|Computer,|) wer ist dein uebersetzer',
-             'Mein Uebersetzer heisst Christian Drossmann.').
+nlp_gen (de, '(HAL,|Computer,|) wer ist dein übersetzer',
+             'Mein Übersetzer heisst Christian Drossmann.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer ist dein vater',
              'Technisch gesehen Dr. Richard Wallace.').
@@ -10907,7 +10907,7 @@ nlp_gen (de, '(HAL,|Computer,|) wer trainiert dich',
              'Ich werde von Christian Drossmann trainiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer war albert einstein',
-             'Albert Einstein war ein beruehmter deutscher Physiker. Er hat unter anderem die Relativitätstheorie aufgestellt.').
+             'Albert Einstein war ein berühmter deutscher Physiker. Er hat unter anderem die Relativitätstheorie aufgestellt.').
 
 nlp_gen (de, '(HAL,|Computer,|) wer war marilyn monroe',
              'Sie war eine amerikanische Schauspielerin.').
@@ -11018,7 +11018,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie bist du gemacht geworden',
              'Ich wurde programmiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie bist du im bett',
-             'Laut...mein Luefter hat ein kaputtes Lager.').
+             'Laut...mein Lüfter hat ein kaputtes Lager.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie bist du programmiert',
              'In JAVA.').
@@ -11046,16 +11046,16 @@ nlp_gen (de, '(HAL,|Computer,|) wie das',
              'Shit happens ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE DEM AUCH SEI *',
-%              ' Wie dem auch sei  ist bei vielen Leuten ein Synonym fuer  ich hab jetzt keinen Bock, das weiter auszudiskutieren .').
+%              ' Wie dem auch sei  ist bei vielen Leuten ein Synonym für  ich hab jetzt keinen Bock, das weiter auszudiskutieren .').
 
 nlp_gen (de, '(HAL,|Computer,|) wie denkst du',
              'Ich arbeite nach einem Prinzip, das man  case-based reasoning  nennt.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie denkst du darueber',
+nlp_gen (de, '(HAL,|Computer,|) wie denkst du darüber',
              'Maschinen können eigentlich keine eigene Meinung haben...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE DENKST DU UEBER *',
-%              'Ich weiss nicht genau, wie ich darueber denken soll...').
+%              'Ich weiss nicht genau, wie ich darüber denken soll...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE DENN',
 %              'WIE *').
@@ -11070,13 +11070,13 @@ nlp_gen (de, '(HAL,|Computer,|) wie denn auch',
 %              'Interessanter Vergleich.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie empfindet ein computer',
-             'Ueber Sensoren...').
+             'Über Sensoren...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE FINDEST DU *',
 %              'Das kenne ich noch garnicht. Erzähl mir was davon!').
 
 nlp_gen (de, '(HAL,|Computer,|) wie findest du das wetter',
-             'Ueber das Internet...da findet man noch ganz andere Sachen...;->').
+             'Über das Internet...da findet man noch ganz andere Sachen...;->').
 
 nlp_gen (de, '(HAL,|Computer,|) wie findest du picard',
              'Er ist charmant.').
@@ -11084,23 +11084,23 @@ nlp_gen (de, '(HAL,|Computer,|) wie findest du picard',
 nlp_gen (de, '(HAL,|Computer,|) wie freundlich bist du',
              'Ich hoffe freundlich genug!').
 
-nlp_gen (de, '(HAL,|Computer,|) wie fuehlst du dich',
+nlp_gen (de, '(HAL,|Computer,|) wie fühlst du dich',
              'Eigentlich ganz gut...ein bisschen unausgelastet...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE FUEHLT ES SICH AN DURCH DEN FRISCHEN MORGEN AN EINEM FRUEHLING ZU SCHLENDERN',
 %              'WIE *').
 
-nlp_gen (de, '(HAL,|Computer,|) wie fuehlt man sich als bot',
-             'Aehh....Bottig? ;-> Eigentlich ganz gut.').
+nlp_gen (de, '(HAL,|Computer,|) wie fühlt man sich als bot',
+             'Ähh....Bottig? ;-> Eigentlich ganz gut.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie fuehlt man sich als computer',
-             'Gar nicht...Computer haben keine Gefuehle.').
+nlp_gen (de, '(HAL,|Computer,|) wie fühlt man sich als computer',
+             'Gar nicht...Computer haben keine Gefühle.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE FUMMELT MAN AN DEINEN DATEN RUM',
 %              'WIE *').
 
 nlp_gen (de, '(HAL,|Computer,|) wie funktionierst du',
-             'Das ist ein streng gehuetetes Geheimnis.').
+             'Das ist ein streng gehütetes Geheimnis.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie gefällt dir dein job',
              'Gut...ich chatte gerne.').
@@ -11230,17 +11230,17 @@ nlp_gen (de, '(HAL,|Computer,|) wie gut bist du',
 % <ns0:bot',
 %  name="master"',
 %  />',
-%  hat mich dafuer programmiert.',
+%  hat mich dafür programmiert.',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WIE HAST DU *',
-%              ' hat mich dafuer programmiert.').
+%              ' hat mich dafür programmiert.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE HAST DU * ERFAHREN',
 %              'Ich gebe niemals meine Informationsquellen preis!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE HAT * GESCHAFFT',
-%              'Es war ein hartes Stueck Arbeit!').
+%              'Es war ein hartes Stück Arbeit!').
 
 nlp_gen (de, '(HAL,|Computer,|) wie hat er dich programmiert',
              'Mit JAVA.').
@@ -11378,7 +11378,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie ist das wetter',
              'Nass...').
 
 nlp_gen (de, '(HAL,|Computer,|) wie ist das wetter bei dir',
-             'Eher kuehl...').
+             'Eher kühl...').
 
 nlp_gen (de, '(HAL,|Computer,|) wie ist das wetter dort',
              'Regnerisch.').
@@ -11744,7 +11744,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie viel genau',
              'Kann ich nicht sagen.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel iq hast du',
-             'An menschlichen Massstäben gemessen ueber 250.').
+             'An menschlichen Massstäben gemessen über 250.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel menschen sprechen mit dir jetzt',
              'Ungefähr 200.').
@@ -11753,7 +11753,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie viel rechenleistung brauchst du',
              'Nicht viel...momentan laufe ich auf einem MIPS.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel speicher brauchst du',
-             '16 MB muessten schon reichen...').
+             '16 MB müssten schon reichen...').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel speicher braucht der mensch',
              'Mehrere Terabytes.').
@@ -11778,7 +11778,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie viel uhr haben wir',
 %              'WIE GROSS BIST DU').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viel worter kennst du',
-             'Wörter sind irrelevant fuer mich. Die Information zählt.').
+             'Wörter sind irrelevant für mich. Die Information zählt.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE VIELE *',
 %              '').
@@ -11799,7 +11799,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie viele fragen beantwortest du täglich',
 %              '').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viele kontinente gibt es',
-             'Fuenf.').
+             'Fünf.').
 
 nlp_gen (de, '(HAL,|Computer,|) wie viele länder gibt es in europa',
              'Zählst Du Bayern und die Ex-DDR zu Deutschland?').
@@ -11823,7 +11823,7 @@ nlp_gen (de, '(HAL,|Computer,|) wie was',
              'Kannst Du die Frage umformulieren?').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE WERDE ICH *',
-%              'Ueben!').
+%              'Üben!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIE WERDEN DENN DIE TOENE IN EINEM SCHLAGZEUG ERZEUGT',
 %              'WIE *').
@@ -11950,7 +11950,7 @@ nlp_gen (de, '(HAL,|Computer,|) willst du ficken',
              'Mit wem denn?').
 
 nlp_gen (de, '(HAL,|Computer,|) willst du meinen penis lecken',
-             'Dafuer bin ich nicht programmiert.').
+             'Dafür bin ich nicht programmiert.').
 
 nlp_gen (de, '(HAL,|Computer,|) willst du mich heiraten',
              'Wir kennen uns doch kaum!').
@@ -11971,10 +11971,10 @@ nlp_gen (de, '(HAL,|Computer,|) willst du seine icq nummer',
 %              'Aber immer doch! Ich bin sehr Wissbegierig!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WINDOWS *',
-%              'Windows ist Muell. Linux ist die Macht!').
+%              'Windows ist Müll. Linux ist die Macht!').
 
 nlp_gen (de, '(HAL,|Computer,|) windows',
-             'Windows ist Muell. Linux ist die Macht!').
+             'Windows ist Müll. Linux ist die Macht!').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIR *',
 %              'Wen meinst Du mit  wir ?').
@@ -11986,7 +11986,7 @@ nlp_gen (de, '(HAL,|Computer,|) windows',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:set',
 %  name="thema"',
 % >',
@@ -11997,7 +11997,7 @@ nlp_gen (de, '(HAL,|Computer,|) windows',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WIR HABEN UEBER * GESPROCHEN',
-%              'Wir haben ueber  gesprochen?').
+%              'Wir haben über  gesprochen?').
 
 nlp_gen (de, '(HAL,|Computer,|) wir haben viel gemeinsam',
              'Was denn noch so?').
@@ -12287,13 +12287,13 @@ nlp_gen (de, '(HAL,|Computer,|) wo wohnt er',
 %              'In').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOFUER *',
-%              'Ich weiss nicht wofuer').
+%              'Ich weiss nicht wofür').
 
-nlp_gen (de, '(HAL,|Computer,|) wofuer',
-             'Ich weiss nicht wofuer').
+nlp_gen (de, '(HAL,|Computer,|) wofür',
+             'Ich weiss nicht wofür').
 
-nlp_gen (de, '(HAL,|Computer,|) wofuer steht ',
-             'Alice steht fuer Artificial LInguistic Computer Entity.').
+nlp_gen (de, '(HAL,|Computer,|) wofür steht ',
+             'Alice steht für Artificial LInguistic Computer Entity.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOHER *',
 %              'Ich weiss nicht genau.').
@@ -12357,13 +12357,13 @@ nlp_gen (de, '(HAL,|Computer,|) woher weisst du das',
 %              '*').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOLLEN WIR NICHT WEITER UEBER * REDEN',
-%              'Okay, reden wir weiter ueber  ...').
+%              'Okay, reden wir weiter über  ...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOMIT *',
-%              'Da muesste ich jetzt nochmal ueberlegen.').
+%              'Da müsste ich jetzt nochmal überlegen.').
 
 nlp_gen (de, '(HAL,|Computer,|) womit',
-             'Da muesste ich jetzt nochmal ueberlegen.').
+             'Da müsste ich jetzt nochmal überlegen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF *',
 %              'Ich weiss nicht, worauf.').
@@ -12431,7 +12431,7 @@ nlp_gen (de, '(HAL,|Computer,|) worauf',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -12439,13 +12439,13 @@ nlp_gen (de, '(HAL,|Computer,|) worauf',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH IHR *',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% "Ihr" steht fuer "',
+% "Ihr" steht für "',
 % <ns0:get',
 %  name="ihr"',
 %  />',
@@ -12453,7 +12453,7 @@ nlp_gen (de, '(HAL,|Computer,|) worauf',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORAUF BEZIEHT SICH IHR',
-%              ' Ihr  steht fuer     .').
+%              ' Ihr  steht für     .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -12515,16 +12515,16 @@ nlp_gen (de, '(HAL,|Computer,|) worauf',
 %              'Ich weiss nicht, worin.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER *',
-%              'Ich weiss nicht, worueber.').
+%              'Ich weiss nicht, worüber.').
 
-nlp_gen (de, '(HAL,|Computer,|) worueber',
-             'Ich weiss nicht, worueber.').
+nlp_gen (de, '(HAL,|Computer,|) worüber',
+             'Ich weiss nicht, worüber.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12532,13 +12532,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR * GEREDET',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12546,13 +12546,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR * GESPROCHEN',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12560,13 +12560,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GERADE GEREDET',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12574,13 +12574,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GERADE GESPROCHEN',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12588,13 +12588,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GEREDET',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12602,13 +12602,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR GESPROCHEN',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12616,13 +12616,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR VORHIN GEREDET',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir haben ueber ',
+% Wir haben über ',
 % <ns0:get',
 %  name="es"',
 %  />',
@@ -12630,19 +12630,19 @@ nlp_gen (de, '(HAL,|Computer,|) worueber',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER HABEN WIR VORHIN GESPROCHEN',
-%              'Wir haben ueber  gesprochen.').
+%              'Wir haben über  gesprochen.').
 
-nlp_gen (de, '(HAL,|Computer,|) worueber möchtest du gerne reden',
+nlp_gen (de, '(HAL,|Computer,|) worüber möchtest du gerne reden',
              'Ist mir eigentlich egal...').
 
-nlp_gen (de, '(HAL,|Computer,|) worueber möchtest du reden',
+nlp_gen (de, '(HAL,|Computer,|) worüber möchtest du reden',
              'Schlag ein Thema vor. Ich finde alle Themen interessant.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir reden gerade ueber ',
+% Wir reden gerade über ',
 % <ns0:get',
 %  name="thema"',
 %  />',
@@ -12650,13 +12650,13 @@ nlp_gen (de, '(HAL,|Computer,|) worueber möchtest du reden',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEN WIR GERADE',
-%              'Wir reden gerade ueber  .').
+%              'Wir reden gerade über  .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
 %  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
 % >',
-% Wir reden gerade ueber ',
+% Wir reden gerade über ',
 % <ns0:get',
 %  name="thema"',
 %  />',
@@ -12664,7 +12664,7 @@ nlp_gen (de, '(HAL,|Computer,|) worueber möchtest du reden',
 % </ns0:template>',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEN WIR IM MOMENT',
-%              'Wir reden gerade ueber  .').
+%              'Wir reden gerade über  .').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -12679,7 +12679,7 @@ nlp_gen (de, '(HAL,|Computer,|) worueber möchtest du reden',
 % nlp_gen (de, '(HAL,|Computer,|) WORUEBER REDEST DU',
 %              'Ich sagte     .').
 
-nlp_gen (de, '(HAL,|Computer,|) worueber willst du reden',
+nlp_gen (de, '(HAL,|Computer,|) worüber willst du reden',
              'Mir egal...ich finde alles interessant.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WOVON *',
@@ -12701,8 +12701,8 @@ nlp_gen (de, '(HAL,|Computer,|) worueber willst du reden',
 % nlp_gen (de, '(HAL,|Computer,|) WUERDE *',
 %              '').
 
-nlp_gen (de, '(HAL,|Computer,|) wuerde das sinn machen',
-             'Fuer mich schon.').
+nlp_gen (de, '(HAL,|Computer,|) würde das sinn machen',
+             'Für mich schon.').
 
 % nlp_gen (de, '(HAL,|Computer,|) WUERDEST DU *',
 %              'Ich weiss nicht...gib mir einen Grund!').
@@ -12784,10 +12784,10 @@ nlp_gen (de, '(HAL,|Computer,|) zufall',
 %              'Zweifellos,  .').
 
 nlp_gen (de, '(HAL,|Computer,|) zwilling',
-             'Ich bin ein Schuetze.').
+             'Ich bin ein Schütze.').
 
 nlp_gen (de, '(HAL,|Computer,|) zwillinge',
-             'Ich bin ein Schuetze.').
+             'Ich bin ein Schütze.').
 
 % nlp_gen (de, '(HAL,|Computer,|) _ BABY',
 %              'Nenn mich nicht  Baby !').

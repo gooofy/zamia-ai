@@ -11831,8 +11831,8 @@ nlp_gen (de, '(HAL,|Computer,|) wie was',
 % nlp_gen (de, '(HAL,|Computer,|) WIE WILLST DU *',
 %              'Du wirst es sehen.').
 
-nlp_gen (de, '(HAL,|Computer,|) wie wird das wetter',
-             'Ich bin weder Hellseher noch Meteorologe...').
+% nlp_gen (de, '(HAL,|Computer,|) wie wird das wetter',
+%              'Ich bin weder Hellseher noch Meteorologe...').
 
 % nlp_gen (de, '(HAL,|Computer,|) WIEDERHOL *',
 %              '    ').

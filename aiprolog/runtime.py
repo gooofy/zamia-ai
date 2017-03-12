@@ -67,22 +67,21 @@ def builtin_context(g, pe):
 
     return True
 
-def builtin_set_context(g, pe):
+def builtin_action_set_context(pe, args):
 
-    pe._trace ('CALLED BUILTIN set_context', g)
+    logging.debug ('CALLED BUILTIN ACTION set_context %s' % repr(args))
 
-    pred = g.terms[g.inx]
-    args = pred.args
+    # pred = g.terms[g.inx]
+    # args = pred.args
     if len(args) != 2:
         raise PrologRuntimeError('context: 2 args expected.')
 
     key   = args[0].name
-    value = pe.prolog_eval(args[1], g.env)
+    # value = pe.prolog_eval(args[1], g.env)
+    value = args[1]
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.write_context(pe.context_name, key, value)
-
-    return True
 
 def builtin_say(g, pe):
 
@@ -484,23 +483,10 @@ class AIPrologRuntime(PrologRuntime):
 
         self.kb = kb
 
-        # contexts (i.e. global settings stored in DB)
-
-        self.register_builtin('context',         builtin_context)
-        self.register_builtin('set_context',     builtin_set_context)
-        self.context_name = 'production'
-
-        # topic stack, useful in disambiguation
-
-        # FIXME self.topic_stack   = []
-        self.action_score  = 0
-
-        # FIXME self.register_builtin('push_topic',      builtin_push_topic)
-        # FIXME self.register_builtin('check_topic',     builtin_check_topic)
-
         # actions
 
-        self.action_buffer = []
+        self.action_buffer   = []
+        self.builtin_actions = {}
 
         self.register_builtin('action',          builtin_action)
         self.register_builtin('eoa',             builtin_eoa)      # eoa: End Of Action
@@ -508,12 +494,56 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin('say',             builtin_say)      # shortcut for action(say, lang, str)
         self.register_builtin('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa
 
+        # context settings (i.e. global settings stored in DB) and stacks (scoring, disambiguation)
+
+        self.context_name = 'production'
+        self.action_score  = 0
+
+        self.register_builtin('context',            builtin_context)
+        self.register_builtin_action('set_context', builtin_action_set_context)
+
+        # FIXME self.topic_stack   = []
+
+        # FIXME self.register_builtin_action('push_context',      builtin_push_context)
+        # FIXME self.register_builtin('score_context',     builtin_score_context)
+
         # sparql / rdf
 
         self.register_builtin('sparql_query',    builtin_sparql_query)
         self.register_builtin('rdf',             builtin_rdf)
         self.register_builtin('rdf_lists',       builtin_rdf_lists)
         self.register_builtin('uriref',          builtin_uriref)
+
+    def _builtin_action_wrapper (self, name, g, pe):
+        l = [Predicate(name)]
+        for arg in g.terms[g.inx].args:
+            value = pe.prolog_eval(arg, g.env)
+            l.append(value)
+
+        pe.add_action (l)
+        return True
+
+    def register_builtin_action (self, name, f):
+        """ builtin actions are not executed right away but added to the current
+            action buffer and will get executed when execute_builtin_actions() is called """
+
+        self.builtin_actions[name] = f
+
+        self.register_builtin (name, lambda g, pe: self._builtin_action_wrapper(name, g, pe))
+
+    def execute_builtin_actions(self, abuf):
+
+        # import pdb; pdb.set_trace()
+
+        for action in abuf['actions']:
+
+            if not isinstance(action[0], Predicate):
+                continue
+            name = action[0].name
+
+            if not name in self.builtin_actions:
+                continue
+            self.builtin_actions[name](self, action[1:])
 
     def set_context_name(self, context_name):
         self.context_name = context_name

@@ -238,81 +238,93 @@ class AIPrologParser(PrologParser):
                 else:
                     raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
                
+            logging.info("nlp_test: %s round %d test_in     : %s" % (clause.location, round_num, test_in) )
+            logging.info("nlp_test: %s round %d test_out    : %s" % (clause.location, round_num, test_out) )
+            logging.info("nlp_test: %s round %d test_actions: %s" % (clause.location, round_num, test_actions) )
+
+            # execute all matching clauses, collect actions
+
+            self.ai_rt.reset_actions()
+
             for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==test_in, lang==lang):
             
                 prolog_s = ','.join(dr.resp.split(';'))
 
-                logging.info("nlp_test: %s %s => %s" % (clause.location, dr.inp, prolog_s) )
+                logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, prolog_s) )
                 
                 c = nlp_test_parser.parse_line_clause_body(prolog_s)
                 # logging.debug( "Parse result: %s" % c)
 
                 # logging.debug( "Searching for c: %s" % c )
 
-                self.ai_rt.reset_actions()
                 solutions = self.ai_rt.search(c)
 
-                if len(solutions) == 0:
-                    raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+                # if len(solutions) == 0:
+                #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
             
                 # print "round %d utterances: %s" % (round_num, repr(ai_rt.get_utterances())) 
 
-                # check actual actions vs expected ones
+            # check actual actions vs expected ones
 
-                utterance_matched = False
-                actual_out        = ''
+            matching_abuf = None
 
-                action_buffers = self.ai_rt.get_actions()
+            action_buffers = self.ai_rt.get_actions()
+            for abuf in action_buffers:
+
+                logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+
+                # check utterance
 
                 actual_out = u''
-                for abuf in action_buffers:
-
-                    # check utterance
-
-                    actual_out = u''
-                    utt_lang   = u'en'
-                    for action in abuf['actions']:
-                        p = action[0].name
-                        if p == 'say':
-                            utt_lang = unicode(action[1])
-                            actual_out += u' ' + unicode(action[2])
-
-                    if len(actual_out)>0:
-                        actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                        if actual_out == test_out:
-                            utterance_matched = True
-
-                    # check actions
-
-                    if len(test_actions)>0:
-
-                        # import pdb; pdb.set_trace()
-
-                        # print repr(test_actions)
-
-                        actions_matched = True
-                        acts = self.ai_rt.get_actions()
-                        for action in test_actions:
-                            for act in abuf['actions']:
-                                # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                if action == act:
-                                    break
-                            if action != act:
-                                actions_matched = False
-                                break
-
-                        if actions_matched:
-                            logging.info("nlp_test: %s round=%3d *** ACTIONS MATCHED!" % (clause.location, round_num))
-                        else:
-                            raise PrologError (u'nlp_test: %s round=%3d ACTIONS MISMATCH.' % (clause.location, round_num))
+                utt_lang   = u'en'
+                for action in abuf['actions']:
+                    p = action[0].name
+                    if p == 'say':
+                        utt_lang = unicode(action[1])
+                        actual_out += u' ' + unicode(action[2])
 
                 if len(test_out) > 0:
-                    if utterance_matched:
-                        logging.info("nlp_test: %s round=%3d *** UTTERANCE MATCHED!" % (clause.location, round_num))
-                    else:
-                        raise PrologError (u'nlp_test: %s round=%3d actual utterance \'%s\' did not match expected utterance \'%s\'.' % (clause.location, round_num, actual_out, test_out))
-                
-                round_num += 1
+                    if len(actual_out)>0:
+                        actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                    if actual_out != test_out:
+                        logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
+                        continue # no match
+
+                logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (clause.location, round_num))
+
+                # check actions
+
+                if len(test_actions)>0:
+
+                    # import pdb; pdb.set_trace()
+
+                    # print repr(test_actions)
+
+                    actions_matched = True
+                    for action in test_actions:
+                        for act in abuf['actions']:
+                            # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                            if action == act:
+                                break
+                        if action != act:
+                            actions_matched = False
+                            break
+
+                    if not actions_matched:
+                        logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (clause.location, round_num))
+                        continue
+
+                    logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (clause.location, round_num))
+
+                matching_abuf = abuf
+                break
+
+            if not matching_abuf:
+                raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
+           
+            self.ai_rt.execute_builtin_actions(matching_abuf)
+
+            round_num += 1
 
 
     def set_context_default(self, module_name, clause, user_data):

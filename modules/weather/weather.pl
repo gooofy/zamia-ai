@@ -24,32 +24,50 @@ near_future(weather, tomorrow) :-
 % weather answers 
 %
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "01", say_eoa(de, format_str("%s wird es der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "01", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "02", say_eoa(de, format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "02", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "03", say_eoa(de, format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "03", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "04", say_eoa(de, format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "04", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "09", say_eoa(de, format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "09", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "10", say_eoa(de, format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "10", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "11", say_eoa(de, format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "11", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "13", say_eoa(de, format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "13", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT) :-
-    Code is "50", say_eoa(de, format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax)).
+answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
+    Code is "50", 
+    set_context(place, P), set_context(time, EvT),
+    say_eoa(de, format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax)).
 
 weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc) :-
     time_span(EvT, EvTS, EvTE),
@@ -98,30 +116,34 @@ weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, 
 
 answer(weather, Lang, EvT, P) :-
     weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc),
-    answerWeather(Lang, Code, list_sum(Precipitation), list_min(TempMin), list_max(TempMax), PLoc, EvTLoc).
+    answerWeather(Lang, Code, list_sum(Precipitation), list_min(TempMin), list_max(TempMax), PLoc, EvTLoc, P, EvT).
 
 answer(weatherPrecCloud, Lang, EvT, P) :-
     weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc),
-    answerWeatherPrecCloud(Lang, list_sum(Precipitation), list_avg(Clouds), EvTLoc, PLoc).
+    answerWeatherPrecCloud(Lang, list_sum(Precipitation), list_avg(Clouds), EvTLoc, PLoc, P, EvT).
 
-answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
+answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS < 50,
+    set_context(place, P), set_context(time, EvT),
     say_eoa(de, format_str("%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP)).
 
-answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
+answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS < 50,
+    set_context(place, P), set_context(time, EvT),
     say_eoa(de, format_str("%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
-answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
+answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS >= 50,
+    set_context(place, P), set_context(time, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP)).
 
-answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP) :-
+answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS >= 50,
+    set_context(place, P), set_context(time, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 %
@@ -169,119 +191,119 @@ nlp_macro('PLACEF', W, P) :-
 
 nlp_gen(de,
         '@HELLO:W wird es @TIMESPEC:W @PLACE:W regnen?',
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P), set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hi, wird es morgen in Freudental regnen?'),
              out('morgen ist es in Freudental überwiegend bewölkt, aber es gibt wenig Niederschlag.'))).
 
 nlp_gen(de,
         '@HELLO:W wird es @TIMESPEC:W @PLACE:W Regen geben?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Computer, wird es heute in Tallinn regnen?'),
              out('heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben.'))).
 
 nlp_gen(de,
         '@HELLO:W wie groß ist die Wahrscheinlichkeit für Regen @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('wie groß ist die Wahrscheinlichkeit für Regen übermorgen in Stuttgart?'),
              out('übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:W wie wahrscheinlich ist es, dass es @TIMESPEC:W @PLACE:W regnen wird?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('HAL, wie wahrscheinlich ist es, dass es heute in Freudental regnen wird?'),
              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:W wie wird @TIMESPEC:W @PLACE:W das Wetter?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hi, wie wird morgen in Tallinn das Wetter?'),
              out('morgen regnet es null millimeter in tallinn und es wird zwischen eins und drei grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W scheint @TIMESPEC:W @PLACE:W die Sonne?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, scheint übermorgen in Stuttgart die Sonne?'),
              out('übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:W regnet es @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Regnet es in Freudental?'),
              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
         '@HELLO:W kommt @TIMESPEC:W noch Regen @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Computer, kommt morgen noch Regen in Tallinn?'),
              out('morgen ist es in tallinn überwiegend bewölkt aber es gibt wenig niederschlag'))).
 
 nlp_gen(de,
         '@HELLO:W wie warm wird es @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('HAL, wie warm wird es übermorgen in Stuttgart?'),
              out('übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen minus neun und eins grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W wie warm wird es @TIMESPEC:W @PLACE:W werden ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hi, wie warm wird es in Freudental werden?'),
              out('heute wird es wenige wolken geben in freudental und es wird zwischen minus sieben und zwei grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W wie wird das Wetter @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, wie wird das Wetter heute in Tallinn?'),
              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W wie wird das Wetter @PLACE:W @TIMESPEC:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('wie wird das Wetter in Stuttgart morgen?'),
              out('morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und eins grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W wie kalt wird es @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Computer, wie kalt wird es übermorgen in Freudental?'),
              out('übermorgen zeigt sich ab und an die sonne in freudental und es wird zwischen minus sechs und eins grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W wie kalt wird es @TIMESPEC:W @PLACE:W werden ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('HAL, wie kalt wird es in Tallinn?'),
              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W was sagt der Wetterbericht @TIMESPECF:W @PLACEF:W ?', 
-        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hi, was sagt der Wetterbericht für heute für Stuttgart?'),
              out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus sieben und drei grad warm'))).
 
 nlp_gen(de,
         '@HELLO:W was sagt die Wettervorhersage @TIMESPECF:W @PLACEF:W ?', 
-        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, was sagt die Wettervorhersage für morgen für Freudental?'),
              out('morgen zeigt sich ab und an die sonne in freudental und es wird zwischen minus sechs und minus zwei grad warm'))).
 
 nlp_gen(de, 
         '@HELLO:W wie sind die Wetteraussichten @TIMESPECF:W @PLACEF:W ?', 
-        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P),set_context(place, P), set_context(time, EvT)).
+        @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Wie sind die Wetteraussichten für übermorgen?'),
              out('übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen -9 und 1 grad warm'))).

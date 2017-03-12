@@ -67,6 +67,37 @@ def builtin_context(g, pe):
 
     return True
 
+def builtin_score_context(g, pe):
+
+    pe._trace ('CALLED BUILTIN score_context', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 3:
+        raise PrologRuntimeError('score_context: 3 args expected.')
+
+    key     = args[0].name
+    value   = pe.prolog_eval(args[1], g.env)
+    score   = pe.prolog_eval(args[2], g.env)
+
+    if not key in pe.context_stacks:
+        return False
+
+    i = 1
+    found = False
+    for v in pe.context_stacks[key]:
+        if v == value:
+            found = True
+            break
+        i += 1
+
+    if not found:
+        return False
+
+    pe.action_score += score.f / float(i)
+
+    return True
+
 def builtin_action_set_context(pe, args):
 
     logging.debug ('CALLED BUILTIN ACTION set_context %s' % repr(args))
@@ -74,7 +105,7 @@ def builtin_action_set_context(pe, args):
     # pred = g.terms[g.inx]
     # args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('context: 2 args expected.')
+        raise PrologRuntimeError('set_context: 2 args expected.')
 
     key   = args[0].name
     # value = pe.prolog_eval(args[1], g.env)
@@ -82,6 +113,19 @@ def builtin_action_set_context(pe, args):
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.write_context(pe.context_name, key, value)
+
+def builtin_action_push_context(pe, args):
+
+    logging.debug ('CALLED BUILTIN ACTION push_context %s' % repr(args))
+
+    if len(args) != 2:
+        raise PrologRuntimeError('push_context: 2 args expected.')
+
+    key   = args[0].name
+    value = args[1]
+
+    # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
+    pe.push_context(pe.context_name, key, value)
 
 def builtin_say(g, pe):
 
@@ -502,10 +546,10 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin('context',            builtin_context)
         self.register_builtin_action('set_context', builtin_action_set_context)
 
-        # FIXME self.topic_stack   = []
+        self.context_stacks   = {} # key -> []
 
-        # FIXME self.register_builtin_action('push_context',      builtin_push_context)
-        # FIXME self.register_builtin('score_context',     builtin_score_context)
+        self.register_builtin_action('push_context',builtin_action_push_context)
+        self.register_builtin('score_context',      builtin_score_context)
 
         # sparql / rdf
 
@@ -561,7 +605,7 @@ class AIPrologRuntime(PrologRuntime):
         highscore = 0
         for ab in self.action_buffer:
             if ab['score'] > highscore:
-                highscore = ab[score]
+                highscore = ab['score']
 
         # filter out any lower scoring action:
 
@@ -649,6 +693,14 @@ class AIPrologRuntime(PrologRuntime):
         else:
             ctx.value       = v
             ctx.prolog_type = pt
+
+    def push_context (self, name, key, value):
+
+        self.write_context (name, key, value)
+
+        if not key in self.context_stacks:
+            self.context_stacks[key] = []
+        self.context_stacks[key].insert(0, value)
 
     def set_context_default(self, name, key, value):
 

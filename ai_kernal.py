@@ -427,21 +427,27 @@ class AIKernal(object):
             c = self.parser.parse_line_clause_body(prolog_s)
             logging.debug( "Parse result: %s" % c)
 
-            self.prolog_rt.reset_utterances()
             self.prolog_rt.reset_actions()
 
             self.prolog_rt.search(c)
 
-            utts    = self.prolog_rt.get_utterances()
-            actions = self.prolog_rt.get_actions()
+            abufs = self.prolog_rt.get_actions()
 
-            return utts, actions
+            # if we have multiple abufs, pick one at random
+
+            if len(abufs)>0:
+
+                abuf = random.choice(abufs)
+
+                self.prolog_rt.execute_builtin_actions(abuf)
+
+                return abuf
 
         except PrologError as e:
 
             logging.error("*** ERROR: %s" % e)
 
-        return [], []
+        return None
 
     def dump_utterances (self, num_utterances, dictfn):
 

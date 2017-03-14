@@ -35,7 +35,8 @@ import psycopg2
 
 import model
 
-from ai_kernal import AIKernal
+from zamiaprolog.logic import Predicate
+from ai_kernal         import AIKernal
 
 DEFAULT_LOGLEVEL   = logging.INFO
 RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
@@ -329,13 +330,18 @@ class AICli(cmdln.Cmdln):
             if line == 'quit' or line == 'exit':
                 break
 
-            utts, actions = self.kernal.process_line(line)
+            abuf = self.kernal.process_line(line)
 
-            if len(utts)>0:
-                print "SAY", random.choice(utts)['utterance']
+            if abuf:
 
-            for action in actions:
-                print "ACTION", action
+                for action in abuf['actions']:
+                    p = action[0]
+                    if not isinstance(p, Predicate):
+                        continue
+                    if p.name == 'say': 
+                        print "SAY", action[2]
+                    else:
+                        print "ACTION", action
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

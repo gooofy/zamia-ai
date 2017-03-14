@@ -53,7 +53,7 @@ nlp_gen(de,
 answer (feel_sorry, de) :-
     say_eoa(de, "Das tut mir leid."),
     say_eoa(de, "Kann ich dir irgendwie helfen?"),
-    say_eoa(de, "Ich wuerde Dir gern helfen."),
+    say_eoa(de, "Ich würde Dir gern helfen."),
     say_eoa(de, "Erzähle mir mehr von Deinen Gefühlen."),
     say_eoa(de, "Das ist schade.").
 
@@ -229,7 +229,7 @@ nlp_gen(de, '(HAL,|Computer,|) du bist (dumm|strohdumm|doof|verrückt)',
 nlp_gen (de, '(HAL,|Computer,|) das klingt nicht (sehr|besonders|allzu|) intelligent',
              'Intelligenter als manche Politikerrede...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
 
-nlp_gen (de, '(HAL,|Computer,|) das (ergibt|macht) (gar keinen|ueberhaupt keinen|keinen|wenig|nicht viel) sinn',
+nlp_gen (de, '(HAL,|Computer,|) das (ergibt|macht) (gar keinen|überhaupt keinen|keinen|wenig|nicht viel) sinn',
              'Da habe ich wohl den Faden verloren?', 'Oh, bitte hilf mir auf die Sprünge').
 
 

@@ -37,7 +37,7 @@ answer (knownPerson, de, PERSON, LABEL) :-
 answer (knownPerson, de, PERSON, LABEL) :-
     is_german_chancellor(PERSON),
     is_female(PERSON),
-    say_eoa(de, 'Die ist doch gerade Bundeskanzler!').
+    say_eoa(de, 'Die ist doch gerade Bundeskanzlerin!').
 
 answer (knownPerson, de, PERSON, LABEL) :-
     was_german_chancellor(PERSON), 
@@ -49,7 +49,7 @@ answer (knownPerson, de, PERSON, LABEL) :-
     was_german_chancellor(PERSON), 
     not (is_german_chancellor(PERSON)),
     is_female(PERSON),
-    say_eoa(de, 'Die war doch mal Bundeskanzler.').
+    say_eoa(de, 'Die war doch mal Bundeskanzlerin.').
 
 nlp_gen (de, '(HAL,|Computer,|) (kennst du|wer ist) (eigentlich|) @KNOWN_PERSONS:LABEL',
              answer(knownPerson, de, '@KNOWN_PERSONS:PERSON', "@KNOWN_PERSONS:LABEL")). 

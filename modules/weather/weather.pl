@@ -46,7 +46,7 @@ answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
     Code is "01", 
     push_context(topic, weather),
     set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
+    say_eoa(de, format_str("%s wird der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
 
 answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
     Code is "02", 

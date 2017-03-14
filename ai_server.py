@@ -83,19 +83,21 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 line        = data['line']
 
-                utts, actions = kernal.process_line(line)
+                abuf = kernal.process_line(line)
 
-                logging.debug("utts: %s" % repr(utts)) 
-                logging.debug("actions: %s" % repr(actions)) 
+                logging.debug("abuf: %s" % repr(abuf)) 
+
+                if not abuf:
+                    raise Exception ('No abuf received.')
 
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
 
-                reply_actions = map (lambda action: map (lambda p: unicode(p), action), actions)
+                reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
 
                 logging.debug("reply_actions: %s" % repr(reply_actions)) 
-                reply = {'utts': utts, 'actions': reply_actions }
+                reply = {'actions': reply_actions }
 
                 self.wfile.write(json.dumps(reply))
 

@@ -441,6 +441,8 @@ class AIKernal(object):
 
                 self.prolog_rt.execute_builtin_actions(abuf)
 
+                self.db.commit()
+
                 return abuf
 
         except PrologError as e:

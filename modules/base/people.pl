@@ -56,7 +56,7 @@ nlp_gen (de, '(HAL,|Computer,|) (kennst du|wer ist) (eigentlich|) @KNOWN_PERSONS
 
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Angela Merkel?'),
-             out('die ist doch gerade bundeskanzler'))).
+             out('die ist doch gerade bundeskanzlerin'))).
 
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Helmut Kohl?'),

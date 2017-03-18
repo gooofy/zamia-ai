@@ -37,6 +37,7 @@ import model
 
 from zamiaprolog.logic import Predicate
 from ai_kernal         import AIKernal
+from nltools           import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
 RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
@@ -365,9 +366,11 @@ class AICli(cmdln.Cmdln):
 # init terminal
 #
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+misc.init_app('ai_cli')
+
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
+# sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 #
 # logging

@@ -67,6 +67,9 @@ def builtin_context(g, pe):
 
     return True
 
+ACTION_VARNAME       = '__ACTION__'
+ACTION_SCORE_VARNAME = '__ACTION_SCORE__'
+
 def builtin_score_context(g, pe):
 
     pe._trace ('CALLED BUILTIN score_context', g)
@@ -94,7 +97,9 @@ def builtin_score_context(g, pe):
     if not found:
         return False
 
-    pe.action_score += score.f / float(i)
+    if not ACTION_SCORE_VARNAME in g.env:
+        g.env[ACTION_SCORE_VARNAME] = 0.0
+    g.env[ACTION_SCORE_VARNAME] += score.f / float(i)
 
     return True
 
@@ -139,7 +144,10 @@ def builtin_say(g, pe):
     arg_L   = args[0].name
     arg_S   = pe.prolog_get_string(args[1], g.env)
 
-    pe.add_action([Predicate('say'), arg_L, arg_S])
+    if not ACTION_VARNAME in g.env:
+        g.env[ACTION_VARNAME] = []
+
+    g.env[ACTION_VARNAME].append( [Predicate('say'), arg_L, arg_S] )
 
     return True
 
@@ -147,7 +155,16 @@ def builtin_eoa(g, pe):
 
     pe._trace ('CALLED BUILTIN eoa', g)
 
-    pe.end_action()
+    if not (ACTION_VARNAME in g.env):
+        raise PrologRuntimeError('eoa: no action defined.')
+
+    score = g.env[ACTION_SCORE_VARNAME] if ACTION_SCORE_VARNAME in g.env else 0.0
+
+    pe.end_action(g.env[ACTION_VARNAME], score)
+
+    del g.env[ACTION_VARNAME]
+    if ACTION_SCORE_VARNAME in g.env:
+        del g.env[ACTION_SCORE_VARNAME]
 
     return True
 
@@ -169,7 +186,10 @@ def builtin_action(g, pe):
 
     evaluated_args = map (lambda v: pe.prolog_eval(v, g.env), args)
 
-    pe.add_action(evaluated_args)
+    if not ACTION_VARNAME in g.env:
+        g.env[ACTION_VARNAME] = []
+
+    g.env[ACTION_VARNAME].append( evaluated_args )
 
     return True
 
@@ -564,7 +584,10 @@ class AIPrologRuntime(PrologRuntime):
             value = pe.prolog_eval(arg, g.env)
             l.append(value)
 
-        pe.add_action (l)
+        if not ACTION_VARNAME in g.env:
+            g.env[ACTION_VARNAME] = []
+
+        g.env[ACTION_VARNAME].append( l )
         return True
 
     def register_builtin_action (self, name, f):
@@ -604,6 +627,9 @@ class AIPrologRuntime(PrologRuntime):
 
         highscore = 0
         for ab in self.action_buffer:
+
+            logging.debug('get_actions: %s' % repr(ab))
+
             if ab['score'] > highscore:
                 highscore = ab['score']
 
@@ -617,22 +643,31 @@ class AIPrologRuntime(PrologRuntime):
         return hs_actions
 
 
-    def add_action(self, args):
-        
-        # do we have an open action?
-        n = len(self.action_buffer)
-        if n>0 and not self.action_buffer[n-1]['finished']:
-            self.action_buffer[n-1]['actions'].append(args)
-        else:
-            self.action_buffer.append({'finished' : False, 
-                                       'actions'  : [args],
-                                       'score'    : 0       })
-    def end_action(self):
-        n = len(self.action_buffer)
-        if n>0:
-            self.action_buffer[n-1]['finished'] = True
-            self.action_buffer[n-1]['score']    = self.action_score
-        self.action_score = 0
+    # FIXME: remove old code
+    # def add_action(self, args):
+    #     
+    #     # do we have an open action?
+    #     n = len(self.action_buffer)
+    #     if n>0 and not self.action_buffer[n-1]['finished']:
+    #         self.action_buffer[n-1]['actions'].append(args)
+    #     else:
+    #         self.action_buffer.append({'finished' : False, 
+    #                                    'actions'  : [args],
+    #                                    'score'    : 0       })
+
+    #     logging.info ('add_action -> %s' % repr(self.action_buffer))
+
+    def end_action(self, actions, score):
+
+        self.action_buffer.append({'actions': actions, 'score': score})
+        logging.info ('end_action -> %s' % repr(self.action_buffer))
+
+        # FIXME: remove old code
+        # n = len(self.action_buffer)
+        # if n>0:
+        #     self.action_buffer[n-1]['finished'] = True
+        #     self.action_buffer[n-1]['score']    = score
+
 
     #
     # manage stored contexts in db
@@ -720,4 +755,7 @@ class AIPrologRuntime(PrologRuntime):
 
         for ctx in self.db.session.query(model.Context).filter(model.Context.name==name).all():
             ctx.value = ctx.default_value
-        
+       
+    def reset_context_stacks(self):
+        self.context_stacks   = {} 
+

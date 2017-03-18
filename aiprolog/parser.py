@@ -217,6 +217,7 @@ class AIPrologParser(PrologParser):
 
         nlp_test_parser = PrologParser()
         self.ai_rt.reset_context(TEST_CONTEXT_NAME)
+        self.ai_rt.reset_context_stacks()
         round_num = 0
         for ivr in args[1:]:
 

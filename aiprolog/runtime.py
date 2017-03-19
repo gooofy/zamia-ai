@@ -70,9 +70,7 @@ def builtin_context(g, pe):
 ACTION_VARNAME       = '__ACTION__'
 ACTION_SCORE_VARNAME = '__ACTION_SCORE__'
 
-def builtin_score_context(g, pe):
-
-    pe._trace ('CALLED BUILTIN score_context', g)
+def _score_context(g, pe, do_fail):
 
     pred = g.terms[g.inx]
     args = pred.args
@@ -84,22 +82,69 @@ def builtin_score_context(g, pe):
     score   = pe.prolog_eval(args[2], g.env)
 
     if not key in pe.context_stacks:
-        return False
+        return not do_fail
+
+    if value:
+
+        i = 1
+        found = False
+        for v in pe.context_stacks[key]:
+            if v == value:
+                found = True
+                break
+            i += 1
+
+        if not found:
+            return not do_fail
+
+        if not ACTION_SCORE_VARNAME in g.env:
+            g.env[ACTION_SCORE_VARNAME] = 0.0
+        g.env[ACTION_SCORE_VARNAME] += score.f / float(i)
+
+        return True
+
+    if not isinstance (args[1], Variable):
+        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]))
+
+    base_score = g.env[ACTION_SCORE_VARNAME] if ACTION_SCORE_VARNAME in g.env else 0.0
+
+    res = []
 
     i = 1
-    found = False
     for v in pe.context_stacks[key]:
-        if v == value:
-            found = True
-            break
         i += 1
+        res.append({args[1].name: v, ACTION_SCORE_VARNAME: base_score + score.f / float(i)})
 
-    if not found:
-        return False
+    return res
+    
+
+def builtin_score_context(g, pe):
+
+    pe._trace ('CALLED BUILTIN score_context', g)
+
+    return _score_context (g, pe, True)
+
+
+def builtin_score_context_add(g, pe):
+
+    pe._trace ('CALLED BUILTIN score_context_add', g)
+
+    return _score_context (g, pe, False)
+
+def builtin_score_add(g, pe):
+
+    pe._trace ('CALLED BUILTIN score_add', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 1:
+        raise PrologRuntimeError('score_add: 1 arg expected.')
+
+    score   = pe.prolog_eval(args[0], g.env)
 
     if not ACTION_SCORE_VARNAME in g.env:
         g.env[ACTION_SCORE_VARNAME] = 0.0
-    g.env[ACTION_SCORE_VARNAME] += score.f / float(i)
+    g.env[ACTION_SCORE_VARNAME] += score.f 
 
     return True
 
@@ -570,6 +615,8 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin_action('push_context',builtin_action_push_context)
         self.register_builtin('score_context',      builtin_score_context)
+        self.register_builtin('score_add',          builtin_score_add)
+        self.register_builtin('score_context_add',  builtin_score_context_add)
 
         # sparql / rdf
 
@@ -752,7 +799,6 @@ class AIPrologRuntime(PrologRuntime):
             ctx.prolog_type   = pt
 
     def reset_context(self, name):
-
         for ctx in self.db.session.query(model.Context).filter(model.Context.name==name).all():
             ctx.value = ctx.default_value
        

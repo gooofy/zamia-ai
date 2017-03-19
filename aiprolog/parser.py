@@ -188,6 +188,10 @@ class AIPrologParser(PrologParser):
 
         # generate all macro-expansions
 
+        logging.info ("nlp_gen: %s: generating macro expansions..." % clause.location)
+
+        cnt = 0
+
         ds = self.macro_engine.macro_expand(lang, nlp_input, response)
 
         for inp, resp in ds:
@@ -203,6 +207,9 @@ class AIPrologParser(PrologParser):
                                        inp       = inp, 
                                        resp      = resp)
             self.db.session.add(dr)
+            cnt += 1
+
+        logging.info ("nlp_gen: %s: %d generating macro expansions generated." % (clause.location, cnt))
 
     def nlp_test(self, module_name, clause, user_data):
 

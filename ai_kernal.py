@@ -150,7 +150,7 @@ class AIKernal(object):
                 if module_name == 'all':
                     self.session.query(model.DiscourseRound).delete()
                 else:
-                    self.session.query(model.DiscourseRound).filter(model.Discourse.module==module_name).delete()
+                    self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
 
             if clean_cronjobs or clean_all:
                 logging.info('cleaning cronjobs for %s...' % module_name)

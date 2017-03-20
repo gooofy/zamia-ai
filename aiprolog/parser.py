@@ -46,7 +46,7 @@ TEST_CONTEXT_NAME = 'test'
 
 class AIPrologParser(PrologParser):
 
-    def __init__(self, trace = False, run_tests = False, print_utterances=False, split_utterances=False):
+    def __init__(self, trace = False, run_tests = False, print_utterances=False, split_utterances=False, warn_level=0):
 
         super (AIPrologParser, self).__init__()
 
@@ -54,6 +54,7 @@ class AIPrologParser(PrologParser):
         self.run_tests        = run_tests
         self.print_utterances = print_utterances
         self.split_utterances = split_utterances
+        self.warn_level       = warn_level
 
         # register directives
 
@@ -188,7 +189,7 @@ class AIPrologParser(PrologParser):
 
         # generate all macro-expansions
 
-        logging.info ("nlp_gen: %s: generating macro expansions..." % clause.location)
+        logging.debug ("nlp_gen: %s: generating macro expansions..." % clause.location)
 
         cnt = 0
 
@@ -202,6 +203,26 @@ class AIPrologParser(PrologParser):
             if self.print_utterances:
                 logging.info(u'inp: %s' % inp)
 
+            if self.warn_level > 0 :
+                # in and ideal world, inputs should be unique
+                dr = self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==inp,  
+                                                                        model.DiscourseRound.lang==lang).first()
+                if dr:
+                    msg = '%s: input not unique: found same input "%s" in module %s' % (clause.location, inp, dr.module)
+                    diff = resp != dr.resp
+
+                    if self.warn_level == 1:
+                        if diff:
+                            logging.warning (msg) 
+                    elif self.warn_level == 2:
+                        if diff:
+                            raise PrologError(msg, clause.location)
+                        else:
+                            logging.warning(msg)
+                    else:
+                        raise PrologError(msg, clause.location)
+
+
             dr = model.DiscourseRound( lang      = lang,
                                        module    = module_name,
                                        inp       = inp, 
@@ -209,7 +230,7 @@ class AIPrologParser(PrologParser):
             self.db.session.add(dr)
             cnt += 1
 
-        logging.info ("nlp_gen: %s: %d generating macro expansions generated." % (clause.location, cnt))
+        logging.debug ("nlp_gen: %s: %d generating macro expansions generated." % (clause.location, cnt))
 
     def nlp_test(self, module_name, clause, user_data):
 

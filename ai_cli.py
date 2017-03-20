@@ -35,9 +35,10 @@ import psycopg2
 
 import model
 
-from zamiaprolog.logic import Predicate
-from ai_kernal         import AIKernal
-from nltools           import misc
+from zamiaprolog.logic  import Predicate
+from zamiaprolog.errors import PrologError
+from ai_kernal          import AIKernal
+from nltools            import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
 RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
@@ -216,24 +217,24 @@ class AICli(cmdln.Cmdln):
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
         logging.getLogger('sqlalchemy.engine').setLevel(logging.WARN)
 
-    @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
-                   help="argument(s) represent(s) file name(s) to read sparql from")
-    def do_kb_update(self, subcmd, opts, *paths):
-        """${cmd_name}: run sparql update
+    # @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
+    #                help="argument(s) represent(s) file name(s) to read sparql from")
+    # def do_kb_update(self, subcmd, opts, *paths):
+    #     """${cmd_name}: run sparql update
 
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
+    #     ${cmd_usage}
+    #     ${cmd_option_list}
+    #     """
 
-        for a in paths:
+    #     for a in paths:
 
-            if opts.from_file:
-                with codecs.open(a, 'r', 'utf8') as f:
-                    query = f.read()
-            else:
-                query = a
+    #         if opts.from_file:
+    #             with codecs.open(a, 'r', 'utf8') as f:
+    #                 query = f.read()
+    #         else:
+    #             query = a
 
-            qres = self.kb.sparql(query)
+    #         qres = self.kb.sparql(query)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")
@@ -243,6 +244,8 @@ class AICli(cmdln.Cmdln):
            help="run tests")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
+    @cmdln.option("-w", "--warn-level", dest="warn_level", type = "int", default=0,
+           help="warn level, default: 0 (none)")
     def do_compile(self, subcmd, opts, *paths):
         """${cmd_name}: compile module(s)
 
@@ -260,7 +263,10 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.compile_module_multi (paths, opts.run_trace, opts.run_tests, opts.print_utterances)
+        try:
+            self.kernal.compile_module_multi (paths, opts.run_trace, opts.run_tests, opts.print_utterances, opts.warn_level)
+        except PrologError as e:
+            logging.error("*** ERROR: %s" % e)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

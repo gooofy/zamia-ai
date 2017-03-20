@@ -148,9 +148,9 @@ class AIKernal(object):
             if clean_discourses or clean_all:
                 logging.info('cleaning discourses for %s...' % module_name)
                 if module_name == 'all':
-                    self.session.query(model.Discourse).delete()
+                    self.session.query(model.DiscourseRound).delete()
                 else:
-                    self.session.query(model.Discourse).filter(model.Discourse.module==module_name).delete()
+                    self.session.query(model.DiscourseRound).filter(model.Discourse.module==module_name).delete()
 
             if clean_cronjobs or clean_all:
                 logging.info('cleaning cronjobs for %s...' % module_name)
@@ -300,13 +300,13 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def compile_module (self, module_name, trace=False, run_tests=False, print_utterances=False):
+    def compile_module (self, module_name, trace=False, run_tests=False, print_utterances=False, warn_level=0):
 
         m = self.modules[module_name]
 
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
-        compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances)
+        compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances, warn_level=warn_level)
 
         compiler.clear_module(module_name, self.db)
 
@@ -317,7 +317,7 @@ class AIKernal(object):
             logging.debug('   parsing %s ...' % pl_pathname)
             compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
 
-    def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False):
+    def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False, warn_level=0):
 
         for module_name in module_names:
 
@@ -325,11 +325,11 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile_module (mn2, run_trace, run_tests, print_utterances)
+                    self.compile_module (mn2, run_trace, run_tests, print_utterances, warn_level)
 
             else:
                 self.load_module (module_name)
-                self.compile_module (module_name, run_trace, run_tests, print_utterances)
+                self.compile_module (module_name, run_trace, run_tests, print_utterances, warn_level)
 
         self.session.commit()
 

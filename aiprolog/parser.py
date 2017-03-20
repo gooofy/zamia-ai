@@ -208,7 +208,7 @@ class AIPrologParser(PrologParser):
                 dr = self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==inp,  
                                                                         model.DiscourseRound.lang==lang).first()
                 if dr:
-                    msg = '%s: input not unique: found same input "%s" in module %s' % (clause.location, inp, dr.module)
+                    msg = '%s: input not unique: found same input "%s" in module %s (r: %s vs %s)' % (clause.location, inp, dr.module, resp, dr.resp)
                     diff = resp != dr.resp
 
                     if self.warn_level == 1:

@@ -1,0 +1,18 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hal: <http://hal.zamia.org/kb/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix wde: <http://www.wikidata.org/entity/>.
+@prefix wdpd: <http://www.wikidata.org/prop/direct/>.
+
+
+hal:hal9000     rdfs:label    "HAL 9000"@en;
+                rdfs:label    "HAL 9000"@de;
+                wdpd:P31      wde:Q68;       # instanceof computer
+                wdpd:P21      wde:Q6581097;  # gender male
+                hal:favMovie  wde:Q103474.   # fav movie 2001: A Space Odyssey
+
+

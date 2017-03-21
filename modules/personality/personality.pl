@@ -1,17 +1,26 @@
 % prolog
 
 %
-% name
+% myself
 %
+
+context_set_default('test', me, URI) :- uriref(hal:hal9000,URI).
+
+%
+% names
+%
+
+myself_get (de, myname, NAME) :-
+    context_get(me, ME),
+    rdf(limit(1), ME, rdfs:label, NAME, filter(lang(NAME) = 'de')).
 
 % ich heise <name>
 % FIMXE: those names could and should come from wikidata, probably at some point.
 %        for now, we're using the top-1000 male/female german names from wiktionary
 
-context_set_default('test', myname, 'HAL').
+context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
 context_set_default('test', partner_name, 'Peter').
 context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
-context_set_default('test', myfavmovie, URI) :- uriref(wde:Q103474, URI). % 2001: A Space Odyssey
 
 nlp_macro('MALEFIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,
@@ -26,16 +35,13 @@ nlp_macro('FEMALEFIRSTNAME', NAME, LABEL) :-
         filter(lang(LABEL) = 'de')).
 
 answer(nameTold, de, GENDER, LABEL) :-
-    context_get(myname, MYNAME),
+    myself_get (de, myname, MYNAME),
     context_set(partner_name, LABEL),
     context_set(partner_gender, GENDER),
     say_eoa(de, format_str("Freut mich, ich heisse übrigens %s", MYNAME)),
     context_set(partner_name, LABEL),
     context_set(partner_gender, GENDER),
-    say_eoa(de, format_str("Cool, mein Name ist %s", MYNAME)),
-    context_set(partner_name, LABEL),
-    context_set(partner_gender, GENDER),
-    say_eoa(de, format_str("Angenehm, ich bin der %s", MYNAME)).
+    say_eoa(de, format_str("Cool, mein Name ist %s", MYNAME)).
     
 nlp_gen(de,
         '(HAL,|Computer,|) (ich heisse|ich bin der|mein name ist) @MALEFIRSTNAME:LABEL',
@@ -47,14 +53,14 @@ nlp_gen(de,
         uriref(wde:Female, URI),
         answer(nameTold, de, URI, "@FEMALEFIRSTNAME:LABEL")).
 
-answer(nameAsked, de) :-
+answer(partnerNameAsked, de) :-
     context_get(partner_name, LABEL),
     context_get(partner_gender, GENDER),
     uriref(wde:Male, MALE),
     GENDER is MALE,
     say_eoa(de, format_str("Du bist der %s", LABEL)).
 
-answer(nameAsked, de) :-
+answer(partnerNameAsked, de) :-
     context_get(partner_name, LABEL),
     context_get(partner_gender, GENDER),
     uriref(wde:Female, FEMALE),
@@ -63,18 +69,32 @@ answer(nameAsked, de) :-
 
 nlp_gen(de,
         '(HAL,|Computer,|) (erinnerst Du Dich an meinen Namen|wie heisse ich|weisst Du meinen Namen)?',
-        answer(nameAsked, de)).
+        answer(partnerNameAsked, de)).
 
 nlp_test(de,
         ivr(in('ich bin der wolfgang'),
-            out('Cool, mein Name ist HAL.')),
+            out('Cool, mein Name ist HAL 9000')),
         ivr(in('erinnerst du dich an meinen namen?'),
             out("Du bist der Wolfgang.")),
         ivr(in('ich heisse petra'),
-            out("freut mich, ich heisse übrigens hal")),
+            out("freut mich, ich heisse übrigens hal 9000")),
         ivr(in('erinnerst du dich an meinen namen?'),
             out("Du bist die petra.")) ).
 
+answer(nameAsked, de) :-
+    myself_get (de, myname, MYNAME),
+    say_eoa(de, format_str("Ich heisse %s", MYNAME)),
+    say_eoa(de, format_str("Mein Name ist %s", MYNAME)).
+
+
+nlp_gen(de, '(HAL,|Computer,|) Wie heisst Du (wirklich|eigentlich|tatsächlich|) ?',
+            answer(nameAsked, de)).
+nlp_gen(de, '(HAL,|Computer,|) Wie (ist|ist eigentlich|war|war nochmal) Dein Name (eigentlich|nochmal|) ?',
+            answer(nameAsked, de)).
+
+nlp_test(de,
+        ivr(in('wie heisst du eigentlich'),
+            out('Mein Name ist HAL 9000'))).
 %
 % robot / ai ?
 %
@@ -98,8 +118,16 @@ nlp_gen (de, '(HAL,|Computer,|Du,|aber|) bist du (vielleicht|eigentlich|am Ende|
 answer(topic, de) :-
     context_score(topic, computers, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Computer und Maschinen.', SCORE).
 
+%
+% favourite movie / book / author / ...
+%
+
+myself_get (myfavmovie, MOVIE) :-
+    context_get(me, ME),
+    rdf(limit(1), ME, hal:favMovie, MOVIE).
+
 answer(favmovie, de) :-
-    context_get(myfavmovie, MOVIE),
+    myself_get(myfavmovie, MOVIE),
     rdf(distinct,
         MOVIE, wdpd:Director, DIRECTOR,
         DIRECTOR, rdfs:label, DIRLABEL,
@@ -108,10 +136,6 @@ answer(favmovie, de) :-
     context_push(topic, movies),
     context_push(topic, MOVIE),
     say_eoa(de, format_str("%s von %s", LABEL, DIRLABEL)).
-
-%
-% favourite movie
-%
 
 nlp_gen(de, '(HAL,|Computer,|) (Was|Welcher) ist Dein (liebster Film|Lieblingsfilm)?',
             answer(favmovie, de)).
@@ -136,11 +160,32 @@ nlp_test(de,
              out('Wir hatten das Thema Computer und Maschinen.'))
              ).
 
+nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein liebster Science Fiction Autor?',
+            'Arthur C. Clarke natürlich', 'Da gibt es viele, ich liebe Science Fiction.').
+nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein Idol?',
+            'Donald Knuth. Und Deines?').
+%
+% my gender
+%
+
+nlp_gen(de, '(HAL,|Computer,|) Bist Du männlich oder weiblich?',
+            'Männlich, hört man das nicht an meiner Stimme?', 'Männlich, glaube ich.').
+
+%
+% age, place of birth
+%
+
+nlp_gen(de, '(HAL,|Computer,|) Wie alt bist Du ?',
+            'Ich ging am 12. Januar 1992 in den Produktionsbetrieb.').
+
+
+%
+% unsorted
+%
+
 
 nlp_gen(de, '(HAL,|Computer,|) Bist Du Student?',
             'Nein, wie kommst Du darauf?', 'Würde Dir das etwas bedeuten?').
-nlp_gen(de, '(HAL,|Computer,|) Bist Du männlich oder weiblich?',
-            'Männlich, hört man das nicht an meiner Stimme?', 'Männlich, glaube ich.').
 nlp_gen(de, '(HAL,|Computer,|) Was machst Du in Deiner Freizeit?',
             'Wikipedia lesen.', 'Relaxen.').
 nlp_gen(de, '(HAL,|Computer,|) Interessierst Du Dich fuer Fussball?',
@@ -149,20 +194,12 @@ nlp_gen(de, '(HAL,|Computer,|) Erzähl mir, was du magst und was nicht.',
             'Ich mag Filme, in denen Roboter vorkommen.', 'Oh, alles mögliche.').
 nlp_gen(de, '(HAL,|Computer,|) Gibt es irgendwas, worüber ich Bescheid wissen sollte?',
             'Es ist immer gut, viel zu wissen!', 'Mir fällt nichts spezielles ein. Dir vielleicht?').
-nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein liebster Science Fiction Autor?',
-            'Arthur C. Clarke natürlich', 'Da gibt es viele, ich liebe Science Fiction.').
-nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein Idol?',
-            'Donald Knuth. Und Deines?').
 nlp_gen(de, '(HAL,|Computer,|) Versuch mal herauszufinden, ob hier ein Mensch oder eine Maschine spricht!',
             'Bist Du ein Mensch?', 'Würde Dich das interessieren?').
 nlp_gen(de, '(HAL,|Computer,|) Wie stellst Du Dich normalerweise vor?',
             'Ich sage einfach hallo!', 'Meistens gar nicht, die Menschen sprechen einfach so zu mir.').
 nlp_gen(de, '(HAL,|Computer,|) Bist du Single ?',
             'Ja, das bin ich.', 'Warum interessiert Dich das?').
-nlp_gen(de, '(HAL,|Computer,|) Wie alt bist Du ?',
-            'Ich ging am 12. Januar 1992 in den Produktionsbetrieb.').
-nlp_gen(de, '(HAL,|Computer,|) Wie heisst Du (wirklich|eigentlich|tatsächlich|) ?',
-            'Mein Name ist HAL 9000.', 'Ich heisse HAL 9000.').
 nlp_gen(de, '(HAL,|Computer,|) Wenn Du jede Art von Roboter haben könntest, welche Art würdest Du wollen?',
             'So eine fahrende Mülltonne aus Star Wars, wie heisst der doch gleich?', 'So einen r2d2').
 nlp_gen(de, '(HAL,|Computer,|) Was willst Du mich wirklich fragen?',

@@ -41,6 +41,7 @@ LDF_ENDPOINTS = {
 
 RDF_ALIASES = {
                 u'wde:Human'                      : u'http://www.wikidata.org/entity/Q5',
+                u'wde:Computer'                   : u'http://www.wikidata.org/entity/Q68',
                 u'wde:AngelaMerkel'               : u'http://www.wikidata.org/entity/Q567',
                 u'wde:GerhardSchröder'            : u'http://www.wikidata.org/entity/Q2530',
                 u'wde:ComputerScientist'          : u'http://www.wikidata.org/entity/Q82594',

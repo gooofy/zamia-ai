@@ -4,97 +4,62 @@
 % test setup and context
 %
 
-set_context_default('test', place, URI) :- uriref(wde:Q1022, URI).
-set_context_default('test', time, weatherNearFuture).
-set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
+context_set_default('test', place, URI) :- uriref(wde:Q1022, URI).
+context_set_default('test', time, weatherNearFuture).
+context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 
 %
 % weather reasoning / common sense
 %
 
 time_span(weatherNearFuture, TS, TE) :-
-    context(currentTime, CT),
+    context_get(currentTime, CT),
     before_evening(CT),
     time_span(today, TS, TE).
 
 time_span(weatherNearFuture, TS, TE) :-
-    context(currentTime, CT),
+    context_get(currentTime, CT),
     after_evening(CT),
     time_span(tomorrow, TS, TE).
 
 time_str(de, weatherNearFuture, "heute") :- 
-    context(currentTime, CT),
+    context_get(currentTime, CT),
     before_evening(CT).
 
 time_str(de, weatherNearFuture, "morgen") :- 
-    context(currentTime, CT),
+    context_get(currentTime, CT),
     after_evening(CT).
 
 % near_future(weather, today) :-
-%     context(currentTime, TS),
+%     context_get(currentTime, TS),
 %     before_evening(TS).
 % 
 % near_future(weather, tomorrow) :-
-%     context(currentTime, TS),
+%     context_get(currentTime, TS),
 %     after_evening(TS).
 
 %
 % weather answers 
 %
 
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "01", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "02", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "03", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "04", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "09", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "10", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "11", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "13", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax)).
-
-answerWeather(de, Code, Precipitation, TempMin, TempMax, DeP, DeEvT, P, EvT) :-
-    Code is "50", 
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
-    say_eoa(de, format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax)).
+weatherStr(de, "01", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird der Himmel klar sein in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax).
+weatherStr(de, "02", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird es wenige Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax).
+weatherStr(de, "03", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird es lockere Wolken geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax).
+weatherStr(de, "04", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s zeigt sich ab und an die Sonne in %s und es wird zwischen %d und %d Grad warm.", DeEvT, DeP, TempMin, TempMax).
+weatherStr(de, "09", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax).
+weatherStr(de, "10", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax).
+weatherStr(de, "11", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm.", DeEvT, Precipitation, DeP, TempMin, TempMax).
+weatherStr(de, "13", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt.", DeEvT, Precipitation, DeP, TempMin, TempMax).
+weatherStr(de, "50", Precipitation, TempMin, TempMax, DeP, DeEvT, S) :- 
+    S is format_str("%s wird es neblich in %s und es wird zwischen %d und %d Grad geben.", DeEvT, DeP, TempMin, TempMax).
 
 weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc) :-
     time_span(EvT, EvTS, EvTE),
@@ -141,9 +106,15 @@ weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, 
     time_str(Lang, EvT, EvTLoc),
     sub_string (list_max(Icon), 0, 2, _, Code).
 
-answer(weather, Lang, EvT, P) :-
+answer(weather, Lang, EvT, P, SCORE) :-
     weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc),
-    answerWeather(Lang, Code, list_sum(Precipitation), list_min(TempMin), list_max(TempMax), PLoc, EvTLoc, P, EvT).
+    weatherStr(Lang, Code, list_sum(Precipitation), list_min(TempMin), list_max(TempMax), PLoc, EvTLoc, STR),
+    context_push(topic, weather),
+    context_set(place, P), context_set(time, EvT),
+    say_eoa(de, STR, SCORE).
+
+answer(weather, Lang, EvT, P) :-
+    answer(weather, Lang, EvT, P, 100).
 
 answer(weatherPrecCloud, Lang, EvT, P) :-
     weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc),
@@ -152,42 +123,42 @@ answer(weatherPrecCloud, Lang, EvT, P) :-
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS < 50,
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
+    context_push(topic, weather),
+    context_set(place, P), context_set(time, EvT),
     say_eoa(de, format_str("%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS < 50,
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
+    context_push(topic, weather),
+    context_set(place, P), context_set(time, EvT),
     say_eoa(de, format_str("%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS >= 50,
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
+    context_push(topic, weather),
+    context_set(place, P), context_set(time, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS >= 50,
-    push_context(topic, weather),
-    set_context(place, P), set_context(time, EvT),
+    context_push(topic, weather),
+    context_set(place, P), context_set(time, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 %
 % nlp processing (german)
 %
 
-nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'context(time, EvT)'.
+nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'context_get(time, EvT)'.
 nlp_macro('TIMESPEC', W, P) :- W is 'heute'                , P is 'EvT is today'.
 nlp_macro('TIMESPEC', W, P) :- W is 'morgen'               , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'übermorgen'           , P is 'EvT is dayAfterTomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'in den nächsten Tagen', P is 'EvT is nextThreeDays'.
 
-nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'context(time, EvT)'.
+nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'context_get(time, EvT)'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für heute'            , P is 'EvT is today'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für morgen'           , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für übermorgen'       , P is 'EvT is dayAfterTomorrow'.
@@ -211,7 +182,7 @@ nlp_macro('HELLO', W) :- W is 'HAL, '     .
 nlp_macro('HELLO', W) :- W is 'Hi, '      .
 nlp_macro('HELLO', W) :- W is 'Hallo, '   .
 
-nlp_macro('PLACE', W, P) :- W is '', P is 'context(place, P)'.
+nlp_macro('PLACE', W, P) :- W is '', P is 'context_get(place, P)'.
 
 % W : 'in Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'in Freudental'    , P: 'P is "dbr:Freudental"'
@@ -223,7 +194,7 @@ nlp_macro('PLACE', W, P) :-
     W is format_str('in %s', LABEL),
     P is format_str('P is "%s"', LOCATION).
 
-nlp_macro('PLACEF', W, P) :- W is '', P is 'context(place, P)'.
+nlp_macro('PLACEF', W, P) :- W is '', P is 'context_get(place, P)'.
 
 % W : 'für Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'für Freudental'    , P: 'P is "dbr:Freudental"'
@@ -299,7 +270,7 @@ nlp_gen(de,
         @TIMESPECN:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_gen(de,
         '@HELLO:W regnet es @PLACEN:W ?', 
-        context(time, EvT), @PLACEN:P, answer (weatherPrecCloud, de, EvT, P)).
+        context_get(time, EvT), @PLACEN:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Regnet es in Freudental?'),
              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
@@ -330,7 +301,7 @@ nlp_gen(de,
         @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P)).
 nlp_gen(de,
         '@HELLO:W wie wird das Wetter @TIMESPECN:W?', 
-        @TIMESPECN:P, context(place, P), answer (weather, de, EvT, P)).
+        @TIMESPECN:P, context_get(place, P), answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, wie wird das Wetter heute in Tallinn?'),
              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
@@ -383,19 +354,19 @@ nlp_test(de,
 
 nlp_gen(de, 
         '@HELLO:W und @TIMESPECNF:W @PLACEF:W ?', 
-        score_context (topic, weather, 100), @TIMESPECNF:P, @PLACEF:P, answer (weather, de, EvT, P)).
+        context_score (topic, weather, 100, S), @TIMESPECNF:P, @PLACEF:P, answer (weather, de, EvT, P, S)).
 
 nlp_gen(de, 
         '@HELLO:W und @PLACENF:W ?', 
-        score_context (topic, weather, 100), context(time, EvT), @TIMESPECF:P, @PLACENF:P, answer (weather, de, EvT, P)).
+        context_score (topic, weather, 100, S), context_get(time, EvT), @TIMESPECF:P, @PLACENF:P, answer (weather, de, EvT, P, S)).
 
 nlp_gen(de, 
         '@HELLO:W und @TIMESPEC:W @PLACEN:W ?', 
-        score_context (topic, weather, 100), @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P)).
+        context_score (topic, weather, 100, S), @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P, S)).
 
 nlp_gen(de, 
         '@HELLO:W und @TIMESPECN:W ?', 
-        score_context (topic, weather, 100), @TIMESPECN:P, context(place, P), answer (weather, de, EvT, P)).
+        context_score (topic, weather, 100, S), @TIMESPECN:P, context_get(place, P), answer (weather, de, EvT, P, S)).
 
 
 %
@@ -428,12 +399,12 @@ nlp_test(de,
 
 %  % Wird es morgen regnen?
 %  % ?- rain(X,TimeSpan,Place),future(TimeSpan),tomorrow(TimeSpan).
-%  question(Prob, I), rain_intensity (E, I), rain_prob(E, Prob), time(E,EvT), tomorrow(EvT), place(E, P), context(P)
+%  question(Prob, I), rain_intensity (E, I), rain_prob(E, Prob), time(E,EvT), tomorrow(EvT), place(E, P), context_get(P)
 %  
 %  % @nlp_de Wird es morgen regnen?
 %  % @nlp_en Will it rain tomorrow?
 %   
-%  ?- rain(E),time(E,EvT),context(P),place(P),place(E,P),context(R),tomorrow(R,EvT).
+%  ?- rain(E),time(E,EvT),context_get(P),place(P),place(E,P),context_get(R),tomorrow(R,EvT).
 
 
 % wird es regnen
@@ -454,61 +425,61 @@ nlp_test(de,
 
 % ( 7) Wie wird das Wetter?
 
-% question(Report), report(E, Report), time(E,Evt), near_future(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), near_future(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % ( 8) Scheint morgen die Sonne?
 
-% yesnoprob(E), sunshine_prob(E), time(E,EvT), tomorrow(EvT), place(E, P), context(P)
+% yesnoprob(E), sunshine_prob(E), time(E,EvT), tomorrow(EvT), place(E, P), context_get(P)
 
 % ( 9) Regnet es?
 
-% yesnoprob(E), rain_prob(E), time(E,EvT), now(EvT), place(E, P), context(P)
+% yesnoprob(E), rain_prob(E), time(E,EvT), now(EvT), place(E, P), context_get(P)
 
 % (10) Wie wird das Wetter morgen?
 
-% question(Report), report(E, Report), time(E,Evt), tomorrow(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), tomorrow(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (11) Und in den kommenden Tagen?
 
-% question(Report), report(E, Report), time(E,Evt), next_days(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), next_days(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (12) Wie wird es naechste Woche werden?
 
-% question(Report), report(E, Report), time(E,Evt), next_week(EvT), place(E, P), context(P), topic(Report, T), context(T)
+% question(Report), report(E, Report), time(E,Evt), next_week(EvT), place(E, P), context_get(P), topic(Report, T), context_get(T)
 
 % (13) Kommt heute noch Regen?
 
-% yesnoprob(E), rain_prob(E), time(E,EvT), today(EvT), future(EvT), place(E, P), context(P)
+% yesnoprob(E), rain_prob(E), time(E,EvT), today(EvT), future(EvT), place(E, P), context_get(P)
 
 % (14) Wie warm wird es heute?
 
-% question(MaxTemp), max_temp(E, MaxTemp), time(E,EvT), today(EvT), place(E, P), context(P)
+% question(MaxTemp), max_temp(E, MaxTemp), time(E,EvT), today(EvT), place(E, P), context_get(P)
 
 % (15) Wie wird das Wetter heute?
 
-% question(Report), report(E, Report), time(E,Evt), today(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), today(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (16) Wie kalt wird es werden?
 
-% question(MinTemp), min_temp(E, MinTemp), time(E,EvT), context(EvT), place(E, P), context(P)
+% question(MinTemp), min_temp(E, MinTemp), time(E,EvT), context_get(EvT), place(E, P), context_get(P)
 
 % (17) Was sagt der Wetterbericht?
 
-% question(Report), report(E, Report), time(E,Evt), context(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), context_get(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (18) Was sagt die Wettervorhersage?
 
-% question(Report), report(E, Report), time(E,Evt), context(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), context_get(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (19) Wann geht die Sonne unter?
 
-% question(SunsetTime), sunset_time(E, SunsetTime), time(E,EvT), context(EvT), place(E, P), context(P)
+% question(SunsetTime), sunset_time(E, SunsetTime), time(E,EvT), context_get(EvT), place(E, P), context_get(P)
 
 % (20) Wie sind die Wetteraussichten?
 
-% question(Report), report(E, Report), time(E,Evt), context(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), context_get(EvT), place(E, P), context_get(P), topic(Report, weather)
 
 % (21) Wie sind die Wetteraussichten fuer die naechsten Tage?
 
-% question(Report), report(E, Report), time(E,Evt), next_days(EvT), place(E, P), context(P), topic(Report, weather)
+% question(Report), report(E, Report), time(E,Evt), next_days(EvT), place(E, P), context_get(P), topic(Report, weather)
 

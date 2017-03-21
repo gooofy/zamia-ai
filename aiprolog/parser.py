@@ -61,7 +61,7 @@ class AIPrologParser(PrologParser):
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
-        self.register_directive('set_context_default', self.set_context_default, None)
+        self.register_directive('context_set_default', self.context_set_default, None)
 
     def set_trace (self, trace):
         self.trace = trace
@@ -356,14 +356,14 @@ class AIPrologParser(PrologParser):
             round_num += 1
 
 
-    def set_context_default(self, module_name, clause, user_data):
+    def context_set_default(self, module_name, clause, user_data):
 
         solutions = self.ai_rt.search(clause)
 
-        # print "set_context_default: solutions=%s" % repr(solutions)
+        # print "context_set_default: solutions=%s" % repr(solutions)
 
         if len(solutions) != 1:
-            raise PrologError ('set_context_default: need exactly one solution.')
+            raise PrologError ('context_set_default: need exactly one solution.')
 
         args = clause.head.args
 

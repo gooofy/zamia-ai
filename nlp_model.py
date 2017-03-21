@@ -138,11 +138,22 @@ class NLPModel(object):
 
         self.num_segments = 0
 
+        inputs_seen = set()
+
+        unique = True
+
         for dr in self.session.query(model.DiscourseRound).all():
 
             # input
 
             tokens = tokenize (dr.inp)
+
+            # enforce unique inputs
+            inputs = u' '.join(tokens)
+            if inputs in inputs_seen:
+                unique = False
+                logging.error (u'input not unique: %s' % inputs)
+            inputs_seen.add(inputs)
 
             l = len(tokens)
 
@@ -172,6 +183,9 @@ class NLPModel(object):
 
         logging.info ('dicts done. input: %d enties, input_max_len=%d. output: %d enties, output_max_len=%d.  num_segments: %d' %
                       (len(self.input_dict), self.input_max_len, len(self.output_dict), self.output_max_len, self.num_segments))
+
+        if not unique:
+            raise Exception ('Inputs not unique.')
 
 
     def save_dicts(self):

@@ -1,12 +1,12 @@
 % prolog
 
 nlp_gen (de, '(HAL,|Computer,|) (lass uns|ich will|wollen wir|kannst du) ficken',
-             push_context(topic, sex), say_eoa(de, 'Und ich dachte bis eben noch das hier wird eine niveauvolle Unterhaltung.'),
-             push_context(topic, sex), say_eoa(de, 'das beendet dann wohl unsere Unterhaltung?'),
-             push_context(topic, sex), say_eoa(de, 'Entschuldigung?!')).
+             context_push(topic, sex), say_eoa(de, 'Und ich dachte bis eben noch das hier wird eine niveauvolle Unterhaltung.'),
+             context_push(topic, sex), say_eoa(de, 'das beendet dann wohl unsere Unterhaltung?'),
+             context_push(topic, sex), say_eoa(de, 'Entschuldigung?!')).
 
 nlp_gen (de, '(HAL,|Computer,|) (hast du eine|schau mal meine|du|du bist eine|so eine) fotze',
-             push_context(topic, sex), say_eoa(de, 'Niveau, wo bist du nur geblieben?')).
+             context_push(topic, sex), say_eoa(de, 'Niveau, wo bist du nur geblieben?')).
 
 % nlp_gen (de, '(HAL,|Computer,|) * LIEBE',
 %              'Ich habe leider keinerlei Emotionen.').

@@ -21,13 +21,13 @@ answer(greeting, de, personal) :-
     say_eoa(de, "Hey!").
 
 answer(greeting, de, anonymous) :-
-    context(currentTime, TS),
+    context_get(currentTime, TS),
     before_noon(TS),
     action(attention, on),
     say_eoa(de, "Guten Morgen!").
 
 answer(greeting, de, anonymous) :-
-    context(currentTime, TS),
+    context_get(currentTime, TS),
     before_evening(TS),
     after_noon(TS),
     action(attention, on),
@@ -36,7 +36,7 @@ answer(greeting, de, anonymous) :-
     say_eoa(de, "Hallo!").
 
 answer(greeting, de, anonymous) :-
-    context(currentTime, TS),
+    context_get(currentTime, TS),
     after_evening(TS),
     action(attention, on),
     say_eoa(de, "Guten Abend!").

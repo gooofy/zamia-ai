@@ -204,7 +204,7 @@ class AIPrologParser(PrologParser):
                 logging.info(u'inp: %s' % inp)
 
             if self.warn_level > 0 :
-                # in and ideal world, inputs should be unique
+                # in an ideal world, inputs should be unique
                 dr = self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==inp,  
                                                                         model.DiscourseRound.lang==lang).first()
                 if dr:

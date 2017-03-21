@@ -1,7 +1,7 @@
 %prolog
 
 answer(topic, de) :-
-    score_context(topic, politics, 100), say_eoa(de, 'Politik war unser Thema.').
+    context_score(topic, politics, 100, SCORE), say_eoa(de, 'Politik war unser Thema.', SCORE).
 
 %
 % german chancellors
@@ -26,42 +26,42 @@ nlp_macro ('KNOWN_CHANCELLORS', PERSON, LABEL) :-
          filter (lang(LABEL) = 'de')).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     is_german_chancellor(PERSON),
     is_male(PERSON),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Der ist doch gerade Bundeskanzler!').
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Der ist doch gerade Bundeskanzler!', SCORE).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     is_german_chancellor(PERSON),
     is_female(PERSON),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Die ist doch gerade Bundeskanzlerin!').
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Die ist doch gerade Bundeskanzlerin!', SCORE).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     was_german_chancellor(PERSON), 
     not (is_german_chancellor(PERSON)),
     is_male(PERSON),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Der war doch mal Bundeskanzler.').
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Der war doch mal Bundeskanzler.', SCORE).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     was_german_chancellor(PERSON), 
     not (is_german_chancellor(PERSON)),
     is_female(PERSON),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Die war doch mal Bundeskanzlerin.').
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Die war doch mal Bundeskanzlerin.', SCORE).
 
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Angela Merkel?'),
@@ -73,34 +73,34 @@ nlp_test(de,
 
 
 answer (germanChancellorPredecessor, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany,
         OFFICE_STMT, wdpq:Replaces,     PREDECESSOR,
         PREDECESSOR, rdfs:label,        PLABEL,
         filter (lang(PLABEL) = 'de', PERSON \= PREDECESSOR)),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    push_context(topic, PREDECESSOR),
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    context_push(topic, PREDECESSOR),
     is_male(PREDECESSOR),
-    say_eoa(de, format_str('Vorgänger von %s war %s.', LABEL, PLABEL)).
+    say_eoa(de, format_str('Vorgänger von %s war %s.', LABEL, PLABEL), SCORE).
 
 answer (germanChancellorPredecessor, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany,
         OFFICE_STMT, wdps:Replaces,     PREDECESSOR,
         PREDECESSOR, rdfs:label,        PLABEL,
         filter (lang(PLABEL) = 'de', PERSON \= PREDECESSOR)),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    push_context(topic, PREDECESSOR),
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    context_push(topic, PREDECESSOR),
     is_female(PREDECESSOR),
-    say_eoa(de, format_str('Vorgängerin von %s war %s.', LABEL, PLABEL)).
+    say_eoa(de, format_str('Vorgängerin von %s war %s.', LABEL, PLABEL), SCORE).
 
 
 nlp_gen (de, '(HAL,|Computer,|) wer (ist|war) (eigentlich|) (die vorgängerin|der vorgänger) von @KNOWN_CHANCELLORS:LABEL ?',
@@ -111,34 +111,34 @@ nlp_test(de,
              out('Vorgänger von Helmut Kohl war Helmut Schmidt.'))).
 
 answer (germanChancellorSuccessor, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany,
         OFFICE_STMT, wdpq:ReplacedBy,   SUCCESSOR,
         SUCCESSOR,   rdfs:label,        PLABEL,
         filter (lang(PLABEL) = 'de', PERSON \= SUCCESSOR)),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    push_context(topic, SUCCESSOR),
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    context_push(topic, SUCCESSOR),
     is_male(SUCCESSOR),
-    say_eoa(de, format_str('Nachfolger von %s war %s.', LABEL, PLABEL)).
+    say_eoa(de, format_str('Nachfolger von %s war %s.', LABEL, PLABEL), SCORE).
 
 answer (germanChancellorSuccessor, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, politics, 100),
+    SCORE is 10,
+    context_score (topic, politics, 100, SCORE),
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany,
         OFFICE_STMT, wdps:ReplacedBy,   SUCCESSOR,
         SUCCESSOR,   rdfs:label,        PLABEL,
         filter (lang(PLABEL) = 'de', PERSON \= SUCCESSOR)),
-    push_context(topic, politics),
-    push_context(topic, PERSON),
-    push_context(topic, SUCCESSOR),
+    context_push(topic, politics),
+    context_push(topic, PERSON),
+    context_push(topic, SUCCESSOR),
     is_female(SUCCESSOR),
-    say_eoa(de, format_str('Nachfolgerin von %s war %s.', LABEL, PLABEL)).
+    say_eoa(de, format_str('Nachfolgerin von %s war %s.', LABEL, PLABEL), SCORE).
 
 nlp_gen (de, '(HAL,|Computer,|) wer (ist|war) (eigentlich|) (die nachfolgerin|der nachfolger) von @KNOWN_CHANCELLORS:LABEL ?',
              answer(germanChancellorSuccessor, de, '@KNOWN_CHANCELLORS:PERSON', "@KNOWN_CHANCELLORS:LABEL")). 

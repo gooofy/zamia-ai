@@ -4,7 +4,7 @@
 % test setup and context
 %
 
-set_context_default('test', channel, URI) :- uriref(wde:Q795291, URI).
+context_set_default('test', channel, URI) :- uriref(wde:Q795291, URI).
 
 %
 % media_tune: set context, look up slot and title in RDF, generate action

@@ -4,8 +4,8 @@
 % test setup and context
 %
 
-set_context_default('test', time, today).
-set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
+context_set_default('test', time, today).
+context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 
 answer(greeting, de, personal) :-
     action(attention, on),
@@ -83,12 +83,12 @@ nlp_gen(de,'@GREETING:W @ADDRESSEE:W',
 nlp_gen(de,'@ADDRESSEE:W @GREETING:W',
            @ADDRESSEE:P, @GREETING:P).
 
-set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
+context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
 nlp_test(de,
          ivr(in('hallo'),
              out('Guten Morgen!'))).
 
-set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
+context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 nlp_test(de,
          ivr(in('hi'),
              out('Guten Tag!'),
@@ -98,7 +98,7 @@ nlp_test(de,
              out('Hallo!'),
              action(attention, on))).
 
-set_context_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,19,28,6,'local'), T).
+context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,19,28,6,'local'), T).
 nlp_test(de,
          ivr(in('guten abend'),
              out('Guten Abend!'),

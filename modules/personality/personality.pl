@@ -8,10 +8,10 @@
 % FIMXE: those names could and should come from wikidata, probably at some point.
 %        for now, we're using the top-1000 male/female german names from wiktionary
 
-set_context_default('test', myname, 'HAL').
-set_context_default('test', partner_name, 'Peter').
-set_context_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
-set_context_default('test', myfavmovie, URI) :- uriref(wde:Q103474, URI). % 2001: A Space Odyssey
+context_set_default('test', myname, 'HAL').
+context_set_default('test', partner_name, 'Peter').
+context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
+context_set_default('test', myfavmovie, URI) :- uriref(wde:Q103474, URI). % 2001: A Space Odyssey
 
 nlp_macro('MALEFIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,

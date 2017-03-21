@@ -26,15 +26,15 @@ nlp_macro('FEMALEFIRSTNAME', NAME, LABEL) :-
         filter(lang(LABEL) = 'de')).
 
 answer(nameTold, de, GENDER, LABEL) :-
-    context(myname, MYNAME),
-    set_context(partner_name, LABEL),
-    set_context(partner_gender, GENDER),
+    context_get(myname, MYNAME),
+    context_set(partner_name, LABEL),
+    context_set(partner_gender, GENDER),
     say_eoa(de, format_str("Freut mich, ich heisse übrigens %s", MYNAME)),
-    set_context(partner_name, LABEL),
-    set_context(partner_gender, GENDER),
+    context_set(partner_name, LABEL),
+    context_set(partner_gender, GENDER),
     say_eoa(de, format_str("Cool, mein Name ist %s", MYNAME)),
-    set_context(partner_name, LABEL),
-    set_context(partner_gender, GENDER),
+    context_set(partner_name, LABEL),
+    context_set(partner_gender, GENDER),
     say_eoa(de, format_str("Angenehm, ich bin der %s", MYNAME)).
     
 nlp_gen(de,
@@ -48,15 +48,15 @@ nlp_gen(de,
         answer(nameTold, de, URI, "@FEMALEFIRSTNAME:LABEL")).
 
 answer(nameAsked, de) :-
-    context(partner_name, LABEL),
-    context(partner_gender, GENDER),
+    context_get(partner_name, LABEL),
+    context_get(partner_gender, GENDER),
     uriref(wde:Male, MALE),
     GENDER is MALE,
     say_eoa(de, format_str("Du bist der %s", LABEL)).
 
 answer(nameAsked, de) :-
-    context(partner_name, LABEL),
-    context(partner_gender, GENDER),
+    context_get(partner_name, LABEL),
+    context_get(partner_gender, GENDER),
     uriref(wde:Female, FEMALE),
     GENDER is FEMALE,
     say_eoa(de, format_str("Du bist die %s", LABEL)).
@@ -80,14 +80,14 @@ nlp_test(de,
 %
 
 answer (i_am_a_computer, de) :-
-    push_context(topic, computers), say_eoa(de, "Ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
-    push_context(topic, computers), say_eoa(de, "Ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
-    push_context(topic, computers), say_eoa(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
-    push_context(topic, computers), say_eoa(de, "Fürchtest Du Dich vor Maschinen?"),
-    push_context(topic, computers), say_eoa(de, "Warum führst Du Computer an?"),
-    push_context(topic, computers), say_eoa(de, "Glaubst Du nicht, dass Computer den Menschen helfen können?"),
-    push_context(topic, computers), say_eoa(de, "Was besorgt Dich besonders an Maschinen?"),
-    push_context(topic, computers), say_eoa(de, "Was weißt Du über Computer?").
+    context_push(topic, computers), say_eoa(de, "Ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
+    context_push(topic, computers), say_eoa(de, "Ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
+    context_push(topic, computers), say_eoa(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
+    context_push(topic, computers), say_eoa(de, "Fürchtest Du Dich vor Maschinen?"),
+    context_push(topic, computers), say_eoa(de, "Warum führst Du Computer an?"),
+    context_push(topic, computers), say_eoa(de, "Glaubst Du nicht, dass Computer den Menschen helfen können?"),
+    context_push(topic, computers), say_eoa(de, "Was besorgt Dich besonders an Maschinen?"),
+    context_push(topic, computers), say_eoa(de, "Was weißt Du über Computer?").
 
 nlp_gen (de, '(HAL,|Computer,|) ich (glaube|denke|vermute|ahne) du bist (ein Roboter|eine Maschine|ein Computer)',
             answer(i_am_a_computer, de)).
@@ -96,17 +96,17 @@ nlp_gen (de, '(HAL,|Computer,|Du,|aber|) bist du (vielleicht|eigentlich|am Ende|
             answer(i_am_a_computer, de)).
 
 answer(topic, de) :-
-    score_context(topic, computers, 100), say_eoa(de, 'Wir hatten das Thema Computer und Maschinen.').
+    context_score(topic, computers, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Computer und Maschinen.', SCORE).
 
 answer(favmovie, de) :-
-    context(myfavmovie, MOVIE),
+    context_get(myfavmovie, MOVIE),
     rdf(distinct,
         MOVIE, wdpd:Director, DIRECTOR,
         DIRECTOR, rdfs:label, DIRLABEL,
         MOVIE, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de', lang(DIRLABEL) = 'de')),
-    push_context(topic, movies),
-    push_context(topic, MOVIE),
+    context_push(topic, movies),
+    context_push(topic, MOVIE),
     say_eoa(de, format_str("%s von %s", LABEL, DIRLABEL)).
 
 %
@@ -129,7 +129,7 @@ nlp_test(de,
          ivr(in('Was ist dein Lieblingsfilm?'),
              out('2001: Odyssee im Weltraum von Stanley Kubrick')),
          ivr(in('Worüber haben wir gesprochen?'),
-             out('Wir hatten das Thema Filme.')),
+             out('Wir hatten über 2001: Odyssee im Weltraum gesprochen.')),
          ivr(in('Bist Du ein Roboter?'),
              out('Ich bin ein Computer. Hast Du Computer-Kenntnisse?')),
          ivr(in('Worüber haben wir gesprochen?'),

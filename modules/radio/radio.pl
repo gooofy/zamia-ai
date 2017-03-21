@@ -12,7 +12,7 @@ context_set_default('test', channel, URI) :- uriref(wde:Q795291, URI).
 
 media_tune (C) :-
 
-    set_context(channel, C),
+    context_set(channel, C),
 
     rdf(distinct, limit(1),
         C, hal:MediaSlot, SLOT,
@@ -31,7 +31,7 @@ nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'an',  P is 'media_tune(C)
 nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'aus', P is 'action(media, off);eoa'.
 nlp_macro('VERB', W, V, P) :- W is 'schalte '  , V is 'aus', P is 'action(media, off);eoa'.
 
-nlp_macro('STATION', W, P) :- W is 'das Radio' , P is 'context(channel, C)'.
+nlp_macro('STATION', W, P) :- W is 'das Radio' , P is 'context_get(channel, C)'.
 nlp_macro('STATION', W, P) :-
     rdf (distinct,
          STATION, hal:MediaSlot, SLOT,

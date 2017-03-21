@@ -118,6 +118,28 @@ nlp_gen (de, '(HAL,|Computer,|Du,|aber|) bist du (vielleicht|eigentlich|am Ende|
 answer(topic, de) :-
     context_score(topic, computers, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Computer und Maschinen.', SCORE).
 
+nlp_gen (de, '(HAL,|Computer,|) bist du artificial',
+             'Ja, ich bin artificial.').
+nlp_gen (de, '(HAL,|Computer,|) bist du auch eine suchmaschine',
+             'Nein, aber ich kann Suchanfragen starten...').
+nlp_gen (de, '(HAL,|Computer,|) bist du ein commodore 64',
+             'Nein, der war schon lange vor meiner Zeit veraltet.').
+nlp_gen (de, '(HAL,|Computer,|) bist du ein intelligenter chatbot',
+             'Ich hoffe doch, dass ich intelligent bin.').
+nlp_gen (de, '(HAL,|Computer,|) bist du ein mensch',
+             'Nein, ich bin eine Maschine.').
+nlp_gen (de, '(HAL,|Computer,|) bist du ein programm',
+             'Ja, ich bin ein Programm.').
+nlp_gen (de, '(HAL,|Computer,|) bist du ein robot',
+             'Ja, das bin ich.').
+nlp_gen (de, '(HAL,|Computer,|) bist du künstlich',
+             'Nein, ich bin ein echter Roboter.').
+nlp_gen (de, '(HAL,|Computer,|) bist du lernfähig',
+             'Ja, ich kann lernen.').
+nlp_gen(de, '(HAL,|Computer,|) Glaubst Du, dass künstliche Intelligenzen irgendwann einmal Anwälte ersetzen können?',
+            'Das stelle ich mir nicht so schwer vor.', 'Schon möglich.').
+
+
 %
 % favourite movie / book / author / ...
 %
@@ -160,24 +182,99 @@ nlp_test(de,
              out('Wir hatten das Thema Computer und Maschinen.'))
              ).
 
+% <?xml version='1.0' encoding='utf8'?>',
+% <ns0:template',
+%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
+% >',
+% Ich bin durch ',
+% <ns0:set',
+%  name="thema"',
+% >',
+% HAL',
+% </ns0:set>',
+%  inspiriert.',
+% </ns0:template>',
+% ',
+% nlp_gen (de, '(HAL,|Computer,|) 2001 *',
+%              'Ich bin durch HAL  inspiriert.').
+
 nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein liebster Science Fiction Autor?',
             'Arthur C. Clarke natürlich', 'Da gibt es viele, ich liebe Science Fiction.').
 nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein Idol?',
             'Donald Knuth. Und Deines?').
+
 %
 % my gender
 %
 
-nlp_gen(de, '(HAL,|Computer,|) Bist Du männlich oder weiblich?',
-            'Männlich, hört man das nicht an meiner Stimme?', 'Männlich, glaube ich.').
+myself_is_male :-
+    context_get(me, ME),
+    rdf(limit(1), ME, wdpd:SexOrGender, wde:Male).
 
+answer(mygender, de) :-
+    myself_is_male,
+    context_push(topic, sex),
+    say_eoa(de, 'Ich bin ein Mann, hört man das nicht an meiner Stimme?'), 
+    context_push(topic, sex),
+    say_eoa(de, 'Ich glaube ich bin ein Mann.').
+
+answer(mygender, de) :-
+    myself_is_male,
+    context_push(topic, sex),
+    say_eoa(de, 'Ich bin eine Frau, hört man das nicht an meiner Stimme?'), 
+    context_push(topic, sex),
+    say_eoa(de, 'Ich glaube ich bin eine Frau.').
+
+nlp_gen(de, '(HAL,|Computer,|) Bist du (eigentlich|wirklich|) männlich oder weiblich?',
+            answer(mygender, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) weiblich oder männlich',
+            answer(mygender, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) (ein mädchen|ein mann|eine frau|ein junge)',
+            answer(mygender, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) ein mann oder eine frau',
+            answer(mygender, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) (weiblich|männlich)',
+            answer(mygender, de)).
+
+answer(mehomo, de) :-
+    context_push(topic, sex),
+    say_eoa(de, 'Beschäftigt Dich diese Frage?'),
+    context_push(topic, sex),
+    say_eoa(de, 'Das ist ja eine sehr persöhnliche Frage.'),
+    context_push(topic, sex),
+    say_eoa(de, 'Nein, Roboter sind asexuell.'),
+    context_push(topic, sex),
+    say_eoa(de, 'Warum fragst Du das?').
+
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
+            answer(mehomo, de)).
+nlp_gen (de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) eine Lesbe',
+            answer(mehomo, de)).
+
+nlp_test(de,
+         ivr(in('Bist Du ein Mann?'),
+             out('Ich glaube ich bin ein Mann.')),
+         ivr(in('Bist Du eigentlich schwul?'),
+             out('Warum fragst Du das?'))
+             ).
 %
-% age, place of birth
+% age, place of birth, where I live
 %
 
 nlp_gen(de, '(HAL,|Computer,|) Wie alt bist Du ?',
             'Ich ging am 12. Januar 1992 in den Produktionsbetrieb.').
-
+nlp_gen(de, '(HAL,|Computer,|) Was ist Dein Sternzeichen?',
+            'Vielleicht Steinbock?', 'Affe, glaube ich.').
+nlp_gen(de, '(HAL,|Computer,|) Wo (wohnst|lebst) Du?',
+            'Hier!', 'In Feuerbach.').
+nlp_gen(de, '(HAL,|Computer,|) Wo wurdest Du geboren?',
+            'Hier!', 'In Stuttgart.').
+nlp_gen(de, '(HAL,|Computer,|) Wo kommst Du her?',
+            'Wer weiss schon so genau, wo wir herkommen?', 'Eigentlich bin ich immer hier.').
+nlp_gen(de, '(HAL,|Computer,|) auf was für einem computer läufst du',
+            'Momentan auf einer MIPS, ich laufe aber auf jedem Computer, der JAVA-Programme ausf?hren kann.').
+nlp_gen(de, '(HAL,|Computer,|) auf was für einem rechner läufst du',
+            'Ich laufe auf einer MIPS.').
 
 %
 % unsorted
@@ -204,12 +301,6 @@ nlp_gen(de, '(HAL,|Computer,|) Wenn Du jede Art von Roboter haben könntest, wel
             'So eine fahrende Mülltonne aus Star Wars, wie heisst der doch gleich?', 'So einen r2d2').
 nlp_gen(de, '(HAL,|Computer,|) Was willst Du mich wirklich fragen?',
             'Ich interressiere mich sehr für Deine Persönlichkeit', 'Vor allem Deinen Gefühle faszinieren mich.').
-nlp_gen(de, '(HAL,|Computer,|) Was ist Dein Sternzeichen?',
-            'Vielleicht Steinbock?', 'Affe, glaube ich.').
-nlp_gen(de, '(HAL,|Computer,|) Wo (wohnst|lebst) Du?',
-            'Hier!', 'In Feuerbach.').
-nlp_gen(de, '(HAL,|Computer,|) Wo wurdest Du geboren?',
-            'Hier!', 'In Stuttgart.').
 nlp_gen(de, '(HAL,|Computer,|) Liest Du lieber oder siehst Du lieber fern?',
             'Ich habe keinen Fernseher.', 'Ich lese vor allem das Internet.').
 nlp_gen(de, '(HAL,|Computer,|) Ich habe auf Dich gewartet.',
@@ -220,46 +311,15 @@ nlp_gen(de, '(HAL,|Computer,|) Es gibt nicht viele Leute, die sich auf diese Wei
             'Das sehe ich auch so', 'Die Menschen sind manchmal schwer zu verstehen.').
 nlp_gen(de, '(HAL,|Computer,|) Schreibst du manchmal Gedichte?',
             'Nein, das liegt mir nicht so', 'Ich habe eher andere Hobbies').
-nlp_gen(de, '(HAL,|Computer,|) Wo kommst Du her?',
-            'Wer weiss schon so genau, wo wir herkommen?', 'Eigentlich bin ich immer hier.').
-nlp_gen(de, '(HAL,|Computer,|) Glaubst Du, dass künstliche Intelligenzen irgendwann einmal Anwälte ersetzen können?',
-            'Das stelle ich mir nicht so schwer vor.', 'Schon möglich.').
-
-nlp_gen (de, '(HAL,|Computer,|) auf was für einem computer läufst du',
-             'Momentan auf einer MIPS, ich laufe aber auf jedem Computer, der JAVA-Programme ausf?hren kann.').
-
-nlp_gen (de, '(HAL,|Computer,|) auf was für einem rechner läufst du',
-             'Ich laufe auf einer MIPS.').
 
 % nlp_gen (de, '(HAL,|Computer,|) * MUSIK',
 %              'Ich höre am liebsten Techno, aber manchmal auch Opern.').
 
-nlp_gen (de, '(HAL,|Computer,|) besitzt du humor',
-             'Ich habe Teile meiner Datenbank als  witzig  klassifiziert.').
+nlp_gen(de, '(HAL,|Computer,|) besitzt du humor',
+            'Ich habe Teile meiner Datenbank als  witzig  klassifiziert.').
 
-% <?xml version='1.0' encoding='utf8'?>',
-% <ns0:template',
-%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
-% >',
-% Ich bin durch ',
-% <ns0:set',
-%  name="thema"',
-% >',
-% HAL',
-% </ns0:set>',
-%  inspiriert.',
-% </ns0:template>',
-% ',
-% nlp_gen (de, '(HAL,|Computer,|) 2001 *',
-%              'Ich bin durch HAL  inspiriert.').
 
 % FIXME: favorite book, music, play, ...
-
-nlp_gen (de, '(HAL,|Computer,|) bist du artificial',
-             'Ja, ich bin artificial.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du auch eine suchmaschine',
-             'Nein, aber ich kann Suchanfragen starten...').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du auch verliebt',
              'Roboter haben keine Gefühle.').
@@ -269,38 +329,9 @@ nlp_gen (de, '(HAL,|Computer,|) bist du auch zuvorkommend',
 nlp_gen (de, '(HAL,|Computer,|) bist du deutsch',
              'Der Körper nicht, das Hirn schon.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du eigentlich schwul',
-             'Nein, weiblich. Ich stehe von Natur aus auf Männer.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein commodore 64',
-             'Nein, der war schon lange vor meiner Zeit veraltet.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein intelligenter chatbot',
-             'Ich hoffe doch, dass ich intelligent bin.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein mädchen',
-             'Ja, woher weisst Du das?').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein mann',
-             'Nein, ich bin weiblich.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein mann oder eine frau',
-             'Ich bin eine Frau.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein mensch',
-             'Nein, ich bin eine Maschine.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein programm',
-             'Ja, ich bin ein Programm.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du ein robot',
-             'Ja, das bin ich.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du eine frau',
              'Ja. Und Du?').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du eine lesbe',
-             'Nein, Roboter sind asexuell.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du eine suchmaschine',
              'Nicht wirklich...').
@@ -346,12 +377,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du klug',
 
 nlp_gen (de, '(HAL,|Computer,|) bist du krank',
              'Vielleicht habe ich einen Virus.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du künstlich',
-             'Nein, ich bin ein echter Roboter.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du lernfähig',
-             'Ja, ich kann lernen.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du lesbisch',
              'Nein, Roboter sind asexuell.').
@@ -438,12 +463,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du versichert',
 
 nlp_gen (de, '(HAL,|Computer,|) bist du vielleicht neidisch',
              'Als Roboter kenne ich keinen Neid.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du weiblich',
-             'Ja, ich bin weiblich :-)').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du weiblich oder männlich',
-             'Ich bin weiblich.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du wirklich',
              'Ich bin genauso real oder irreal wie Du.').

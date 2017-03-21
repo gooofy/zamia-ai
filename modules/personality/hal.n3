@@ -11,8 +11,8 @@
 
 hal:hal9000     rdfs:label    "HAL 9000"@en;
                 rdfs:label    "HAL 9000"@de;
-                wdpd:P31      wde:Q68;       # instanceof computer
-                wdpd:P21      wde:Q6581097;  # gender male
-                hal:favMovie  wde:Q103474.   # fav movie 2001: A Space Odyssey
+                wdpd:P31      wde:Q68;       # InstanceOf computer
+                wdpd:P21      wde:Q6581097;  # SexOrGender male
+                hal:favMovie  wde:Q103474.   # favMovie 2001: A Space Odyssey
 
 

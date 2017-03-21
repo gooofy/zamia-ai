@@ -12,7 +12,7 @@ nlp_macro ('KNOWN_PERSONS', PERSON, LABEL) :-
          filter (lang(LABEL) = 'de')).
 
 answer(topic, de) :-
-    score_context(topic, people, 20), say_eoa(de, 'Wir hatten es von den Menschen.').
+    context_score(topic, people, 20, S), say_eoa(de, 'Wir hatten es von den Menschen.', S).
 
 answer (knownPerson, de, PERSON, LABEL) :-
     say_eoa(de, 'Ja, der Name ist mir bekannt.').
@@ -25,9 +25,9 @@ answer (birthplacePerson, de, PERSON, PERSON_LABEL) :-
          PERSON,     wdpd:PlaceOfBirth, BIRTHPLACE,
          BIRTHPLACE, rdfs:label,        LABEL,
          filter (lang(LABEL) = 'de')),
-    push_context(topic, people),
-    push_context(topic, PERSON),
-    push_context(topic, BIRTHPLACE),
+    context_push(topic, people),
+    context_push(topic, PERSON),
+    context_push(topic, BIRTHPLACE),
     say_eoa(de, format_str('%s wurde in %s geboren.', PERSON_LABEL, LABEL)).
 
 nlp_gen (de, '(HAL,|Computer,|) (wo|in welcher stadt) (wurde|ist) (eigentlich|) @KNOWN_PERSONS:LABEL geboren?',
@@ -44,9 +44,9 @@ answer (birthdatePerson, de, PERSON, PERSON_LABEL) :-
     rdf (distinct, limit(1),
          PERSON,     wdpd:DateOfBirth, TS),
     transcribe_date(de, dativ, TS, TS_SCRIPT),
-    push_context(topic, people),
-    push_context(topic, birthday),
-    push_context(topic, PERSON),
+    context_push(topic, people),
+    context_push(topic, birthday),
+    context_push(topic, PERSON),
     say_eoa(de, format_str('%s wurde am %s geboren.', PERSON_LABEL, TS_SCRIPT)).
 
 nlp_gen (de, '(HAL,|Computer,|) (wann|in welchem Jahr) (wurde|ist) (eigentlich|) @KNOWN_PERSONS:LABEL geboren?',

@@ -9,11 +9,11 @@ answer(topic, de) :-
     say_eoa(de, 'Ich glaube vor allem über Dich!').
 
 answer(topic, de) :-
-    score_context(topic, ENTITY, 100),
+    context_score(topic, ENTITY, 100, S),
     rdf (limit(1),
          ENTITY, rdfs:label, LABEL,
          filter (lang(LABEL) = 'de')),
-    say_eoa(de, format_str('Wir hatten über %s gesprochen.', LABEL)).
+    say_eoa(de, format_str('Wir hatten über %s gesprochen.', LABEL), S).
 
 nlp_gen(de, '(HAL,|Computer,|) Worüber haben wir (eben|) gesprochen?', answer(topic, de)).
 nlp_gen(de, '(HAL,|Computer,|) (Wie|Was) war (doch gleich|gleich|) unser Thema?', answer(topic, de)).

@@ -41,14 +41,16 @@ import model
 
 from kb import HALKB
 
-def builtin_context(g, pe):
+def builtin_context_get(g, pe):
 
-    pe._trace ('CALLED BUILTIN context', g)
+    """ context_get(+Name, -Value) """
+
+    pe._trace ('CALLED BUILTIN context_get', g)
 
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('context: 2 args expected.')
+        raise PrologRuntimeError('context_get: 2 args expected.')
 
     key     = args[0].name
     arg_v   = pe.prolog_get_variable(args[1], g.env)
@@ -61,101 +63,40 @@ def builtin_context(g, pe):
         if not v:
             return False
 
-    # print u"builtin_context: %s -> %s" % (key, unicode(v.body))
-
     g.env[arg_v] = v
 
     return True
 
-ACTION_VARNAME       = '__ACTION__'
-ACTION_SCORE_VARNAME = '__ACTION_SCORE__'
+def builtin_context_get_fn(pred, env, rt):
 
-def _score_context(g, pe, do_fail):
+    """ context_get(+Name) """
 
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 3:
-        raise PrologRuntimeError('score_context: 3 args expected.')
+    rt._trace_fn ('CALLED FUNCTION context_get', g)
 
-    key     = args[0].name
-    value   = pe.prolog_eval(args[1], g.env)
-    score   = pe.prolog_eval(args[2], g.env)
-
-    if not key in pe.context_stacks:
-        return not do_fail
-
-    if value:
-
-        i = 1
-        found = False
-        for v in pe.context_stacks[key]:
-            if v == value:
-                found = True
-                break
-            i += 1
-
-        if not found:
-            return not do_fail
-
-        if not ACTION_SCORE_VARNAME in g.env:
-            g.env[ACTION_SCORE_VARNAME] = 0.0
-        g.env[ACTION_SCORE_VARNAME] += score.f / float(i)
-
-        return True
-
-    if not isinstance (args[1], Variable):
-        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]))
-
-    base_score = g.env[ACTION_SCORE_VARNAME] if ACTION_SCORE_VARNAME in g.env else 0.0
-
-    res = []
-
-    i = 1
-    for v in pe.context_stacks[key]:
-        i += 1
-        res.append({args[1].name: v, ACTION_SCORE_VARNAME: base_score + score.f / float(i)})
-
-    return res
-    
-
-def builtin_score_context(g, pe):
-
-    pe._trace ('CALLED BUILTIN score_context', g)
-
-    return _score_context (g, pe, True)
-
-
-def builtin_score_context_add(g, pe):
-
-    pe._trace ('CALLED BUILTIN score_context_add', g)
-
-    return _score_context (g, pe, False)
-
-def builtin_score_add(g, pe):
-
-    pe._trace ('CALLED BUILTIN score_add', g)
-
-    pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 1:
-        raise PrologRuntimeError('score_add: 1 arg expected.')
+        raise PrologRuntimeError('context_get: 1 arg expected.')
 
-    score   = pe.prolog_eval(args[0], g.env)
+    key     = args[0].name
 
-    if not ACTION_SCORE_VARNAME in g.env:
-        g.env[ACTION_SCORE_VARNAME] = 0.0
-    g.env[ACTION_SCORE_VARNAME] += score.f 
+    # currentTime is special in production contexts
+    if key=='currentTime' and pe.context_name != 'test':
+        v = NumberLiteral(time.time())
+    else:
+        v = pe.read_context(pe.context_name, key)
+        if not v:
+            return ListLiteral([])
 
-    return True
+    return v
 
-def builtin_action_set_context(pe, args):
+def builtin_action_context_set(pe, args):
 
-    logging.debug ('CALLED BUILTIN ACTION set_context %s' % repr(args))
+    """ context_set(+Name, +Value) """
 
-    # pred = g.terms[g.inx]
-    # args = pred.args
+    logging.debug ('CALLED BUILTIN ACTION context_set %s' % repr(args))
+
     if len(args) != 2:
-        raise PrologRuntimeError('set_context: 2 args expected.')
+        raise PrologRuntimeError('context_push: 2 args expected.')
 
     key   = args[0].name
     # value = pe.prolog_eval(args[1], g.env)
@@ -164,12 +105,14 @@ def builtin_action_set_context(pe, args):
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.write_context(pe.context_name, key, value)
 
-def builtin_action_push_context(pe, args):
+def builtin_action_context_push(pe, args):
 
-    logging.debug ('CALLED BUILTIN ACTION push_context %s' % repr(args))
+    """ context_push(+Name, +Value) """
+
+    logging.debug ('CALLED BUILTIN ACTION context_push %s' % repr(args))
 
     if len(args) != 2:
-        raise PrologRuntimeError('push_context: 2 args expected.')
+        raise PrologRuntimeError('context_push: 2 args expected.')
 
     key   = args[0].name
     value = args[1]
@@ -177,7 +120,96 @@ def builtin_action_push_context(pe, args):
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.push_context(pe.context_name, key, value)
 
+
+ACTION_VARNAME       = '__ACTION__'
+
+def builtin_context_score(g, pe):
+
+    """ context_score(+Name, ?Value, +Points, ?Score [, +MinPoints]) """
+
+    pe._trace ('CALLED BUILTIN context_score', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) < 4:
+        raise PrologRuntimeError('context_score: at least 4 args expected.')
+    if len(args) > 5:
+        raise PrologRuntimeError('context_score: max 5 args expected.')
+
+    key     = args[0].name
+    value   = pe.prolog_eval(args[1], g.env)
+    points  = pe.prolog_get_float(args[2], g.env)
+    scorev  = pe.prolog_get_variable(args[3], g.env)
+
+    if len(args) == 5:
+        min_score = pe.prolog_get_float(args[4], g.env)
+    else:
+        min_score = 0.0
+
+    score = g.env[scorev] if scorev in g.env else 0.0
+
+    if value:
+        if key in pe.context_stacks:
+            i = 1
+            for v in pe.context_stacks[key]:
+                if v == value:
+                    score += points / float(i)
+                    break
+                i += 1
+
+        if score < min_score:
+            return False
+        g.env[scorev] = NumberLiteral(score)
+        return True
+
+    if not isinstance (args[1], Variable):
+        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]))
+
+    res = []
+
+    if key in pe.context_stacks:
+        i = 1
+        for v in pe.context_stacks[key]:
+            s = score + points / float(i)
+            if s >= min_score:
+                res.append({ 
+                             args[1].name : v, 
+                             scorev       : NumberLiteral(score + points / float(i))
+                            })
+            i += 1
+    else:
+        if score >= min_score:
+            res.append({ 
+                         args[1].name : ListLiteral([]), 
+                         scorev       : NumberLiteral(score)
+                        })
+
+    return res
+
+
+def _queue_action(g, action):
+
+    if not ACTION_VARNAME in g.env:
+        g.env[ACTION_VARNAME] = []
+
+    g.env[ACTION_VARNAME].append( action )
+
+def builtin_action(g, pe):
+
+    pe._trace ('CALLED BUILTIN action', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    evaluated_args = map (lambda v: pe.prolog_eval(v, g.env), args)
+
+    _queue_action (g, evaluated_args)
+
+    return True
+
 def builtin_say(g, pe):
+
+    """ say ( +Lang, +Str ) """
 
     pe._trace ('CALLED BUILTIN say', g)
 
@@ -189,52 +221,63 @@ def builtin_say(g, pe):
     arg_L   = args[0].name
     arg_S   = pe.prolog_get_string(args[1], g.env)
 
-    if not ACTION_VARNAME in g.env:
-        g.env[ACTION_VARNAME] = []
-
-    g.env[ACTION_VARNAME].append( [Predicate('say'), arg_L, arg_S] )
+    _queue_action (g, [Predicate('say'), arg_L, arg_S] )
 
     return True
 
-def builtin_eoa(g, pe):
-
-    pe._trace ('CALLED BUILTIN eoa', g)
+def _eoa (g, pe, score):
 
     if not (ACTION_VARNAME in g.env):
         raise PrologRuntimeError('eoa: no action defined.')
 
-    score = g.env[ACTION_SCORE_VARNAME] if ACTION_SCORE_VARNAME in g.env else 0.0
-
     pe.end_action(g.env[ACTION_VARNAME], score)
 
     del g.env[ACTION_VARNAME]
-    if ACTION_SCORE_VARNAME in g.env:
-        del g.env[ACTION_SCORE_VARNAME]
+
+def builtin_eoa(g, pe):
+
+    """ eoa ( [+Score] ) """
+
+    pe._trace ('CALLED BUILTIN eoa', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    if len(args)>1:
+        raise PrologRuntimeError('eoa: max 1 arg expected.')
+
+    score = 0.0
+    if len(args)>0:
+        score = pe.prolog_get_float(args[0], g.env)
+
+    _eoa (g, pe, score)
 
     return True
 
 def builtin_say_eoa(g, pe):
 
+    """ say_eoa ( +Lang, +Str, [+Score] ) """
+
     pe._trace ('CALLED BUILTIN say_eoa', g)
-
-    builtin_say(g, pe)
-    builtin_eoa(g, pe)
-
-    return True
-
-def builtin_action(g, pe):
-
-    pe._trace ('CALLED BUILTIN action', g)
 
     pred = g.terms[g.inx]
     args = pred.args
 
-    evaluated_args = map (lambda v: pe.prolog_eval(v, g.env), args)
+    if len(args) < 2:
+        raise PrologRuntimeError('say_eoa: at least 2 args expected.')
+    if len(args) > 3:
+        raise PrologRuntimeError('say_eoa: max 3 args expected.')
 
-    if not ACTION_VARNAME in g.env:
-        g.env[ACTION_VARNAME] = []
+    arg_L   = args[0].name
+    arg_S   = pe.prolog_get_string(args[1], g.env)
 
-    g.env[ACTION_VARNAME].append( evaluated_args )
+    _queue_action (g, [Predicate('say'), arg_L, arg_S] )
+
+    score = 0.0
+    if len(args)>2:
+        score = pe.prolog_get_float(args[2], g.env)
+
+    _eoa (g, pe, score)
 
     return True
 
@@ -598,25 +641,27 @@ class AIPrologRuntime(PrologRuntime):
         self.builtin_actions = {}
 
         self.register_builtin('action',          builtin_action)
-        self.register_builtin('eoa',             builtin_eoa)      # eoa: End Of Action
+        self.register_builtin('eoa',             builtin_eoa)      # eoa: End Of Action ([+Score])
 
-        self.register_builtin('say',             builtin_say)      # shortcut for action(say, lang, str)
-        self.register_builtin('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa
+        self.register_builtin('say',             builtin_say)      # shortcut for action(say, lang, str) (+Lang, +Str)
+        self.register_builtin('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa (+Lang, +Str, [+Score])
 
-        # context settings (i.e. global settings stored in DB) and stacks (scoring, disambiguation)
+        #
+        # context related functions and predicates
+        #
+        # contexts are global settings stored in DB 
+        #          and can have transient history stacks (for scoring, disambiguation)
+        #
 
-        self.context_name = 'production'
-        self.action_score  = 0
+        self.context_name   = 'production'
+        self.context_stacks = {} # key -> []
 
-        self.register_builtin('context',            builtin_context)
-        self.register_builtin_action('set_context', builtin_action_set_context)
-
-        self.context_stacks   = {} # key -> []
-
-        self.register_builtin_action('push_context',builtin_action_push_context)
-        self.register_builtin('score_context',      builtin_score_context)
-        self.register_builtin('score_add',          builtin_score_add)
-        self.register_builtin('score_context_add',  builtin_score_context_add)
+        self.register_builtin          ('context_get',   builtin_context_get)         # context_get(+Name, -Value)
+        self.register_builtin_function ('context_get',   builtin_context_get_fn)      # context_get(+Name)
+        self.register_builtin_action   ('context_set',   builtin_action_context_set)  # context_set(+Name, +Value)
+        self.register_builtin_action   ('context_push',  builtin_action_context_push) # context_push(+Name, +Value)
+        self.register_builtin          ('context_score', builtin_context_score)       # context_score(+Name, ?Value, +Points, -Score [, +MinPoints])
+        # self.register_builtin_function ('context_score', builtin_context_score_fn)    # context_score(+Name, +Value, +Points)
 
         # sparql / rdf
 

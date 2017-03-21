@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS    = [ 'base' ]
+DEPENDS    = [ 'base', 'config' ]
 
 PL_SOURCES = [
               'radio.pl',

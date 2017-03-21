@@ -51,7 +51,7 @@ hal:MediaStationNewRock   hal:MediaSlot  3 ;
                                          "New Rock"@de .
 
 # Rock
-hal:MediaStationNewRock   hal:MediaSlot  4 ;
+hal:MediaStationRock      hal:MediaSlot  4 ;
                           rdfs:label     "Rock"@en,
                                          "Rock"@de .
 

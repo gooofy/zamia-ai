@@ -6,8 +6,10 @@ import rdflib
 DEPENDS    = [ ]
 
 PL_SOURCES = [
-              'people.pl',
+              'conversation.pl',
+              'math.pl',
               'time.pl',
+              'people.pl',
              ]
 
 RDF_PREFIXES = {
@@ -41,11 +43,11 @@ RDF_ALIASES = {
                 u'wde:Human'                      : u'http://www.wikidata.org/entity/Q5',
                 u'wde:AngelaMerkel'               : u'http://www.wikidata.org/entity/Q567',
                 u'wde:GerhardSchröder'            : u'http://www.wikidata.org/entity/Q2530',
-                u'wde:PresidentOfGermany'         : u'http://www.wikidata.org/entity/Q25223',
                 u'wde:ComputerScientist'          : u'http://www.wikidata.org/entity/Q82594',
-                u'wde:FederalChancellorOfGermany' : u'http://www.wikidata.org/entity/Q4970706',
                 u'wde:Female'                     : u'http://www.wikidata.org/entity/Q6581072',
                 u'wde:Male'                       : u'http://www.wikidata.org/entity/Q6581097',
+                u'wde:FemaleGivenName'            : u'http://www.wikidata.org/entity/Q11879590',
+                u'wde:MaleGivenName'              : u'http://www.wikidata.org/entity/Q12308941',
 
                 u'wde:Freudental'                 : u'http://www.wikidata.org/entity/Q61656',
                 u'wde:Ludwigsburg'                : u'http://www.wikidata.org/entity/Q622',
@@ -80,9 +82,19 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'SexOrGender'                , u'P21'),
                               (u'InstanceOf'                 , u'P31'),
                               (u'PositionHeld'               , u'P39'),
+                              (u'Director'                   , u'P57'),
+                              (u'ScreenWriter'               , u'P58'),
                               (u'Occupation'                 , u'P106'),
+                              (u'Genre'                      , u'P136'),
+                              (u'BasedOn'                    , u'P144'),
+                              (u'CastMember'                 , u'P161'),
+                              (u'DateOfBirth'                , u'P569'),
+                              (u'PublicationDate'            , u'P577'),
                               (u'StartTime'                  , u'P580'),
                               (u'EndTime'                    , u'P582'),
+                              (u'MainSubject'                , u'P921'),
+                              (u'Replaces'                   , u'P1365'),
+                              (u'ReplacedBy'                 , u'P1366'),
                               (u'GeoNamesID'                 , u'P1566'),
                              ]:
 
@@ -95,11 +107,8 @@ KB_SOURCES = [
 
               (
                 [ 
-                  ('wdpd:PositionHeld', 'wde:FederalChancellorOfGermany'),
-                  ('wdpd:PositionHeld', 'wde:PresidentOfGermany'),
-                  # ('wdpd:Occupation',   'wde:ComputerScientist'),
-                  #u'wde:AngelaMerkel', 
-                  #u'wde:GerhardSchröder',
+                  u'wde:AngelaMerkel', 
+                  u'wde:GerhardSchröder',
                 ],
                 [
                   ['wdpd:PlaceOfBirth'], 

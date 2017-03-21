@@ -41,6 +41,25 @@ time_str(de, tomorrow,         "morgen").
 time_str(de, dayAfterTomorrow, "übermorgen").
 time_str(de, nextThreeDays,    "in den nächsten drei Tagen").
 
+transcribe_month(de,  1, 'januar').
+transcribe_month(de,  2, 'feburar').
+transcribe_month(de,  3, 'märz').
+transcribe_month(de,  4, 'april').
+transcribe_month(de,  5, 'mai').
+transcribe_month(de,  6, 'juni').
+transcribe_month(de,  7, 'juli').
+transcribe_month(de,  8, 'august').
+transcribe_month(de,  9, 'september').
+transcribe_month(de, 10, 'oktober').
+transcribe_month(de, 11, 'november').
+transcribe_month(de, 12, 'dezember').
+
+transcribe_date(de, dativ, TS, SCRIPT) :-
+    stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
+    transcribe_number(de, dativ, D, DS),
+    transcribe_month(de, M, MS),
+    SCRIPT is format_str('%s %s %s', DS, MS, Y).
+
 %
 % time and dates
 %

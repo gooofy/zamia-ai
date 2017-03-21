@@ -18,7 +18,8 @@ media_tune (C) :-
         C, hal:MediaSlot, SLOT,
         optional(C, hal:MediaTitle, TITLE)),
     
-    action (media, tune, SLOT, TITLE).
+    action (media, tune, SLOT, TITLE),
+    eoa.
 
 
 %
@@ -27,12 +28,13 @@ media_tune (C) :-
 
 nlp_macro('VERB', W, V, P) :- W is 'schalte'   , V is 'ein', P is 'media_tune(C)'.
 nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'an',  P is 'media_tune(C)'.
-nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'aus', P is 'action(media, off)'.
-nlp_macro('VERB', W, V, P) :- W is 'schalte '  , V is 'aus', P is 'action(media, off)'.
+nlp_macro('VERB', W, V, P) :- W is 'mach '     , V is 'aus', P is 'action(media, off);eoa'.
+nlp_macro('VERB', W, V, P) :- W is 'schalte '  , V is 'aus', P is 'action(media, off);eoa'.
 
 nlp_macro('STATION', W, P) :- W is 'das Radio' , P is 'context(channel, C)'.
 nlp_macro('STATION', W, P) :-
-    rdf (STATION, hal:MediaSlot, SLOT,
+    rdf (distinct,
+         STATION, hal:MediaSlot, SLOT,
          STATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is LABEL,

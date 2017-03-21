@@ -181,19 +181,29 @@ answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
 % nlp processing (german)
 %
 
-% nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'near_future(weather, EvT)'.
 nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'context(time, EvT)'.
 nlp_macro('TIMESPEC', W, P) :- W is 'heute'                , P is 'EvT is today'.
 nlp_macro('TIMESPEC', W, P) :- W is 'morgen'               , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'übermorgen'           , P is 'EvT is dayAfterTomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'in den nächsten Tagen', P is 'EvT is nextThreeDays'.
 
-% nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'near_future(weather, EvT)'.
 nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'context(time, EvT)'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für heute'            , P is 'EvT is today'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für morgen'           , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für übermorgen'       , P is 'EvT is dayAfterTomorrow'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für die nächsten Tage', P is 'EvT is nextThreeDays'.
+
+% N: non empty
+
+nlp_macro('TIMESPECN', W, P) :- W is 'heute'                , P is 'EvT is today'.
+nlp_macro('TIMESPECN', W, P) :- W is 'morgen'               , P is 'EvT is tomorrow'.
+nlp_macro('TIMESPECN', W, P) :- W is 'übermorgen'           , P is 'EvT is dayAfterTomorrow'.
+nlp_macro('TIMESPECN', W, P) :- W is 'in den nächsten Tagen', P is 'EvT is nextThreeDays'.
+
+nlp_macro('TIMESPECNF', W, P) :- W is 'für heute'            , P is 'EvT is today'.
+nlp_macro('TIMESPECNF', W, P) :- W is 'für morgen'           , P is 'EvT is tomorrow'.
+nlp_macro('TIMESPECNF', W, P) :- W is 'für übermorgen'       , P is 'EvT is dayAfterTomorrow'.
+nlp_macro('TIMESPECNF', W, P) :- W is 'für die nächsten Tage', P is 'EvT is nextThreeDays'.
 
 nlp_macro('HELLO', W) :- W is ''          .
 nlp_macro('HELLO', W) :- W is 'Computer, '.
@@ -206,7 +216,8 @@ nlp_macro('PLACE', W, P) :- W is '', P is 'context(place, P)'.
 % W : 'in Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'in Freudental'    , P: 'P is "dbr:Freudental"'
 nlp_macro('PLACE', W, P) :- 
-    rdf (LOCATION, hal:cityid, CITYID,
+    rdf (distinct,
+         LOCATION, hal:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('in %s', LABEL),
@@ -217,7 +228,24 @@ nlp_macro('PLACEF', W, P) :- W is '', P is 'context(place, P)'.
 % W : 'für Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'für Freudental'    , P: 'P is "dbr:Freudental"'
 nlp_macro('PLACEF', W, P) :- 
-    rdf (LOCATION, hal:cityid, CITYID,
+    rdf (distinct,
+         LOCATION, hal:cityid, CITYID,
+         LOCATION, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'de')),
+    W is format_str('für %s', LABEL),
+    P is format_str('P is "%s"', LOCATION).
+
+nlp_macro('PLACEN', W, P) :- 
+    rdf (distinct,
+         LOCATION, hal:cityid, CITYID,
+         LOCATION, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'de')),
+    W is format_str('in %s', LABEL),
+    P is format_str('P is "%s"', LOCATION).
+
+nlp_macro('PLACENF', W, P) :- 
+    rdf (distinct,
+         LOCATION, hal:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('für %s', LABEL),
@@ -267,8 +295,11 @@ nlp_test(de,
              out('übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
 
 nlp_gen(de,
-        '@HELLO:W regnet es @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
+        '@HELLO:W regnet es @TIMESPECN:W @PLACE:W ?', 
+        @TIMESPECN:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
+nlp_gen(de,
+        '@HELLO:W regnet es @PLACEN:W ?', 
+        context(time, EvT), @PLACEN:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Regnet es in Freudental?'),
              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
@@ -295,15 +326,18 @@ nlp_test(de,
              out('heute wird es wenige wolken geben in freudental und es wird zwischen minus sieben und zwei grad warm'))).
 
 nlp_gen(de,
-        '@HELLO:W wie wird das Wetter @TIMESPEC:W @PLACE:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
+        '@HELLO:W wie wird das Wetter @TIMESPEC:W @PLACEN:W ?', 
+        @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P)).
+nlp_gen(de,
+        '@HELLO:W wie wird das Wetter @TIMESPECN:W?', 
+        @TIMESPECN:P, context(place, P), answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, wie wird das Wetter heute in Tallinn?'),
              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
 
 nlp_gen(de,
-        '@HELLO:W wie wird das Wetter @PLACE:W @TIMESPEC:W ?', 
-        @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
+        '@HELLO:W wie wird das Wetter @PLACEN:W @TIMESPECN:W ?', 
+        @TIMESPECN:P, @PLACEN:P, answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('wie wird das Wetter in Stuttgart morgen?'),
              out('morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und eins grad warm'))).
@@ -348,12 +382,20 @@ nlp_test(de,
 %
 
 nlp_gen(de, 
-        '@HELLO:W und @TIMESPECF:W @PLACEF:W ?', 
-        score_context (topic, weather, 100), @TIMESPECF:P, @PLACEF:P, answer (weather, de, EvT, P)).
+        '@HELLO:W und @TIMESPECNF:W @PLACEF:W ?', 
+        score_context (topic, weather, 100), @TIMESPECNF:P, @PLACEF:P, answer (weather, de, EvT, P)).
 
 nlp_gen(de, 
-        '@HELLO:W und @TIMESPEC:W @PLACE:W ?', 
-        score_context (topic, weather, 100), @TIMESPEC:P, @PLACE:P, answer (weather, de, EvT, P)).
+        '@HELLO:W und @PLACENF:W ?', 
+        score_context (topic, weather, 100), context(time, EvT), @TIMESPECF:P, @PLACENF:P, answer (weather, de, EvT, P)).
+
+nlp_gen(de, 
+        '@HELLO:W und @TIMESPEC:W @PLACEN:W ?', 
+        score_context (topic, weather, 100), @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P)).
+
+nlp_gen(de, 
+        '@HELLO:W und @TIMESPECN:W ?', 
+        score_context (topic, weather, 100), @TIMESPECN:P, context(place, P), answer (weather, de, EvT, P)).
 
 
 %

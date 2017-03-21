@@ -5844,11 +5844,6 @@ hal:MaleGivenNameHugo     rdfs:label "Hugo"@en;
                         wdpd:P31       wde:Q12308941; # instanceof maleGivenName
                         wdpd:P21       wde:Q6581097 . # gender male
 
-hal:MaleGivenNamePhilipp     rdfs:label "Philipp"@en;
-                        rdfs:label "Philipp"@de;
-                        wdpd:P31       wde:Q12308941; # instanceof maleGivenName
-                        wdpd:P21       wde:Q6581097 . # gender male
-
 hal:MaleGivenNameKlausPeter     rdfs:label "Klaus-Peter"@en;
                         rdfs:label "Klaus-Peter"@de;
                         wdpd:P31       wde:Q12308941; # instanceof maleGivenName
@@ -7276,11 +7271,6 @@ hal:MaleGivenNameAndrzej     rdfs:label "Andrzej"@en;
 
 hal:MaleGivenNameKarlOtto     rdfs:label "Karl-Otto"@en;
                         rdfs:label "Karl-Otto"@de;
-                        wdpd:P31       wde:Q12308941; # instanceof maleGivenName
-                        wdpd:P21       wde:Q6581097 . # gender male
-
-hal:MaleGivenNameWalther     rdfs:label "Walther"@en;
-                        rdfs:label "Walther"@de;
                         wdpd:P31       wde:Q12308941; # instanceof maleGivenName
                         wdpd:P21       wde:Q6581097 . # gender male
 

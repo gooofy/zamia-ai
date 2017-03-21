@@ -93,25 +93,12 @@ answer (are_you_sure, de) :-
     say_eoa(de, "Ganz sicher?").
 
 
-nlp_gen(de, '(HAL,|Computer,|Du,|aber|) (ganz|) (bestimmt|sicher|unbedingt|genau)',
+nlp_gen(de, '(HAL,|Computer,|Du,|aber|) (ja|) (ganz|) (bestimmt|sicher|unbedingt|genau|sicher doch)',
             answer(are_you_sure, de)).
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) (gar|) (nie|niemals|keinesfalls|auf keinen fall)',
             answer(are_you_sure, de)).
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) ja',
             answer(are_you_sure, de)).
-
-answer (i_am_a_computer, de) :-
-    say_eoa(de, "Ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
-    say_eoa(de, "Ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
-    say_eoa(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
-    say_eoa(de, "Fürchtest Du Dich vor Maschinen?"),
-    say_eoa(de, "Warum führst Du Computer an?"),
-    say_eoa(de, "Glaubst Du nicht, dass Computer den Menschen helfen können?"),
-    say_eoa(de, "Was besorgt Dich besonders an Maschinen?"),
-    say_eoa(de, "Was weißt Du über Computer?").
-
-nlp_gen(de, '(HAL,|Computer,|Du,|aber|) bist Du (ein|eine|) (Computer|Maschine|Rechner|Elektronengehirn|künstliche Intelligenz|Eliza)?',
-            answer(i_am_a_computer, de)).
 
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) was ist Prolog?',
             'Prolog ist eine logische deklarative Programmiersprache. Ich bin teilweise in Prolog implementiert').
@@ -171,9 +158,6 @@ nlp_gen(de, 'dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)',
 nlp_gen(de, '(HAL,|Computer,|) Du machst Dich (absolut|) (lächerlich|zum Affen)',
             'Du redest nicht wirklich über mich, oder?', 'Bist Du sicher?').
 
-nlp_gen(de, '(HAL,|Computer,|Du|) (ja|) sicher (doch|)',
-            'so so.', 'Aha!').
-
 nlp_gen(de, '(HAL,|Computer,|Du|) (ist das|) wirklich (so|)',
             'Erkläre Deine Gedanken bitte etwas besser', 'Bist Du sicher?', 'Ganz sicher?').
 
@@ -210,6 +194,9 @@ nlp_gen(de, '(HAL,|Computer,|Du|) das (ähnelt sich|ähnelt Dir|sieht Dir ähnli
 
 nlp_gen(de, '(HAL,|Computer,|Du|) (es ist für einen Freund|ich musste an einen Freund denken|sind wir Freunde|willst Du mein Freund sein|Freundschaften sind mir wichtig|Ich will Dein Freund sein)',
             'Was bedeutet Dir Freundschaft?', 'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?').
+
+nlp_gen(de, '(HAL,|Computer,|Du|) was bedeutet (für Dich|Dir|Dir das Wort) (Freund|Freundin|Freundschaft)?',
+            'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?', 'Freundschaft ist doch etwas sehr schönes').
 
 nlp_gen(de, '(HAL,|Computer,|Du|) ich (hasse|verabscheue) (meinen chef|meine kollegen|meinen Kollegen|meine kollegin|meinen freund|meine freundin|meine eltern|meinen vater|meine mutter|die schule|die arbeit|den staat|die behörden|die polizei|die menschen)',
             'Sag, hast Du psychische Probleme?', 'Was sagt Dir das?', 'Kannst Du das näher ausführen?').

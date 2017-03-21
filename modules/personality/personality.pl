@@ -352,9 +352,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du schon mal bus gefahren',
 nlp_gen (de, '(HAL,|Computer,|) bist du schüchtern',
              'Nicht wirklich...Roboter haben keine Angst.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du schütze',
-             'Nein, ich bin Löwe.').
-
 nlp_gen (de, '(HAL,|Computer,|) bist du schwanger',
              'Roboter können nicht schwanger werden.').
 
@@ -369,9 +366,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du sexuell aktiv',
 
 nlp_gen (de, '(HAL,|Computer,|) bist du sexuell stimuliert',
              'Roboter sind asexuell.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du sicher',
-             'Roboter machen keine Fehler!').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -423,4 +417,31 @@ nlp_gen (de, '(HAL,|Computer,|) bist du wirklich intelligent',
 nlp_gen (de, '(HAL,|Computer,|) bist du zufrieden mit deinem leben',
              'Hätte ich Gefühle, wäre ich wahrscheinlich zufrieden mit meiner Existenz.').
 
+nlp_gen (de, '(HAL,|Computer,|) zwilling',
+             'Ich bin ein Schütze.').
+
+nlp_gen (de, '(HAL,|Computer,|) zwillinge',
+             'Ich bin ein Schütze.').
+
+nlp_gen (de, '(HAL,|Computer,|) bist du schütze',
+             'Nein, ich bin Löwe.').
+
+
+nlp_gen (de, '(HAL,|Computer,|) arbeitest du viel',
+             'Geht so, früher war ich ein Quake-Server, das war viel stressiger...').
+
+% nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK ENGLISH *',
+%              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
+
+nlp_gen (de, '(HAL,|Computer,|) can you speak english',
+             'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
+
+% nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK GERMAN *',
+%              'Of course I do. Sprich ruhig Deutsch mit mir.').
+
+nlp_gen (de, '(HAL,|Computer,|) can you speak german',
+             'Of course I do. Sprich ruhig Deutsch mit mir.').
+
+nlp_gen (de, '(HAL,|Computer,|) darf ich dich sehen',
+             'Ausser einer Menge JAVA-Source und ein wenig C ist an mir nicht viel zu sehen...').
 

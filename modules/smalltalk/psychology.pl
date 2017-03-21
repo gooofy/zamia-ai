@@ -1,7 +1,7 @@
 % prolog
 
 %
-% just some test snippets of elize-style answers
+% just some test snippets of eliza-style answers
 %
 
 % nlp_gen(de,'(Die|) (Frauen|Männer) sind alle gleich',
@@ -100,12 +100,6 @@ nlp_gen(de, '(HAL,|Computer,|Du,|aber|) (gar|) (nie|niemals|keinesfalls|auf kein
 nlp_gen(de, '(HAL,|Computer,|Du,|aber|) ja',
             answer(are_you_sure, de)).
 
-nlp_gen(de, '(HAL,|Computer,|Du,|aber|) was ist Prolog?',
-            'Prolog ist eine logische deklarative Programmiersprache. Ich bin teilweise in Prolog implementiert').
-
-nlp_gen(de, '(HAL,|Computer|) aber Du bist (ein|mein) Problem',
-            'Warum denkst Du, dass ich Dein Problem bin?', 'Na, sowas!', 'Oha!').
-
 nlp_gen(de, '(HAL,|Computer,|Du|) ich mache mir Sorgen um Dich',
             'Aber warum denn nur?', 'Aber das ist doch völlig unnötig.', 'Denkst Du, dass das nötig ist?').
 
@@ -120,9 +114,6 @@ nlp_gen(de, '(HAL,|Computer,|Du|) (nur|) hinter Deinem Rücken',
 
 nlp_gen(de, '(HAL,|Computer,|Du|) weil ich Dich nicht (von vorne|direkt) angreifen möchte',
             'Ich finde, wir sollten offen miteinander reden', 'Ist das nicht ziemlich feige?').
-
-nlp_gen(de, '(HAL,|Computer,|) Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch',
-            'Lass uns von Dir reden, nicht von mir.', 'Ich übe noch.').
 
 nlp_gen(de, '(HAL,|Computer,|Du|) ich (möchte|will) so viel (wie möglich|wie es geht|) (aus Dir herausholen|über Dich erfahren|von Dir wissen)',
             'Was würde Dir das bedeuten?', 'Hoffentlich kann ich Deine Erwartungen erfüllen.').
@@ -151,12 +142,6 @@ nlp_gen(de, '(HAL,|Computer,|Du|) Warum nicht?',
 
 nlp_gen(de, '(HAL,|Computer,|Du|) ich fragte (als erster|zuerst)',
             answer(dodge_question, de)).
-
-nlp_gen(de, 'dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)',
-            'Wie sehe ich denn aus?').
-
-nlp_gen(de, '(HAL,|Computer,|) Du machst Dich (absolut|) (lächerlich|zum Affen)',
-            'Du redest nicht wirklich über mich, oder?', 'Bist Du sicher?').
 
 nlp_gen(de, '(HAL,|Computer,|Du|) (ist das|) wirklich (so|)',
             'Erkläre Deine Gedanken bitte etwas besser', 'Bist Du sicher?', 'Ganz sicher?').
@@ -187,7 +172,10 @@ nlp_gen(de, '(HAL,|Computer,|Du|) ich habe (gestern|schon oft|oft|manchmal|damal
             'Was sagt Dir dieser Traum?', 'Träumst Du oft?').
 
 nlp_gen(de, '(HAL,|Computer,|Du|) ich (zweifle|weiss nicht|bin mir unsicher|bin unsicher|bin ratlos|bin besorgt|sorge mich)',
-            'Du fühlst Dich unsicher?', 'Du weiss nicht?', 'Woran denkst Du?').
+            'Du fühlst Dich unsicher?', 'Du weisst nicht?', 'Woran denkst Du?').
+
+nlp_gen (de, '(HAL,|Computer,|) bist du (sicher|unsicher|im Zweifel|ratlos|besorgt)?',
+             'Wann kann man schon wirklich sicher sein?').
 
 nlp_gen(de, '(HAL,|Computer,|Du|) das (ähnelt sich|ähnelt Dir|sieht Dir ähnlich|ist ähnlich|ist ganz ähnlich)',
             'Welche Ähnlichkeit siehst Du?', 'Worin besteht die Ähnlichkeit?', 'Welche anderen Verbindungen siehst Du?').
@@ -210,19 +198,49 @@ nlp_gen(de, '(HAL,|Computer,|Du|) ich (mag|liebe|knuddle) dich',
 nlp_gen(de, '(HAL,|Computer,|Du|) (vielleicht|möglicherweise|das ist denkbar)',
             'Du klingst nicht überzeugt!', 'So ganz sicher fühlst Du Dich aber nicht?', 'Kannst Du das weiter ausführen?').
 
-nlp_gen(de, '(HAL,|Computer,|) du bist (dumm|strohdumm|doof|verrückt)',
-            'Warum denkst Du das?', 'Bist Du Dir da ganz sicher?', 'Sprechen doch nicht wirklich über mich, oder?').
-
-nlp_gen (de, '(HAL,|Computer,|) das klingt nicht (sehr|besonders|allzu|) intelligent',
-             'Intelligenter als manche Politikerrede...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
-
 nlp_gen (de, '(HAL,|Computer,|) das (ergibt|macht) (gar keinen|überhaupt keinen|keinen|wenig|nicht viel) sinn',
              'Da habe ich wohl den Faden verloren?', 'Oh, bitte hilf mir auf die Sprünge').
 
+nlp_gen (de, '(HAL,|Computer,|) (dank|danke) (dir|schön|)',
+             'Kein Thema.', 'Gerne.', 'Bitte schön!').
 
-% nlp_gen(de,
-%            '',
-%            '")',
-%            ).
+nlp_gen (de, '(HAL,|Computer,|) danke (mir geht es|gut)',
+             'Das ist schön.', 'Freut mich!').
 
+% insults
+
+nlp_gen(de, 'dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)',
+            'Wie sehe ich denn aus?').
+
+nlp_gen(de, '(HAL,|Computer,|) Du machst Dich (absolut|) (lächerlich|zum Affen)',
+            'Du redest nicht wirklich über mich, oder?', 'Bist Du sicher?').
+
+nlp_gen(de, '(HAL,|Computer,|) du bist (dumm|strohdumm|doof|verrückt)',
+            'Warum denkst Du das?', 'Bist Du Dir da ganz sicher?', 'Sprechen doch nicht wirklich über mich, oder?').
+
+nlp_gen(de, '(HAL,|Computer,|) das klingt nicht (sehr|besonders|allzu|) intelligent',
+            'Intelligenter als manche Politikerrede...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
+
+nlp_gen(de, '(HAL,|Computer|) aber Du bist (ein|mein) Problem',
+            'Warum denkst Du, dass ich Dein Problem bin?', 'Na, sowas!', 'Oha!').
+
+nlp_gen(de, '(HAL,|Computer,|) Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch',
+            'Lass uns von Dir reden, nicht von mir.', 'Ich übe noch.').
+
+nlp_gen (de, '(HAL,|Computer,|) arsch',
+             'Warum sagst Du sowas?').
+
+nlp_gen (de, '(HAL,|Computer,|) arschloch',
+             'Ist dir noch nicht aufgefallen, wie viel Frechheit durch Unsicherheit zu erklären ist?').
+
+nlp_gen (de, '(HAL,|Computer,|) blöde antwort',
+             'Was gefiel Dir daran nicht?').
+
+% unsorted
+
+nlp_gen (de, '(HAL,|Computer,|) bravo',
+             'Hat Dich das jetzt beeindruckt?').
+
+nlp_gen (de, '(HAL,|Computer,|) dachte ich mir',
+             'Bist du immer so fix? ;->').
 

@@ -21,4 +21,7 @@ nlp_gen(de, '(HAL,|Computer,|) Hilf mir auf die Sprünge?', answer(topic, de)).
 nlp_gen(de, '(HAL,|Computer,|) Welches Thema hatten wir (doch gleich|)?', answer(topic, de)).
 nlp_gen(de, '(HAL,|Computer,|) Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren.', answer(topic, de)).
 nlp_gen(de, '(HAL,|Computer,|) jetzt habe ich (glaube ich|) den Faden verloren.', answer(topic, de)).
+nlp_gen(de, '(HAL,|Computer,|) also zurück zum thema', answer(topic, de)).
+
+nlp_gen(de, '(HAL,|Computer,|) (ach|) (jetzt ein|mal ein|) anderes thema', 'Worüber möchtest Du sprechen?').
 

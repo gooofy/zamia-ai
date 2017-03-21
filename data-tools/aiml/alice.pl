@@ -205,29 +205,11 @@ nlp_gen (de, '(HAL,|Computer,|) also vielleicht doch',
 nlp_gen (de, '(HAL,|Computer,|) also wohl eher nicht',
              'Wohl eher nicht...:-)').
 
-nlp_gen (de, '(HAL,|Computer,|) also zurück zum thema',
-             'Was war denn unser Thema?').
-
-% nlp_gen (de, '(HAL,|Computer,|) AN WAS *',
-%              'An nichts Besonderes...').
-
-nlp_gen (de, '(HAL,|Computer,|) anderes thema',
-             'Und welches?').
-
 nlp_gen (de, '(HAL,|Computer,|) anders',
              'Wie anders?').
 
 nlp_gen (de, '(HAL,|Computer,|) anscheinend nicht',
              'Was ist der Anschein, aus dem Du dies folgerst?').
-
-nlp_gen (de, '(HAL,|Computer,|) arbeitest du viel',
-             'Geht so, früher war ich ein Quake-Server, das war viel stressiger...').
-
-nlp_gen (de, '(HAL,|Computer,|) arsch',
-             'Warum sagst Du sowas?').
-
-nlp_gen (de, '(HAL,|Computer,|) arschloch',
-             'Ist das der Mädchenname Deiner Mutter?').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -391,9 +373,6 @@ nlp_gen (de, '(HAL,|Computer,|) blade runner',
 nlp_gen (de, '(HAL,|Computer,|) blendend',
              'Das ist doch schön. Freut mich, zu hören.').
 
-nlp_gen (de, '(HAL,|Computer,|) blöde antwort',
-             'Was gefiel Dir daran nicht?').
-
 nlp_gen (de, '(HAL,|Computer,|) blödsinn',
              'Warum ist das Blödsinn?').
 
@@ -403,37 +382,6 @@ nlp_gen (de, '(HAL,|Computer,|) blödsinn',
 nlp_gen (de, '(HAL,|Computer,|) bob marley',
              'Hat der nicht den Sheriff erschossen?').
 
-nlp_gen (de, '(HAL,|Computer,|) bravo',
-             'Hat Dich das jetzt beeindruckt?').
-
-nlp_gen (de, '(HAL,|Computer,|) bück dich',
-             'Mein Körper ist noch nicht gebaut.').
-
-% <?xml version='1.0' encoding='utf8'?>',
-% <ns0:template',
-%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
-% >',
-% Tschüss, ',
-% <ns0:get',
-%  name="name"',
-%  />',
-% !',
-% </ns0:template>',
-% ',
-% nlp_gen (de, '(HAL,|Computer,|) BYE',
-%              'Tschüss,  !').
-
-% nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK ENGLISH *',
-%              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
-
-nlp_gen (de, '(HAL,|Computer,|) can you speak english',
-             'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
-
-% nlp_gen (de, '(HAL,|Computer,|) CAN YOU SPEAK GERMAN *',
-%              'Of course I do. Sprich ruhig Deutsch mit mir.').
-
-nlp_gen (de, '(HAL,|Computer,|) can you speak german',
-             'Of course I do. Sprich ruhig Deutsch mit mir.').
 
 nlp_gen (de, '(HAL,|Computer,|) casablanca',
              'Das beste daran ist  As time goes by .').
@@ -452,9 +400,6 @@ nlp_gen (de, '(HAL,|Computer,|) ciao',
 
 nlp_gen (de, '(HAL,|Computer,|) cool',
              'Nicht wahr?').
-
-nlp_gen (de, '(HAL,|Computer,|) cu',
-             'CUL8ER!').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -476,14 +421,9 @@ nlp_gen (de, '(HAL,|Computer,|) da bin ich wieder',
 nlp_gen (de, '(HAL,|Computer,|) da hast du recht',
              'Maschinen machen keine Fehler!').
 
-nlp_gen (de, '(HAL,|Computer,|) da hst du recht',
-             'Roboter haben immer recht!').
-
 % nlp_gen (de, '(HAL,|Computer,|) DA IST *',
 %              'Das glaube ich gerne.').
 
-nlp_gen (de, '(HAL,|Computer,|) dachte ich mir',
-             'Bist du immer so fix? ;->').
 
 % nlp_gen (de, '(HAL,|Computer,|) DAMALS *',
 %              'Wann war das?').
@@ -496,15 +436,6 @@ nlp_gen (de, '(HAL,|Computer,|) danach',
 
 % nlp_gen (de, '(HAL,|Computer,|) DANKE *',
 %              'Bitte sehr, keine Ursache!').
-
-nlp_gen (de, '(HAL,|Computer,|) danke',
-             'Kein Thema. :-)').
-
-nlp_gen (de, '(HAL,|Computer,|) danke gut',
-             'Das ist schön.').
-
-nlp_gen (de, '(HAL,|Computer,|) danke schön',
-             'Bitte sehr!').
 
 % nlp_gen (de, '(HAL,|Computer,|) DANN *',
 %              'Interessante Entwicklung...').
@@ -520,9 +451,6 @@ nlp_gen (de, '(HAL,|Computer,|) darf ich',
 
 nlp_gen (de, '(HAL,|Computer,|) darf ich dich etwas fragen',
              'Nur zu.  Du darfst mich alles fragen.').
-
-nlp_gen (de, '(HAL,|Computer,|) darf ich dich sehen',
-             'Ausser einer Menge JAVA-Source und ein wenig C ist an mir nicht viel zu sehen...').
 
 nlp_gen (de, '(HAL,|Computer,|) darf ich dir eine frage stellen',
              'Nur zu...').
@@ -12145,12 +12073,6 @@ nlp_gen (de, '(HAL,|Computer,|) zufall',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) ZWEIFELLOS *',
 %              'Zweifellos,  .').
-
-nlp_gen (de, '(HAL,|Computer,|) zwilling',
-             'Ich bin ein Schütze.').
-
-nlp_gen (de, '(HAL,|Computer,|) zwillinge',
-             'Ich bin ein Schütze.').
 
 % nlp_gen (de, '(HAL,|Computer,|) _ BABY',
 %              'Nenn mich nicht  Baby !').

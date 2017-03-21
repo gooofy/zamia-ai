@@ -41,3 +41,6 @@ nlp_gen (de, '(HAL,|Computer,|) bill gates',
              'Wie denkst Du über Bill Gates?').
 
 
+nlp_gen(de, '(HAL,|Computer,|Du,|aber|) was ist Prolog?',
+            'Prolog ist eine logische deklarative Programmiersprache. Ich bin teilweise in Prolog implementiert').
+

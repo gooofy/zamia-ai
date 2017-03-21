@@ -68,6 +68,8 @@ nlp_macro('GREETING', W, P) :- W is 'auf wiedersehen'     , P is 'answer (goodby
 nlp_macro('GREETING', W, P) :- W is 'tschüss'             , P is 'answer (goodbye,  de, S)'.
 nlp_macro('GREETING', W, P) :- W is 'ciao'                , P is 'answer (goodbye,  de, S)'.
 nlp_macro('GREETING', W, P) :- W is 'ade'                 , P is 'answer (goodbye,  de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'bye'                 , P is 'answer (goodbye,  de, S)'.
+nlp_macro('GREETING', W, P) :- W is 'cu'                  , P is 'answer (goodbye,  de, S)'.
 nlp_macro('GREETING', W, P) :- W is 'bis bald'            , P is 'answer (goodbye,  de, S)'.
 nlp_macro('GREETING', W, P) :- W is 'bis zum nächsten mal', P is 'answer (goodbye,  de, S)'.
 

@@ -30,4 +30,7 @@ nlp_gen (de, '(HAL,|Computer,|) bh',
 nlp_gen (de, '(HAL,|Computer,|) bin ich weiblich oder männlich',
              'Sag es mir :-)').
 
+nlp_gen (de, '(HAL,|Computer,|) bück dich',
+             'Mein Körper ist noch nicht gebaut.').
+
 

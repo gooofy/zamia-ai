@@ -7,16 +7,16 @@ nlp_macro ('MOVIES', MOVIE, LABEL) :-
          filter (lang(LABEL) = 'de')).
 
 answer(topic, de) :-
-    score_context(topic, movies, 100), say_eoa(de, 'Wir hatten das Thema Filme.').
+    context_score(topic, movies, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Filme.', SCORE).
 
 answer (movieDirector, de, MOVIE, MOVIE_LABEL) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:Director, DIRECTOR,
          DIRECTOR, rdfs:label,    LABEL,
          filter (lang(LABEL) = 'de')),
-    push_context(topic, movies),
-    push_context(topic, MOVIE),
-    push_context(topic, DIRECTOR),
+    context_push(topic, movies),
+    context_push(topic, MOVIE),
+    context_push(topic, DIRECTOR),
     say_eoa(de, format_str('Der Regisseur von %s ist %s.', MOVIE_LABEL, LABEL)).
 
 nlp_gen (de, '(HAL,|Computer,|) wer hat (eigentlich|) @MOVIES:LABEL gedreht?',
@@ -33,22 +33,22 @@ is_director(PERSON) :-
     rdf(MOVIE, wdpd:Director, PERSON).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, movies, 100),
+    SCORE is 10,
+    context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_male(PERSON),
-    push_context(topic, movies),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Ja, der ist Regisseur.').
+    context_push(topic, movies),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Ja, der ist Regisseur.', SCORE).
 
 answer (knownPerson, de, PERSON, LABEL) :-
-    score_add(10),
-    score_context_add (topic, movies, 100),
+    SCORE is 10,
+    context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_female(PERSON),
-    push_context(topic, movies),
-    push_context(topic, PERSON),
-    say_eoa(de, 'Ja, die ist Regisseurin.').
+    context_push(topic, movies),
+    context_push(topic, PERSON),
+    say_eoa(de, 'Ja, die ist Regisseurin.', SCORE).
 
 nlp_test(de,
          ivr(in('wer ist Alfred Hitchcock?'),
@@ -58,9 +58,9 @@ answer (movieCreationDate, de, MOVIE, MOVIE_LABEL) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:PublicationDate, TS),
     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-    push_context(topic, movies),
-    push_context(topic, MOVIE),
-    say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y)).
+    context_push(topic, movies),
+    context_push(topic, MOVIE),
+    say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y), 100).
 
 nlp_gen (de, '(HAL,|Computer,|) wann (ist|wurde) (eigentlich|) @MOVIES:LABEL (gedreht|gemacht)?',
              answer(movieCreationDate, de, '@MOVIES:MOVIE', "@MOVIES:LABEL")). 
@@ -70,8 +70,8 @@ nlp_test(de,
              out('Der dritte Mann wurde 1949 gedreht.'))).
 
 answer (movieSeen, de, MOVIE, MOVIE_LABEL) :-
-    push_context(topic, movies),
-    push_context(topic, MOVIE),
+    context_push(topic, movies),
+    context_push(topic, MOVIE),
     say_eoa(de, format_str('ja, %s kenne ich - ist ein bekannter Film.', MOVIE_LABEL)).
 
 nlp_gen (de, '(HAL,|Computer,|) kennst du (eigentlich|) (den film|) @MOVIES:LABEL?',
@@ -85,7 +85,7 @@ nlp_test(de,
              out('ja, der dritte mann kenne ich - ist ein bekannter film.'))).
 
 % FIXME nlp_gen (de, '(HAL,|Computer,|) weisst du (eigentlich|) wer ihn (gedreht|gemacht) hat?',
-% FIXME              score_context(topic, answer(movieSeen, de, '@MOVIES:MOVIE', "@MOVIES:LABEL")). 
+% FIXME              context_score(topic, answer(movieSeen, de, '@MOVIES:MOVIE', "@MOVIES:LABEL")). 
 % FIXME 
 % FIXME nlp_test(de,
 % FIXME          ivr(in('kennst du den film der dritte mann?'),

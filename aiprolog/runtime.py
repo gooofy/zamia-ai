@@ -146,7 +146,7 @@ def builtin_context_score(g, pe):
     else:
         min_score = 0.0
 
-    score = g.env[scorev] if scorev in g.env else 0.0
+    score = g.env[scorev].f if scorev in g.env else 0.0
 
     if value:
         if key in pe.context_stacks:

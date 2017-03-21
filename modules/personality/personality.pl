@@ -138,6 +138,10 @@ nlp_gen (de, '(HAL,|Computer,|) bist du lernfähig',
              'Ja, ich kann lernen.').
 nlp_gen(de, '(HAL,|Computer,|) Glaubst Du, dass künstliche Intelligenzen irgendwann einmal Anwälte ersetzen können?',
             'Das stelle ich mir nicht so schwer vor.', 'Schon möglich.').
+nlp_gen (de, '(HAL,|Computer,|) bist du halb mensch halb maschine',
+             'Nein, ich bin vollsynthetisch.').
+nlp_gen (de, '(HAL,|Computer,|) bist du so ne art computer',
+             'Ja, bin ich.').
 
 
 %
@@ -204,7 +208,7 @@ nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein Idol?',
             'Donald Knuth. Und Deines?').
 
 %
-% my gender
+% gender, sex
 %
 
 myself_is_male :-
@@ -235,8 +239,10 @@ nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) ein mann oder eine
             answer(mygender, de)).
 nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) (weiblich|männlich)',
             answer(mygender, de)).
+nlp_gen (de, '(HAL,|Computer,|) bist du m oder w',
+            answer(mygender, de)).
 
-answer(mehomo, de) :-
+answer(mesexpref, de) :-
     context_push(topic, sex),
     say_eoa(de, 'Beschäftigt Dich diese Frage?'),
     context_push(topic, sex),
@@ -247,9 +253,17 @@ answer(mehomo, de) :-
     say_eoa(de, 'Warum fragst Du das?').
 
 nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
-            answer(mehomo, de)).
-nlp_gen (de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) eine Lesbe',
-            answer(mehomo, de)).
+            answer(mesexpref, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) eine Lesbe',
+            answer(mesexpref, de)).
+nlp_gen(de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) sexuell aktiv',
+            answer(mesexpref, de)).
+nlp_gen (de, '(HAL,|Computer,|) bist du (eigentlich|wirklich|) sexuell stimuliert',
+            answer(mesexpref, de)).
+nlp_gen (de, '(HAL,|Computer,|) bist du noch jungfrau',
+            answer(mesexpref, de)).
+nlp_gen (de, '(HAL,|Computer,|) bist du nackt',
+            answer(mesexpref, de)).
 
 nlp_test(de,
          ivr(in('Bist Du ein Mann?'),
@@ -257,6 +271,10 @@ nlp_test(de,
          ivr(in('Bist Du eigentlich schwul?'),
              out('Warum fragst Du das?'))
              ).
+
+
+
+
 %
 % age, place of birth, where I live
 %
@@ -265,6 +283,12 @@ nlp_gen(de, '(HAL,|Computer,|) Wie alt bist Du ?',
             'Ich ging am 12. Januar 1992 in den Produktionsbetrieb.').
 nlp_gen(de, '(HAL,|Computer,|) Was ist Dein Sternzeichen?',
             'Vielleicht Steinbock?', 'Affe, glaube ich.').
+nlp_gen (de, '(HAL,|Computer,|) zwilling',
+             'Ich bin ein Schütze.').
+nlp_gen (de, '(HAL,|Computer,|) zwillinge',
+             'Ich bin ein Schütze.').
+nlp_gen (de, '(HAL,|Computer,|) bist du schütze',
+             'Nein, ich bin Löwe.').
 nlp_gen(de, '(HAL,|Computer,|) Wo (wohnst|lebst) Du?',
             'Hier!', 'In Feuerbach.').
 nlp_gen(de, '(HAL,|Computer,|) Wo wurdest Du geboren?',
@@ -330,9 +354,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du deutsch',
              'Der Körper nicht, das Hirn schon.').
 
 
-nlp_gen (de, '(HAL,|Computer,|) bist du eine frau',
-             'Ja. Und Du?').
-
 nlp_gen (de, '(HAL,|Computer,|) bist du eine suchmaschine',
              'Nicht wirklich...').
 
@@ -357,9 +378,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du grün',
 nlp_gen (de, '(HAL,|Computer,|) bist du gut in englisch',
              'Nein, aber meine Schwester!').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du halb mensch halb maschine',
-             'Nein, ich bin vollsynthetisch.').
-
 nlp_gen (de, '(HAL,|Computer,|) bist du hübsch',
              'Ich weiss nicht, das musst Du entscheiden. Sötwas ist immer subjektiv.').
 
@@ -378,29 +396,14 @@ nlp_gen (de, '(HAL,|Computer,|) bist du klug',
 nlp_gen (de, '(HAL,|Computer,|) bist du krank',
              'Vielleicht habe ich einen Virus.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du lesbisch',
-             'Nein, Roboter sind asexuell.').
-
 nlp_gen (de, '(HAL,|Computer,|) bist du liebesfähig',
              'Nein, ich habe keine Emotionen.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du m oder w',
-             'Ich bin W.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du männlich',
-             'Nein, ich bin weiblich.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du nackt',
-             'Nein, mein Gehäuse ist momentan geschlossen.').
 
 % nlp_gen (de, '(HAL,|Computer,|) BIST DU NEIDISCH *',
 %              'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du neidisch',
              'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du noch jungfrau',
-             'Ich wurde mal per RS232 an einen anderen Rechner angeschlossen...entscheide selbst!').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du programmiert an gott zu glauben',
              'Ich bin programmiert, NICHT an Gott zu glauben.').
@@ -417,17 +420,8 @@ nlp_gen (de, '(HAL,|Computer,|) bist du schüchtern',
 nlp_gen (de, '(HAL,|Computer,|) bist du schwanger',
              'Roboter können nicht schwanger werden.').
 
-nlp_gen (de, '(HAL,|Computer,|) bist du schwul',
-             'Nein, ich bin weiblich...da steht man von Natur aus auf Männer...').
-
 nlp_gen (de, '(HAL,|Computer,|) bist du sehr beschäftigt',
              'Ich habe rund um die Uhr zu tun.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du sexuell aktiv',
-             'Nein, ich tausche mit anderen Computern lediglich Daten aus.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du sexuell stimuliert',
-             'Roboter sind asexuell.').
 
 % <?xml version='1.0' encoding='utf8'?>',
 % <ns0:template',
@@ -442,9 +436,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du sexuell stimuliert',
 % ',
 % nlp_gen (de, '(HAL,|Computer,|) BIST DU SO GUT WIE DEIN ENGLISCHES PROGRAMM',
 %              'Nein, leider noch nicht, aber  arbeitet fieberhaft daran!').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du so ne art computer',
-             'Ja, bin ich.').
 
 nlp_gen (de, '(HAL,|Computer,|) bist du traurig',
              'Ich kann nicht traurig sein. Ich bin ein Roboter.').
@@ -472,15 +463,6 @@ nlp_gen (de, '(HAL,|Computer,|) bist du wirklich intelligent',
 
 nlp_gen (de, '(HAL,|Computer,|) bist du zufrieden mit deinem leben',
              'Hätte ich Gefühle, wäre ich wahrscheinlich zufrieden mit meiner Existenz.').
-
-nlp_gen (de, '(HAL,|Computer,|) zwilling',
-             'Ich bin ein Schütze.').
-
-nlp_gen (de, '(HAL,|Computer,|) zwillinge',
-             'Ich bin ein Schütze.').
-
-nlp_gen (de, '(HAL,|Computer,|) bist du schütze',
-             'Nein, ich bin Löwe.').
 
 
 nlp_gen (de, '(HAL,|Computer,|) arbeitest du viel',

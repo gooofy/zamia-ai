@@ -20,7 +20,7 @@
 
 import sys
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -58,8 +58,11 @@ class DiscourseRound(Base):
     lang              = Column(String(2), index=True)
     module            = Column(String(255), index=True)
 
-    inp               = Column(UnicodeText)
+    inp               = Column(UnicodeText, index=True)
     resp              = Column(UnicodeText)
+
+    __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
+
 
 class Context(Base):
 

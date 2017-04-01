@@ -18,7 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# helper functions to translate from prolog logic tree to sparqlalchemy algebra
+# helper functions to translate 
+# - from prolog logic tree to sparqlalchemy algebra
+# - from prolog literals to rdflib literals and back
 #
 
 import sys
@@ -26,20 +28,120 @@ import datetime
 import dateutil.parser
 import time
 import pytz # $ pip install pytz
+import json
 import rdflib
 from rdflib.plugins.sparql.parserutils import CompValue
 import logging
 
 from tzlocal import get_localzone # $ pip install tzlocal
 
-from zamiaprolog.errors  import PrologError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
+from zamiaprolog.errors  import PrologError, PrologRuntimeError
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate, Literal
 
 import model
 
-from kb import HALKB
+DT_LIST     = u'http://ai.zamia.org/types/list'
+DT_CONSTANT = u'http://ai.zamia.org/types/constant'
 
-def arg_to_rdf(term, env, pe, var_map, kb):
+class PrologJSONEncoder(json.JSONEncoder):
+
+    def default(self, o):
+        
+        if isinstance (o, NumberLiteral):
+            return {'pt': 'NumberLiteral', 'f': o.f}
+
+        elif isinstance (o, ListLiteral):
+            return {'pt': 'ListLiteral', 'l': o.l}
+        
+        elif isinstance (o, StringLiteral):
+            return {'pt': 'StringLiteral', 's': o.s}
+        
+        elif isinstance (o, Predicate) and len(o.args)==0:
+            return {'pt': 'Constant', 'name': o.name}
+        
+
+        return json.JSONEncoder.default(self, o)
+
+def _prolog_from_json(o):
+
+    if o['pt'] == 'Constant':
+        return Predicate(o['name'])
+    if o['pt'] == 'StringLiteral':
+        return StringLiteral (o['s'])
+    if o['pt'] == 'NumberLiteral':
+        return NumberLiteral (o['f'])
+    if o['pt'] == 'ListLiteral':
+        return ListLiteral (o['l'])
+
+    raise PrologRuntimeError('cannot convert from json: %s .' % repr(o))
+
+
+def rdf_to_pl(l):
+
+    value    = unicode(l)
+
+    if isinstance (l, rdflib.Literal) :
+        if l.datatype:
+
+            datatype = str(l.datatype)
+
+            if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
+                value = NumberLiteral(float(value))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                dt = dateutil.parser.parse(value)
+                value = NumberLiteral(time.mktime(dt.timetuple()))
+            elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
+                dt = dateutil.parser.parse(value)
+                value = NumberLiteral(time.mktime(dt.timetuple()))
+            elif datatype == DT_LIST:
+                value = json.JSONDecoder(object_hook = _prolog_from_json).decode(value)
+            elif datatype == DT_CONSTANT:
+                value = Predicate (value)
+            else:
+                raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
+        else:
+            if l.value is None:
+                value = ListLiteral([])
+            else:
+                value = StringLiteral(value)
+   
+    else:
+        value = StringLiteral(value)
+
+    return value
+    
+def pl_literal_to_rdf(a, kb):
+
+    if isinstance (a, NumberLiteral):
+        return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
+
+    if isinstance (a, StringLiteral):
+        if a.s.startswith('http://'): # a URL/URI/IRI, apparently
+            return rdflib.term.URIRef (a.s)
+        return rdflib.term.Literal (a.s)
+        
+    if isinstance (a, ListLiteral):
+        return rdflib.term.Literal (PrologJSONEncoder().encode(a), datatype=DT_LIST)
+
+    if isinstance (a, Predicate):
+
+        if len(a.args) > 0:
+            raise PrologError('pl_literal_to_rdf: only constants are supported, found instead: %s (%s)' % (a.__class__, repr(a)))
+
+        name = kb.resolve_aliases_prefixes(a.name)
+
+        if name.startswith('http://'):
+            return rdflib.term.URIRef(name)
+
+        return rdflib.term.Literal (a.name, datatype=DT_CONSTANT)
+
+    raise PrologError('pl_literal_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
+
+def pl_to_rdf(term, env, pe, var_map, kb):
 
     if pe:
         a = pe.prolog_eval(term, env)
@@ -51,25 +153,7 @@ def arg_to_rdf(term, env, pe, var_map, kb):
             var_map[term.name] = rdflib.term.Variable(term.name)
         return var_map[term.name]
 
-    if isinstance (a, Predicate):
-        return rdflib.term.URIRef(kb.resolve_aliases_prefixes(a.name))
-
-    if isinstance (a, NumberLiteral):
-        return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
-
-    if isinstance (a, StringLiteral):
-        if a.s.startswith('http://'): # a URL/URI/IRI, apparently
-            return rdflib.term.URIRef (a.s)
-        return rdflib.term.Literal (a.s)
-        
-    if isinstance (a, ListLiteral):
-        if len(a.l) == 0:
-            rl = rdflib.term.Literal(None)
-            return rl
-
-        raise PrologError('arg_to_rdf: for list literals, only the empty list (representing NULL) is supported.')
-
-    raise PrologError('arg_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
+    return pl_literal_to_rdf(a, kb)
 
 def _prolog_relational_expression (op, args, env, pe, var_map, kb):
 
@@ -126,5 +210,5 @@ def prolog_to_filter_expression(e, env, pe, var_map, kb):
                               arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map, kb),
                               _vars = set(var_map.values()))
 
-    return arg_to_rdf (e, env, pe, var_map, kb)
+    return pl_to_rdf (e, env, pe, var_map, kb)
 

@@ -15,7 +15,9 @@ PL_SOURCES = [
 RDF_PREFIXES = {
                 'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
                 'rdfs':    'http://www.w3.org/2000/01/rdf-schema#',
-                'hal':     'http://hal.zamia.org/kb/',
+                'ai':      'http://ai.zamia.org/kb/',
+                'aiu':     'http://ai.zamia.org/kb/user/',
+                'aiup':    'http://ai.zamia.org/kb/user/prop/',
                 'dbo':     'http://dbpedia.org/ontology/',
                 'dbr':     'http://dbpedia.org/resource/',
                 'dbp':     'http://dbpedia.org/property/',
@@ -79,24 +81,25 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                     ('wdpq',    'http://www.wikidata.org/prop/qualifier/'),
                     ('wdp',     'http://www.wikidata.org/prop/')]:
 
-    for proplabel, propid in [(u'PlaceOfBirth'               , u'P19'),
-                              (u'SexOrGender'                , u'P21'),
-                              (u'InstanceOf'                 , u'P31'),
-                              (u'PositionHeld'               , u'P39'),
-                              (u'Director'                   , u'P57'),
-                              (u'ScreenWriter'               , u'P58'),
-                              (u'Occupation'                 , u'P106'),
-                              (u'Genre'                      , u'P136'),
-                              (u'BasedOn'                    , u'P144'),
-                              (u'CastMember'                 , u'P161'),
-                              (u'DateOfBirth'                , u'P569'),
-                              (u'PublicationDate'            , u'P577'),
-                              (u'StartTime'                  , u'P580'),
-                              (u'EndTime'                    , u'P582'),
-                              (u'MainSubject'                , u'P921'),
-                              (u'Replaces'                   , u'P1365'),
-                              (u'ReplacedBy'                 , u'P1366'),
-                              (u'GeoNamesID'                 , u'P1566'),
+    for proplabel, propid in [(u'PlaceOfBirth'                               , u'P19'),
+                              (u'SexOrGender'                                , u'P21'),
+                              (u'InstanceOf'                                 , u'P31'),
+                              (u'PositionHeld'                               , u'P39'),
+                              (u'Director'                                   , u'P57'),
+                              (u'ScreenWriter'                               , u'P58'),
+                              (u'Occupation'                                 , u'P106'),
+                              (u'LocatedInTheAdministrativeTerritorialEntity', u'P131'),
+                              (u'Genre'                                      , u'P136'),
+                              (u'BasedOn'                                    , u'P144'),
+                              (u'CastMember'                                 , u'P161'),
+                              (u'DateOfBirth'                                , u'P569'),
+                              (u'PublicationDate'                            , u'P577'),
+                              (u'StartTime'                                  , u'P580'),
+                              (u'EndTime'                                    , u'P582'),
+                              (u'MainSubject'                                , u'P921'),
+                              (u'Replaces'                                   , u'P1365'),
+                              (u'ReplacedBy'                                 , u'P1366'),
+                              (u'GeoNamesID'                                 , u'P1566'),
                              ]:
 
         RDF_ALIASES[prefix + ':' + proplabel] = iri + propid
@@ -144,7 +147,7 @@ KB_SOURCES = [
                 ],
                 [
                 
-                  [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('hal:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
+                  [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('ai:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
                 
                 ]
               ),

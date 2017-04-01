@@ -1,18 +1,15 @@
 % prolog
 
-%
-% myself
-%
+init ('personality').
 
-context_set_default('test', me, URI) :- uriref(hal:hal9000,URI).
+test_setup('personality') :- context_set(topic, []), eoa.
 
 %
 % names
 %
 
 myself_get (de, myname, NAME) :-
-    context_get(me, ME),
-    rdf(limit(1), ME, rdfs:label, NAME, filter(lang(NAME) = 'de')).
+    rdf(limit(1), aiu:self, rdfs:label, NAME, filter(lang(NAME) = 'de')).
 
 % ich heise <name>
 % FIMXE: those names could and should come from wikidata, probably at some point.
@@ -148,13 +145,10 @@ nlp_gen (de, '(HAL,|Computer,|) bist du so ne art computer',
 % favourite movie / book / author / ...
 %
 
-myself_get (myfavmovie, MOVIE) :-
-    context_get(me, ME),
-    rdf(limit(1), ME, hal:favMovie, MOVIE).
-
 answer(favmovie, de) :-
-    myself_get(myfavmovie, MOVIE),
+
     rdf(distinct,
+        aiu:self, ai:favMovie, MOVIE,
         MOVIE, wdpd:Director, DIRECTOR,
         DIRECTOR, rdfs:label, DIRLABEL,
         MOVIE, rdfs:label, LABEL,
@@ -212,8 +206,7 @@ nlp_gen(de, '(HAL,|Computer,|) Wer ist Dein Idol?',
 %
 
 myself_is_male :-
-    context_get(me, ME),
-    rdf(limit(1), ME, wdpd:SexOrGender, wde:Male).
+    rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Male).
 
 answer(mygender, de) :-
     myself_is_male,

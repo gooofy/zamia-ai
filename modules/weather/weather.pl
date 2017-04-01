@@ -1,41 +1,66 @@
 % prolog
 
 %
+% init / defaults
+%
+
+init ('weather') :-
+    % by default, give weather forecast for location of self
+    rdf (aiu:self, wdpd:P131, PLACE),
+    context_set (weatherPlace, PLACE),
+
+    % by default, give weather forecast for the near future
+    context_set (weatherTime, weatherNearFuture),
+    eoa.
+
+
+%
 % test setup and context
 %
 
-context_set_default('test', place, URI) :- uriref(wde:Q1022, URI).
-context_set_default('test', time, weatherNearFuture).
-context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
+test_setup('weather') :-
+
+    % these are the same defaults as in init above, but
+    % the point here is to reset the 'test' user back to defaults
+    % before each test is run (so tests will independently from 
+    % each other always start with the same context)
+
+    % by default, give weather forecast for location of self
+    rdf (aiu:self, wdpd:P131, PLACE),
+    context_set (weatherPlace, PLACE),
+
+    % by default, give weather forecast for the near future
+    context_set (weatherTime, weatherNearFuture),
+    eoa.
 
 %
 % weather reasoning / common sense
 %
 
 time_span(weatherNearFuture, TS, TE) :-
-    context_get(currentTime, CT),
+    rdf(ai:curin, ai:currentTime, CT),
     before_evening(CT),
     time_span(today, TS, TE).
 
 time_span(weatherNearFuture, TS, TE) :-
-    context_get(currentTime, CT),
+    rdf(ai:curin, ai:currentTime, CT),
     after_evening(CT),
     time_span(tomorrow, TS, TE).
 
 time_str(de, weatherNearFuture, "heute") :- 
-    context_get(currentTime, CT),
+    rdf(ai:curin, ai:currentTime, CT),
     before_evening(CT).
 
 time_str(de, weatherNearFuture, "morgen") :- 
-    context_get(currentTime, CT),
+    rdf(ai:curin, ai:currentTime, CT),
     after_evening(CT).
 
 % near_future(weather, today) :-
-%     context_get(currentTime, TS),
+%     rdf(ai:curin, ai:currentTime, TS),
 %     before_evening(TS).
 % 
 % near_future(weather, tomorrow) :-
-%     context_get(currentTime, TS),
+%     rdf(ai:curin, ai:currentTime, TS),
 %     after_evening(TS).
 
 %
@@ -66,15 +91,15 @@ weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, 
     atom_chars(Lang, L2),
 
     rdf_lists(distinct,
-              WEV, hal:dt_end,        DT_END,
-              WEV, hal:dt_start,      DT_START,
-              WEV, hal:location,      P,
+              WEV, ai:dt_end,        DT_END,
+              WEV, ai:dt_start,      DT_START,
+              WEV, ai:location,      P,
               P,   rdfs:label,        Label,
-              WEV, hal:temp_min,      TempMin,
-              WEV, hal:temp_max,      TempMax,
-              WEV, hal:precipitation, Precipitation,
-              WEV, hal:clouds,        Clouds,
-              WEV, hal:icon,          Icon,
+              WEV, ai:temp_min,      TempMin,
+              WEV, ai:temp_max,      TempMax,
+              WEV, ai:precipitation, Precipitation,
+              WEV, ai:clouds,        Clouds,
+              WEV, ai:icon,          Icon,
               filter (DT_START >= isoformat(EvTS, 'local'),
                       DT_END   =< isoformat(EvTE, 'local'),
                       lang(Label) = L2)
@@ -83,15 +108,15 @@ weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, 
     % sparql_query (format_str(
     %                   "SELECT DISTINCT ?temp_min ?temp_max ?precipitation ?clouds ?icon ?label
     %                    WHERE {
-    %                        ?wev hal:dt_end ?dt_end. 
-    %                        ?wev hal:dt_start ?dt_start.
-    %                        ?wev hal:location <%s>.
+    %                        ?wev ai:dt_end ?dt_end. 
+    %                        ?wev ai:dt_start ?dt_start.
+    %                        ?wev ai:location <%s>.
     %                        <%s> rdfs:label ?label .
-    %                        ?wev hal:temp_min ?temp_min .
-    %                        ?wev hal:temp_max ?temp_max .
-    %                        ?wev hal:precipitation ?precipitation .
-    %                        ?wev hal:clouds ?clouds .
-    %                        ?wev hal:icon ?icon .
+    %                        ?wev ai:temp_min ?temp_min .
+    %                        ?wev ai:temp_max ?temp_max .
+    %                        ?wev ai:precipitation ?precipitation .
+    %                        ?wev ai:clouds ?clouds .
+    %                        ?wev ai:icon ?icon .
     %                        FILTER (?dt_start >= \"%s\"^^xsd:dateTime && 
     %                                ?dt_end   <= \"%s\"^^xsd:dateTime &&
     %                                lang(?label) = '%s') 
@@ -110,7 +135,7 @@ answer(weather, Lang, EvT, P, SCORE) :-
     weather_data(Lang, EvT, P, Code, Precipitation, TempMin, TempMax, Clouds, PLoc, EvTLoc),
     weatherStr(Lang, Code, list_sum(Precipitation), list_min(TempMin), list_max(TempMax), PLoc, EvTLoc, STR),
     context_push(topic, weather),
-    context_set(place, P), context_set(time, EvT),
+    context_set(weatherPlace, P), context_set(weatherTime, EvT),
     say_eoa(de, STR, SCORE).
 
 answer(weather, Lang, EvT, P) :-
@@ -124,41 +149,41 @@ answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS < 50,
     context_push(topic, weather),
-    context_set(place, P), context_set(time, EvT),
+    context_set(weatherPlace, P), context_set(weatherTime, EvT),
     say_eoa(de, format_str("%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS < 50,
     context_push(topic, weather),
-    context_set(place, P), context_set(time, EvT),
+    context_set(weatherPlace, P), context_set(weatherTime, EvT),
     say_eoa(de, format_str("%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC < 0.5,
     CLDS >= 50,
     context_push(topic, weather),
-    context_set(place, P), context_set(time, EvT),
+    context_set(weatherPlace, P), context_set(weatherTime, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, aber es gibt wenig Niederschlag.", DeEvT, DeP)).
 
 answerWeatherPrecCloud(de, PREC, CLDS, DeEvT, DeP, P, EvT) :-
     PREC >= 0.5,
     CLDS >= 50,
     context_push(topic, weather),
-    context_set(place, P), context_set(time, EvT),
+    context_set(weatherPlace, P), context_set(weatherTime, EvT),
     say_eoa(de, format_str("%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag.", DeEvT, DeP, PREC)).
 
 %
 % nlp processing (german)
 %
 
-nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'context_get(time, EvT)'.
+nlp_macro('TIMESPEC', W, P) :- W is ''                     , P is 'context_get(weatherTime, EvT)'.
 nlp_macro('TIMESPEC', W, P) :- W is 'heute'                , P is 'EvT is today'.
 nlp_macro('TIMESPEC', W, P) :- W is 'morgen'               , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'übermorgen'           , P is 'EvT is dayAfterTomorrow'.
 nlp_macro('TIMESPEC', W, P) :- W is 'in den nächsten Tagen', P is 'EvT is nextThreeDays'.
 
-nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'context_get(time, EvT)'.
+nlp_macro('TIMESPECF', W, P) :- W is ''                     , P is 'context_get(weatherTime, EvT)'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für heute'            , P is 'EvT is today'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für morgen'           , P is 'EvT is tomorrow'.
 nlp_macro('TIMESPECF', W, P) :- W is 'für übermorgen'       , P is 'EvT is dayAfterTomorrow'.
@@ -182,25 +207,25 @@ nlp_macro('HELLO', W) :- W is 'HAL, '     .
 nlp_macro('HELLO', W) :- W is 'Hi, '      .
 nlp_macro('HELLO', W) :- W is 'Hallo, '   .
 
-nlp_macro('PLACE', W, P) :- W is '', P is 'context_get(place, P)'.
+nlp_macro('PLACE', W, P) :- W is '', P is 'context_get(weatherPlace, P)'.
 
 % W : 'in Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'in Freudental'    , P: 'P is "dbr:Freudental"'
 nlp_macro('PLACE', W, P) :- 
     rdf (distinct,
-         LOCATION, hal:cityid, CITYID,
+         LOCATION, ai:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('in %s', LABEL),
     P is format_str('P is "%s"', LOCATION).
 
-nlp_macro('PLACEF', W, P) :- W is '', P is 'context_get(place, P)'.
+nlp_macro('PLACEF', W, P) :- W is '', P is 'context_get(weatherPlace, P)'.
 
 % W : 'für Stuttgart'     , P: 'P is "dbr:Stuttgart"'
 % W : 'für Freudental'    , P: 'P is "dbr:Freudental"'
 nlp_macro('PLACEF', W, P) :- 
     rdf (distinct,
-         LOCATION, hal:cityid, CITYID,
+         LOCATION, ai:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('für %s', LABEL),
@@ -208,7 +233,7 @@ nlp_macro('PLACEF', W, P) :-
 
 nlp_macro('PLACEN', W, P) :- 
     rdf (distinct,
-         LOCATION, hal:cityid, CITYID,
+         LOCATION, ai:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('in %s', LABEL),
@@ -216,7 +241,7 @@ nlp_macro('PLACEN', W, P) :-
 
 nlp_macro('PLACENF', W, P) :- 
     rdf (distinct,
-         LOCATION, hal:cityid, CITYID,
+         LOCATION, ai:cityid, CITYID,
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is format_str('für %s', LABEL),
@@ -270,7 +295,7 @@ nlp_gen(de,
         @TIMESPECN:P, @PLACE:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_gen(de,
         '@HELLO:W regnet es @PLACEN:W ?', 
-        context_get(time, EvT), @PLACEN:P, answer (weatherPrecCloud, de, EvT, P)).
+        context_get(weatherTime, EvT), @PLACEN:P, answer (weatherPrecCloud, de, EvT, P)).
 nlp_test(de,
          ivr(in('Regnet es in Freudental?'),
              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
@@ -301,7 +326,7 @@ nlp_gen(de,
         @TIMESPEC:P, @PLACEN:P, answer (weather, de, EvT, P)).
 nlp_gen(de,
         '@HELLO:W wie wird das Wetter @TIMESPECN:W?', 
-        @TIMESPECN:P, context_get(place, P), answer (weather, de, EvT, P)).
+        @TIMESPECN:P, context_get(weatherPlace, P), answer (weather, de, EvT, P)).
 nlp_test(de,
          ivr(in('Hallo, wie wird das Wetter heute in Tallinn?'),
              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
@@ -358,7 +383,7 @@ nlp_gen(de,
 
 nlp_gen(de, 
         '@HELLO:W und @PLACENF:W ?', 
-        context_score (topic, weather, 100, S), context_get(time, EvT), @TIMESPECF:P, @PLACENF:P, answer (weather, de, EvT, P, S)).
+        context_score (topic, weather, 100, S), context_get(weatherTime, EvT), @TIMESPECF:P, @PLACENF:P, answer (weather, de, EvT, P, S)).
 
 nlp_gen(de, 
         '@HELLO:W und @TIMESPEC:W @PLACEN:W ?', 
@@ -366,7 +391,7 @@ nlp_gen(de,
 
 nlp_gen(de, 
         '@HELLO:W und @TIMESPECN:W ?', 
-        context_score (topic, weather, 100, S), @TIMESPECN:P, context_get(place, P), answer (weather, de, EvT, P, S)).
+        context_score (topic, weather, 100, S), @TIMESPECN:P, context_get(weatherPlace, P), answer (weather, de, EvT, P, S)).
 
 
 %

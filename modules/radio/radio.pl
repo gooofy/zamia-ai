@@ -1,10 +1,21 @@
 % prolog
 
+init ('radio') :-
+
+    % by default, tune into self's favorite radio station
+    
+    rdf (aiu:self, ai:favChannel, CHANNEL),
+    context_set (channel, CHANNEL),
+    eoa.
+
 %
 % test setup and context
 %
 
-context_set_default('test', channel, URI) :- uriref(wde:Q795291, URI).
+test_setup('weather') :-
+    rdf (aiu:self, ai:favChannel, CHANNEL),
+    context_set (channel, CHANNEL),
+    eoa.
 
 %
 % media_tune: set context, look up slot and title in RDF, generate action
@@ -15,8 +26,8 @@ media_tune (C) :-
     context_set(channel, C),
 
     rdf(distinct, limit(1),
-        C, hal:MediaSlot, SLOT,
-        optional(C, hal:MediaTitle, TITLE)),
+        C, ai:MediaSlot, SLOT,
+        optional(C, ai:MediaTitle, TITLE)),
     
     action (media, tune, SLOT, TITLE),
     eoa.
@@ -34,7 +45,7 @@ nlp_macro('VERB', W, V, P) :- W is 'schalte '  , V is 'aus', P is 'action(media,
 nlp_macro('STATION', W, P) :- W is 'das Radio' , P is 'context_get(channel, C)'.
 nlp_macro('STATION', W, P) :-
     rdf (distinct,
-         STATION, hal:MediaSlot, SLOT,
+         STATION, ai:MediaSlot, SLOT,
          STATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     W is LABEL,

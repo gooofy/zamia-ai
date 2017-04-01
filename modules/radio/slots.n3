@@ -1,77 +1,77 @@
-@prefix dbo: <http://dbpedia.org/ontology/> .
-@prefix dbr: <http://dbpedia.org/resource/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix dbr:  <http://dbpedia.org/resource/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix hal: <http://hal.zamia.org/kb/> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix wde: <http://www.wikidata.org/entity/>.
+@prefix ai:   <http://ai.zamia.org/kb/> .
+@prefix xml:  <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix wde:  <http://www.wikidata.org/entity/>.
 
 # b5 aktuell
-wde:Q795291               hal:MediaSlot  9 ;
-                          hal:MediaTitle 1 .
+wde:Q795291               ai:MediaSlot  9 ;
+                          ai:MediaTitle 1 .
 
 # music
-hal:MediaStationMusic     hal:MediaSlot  3 ;
+ai:MediaStationMusic     ai:MediaSlot  3 ;
                           rdfs:label     "Music"@en,
                                          "Musik"@de .
 
 # Deutschlandfunk
-wde:Q695328               hal:MediaSlot  9 ;
-                          hal:MediaTitle 2 .
+wde:Q695328               ai:MediaSlot  9 ;
+                          ai:MediaTitle 2 .
 
 # SWR aktuell
-wde:Q2208796              hal:MediaSlot  9 ;
-                          hal:MediaTitle 9 .
+wde:Q2208796              ai:MediaSlot  9 ;
+                          ai:MediaTitle 9 .
 
 # SWR 3
-wde:Q2208789              hal:MediaSlot  5 ;
-                          hal:MediaTitle 6 .
+wde:Q2208789              ai:MediaSlot  5 ;
+                          ai:MediaTitle 6 .
 
 # Power Hit Radio
-wde:Q12372710             hal:MediaSlot  7 .
+wde:Q12372710             ai:MediaSlot  7 .
 
 # 104.6 RTL
-wde:Q166266               hal:MediaSlot  8 ;
+wde:Q166266               ai:MediaSlot  8 ;
                           rdfs:label     "RTL"@de.
 
 # aktuelles
-hal:MediaStationAktuelles hal:MediaSlot  9 ;
+ai:MediaStationAktuelles ai:MediaSlot  9 ;
                           rdfs:label     "News"@en,
                                          "Aktuelles"@de .
 
 # Newstalk
-hal:MediaStationNewsTalk  hal:MediaSlot  13 ;
+ai:MediaStationNewsTalk  ai:MediaSlot  13 ;
                           rdfs:label     "Newstalk"@en,
                                          "Newstalk"@de .
 
 # New Rock
-hal:MediaStationNewRock   hal:MediaSlot  3 ;
+ai:MediaStationNewRock   ai:MediaSlot  3 ;
                           rdfs:label     "New Rock"@en,
                                          "New Rock"@de .
 
 # Rock
-hal:MediaStationRock      hal:MediaSlot  4 ;
+ai:MediaStationRock      ai:MediaSlot  4 ;
                           rdfs:label     "Rock"@en,
                                          "Rock"@de .
 
 # Pop
-hal:MediaStationPop       hal:MediaSlot  5 ;
+ai:MediaStationPop       ai:MediaSlot  5 ;
                           rdfs:label     "Pop"@en,
                                          "Pop"@de .
 
 # Dance
-hal:MediaStationDance     hal:MediaSlot  6 ;
+ai:MediaStationDance     ai:MediaSlot  6 ;
                           rdfs:label     "Dance"@en,
                                          "Dance"@de .
 
 # Tech News
-hal:MediaStationTechNews  hal:MediaSlot  1 ;
+ai:MediaStationTechNews  ai:MediaSlot  1 ;
                           rdfs:label     "Tech News"@en,
                                          "Tech News"@de .
 
 # Workout
-hal:MediaStationWorkout   hal:MediaSlot  15 ;
+ai:MediaStationWorkout   ai:MediaSlot  15 ;
                           rdfs:label     "Workout"@en,
                                          "Workout"@de .
 

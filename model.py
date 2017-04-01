@@ -64,18 +64,6 @@ class DiscourseRound(Base):
     __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
 
 
-class Context(Base):
-
-    __tablename__ = 'contexts'
-
-    id                = Column(Integer, primary_key=True)
-
-    name              = Column(String, index=True)
-    key               = Column(Unicode, index=True)
-    value             = Column(UnicodeText)
-    default_value     = Column(UnicodeText)
-    prolog_type       = Column(Enum('string', 'number', 'constant', name='prolog_types'))
-
 class Cronjob(Base):
 
     __tablename__ = 'cronjobs'
@@ -85,6 +73,19 @@ class Cronjob(Base):
     module            = Column(String, index=True)
     name              = Column(String, index=True)
     last_run          = Column(Integer, index=True)
+
+class NLPTest(Base):
+
+    __tablename__ = 'nlp_tests'
+
+    id                = Column(Integer, primary_key=True)
+
+    module            = Column(String(255), index=True)
+    name              = Column(String(255), index=True)
+
+    test_src          = Column(UnicodeText)
+    location          = Column(String(255), index=True)
+
 
 Base.metadata.create_all(engine)
 

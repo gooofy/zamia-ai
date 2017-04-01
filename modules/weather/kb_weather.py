@@ -40,7 +40,7 @@ from rdflib.namespace import XSD
 from tzlocal          import get_localzone
 
 from nltools          import misc
-from kb               import HALKB
+from kb               import AIKB
 
 import astral
 import model
@@ -63,10 +63,10 @@ def fetch_weather_forecast(config, kb, graph_name):
     query = """
             SELECT DISTINCT ?location ?cityid ?timezone ?label ?long ?lat
                    WHERE {
-                      ?location hal:cityid ?cityid .
-                      ?location hal:timezone ?timezone .
+                      ?location ai:cityid ?cityid .
+                      ?location ai:timezone ?timezone .
                       ?location rdfs:label ?label .
-                      ?location hal:GeoNames ?gid .
+                      ?location ai:GeoNames ?gid .
                       ?gid <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
                       ?gid <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
                       FILTER(lang(?label) = 'en') .
@@ -76,8 +76,8 @@ def fetch_weather_forecast(config, kb, graph_name):
     # query = """
     #         SELECT DISTINCT ?location ?cityid ?timezone
     #         WHERE {
-    #            ?location hal:cityid ?cityid .
-    #            ?location hal:timezone ?timezone .
+    #            ?location ai:cityid ?cityid .
+    #            ?location ai:timezone ?timezone .
     #         }
     #         """
 
@@ -157,17 +157,17 @@ def fetch_weather_forecast(config, kb, graph_name):
 
             sun = l.sun(date=cur_date, local=True)
 
-            sun_uri = u'hal:sun_%s_%s' % (loc_label, cur_date.strftime('%Y%m%d'))
+            sun_uri = u'ai:sun_%s_%s' % (loc_label, cur_date.strftime('%Y%m%d'))
 
             kb.remove ((sun_uri, None, None, graph))
 
-            quads.append(( sun_uri, u'hal:location', location, graph ))
-            quads.append(( sun_uri, u'hal:date',     rdflib.Literal(cur_date, datatype=XSD.date), graph ))
-            quads.append(( sun_uri, u'hal:dawn',     rdflib.Literal(sun['dawn'], datatype=XSD.dateTime), graph ))
-            quads.append(( sun_uri, u'hal:sunrise',  rdflib.Literal(sun['sunrise'], datatype=XSD.dateTime), graph ))
-            quads.append(( sun_uri, u'hal:noone',    rdflib.Literal(sun['noon'], datatype=XSD.dateTime), graph ))
-            quads.append(( sun_uri, u'hal:sunset',   rdflib.Literal(sun['sunset'], datatype=XSD.dateTime), graph ))
-            quads.append(( sun_uri, u'hal:dusk',     rdflib.Literal(sun['dusk'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'ai:location', location, graph ))
+            quads.append(( sun_uri, u'ai:date',     rdflib.Literal(cur_date, datatype=XSD.date), graph ))
+            quads.append(( sun_uri, u'ai:dawn',     rdflib.Literal(sun['dawn'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'ai:sunrise',  rdflib.Literal(sun['sunrise'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'ai:noone',    rdflib.Literal(sun['noon'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'ai:sunset',   rdflib.Literal(sun['sunset'], datatype=XSD.dateTime), graph ))
+            quads.append(( sun_uri, u'ai:dusk',     rdflib.Literal(sun['dusk'], datatype=XSD.dateTime), graph ))
 
             logging.debug ("astral %s %s %s -> %s" % (location, cur_date, sun['sunrise'], sun['sunset']) )
 
@@ -203,21 +203,21 @@ def fetch_weather_forecast(config, kb, graph_name):
 
             logging.debug ("forecast %s on %s-%s city_id=%s" % (location, dt_from, dt_to, city_id))
 
-            fc_uri = 'hal:fc_%s_%s' % (loc_label, dt_from.strftime('%Y%m%d_%H%M%S'))
+            fc_uri = 'ai:fc_%s_%s' % (loc_label, dt_from.strftime('%Y%m%d_%H%M%S'))
 
             kb.remove ((fc_uri, None, None, graph))
 
-            quads.append(( fc_uri, u'hal:location',      location, graph ))
-            quads.append(( fc_uri, u'hal:temp_min',      rdflib.Literal(unicode(temp_min), datatype=XSD.float), graph ))
-            quads.append(( fc_uri, u'hal:temp_max',      rdflib.Literal(unicode(temp_max), datatype=XSD.float), graph ))
-            quads.append(( fc_uri, u'hal:precipitation', rdflib.Literal(unicode(precipitation), datatype=XSD.float), graph ))
-            quads.append(( fc_uri, u'hal:clouds',        rdflib.Literal(unicode(clouds), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'ai:location',      location, graph ))
+            quads.append(( fc_uri, u'ai:temp_min',      rdflib.Literal(unicode(temp_min), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'ai:temp_max',      rdflib.Literal(unicode(temp_max), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'ai:precipitation', rdflib.Literal(unicode(precipitation), datatype=XSD.float), graph ))
+            quads.append(( fc_uri, u'ai:clouds',        rdflib.Literal(unicode(clouds), datatype=XSD.float), graph ))
 
-            quads.append(( fc_uri, u'hal:icon',          rdflib.Literal(icon), graph ))
-            quads.append(( fc_uri, u'hal:description',   rdflib.Literal(description), graph ))
+            quads.append(( fc_uri, u'ai:icon',          rdflib.Literal(icon), graph ))
+            quads.append(( fc_uri, u'ai:description',   rdflib.Literal(description), graph ))
 
-            quads.append(( fc_uri, u'hal:dt_start',      rdflib.Literal(dt_from, datatype=XSD.dateTime), graph ))
-            quads.append(( fc_uri, u'hal:dt_end',        rdflib.Literal(dt_to, datatype=XSD.dateTime), graph ))
+            quads.append(( fc_uri, u'ai:dt_start',      rdflib.Literal(dt_from, datatype=XSD.dateTime), graph ))
+            quads.append(( fc_uri, u'ai:dt_end',        rdflib.Literal(dt_to, datatype=XSD.dateTime), graph ))
 
         # break
 
@@ -234,17 +234,17 @@ if __name__ == "__main__":
 
     config = misc.load_config('.airc')
     
-    kb = HALKB()
-    gn = u'http://hal.zamia.org/benchmark'
+    kb = AIKB()
+    gn = u'http://ai.zamia.org/benchmark'
 
-    kb.register_prefix('hal', 'http://hal.zamia.org/kb/')
+    kb.register_prefix('ai', 'http://ai.zamia.org/kb/')
     kb.register_prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
 
     fetch_weather_forecast (config, kb, gn)
 
 
     # start_time = time.time()
-    # kb = HALKB()
-    # logging.debug ('HALKB init took %fs' % (time.time() - start_time))
+    # kb = AIKB()
+    # logging.debug ('AIKB init took %fs' % (time.time() - start_time))
 
 

@@ -41,7 +41,7 @@ from ai_kernal          import AIKernal
 from nltools            import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
-RDF_LIB_DUMP_PATH  = 'data/HALKB.n3'
+RDF_LIB_DUMP_PATH  = 'data/AIKB.n3'
 
 class AICli(cmdln.Cmdln):
 
@@ -238,10 +238,10 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")
+    @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
+           help="run tests")
     @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
            help="print generated utterances")
-    @cmdln.option("-t", "--tests", dest="run_tests", action="store_true",
-           help="run tests")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     @cmdln.option("-w", "--warn-level", dest="warn_level", type = "int", default=0,
@@ -264,7 +264,39 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (paths, opts.run_trace, opts.run_tests, opts.print_utterances, opts.warn_level)
+            self.kernal.compile_module_multi (paths, opts.run_trace, opts.print_utterances, opts.warn_level)
+
+            if opts.run_tests:
+                self.kernal.run_tests_multi (paths, opts.run_trace)
+
+        except PrologError as e:
+            logging.error("*** ERROR: %s" % e)
+
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+
+    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+           help="enable tracing")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_test(self, subcmd, opts, *paths):
+        """${cmd_name}: run tests from module(s)
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if len(paths)==0:
+            logging.error ('specify at least one module name (or all to run tests from all modules)')
+            return
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+            logging.debug('verbose logging enabled.')
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        try:
+            self.kernal.run_tests_multi (paths, opts.run_trace)
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)
 
@@ -272,6 +304,8 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
+    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+           help="enable prolog tracing")
     @cmdln.option("-f", "--force", dest="force", action="store_true",
            help="force cronjob to run even if it is not due to")
     def do_cron(self, subcmd, opts, *paths):
@@ -290,7 +324,7 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.run_cronjobs_multi(paths, opts.force)
+        self.kernal.run_cronjobs_multi(paths, opts.force, run_trace=opts.run_trace)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

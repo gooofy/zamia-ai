@@ -1,50 +1,50 @@
-@prefix dbo: <http://dbpedia.org/ontology/> .
-@prefix dbr: <http://dbpedia.org/resource/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix dbr:  <http://dbpedia.org/resource/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix hal: <http://hal.zamia.org/kb/> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix wde: <http://www.wikidata.org/entity/>.
+@prefix ai:   <http://ai.zamia.org/kb/> .
+@prefix xml:  <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix wde:  <http://www.wikidata.org/entity/>.
 
 # wde:Freudental'                 
-<http://www.wikidata.org/entity/Q61656> hal:cityid 2924888 .
+<http://www.wikidata.org/entity/Q61656> ai:cityid 2924888 .
 # wde:Ludwigsburg'                
-<http://www.wikidata.org/entity/Q622> hal:cityid 2875392 .
+<http://www.wikidata.org/entity/Q622> ai:cityid 2875392 .
 # wde:Stuttgart'                  
-<http://www.wikidata.org/entity/Q1022> hal:cityid 2825297 .
+<http://www.wikidata.org/entity/Q1022> ai:cityid 2825297 .
 # wde:Tallinn'                    
-<http://www.wikidata.org/entity/Q1770> hal:cityid 588409 .
+<http://www.wikidata.org/entity/Q1770> ai:cityid 588409 .
 # wde:SanFrancisco'               
-<http://www.wikidata.org/entity/Q62> hal:cityid 5391959 .
+<http://www.wikidata.org/entity/Q62> ai:cityid 5391959 .
 # wde:LosAngeles'                 
-<http://www.wikidata.org/entity/Q65> hal:cityid 5368361 .
+<http://www.wikidata.org/entity/Q65> ai:cityid 5368361 .
 # wde:NewYorkCity'                
-<http://www.wikidata.org/entity/Q60> hal:cityid 5128581 .
+<http://www.wikidata.org/entity/Q60> ai:cityid 5128581 .
 # wde:London'                     
-<http://www.wikidata.org/entity/Q84> hal:cityid 2643743 .
+<http://www.wikidata.org/entity/Q84> ai:cityid 2643743 .
 # wde:Paris'                      
-<http://www.wikidata.org/entity/Q90> hal:cityid 2988507 .
+<http://www.wikidata.org/entity/Q90> ai:cityid 2988507 .
 # wde:Reykjavík'                  
-<http://www.wikidata.org/entity/Q1764> hal:cityid 3413829 .
+<http://www.wikidata.org/entity/Q1764> ai:cityid 3413829 .
 # wde:Oberwiesenthal'             
-<http://www.wikidata.org/entity/Q57926> hal:cityid 2882332 .
+<http://www.wikidata.org/entity/Q57926> ai:cityid 2882332 .
 # wde:Arnstorf'                   
-<http://www.wikidata.org/entity/Q582608> hal:cityid 2854179 .
+<http://www.wikidata.org/entity/Q582608> ai:cityid 2854179 .
 # wde:Hamburg'                    
-<http://www.wikidata.org/entity/Q1055> hal:cityid 2911298 .
+<http://www.wikidata.org/entity/Q1055> ai:cityid 2911298 .
 # wde:Brackenheim'                
-<http://www.wikidata.org/entity/Q53751> hal:cityid 2945591 .
+<http://www.wikidata.org/entity/Q53751> ai:cityid 2945591 .
 # wde:Heilbronn'                  
-<http://www.wikidata.org/entity/Q715> hal:cityid 2907669 .
+<http://www.wikidata.org/entity/Q715> ai:cityid 2907669 .
 # wde:Ludwigshafen'               
-<http://www.wikidata.org/entity/Q2910> hal:cityid 2875377 .
+<http://www.wikidata.org/entity/Q2910> ai:cityid 2875377 .
 # wde:BiberachRiss'               
-<http://www.wikidata.org/entity/Q16069> hal:cityid 2949426 .
+<http://www.wikidata.org/entity/Q16069> ai:cityid 2949426 .
 # wde:BlombergNRW'                
-<http://www.wikidata.org/entity/Q168646> hal:cityid 2947641 .
+<http://www.wikidata.org/entity/Q168646> ai:cityid 2947641 .
 # wde:WashingtonDC'               
-<http://www.wikidata.org/entity/Q61> hal:cityid 4140963 .
+<http://www.wikidata.org/entity/Q61> ai:cityid 4140963 .
 # wde:Fairbanks'                  
-<http://www.wikidata.org/entity/Q79638> hal:cityid 5861897 .
+<http://www.wikidata.org/entity/Q79638> ai:cityid 5861897 .
 

@@ -33,41 +33,38 @@ from copy import copy
 
 import model
 from nltools.tokenizer import tokenize
-from kb import HALKB
 
 from zamiaprolog.parser import PrologParser
 from zamiaprolog.errors import PrologError
 from zamiaprolog.logic  import *
 from nlp_macro_engine   import NLPMacroEngine
 from runtime            import AIPrologRuntime
-from pl2algebra         import prolog_to_filter_expression, arg_to_rdf
-
-TEST_CONTEXT_NAME = 'test'
 
 class AIPrologParser(PrologParser):
 
-    def __init__(self, trace = False, run_tests = False, print_utterances=False, split_utterances=False, warn_level=0):
+    def __init__(self, trace = False, print_utterances=False, split_utterances=False, warn_level=0):
 
         super (AIPrologParser, self).__init__()
 
         self.trace            = trace
-        self.run_tests        = run_tests
         self.print_utterances = print_utterances
         self.split_utterances = split_utterances
         self.warn_level       = warn_level
+        self.test_cnt         = 0
 
         # register directives
 
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
-        self.register_directive('context_set_default', self.context_set_default, None)
 
     def set_trace (self, trace):
         self.trace = trace
 
-    def set_run_tests (self, run_tests):
-        self.run_tests = run_tests
+    def _get_variable(self, term):
+        if not isinstance(term, Variable):
+            raise PrologRuntimeError('Variable expected, %s found instead.' % term.__class__)
+        return term.name
 
     def nlp_macro(self, module_name, clause, user_data):
 
@@ -75,14 +72,16 @@ class AIPrologParser(PrologParser):
 
         name = args[0].s
 
-        macro_vars = map (lambda v: self.ai_rt.prolog_get_variable (v, {}), args[1:])
+        macro_vars = map (lambda v: self._get_variable (v), args[1:])
         # for v in args[1:]:
         #     if not isinstance(v, Variable):
         #         raise PrologError('nlp_macro: variable arg expected, %s found instead.' % v)
         #         
         #     macro_vars.append(v.name)
 
-        solutions = self.ai_rt.search(clause)
+        ai_rt = AIPrologRuntime(self.db, self.kb)
+
+        solutions = ai_rt.search(clause)
 
         mappings = []
 
@@ -90,7 +89,7 @@ class AIPrologParser(PrologParser):
 
             mapping = {}
             for v in macro_vars:
-                mapping[v] = self.ai_rt.prolog_get_string (solution[v], {})
+                mapping[v] = ai_rt.prolog_get_string (solution[v], {})
         
             mappings.append(mapping)
 
@@ -234,152 +233,26 @@ class AIPrologParser(PrologParser):
 
     def nlp_test(self, module_name, clause, user_data):
 
-        if not self.run_tests:
-            return
+        # store test in DB
 
-        args = clause.head.args
+        name = 'test_%06d' % self.test_cnt
+        self.test_cnt += 1
 
-        lang = args[0].name
+        nlptest = model.NLPTest(module   = module_name,
+                                name     = name,
+                                test_src = unicode(clause),
+                                location = str(clause.location))
 
-        # extract test rounds, look up matching discourse_rounds, execute them
-
-        nlp_test_parser = PrologParser()
-        self.ai_rt.reset_context(TEST_CONTEXT_NAME)
-        self.ai_rt.reset_context_stacks()
-        round_num = 0
-        for ivr in args[1:]:
-
-            if ivr.name != 'ivr':
-                raise PrologError ('nlp_test: ivr predicate args expected.')
-
-            test_in = ''
-            test_out = ''
-            test_actions = []
-
-            for e in ivr.args:
-
-                if e.name == 'in':
-                    test_in = ' '.join(tokenize(e.args[0].s, lang))
-                elif e.name == 'out':
-                    test_out = ' '.join(tokenize(e.args[0].s, lang))
-                elif e.name == 'action':
-                    test_actions.append(e.args)
-                else:
-                    raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
-               
-            logging.info("nlp_test: %s round %d test_in     : %s" % (clause.location, round_num, test_in) )
-            logging.info("nlp_test: %s round %d test_out    : %s" % (clause.location, round_num, test_out) )
-            logging.info("nlp_test: %s round %d test_actions: %s" % (clause.location, round_num, test_actions) )
-
-            # execute all matching clauses, collect actions
-
-            self.ai_rt.reset_actions()
-
-            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==test_in, lang==lang):
-            
-                prolog_s = ','.join(dr.resp.split(';'))
-
-                logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, prolog_s) )
-                
-                c = nlp_test_parser.parse_line_clause_body(prolog_s)
-                # logging.debug( "Parse result: %s" % c)
-
-                # logging.debug( "Searching for c: %s" % c )
-
-                solutions = self.ai_rt.search(c)
-
-                # if len(solutions) == 0:
-                #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
-            
-                # print "round %d utterances: %s" % (round_num, repr(ai_rt.get_utterances())) 
-
-            # check actual actions vs expected ones
-
-            matching_abuf = None
-
-            action_buffers = self.ai_rt.get_actions()
-            for abuf in action_buffers:
-
-                logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
-
-                # check utterance
-
-                actual_out = u''
-                utt_lang   = u'en'
-                for action in abuf['actions']:
-                    p = action[0].name
-                    if p == 'say':
-                        utt_lang = unicode(action[1])
-                        actual_out += u' ' + unicode(action[2])
-
-                if len(test_out) > 0:
-                    if len(actual_out)>0:
-                        actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                    if actual_out != test_out:
-                        logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
-                        continue # no match
-
-                logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (clause.location, round_num))
-
-                # check actions
-
-                if len(test_actions)>0:
-
-                    # import pdb; pdb.set_trace()
-
-                    # print repr(test_actions)
-
-                    actions_matched = True
-                    for action in test_actions:
-                        for act in abuf['actions']:
-                            # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                            if action == act:
-                                break
-                        if action != act:
-                            actions_matched = False
-                            break
-
-                    if not actions_matched:
-                        logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (clause.location, round_num))
-                        continue
-
-                    logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (clause.location, round_num))
-
-                matching_abuf = abuf
-                break
-
-            if not matching_abuf:
-                raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
-           
-            self.ai_rt.execute_builtin_actions(matching_abuf)
-
-            round_num += 1
-
-
-    def context_set_default(self, module_name, clause, user_data):
-
-        solutions = self.ai_rt.search(clause)
-
-        # print "context_set_default: solutions=%s" % repr(solutions)
-
-        if len(solutions) != 1:
-            raise PrologError ('context_set_default: need exactly one solution.')
-
-        args = clause.head.args
-
-        name  = args[0].s
-        key   = args[1].name
-
-        value = args[2]
-        if isinstance (value, Variable):
-            value = solutions[0][value.name]
-
-        self.ai_rt.set_context_default(name, key, value)
-
+        self.db.session.add(nlptest)
+        
     def clear_module (self, module_name, db):
 
         logging.debug ('clearing discourses...')
         db.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
+        logging.debug ('clearing tests...')
+        db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name).delete()
+
+        self.test_cnt = 0
 
         super(AIPrologParser, self).clear_module(module_name, db)
 
@@ -390,10 +263,6 @@ class AIPrologParser(PrologParser):
         self.macro_engine = NLPMacroEngine()
         self.kb           = kb
         self.db           = db
-
-        self.ai_rt = AIPrologRuntime(db, kb)
-        self.ai_rt.set_trace(self.trace)
-        self.ai_rt.set_context_name(TEST_CONTEXT_NAME)
 
         if clear_module:
             self.clear_module(module_name, db)

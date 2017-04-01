@@ -4,9 +4,6 @@
 % test setup and context
 %
 
-context_set_default('test', time, today).
-context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
-
 answer(greeting, de, personal) :-
     action(attention, on),
     say_eoa(de, "Hallo!"),
@@ -21,13 +18,13 @@ answer(greeting, de, personal) :-
     say_eoa(de, "Hey!").
 
 answer(greeting, de, anonymous) :-
-    context_get(currentTime, TS),
+    rdf(ai:curin, ai:currentTime, TS),
     before_noon(TS),
     action(attention, on),
     say_eoa(de, "Guten Morgen!").
 
 answer(greeting, de, anonymous) :-
-    context_get(currentTime, TS),
+    rdf(ai:curin, ai:currentTime, TS),
     before_evening(TS),
     after_noon(TS),
     action(attention, on),
@@ -36,7 +33,7 @@ answer(greeting, de, anonymous) :-
     say_eoa(de, "Hallo!").
 
 answer(greeting, de, anonymous) :-
-    context_get(currentTime, TS),
+    rdf(ai:curin, ai:currentTime, TS),
     after_evening(TS),
     action(attention, on),
     say_eoa(de, "Guten Abend!").
@@ -85,12 +82,6 @@ nlp_gen(de,'@GREETING:W @ADDRESSEE:W',
 nlp_gen(de,'@ADDRESSEE:W @GREETING:W',
            @ADDRESSEE:P, @GREETING:P).
 
-context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,10,28,6,'local'), T).
-nlp_test(de,
-         ivr(in('hallo'),
-             out('Guten Morgen!'))).
-
-context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,13,28,6,'local'), T).
 nlp_test(de,
          ivr(in('hi'),
              out('Guten Tag!'),
@@ -98,12 +89,6 @@ nlp_test(de,
 nlp_test(de,
          ivr(in('hi'),
              out('Hallo!'),
-             action(attention, on))).
-
-context_set_default('test', currentTime, T) :- date_time_stamp(date(2016,12,06,19,28,6,'local'), T).
-nlp_test(de,
-         ivr(in('guten abend'),
-             out('Guten Abend!'),
              action(attention, on))).
 
 nlp_test(de,

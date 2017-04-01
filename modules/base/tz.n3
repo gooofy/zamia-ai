@@ -1,49 +1,49 @@
-@prefix dbo: <http://dbpedia.org/ontology/> .
-@prefix dbr: <http://dbpedia.org/resource/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix dbr:  <http://dbpedia.org/resource/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix hal: <http://hal.zamia.org/kb/> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ai:   <http://ai.zamia.org/kb/> .
+@prefix xml:  <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
 # wde:Freudental'                 
-<http://www.wikidata.org/entity/Q61656> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q61656> ai:timezone "Europe/Berlin" .
 # wde:Ludwigsburg'                
-<http://www.wikidata.org/entity/Q622> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q622> ai:timezone "Europe/Berlin" .
 # wde:Stuttgart'                  
-<http://www.wikidata.org/entity/Q1022> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q1022> ai:timezone "Europe/Berlin" .
 # wde:Tallinn'                    
-<http://www.wikidata.org/entity/Q1770> hal:timezone "Europe/Tallinn" .
+<http://www.wikidata.org/entity/Q1770> ai:timezone "Europe/Tallinn" .
 # wde:SanFrancisco'               
-<http://www.wikidata.org/entity/Q62> hal:timezone "America/Los_Angeles" .
+<http://www.wikidata.org/entity/Q62> ai:timezone "America/Los_Angeles" .
 # wde:LosAngeles'                 
-<http://www.wikidata.org/entity/Q65> hal:timezone "America/Los_Angeles" .
+<http://www.wikidata.org/entity/Q65> ai:timezone "America/Los_Angeles" .
 # wde:NewYorkCity'                
-<http://www.wikidata.org/entity/Q60> hal:timezone "America/New_York" .
+<http://www.wikidata.org/entity/Q60> ai:timezone "America/New_York" .
 # wde:London'                     
-<http://www.wikidata.org/entity/Q84> hal:timezone "Europe/London" .
+<http://www.wikidata.org/entity/Q84> ai:timezone "Europe/London" .
 # wde:Paris'                      
-<http://www.wikidata.org/entity/Q90> hal:timezone "Europe/Paris" .
+<http://www.wikidata.org/entity/Q90> ai:timezone "Europe/Paris" .
 # wde:Reykjavík'                  
-<http://www.wikidata.org/entity/Q1764> hal:timezone "Atlantic/Reykjavik" .
+<http://www.wikidata.org/entity/Q1764> ai:timezone "Atlantic/Reykjavik" .
 # wde:Oberwiesenthal'             
-<http://www.wikidata.org/entity/Q57926> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q57926> ai:timezone "Europe/Berlin" .
 # wde:Arnstorf'                   
-<http://www.wikidata.org/entity/Q582608> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q582608> ai:timezone "Europe/Berlin" .
 # wde:Hamburg'                    
-<http://www.wikidata.org/entity/Q1055> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q1055> ai:timezone "Europe/Berlin" .
 # wde:Brackenheim'                
-<http://www.wikidata.org/entity/Q53751> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q53751> ai:timezone "Europe/Berlin" .
 # wde:Heilbronn'                  
-<http://www.wikidata.org/entity/Q715> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q715> ai:timezone "Europe/Berlin" .
 # wde:Ludwigshafen'               
-<http://www.wikidata.org/entity/Q2910> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q2910> ai:timezone "Europe/Berlin" .
 # wde:BiberachRiss'               
-<http://www.wikidata.org/entity/Q16069> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q16069> ai:timezone "Europe/Berlin" .
 # wde:BlombergNRW'                
-<http://www.wikidata.org/entity/Q168646> hal:timezone "Europe/Berlin" .
+<http://www.wikidata.org/entity/Q168646> ai:timezone "Europe/Berlin" .
 # wde:WashingtonDC'               
-<http://www.wikidata.org/entity/Q61> hal:timezone "America/New_York" .
+<http://www.wikidata.org/entity/Q61> ai:timezone "America/New_York" .
 # wde:Fairbanks'                  
-<http://www.wikidata.org/entity/Q79638> hal:timezone "America/Anchorage" .
+<http://www.wikidata.org/entity/Q79638> ai:timezone "America/Anchorage" .
 

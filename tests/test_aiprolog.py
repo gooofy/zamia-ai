@@ -31,7 +31,7 @@ from zamiaprolog.logicdb import LogicDB
 from aiprolog.runtime    import AIPrologRuntime
 from aiprolog.parser     import AIPrologParser
 
-from kb import HALKB
+from kb import AIKB
 
 UNITTEST_MODULE  = 'unittests'
 UNITTEST_CONTEXT = 'unittests'
@@ -39,7 +39,9 @@ UNITTEST_CONTEXT = 'unittests'
 COMMON_PREFIXES = {
             'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
             'rdfs':    'http://www.w3.org/2000/01/rdf-schema#',
-            'hal':     'http://hal.zamia.org/kb/',
+            'ai':      'http://ai.zamia.org/kb/',
+            'aiu':     'http://ai.zamia.org/kb/user/',
+            'aiup':    'http://ai.zamia.org/kb/user/prop/',
             'dbo':     'http://dbpedia.org/ontology/',
             'dbr':     'http://dbpedia.org/resource/',
             'dbp':     'http://dbpedia.org/property/',
@@ -74,7 +76,7 @@ class TestAIProlog (unittest.TestCase):
         # knowledge base
         #
 
-        self.kb = HALKB(UNITTEST_MODULE)
+        self.kb = AIKB(UNITTEST_MODULE)
 
         for prefix in COMMON_PREFIXES:
             self.kb.register_prefix(prefix, COMMON_PREFIXES[prefix])
@@ -168,15 +170,15 @@ class TestAIProlog (unittest.TestCase):
          date_time_stamp(date(2016,12,6,0,0,0,\'local\'), EvTS),
          date_time_stamp(date(2016,12,7,0,0,0,\'local\'), EvTE),
          rdf (distinct,
-              WEV, hal:dt_end,        DT_END,
-              WEV, hal:dt_start,      DT_START,
-              WEV, hal:location,      P,
+              WEV, ai:dt_end,        DT_END,
+              WEV, ai:dt_start,      DT_START,
+              WEV, ai:location,      P,
               P,   rdfs:label,        Label,
-              WEV, hal:temp_min,      TempMin,
-              WEV, hal:temp_max,      TempMax,
-              WEV, hal:precipitation, Precipitation,
-              WEV, hal:clouds,        Clouds,
-              WEV, hal:icon,          Icon,
+              WEV, ai:temp_min,      TempMin,
+              WEV, ai:temp_max,      TempMax,
+              WEV, ai:precipitation, Precipitation,
+              WEV, ai:clouds,        Clouds,
+              WEV, ai:icon,          Icon,
               filter (DT_START >= isoformat(EvTS, 'local'),
                       DT_END   =< isoformat(EvTE, 'local'),
                       lang(Label) = L2)
@@ -188,6 +190,29 @@ class TestAIProlog (unittest.TestCase):
         logging.debug('solutions: %s' % repr(solutions))
         self.assertEqual (len(solutions), 7)
 
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_assert(self):
+
+        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:name, "Alice Green"), rdf(aiu:Alice, X, Y).')
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 1)
+        self.assertEqual (solutions[0]['X'].s, u'http://ai.zamia.org/kb/user/prop/name')
+        self.assertEqual (solutions[0]['Y'].s, u'Alice Green')
+
+    # @unittest.skip("temporarily disabled")
+    def test_rdf_assert_list(self):
+
+        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:topic, [1, "abc", wde:42]), rdf(aiu:Alice, aiup:topic, Y).')
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+        self.assertEqual (len(solutions), 1)
+        self.assertEqual (len(solutions[0]['Y'].l), 3)
+        self.assertEqual (solutions[0]['Y'].l[0].f, 1.0)
+        self.assertEqual (solutions[0]['Y'].l[1].s, u'abc')
+        self.assertEqual (solutions[0]['Y'].l[2].name, u'wde:42')
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ from sparqlalchemy.ldfmirror     import LDFMirror
 # essentially we have two graphs: dbpedia subset + our own entries
 #
 
-class HALKB(object):
+class AIKB(object):
 
     def __init__(self, kbname='kb'):
 
@@ -215,15 +215,15 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
 
-    gn = u'http://hal.zamia.org/benchmark'
+    gn = u'http://ai.zamia.org/benchmark'
 
     start_time = time.time()
-    kb = HALKB()
-    logging.debug ('HALKB init took %fs' % (time.time() - start_time))
+    kb = AIKB()
+    logging.debug ('AIKB init took %fs' % (time.time() - start_time))
 
     start_time = time.time()
     kb.clear_graph(gn)
-    logging.debug ('HALKB clear graph took %fs' % (time.time() - start_time))
+    logging.debug ('AIKB clear graph took %fs' % (time.time() - start_time))
 
     #
     # LDF import test
@@ -257,37 +257,37 @@ if __name__ == "__main__":
 
     # query = """
     #            INSERT DATA {
-    #                GRAPH <http://hal.zamia.org/benchmark>
+    #                GRAPH <http://ai.zamia.org/benchmark>
     #                { 
-    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:location <http://dbpedia.org/resource/Fairbanks,_Alaska> .
-    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:temp_min -30 .
-    #                    hal:fc_Fairbanks__Alaska_20161112_morning hal:temp_max -20 .
+    #                    ai:fc_Fairbanks__Alaska_20161112_morning ai:location <http://dbpedia.org/resource/Fairbanks,_Alaska> .
+    #                    ai:fc_Fairbanks__Alaska_20161112_morning ai:temp_min -30 .
+    #                    ai:fc_Fairbanks__Alaska_20161112_morning ai:temp_max -20 .
     #                }
     #             }
     #         """
     # start_time = time.time()
     # kb.sparql(query)
-    # logging.debug ('HALKB sparql() took %fs' % (time.time() - start_time))
+    # logging.debug ('AIKB sparql() took %fs' % (time.time() - start_time))
 
     # generate lots of n3 data, for parser benchmarking
 
-    n3data = '@prefix hal: <http://hal.zamia.org/kb/> .\n'
+    n3data = '@prefix ai: <http://ai.zamia.org/kb/> .\n'
     for i in range (1000):
-        n3data += 'hal:n%d hal:bench hal:m%d .\n' % (i, i)
+        n3data += 'ai:n%d ai:bench ai:m%d .\n' % (i, i)
 
     # print n3data
 
-    print 'HALKB parsing...'
+    print 'AIKB parsing...'
     start_time = time.time()
     kb.parse (gn, 'n3', n3data)
-    logging.debug ('HALKB parse() took %fs' % (time.time() - start_time))
+    logging.debug ('AIKB parse() took %fs' % (time.time() - start_time))
 
-    print 'HALKB parsing (again)...'
+    print 'AIKB parsing (again)...'
     start_time = time.time()
     kb.parse (gn, 'n3', n3data)
-    logging.debug ('HALKB parse() took %fs' % (time.time() - start_time))
+    logging.debug ('AIKB parse() took %fs' % (time.time() - start_time))
 
     start_time = time.time()
     kb.close()
-    logging.debug ('HALKB close() took %fs' % (time.time() - start_time))
+    logging.debug ('AIKB close() took %fs' % (time.time() - start_time))
 

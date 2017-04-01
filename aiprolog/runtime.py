@@ -35,11 +35,19 @@ from tzlocal import get_localzone # $ pip install tzlocal
 from zamiaprolog.runtime import PrologRuntime
 from zamiaprolog.errors  import PrologRuntimeError
 from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
-from pl2algebra          import arg_to_rdf, prolog_to_filter_expression
+from pl2rdf              import pl_to_rdf, pl_literal_to_rdf, prolog_to_filter_expression, rdf_to_pl
+from nltools.tokenizer   import tokenize
 
 import model
 
-from kb import HALKB
+CONTEXT_GRAPH_NAME = u'http://ai.zamia.org/context'
+KB_PREFIX          = u'http://ai.zamia.org/kb/'
+USER_PREFIX        = u'http://ai.zamia.org/kb/user/'
+USER_PROP_PREFIX   = u'http://ai.zamia.org/kb/user/prop/'
+CURIN              = u'http://ai.zamia.org/kb/curin'
+DEFAULT_USER       = USER_PREFIX + u'default'
+TEST_USER          = USER_PREFIX + u'test'
+TEST_TIME          = time.mktime(datetime.datetime(2016,12,06,13,28,6).timetuple())
 
 def builtin_context_get(g, pe):
 
@@ -55,13 +63,10 @@ def builtin_context_get(g, pe):
     key     = args[0].name
     arg_v   = pe.prolog_get_variable(args[1], g.env)
 
-    # currentTime is special in production contexts
-    if key=='currentTime' and pe.context_name != 'test':
-        v = NumberLiteral(time.time())
-    else:
-        v = pe.read_context(pe.context_name, key)
-        if not v:
-            return False
+    v = pe.read_context(key)
+    if not v:
+        import pdb; pdb.set_trace()
+        return False
 
     g.env[arg_v] = v
 
@@ -79,13 +84,9 @@ def builtin_context_get_fn(pred, env, rt):
 
     key     = args[0].name
 
-    # currentTime is special in production contexts
-    if key=='currentTime' and pe.context_name != 'test':
-        v = NumberLiteral(time.time())
-    else:
-        v = pe.read_context(pe.context_name, key)
-        if not v:
-            return ListLiteral([])
+    v = pe.read_context(key)
+    if not v:
+        return ListLiteral([])
 
     return v
 
@@ -103,7 +104,7 @@ def builtin_action_context_set(pe, args):
     value = args[1]
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.write_context(pe.context_name, key, value)
+    pe.write_context(key, value)
 
 def builtin_action_context_push(pe, args):
 
@@ -118,7 +119,7 @@ def builtin_action_context_push(pe, args):
     value = args[1]
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.push_context(pe.context_name, key, value)
+    pe.push_context(key, value)
 
 
 ACTION_VARNAME       = '__ACTION__'
@@ -149,9 +150,12 @@ def builtin_context_score(g, pe):
     score = g.env[scorev].f if scorev in g.env else 0.0
 
     if value:
-        if key in pe.context_stacks:
+
+        stack = pe.read_context(key)
+
+        if stack:
             i = 1
-            for v in pe.context_stacks[key]:
+            for v in stack.l:
                 if v == value:
                     score += points / float(i)
                     break
@@ -167,9 +171,10 @@ def builtin_context_score(g, pe):
 
     res = []
 
-    if key in pe.context_stacks:
+    stack = pe.read_context(key)
+    if stack:
         i = 1
-        for v in pe.context_stacks[key]:
+        for v in stack.l:
             s = score + points / float(i)
             if s >= min_score:
                 res.append({ 
@@ -281,40 +286,6 @@ def builtin_say_eoa(g, pe):
 
     return True
 
-def _literal_rdf2pl(l):
-
-    value    = unicode(l)
-
-    if isinstance (l, rdflib.Literal) :
-        if l.datatype:
-
-            datatype = str(l.datatype)
-
-            if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                value = NumberLiteral(float(value))
-            elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                value = NumberLiteral(float(value))
-            elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
-                value = NumberLiteral(float(value))
-            elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                dt = dateutil.parser.parse(value)
-                value = NumberLiteral(time.mktime(dt.timetuple()))
-            elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                dt = dateutil.parser.parse(value)
-                value = NumberLiteral(time.mktime(dt.timetuple()))
-            else:
-                raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
-        else:
-            if l.value is None:
-                value = ListLiteral([])
-            else:
-                value = StringLiteral(value)
-   
-    else:
-        value = StringLiteral(value)
-
-    return value
-    
 def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
@@ -396,9 +367,9 @@ def _rdf_exec (g, pe, generate_lists=False):
 
             logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            optional_triples.append((arg_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
-                                     arg_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
-                                     arg_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
+            optional_triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
+                                     pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
+                                     pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
 
             arg_idx += 1
 
@@ -459,9 +430,9 @@ def _rdf_exec (g, pe, generate_lists=False):
 
             logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            triples.append((arg_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
-                            arg_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
-                            arg_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
+            triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
+                            pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
+                            pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
 
             arg_idx += 3
 
@@ -509,7 +480,7 @@ def _rdf_exec (g, pe, generate_lists=False):
 
                 l = binding[v]
 
-                value = _literal_rdf2pl(l)
+                value = rdf_to_pl(l)
 
                 if not v in g.env:
                     g.env[v] = ListLiteral([])
@@ -531,7 +502,7 @@ def _rdf_exec (g, pe, generate_lists=False):
 
                 l = binding[v]
 
-                value = _literal_rdf2pl(l)
+                value = rdf_to_pl(l)
 
                 res_binding[v] = value
 
@@ -543,6 +514,27 @@ def _rdf_exec (g, pe, generate_lists=False):
         logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
 
         return res_bindings
+
+def builtin_action_rdf_assert(pe, args):
+
+    """ rdf_assert (+S, +P, +O) """
+
+    logging.debug ('CALLED BUILTIN ACTION rdf_assert %s' % repr(args))
+
+    if len(args) != 3:
+        raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args))
+
+    arg_s = args[0]
+    arg_p = args[1]
+    arg_o = args[2]
+
+    quads = [ (pl_to_rdf(arg_s, g.env, pe, {}, pe.kb), 
+               pl_to_rdf(arg_p, g.env, pe, {}, pe.kb), 
+               pl_to_rdf(arg_o, g.env, pe, {}, pe.kb),
+               pe.context_gn) ]
+
+    pe.kb.addN(quads)
+
 
 def builtin_uriref(g, pe):
 
@@ -596,7 +588,7 @@ def builtin_sparql_query(g, pe):
 
             l = binding[v]
 
-            value = _literal_rdf2pl(l)
+            value = rdf_to_pl(l)
 
             if not v in res_map:
                 res_map[v] = []
@@ -649,26 +641,22 @@ class AIPrologRuntime(PrologRuntime):
         #
         # context related functions and predicates
         #
-        # contexts are global settings stored in DB 
-        #          and can have transient history stacks (for scoring, disambiguation)
-        #
 
-        self.context_name   = 'production'
-        self.context_stacks = {} # key -> []
+        self.context_gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
-        self.register_builtin          ('context_get',   builtin_context_get)         # context_get(+Name, -Value)
-        self.register_builtin_function ('context_get',   builtin_context_get_fn)      # context_get(+Name)
-        self.register_builtin_action   ('context_set',   builtin_action_context_set)  # context_set(+Name, +Value)
-        self.register_builtin_action   ('context_push',  builtin_action_context_push) # context_push(+Name, +Value)
-        self.register_builtin          ('context_score', builtin_context_score)       # context_score(+Name, ?Value, +Points, -Score [, +MinPoints])
-        # self.register_builtin_function ('context_score', builtin_context_score_fn)    # context_score(+Name, +Value, +Points)
+        self.register_builtin          ('context_get',     builtin_context_get)         # context_get(+Name, -Value)
+        self.register_builtin_function ('context_get',     builtin_context_get_fn)      # context_get(+Name)
+        self.register_builtin_action   ('context_set',     builtin_action_context_set)  # context_set(+Name, +Value)
+        self.register_builtin_action   ('context_push',    builtin_action_context_push) # context_push(+Name, +Value)
+        self.register_builtin          ('context_score',   builtin_context_score)       # context_score(+Name, ?Value, +Points, -Score [, +MinPoints])
 
         # sparql / rdf
 
-        self.register_builtin('sparql_query',    builtin_sparql_query)
-        self.register_builtin('rdf',             builtin_rdf)
-        self.register_builtin('rdf_lists',       builtin_rdf_lists)
-        self.register_builtin('uriref',          builtin_uriref)
+        self.register_builtin          ('sparql_query',    builtin_sparql_query)
+        self.register_builtin          ('rdf',             builtin_rdf)
+        self.register_builtin          ('rdf_lists',       builtin_rdf_lists)
+        self.register_builtin_action   ('rdf_assert',      builtin_action_rdf_assert) # rdf_assert (+S, +P, +O)
+        self.register_builtin          ('uriref',          builtin_uriref)
 
     def _builtin_action_wrapper (self, name, g, pe):
         l = [Predicate(name)]
@@ -704,9 +692,6 @@ class AIPrologRuntime(PrologRuntime):
                 continue
             self.builtin_actions[name](self, action[1:])
 
-    def set_context_name(self, context_name):
-        self.context_name = context_name
-
     def reset_actions(self):
         self.action_buffer = []
 
@@ -734,119 +719,77 @@ class AIPrologRuntime(PrologRuntime):
             hs_actions.append(ab)
         return hs_actions
 
-
-    # FIXME: remove old code
-    # def add_action(self, args):
-    #     
-    #     # do we have an open action?
-    #     n = len(self.action_buffer)
-    #     if n>0 and not self.action_buffer[n-1]['finished']:
-    #         self.action_buffer[n-1]['actions'].append(args)
-    #     else:
-    #         self.action_buffer.append({'finished' : False, 
-    #                                    'actions'  : [args],
-    #                                    'score'    : 0       })
-
-    #     logging.info ('add_action -> %s' % repr(self.action_buffer))
-
     def end_action(self, actions, score):
 
         self.action_buffer.append({'actions': actions, 'score': score})
         logging.info ('end_action -> %s' % repr(self.action_buffer))
 
-        # FIXME: remove old code
-        # n = len(self.action_buffer)
-        # if n>0:
-        #     self.action_buffer[n-1]['finished'] = True
-        #     self.action_buffer[n-1]['score']    = score
+    #
+    # CURIN related helpers
+    #
 
+    def get_user (self):
+
+        for q in self.kb.filter_quads(s=CURIN, p=KB_PREFIX + u'user'):
+            return q[2]
+
+        return None
+
+    def read_curin (self, key):
+
+        user = self.get_user()
+
+        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
+            return rdf_to_pl(q[2])
+
+        user = DEFAULT_USER
+
+        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
+            return rdf_to_pl(q[2])
+
+        return None
 
     #
     # manage stored contexts in db
     #
 
-    def read_context (self, name, key):
+    def read_context (self, key):
 
-        ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
-        if not ctx:
-            return None
+        user = self.get_user()
 
-        if ctx.prolog_type == 'string':
-            return StringLiteral(ctx.value)
+        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
+            return rdf_to_pl(q[2])
 
-        if ctx.prolog_type == 'number':
-            return NumberLiteral(float(ctx.value))
-        
-        if ctx.prolog_type == 'constant':
-            return Predicate (ctx.value)
+        user = DEFAULT_USER
 
-        raise PrologRuntimeError ('Internal error: unknown context type "%s" stored in db.' % ctx.prolog_type)
+        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
+            return rdf_to_pl(q[2])
 
-    def _value_pt(self, value):
-        if isinstance(value, StringLiteral):
-            pt = 'string'
-        elif isinstance(value, NumberLiteral):
-            pt = 'number'
-        elif isinstance(value, Predicate):
-            if len(value.args)>0:
-                raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
-            pt = 'constant'
-        else:
-            raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
-        return pt
+        return None
 
-    def _value_v(self, value):
-        if isinstance(value, StringLiteral):
-            v = value.s
-        elif isinstance(value, NumberLiteral):
-            v = unicode(value.f)
-        elif isinstance(value, Predicate):
-            if len(value.args)>0:
-                raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
-            v = value.name
-        else:
-            raise PrologRuntimeError ('Only string/number literals and prolog constants can be stored in contexts, got: %s (%s %s).' % (repr(value), type(value), value.__class__))
-        return v
+    def write_context (self, key, value):
 
-    def write_context (self, name, key, value):
+        # import pdb; pdb.set_trace()
 
-        v  = self._value_v(value)
-        pt = self._value_pt(value)
+        user = self.get_user()
 
-        ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
-        if not ctx:
-            ctx = model.Context(name=name, key=key, value=v, default_value=v, prolog_type=pt)
-            self.db.session.add(ctx)
-        else:
-            ctx.value       = v
-            ctx.prolog_type = pt
+        v  = pl_literal_to_rdf(value, self.kb)
 
-    def push_context (self, name, key, value):
+        self.kb.remove (  (user, USER_PROP_PREFIX + key, None, self.context_gn)  )
+        self.kb.addN   ([ (user, USER_PROP_PREFIX + key,    v, self.context_gn) ])
 
-        self.write_context (name, key, value)
 
-        if not key in self.context_stacks:
-            self.context_stacks[key] = []
-        self.context_stacks[key].insert(0, value)
+    def push_context (self, key, value):
 
-    def set_context_default(self, name, key, value):
+        l = self.read_context(key)
 
-        v  = self._value_v(value)
-        pt = self._value_pt(value)
+        # logging.debug ('context %s before push: %s' % (key, l))
 
-        ctx = self.db.session.query(model.Context).filter(model.Context.name==name, model.Context.key==key).first()
+        if not l:
+            l = ListLiteral([])
+        l.l.insert(0, value)
 
-        if not ctx:
-            ctx = model.Context(name=name, key=key, value=v, default_value=v, prolog_type=pt)
-            self.db.session.add(ctx)
-        else:
-            ctx.default_value = v
-            ctx.prolog_type   = pt
+        # logging.debug ('context %s after push: %s' % (key, l))
 
-    def reset_context(self, name):
-        for ctx in self.db.session.query(model.Context).filter(model.Context.name==name).all():
-            ctx.value = ctx.default_value
-       
-    def reset_context_stacks(self):
-        self.context_stacks   = {} 
+        self.write_context (key, l)
 

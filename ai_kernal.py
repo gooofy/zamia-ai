@@ -39,15 +39,16 @@ from sqlalchemy.orm import sessionmaker
 import model
 
 from zamiaprolog.logicdb import LogicDB
+from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral
 from zamiaprolog.errors  import PrologError
-from aiprolog.runtime    import AIPrologRuntime
+from aiprolog.pl2rdf     import pl_literal_to_rdf
+from aiprolog.runtime    import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER, \
+                                TEST_USER, TEST_TIME
 from aiprolog.parser     import AIPrologParser
 
-from kb import HALKB
+from kb import AIKB
 from nltools import misc
 from nltools.tokenizer import tokenize
-
-GRAPH_PREFIX       = u'http://hal.zamia.org/kb/'
 
 class AIKernal(object):
 
@@ -72,7 +73,7 @@ class AIKernal(object):
         # knowledge base
         #
 
-        self.kb = HALKB()
+        self.kb = AIKB()
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -88,9 +89,6 @@ class AIKernal(object):
         self.modules  = {}
         s = self.config.get('semantics', 'modules')
         self.all_modules = map (lambda s: s.strip(), s.split(','))
-
-        for mn2 in self.all_modules:
-            self.load_module (mn2)
 
         #
         # prolog environment setup
@@ -169,7 +167,7 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def load_module (self, module_name):
+    def load_module (self, module_name, run_init=False, run_trace=False):
 
         if module_name in self.modules:
             return self.modules[module_name]
@@ -194,7 +192,7 @@ class AIKernal(object):
             #     print name
 
             for m2 in getattr (m, 'DEPENDS'):
-                self.load_module(m2)
+                self.load_module(m2, run_init=run_init, run_trace=run_trace)
 
             if hasattr(m, 'RDF_PREFIXES'):
                 prefixes = getattr(m, 'RDF_PREFIXES')
@@ -239,6 +237,30 @@ class AIKernal(object):
 
                 self.session.commit()
 
+            if run_init:
+                gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+                self.kb.remove((CURIN, None, None, gn))
+
+                quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, gn) ]
+
+                self.kb.addN_resolve(quads)
+
+                prolog_s = u'init(\'%s\')' % (module_name)
+                c = self.parser.parse_line_clause_body(prolog_s)
+
+                self.prolog_rt.set_trace(run_trace)
+
+                self.prolog_rt.reset_actions()
+            
+                solutions = self.prolog_rt.search(c)
+
+                # import pdb; pdb.set_trace()
+            
+                actions = self.prolog_rt.get_actions()
+                for action in actions:
+                    self.prolog_rt.execute_builtin_actions(action)
+
+
         except:
             logging.error(traceback.format_exc())
 
@@ -250,7 +272,7 @@ class AIKernal(object):
         return m
 
     def _module_graph_name (self, module_name):
-        return GRAPH_PREFIX + module_name
+        return KB_PREFIX + module_name
 
     def import_kb (self, module_name):
 
@@ -300,13 +322,13 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def compile_module (self, module_name, trace=False, run_tests=False, print_utterances=False, warn_level=0):
+    def compile_module (self, module_name, trace=False, print_utterances=False, warn_level=0):
 
         m = self.modules[module_name]
 
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
-        compiler = AIPrologParser (trace=trace, run_tests=run_tests, print_utterances=print_utterances, warn_level=warn_level)
+        compiler = AIPrologParser (trace=trace, print_utterances=print_utterances, warn_level=warn_level)
 
         compiler.clear_module(module_name, self.db)
 
@@ -317,7 +339,7 @@ class AIKernal(object):
             logging.debug('   parsing %s ...' % pl_pathname)
             compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
 
-    def compile_module_multi (self, module_names, run_trace=False, run_tests=False, print_utterances=False, warn_level=0):
+    def compile_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
 
         for module_name in module_names:
 
@@ -325,61 +347,63 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile_module (mn2, run_trace, run_tests, print_utterances, warn_level)
+                    self.compile_module (mn2, run_trace, print_utterances, warn_level)
 
             else:
                 self.load_module (module_name)
-                self.compile_module (module_name, run_trace, run_tests, print_utterances, warn_level)
+                self.compile_module (module_name, run_trace, print_utterances, warn_level)
 
         self.session.commit()
 
-    def run_cronjobs (self, module_name, force=False):
+    def process_input (self, utterance, utt_lang, user_uri, test_mode=False, trace=False):
 
-        m = self.modules[module_name]
-        if not hasattr(m, 'CRONJOBS'):
-            return
+        """ process user input, return action(s) """
 
-        graph = self._module_graph_name(module_name)
+        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
-        self.kb.register_graph(graph)
+        tokens = tokenize(utterance, utt_lang)
 
-        for name, interval, f in getattr (m, 'CRONJOBS'):
+        self.kb.remove((CURIN, None, None, gn))
 
-            cronjob = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
+        quads = [ ( CURIN, KB_PREFIX+u'user',      user_uri,                                        gn),
+                  ( CURIN, KB_PREFIX+u'utterance', utterance,                                       gn),
+                  ( CURIN, KB_PREFIX+u'uttLang',   utt_lang,                                        gn),
+                  ( CURIN, KB_PREFIX+u'tokens',    pl_literal_to_rdf(ListLiteral(tokens), self.kb), gn)
+                  ]
 
-            t = time.time()
+        if test_mode:
+            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(TEST_TIME), self.kb), gn ) )
+        else:
+            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(time.time()), self.kb), gn ) )
+   
+        self.kb.addN_resolve(quads)
 
-            next_run = cronjob.last_run + interval
+        self.prolog_rt.reset_actions()
 
-            if force or t > next_run:
+        if test_mode:
 
-                logging.debug ('running cronjob %s' %name)
-                f (self.config, self.kb, graph)
+            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
+                                                                         model.DiscourseRound.lang==utt_lang):
+            
+                prolog_s = ','.join(dr.resp.split(';'))
 
-                cronjob.last_run = t
+                logging.info("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
+                
+                c = self.parser.parse_line_clause_body(prolog_s)
+                # logging.debug( "Parse result: %s" % c)
 
-    def run_cronjobs_multi (self, module_names, force):
+                # logging.debug( "Searching for c: %s" % c )
 
-        for module_name in module_names:
+                solutions = self.prolog_rt.search(c)
 
-            if module_name == 'all':
+                # if len(solutions) == 0:
+                #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+            
+                # print "round %d utterances: %s" % (round_num, repr(prolog_rt.get_utterances())) 
 
-                for mn2 in self.all_modules:
-                    self.load_module (mn2)
-                    self.run_cronjobs (mn2, force=force)
+        return self.prolog_rt.get_actions()
 
-            else:
-                self.load_module (module_name)
-                self.run_cronjobs (module_name, force=force)
-
-        self.session.commit()
-
-    def train (self, num_steps):
-
-        self.setup_tf_model (False, False)
-        self.nlp_model.train(num_steps)
-
-
+    # FIXME: merge into process_input
     def process_line(self, line):
 
         self.setup_tf_model (True, True)
@@ -450,6 +474,199 @@ class AIKernal(object):
             logging.error("*** ERROR: %s" % e)
 
         return None
+
+    def test_module (self, module_name, trace=False):
+
+        logging.info('running tests of module %s ...' % (module_name))
+
+        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+
+        for nlpt in self.db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name):
+
+            # import pdb; pdb.set_trace()
+        
+            # test setup predicate for this module
+
+            self.kb.remove((CURIN, None, None, gn))
+
+            quads = [ ( CURIN, KB_PREFIX+u'user', TEST_USER, gn) ]
+
+            self.kb.addN_resolve(quads)
+
+            prolog_s = u'test_setup(\'%s\')' % (module_name)
+            c = self.parser.parse_line_clause_body(prolog_s)
+
+            self.prolog_rt.set_trace(trace)
+
+            self.prolog_rt.reset_actions()
+        
+            solutions = self.prolog_rt.search(c)
+
+            actions = self.prolog_rt.get_actions()
+            for action in actions:
+                self.prolog_rt.execute_builtin_actions(action)
+
+            # extract test rounds, look up matching discourse_rounds, execute them
+
+            clause = self.parser.parse_line_clause_body(nlpt.test_src)
+            clause.location = nlpt.location
+            logging.debug( "Parse result: %s (%s)" % (clause, clause.__class__))
+
+            args = clause.body.args
+            lang = args[0].name
+
+            round_num = 0
+            for ivr in args[1:]:
+
+                if ivr.name != 'ivr':
+                    raise PrologError ('nlp_test: ivr predicate args expected.')
+
+                test_in = ''
+                test_out = ''
+                test_actions = []
+
+                for e in ivr.args:
+
+                    if e.name == 'in':
+                        test_in = ' '.join(tokenize(e.args[0].s, lang))
+                    elif e.name == 'out':
+                        test_out = ' '.join(tokenize(e.args[0].s, lang))
+                    elif e.name == 'action':
+                        test_actions.append(e.args)
+                    else:
+                        raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
+                   
+                logging.info("nlp_test: %s round %d test_in     : %s" % (clause.location, round_num, test_in) )
+                logging.info("nlp_test: %s round %d test_out    : %s" % (clause.location, round_num, test_out) )
+                logging.info("nlp_test: %s round %d test_actions: %s" % (clause.location, round_num, test_actions) )
+
+                # execute all matching clauses, collect actions
+
+                # FIXME: nlp_test should probably let the user specify a user
+                action_buffers = self.process_input (test_in, lang, TEST_USER, test_mode=True, trace=trace)
+
+                # check actual actions vs expected ones
+                matching_abuf = None
+                for abuf in action_buffers:
+
+                    logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+
+                    # check utterance
+
+                    actual_out = u''
+                    utt_lang   = u'en'
+                    for action in abuf['actions']:
+                        p = action[0].name
+                        if p == 'say':
+                            utt_lang = unicode(action[1])
+                            actual_out += u' ' + unicode(action[2])
+
+                    if len(test_out) > 0:
+                        if len(actual_out)>0:
+                            actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                        if actual_out != test_out:
+                            logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
+                            continue # no match
+
+                    logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (clause.location, round_num))
+
+                    # check actions
+
+                    if len(test_actions)>0:
+
+                        # import pdb; pdb.set_trace()
+
+                        # print repr(test_actions)
+
+                        actions_matched = True
+                        for action in test_actions:
+                            for act in abuf['actions']:
+                                # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                if action == act:
+                                    break
+                            if action != act:
+                                actions_matched = False
+                                break
+
+                        if not actions_matched:
+                            logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (clause.location, round_num))
+                            continue
+
+                        logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (clause.location, round_num))
+
+                    matching_abuf = abuf
+                    break
+
+                if not matching_abuf:
+                    raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
+               
+                self.prolog_rt.execute_builtin_actions(matching_abuf)
+
+                round_num += 1
+
+        logging.info('running tests of module %s complete!' % (module_name))
+
+    def run_tests_multi (self, module_names, run_trace=False):
+
+        for module_name in module_names:
+
+            if module_name == 'all':
+
+                for mn2 in self.all_modules:
+                    self.load_module (mn2, run_init=True, run_trace=run_trace)
+                    self.test_module (mn2, run_trace)
+
+            else:
+                self.load_module (module_name, run_init=True, run_trace=run_trace)
+                self.test_module (module_name, run_trace)
+
+
+    def run_cronjobs (self, module_name, force=False):
+
+        m = self.modules[module_name]
+        if not hasattr(m, 'CRONJOBS'):
+            return
+
+        graph = self._module_graph_name(module_name)
+
+        self.kb.register_graph(graph)
+
+        for name, interval, f in getattr (m, 'CRONJOBS'):
+
+            cronjob = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
+
+            t = time.time()
+
+            next_run = cronjob.last_run + interval
+
+            if force or t > next_run:
+
+                logging.debug ('running cronjob %s' %name)
+                f (self.config, self.kb, graph)
+
+                cronjob.last_run = t
+
+    def run_cronjobs_multi (self, module_names, force, run_trace=False):
+
+        for module_name in module_names:
+
+            if module_name == 'all':
+
+                for mn2 in self.all_modules:
+                    self.load_module (mn2, run_init=True, run_trace=run_trace)
+                    self.run_cronjobs (mn2, force=force)
+
+            else:
+                self.load_module (module_name, run_init=True, run_trace=run_trace)
+                self.run_cronjobs (module_name, force=force)
+
+        self.session.commit()
+
+    def train (self, num_steps):
+
+        self.setup_tf_model (False, False)
+        self.nlp_model.train(num_steps)
+
 
     def dump_utterances (self, num_utterances, dictfn):
 

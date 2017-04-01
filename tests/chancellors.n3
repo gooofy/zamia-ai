@@ -14,7 +14,7 @@
 @prefix wdt:      <http://www.wikidata.org/prop/direct/> .
 @prefix owl:	  <http://www.w3.org/2002/07/owl#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
-@prefix hal:      <http://hal.zamia.org/kb/> .
+@prefix ai:       <http://ai.zamia.org/kb/> .
 
 #
 # some random data on german chancellors

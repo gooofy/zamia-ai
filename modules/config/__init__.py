@@ -8,5 +8,6 @@ PL_SOURCES = [
              ]
 
 KB_SOURCES = [
+              'config.n3'
              ]
 

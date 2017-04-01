@@ -9,6 +9,5 @@ PL_SOURCES = [
 
 KB_SOURCES = [
               'givennames.n3',
-              'hal.n3'
              ]
 

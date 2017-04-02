@@ -15,9 +15,9 @@ myself_get (de, myname, NAME) :-
 % FIMXE: those names could and should come from wikidata, probably at some point.
 %        for now, we're using the top-1000 male/female german names from wiktionary
 
-context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
-context_set_default('test', partner_name, 'Peter').
-context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
+% context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
+% context_set_default('test', partner_name, 'Peter').
+% context_set_default('test', partner_gender, URI) :- uriref(wde:Male, URI).
 
 nlp_macro('MALEFIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,

@@ -36,10 +36,28 @@ time_span(nextThreeDays, TS, TE) :-
 % time strings
 %
 
+time_str(en, today,            "today").
+time_str(en, tomorrow,         "tomorrow").
+time_str(en, dayAfterTomorrow, "day after tomorrow").
+time_str(en, nextThreeDays,    "in the next three days").
+
 time_str(de, today,            "heute").
 time_str(de, tomorrow,         "morgen").
 time_str(de, dayAfterTomorrow, "übermorgen").
 time_str(de, nextThreeDays,    "in den nächsten drei Tagen").
+
+transcribe_month(en,  1, 'january').
+transcribe_month(en,  2, 'feburary').
+transcribe_month(en,  3, 'march').
+transcribe_month(en,  4, 'april').
+transcribe_month(en,  5, 'may').
+transcribe_month(en,  6, 'june').
+transcribe_month(en,  7, 'july').
+transcribe_month(en,  8, 'august').
+transcribe_month(en,  9, 'september').
+transcribe_month(en, 10, 'october').
+transcribe_month(en, 11, 'november').
+transcribe_month(en, 12, 'december').
 
 transcribe_month(de,  1, 'januar').
 transcribe_month(de,  2, 'feburar').
@@ -54,9 +72,15 @@ transcribe_month(de, 10, 'oktober').
 transcribe_month(de, 11, 'november').
 transcribe_month(de, 12, 'dezember').
 
+transcribe_date(en, dativ, TS, SCRIPT) :-
+    stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
+    transcribe_number(en, nominative, D, DS),
+    transcribe_month(en, M, MS),
+    SCRIPT is format_str('%s %s, %s', MS, DS, Y).
+
 transcribe_date(de, dativ, TS, SCRIPT) :-
     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-    transcribe_number(de, dativ, D, DS),
+    transcribe_number(de, ord_gen, D, DS),
     transcribe_month(de, M, MS),
     SCRIPT is format_str('%s %s %s', DS, MS, Y).
 

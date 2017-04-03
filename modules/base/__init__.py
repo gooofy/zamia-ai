@@ -3,9 +3,10 @@
 
 import rdflib
 
-DEPENDS    = [ ]
+DEPENDS    = [ 'config' ]
 
 PL_SOURCES = [
+              'base.pl',
               'conversation.pl',
               'math.pl',
               'time.pl',

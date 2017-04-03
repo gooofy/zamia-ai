@@ -73,11 +73,6 @@ class AIPrologParser(PrologParser):
         name = args[0].s
 
         macro_vars = map (lambda v: self._get_variable (v), args[1:])
-        # for v in args[1:]:
-        #     if not isinstance(v, Variable):
-        #         raise PrologError('nlp_macro: variable arg expected, %s found instead.' % v)
-        #         
-        #     macro_vars.append(v.name)
 
         ai_rt = AIPrologRuntime(self.db, self.kb)
 
@@ -93,21 +88,7 @@ class AIPrologParser(PrologParser):
         
             mappings.append(mapping)
 
-        # for m in args[1:]:
-
-        #     if m.name != 'map':
-        #         raise Exception ('map structure expected in nlp_macro %s' % name)
-
-        #     mapping = {}
-
-        #     for p in m.args:
-        #         mapping[p.name] = p.args[0].s
-
-        #     mappings.append(mapping)
-
-        # import pdb; pdb.set_trace()
-
-        self.macro_engine.define_named_macro(name, mappings)
+        self.macro_engine.define_named_macro(name, mappings, module_name, clause.location)
 
     # nlp_gen(de, 
     #         '@HI:w @ADDRESSEE:w @VERB:w @PLEASE:w @MAL:w @WHAT:w @VERB:v',
@@ -192,7 +173,7 @@ class AIPrologParser(PrologParser):
 
         cnt = 0
 
-        ds = self.macro_engine.macro_expand(lang, nlp_input, response)
+        ds = self.macro_engine.macro_expand(lang, nlp_input, response, clause.location)
 
         for inp, resp in ds:
 
@@ -251,6 +232,8 @@ class AIPrologParser(PrologParser):
         db.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
         logging.debug ('clearing tests...')
         db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name).delete()
+        logging.debug ('clearing macros...')
+        db.session.query(model.NLPMacro).filter(model.NLPMacro.module==module_name).delete()
 
         self.test_cnt = 0
 
@@ -260,7 +243,7 @@ class AIPrologParser(PrologParser):
 
         # setup compiler / test environment
 
-        self.macro_engine = NLPMacroEngine()
+        self.macro_engine = NLPMacroEngine(db.session)
         self.kb           = kb
         self.db           = db
 

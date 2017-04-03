@@ -20,6 +20,7 @@
 #
 # NLP Macro Expansion Engine
 #
+# persists named macros in our DB (macros are global that way, all macros available in all modules)
 # generates all possible macro-expansions of macro-expressions
 #
 
@@ -28,23 +29,55 @@ import sys
 import logging
 import re
 import unittest
+import json
 from copy import copy
 
 from nltools import misc
 from nltools.tokenizer import tokenize
+from zamiaprolog.errors import PrologError
+
+import model
 
 class NLPMacroEngine(object):
 
-    def __init__(self):
+    def __init__(self, session):
 
         self.named_macros = {}
+        self.session      = session
 
-    def define_named_macro(self, name, mappings):
+    def define_named_macro(self, name, mappings, module_name, location):
         if not name in self.named_macros:
             self.named_macros[name] = []
         self.named_macros[name].extend(mappings)
 
-    def macro_expand(self, lang, nlp_input, response):
+        # persist in DB
+
+        nlpm = self.session.query(model.NLPMacro).filter(model.NLPMacro.name==name).first()
+        if nlpm:
+
+            if nlpm.module != module_name:
+                raise PrologError('macro %s defined in more than one module: %s vs %s' % (name, module_name, nlpm.module), location)
+
+            nlpm.mappings = json.dumps(self.named_macros[name])
+        else:
+            nlpm = model.NLPMacro (module   = module_name,
+                                   name     = name,
+                                   mappings = json.dumps(self.named_macros[name]),
+                                   location = str(location))
+            self.session.add(nlpm)
+
+    def lookup_named_macro (self, name, location):
+
+        if not name in self.named_macros:
+            nlpm = self.session.query(model.NLPMacro).filter(model.NLPMacro.name==name).first()
+            if not nlpm:
+                raise PrologError('undefined macro %s' % name, location)
+
+            self.named_macros[name] = json.loads(nlpm.mappings)
+
+        return self.named_macros[name]
+
+    def macro_expand(self, lang, nlp_input, response, location):
 
         logging.debug ('macro_expand: nlp_input=%s, response=%s' % (repr(nlp_input), repr(response)))
 
@@ -121,9 +154,9 @@ class NLPMacroEngine(object):
 
                 macro_name = macro_names[idx]
 
-                macro_dict = implicit_macros if macro_name in implicit_macros else self.named_macros
+                macro = implicit_macros[macro_name] if macro_name in implicit_macros else self.lookup_named_macro(macro_name, location)
 
-                for v in macro_dict[macro_name]:
+                for v in macro:
 
                     new_mappings = copy(mappings)
                     new_mappings[macro_name] = v

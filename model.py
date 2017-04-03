@@ -86,6 +86,17 @@ class NLPTest(Base):
     test_src          = Column(UnicodeText)
     location          = Column(String(255), index=True)
 
+class NLPMacro(Base):
+
+    __tablename__ = 'nlp_macros'
+
+    id                = Column(Integer, primary_key=True)
+
+    module            = Column(String(255), index=True)
+    name              = Column(String(255), index=True)
+
+    mappings          = Column(Text)
+    location          = Column(String(255), index=True)
 
 Base.metadata.create_all(engine)
 

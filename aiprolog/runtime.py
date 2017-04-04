@@ -223,7 +223,7 @@ def builtin_say(g, pe):
     if len(args) != 2:
         raise PrologRuntimeError('say: 2 args expected.')
 
-    arg_L   = args[0].name
+    arg_L   = pe.prolog_eval(args[0], g.env).name
     arg_S   = pe.prolog_get_string(args[1], g.env)
 
     _queue_action (g, [Predicate('say'), arg_L, arg_S] )
@@ -273,7 +273,7 @@ def builtin_say_eoa(g, pe):
     if len(args) > 3:
         raise PrologRuntimeError('say_eoa: max 3 args expected.')
 
-    arg_L   = args[0].name
+    arg_L   = pe.prolog_eval(args[0], g.env).name
     arg_S   = pe.prolog_get_string(args[1], g.env)
 
     _queue_action (g, [Predicate('say'), arg_L, arg_S] )
@@ -659,8 +659,11 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin          ('uriref',          builtin_uriref)
 
     def _builtin_action_wrapper (self, name, g, pe):
+
+
         l = [Predicate(name)]
         for arg in g.terms[g.inx].args:
+            # logging.debug ('_builtin_action_wrapper: %s arg=%s' % (name, repr(arg)))
             value = pe.prolog_eval(arg, g.env)
             l.append(value)
 
@@ -722,7 +725,7 @@ class AIPrologRuntime(PrologRuntime):
     def end_action(self, actions, score):
 
         self.action_buffer.append({'actions': actions, 'score': score})
-        logging.info ('end_action -> %s' % repr(self.action_buffer))
+        # logging.debug ('end_action -> %s' % repr(self.action_buffer))
 
     #
     # CURIN related helpers

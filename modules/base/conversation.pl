@@ -27,14 +27,14 @@ answer(topic, de) :-
     say_eoa(de, format_str('Wir hatten über %s gesprochen.', LABEL), S).
 
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL What were we talking about (again|)?', answer(topic, en)).
-nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) was our Topic (again|)?', answer(topic, en)).
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) was our topic (again|)?', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL Give me a hint', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL Which topic did we have (again|)?', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL I (think|believe) I lost my train of thought (just now|).', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (lets get|) Back to our topic', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (uh|) now for a different subject!', 'What would you like to talk about?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Worüber haben wir (eben|) gesprochen?', answer(topic, de)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Wovon|Worüber|Was) (hatten|haben) wir (eben|) gesprochen?', answer(topic, de)).
 nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Wie|Was) war (doch gleich|gleich|) unser Thema?', answer(topic, de)).
 nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Hilf mir auf die Sprünge?', answer(topic, de)).
 nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Welches Thema hatten wir (doch gleich|)?', answer(topic, de)).

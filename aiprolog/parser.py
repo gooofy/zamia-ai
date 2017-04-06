@@ -103,7 +103,7 @@ class AIPrologParser(PrologParser):
         args = clause.head.args
 
         if len(args) < 3:
-            raise PrologError (u'nlp_gen: at least 3 arguments expected: lang, input, response(s) (got: %s)' % clause)
+            raise PrologError (u'nlp_gen: at least 3 arguments expected: lang, input, response(s) (got: %s)' % clause, clause.location)
 
         lang = args[0].name
 

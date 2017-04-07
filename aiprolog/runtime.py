@@ -48,6 +48,7 @@ CURIN              = u'http://ai.zamia.org/kb/curin'
 DEFAULT_USER       = USER_PREFIX + u'default'
 TEST_USER          = USER_PREFIX + u'test'
 TEST_TIME          = time.mktime(datetime.datetime(2016,12,06,13,28,6).timetuple())
+MAX_CONTEXT_LEN    = 6
 
 def builtin_context_get(g, pe):
 
@@ -791,6 +792,8 @@ class AIPrologRuntime(PrologRuntime):
         if not l:
             l = ListLiteral([])
         l.l.insert(0, value)
+
+        l.l = l.l[:MAX_CONTEXT_LEN]
 
         # logging.debug ('context %s after push: %s' % (key, l))
 

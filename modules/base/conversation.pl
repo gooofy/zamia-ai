@@ -26,7 +26,7 @@ answer(topic, de) :-
          filter (lang(LABEL) = 'de')),
     say_eoa(de, format_str('Wir hatten über %s gesprochen.', LABEL), S).
 
-nlp_gen(en, '@SELF_ADDRESS_EN:LABEL What were we talking about (again|)?', answer(topic, en)).
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL What (were we talking|did we talk) about (again|)?', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) was our topic (again|)?', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL Give me a hint', answer(topic, en)).
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL Which topic did we have (again|)?', answer(topic, en)).

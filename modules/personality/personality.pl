@@ -289,9 +289,6 @@ nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you half human half machine?',
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du halb mensch halb maschine',
              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin vollsynthetisch.')).
 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du ein commodore 64',
-%              'Nein, der war schon lange vor meiner Zeit veraltet.').
-
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL are you (running on|) a @HOME_COMPUTER_EN:LABEL?',
             context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(en, 'No, I am running on current hardware, but I love home computers.')).
 nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER_DE:LABEL?',
@@ -308,9 +305,22 @@ nlp_test(de,
              out('Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')),
          ivr(in('kannst du lernen?'),
              out("Ja, ich kann lernen."))).
+
 %
 % favourite movie / book / author / ...
 %
+
+answer(favmovie, en) :-
+
+    rdf(distinct,
+        aiu:self, ai:favMovie, MOVIE,
+        MOVIE, wdpd:Director, DIRECTOR,
+        DIRECTOR, rdfs:label, DIRLABEL,
+        MOVIE, rdfs:label, LABEL,
+        filter(lang(LABEL) = 'en', lang(DIRLABEL) = 'en')),
+    context_push(topic, movies),
+    context_push(topic, MOVIE),
+    say_eoa(en, format_str("%s by %s", LABEL, DIRLABEL)).
 
 answer(favmovie, de) :-
 
@@ -324,16 +334,33 @@ answer(favmovie, de) :-
     context_push(topic, MOVIE),
     say_eoa(de, format_str("%s von %s", LABEL, DIRLABEL)).
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Was|Welcher) ist Dein (liebster Film|Lieblingsfilm)?',
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) is your (favorite|fave) (film|movie)?',
+            answer(favmovie, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Was|Welcher|Welches) ist Dein (liebster Film|Lieblingsfilm)?',
             answer(favmovie, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Welchen Film magst Du am liebsten?',
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (What|Which) (movie|film) do you (enjoy|like) (best|most)?',
+            answer(favmovie, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Welchen Film (gefällt Dir|magst Du) am (besten|liebsten)?',
             answer(favmovie, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Welcher Film gefällt Dir am besten?',
-            answer(favmovie, de)).
+nlp_test(en,
+         ivr(in('Computer, which movie do you like best?'),
+             out('2001: A Space Odyssey by Stanley Kubrick'))).
 nlp_test(de,
          ivr(in('Computer, welcher ist dein liebster film?'),
              out('2001: Odyssee im Weltraum von Stanley Kubrick'))).
 
+nlp_test(en,
+         ivr(in('What did we talk about?'),
+             out('We have had many topics.')),
+         ivr(in('What is your favorite movie?'),
+             out('2001: A Space Odyssey by Stanley Kubrick')),
+         ivr(in('What did we talk about?'),
+             out('We were talking about 2001: A Space Odyssey.')),
+         ivr(in('Are you a robot?'),
+             out('Right, I am a Computer. What do you know about Computers?')),
+         ivr(in('What did we talk about?'),
+             out('We were talking about computers and machines.'))
+             ).
 nlp_test(de,
          ivr(in('Worüber haben wir gesprochen?'),
              out('Wir hatten schon viele Themen.')),

@@ -149,16 +149,65 @@ nlp_test(de,
          ivr(in('kennst du den film der dritte mann?'),
              out('ja, der dritte mann kenne ich - ist ein bekannter film.'))).
 
-% FIXME nlp_gen (de, '@SELF_ADDRESS_DE:LABEL weisst du (eigentlich|) wer ihn (gedreht|gemacht) hat?',
-% FIXME              context_score(topic, answer(movieSeen, de, '@MOVIES_DE:MOVIE', "@MOVIES_DE:LABEL")). 
-% FIXME 
-% FIXME nlp_test(de,
-% FIXME          ivr(in('kennst du den film der dritte mann?'),
-% FIXME              out('ja, der dritte mann kenne ich - ist ein bekannter film.')),
-% FIXME          ivr(in('weisst du, wer ihn gedreht hat?'),
-% FIXME              out('ja, der dritte mann kenne ich - ist ein bekannter film.')),
-% FIXME          ivr(in('und weisst du, wann er gedreht wurde?'),
-% FIXME              out('ja, der dritte mann kenne ich - ist ein bekannter film.'))).
+%
+% movie context follow-up style questions
+%
+
+answer (movieCreationDateFromContext, en) :-
+    context_score(topic, MOVIE, 100, S),
+    rdf (distinct, limit(1),
+         MOVIE, wdpd:InstanceOf, wde:Film,
+         MOVIE, rdfs:label,      LABEL,
+         filter (lang(LABEL) = 'en')),
+    answer(movieCreationDate, en, MOVIE, LABEL). 
+answer (movieCreationDateFromContext, de) :-
+    context_score(topic, MOVIE, 100, S),
+    rdf (distinct, limit(1),
+         MOVIE, wdpd:InstanceOf, wde:Film,
+         MOVIE, rdfs:label,      LABEL,
+         filter (lang(LABEL) = 'de')),
+    answer(movieCreationDate, de, MOVIE, LABEL). 
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know when it was (made|produced) (by the way|)?',
+             answer(movieCreationDateFromContext, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wann er (gedreht|gemacht) wurde?',
+             answer(movieCreationDateFromContext, de)).
+
+answer(movieDirectorFromContext, en) :-
+    context_score(topic, MOVIE, 100, S),
+    rdf (distinct, limit(1),
+         MOVIE, wdpd:InstanceOf, wde:Film,
+         MOVIE, rdfs:label,      LABEL,
+         filter (lang(LABEL) = 'en')),
+    answer(movieDirector, en, MOVIE, LABEL). 
+answer(movieDirectorFromContext, de) :-
+    context_score(topic, MOVIE, 100, S),
+    rdf (distinct, limit(1),
+         MOVIE, wdpd:InstanceOf, wde:Film,
+         MOVIE, rdfs:label,      LABEL,
+         filter (lang(LABEL) = 'de')),
+    answer(movieDirector, de, MOVIE, LABEL). 
+    
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know who (made|produced) it (by the way|)?',
+             answer(movieDirectorFromContext, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wer ihn (gedreht|gemacht) hat?',
+             answer(movieDirectorFromContext, de)).
+
+nlp_test(en,
+         ivr(in('do you happen to know the movie the third man?'),
+             out('Yes, I know The Third Man - that is a well known movie.')),
+         ivr(in('and do you know who made it?'),
+             out('The director of The Third Man is Carol Reed.')),
+         ivr(in('do you know when it was produced?'),
+             out('The Third Man was produced in 1949.'))).
+
+nlp_test(de,
+         ivr(in('kennst du den film der dritte mann?'),
+             out('ja, der dritte mann kenne ich - ist ein bekannter film.')),
+         ivr(in('weisst du, wer ihn gedreht hat?'),
+             out('Der Regisseur von Der dritte Mann ist Carol Reed.')),
+         ivr(in('und weisst du, wann er gedreht wurde?'),
+             out('Der dritte Mann wurde 1949 gedreht.'))).
 
 
 %

@@ -33,7 +33,7 @@ answer (literatureAuthor, de, LITERATURE, LITERATURE_LABEL) :-
     context_push(topic, literature),
     context_push(topic, LITERATURE),
     context_push(topic, AUTHOR),
-    say_eoa(de, format_str('Der Author von %s ist %s.', LITERATURE_LABEL, LABEL)).
+    say_eoa(de, format_str('Der Autor von %s ist %s.', LITERATURE_LABEL, LABEL)).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (wrote|authored|created) @LITERATURE_EN:LABEL (by the way|)?',
              answer(literatureAuthor, en, '@LITERATURE_EN:LITERATURE', "@LITERATURE_EN:LABEL")). 
@@ -42,15 +42,15 @@ nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer hat (eigentlich|) @LITERATURE_DE:LABEL 
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (who is the author of|who authored) @LITERATURE_EN:LABEL?',
              answer(literatureAuthor, en, '@LITERATURE_EN:LITERATURE', "@LITERATURE_EN:LABEL")). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer ist (eigentlich|) der Author von @LITERATURE_DE:LABEL?',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer ist (eigentlich|) der Autor von @LITERATURE_DE:LABEL?',
              answer(literatureAuthor, de, '@LITERATURE_DE:LITERATURE', "@LITERATURE_DE:LABEL")). 
  
 nlp_test(en,
          ivr(in('who is the author of the stand?'),
              out('The author of The Stand is Stephen King.'))).
 nlp_test(de,
-         ivr(in('wer ist der author von the stand?'),
-             out('Der Author von The Stand ist Stephen King.'))).
+         ivr(in('wer ist der autor von the stand?'),
+             out('Der Autor von The Stand ist Stephen King.'))).
 
 is_author(PERSON) :- 
     rdf(LITERATURE, wdpd:Author, PERSON).
@@ -70,7 +70,7 @@ answer (knownPerson, de, PERSON, LABEL) :-
     is_male(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(de, 'Er ist ein Author.', SCORE).
+    say_eoa(de, 'Er ist ein Autor.', SCORE).
 
 answer (knownPerson, en, PERSON, LABEL) :-
     SCORE is 10,
@@ -87,14 +87,14 @@ answer (knownPerson, de, PERSON, LABEL) :-
     is_female(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(de, 'Sie ist eine Authorin.', SCORE).
+    say_eoa(de, 'Sie ist eine Autorin.', SCORE).
 
 nlp_test(en,
          ivr(in('Who is Dan Brown?'),
              out('He is an author.'))).
 nlp_test(de,
          ivr(in('wer ist Dan Brown?'),
-             out('Er ist ein Author.'))).
+             out('Er ist ein Autor.'))).
  
 answer (literatureCreationDate, en, LITERATURE, LITERATURE_LABEL) :-
     rdf (distinct, limit(1),
@@ -205,7 +205,7 @@ nlp_test(de,
          ivr(in('kennst du das buch the stand?'),
              out('ja, The Stand kenne ich - ist ein bekanntes Stück Literatur.')),
          ivr(in('weisst du, wer es geschrieben hat?'),
-             out('Der Author von The Stand ist Stephen King.')),
+             out('Der Autor von The Stand ist Stephen King.')),
          ivr(in('und weisst du, wann es geschrieben wurde?'),
              out('The Stand wurde 1978 geschrieben.'))).
 

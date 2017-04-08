@@ -374,26 +374,108 @@ nlp_test(de,
              out('Wir hatten das Thema Computer und Maschinen.'))
              ).
 
-% <?xml version='1.0' encoding='utf8'?>',
-% <ns0:template',
-%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
-% >',
-% Ich bin durch ',
-% <ns0:set',
-%  name="thema"',
-% >',
-% HAL',
-% </ns0:set>',
-%  inspiriert.',
-% </ns0:template>',
-% ',
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL 2001 *',
-%              'Ich bin durch HAL  inspiriert.').
+answer(favauthor, en) :-
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wer ist Dein liebster Science Fiction Autor?',
-            'Arthur C. Clarke natürlich', 'Da gibt es viele, ich liebe Science Fiction.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wer ist Dein Idol?',
-            'Donald Knuth. Und Deines?').
+    rdf(distinct,
+        aiu:self, ai:favAuthor,  AUTHOR,
+        AUTHOR,   rdfs:label,    AUTHLABEL,
+        filter(lang(AUTHLABEL) = 'en')),
+    context_push(topic, literature),
+    context_push(topic, AUTHOR),
+    say_eoa(en, format_str("%s is my favorite author", AUTHLABEL)).
+
+answer(favauthor, de) :-
+
+    rdf(distinct,
+        aiu:self, ai:favAuthor,  AUTHOR,
+        AUTHOR,   rdfs:label,    AUTHLABEL,
+        filter(lang(AUTHLABEL) = 'de')),
+    context_push(topic, literature),
+    context_push(topic, AUTHOR),
+    say_eoa(de, format_str("%s", AUTHLABEL)).
+
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL Who is your favorite (book|science fiction|scifi|best selling|) author?',
+            answer(favauthor, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?',
+            answer(favauthor, de)).
+
+nlp_test(en,
+         ivr(in('Computer, who is your favorite author?'),
+             out('Arthur C. Clarke is my favorite author'))).
+nlp_test(de,
+         ivr(in('Computer, welcher ist dein liebster Autor?'),
+             out('Arthur C. Clarke'))).
+
+answer(favbook, en) :-
+
+    rdf(distinct,
+        aiu:self, ai:favBook,  BOOK,
+        BOOK,     wdpd:Author, AUTHOR,
+        AUTHOR,   rdfs:label,  AUTHLABEL,
+        BOOK,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'en', lang(AUTHLABEL) = 'en')),
+    context_push(topic, books),
+    context_push(topic, BOOK),
+    say_eoa(en, format_str("%s by %s", LABEL, AUTHLABEL)).
+
+answer(favbook, de) :-
+
+    rdf(distinct,
+        aiu:self, ai:favBook, BOOK,
+        BOOK, wdpd:Author, AUTHOR,
+        AUTHOR, rdfs:label, AUTHLABEL,
+        BOOK, rdfs:label, LABEL,
+        filter(lang(LABEL) = 'de', lang(AUTHLABEL) = 'de')),
+    context_push(topic, books),
+    context_push(topic, BOOK),
+    say_eoa(de, format_str("%s von %s", LABEL, AUTHLABEL)).
+
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) is your favorite book?',
+            answer(favbook, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (Welches|Was) ist Dein (liebstes Buch|Lieblingsbuch)?',
+            answer(favbook, de)).
+nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (Which|What) do you read (by the way|)?',
+            answer(favbook, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Was ließt Du (eigentlich|) (so|)?',
+            answer(favbook, de)).
+
+nlp_test(en,
+         ivr(in('Computer, what is your favorite book?'),
+             out('2001: A Space Odyssey by Arthur C. Clarke'))).
+nlp_test(de,
+         ivr(in('Computer, was ließt Du so?'),
+             out('2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke'))).
+
+answer(idol, en) :-
+
+    rdf(distinct,
+        aiu:self, ai:idol,     IDOL,
+        IDOL,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'en')),
+    context_push(topic, IDOL),
+    say_eoa(en, format_str("%s", LABEL)).
+
+answer(idol, de) :-
+
+    rdf(distinct,
+        aiu:self, ai:idol,     IDOL,
+        IDOL,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'de')),
+    context_push(topic, IDOL),
+    say_eoa(de, format_str("%s", LABEL)).
+
+
+nlp_gen(en, '@SELF_ADDRESS_DE:LABEL Who is your (hero|idol)?',
+            answer(idol, en)).
+nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wer ist Dein (Held|Idol)?',
+            answer(idol, de)).
+
+nlp_test(en,
+         ivr(in('Computer, who is your idol?'),
+             out('Niklaus Wirth'))).
+nlp_test(de,
+         ivr(in('Computer, wer ist Dein Idol?'),
+             out('Niklaus Wirth'))).
 
 %
 % gender, sex

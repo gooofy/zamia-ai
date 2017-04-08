@@ -10,7 +10,6 @@ PL_SOURCES = [
              ]
 
 RDF_ALIASES = {
-                u'wde:Film'                  : u'http://www.wikidata.org/entity/Q11424',
               }
 
 KB_SOURCES = [

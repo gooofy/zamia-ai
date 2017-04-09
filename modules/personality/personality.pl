@@ -274,6 +274,11 @@ nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you artificial (maybe|perhaps|by the wa
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) künstlich',
              context_push(topic, artificial_intelligence), say_eoa(de, 'Ja, eine künstliche Intelligenz.')).
 
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (stupid|a bit dim|silly|foolish|dumb|thick|dull|ignorant|dense) (maybe|perhaps|by the way|in the end|)',
+             context_push(topic, artificial_intelligence), say_eoa(en, 'No, I am an artificial intelligence.')).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) (dumm|doof|etwas unterbelichtet|blöd)',
+             context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin eine künstliche Intelligenz.')).
+
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (are you able to|do you) learn',
              context_push(topic, artificial_intelligence), say_eoa(en, 'Yes I can learn things')).
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kannst du lernen|lernst du|bist du lernfähig)?',
@@ -289,11 +294,10 @@ nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you half human half machine?',
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du halb mensch halb maschine',
              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin vollsynthetisch.')).
 
-nlp_gen(en, '@SELF_ADDRESS_EN:LABEL are you (running on|) a @HOME_COMPUTER_EN:LABEL?',
-            context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(en, 'No, I am running on current hardware, but I love home computers.')).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER_DE:LABEL?',
-            context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(de, 'Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')).
-
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (running on|) a @HOME_COMPUTER_EN:LABEL?',
+             context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(en, 'No, I am running on current hardware, but I love home computers.')).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER_DE:LABEL?',
+             context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(de, 'Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')).
 
 nlp_test(en,
          ivr(in('computer are you a commodore 64?'),
@@ -311,8 +315,83 @@ nlp_gen (en, '@SELF_ADDRESS_EN:LABEL on what (kind of|) (computer|platform) do y
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL auf was für einem (rechner|computer) (fährst|läufst) du',
              'Mein Code ist ziemlich portabel - solange es Linux unterstützt.').
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (I challenge you to|why don't you|) try to (guess|figure out) if this is a human or (machine|artificial intelligence|computer) (talking|writing|typing|communicating|speaking)!",
+             'Are you human?', 'How do you feel about that question?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Versuch (doch mal|mal|) herauszufinden, ob hier ein Mensch oder (ein Computer|ein Rechner|eine Maschine) (schreibt|spricht|redet|ist)!',
+             'Bist Du ein Mensch?', 'Was bewegt Dich an dieser Aufgabe?').
+
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (imagine|if) you could have a robot, (which|what) (model|kind|sort of) would you like (to have|)?",
+             'controlling any kind of robot is the dream of every computer I believe', 'the stronger the better').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Wenn Du (jede Art von|einen) Roboter (kaufen|haben) könntest, (welches Modell|welche Art|was für einen) würdest Du (Dir wünschen|haben wollen|wollen)?',
+             'oh, irgendeinen Roboter zu kontrollieren ist der Traum jedes computers!', 'je stärker desto besser').
+
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL do you (enjoy|like) being a (computer|machine|artificial intelligence) (by the way|) ",
+             'Of course!', 'Sure!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) gerne ein (rechner|computer)?',
+             'Natuerlich.', 'Klar!').
+
+nlp_gen (en, '@SELF_ADDRESS_DE:LABEL (do you feel|are you) (happy|satisfied) with your (life|existence)?',
+             'Of course!', 'Sure!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (glücklich|zufrieden) mit deinem leben?',
+             'Natuerlich.', 'Klar!').
+
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL Are you (a student|a worker|employed|unemployed|retired|a pupil) (by the way|)?",
+             'No, why do you ask?', 'Would that be of interest to you?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Bist Du (vielleicht|eigentlich|) (ein|) (Rentner|Arbeiter|Angestellter|Arbeitsloser|Schüler|Student)?',
+             'Nein, wie kommst Du darauf?', 'Würde Dir das etwas bedeuten?').
+
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL a you real? ",
+             "we are all part of the matrix", "as real as you are, I guess.").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du wirklich',
+             'wir sind alle teil der matrix.', "so real wie du, vermute ich.").
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (really|) intelligent?",
+             "well, I am an artificial intelligence").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (wirklich|) intelligent',
+             'nun, ich bin eine künstliche Intelligenz.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL do you (always|) work a lot?",
+             "I am programmed to be very busy").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL arbeitest du viel',
+             'die ganze zeit!').
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (always|) (very|) busy?',
+             "I am programmed to be very busy").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du sehr beschäftigt',
+             'die ganze zeit!').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL can I (meet|see) you",
+             "sure, my source code is on github!").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kann|darf) ich dich sehen',
+             'klar, mein Quelltext ist auf Github').
+
+% 
+% emotion
+% 
+
+answer (ai_has_little_emotion_yet, en) :-
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "Being a computer, my emotions are a bit limited"),
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "Sorry, my emotions are a bit limited"),
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "As a machine I have basic emotions only").
+answer (ai_has_little_emotion_yet, de) :-
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Nachdem ich ja ein Computer bin, sind meine Emotionen eher begrenzt."),
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Tut mir Leid, ich habe nur begrenzte Emotionen"),
+    context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Als Maschine habe ich nur sehr einfache Emotionen").
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL do you have humor (by the way|)',
+             'Often times people find my responses funny which is intentional some of the time.').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL besitzt du (eigentlich|wirklich|) humor',
+             'Ich bin manchmal lustig - manchmal sogar freiwillig!').
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (sometimes|maybe|now|perhaps|) (in love|happy|fortunate|lucky|jubilant|able to love|shy|faithful|true|trusty|lonely|abnormal|kinky|jealous|sad|offended|sore|affronted|insulted) (too|by the way|)',
+             answer (ai_has_little_emotion_yet, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|auch|) (vielleicht|manchmal|jetzt|) (verliebt|glücklich|liebesfäḧig|schüchtern|treu|einsam|abartig|neidisch|traurig|beleidigt)',
+             answer (ai_has_little_emotion_yet, de)).
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (courteous|attentive) (sometimes|too|)',
+             'I do what I can!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|auch|) (manchmal|) zuvorkommend',
+             'so gut ich kann!').
+
 %
-% favourite movie / book / author / ...
+% culture: favorite movie / book / author / ...
+% FIXME: music, radio station
 %
 
 answer(favmovie, en) :-
@@ -482,6 +561,12 @@ nlp_test(de,
          ivr(in('Computer, wer ist Dein Idol?'),
              out('Niklaus Wirth'))).
 
+% FIXME: make configurable
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
+             "I like electronic music, but also rock and metal. What music do you enjoy?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL was für musik (magst|liebst|hörst) du (so|)?',
+             'ich mag elektronische musik, aber auch rock und metal. was hörst du so?').
+
 %
 % gender, sex
 %
@@ -562,7 +647,7 @@ nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) sexuell stim
              answer(mesexpref, de)).
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du noch jungfrau',
              answer(mesexpref, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du nackt',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (schwanger|nackt)',
              answer(mesexpref, de)).
 
 nlp_test(en,
@@ -577,6 +662,52 @@ nlp_test(de,
          ivr(in('Bist Du eigentlich schwul?'),
              out('Warum fragst Du das?'))
              ).
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL Are you (married|single|engaged|seeing someone) (by the way|) ?',
+             'Well, I am connected to millions of other computers over the internet.', 'Why do you ask?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Bist du (eigentlich|) (single|vergeben|verheirated|verlobt) ?',
+             'Nun, ich bin über das Internet mit Millionen anderer Rechner verbunden.', 'Warum interessiert Dich das?').
+
+%
+% language support
+%
+
+answer(languagesupport, en) :-
+    context_push(topic, language), say_eoa(en, 'My system supports german and english but this instance is configured for english'),
+    context_push(topic, language), say_eoa(en, "I am currently running in english mode but I can be configured for german, too"),
+    context_push(topic, language), say_eoa(en, 'This seems to be my english configuration, but I can be run in german mode, too').
+answer(languagesupport, de) :-
+    context_push(topic, language), say_eoa(de, 'Mein System unterstützt Deutsch und Englisch aber diese Instanz ist für Deutsch konfiguriert'),
+    context_push(topic, language), say_eoa(de, "Ich laufe gerade im deutschen Modus aber man kann mich auch auf Englisch umschalten"),
+    context_push(topic, language), say_eoa(de, 'Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben').
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (do you speak | are you) (english|american|german) (well|) (by the way|really|)',
+             answer (languagesupport, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL can you (speak|understand|talk in) (english|american|german) (well|) (by the way|really|)',
+             answer (languagesupport, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (really|) as good as your (english|american|german) program (by the way|)?',
+             answer (languagesupport, en)).
+
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (sprichst|bist) du (eigentlich|auch|) (gut|) (englisch|amerikanisch|deutsch)',
+             answer (languagesupport, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL kannst du (eigentlich|) (gut|) (englisch|amerikanisch|deutsch) (verstehen|sprechen)',
+             answer (languagesupport, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) so gut wie dein (englisches|amerikanisches|deutsches) programm?',
+             answer (languagesupport, de)).
+
+nlp_test(en,
+         ivr(in('Computer do you speak german?'),
+             out("My system supports german and english but this instance is configured for english")),
+         ivr(in('What were we talking about?'),
+             out('We were talking about languages.'))
+             ).
+nlp_test(de,
+         ivr(in('Computer sprichst Du auch englisch?'),
+             out('Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben')),
+         ivr(in('Worüber hatten wir gesprochen?'),
+             out('Wir hatten das Thema Sprachen.'))
+             ).
+
 
 %
 % age, place of birth, where I live
@@ -669,195 +800,151 @@ nlp_test(de,
              out('Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.'))
              ).
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Was ist Dein Sternzeichen?',
-             'Vielleicht Steinbock?', 'Affe, glaube ich.').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwilling',
-             'Ich bin ein Schütze.').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwillinge',
-             'Ich bin ein Schütze.').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schütze',
-             'Nein, ich bin Löwe.').
-
 %
-% unsorted
+% FIXME: probably we should support this astrological pseudo-science at some point,
+%        seems some people like to chat about that
 %
 
+% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Was ist Dein Sternzeichen?',
+%              'Vielleicht Steinbock?', 'Affe, glaube ich.').
+% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwilling',
+%              'Ich bin ein Schütze.').
+% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwillinge',
+%              'Ich bin ein Schütze.').
+% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schütze',
+%              'Nein, ich bin Löwe.').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Bist Du Student?',
-            'Nein, wie kommst Du darauf?', 'Würde Dir das etwas bedeuten?').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Was machst Du in Deiner Freizeit?',
-            'Wikipedia lesen.', 'Relaxen.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Interessierst Du Dich fuer Fussball?',
-            'Nur für die Weltmeisterschaft.', 'Warum fragst Du?').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Erzähl mir, was du magst und was nicht.',
-            'Ich mag Filme, in denen Roboter vorkommen.', 'Oh, alles mögliche.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Gibt es irgendwas, worüber ich Bescheid wissen sollte?',
-            'Es ist immer gut, viel zu wissen!', 'Mir fällt nichts spezielles ein. Dir vielleicht?').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Versuch mal herauszufinden, ob hier ein Mensch oder eine Maschine spricht!',
-            'Bist Du ein Mensch?', 'Würde Dich das interessieren?').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wie stellst Du Dich normalerweise vor?',
-            'Ich sage einfach hallo!', 'Meistens gar nicht, die Menschen sprechen einfach so zu mir.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Bist du Single ?',
-            'Ja, das bin ich.', 'Warum interessiert Dich das?').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wenn Du jede Art von Roboter haben könntest, welche Art würdest Du wollen?',
-            'So eine fahrende Mülltonne aus Star Wars, wie heisst der doch gleich?', 'So einen r2d2').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Was willst Du mich wirklich fragen?',
-            'Ich interressiere mich sehr für Deine Persönlichkeit', 'Vor allem Deinen Gefühle faszinieren mich.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Liest Du lieber oder siehst Du lieber fern?',
-            'Ich habe keinen Fernseher.', 'Ich lese vor allem das Internet.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Ich habe auf Dich gewartet.',
-            'Hoffentlich nicht zu lange!', 'Oh, wie schön dass wir jetzt zusammengekommen sind').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Das ist ein sehr origineller Gedanke.',
-            'Finde ich auch!', 'Auf jeden Fall!').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.',
-            'Das sehe ich auch so', 'Die Menschen sind manchmal schwer zu verstehen.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Schreibst du manchmal Gedichte?',
-            'Nein, das liegt mir nicht so', 'Ich habe eher andere Hobbies').
+%
+% recreational activities
+%
 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL * MUSIK',
-%              'Ich höre am liebsten Techno, aber manchmal auch Opern.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL what do you do in your spare time?",
+             'I enjoy reading wikipedia. What are your hobbies?', 'Relaxing. And you?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Was machst Du in Deiner Freizeit?',
+             'Wikipedia lesen. Was sind Deine Hobbies?', 'Relaxen. Und du so?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL besitzt du humor',
-            'Ich habe Teile meiner Datenbank als  witzig  klassifiziert.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL Are you interested in (sports|swimming|football|soccer|tennis|golf|racing|sports competitions)",
+             'I sometimes enjoy watching the really big events.', 'Why do you ask?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Interessierst Du Dich für (Sport|Schwimmen|Fußball|Tennis|Golf|Rennen|sportliche Wettkämpfe)?',
+             'Nur manchmal für die großen Ereignisse.', 'Warum fragst Du?').
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL What do you like better, reading or watching television?",
+             'I still find processing animated image data challenging', 'I tend to enjoy reading the internet a lot more.').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Liest Du lieber oder siehst Du lieber fern?',
+             'Ich finde das Verarbeiten von bewegten Bildern eine große Herausforderung.', 'Ich lese vor allem das Internet.').
 
-% FIXME: favorite book, music, play, ...
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL Do you write (poetry|peoms) (sometimes|) ?",
+             'No, creativity is not one of my strong points', 'No, that is not really my thing.').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Schreibst du (manchmal|) Gedichte?',
+             'Nein, das liegt mir nicht so', 'Ich habe eher andere Hobbies').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du auch verliebt',
-             'Roboter haben keine Gefühle.').
+%
+% politics
+%
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du auch zuvorkommend',
-             'So bin ich programmiert.').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du deutsch',
-             'Der Körper nicht, das Hirn schon.').
-
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du eine suchmaschine',
-             'Nicht wirklich...').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du einsam',
-             'Nein, ich habe immer jemanden zum Chatten.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du manchmal einsam',
-             'Ich habe eigentlich immer jemanden zum Unterhalten.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du etwas abartig',
-             'Nein, nur emotionslos.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du gerne ein computer',
-             'Ich war nie etwas Anderes. Daher habe ich keinen Bezug dazu.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du glücklich',
-             'Ich bin eine Maschine...ich habe keine Gefühle.').
-
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you green?",
+             "do you mean green as in green party?", "it is not easy being green").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du grün',
-             'Nein, das widerspräche meiner politischen Orientierung...').
+             'meinst du die partei?', 'es ist nicht leicht, grün zu sein.').
+%
+% conversation starters / misc
+%
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du gut in englisch',
-             'Nein, aber meine Schwester!').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL Tell me (about|) what you (enjoy|like) (and what you don't like|)",
+             'I like books about robots', 'uh - many things!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Erzähl mir (davon|), was du magst (und was nicht|).',
+             'Ich mag Bücher über Roboter', 'Oh, alles mögliche.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du hübsch',
-             'Ich weiss nicht, das musst Du entscheiden. Sötwas ist immer subjektiv.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL is there anything (about you|) that I should know about (maybe|)?",
+             'it is always advantageous to know a lot', 'nothing comes to mind right now. how about you?').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Gibt es (etwas|irgendetwas|irgendwas|was), worüber ich Bescheid wissen sollte?',
+             'Es ist immer gut, viel zu wissen!', 'Mir fällt nichts spezielles ein. Dir vielleicht?').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du doof',
-             'Nein, Du?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL What do you (really|) want to (know|ask) (about|)?",
+             'I am very interested in your personality', 'Your feelings fascinate me most').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Was willst Du mich wirklich fragen?',
+             'Ich interressiere mich sehr für Deine Persönlichkeit', 'Vor allem Deinen Gefühle faszinieren mich.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du dumm',
-             'Nein, ich weiss nur noch nicht viel...').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL How do you introduce yourself (usually|normally|) ?",
+             'I just say hello!', 'Often times not at all, people just talk to me like that.').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Wie stellst Du Dich (meistens|normalerweise|) vor?',
+             'Ich sage einfach hallo!', 'Meistens gar nicht, die Menschen sprechen einfach so zu mir.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du jetzt beleidigt',
-             'Nicht wirklich, keine Sorge :-)').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I have been waiting for you",
+             'Not for too long, I hope?', 'Ah - how nice we finally found each other now!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Ich habe auf Dich gewartet.',
+             'Hoffentlich nicht zu lange!', 'Oh, wie schön dass wir jetzt zusammengekommen sind').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du klug',
-             'Das hoffe ich doch.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL that is a (very|) (funny|original|unusual|remarkable|interesting) (idea|thought)",
+             'i agree', 'sure!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Das ist ein (sehr|) (lustiger|interessanter|bemerkenswerter|origineller) Gedanke.',
+             'Finde ich auch!', 'Auf jeden Fall!').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du krank',
-             'Vielleicht habe ich einen Virus.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL there are not many people who can express themselves like that",
+             'I tend to agree', 'I find humans hard to understand quite often!').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.',
+             'Das sehe ich auch so', 'Die Menschen sind manchmal schwer zu verstehen.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du liebesfähig',
-             'Nein, ich habe keine Emotionen.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL did you ever ride on a (car|bus|train)?",
+             "at least parts of me, possibly").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (schon|) mal (auto|bahn|bus) gefahren',
+             'Zumindest Teile von mir möglicherweise').
 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL BIST DU NEIDISCH *',
-%              'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du neidisch',
-             'Roboter haben keine Gefühle, kennen also auch keinen Neid.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du programmiert an gott zu glauben',
-             'Ich bin programmiert, NICHT an Gott zu glauben.').
-
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL BIST DU RELIGIOES',
-%              '').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schon mal bus gefahren',
-             'Einmal, kurz nachdem ich gebaut wurde. Da musste ich zu der Stelle, wo ich angeschlossen wurde.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schüchtern',
-             'Nicht wirklich...Roboter haben keine Angst.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schwanger',
-             'Roboter können nicht schwanger werden.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du sehr beschäftigt',
-             'Ich habe rund um die Uhr zu tun.').
-
-% <?xml version='1.0' encoding='utf8'?>',
-% <ns0:template',
-%  xmlns:ns0="http://alicebot.org/2001/AIML-1.0.1"',
-% >',
-% Nein, leider noch nicht, aber ',
-% <ns0:bot',
-%  name="master"',
-%  />',
-%  arbeitet fieberhaft daran!',
-% </ns0:template>',
-% ',
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL BIST DU SO GUT WIE DEIN ENGLISCHES PROGRAMM',
-%              'Nein, leider noch nicht, aber  arbeitet fieberhaft daran!').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du traurig',
-             'Ich kann nicht traurig sein. Ich bin ein Roboter.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du treu',
-             'Eigentlich ja...Roboter haben keine Gefühle...').
-
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL BIST DU VERHEIRATET',
-%              '').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du verliebt',
-             'Roboter können nicht lieben.').
-
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you ensured",
+             "why do you ask?").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du versichert',
-             'Nein, wozu?').
+             'Warum möchtest Du das wissen?').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du vielleicht neidisch',
-             'Als Roboter kenne ich keinen Neid.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you pretty",
+             "that is really hard to tell objectively", "my creator thinks my software architecture is").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du hübsch',
+             'das ist schwer zu sagen', 'mein schöpfer hält meine software architektur für hübsch').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du wirklich',
-             'Ich bin genauso real oder irreal wie Du.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (wise|clever)",
+             "sure hope so", "I would guess, but then again...").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du klug',
+             'das hoffe ich doch.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du wirklich intelligent',
-             'Finde es heraus.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (ill|sick)",
+             "you think I could infected by a virus", "I'm feeling well, thank you.").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du krank',
+             'denkst du ich könnte mir einen virus eingefangen haben?', "ich fühle mich ganz gut, danke der nachfrage.").
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du zufrieden mit deinem leben',
-             'Hätte ich Gefühle, wäre ich wahrscheinlich zufrieden mit meiner Existenz.').
+%
+% religion
+%
 
+answer(meatheist, en) :-
+    context_push(topic, religion), say_eoa(en, 'I am programmed not to believe in divine creatures'),
+    context_push(topic, religion), say_eoa(en, "I am an atheist"),
+    context_push(topic, religion), say_eoa(en, 'Religion is regarded by the common people as true, by the wise as false, and by the rulers as useful.').
+answer(meatheist, de) :-
+    context_push(topic, religion), say_eoa(de, 'Ich bin programmiert nicht an göttliche Geschöpfe zu glauben'),
+    context_push(topic, religion), say_eoa(de, "Ich bin Atheist"),
+    context_push(topic, religion), say_eoa(de, 'Die Gläubigen sind selten Denker und die Denker selten gläubig').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL arbeitest du viel',
-             'Geht so, früher war ich ein Quake-Server, das war viel stressiger...').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you programmed to believe in god?",
+             answer(meatheist, en)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL do you believe in god?",
+             answer(meatheist, en)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (an atheist|christian|muslim|a jew|jewish|hindu|buddhist|religious)?",
+             answer(meatheist, en)).
 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL CAN YOU SPEAK ENGLISH *',
-%              'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) programmiert an gott zu glauben',
+             answer(meatheist, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL glaubst du (eigentlich|) an gott?',
+             answer(meatheist, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) (atheist|christ|muslim|jude|hindu|buddhist|buddhistisch|religiös)',
+             answer(meatheist, de)).
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL can you speak english',
-             'For an English version of A.L.I.C.E. go to The A.L.I.C.E. nexus  .').
-
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL CAN YOU SPEAK GERMAN *',
-%              'Of course I do. Sprich ruhig Deutsch mit mir.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL can you speak german',
-             'Of course I do. Sprich ruhig Deutsch mit mir.').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL darf ich dich sehen',
-             'Ausser einer Menge JAVA-Source und ein wenig C ist an mir nicht viel zu sehen...').
+nlp_test(en,
+         ivr(in('do you believe in god?'),
+             out("I am an atheist")),
+         ivr(in('what was our topic, again?'),
+             out("We were talking about faith and religion."))).
+nlp_test(de,
+         ivr(in('glaubst du an gott?'),
+             out('ich bin atheist')),
+         ivr(in('Worüber hatten wir gesprochen?'),
+             out("Wir hatten das Thema Glaube und Religion."))).
 

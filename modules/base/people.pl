@@ -40,7 +40,7 @@ answer (birthplacePerson, en, PERSON, PERSON_LABEL) :-
     context_push(topic, people),
     context_push(topic, PERSON),
     context_push(topic, BIRTHPLACE),
-    say_eoa(de, format_str('%s was born in %s.', PERSON_LABEL, LABEL)).
+    say_eoa(en, format_str('%s was born in %s.', PERSON_LABEL, LABEL)).
 
 answer (birthplacePerson, de, PERSON, PERSON_LABEL) :-
     rdf (distinct, limit(1),

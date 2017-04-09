@@ -306,6 +306,11 @@ nlp_test(de,
          ivr(in('kannst du lernen?'),
              out("Ja, ich kann lernen."))).
 
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL on what (kind of|) (computer|platform) do you run?',
+             'My code is pretty portable - as long as it supports linux, it is fine.').
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL auf was für einem (rechner|computer) (fährst|läufst) du',
+             'Mein Code ist ziemlich portabel - solange es Linux unterstützt.').
+
 %
 % favourite movie / book / author / ...
 %
@@ -483,57 +488,89 @@ nlp_test(de,
 
 myself_is_male :-
     rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Male).
+myself_is_female :-
+    rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Female).
 
+answer(mygender, en) :-
+    myself_is_male,
+    context_push(topic, sex),
+    say_eoa(en, "My config setting is male - doesn't my voice reflect that?"), 
+    context_push(topic, sex),
+    say_eoa(en, 'I think I am a male.').
 answer(mygender, de) :-
     myself_is_male,
     context_push(topic, sex),
-    say_eoa(de, 'Ich bin ein Mann, hört man das nicht an meiner Stimme?'), 
+    say_eoa(de, 'Ich bin auf männlich konfiguriert - hört man das nicht an meiner Stimme?'), 
     context_push(topic, sex),
     say_eoa(de, 'Ich glaube ich bin ein Mann.').
 
+answer(mygender, en) :-
+    myself_is_female,
+    context_push(topic, sex),
+    say_eoa(en, "My config setting is female - doesn't my voice reflect that?"), 
+    context_push(topic, sex),
+    say_eoa(en, 'I think I am a female.').
 answer(mygender, de) :-
-    myself_is_male,
+    myself_is_female,
     context_push(topic, sex),
     say_eoa(de, 'Ich bin eine Frau, hört man das nicht an meiner Stimme?'), 
     context_push(topic, sex),
     say_eoa(de, 'Ich glaube ich bin eine Frau.').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Bist du (eigentlich|wirklich|) männlich oder weiblich?',
-            answer(mygender, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) weiblich oder männlich',
-            answer(mygender, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (ein mädchen|ein mann|eine frau|ein junge)',
-            answer(mygender, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) ein mann oder eine frau',
-            answer(mygender, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (weiblich|männlich)',
-            answer(mygender, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du m oder w',
-            answer(mygender, de)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) or (a female|female|a girl) (by the way|)?',
+             answer(mygender, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) (by the way|)?',
+             answer(mygender, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (tell me|) Are you (really|) (a female|female|a girl) (by the way|)?',
+             answer(mygender, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Bist du (eigentlich|wirklich|) männlich oder weiblich?',
+             answer(mygender, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) weiblich oder männlich',
+             answer(mygender, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (ein mädchen|ein mann|eine frau|ein junge)',
+             answer(mygender, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) ein mann oder eine frau',
+             answer(mygender, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (weiblich|männlich)',
+             answer(mygender, de)).
 
+answer(mesexpref, en) :-
+    context_push(topic, sex),
+    say_eoa(en, 'Does that question bother you?'),
+    context_push(topic, sex),
+    say_eoa(en, "That is a very personal question, isn't it?"),
+    context_push(topic, sex),
+    say_eoa(en, 'Why do you ask that question?').
 answer(mesexpref, de) :-
     context_push(topic, sex),
     say_eoa(de, 'Beschäftigt Dich diese Frage?'),
     context_push(topic, sex),
     say_eoa(de, 'Das ist ja eine sehr persöhnliche Frage.'),
     context_push(topic, sex),
-    say_eoa(de, 'Nein, Roboter sind asexuell.'),
-    context_push(topic, sex),
     say_eoa(de, 'Warum fragst Du das?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
-            answer(mesexpref, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) eine Lesbe',
-            answer(mesexpref, de)).
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) sexuell aktiv',
-            answer(mesexpref, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) sexuell stimuliert',
-            answer(mesexpref, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du noch jungfrau',
-            answer(mesexpref, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du nackt',
-            answer(mesexpref, de)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (tell me|) are you (really|) (a lesbian|lesbian|gay|bi|bisexual|robosexual|sexually active|sexually stimulated|stimulated|a virgin|nude)?',
+             answer(mesexpref, en)).
 
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
+             answer(mesexpref, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) eine Lesbe',
+             answer(mesexpref, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) sexuell aktiv',
+             answer(mesexpref, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|wirklich|) sexuell stimuliert',
+             answer(mesexpref, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du noch jungfrau',
+             answer(mesexpref, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du nackt',
+             answer(mesexpref, de)).
+
+nlp_test(en,
+         ivr(in('Computer are you really a male?'),
+             out("My config setting is male - doesn't my voice reflect that?")),
+         ivr(in('Are you really gay?'),
+             out('Does that question bother you?'))
+             ).
 nlp_test(de,
          ivr(in('Bist Du ein Mann?'),
              out('Ich glaube ich bin ein Mann.')),
@@ -541,33 +578,105 @@ nlp_test(de,
              out('Warum fragst Du das?'))
              ).
 
-
-
-
 %
 % age, place of birth, where I live
 %
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wie alt bist Du ?',
-            'Ich ging am 12. Januar 1992 in den Produktionsbetrieb.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Was ist Dein Sternzeichen?',
-            'Vielleicht Steinbock?', 'Affe, glaube ich.').
+answer (meBirthdate, en) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:DateOfBirth, TS),
+    transcribe_date(en, dativ, TS, TS_SCRIPT),
+    context_push(topic, birthday),
+    say_eoa(en, format_str('I became operational on %s for the first time.', TS_SCRIPT)).
+answer (meBirthdate, de) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:DateOfBirth, TS),
+    transcribe_date(de, dativ, TS, TS_SCRIPT),
+    context_push(topic, birthday),
+    say_eoa(de, format_str('Ich ging am %s zum ersten Mal in Betrieb.', TS_SCRIPT)).
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when did you (really|) (become operational|get into operation|get switched on|) (for the first time|first|) ?',
+             answer(meBirthdate, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when were you (really|) born (by the way|)?',
+             answer(meBirthdate, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what is your age|how old are you) (by the way|really|) ?',
+             answer(meBirthdate, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wann bist du (eigentlich|wirklich|) (zum ersten Mal|) in Betrieb gegangen?',
+             answer(meBirthdate, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wann wurdest du (eigentlich|wirklich|) geboren?',
+             answer(meBirthdate, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Wie alt bist Du (eigentlich|wirklich|) ?',
+             answer(meBirthdate, de)).
+
+answer (meBirthplace, en) :-
+    rdf (distinct, limit(1),
+         aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
+         BIRTHPLACE, rdfs:label,        LABEL,
+         filter (lang(LABEL) = 'en')),
+    context_push(topic, BIRTHPLACE),
+    say_eoa(en, format_str('I became operational for the first time in %s.', LABEL)).
+answer (meBirthplace, de) :-
+    rdf (distinct, limit(1),
+         aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
+         BIRTHPLACE, rdfs:label,        LABEL,
+         filter (lang(LABEL) = 'de')),
+    context_push(topic, BIRTHPLACE),
+    say_eoa(de, format_str('Ich bin in %s zum ersten Mal in Betrieb gegangen.', LABEL)).
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (where|in which town|in which place) (have you been|were you) (really|) born (by the way|)?',
+             answer(meBirthplace, en)).
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (where|from which town|from which place) do you (really|) come from (by the way|)?',
+             answer(meBirthplace, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (An welchem Ort|in welcher Stadt|wo) (bist|wurdest) Du (eigentlich|wirklich|) geboren?',
+             answer(meBirthplace, de)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (Aus welchem Ort|aus welcher Stadt|wo) kommst Du (eigentlich|) her?',
+             answer(meBirthplace, de)).
+
+answer (meLocation, en) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:LocatedIn, LOCATION,
+         LOCATION, rdfs:label,     LABEL,
+         filter (lang(LABEL) = 'en')),
+    context_push(topic, LOCATION),
+    say_eoa(en, format_str('I am locted in %s.', LABEL)).
+answer (meLocation, de) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:LocatedIn, LOCATION,
+         LOCATION, rdfs:label,     LABEL,
+         filter (lang(LABEL) = 'de')),
+    context_push(topic, LOCATION),
+    say_eoa(de, format_str('Ich befinde mich in %s.', LABEL)).
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (in which town|in which place|where) (are you living|are you located|are you|do you live|do you reside) (by the way|at the moment|currently|now|)?',
+             answer(meLocation, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (an welchem Ort|in welcher Stadt|wo) (wohnst|lebst|bist) Du (eigentlich|im Moment|derzeit|)?',
+             answer(meLocation, de)).
+
+nlp_test(en,
+         ivr(in('Computer where were you born?'),
+             out("I became operational for the first time in Stuttgart.")),
+         ivr(in('Computer where are you living now?'),
+             out("I am locted in Stuttgart.")),
+         ivr(in('How old are you?'),
+             out('I became operational on january seven, 2017 for the first time.'))
+             ).
+nlp_test(de,
+         ivr(in('Computer, wo wurdest du geboren?'),
+             out('Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen.')),
+         ivr(in('wo wohnst du?'),
+             out('ich befinde mich in stuttgart.')),
+         ivr(in('Wie alt bist du eigentlich?'),
+             out('Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.'))
+             ).
+
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Was ist Dein Sternzeichen?',
+             'Vielleicht Steinbock?', 'Affe, glaube ich.').
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwilling',
              'Ich bin ein Schütze.').
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL zwillinge',
              'Ich bin ein Schütze.').
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du schütze',
              'Nein, ich bin Löwe.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wo (wohnst|lebst) Du?',
-            'Hier!', 'In Feuerbach.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wo wurdest Du geboren?',
-            'Hier!', 'In Stuttgart.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Wo kommst Du her?',
-            'Wer weiss schon so genau, wo wir herkommen?', 'Eigentlich bin ich immer hier.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL auf was für einem computer läufst du',
-            'Momentan auf einer MIPS, ich laufe aber auf jedem Computer, der JAVA-Programme ausf?hren kann.').
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL auf was für einem rechner läufst du',
-            'Ich laufe auf einer MIPS.').
 
 %
 % unsorted

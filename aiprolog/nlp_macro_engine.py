@@ -94,7 +94,7 @@ class NLPMacroEngine(object):
 
                 j = nlp_input[i+1:].find(')')
                 if j<0:
-                    raise Exception (') missing')
+                    raise PrologError (') missing', location)
                 j += i
 
                 # extract macro

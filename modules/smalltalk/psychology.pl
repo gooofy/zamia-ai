@@ -1,5 +1,11 @@
 % prolog
 
+answer(topic, en) :-
+    context_score(topic, emotion, 100, SCORE), say_eoa(en, 'We were talking about emotions.', SCORE).
+answer(topic, de) :-
+    context_score(topic, emotion, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Emotionen.', SCORE).
+
+
 %
 % just some test snippets of eliza-style answers
 %

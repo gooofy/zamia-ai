@@ -180,7 +180,7 @@ class AIPrologParser(PrologParser):
         for inp, resp in ds:
 
             if len(inp.strip()) == 0:
-                raise PrologError ('nlp_gen: empty input generated.')
+                raise PrologError ('nlp_gen: empty input generated.', clause.location)
 
             if self.print_utterances:
                 logging.info(u'inp: %s' % inp)

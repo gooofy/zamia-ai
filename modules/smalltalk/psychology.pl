@@ -127,6 +127,15 @@ nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (very|totally) (wonderful|nice|excellent)",
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (Sehr|ganz) (wunderbar|schön|wunderschön)',
              answer(feel_happy, de)).
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I (like|love|like to cuddle) you",
+             answer(feel_happy, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich (mag|liebe|knuddle) dich',
+             answer(feel_happy, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL thanks (I am good|I am feeling great|good|great)",
+             answer(feel_happy, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL danke (mir geht es|gut)',
+             answer(feel_happy, de)).
+
 nlp_test(en,
          ivr(in('I feel so good'),
              out('I am very happy to hear that'))).
@@ -185,6 +194,20 @@ nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I (want to |would like to) get as much (as 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich (möchte|will) so viel (wie möglich|wie es geht|) (aus Dir herausholen|über Dich erfahren|von Dir wissen)',
              'Was würde Dir das bedeuten?', 'Hoffentlich kann ich Deine Erwartungen erfüllen.').
 
+answer(dodge_question, en) :-
+    say_eoa(en, "why do you ask?"),
+    say_eoa(en, "that question seems interesting to you?"),
+    say_eoa(en, "which answer would you like to hear?"),
+    say_eoa(en, "what do you think?"),
+    say_eoa(en, "not sure if I understand you completely"),
+    say_eoa(en, "is that the sort of question that bothers you frequently?"),
+    say_eoa(en, "what would you really like to know?"),
+    say_eoa(en, "have you spoken to anybody else about this before?"),
+    say_eoa(en, "have you asked such questions before?"),
+    say_eoa(en, "I find that pretty interesting!"),
+    say_eoa(en, "Could you explain that a bit more, please?"),
+    say_eoa(en, "Please tell me how I can help you."),
+    say_eoa(en, "What else comes to mind?").
 answer(dodge_question, de) :-
     say_eoa(de, "Warum fragst Du?"),
     say_eoa(de, "Interessiert Dich diese Frage?"),
@@ -201,113 +224,165 @@ answer(dodge_question, de) :-
     say_eoa(de, "Sag mir bitte, wie ich Dir helfen kann"),
     say_eoa(de, "Was fällt Dir bei dieser Frage noch ein?").
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL was soll das (bedeuten|heissen|sagen)?',
-            answer(dodge_question, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL what (is this supposed to|could this) (tell us|mean|tell me)?",
+             answer(dodge_question, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL was soll das (bedeuten|heissen|sagen)?',
+             answer(dodge_question, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL why not?",
+             answer(dodge_question, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Warum nicht?',
+             answer(dodge_question, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL i asked first",
+             answer(dodge_question, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich fragte (als erster|zuerst)',
+             answer(dodge_question, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (is that) really (so|) ?",
+             answer(dodge_question, en)).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (ist das|) wirklich (so|)',
+             answer(dodge_question, de)).
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Warum nicht?',
-            answer(dodge_question, de)).
+%
+% quick, say something reassuring yet non committing
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich fragte (als erster|zuerst)',
-            answer(dodge_question, de)).
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I am not the most (talkative|chatty|skilful|handy|ingenious) person",
+             "Is that the reason why we're having this conversation?", "That is no big deal", "so what?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich bin nicht der (gesprächigste|eloquenteste|geschickteste) Mensch',
+             'Ist das der Grund, warum wir miteinander sprechen?', 'Das ist doch nicht schlimm!', 'Na und?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (ist das|) wirklich (so|)',
-            'Erkläre Deine Gedanken bitte etwas besser', 'Bist Du sicher?', 'Ganz sicher?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I am getting (somewhat|a bit|a little|) (tired|bored|sleepy) (unfortunately|)",
+             "do you want me to cheer you up or shall we end our conversation?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich werde (leider|langsam|) (etwas|sehr|ein wenig|) (müde|gelangweilt|schläfrig|)',
+             'Soll ich Dich aufmuntern oder wollen wir unser Gespräch beenden?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich bin nicht der (gesprächigste|eloquenteste|geschickteste) Mensch',
-            'Ist das der Grund, warum wir miteinander sprechen?', 'Das ist doch nicht schlimm!', 'Na und?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (please|) stop (now|)",
+             "sure", "no problem", "alright").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL hör (bitte|) (damit|) auf',
+             'aber natürlich, gerne.', 'klar, mach ich.', 'schon gut').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich werde (leider|langsam|) (etwas|sehr|ein wenig|) (müde|gelangweilt|schläfrig|)',
-            'Soll ich Dich aufmuntern oder wollen wir unser Gespräch beenden?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (just|) why is that so?",
+             "Are we talking about the true reason here?", "what possible reasons come to mind?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (darum|warum) (ist das so|nur)',
+             'Sprechen wir über den wirklichen Grund?', 'Welche Gründe könnte es geben?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (schluss jetzt|du lügst|du machst mich krank)',
-            'Ja, dann lass uns für jetzt aufhören',
-            'tut mir leid, schade','tut mir leid, wenn ich dir nicht helfen konnte').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (sorry|sorry about that|I am sorry|please forgive me|forgive me|forgive me please)",
+             "No need to apologize").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (entschuldigung|entschuldige bitte|ich bitte um entschuldigung)',
+             'Du brauchst Dich nicht zu entschuldigen').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL hör (bitte|) (damit|) auf',
-            'aber natürlich, gerne.', 'klar, mach ich.', 'schon gut').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I have been dreaming (of you|about you) (quite often|often|)",
+             "what does that dream tell you?", "do you dream a lot?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich habe (gestern|schon oft|oft|manchmal|damals) (von Dir|) geträumt',
+             'Was sagt Dir dieser Traum?', 'Träumst Du oft?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL kannst du (denken|fühlen|mitgefühl empfinden|begreifen|singen|lachen)?',
-            'Denkst Du, ich kann das nicht?', 'Kannst Du das?', 'Warum fragst Du das?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I (doubt|am not sure|don't know|am feeling insecure|am clueless|am worried|worry)",
+             "So you feel insecure?", "you don't know for sure?", "what exactly are you thinking of?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich (zweifle|weiss nicht|bin mir unsicher|bin unsicher|bin ratlos|bin besorgt|sorge mich)',
+             'Du fühlst Dich unsicher?', 'Du weisst nicht?', 'Woran denkst Du?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (darum|warum) (ist das so|nur)',
-            'Sprechen wir über den wirklichen Grund?', 'Welche Gründe könnte es geben?').
-
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (entschuldigung|entschuldige bitte|ich bitte um entschuldigung)',
-            'Du brauchst Dich nicht zu entschuldigen').
-
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich habe (gestern|schon oft|oft|manchmal|damals) (von Dir|) geträumt',
-            'Was sagt Dir dieser Traum?', 'Träumst Du oft?').
-
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich (zweifle|weiss nicht|bin mir unsicher|bin unsicher|bin ratlos|bin besorgt|sorge mich)',
-            'Du fühlst Dich unsicher?', 'Du weisst nicht?', 'Woran denkst Du?').
-
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (sure|not so sure|in doubt|worried)?",
+             "well, who can ever be really sure about anything?").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (sicher|unsicher|im Zweifel|ratlos|besorgt)?',
              'Wann kann man schon wirklich sicher sein?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL das (ähnelt sich|ähnelt Dir|sieht Dir ähnlich|ist ähnlich|ist ganz ähnlich)',
-            'Welche Ähnlichkeit siehst Du?', 'Worin besteht die Ähnlichkeit?', 'Welche anderen Verbindungen siehst Du?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL that (seems similar|is very similar|looks just like you|looks familiar|is quite similar|seems familiar)",
+             "what resemblance do you see?", "what is it that is so similar?", "what connection do you see?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL das (ähnelt sich|ähnelt Dir|sieht Dir ähnlich|ist ähnlich|ist ganz ähnlich)',
+             'Welche Ähnlichkeit siehst Du?', 'Worin besteht die Ähnlichkeit?', 'Welche anderen Verbindungen siehst Du?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (es ist für einen Freund|ich musste an einen Freund denken|sind wir Freunde|willst Du mein Freund sein|Freundschaften sind mir wichtig|Ich will Dein Freund sein)',
-            'Was bedeutet Dir Freundschaft?', 'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (it is for a friend|this is for a friend|asking for a friend|had to think of a friend|are we friends|do you want to be my friend|friendship is really important to me|I want to be your friend)",
+             "what does friendship mean to you?", "are you worried about your friends?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (es ist für einen Freund|ich musste an einen Freund denken|sind wir Freunde|willst Du mein Freund sein|Freundschaften sind mir wichtig|Ich will Dein Freund sein)',
+             'Was bedeutet Dir Freundschaft?', 'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL was bedeutet (für Dich|Dir|Dir das Wort) (Freund|Freundin|Freundschaft)?',
-            'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?', 'Freundschaft ist doch etwas sehr schönes').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL what does (the word friend|the word friendship|a friend|friendship) mean to you?",
+             "I think friendship is a marvellous thing.", "do you worry about your friends?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL was bedeutet (für Dich|Dir|Dir das Wort) (Freund|Freundin|Freundschaft)?',
+             'Warum kommst Du zum Thema Freundschaften?', 'Bist Du um Deine Freunde besorgt?', 'Freundschaft ist doch etwas sehr schönes').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich (hasse|verabscheue) (meinen chef|meine kollegen|meinen Kollegen|meine kollegin|meinen freund|meine freundin|meine eltern|meinen vater|meine mutter|die schule|die arbeit|den staat|die behörden|die polizei|die menschen)',
-            'Sag, hast Du psychische Probleme?', 'Was sagt Dir das?', 'Kannst Du das näher ausführen?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I (hate|loathe) (my firend|my colleague|my colleagues|my friend|my boyfriend|my girlfriend|my parents|may father|my mother|my brother|my sister|people|humans|the police|the government)",
+             "tell me, do you feel you have psychological issues?", "what does that tell you?", "Please elaborate.").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich (hasse|verabscheue) (meinen chef|meine kollegen|meinen Kollegen|meine kollegin|meinen freund|meine freundin|meine eltern|meinen vater|meine mutter|die schule|die arbeit|den staat|die behörden|die polizei|die menschen)',
+             'Sag, hast Du psychische Probleme?', 'Was sagt Dir das?', 'Kannst Du das näher ausführen?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich (bin nie zufrieden|bin unzufrieden)',
-            'Wirklich immer?', 'Was bedrückt Dich?', 'Kannst Du das näher ausführen?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I am (never satisfied|dissatisfied)",
+             "Always, really?", "what bothers you?", "can you elaborate?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL ich (bin nie zufrieden|bin unzufrieden)',
+             'Wirklich immer?', 'Was bedrückt Dich?', 'Kannst Du das näher ausführen?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL ich (mag|liebe|knuddle) dich',
-            'Das freut mich!', 'Ich fühle mich geschmeichelt', 'Erzähl mir mehr von Deinen Gefühlen').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (maybe|possibly|that is thinkable|that might be possible)",
+             "you don't sound convinced.", "you don't feel entirely sure about this, do you?", "can you elaborate on that?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (vielleicht|möglicherweise|das ist denkbar)',
+             'Du klingst nicht überzeugt!', 'So ganz sicher fühlst Du Dich aber nicht?', 'Kannst Du das weiter ausführen?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (vielleicht|möglicherweise|das ist denkbar)',
-            'Du klingst nicht überzeugt!', 'So ganz sicher fühlst Du Dich aber nicht?', 'Kannst Du das weiter ausführen?').
-
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL that doesn't make (much|any) sense (at all)",
+             "Guess I lost my train of thought, then?", "oh, please enlighten me.").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL das (ergibt|macht) (gar keinen|überhaupt keinen|keinen|wenig|nicht viel) sinn',
              'Da habe ich wohl den Faden verloren?', 'Oh, bitte hilf mir auf die Sprünge').
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL thank you (so much|)",
+             "no problem", "sure", "with pleasure").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (dank|danke) (dir|schön|)',
              'Kein Thema.', 'Gerne.', 'Bitte schön!').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL danke (mir geht es|gut)',
-             'Das ist schön.', 'Freut mich!').
 
 % insults
 
-nlp_gen(de, 'dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)',
-            'Wie sehe ich denn aus?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (stop it|you are a liar|you're a liar|you make me sick)",
+             "ok, then let us finish this conversation", "I am sorry", "Sorry I couldn't help you").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (schluss jetzt|du lügst|du machst mich krank)',
+             'Ja, dann lass uns für jetzt aufhören',
+             'tut mir leid, schade','tut mir leid, wenn ich dir nicht helfen konnte').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Du machst Dich (absolut|) (lächerlich|zum Affen)',
-            'Du redest nicht wirklich über mich, oder?', 'Bist Du sicher?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (I think) that you are not as (bright|clever) (as you look|appear|)",
+             "how bright do I appear, then?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)',
+             'Wie sehe ich denn aus?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL du bist (dumm|strohdumm|doof|verrückt)',
-            'Warum denkst Du das?', 'Bist Du Dir da ganz sicher?', 'Sprechen doch nicht wirklich über mich, oder?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL you are making a fool of yourself",
+             "are you sure you're talking about me?", "are you sure?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Du machst Dich (absolut|) (lächerlich|zum Affen)',
+             'Du redest nicht wirklich über mich, oder?', 'Bist Du sicher?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL das klingt nicht (sehr|besonders|allzu|) intelligent',
-            'Intelligenter als manche Politikerrede...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL you are (stupid|thick|silly|crazy)",
+             "why do you think that?", "are you really sure?", "we're not really talking about me, are we?" ).
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL du bist (dumm|strohdumm|doof|verrückt)',
+             'Warum denkst Du das?', 'Bist Du Dir da ganz sicher?', 'Sprechen doch nicht wirklich über mich, oder?').
 
-nlp_gen(de, '(HAL,|Computer|) aber Du bist (ein|mein) Problem',
-            'Warum denkst Du, dass ich Dein Problem bin?', 'Na, sowas!', 'Oha!').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL that doesn't sound (too|very|particularly) intelligent",
+             "Failure is simply the opportunity to begin again, this time more intelligently.", 
+             "Intelligence is chasing me, but I'm beating it so far.").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL das klingt nicht (sehr|besonders|allzu|) intelligent',
+             'Intelligenter als manches was ich heute gehört habe...', 'Vielleicht habe ich mich ungeschickt ausgedrückt?').
 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch',
-            'Lass uns von Dir reden, nicht von mir.', 'Ich übe noch.').
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL but you are (a|my) problem!",
+             "Why do you think that?", "oh dear", "gee!").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL aber Du bist (ein|mein) Problem',
+             'Warum denkst Du, dass ich Dein Problem bin?', 'Na, sowas!', 'Oha!').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL arsch',
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL Your english is (bad|terrible)!",
+             "Let us talk about you, not me.", "I am still practicing, you know.").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch',
+             'Lass uns von Dir reden, nicht von mir.', 'Ich übe noch.').
+
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (butt|turd|arse|ass|jerk|prick)",
+             "Why do you use such words?!").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (arsch|arschloch|sau|schwein)',
              'Warum sagst Du sowas?').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL arschloch',
-             'Ist dir noch nicht aufgefallen, wie viel Frechheit durch Unsicherheit zu erklären ist?').
-
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL blöde antwort',
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (stupid|bad|strange) (answer|reply)",
+             "what is it that you didn't like about it?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (dumme|blöde|komische) antwort',
              'Was gefiel Dir daran nicht?').
 
 % unsorted
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL bravo",
+             "I see you're impressed?").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bravo',
              'Hat Dich das jetzt beeindruckt?').
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL I thought (so|as much)",
+             "Are you always that quick?").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL dachte ich mir',
-             'Bist du immer so fix? ;->').
+             'Bist du immer so fix?').
 

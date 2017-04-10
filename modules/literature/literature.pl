@@ -214,3 +214,12 @@ nlp_test(de,
 % FIXME: genre, topics, ...
 %
 
+%
+% misc / random stuff
+%
+
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL agatha christie',
+             'I like Miss Marple...').
+nlp_gen (de, '@SELF_ADDRESS_EN:LABEL agatha christie',
+             'Ich mag Miss Marple...').
+

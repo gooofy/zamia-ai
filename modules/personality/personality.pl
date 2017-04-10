@@ -361,6 +361,11 @@ nlp_gen (en, "@SELF_ADDRESS_EN:LABEL can I (meet|see) you",
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kann|darf) ich dich sehen',
              'klar, mein Quelltext ist auf Github').
 
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL can you (think|feel|feel empathy|understand|realize|sing|laugh)",
+             "you suspect I couldn't do that?", "can you?", "why do you ask?").
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL kannst du (denken|fühlen|mitgefühl empfinden|begreifen|singen|lachen)?',
+             'Denkst Du, ich kann das nicht?', 'Kannst Du das?', 'Warum fragst Du das?').
+
 % 
 % emotion
 % 

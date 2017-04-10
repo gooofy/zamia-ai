@@ -8,7 +8,7 @@ PL_SOURCES = [
               'psychology.pl',
               'cars.pl',
               'sex.pl',
-              'culture.pl',
+              'music.pl',
               'health.pl',
               'humor.pl',
               'languages.pl',

@@ -29,6 +29,7 @@ import sys
 import logging
 import codecs
 import math
+import ConfigParser
 import numpy as np
 from time import time
 
@@ -42,10 +43,7 @@ import tensorflow as tf
 from tensorflow.models.rnn.translate import seq2seq_model
 from tensorflow.models.rnn.translate.data_utils import _PAD, PAD_ID, _GO, GO_ID, _EOS, EOS_ID, _UNK, UNK_ID
 
-OUT_DICT_FN  = 'data/nlp_out_dict.csv'
-IN_DICT_FN   = 'data/nlp_in_dict.csv'
-
-CKPT_FN      = 'data/nlp_model.ckpt'
+from nltools.misc import mkdirs
 
 # We use a number of buckets and pad to the closest one for efficiency.
 # See seq2seq_model.Seq2SeqModel for details of how they work.
@@ -89,14 +87,14 @@ CKPT_FN      = 'data/nlp_model.ckpt'
 # 19              .
 
 
-BUCKETS = [
-           ( 5,  4), 
-           ( 7,  5), 
-           #( 7, 17), 
-           (12,  6), 
-           #(20,  6), 
-           (20, 17), 
-          ]
+# BUCKETS = [
+#            ( 5,  4), 
+#            ( 7,  5), 
+#            #( 7, 17), 
+#            (12,  6), 
+#            #(20,  6), 
+#            (20, 17), 
+#           ]
 # BUCKETS = [
 #            ( 8, 4), 
 #            ( 8, 13), 
@@ -106,26 +104,37 @@ BUCKETS = [
 
 
 
-# number of network layers : 1/2/3
-NUM_LAYERS                 = 2
-# typical options : 128, 256, 512, 1024
-LAYER_SIZE                 = 512
-BATCH_SIZE                 = 64
 STEPS_PER_STAT             = 200
 
-LEARNING_RATE              = 0.5
-# LEARNING_RATE_DECAY_FACTOR = 0.99
-LEARNING_RATE_DECAY_FACTOR = 0.95
-MAX_GRADIENT_NORM          = 5.0
 USE_LSTM                   = False
 NUM_SAMPLES                = 32 
 FORWARD_ONLY               = False
 
 class NLPModel(object):
 
-    def __init__(self, session, lang ):
-        self.session   = session
-        self.lang      = lang
+    def __init__(self, session, ini_fn ):
+        self.session     = session
+        
+        if not ini_fn.endswith('.ini'):
+            raise Exception ("no .ini filename extension detected.")
+
+        #
+        # set up model dir
+        #
+
+        self.model_dir   = ini_fn[:len(ini_fn)-4]
+        mkdirs(self.model_dir)
+
+        self.model_fn    = '%s/latest.ckpt' % (self.model_dir)
+        self.in_dict_fn  = '%s/in_dict.csv' % (self.model_dir)
+        self.out_dict_fn = '%s/out_dict.csv' % (self.model_dir)
+
+        # parse config
+
+        self.config = ConfigParser.RawConfigParser()
+        self.config.read(ini_fn)
+
+        self.lang   = self.config.get("training", "lang")
 
         # load discourses from db, resolve non-unique inputs (implicit or of responses)
 
@@ -255,7 +264,7 @@ class NLPModel(object):
 
     def save_dicts(self):
 
-        with codecs.open(IN_DICT_FN, 'w', 'utf8') as f:
+        with codecs.open(self.in_dict_fn, 'w', 'utf8') as f:
 
             f.write("%d\n" % self.input_max_len)
 
@@ -263,9 +272,9 @@ class NLPModel(object):
 
                 f.write(u"%d;%s\n" % (self.input_dict[k], k))
 
-        logging.info ('%s written.', IN_DICT_FN)
+        logging.info ('%s written.', self.in_dict_fn)
 
-        with codecs.open(OUT_DICT_FN, 'w', 'utf8') as f:
+        with codecs.open(self.out_dict_fn, 'w', 'utf8') as f:
 
             f.write("%d\n" % self.output_max_len)
 
@@ -273,11 +282,11 @@ class NLPModel(object):
 
                 f.write(u"%d;%s\n" % (self.output_dict[k], k))
 
-        logging.info ('%s written.', OUT_DICT_FN)
+        logging.info ('%s written.', self.out_dict_fn)
 
     def load_dicts(self):
 
-        with codecs.open(IN_DICT_FN, 'r', 'utf8') as f:
+        with codecs.open(self.in_dict_fn, 'r', 'utf8') as f:
 
             self.input_max_len = int(f.readline().rstrip())
 
@@ -294,9 +303,9 @@ class NLPModel(object):
 
                 self.input_dict[parts[1]] = int(parts[0])
 
-        logging.info ('%s read, %d entries, output_max_len=%d.' % (IN_DICT_FN, len(self.input_dict), self.input_max_len))
+        logging.info ('%s read, %d entries, output_max_len=%d.' % (self.in_dict_fn, len(self.input_dict), self.input_max_len))
 
-        with codecs.open(OUT_DICT_FN, 'r', 'utf8') as f:
+        with codecs.open(self.out_dict_fn, 'r', 'utf8') as f:
 
             self.output_max_len = int(f.readline().rstrip())
 
@@ -313,7 +322,7 @@ class NLPModel(object):
 
                 self.output_dict[parts[1]] = int(parts[0])
 
-        logging.info ('%s read, %d entries, output_max_len=%d.' % (OUT_DICT_FN, len(self.output_dict), self.output_max_len))
+        logging.info ('%s read, %d entries, output_max_len=%d.' % (self.out_dict_fn, len(self.output_dict), self.output_max_len))
 
     def compute_x(self, txt):
 
@@ -351,26 +360,28 @@ class NLPModel(object):
 
         # return y
 
-    def create_tf_model(self, tf_session, layer_size                 = LAYER_SIZE, 
-                                          num_layers                 = NUM_LAYERS, 
-                                          max_gradient_norm          = MAX_GRADIENT_NORM, 
-                                          batch_size                 = BATCH_SIZE,
-                                          learning_rate              = LEARNING_RATE, 
-                                          learning_rate_decay_factor = LEARNING_RATE_DECAY_FACTOR, 
-                                          use_lstm                   = USE_LSTM,
+    def create_tf_model(self, tf_session, use_lstm                   = USE_LSTM,
                                           num_samples                = NUM_SAMPLES, 
                                           forward_only               = FORWARD_ONLY):
 
+
+        layer_size                 = int(self.config.get  ('model', 'layer_size'))
+        num_layers                 = int(self.config.get  ('model', 'num_layers'))
+        max_gradient_norm          = float(self.config.get('model', 'max_gradient_norm'))
+        batch_size                 = int(self.config.get  ('model', 'batch_size'))
+        learning_rate              = float(self.config.get('model', 'learning_rate'))
+        learning_rate_decay_factor = float(self.config.get('model', 'learning_rate_decay_factor'))
+
         logging.info("creating seq2seq model: %d layers of %d units." % (num_layers, layer_size))
 
-        print len(self.input_dict), len(self.output_dict), BUCKETS, layer_size, num_layers, max_gradient_norm, batch_size, learning_rate, learning_rate_decay_factor, num_samples, forward_only
+        print len(self.input_dict), len(self.output_dict), self.buckets, layer_size, num_layers, max_gradient_norm, batch_size, learning_rate, learning_rate_decay_factor, num_samples, forward_only
 
         # 20000 20000 [(5, 10), (10, 15), (20, 25), (40, 50)] 128 1 5.0 64 0.5 0.99 True
         #   103    59 [(7, 4), (14, 8)]                       128 1 5.0 64 0.5 0.99 32 True
 
         self.model = seq2seq_model.Seq2SeqModel( len(self.input_dict), 
                                                  len(self.output_dict),
-                                                 BUCKETS, 
+                                                 self.buckets, 
                                                  layer_size, 
                                                  num_layers, 
                                                  max_gradient_norm, 
@@ -384,12 +395,16 @@ class NLPModel(object):
 
         return self.model
 
-    def save_model (self, tf_session, fn=CKPT_FN):
+    def save_model (self, tf_session, fn=None):
+        if not fn:
+            fn = self.model_fn
         # self.model.saver.save(tf_session, fn, global_step=self.model.global_step)
         self.model.saver.save(tf_session, fn)
         logging.info("model saved to %s ." % fn)
 
-    def load_model(self, tf_session, fn=CKPT_FN):
+    def load_model(self, tf_session, fn=None):
+        if not fn:
+            fn = self.model_fn
         self.model.saver.restore(tf_session, fn)
         logging.info("model restored from %s ." % fn)
 
@@ -419,7 +434,31 @@ class NLPModel(object):
         return 'X'
 
 
-    def train(self, num_steps):
+    def train(self):
+
+        #
+        # get config
+        #
+
+        num_steps = int(self.config.get("training", "num_steps"))
+
+        self.buckets = []
+
+        bucket_idx = 1
+        while True:
+            bucket_id = 'bucket%02d' % bucket_idx
+            if not self.config.has_option('model', bucket_id):
+                break
+
+            bucket_str = self.config.get('model', bucket_id)
+            parts      = bucket_str.split(',')
+            if len(parts) != 2:
+                raise Exception ('Error parsing bucket specification for %s: 2 numbers separated by comma expected, got: "%s"' % (bucket_id, bucket_str))
+
+            self.buckets.append((int(parts[0]), int(parts[1])))
+
+            bucket_idx += 1
+
 
         #
         # 2D diagram of available data
@@ -466,8 +505,8 @@ class NLPModel(object):
 
         logging.info("computing datasets...")
 
-        ds_train = [[] for _ in BUCKETS]
-        ds_dev   = [[] for _ in BUCKETS]
+        ds_train = [[] for _ in self.buckets]
+        ds_dev   = [[] for _ in self.buckets]
 
         cnt = 0
         for inp, resp in self.drs.iteritems():
@@ -485,7 +524,7 @@ class NLPModel(object):
 
             bucket_found = False
 
-            for bucket_id, (x_size, y_size) in enumerate(BUCKETS):
+            for bucket_id, (x_size, y_size) in enumerate(self.buckets):
                 if len(x) < x_size and len(y) < y_size:
                     data_set[bucket_id].append([x, y])
                     bucket_found = True
@@ -496,14 +535,14 @@ class NLPModel(object):
 
             cnt += 1
 
-        train_bucket_sizes = [len(ds_train[b]) for b in xrange(len(BUCKETS))]
+        train_bucket_sizes = [len(ds_train[b]) for b in xrange(len(self.buckets))]
         train_total_size = float(sum(train_bucket_sizes))
 
-        dev_bucket_sizes = [len(ds_dev[b]) for b in xrange(len(BUCKETS))]
+        dev_bucket_sizes = [len(ds_dev[b]) for b in xrange(len(self.buckets))]
         dev_total_size = float(sum(dev_bucket_sizes))
 
         for i, tbs in enumerate(train_bucket_sizes):
-            logging.info('bucket %-10s train: %6d samples, dev: %6d samples' % (repr(BUCKETS[i]), tbs, dev_bucket_sizes[i]))
+            logging.info('bucket %-10s train: %6d samples, dev: %6d samples' % (repr(self.buckets[i]), tbs, dev_bucket_sizes[i]))
 
         logging.info("total num samples: %d, train: %s, dev: %s" % (cnt, repr(train_bucket_sizes), repr(dev_bucket_sizes)))
         # logging.debug("ds_train: %s" % repr(ds_train))
@@ -523,80 +562,95 @@ class NLPModel(object):
         config.gpu_options.allocator_type = 'BFC'
 
         with tf.Session(config=config) as tf_session:
+            with open('%s/train.log' % self.model_dir, 'w') as logf:
 
-            tf_model = self.create_tf_model(tf_session)
+                tf_model = self.create_tf_model(tf_session)
 
-            # this is the training loop
+                # this is the training loop
 
-            step_time, loss, best_loss = 0.0, 0.0, 100000.0
-            current_step    = 0
-            best_step       = 0
-            previous_losses = []
-            while tf_model.global_step.eval() <= num_steps:
-                # Choose a bucket according to data distribution. We pick a random number
-                # in [0, 1] and use the corresponding interval in trainBUCKETS_scale.
-                random_number_01 = np.random.random_sample()
-                bucket_id = min([i for i in xrange(len(train_buckets_scale))
-                                 if train_buckets_scale[i] > random_number_01])
-         
-                # logging.debug("chose bucket id %d" % bucket_id)
+                step_time, loss, best_loss = 0.0, 0.0, 100000.0
+                current_step    = 0
+                best_step       = 0
+                previous_losses = []
+                while tf_model.global_step.eval() <= num_steps:
+                    # Choose a bucket according to data distribution. We pick a random number
+                    # in [0, 1] and use the corresponding interval in trainBUCKETS_scale.
+                    random_number_01 = np.random.random_sample()
+                    bucket_id = min([i for i in xrange(len(train_buckets_scale))
+                                     if train_buckets_scale[i] > random_number_01])
+             
+                    # logging.debug("chose bucket id %d" % bucket_id)
 
-                # get a batch and make a step
+                    # get a batch and make a step
 
-                start_time = time()
-                encoder_inputs, decoder_inputs, target_weights = tf_model.get_batch(ds_train, bucket_id)
-          
-                # print ("encoder_inputs: %s, decoder_inputs: %s, target_weigths: %s" % (encoder_inputs, decoder_inputs, target_weights))
-          
-                _, step_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, False)
+                    start_time = time()
+                    encoder_inputs, decoder_inputs, target_weights = tf_model.get_batch(ds_train, bucket_id)
+              
+                    # print ("encoder_inputs: %s, decoder_inputs: %s, target_weigths: %s" % (encoder_inputs, decoder_inputs, target_weights))
+              
+                    _, step_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, False)
 
-                step_time += (time() - start_time) / STEPS_PER_STAT
-                loss += step_loss / STEPS_PER_STAT
-                current_step += 1
-          
-                if current_step % STEPS_PER_STAT == 0:
+                    step_time += (time() - start_time) / STEPS_PER_STAT
+                    loss += step_loss / STEPS_PER_STAT
+                    current_step += 1
+              
+                    if current_step % STEPS_PER_STAT == 0:
 
-                    # print statistics for the previous epoch.
-                    perplexity = math.exp(loss) if loss < 300 else float('inf')
-                    logging.info ("global step %6d learning rate %.4f step-time %.4fs perplexity %.4f" % \
-                                  (tf_model.global_step.eval(), tf_model.learning_rate.eval(), step_time, perplexity))
+                        # print statistics for the previous epoch.
+                        perplexity = math.exp(loss) if loss < 300 else float('inf')
 
-                    # decrease learning rate if no improvement was seen over last 3 times.
-                    if len(previous_losses) > 2 and loss > max(previous_losses[-3:]):
-                        tf_session.run(tf_model.learning_rate_decay_op)
+                        log_str = "global step %6d/%6d learning rate %.4f step-time %.4fs perplexity %.4f" % \
+                                  (tf_model.global_step.eval(), num_steps, tf_model.learning_rate.eval(), step_time, perplexity)
 
-                    previous_losses.append(loss)
-                    step_time, loss = 0.0, 0.0
-           
-                    sum_loss = 0.0
-            
-                    # run evals on development set and print their perplexity.
-                    for bucket_id in xrange(len(BUCKETS)):
-                        if len(ds_dev[bucket_id]) == 0:
-                            logging.info("  eval: empty bucket %d" % (bucket_id))
-                            continue
+                        logging.info (log_str)
+                        logf.write(log_str + '\n')
 
-                        encoder_inputs, decoder_inputs, target_weights = tf_model.get_batch( ds_dev, bucket_id)
-                        _, eval_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
-                        eval_ppx = math.exp(eval_loss) if eval_loss < 300 else float('inf')
-                        logging.info("  eval: bucket %d perplexity %.4f" % (bucket_id, eval_ppx))
-                        
-                        sum_loss += eval_loss
+                        # decrease learning rate if no improvement was seen over last 3 times.
+                        if len(previous_losses) > 2 and loss > max(previous_losses[-3:]):
+                            tf_session.run(tf_model.learning_rate_decay_op)
 
-                    if sum_loss < best_loss:
-                        best_loss = sum_loss
-                        best_step = tf_model.global_step.eval()
-                        logging.info("*** best eval result so far (loss: %f)" % (sum_loss))
-                        if best_step >= num_steps/2:
-                            logging.info("saving mode to %s ..." % CKPT_FN)
-                            self.save_model(tf_session, CKPT_FN)
-                    else:
-                        logging.info("         eval result        (loss: %f, best loss: %f from step %d)" % (sum_loss, best_loss, best_step))
+                        previous_losses.append(loss)
+                        step_time, loss = 0.0, 0.0
+               
+                        sum_loss = 0.0
+                
+                        # run evals on development set and print their perplexity.
+                        for bucket_id in xrange(len(self.buckets)):
+                            if len(ds_dev[bucket_id]) == 0:
+                                logging.info("  eval: empty bucket %d" % (bucket_id))
+                                continue
 
-                    sys.stdout.flush()
+                            encoder_inputs, decoder_inputs, target_weights = tf_model.get_batch( ds_dev, bucket_id)
+                            _, eval_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+                            eval_ppx = math.exp(eval_loss) if eval_loss < 300 else float('inf')
 
-            logging.info("training finished.")
+                            log_str = "  eval: bucket %d perplexity %.4f" % (bucket_id, eval_ppx)
+                            logging.info(log_str)
+                            logf.write(log_str + '\n')
+                            
+                            sum_loss += eval_loss
 
-            # self.save_model(tf_session, CKPT_FN)
+                        if sum_loss < best_loss:
+                            best_loss = sum_loss
+                            best_step = tf_model.global_step.eval()
+
+                            log_str = "*** best eval result so far (loss: %f)" % (sum_loss)
+                            logging.info(log_str)
+                            logf.write(log_str + '\n')
+
+                            if best_step >= num_steps/2:
+                                logging.info("saving model to %s ..." % self.model_fn)
+                                self.save_model(tf_session, self.model_fn)
+                        else:
+                            log_str = "         eval result        (loss: %f, best loss: %f from step %d)" % (sum_loss, best_loss, best_step)
+                            logging.info(log_str)
+                            logf.write(log_str + '\n')
+
+                        sys.stdout.flush()
+                    logf.flush()
+
+                logging.info("training finished.")
+
+                # self.save_model(tf_session, CKPT_FN)
 
 

@@ -328,10 +328,6 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
-           help="language, default: en")
-    @cmdln.option ("-n", "--num-steps", dest="num_steps", type = "int", default=50000,
-           help="number of training steps, default: 50000")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_train(self, subcmd, opts, *paths):
@@ -341,12 +337,15 @@ class AICli(cmdln.Cmdln):
         ${cmd_option_list}
         """
 
+        if len(paths) != 1:
+            raise Exception ("You need to specify exactly one model ini file")
+
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.train (opts.num_steps, opts.lang)
+        self.kernal.train (paths[0])
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

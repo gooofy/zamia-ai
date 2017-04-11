@@ -6,6 +6,7 @@ syntax: glob
 tmp
 old
 data
+models
 *.log
 TODO
 NOTES

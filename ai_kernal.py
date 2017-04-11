@@ -99,7 +99,7 @@ class AIKernal(object):
 
 
     # FIXME: this will work only on the first call
-    def setup_tf_model (self, forward_only, load_model):
+    def setup_tf_model (self, forward_only, load_model, lang):
 
         if not self.tf_session:
 
@@ -115,7 +115,7 @@ class AIKernal(object):
 
             from nlp_model import NLPModel
 
-            self.nlp_model = NLPModel(self.session)
+            self.nlp_model = NLPModel(self.session, lang)
 
             if load_model:
 
@@ -662,9 +662,9 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def train (self, num_steps):
+    def train (self, num_steps, lang):
 
-        self.setup_tf_model (False, False)
+        self.setup_tf_model (False, False, lang)
         self.nlp_model.train(num_steps)
 
 

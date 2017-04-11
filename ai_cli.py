@@ -328,6 +328,8 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
+           help="language, default: en")
     @cmdln.option ("-n", "--num-steps", dest="num_steps", type = "int", default=50000,
            help="number of training steps, default: 50000")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -344,7 +346,7 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.train (opts.num_steps)
+        self.kernal.train (opts.num_steps, opts.lang)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

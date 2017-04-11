@@ -65,12 +65,44 @@ CKPT_FN      = 'data/nlp_model.ckpt'
 #            (16, 35),
 # 
 #           ]
+
+#     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+#  0
+#  1        ;  .  .
+#  2        o  ;  ;  .
+#  3        o  *  o  ;  .     ;           .           .
+#  4        *  X  *  ;  .     ;           .           .
+#  5        *  *  *  o  .  .  ;           .           .
+#  6        *  o  *  ;     .  .
+#  7        *  o  *  ;
+#  8        *  o  *  ;
+#  9        *  ;  *  ;
+# 10        *  ;  *  ;
+# 11        *  ;  *  ;
+# 12        *  ;  *  .
+# 13        o  ;  o
+# 14        o  ;  o
+# 15        ;  ;  o
+# 16        ;  ;  o
+# 17        .  ;  o
+# 18        ;  ;  ;
+# 19              .
+
+
 BUCKETS = [
-           ( 8, 4), 
-           ( 8, 9), 
-#           (16, 4), 
-           (19, 9), 
+           ( 5,  4), 
+           ( 7,  5), 
+           #( 7, 17), 
+           (12,  6), 
+           #(20,  6), 
+           (20, 17), 
           ]
+# BUCKETS = [
+#            ( 8, 4), 
+#            ( 8, 13), 
+#            ( 6, 17), 
+#            (20, 9), 
+#           ]
 
 
 
@@ -91,32 +123,64 @@ FORWARD_ONLY               = False
 
 class NLPModel(object):
 
-    def __init__(self, session, input_dim = 16 ):
+    def __init__(self, session, lang ):
         self.session   = session
-        self.input_dim = input_dim
+        self.lang      = lang
 
-    def compute_input_hist(self):
+        # load discourses from db, resolve non-unique inputs (implicit or of responses)
 
-        hist = {}
+        self.drs = {} 
 
-        for dr in self.session.query(model.DiscourseRound).all():
+        for dr in self.session.query(model.DiscourseRound).filter(model.DiscourseRound.lang==self.lang):
 
-            tokens = tokenize (dr.inp)
+            inp = ' '.join(tokenize (dr.inp))
 
-            if not (len(tokens) in hist):
-                hist[len(tokens)] = 0
+            if not inp in self.drs:
+                self.drs[inp] = set()
 
-            hist[len(tokens)] += 1
-            
-        return hist
+            self.drs[inp].add(dr.resp)
+
+        # implicit or responses:
+
+        for inp in self.drs:
+            self.drs[inp] = reduce (lambda a,b: a+';or;'+b, self.drs[inp])
+
+        # cnt = 0
+        # for inp in self.drs:
+        #     print inp, '->', self.drs[inp]
+        #     cnt += 1
+        #     if cnt>100:
+        #         sys.exit(1)
+
+    def compute_2d_diagram(self):
+
+        dia = []
+
+        for inp, resp in self.drs.iteritems():
+
+            inp_len   = len(tokenize (inp))
+            resp_len  = len(resp.split(';')) + 1 # +1 because EOS_ID gets appended later
+
+            while len(dia)<=inp_len:
+                dia.append([])
+
+            while len(dia[inp_len])<=resp_len:
+                dia[inp_len].append(0)
+
+            dia[inp_len][resp_len] += 1
+
+            # if inp_len == 8 and 'tallinn' in inp:
+            #     print "2d diagram: %d -> %d %s %s" % (inp_len, resp_len, inp, resp)
+
+        return dia
 
     def compute_output_hist(self):
 
         hist = {}
 
-        for dr in self.session.query(model.DiscourseRound).all():
+        for inp, resp in self.drs.iteritems():
 
-            preds = dr.resp.split(';')
+            preds = resp.split(';')
 
             if not (len(preds) in hist):
                 hist[len(preds)] = 0
@@ -142,11 +206,12 @@ class NLPModel(object):
 
         unique = True
 
-        for dr in self.session.query(model.DiscourseRound).all():
+        
+        for inp, resp in self.drs.iteritems():
 
             # input
 
-            tokens = tokenize (dr.inp)
+            tokens = tokenize (inp)
 
             # enforce unique inputs
             inputs = u' '.join(tokens)
@@ -168,7 +233,7 @@ class NLPModel(object):
 
             # output
 
-            preds = dr.resp.split(';')
+            preds = resp.split(';')
             l = len(preds) + 1 # +1 to account for _EOS token
 
             if l > self.output_max_len:
@@ -338,7 +403,39 @@ class NLPModel(object):
     #     return iter(sorted(self.segments))
 
 
+    def _ascii_art(self, n):
+
+        if n == 0:
+            return ' '
+        if n < 10:
+            return '.'
+        if n < 100:
+            return ';'
+        if n < 1000:
+            return 'o'
+        if n < 10000:
+            return '*'
+
+        return 'X'
+
+
     def train(self, num_steps):
+
+        #
+        # 2D diagram of available data
+        #
+
+        dia = self.compute_2d_diagram()
+
+              # 3     o  *  o  ;  .     ;           .           .
+        print "    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20"
+
+        for inp_len in range(len(dia)):
+            print '%2d' % inp_len,
+            for n in dia[inp_len]:
+                print ' ' + self._ascii_art(n),
+            print
+
 
         #
         # create input/output dicts
@@ -349,19 +446,19 @@ class NLPModel(object):
         self.compute_dicts()
         self.save_dicts()
 
-        #
-        # input and output histograms
-        #
+        # #
+        # # input and output histograms
+        # #
 
-        hist = self.compute_input_hist()
+        # hist = self.compute_input_hist()
 
-        for l in hist:
-            logging.debug(" input histogram len=%6d : %8d samples." % (l, hist[l]))
+        # for l in hist:
+        #     logging.debug(" input histogram len=%6d : %8d samples." % (l, hist[l]))
 
-        hist = self.compute_output_hist()
+        # hist = self.compute_output_hist()
 
-        for l in hist:
-            logging.debug(" output histogram len=%6d : %8d samples." % (l, hist[l]))
+        # for l in hist:
+        #     logging.debug(" output histogram len=%6d : %8d samples." % (l, hist[l]))
 
         #
         # compute datasets
@@ -373,12 +470,12 @@ class NLPModel(object):
         ds_dev   = [[] for _ in BUCKETS]
 
         cnt = 0
-        for dr in self.session.query(model.DiscourseRound).all():
+        for inp, resp in self.drs.iteritems():
 
-            x = self.compute_x(dr.inp)
+            x = self.compute_x(inp)
             # print dr.inp, x
 
-            y = self.compute_y(dr.resp)
+            y = self.compute_y(resp)
             # print dr.resp, y
 
             if cnt % 10 == 9:
@@ -395,7 +492,7 @@ class NLPModel(object):
                     break
 
             if not bucket_found:
-                raise Exception ('ERROR: no bucket found for %d -> %d (%s -> %s)' % (len(x), len(y), dr.inp, dr.resp))
+                raise Exception ('ERROR: no bucket found for %d -> %d (%s -> %s)' % (len(x), len(y), inp, resp))
 
             cnt += 1
 

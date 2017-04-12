@@ -379,6 +379,7 @@ class AIKernal(object):
         self.kb.addN_resolve(quads)
 
         self.prolog_rt.reset_actions()
+        self.prolog_rt.set_trace(trace)
 
         if test_mode:
 
@@ -389,91 +390,61 @@ class AIKernal(object):
 
                 logging.info("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
                 
-                c = self.parser.parse_line_clause_body(prolog_s)
-                # logging.debug( "Parse result: %s" % c)
+        else:
 
-                # logging.debug( "Searching for c: %s" % c )
+            x = self.nlp_model.compute_x(utterance)
 
-                solutions = self.prolog_rt.search(c)
+            logging.debug("x: %s -> %s" % (utterance, x))
 
-                # if len(solutions) == 0:
-                #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
-            
-                # print "round %d utterances: %s" % (round_num, repr(prolog_rt.get_utterances())) 
+            # which bucket does it belong to?
+            bucket_id = min([b for b in xrange(len(self.nlp_model.buckets)) if self.nlp_model.buckets[b][0] > len(x)])
+
+            # get a 1-element batch to feed the sentence to the model
+            encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
+
+            # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
+
+            # get output logits for the sentence
+            _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+
+            logging.debug("output_logits: %s" % repr(output_logits))
+
+            # this is a greedy decoder - outputs are just argmaxes of output_logits.
+            outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
+
+            # print "outputs", outputs
+
+            preds = map (lambda o: self.inv_output_dict[o], outputs)
+            logging.debug("preds: %s" % repr(preds))
+
+            prolog_s = ''
+
+            for p in preds:
+
+                if p[0] == '_':
+                    continue # skip _EOS
+
+                # FIXME: implicit or
+
+                if len(prolog_s)>0:
+                    prolog_s += ', '
+                prolog_s += p
+
+            logging.debug('?- %s' % prolog_s)
+
+        c = self.parser.parse_line_clause_body(prolog_s)
+        # logging.debug( "Parse result: %s" % c)
+
+        # logging.debug( "Searching for c: %s" % c )
+
+        solutions = self.prolog_rt.search(c)
+
+        # if len(solutions) == 0:
+        #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+    
+        # print "round %d utterances: %s" % (round_num, repr(prolog_rt.get_utterances())) 
 
         return self.prolog_rt.get_actions()
-
-    # FIXME: merge into process_input
-    def process_line(self, line):
-
-        self.setup_tf_model (True, True)
-        from nlp_model import BUCKETS
-
-        x = self.nlp_model.compute_x(line)
-
-        logging.debug("x: %s -> %s" % (line, x))
-
-        # which bucket does it belong to?
-        bucket_id = min([b for b in xrange(len(BUCKETS)) if BUCKETS[b][0] > len(x)])
-
-        # get a 1-element batch to feed the sentence to the model
-        encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
-
-        # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
-
-        # get output logits for the sentence
-        _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
-
-        logging.debug("output_logits: %s" % repr(output_logits))
-
-        # this is a greedy decoder - outputs are just argmaxes of output_logits.
-        outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
-
-        # print "outputs", outputs
-
-        preds = map (lambda o: self.inv_output_dict[o], outputs)
-        logging.debug("preds: %s" % repr(preds))
-
-        prolog_s = ''
-
-        for p in preds:
-
-            if p[0] == '_':
-                continue # skip _EOS
-
-            if len(prolog_s)>0:
-                prolog_s += ', '
-            prolog_s += p
-
-        logging.debug('?- %s' % prolog_s)
-
-        try:
-            c = self.parser.parse_line_clause_body(prolog_s)
-            logging.debug( "Parse result: %s" % c)
-
-            self.prolog_rt.reset_actions()
-
-            self.prolog_rt.search(c)
-
-            abufs = self.prolog_rt.get_actions()
-
-            # if we have multiple abufs, pick one at random
-
-            if len(abufs)>0:
-
-                abuf = random.choice(abufs)
-
-                self.prolog_rt.execute_builtin_actions(abuf)
-
-                self.db.commit()
-
-                return abuf
-
-        except PrologError as e:
-
-            logging.error("*** ERROR: %s" % e)
-
-        return None
 
     def test_module (self, module_name, trace=False):
 

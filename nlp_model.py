@@ -161,6 +161,24 @@ class NLPModel(object):
         #     if cnt>100:
         #         sys.exit(1)
 
+        self.buckets = []
+
+        bucket_idx = 1
+        while True:
+            bucket_id = 'bucket%02d' % bucket_idx
+            if not self.config.has_option('model', bucket_id):
+                break
+
+            bucket_str = self.config.get('model', bucket_id)
+            parts      = bucket_str.split(',')
+            if len(parts) != 2:
+                raise Exception ('Error parsing bucket specification for %s: 2 numbers separated by comma expected, got: "%s"' % (bucket_id, bucket_str))
+
+            self.buckets.append((int(parts[0]), int(parts[1])))
+
+            bucket_idx += 1
+
+
     def compute_2d_diagram(self):
 
         dia = []
@@ -441,24 +459,6 @@ class NLPModel(object):
         #
 
         num_steps = int(self.config.get("training", "num_steps"))
-
-        self.buckets = []
-
-        bucket_idx = 1
-        while True:
-            bucket_id = 'bucket%02d' % bucket_idx
-            if not self.config.has_option('model', bucket_id):
-                break
-
-            bucket_str = self.config.get('model', bucket_id)
-            parts      = bucket_str.split(',')
-            if len(parts) != 2:
-                raise Exception ('Error parsing bucket specification for %s: 2 numbers separated by comma expected, got: "%s"' % (bucket_id, bucket_str))
-
-            self.buckets.append((int(parts[0]), int(parts[1])))
-
-            bucket_idx += 1
-
 
         #
         # 2D diagram of available data

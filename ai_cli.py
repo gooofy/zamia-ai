@@ -35,10 +35,11 @@ import psycopg2
 
 import model
 
-from zamiaprolog.logic  import Predicate
-from zamiaprolog.errors import PrologError
-from ai_kernal          import AIKernal
-from nltools            import misc
+from zamiaprolog.logic   import Predicate
+from aiprolog.runtime    import USER_PREFIX
+from zamiaprolog.errors  import PrologError, PrologRuntimeError
+from ai_kernal           import AIKernal
+from nltools             import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
 RDF_LIB_DUMP_PATH  = 'data/AIKB.n3'
@@ -349,6 +350,10 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+           help="enable tracing")
+    @cmdln.option ("-u", "--user", dest="username", type = "str", default="chat",
+           help="username, default: chat")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_chat(self, subcmd, opts, *paths):
@@ -358,12 +363,19 @@ class AICli(cmdln.Cmdln):
         ${cmd_option_list}
         """
 
+        if len(paths) != 1:
+            raise Exception ("You need to specify exactly one model ini file")
+
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.setup_tf_model(True, True)
+        for mn2 in self.kernal.all_modules:
+            self.kernal.load_module (mn2, run_init=True, run_trace=opts.run_trace)
+        self.kernal.setup_tf_model(True, True, paths[0])
+
+        user_uri = USER_PREFIX + opts.username
 
         while True:
 
@@ -372,18 +384,36 @@ class AICli(cmdln.Cmdln):
             if line == 'quit' or line == 'exit':
                 break
 
-            abuf = self.kernal.process_line(line)
+            try:
+                # abuf = self.kernal.process_line(line, opts.run_trace)
+                abufs = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, test_mode=False, trace=opts.run_trace)
 
-            if abuf:
+                for abuf in abufs:
+                    logging.debug ("abuf: %s" % repr(abuf))
 
-                for action in abuf['actions']:
-                    p = action[0]
-                    if not isinstance(p, Predicate):
-                        continue
-                    if p.name == 'say': 
-                        print "SAY", action[2]
-                    else:
-                        print "ACTION", action
+                # if we have multiple abufs, pick one at random
+
+                if len(abufs)>0:
+
+                    abuf = random.choice(abufs)
+
+                    self.kernal.prolog_rt.execute_builtin_actions(abuf)
+
+                    self.kernal.db.commit()
+
+                    for action in abuf['actions']:
+                        p = action[0]
+                        if not isinstance(p, Predicate):
+                            continue
+                        if p.name == 'say': 
+                            print "SAY", action[2]
+                        else:
+                            print "ACTION", action
+                            
+            except PrologRuntimeError as e:
+                print "huh - that did not compute (%s)" % e
+            except PrologError as e:
+                print "huh - that did not compute (%s)" % e
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

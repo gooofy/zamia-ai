@@ -599,7 +599,7 @@ class NLPModel(object):
                         # print statistics for the previous epoch.
                         perplexity = math.exp(loss) if loss < 300 else float('inf')
 
-                        log_str = "global step %6d/%6d learning rate %.4f step-time %.4fs perplexity %.4f" % \
+                        log_str = "global step %6d/%6d learning rate %.6f step-time %.6fs perplexity %.6f" % \
                                   (tf_model.global_step.eval(), num_steps, tf_model.learning_rate.eval(), step_time, perplexity)
 
                         logging.info (log_str)
@@ -624,7 +624,7 @@ class NLPModel(object):
                             _, eval_loss, _ = tf_model.step(tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
                             eval_ppx = math.exp(eval_loss) if eval_loss < 300 else float('inf')
 
-                            log_str = "  eval: bucket %d perplexity %.4f" % (bucket_id, eval_ppx)
+                            log_str = "  eval: bucket %d perplexity %.6f" % (bucket_id, eval_ppx)
                             logging.info(log_str)
                             logf.write(log_str + '\n')
                             
@@ -638,7 +638,7 @@ class NLPModel(object):
                             logging.info(log_str)
                             logf.write(log_str + '\n')
 
-                            if best_step >= num_steps/2:
+                            if best_step >= num_steps/5:
                                 logging.info("saving model to %s ..." % self.model_fn)
                                 self.save_model(tf_session, self.model_fn)
                         else:
@@ -652,5 +652,4 @@ class NLPModel(object):
                 logging.info("training finished.")
 
                 # self.save_model(tf_session, CKPT_FN)
-
 

@@ -6,7 +6,7 @@ nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (jemand|er|sie|mein Kollege|mein Chef|meine
              'nur gutes, hoffe ich?').
 
 nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (I love|I like|I want to have|I want|I hate|do you like|do you hate) (kids|children)?",
-             "Kids are the best; you can teach them to hate the things you hate. And they practically raise themselves, what with the internet and all.").
+             "Kids are the best - you can teach them to hate the things you hate. And they practically raise themselves, what with the internet and all.").
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (ich liebe|ich mag|ich hätte gerne|ich will|ich möchte|ich hasse|magst Du|hasst Du) kinder',
              'Kinder sind toll - man kann ihnen beibringen, die dinge zu hassen, die man selber hasst. Und sie wachsen ja praktisch von allein auf, so mit dem internet und allem.').
 

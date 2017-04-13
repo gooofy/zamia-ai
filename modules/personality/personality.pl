@@ -386,7 +386,7 @@ nlp_gen (de, '@SELF_ADDRESS_DE:LABEL besitzt du (eigentlich|wirklich|) humor',
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (sometimes|maybe|now|perhaps|) (in love|happy|fortunate|lucky|jubilant|able to love|shy|faithful|true|trusty|lonely|abnormal|kinky|jealous|sad|offended|sore|affronted|insulted) (too|by the way|)',
              answer (ai_has_little_emotion_yet, en)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|auch|) (vielleicht|manchmal|jetzt|) (verliebt|glücklich|liebesfäḧig|schüchtern|treu|einsam|abartig|neidisch|traurig|beleidigt)',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|auch|) (vielleicht|manchmal|jetzt|) (verliebt|glücklich|liebesfähig|schüchtern|treu|einsam|abartig|neidisch|traurig|beleidigt)',
              answer (ai_has_little_emotion_yet, de)).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (courteous|attentive) (sometimes|too|)',

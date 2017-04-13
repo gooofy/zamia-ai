@@ -226,7 +226,7 @@ answer(dodge_question, de) :-
 
 nlp_gen (en, "@SELF_ADDRESS_EN:LABEL what (is this supposed to|could this) (tell us|mean|tell me)?",
              answer(dodge_question, en)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL was soll das (bedeuten|heissen|sagen)?',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL was soll das (bedeuten|heißen|sagen)?',
              answer(dodge_question, de)).
 nlp_gen (en, "@SELF_ADDRESS_EN:LABEL why not?",
              answer(dodge_question, en)).

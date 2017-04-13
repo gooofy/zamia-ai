@@ -639,7 +639,7 @@ class AIKernal(object):
         self.nlp_model.train()
 
 
-    def dump_utterances (self, num_utterances, dictfn):
+    def dump_utterances (self, num_utterances, dictfn, lang, module):
 
         dic = None
         if dictfn:
@@ -653,7 +653,12 @@ class AIKernal(object):
 
         all_utterances = []
 
-        for dr in self.session.query(model.DiscourseRound):
+        req = self.session.query(model.DiscourseRound).filter(model.DiscourseRound.lang==lang)
+
+        if module and module != 'all':
+            req = req.filter(model.DiscourseRound.module==module)
+
+        for dr in req:
 
             if not dic:
                 all_utterances.append(dr.inp)
@@ -666,6 +671,7 @@ class AIKernal(object):
                     if not t in dic:
                         # print u"unknown word: %s in %s" % (t, dr.inp)
                         unk = True
+                        dic.add(t)
                         break
                 if not unk:
                     continue

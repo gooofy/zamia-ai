@@ -419,8 +419,10 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option ("-d", "--dict", dest="dictfn", type = "str", default=None,
            help="dictionary to use to detect unknown words, default: none")
-    # @cmdln.option ("-m", "--module", dest="module", type = "str", default='all',
-    #        help="extract utterances from specific module only, default: all modules")
+    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
+           help="language, default: en")
+    @cmdln.option ("-m", "--module", dest="module", type = "str", default='all',
+           help="extract utterances from specific module only, default: all modules")
     @cmdln.option ("-n", "--num-utterances", dest="num_utterances", type = "int", default=0,
            help="number of utterances to extract, default: 0 (all)")
     def do_utterances(self, subcmd, opts, *paths):
@@ -430,7 +432,7 @@ class AICli(cmdln.Cmdln):
         ${cmd_option_list}
         """
 
-        self.kernal.dump_utterances(opts.num_utterances, opts.dictfn)
+        self.kernal.dump_utterances(opts.num_utterances, opts.dictfn, opts.lang, opts.module)
 
 
 #

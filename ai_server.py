@@ -48,6 +48,7 @@ import sys
 import logging
 import traceback
 import json
+import random
 
 from time import time
 from optparse import OptionParser
@@ -56,7 +57,8 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 import model
 
-from ai_kernal import AIKernal
+from ai_kernal         import AIKernal
+from aiprolog.runtime  import USER_PREFIX
 
 PROC_TITLE        = 'ai_server'
 
@@ -70,7 +72,7 @@ class AIHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
 
-        global kernal
+        global kernal, user_uri
 
         logging.debug("POST %s" % self.path)
 
@@ -83,29 +85,49 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 line        = data['line']
 
-                abuf = kernal.process_line(line)
+                abufs = kernal.process_input(line, kernal.nlp_model.lang, user_uri, test_mode=False, trace=False)
 
-                logging.debug("abuf: %s" % repr(abuf)) 
+                for abuf in abufs:
+                    logging.debug ("abuf: %s" % repr(abuf))
 
-                if not abuf:
-                    raise Exception ('No abuf received.')
+                # if we have multiple abufs, pick one at random
 
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
+                if len(abufs)>0:
 
-                reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
+                    abuf = random.choice(abufs)
 
-                logging.debug("reply_actions: %s" % repr(reply_actions)) 
-                reply = {'actions': reply_actions }
+                    kernal.prolog_rt.execute_builtin_actions(abuf)
 
-                self.wfile.write(json.dumps(reply))
+                    kernal.db.commit()
+
+                    logging.debug("abuf: %s" % repr(abuf)) 
+
+                    if not abuf:
+                        raise Exception ('No abuf received.')
+
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+
+                    reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
+
+                    logging.debug("reply_actions: %s" % repr(reply_actions)) 
+                    reply = {'actions': reply_actions }
+
+                    self.wfile.write(json.dumps(reply))
+
+                else:
+
+                    logging.error('no abuf received for input %s' % line)
+
+                    self.send_response(401)
+                    self.end_headers()
 
             except:
 
                 logging.error(traceback.format_exc())
 
-                self.send_response(400)
+                self.send_response(402)
                 self.end_headers()
 
         else:
@@ -124,7 +146,7 @@ if __name__ == '__main__':
     # commandline
     #
 
-    parser = OptionParser("usage: %prog [options] ")
+    parser = OptionParser("usage: %prog [options] model")
 
     parser.add_option ("-v", "--verbose", action="store_true", dest="verbose",
                        help="verbose output")
@@ -135,6 +157,9 @@ if __name__ == '__main__':
     parser.add_option ("-p", "--port", dest="port", type = "int", default=server_port,
                        help="port, default: %d" % server_port)
 
+    parser.add_option ("-u", "--user", dest="username", type = "string", default='server',
+                       help="user, default: server")
+
     (options, args) = parser.parse_args()
 
     if options.verbose:
@@ -144,12 +169,20 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO)
         debug=False
 
+    if len(args) != 1:
+        parser.print_help()
+        sys.exit(42)
+
+    user_uri = USER_PREFIX + options.username
+
     #
     # setup nlp kernal
     #
 
     kernal = AIKernal()
-    kernal.setup_tf_model (True, True)
+    for mn2 in kernal.all_modules:
+        kernal.load_module (mn2, run_init=True)
+    kernal.setup_tf_model (True, True, args[0])
 
     #
     # run HTTP server

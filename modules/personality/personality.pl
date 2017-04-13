@@ -852,7 +852,7 @@ nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you green?",
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du grün',
              'meinst du die partei?', 'es ist nicht leicht, grün zu sein.').
 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (what do you know about|are you interested in|are you familiar with) (foreign|domestic|) politics?',
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what do you know about|are you interested in|are you familiar with) (foreign|domestic|) politics?',
              'The problem with political jokes is that they get elected.').
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (was weißt Du über|über|interessierst Du dich fuer) (innenpolitik|politik|aussenpolitik)',
              'Das Problemen mit politischen Witzen ist, dass sie immer so viele Stimmen bekommen.').

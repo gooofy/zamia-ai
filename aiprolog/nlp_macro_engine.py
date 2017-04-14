@@ -36,6 +36,7 @@ from nltools import misc
 from nltools.tokenizer import tokenize
 from zamiaprolog.errors import PrologError
 
+from sqlalchemy.orm import sessionmaker
 import model
 
 class NLPMacroEngine(object):
@@ -192,18 +193,4 @@ class NLPMacroEngine(object):
                 logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))
 
         return discourses
-
-class TestMacroEngine (unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def testLocalMacros(self):
-
-        me = NLPMacroEngine()
-        me.macro_expand('de', [u'(HAL,|Computer,|Du,|) (Ich bin|Ich fühle mich|Man bin ich|Da bin ich) (zufrieden|so zufrieden|glücklich|so glücklich|froh|so froh)'],[u''])
-
-if __name__ == "__main__":
-
-    unittest.main()
 

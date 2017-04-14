@@ -529,9 +529,9 @@ def builtin_action_rdf_assert(pe, args):
     arg_p = args[1]
     arg_o = args[2]
 
-    quads = [ (pl_to_rdf(arg_s, g.env, pe, {}, pe.kb), 
-               pl_to_rdf(arg_p, g.env, pe, {}, pe.kb), 
-               pl_to_rdf(arg_o, g.env, pe, {}, pe.kb),
+    quads = [ (pl_to_rdf(arg_s, {}, pe, {}, pe.kb), 
+               pl_to_rdf(arg_p, {}, pe, {}, pe.kb), 
+               pl_to_rdf(arg_o, {}, pe, {}, pe.kb),
                pe.context_gn) ]
 
     pe.kb.addN(quads)

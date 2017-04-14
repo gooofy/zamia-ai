@@ -27,9 +27,10 @@ from nltools import misc
 from sqlalchemy.orm import sessionmaker
 import model
 
-from zamiaprolog.logicdb import LogicDB
-from aiprolog.runtime    import AIPrologRuntime
-from aiprolog.parser     import AIPrologParser
+from zamiaprolog.logicdb       import LogicDB
+from aiprolog.runtime          import AIPrologRuntime
+from aiprolog.parser           import AIPrologParser
+from aiprolog.nlp_macro_engine import NLPMacroEngine
 
 from kb import AIKB
 
@@ -193,10 +194,24 @@ class TestAIProlog (unittest.TestCase):
     # @unittest.skip("temporarily disabled")
     def test_rdf_assert(self):
 
-        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:name, "Alice Green"), rdf(aiu:Alice, X, Y).')
+        clause = self.parser.parse_line_clause_body('rdf(aiu:Alice, X, Y).')
+        solutions = self.prolog_rt.search(clause)
+        self.assertEqual (len(solutions), 0)
+
+        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:name, "Alice Green"), eoa.')
         logging.debug('clause: %s' % clause)
         solutions = self.prolog_rt.search(clause)
         logging.debug('solutions: %s' % repr(solutions))
+
+        actions = self.prolog_rt.get_actions()
+        logging.debug('actions: %s' % repr(actions))
+
+        self.assertEqual (len(actions), 1)
+
+        self.prolog_rt.execute_builtin_actions(actions[0])
+
+        clause = self.parser.parse_line_clause_body('rdf(aiu:Alice, X, Y).')
+        solutions = self.prolog_rt.search(clause)
         self.assertEqual (len(solutions), 1)
         self.assertEqual (solutions[0]['X'].s, u'http://ai.zamia.org/kb/user/prop/name')
         self.assertEqual (solutions[0]['Y'].s, u'Alice Green')
@@ -204,15 +219,41 @@ class TestAIProlog (unittest.TestCase):
     # @unittest.skip("temporarily disabled")
     def test_rdf_assert_list(self):
 
-        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:topic, [1, "abc", wde:42]), rdf(aiu:Alice, aiup:topic, Y).')
+        clause = self.parser.parse_line_clause_body('rdf_assert (aiu:Alice, aiup:topic, [1, "abc", wde:42]), eoa.')
         logging.debug('clause: %s' % clause)
         solutions = self.prolog_rt.search(clause)
         logging.debug('solutions: %s' % repr(solutions))
+
+        actions = self.prolog_rt.get_actions()
+        logging.debug('actions: %s' % repr(actions))
+
+        self.assertEqual (len(actions), 1)
+
+        self.prolog_rt.execute_builtin_actions(actions[0])
+
+        clause = self.parser.parse_line_clause_body('rdf(aiu:Alice, aiup:topic, Y).')
+        logging.debug('clause: %s' % clause)
+        solutions = self.prolog_rt.search(clause)
+        logging.debug('solutions: %s' % repr(solutions))
+
         self.assertEqual (len(solutions), 1)
         self.assertEqual (len(solutions[0]['Y'].l), 3)
         self.assertEqual (solutions[0]['Y'].l[0].f, 1.0)
         self.assertEqual (solutions[0]['Y'].l[1].s, u'abc')
         self.assertEqual (solutions[0]['Y'].l[2].name, u'wde:42')
+
+class TestMacroEngine (unittest.TestCase):
+
+    def setUp(self):
+        Session = sessionmaker(bind=model.engine)
+        self.session = Session()
+
+    def testLocalMacros(self):
+
+        me = NLPMacroEngine(self.session)
+        discourses = me.macro_expand('de', u'(HAL,|Computer,|Du,|) (Ich bin|Ich fühle mich|Man bin ich|Da bin ich) (zufrieden|so zufrieden|glücklich|so glücklich|froh|so froh)', u'', None)
+
+        self.assertEqual(len(discourses), 96)
 
 
 if __name__ == "__main__":

@@ -33,8 +33,9 @@ import json
 from copy import copy
 
 from nltools import misc
-from nltools.tokenizer import tokenize
+from nltools.tokenizer  import tokenize
 from zamiaprolog.errors import PrologError
+from zamiaprolog.parser import NAME_CHARS_EXTENDED
 
 from sqlalchemy.orm import sessionmaker
 import model
@@ -184,7 +185,7 @@ class NLPMacroEngine(object):
                     j = i+1
 
                     while j<len(nlp_input2):
-                        if nlp_input2[j] == ' ':
+                        if not (nlp_input2[j] in NAME_CHARS_EXTENDED):
                             break
                         j += 1
                 

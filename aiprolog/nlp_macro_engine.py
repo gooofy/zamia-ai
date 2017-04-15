@@ -104,13 +104,13 @@ class NLPMacroEngine(object):
 
                 # print "macro_s: %s" % macro_s
 
-                macro_name = '__INTERNAL_MACRO_%06d__' % len(implicit_macros)
+                macro_name = 'MACRO_%d' % len(implicit_macros)
 
                 implicit_macros[macro_name] = []
                 for s in macro_s.split('|'):
-                    implicit_macros[macro_name].append({'w': s.strip()})
+                    implicit_macros[macro_name].append({'W': s.strip()})
 
-                nlp_input2 += '@' + macro_name + ':w '
+                nlp_input2 += '@' + macro_name + ':W '
 
                 i = j+2
             else:
@@ -170,16 +170,56 @@ class NLPMacroEngine(object):
 
                 # print 'mappings:', repr(mappings)
 
-                s = nlp_input2
-                p = response
+                # process input from left to right, keep track of tokens
+                # while expanding macros
 
-                # print s,p
+                i = 0
+                s = u''
+                while i<len(nlp_input2):
+                    if nlp_input2[i] != '@':
+                        s += nlp_input2[i]
+                        i += 1
+                        continue
+
+                    j = i+1
+
+                    while j<len(nlp_input2):
+                        if nlp_input2[j] == ' ':
+                            break
+                        j += 1
+                
+                    mexp = nlp_input2[i:j]
+
+                    mparts = mexp.split(':')
+                    if len(mparts) != 2:
+                        raise PrologError('invalid macro call detected: %s (@macroname:variable expected)' % mexp, location)
+                    mname = mparts[0][1:]
+                    if not mname in mappings:
+                        raise PrologError('undefined macro used: %s' % mname, location)
+                    mvar  = mparts[1]
+                    if not mvar in mappings[mname]:
+                        raise PrologError('undefined macro variable used: %s' % mexp, location)
+
+                    i = j
+
+                    tstart = len(tokenize(s, lang))
+                    s += mappings[mname][mvar]
+                    tend   = len(tokenize(s, lang))
+
+                    # logging.debug ('macro detected: "%s", tstart=%d, tend=%d' % (mexp, tstart, tend))
+                    # logging.debug ('macro detected: s=%s' % s)
+
+                    if not 'TSTART' in mappings[mname]:
+                        mappings[mname]['TSTART'] = str(tstart)
+                        mappings[mname]['TEND']   = str(tend)
+
+                p = response
 
                 for k in mappings:
 
                     for v in mappings[k]:
 
-                        s = s.replace('@'+k+':'+v, mappings[k][v])
+                        # s = s.replace('@'+k+':'+v, mappings[k][v])
                         p = p.replace('@'+k+':'+v, mappings[k][v])
 
                 inp_raw = misc.compress_ws(s.lstrip().rstrip())
@@ -190,7 +230,7 @@ class NLPMacroEngine(object):
                 discourse = (inp_tokenized, p)
                 discourses.append(discourse)
 
-                logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))
+                # logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))
 
         return discourses
 

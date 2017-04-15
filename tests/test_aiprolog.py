@@ -255,6 +255,16 @@ class TestMacroEngine (unittest.TestCase):
 
         self.assertEqual(len(discourses), 96)
 
+    def testMacroTokens(self):
+
+        me = NLPMacroEngine(self.session)
+        discourses = me.macro_expand('de', u'hallo (HAL|Computer|Du|lieber computer|) wie geht es dir (heute|)', 
+                                           u'foo @MACRO_0:TSTART bar @MACRO_0:TEND @MACRO_0:W baz @MACRO_1:TEND', None)
+
+        self.assertEqual(len(discourses), 10)
+        self.assertEqual(discourses[0][1], u'foo 1 bar 2 HAL baz 7')
+
+
 
 if __name__ == "__main__":
 

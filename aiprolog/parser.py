@@ -177,6 +177,8 @@ class AIPrologParser(PrologParser):
 
         ds = self.macro_engine.macro_expand(lang, nlp_input, response, clause.location)
 
+        rounds = []
+
         for inp, resp in ds:
 
             if len(inp.strip()) == 0:
@@ -205,12 +207,14 @@ class AIPrologParser(PrologParser):
                         raise PrologError(msg, clause.location)
 
 
-            dr = model.DiscourseRound( lang      = lang,
-                                       module    = module_name,
-                                       inp       = inp, 
-                                       resp      = resp)
-            self.db.session.add(dr)
+            rounds.append(model.DiscourseRound( lang      = lang,
+                                                module    = module_name,
+                                                inp       = inp, 
+                                                resp      = resp))
             cnt += 1
+
+        logging.debug (u'nlp_gen: %s bulk save...' % clause)
+        self.db.session.bulk_save_objects(rounds)
 
         logging.debug ("nlp_gen: %s: %d generating macro expansions generated." % (clause.location, cnt))
 

@@ -50,6 +50,8 @@ TEST_USER          = USER_PREFIX + u'test'
 TEST_TIME          = time.mktime(datetime.datetime(2016,12,06,13,28,6).timetuple())
 MAX_CONTEXT_LEN    = 6
 
+ACTION_VARNAME     = '__ACTION__'
+
 def builtin_context_get(g, pe):
 
     """ context_get(+Name, -Value) """
@@ -122,8 +124,6 @@ def builtin_action_context_push(pe, args):
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.push_context(key, value)
 
-
-ACTION_VARNAME       = '__ACTION__'
 
 def builtin_context_score(g, pe):
 
@@ -633,11 +633,11 @@ class AIPrologRuntime(PrologRuntime):
         self.action_buffer   = []
         self.builtin_actions = {}
 
-        self.register_builtin('action',          builtin_action)
-        self.register_builtin('eoa',             builtin_eoa)      # eoa: End Of Action ([+Score])
+        self.register_builtin          ('action',          builtin_action)   # 
+        self.register_builtin          ('eoa',             builtin_eoa)      # eoa: End Of Action ([+Score])
 
-        self.register_builtin('say',             builtin_say)      # shortcut for action(say, lang, str) (+Lang, +Str)
-        self.register_builtin('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa (+Lang, +Str, [+Score])
+        self.register_builtin          ('say',             builtin_say)      # shortcut for action(say, lang, str) (+Lang, +Str)
+        self.register_builtin          ('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa (+Lang, +Str, [+Score])
 
         #
         # context related functions and predicates

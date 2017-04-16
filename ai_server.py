@@ -120,6 +120,7 @@ class AIHandler(BaseHTTPRequestHandler):
 
                     logging.error('no abuf received for input %s' % line)
 
+                    self.wfile.write(json.dumps({'actions': [] }))
                     self.send_response(401)
                     self.end_headers()
 
@@ -127,10 +128,13 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 logging.error(traceback.format_exc())
 
+                self.wfile.write(json.dumps({'actions': [] }))
                 self.send_response(402)
                 self.end_headers()
 
         else:
+
+            self.wfile.write(json.dumps({'actions': [] }))
             self.send_response(400)
             self.end_headers()
 

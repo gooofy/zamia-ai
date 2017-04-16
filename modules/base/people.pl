@@ -27,10 +27,17 @@ answer (knownPerson, en, PERSON, LABEL) :-
 answer (knownPerson, de, PERSON, LABEL) :-
     say_eoa(de, 'Ja, der Name ist mir bekannt.').
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (do you know|do you happen to know|who is) @KNOWN_PERSONS_EN:LABEL',
+nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what about | do you know | do you happen to know | who is|what is) @KNOWN_PERSONS_EN:LABEL',
              answer(knownPerson, en, '@KNOWN_PERSONS_EN:PERSON', "@KNOWN_PERSONS_EN:LABEL")). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kennst du|wer ist) (eigentlich|) @KNOWN_PERSONS_DE:LABEL',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kennst du|wer ist|was ist|was weisst du über) (eigentlich|) @KNOWN_PERSONS_DE:LABEL',
              answer(knownPerson, de, '@KNOWN_PERSONS_DE:PERSON', "@KNOWN_PERSONS_DE:LABEL")). 
+
+nlp_test(de,
+         ivr(in('Kennst Du Angela Merkel?'),
+             out('Ja, der Name ist mir bekannt'))).
+nlp_test(en,
+         ivr(in('What about Angela Merkel?'),
+             out('That name sounds familiar'))).
 
 answer (birthplacePerson, en, PERSON, PERSON_LABEL) :-
     rdf (distinct, limit(1),

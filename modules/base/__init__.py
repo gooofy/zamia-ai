@@ -181,7 +181,7 @@ KB_SOURCES = [
                   u'wde:London',
                   u'wde:Paris',
                   u'wde:Reykjavík',
-                  u'wde:Oberwiesenthal'
+                  u'wde:Oberwiesenthal',
                   u'wde:Arnstorf',
                   u'wde:Hamburg',
                   u'wde:Brackenheim',

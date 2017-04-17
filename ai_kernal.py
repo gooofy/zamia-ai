@@ -421,13 +421,16 @@ class AIKernal(object):
 
             do_and = True
 
+            # import pdb; pdb.set_trace()
+
             for p in preds:
 
                 if p[0] == '_':
                     continue # skip _EOS
 
-                if p == 'or':
+                if p == u'or':
                     do_and = False
+                    continue
 
                 if len(prolog_s)>0:
                     if do_and:

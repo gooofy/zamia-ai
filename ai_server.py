@@ -120,7 +120,7 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 logging.error(traceback.format_exc())
 
-                abufs = kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
+                abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
                 abuf = random.choice(abufs)
 
                 logging.debug("abuf: %s" % repr(abuf)) 

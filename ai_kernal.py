@@ -419,16 +419,24 @@ class AIKernal(object):
 
             prolog_s = ''
 
+            do_and = True
+
             for p in preds:
 
                 if p[0] == '_':
                     continue # skip _EOS
 
-                # FIXME: implicit or
+                if p == 'or':
+                    do_and = False
 
                 if len(prolog_s)>0:
-                    prolog_s += ', '
+                    if do_and:
+                        prolog_s += ', '
+                    else:
+                        prolog_s += '; '
                 prolog_s += p
+
+                do_and = True
 
             logging.debug('?- %s' % prolog_s)
 

@@ -102,9 +102,6 @@ class AIHandler(BaseHTTPRequestHandler):
 
                     logging.debug("abuf: %s" % repr(abuf)) 
 
-                    if not abuf:
-                        raise Exception ('No abuf received.')
-
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
@@ -117,20 +114,27 @@ class AIHandler(BaseHTTPRequestHandler):
                     self.wfile.write(json.dumps(reply))
 
                 else:
-
-                    logging.error('no abuf received for input %s' % line)
-
-                    self.wfile.write(json.dumps({'actions': [] }))
-                    self.send_response(401)
-                    self.end_headers()
+                    raise Exception('no abuf received for input %s' % line)
 
             except:
 
                 logging.error(traceback.format_exc())
 
-                self.wfile.write(json.dumps({'actions': [] }))
-                self.send_response(402)
+                abufs = self.kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
+                abuf = random.choice(abufs)
+
+                logging.debug("abuf: %s" % repr(abuf)) 
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
                 self.end_headers()
+
+                reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
+
+                logging.debug("reply_actions: %s" % repr(reply_actions)) 
+                reply = {'actions': reply_actions }
+
+                self.wfile.write(json.dumps(reply))
 
         else:
 

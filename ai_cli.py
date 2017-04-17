@@ -385,7 +385,6 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                # abuf = self.kernal.process_line(line, opts.run_trace)
                 abufs = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, test_mode=False, trace=opts.run_trace)
 
                 for abuf in abufs:
@@ -410,10 +409,19 @@ class AICli(cmdln.Cmdln):
                         else:
                             print "ACTION", action
                             
-            except PrologRuntimeError as e:
-                print "huh - that did not compute (%s)" % e
-            except PrologError as e:
-                print "huh - that did not compute (%s)" % e
+            except Exception as e:
+                logging.error(traceback.format_exc())
+
+                abufs = self.kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
+
+                abuf = random.choice(abufs)
+
+                for action in abuf['actions']:
+                    p = action[0]
+                    if not isinstance(p, Predicate):
+                        continue
+                    if p.name == 'say': 
+                        print "SAY", action[2]
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

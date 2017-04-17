@@ -440,6 +440,8 @@ class AIKernal(object):
 
             logging.debug('?- %s' % prolog_s)
 
+        abufs = []
+
         c = self.parser.parse_line_clause_body(prolog_s)
         # logging.debug( "Parse result: %s" % c)
 
@@ -449,10 +451,28 @@ class AIKernal(object):
 
         # if len(solutions) == 0:
         #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
-    
+
         # print "round %d utterances: %s" % (round_num, repr(prolog_rt.get_utterances())) 
 
-        return self.prolog_rt.get_actions()
+        abufs = self.prolog_rt.get_actions()
+
+        return abufs
+
+    def do_eliza (self, utterance, utt_lang, trace=False):
+
+        """ produce eliza-style response """
+
+        logging.info ('producing ELIZA-style response for input %s' % utterance)
+
+        self.prolog_rt.reset_actions()
+        self.prolog_rt.set_trace(trace)
+
+        c = self.parser.parse_line_clause_body('answer(dodge_question, %s)' % utt_lang)
+        solutions = self.prolog_rt.search(c)
+        abufs = self.prolog_rt.get_actions()
+
+        return abufs
+
 
     def test_module (self, module_name, trace=False):
 

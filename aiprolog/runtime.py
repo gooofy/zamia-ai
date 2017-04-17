@@ -68,7 +68,7 @@ def builtin_context_get(g, pe):
 
     v = pe.read_context(key)
     if not v:
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         return False
 
     g.env[arg_v] = v

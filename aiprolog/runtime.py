@@ -618,6 +618,27 @@ def builtin_sparql_query(g, pe):
 
     return True
 
+def builtin_tokenize(g, pe):
+
+    """ tokenize (+Lang, +Str, -Tokens) """
+
+    pe._trace ('CALLED BUILTIN tokenize', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 3:
+        raise PrologRuntimeError('tokenize: 3 args expected.')
+
+    if not isinstance(args[0], Predicate):
+        raise PrologRuntimeError('tokenize: first argument: constant expected, %s found instead.' % repr(args[0]))
+
+    arg_str     = pe.prolog_get_string   (args[1], g.env)
+    arg_tokens  = pe.prolog_get_variable (args[2], g.env)
+
+    g.env[arg_tokens] = tokenize(arg_str, lang=args[0].name)
+
+    return True
+
 class AIPrologRuntime(PrologRuntime):
 
     def __init__(self, db, kb):
@@ -656,8 +677,13 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin          ('sparql_query',    builtin_sparql_query)
         self.register_builtin          ('rdf',             builtin_rdf)
         self.register_builtin          ('rdf_lists',       builtin_rdf_lists)
-        self.register_builtin_action   ('rdf_assert',      builtin_action_rdf_assert) # rdf_assert (+S, +P, +O)
+        self.register_builtin_action   ('rdf_assert',      builtin_action_rdf_assert)   # rdf_assert (+S, +P, +O)
         self.register_builtin          ('uriref',          builtin_uriref)
+
+        # natural language processing
+
+        self.register_builtin          ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
+
 
     def _builtin_action_wrapper (self, name, g, pe):
 

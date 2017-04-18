@@ -37,6 +37,7 @@ from zamiaprolog.errors  import PrologRuntimeError
 from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
 from pl2rdf              import pl_to_rdf, pl_literal_to_rdf, prolog_to_filter_expression, rdf_to_pl
 from nltools.tokenizer   import tokenize
+from nltools.misc        import edit_distance
 
 import model
 
@@ -635,7 +636,26 @@ def builtin_tokenize(g, pe):
     arg_str     = pe.prolog_get_string   (args[1], g.env)
     arg_tokens  = pe.prolog_get_variable (args[2], g.env)
 
-    g.env[arg_tokens] = tokenize(arg_str, lang=args[0].name)
+    g.env[arg_tokens] = ListLiteral(tokenize(arg_str, lang=args[0].name))
+
+    return True
+
+def builtin_edit_distance(g, pe):
+
+    """" edit_distance (+Tokens1, +Tokens2, -Distance) """
+
+    pe._trace ('CALLED BUILTIN edit_distance', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 3:
+        raise PrologRuntimeError('edit_distance: 3 args expected.')
+
+    arg_tok1  = pe.prolog_get_list     (args[0], g.env)
+    arg_tok2  = pe.prolog_get_list     (args[1], g.env)
+    arg_dist  = pe.prolog_get_variable (args[2], g.env)
+
+    g.env[arg_dist] = NumberLiteral(edit_distance(arg_tok1.l, arg_tok2.l))
 
     return True
 
@@ -683,6 +703,7 @@ class AIPrologRuntime(PrologRuntime):
         # natural language processing
 
         self.register_builtin          ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
+        self.register_builtin          ('edit_distance',   builtin_edit_distance)       # edit_distance (+Str1, +Str2, -Distance)
 
 
     def _builtin_action_wrapper (self, name, g, pe):

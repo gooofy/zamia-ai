@@ -10,3 +10,4 @@ models
 *.log
 TODO
 NOTES
+run_training.sh

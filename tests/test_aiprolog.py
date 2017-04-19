@@ -259,11 +259,17 @@ class TestMacroEngine (unittest.TestCase):
 
         me = NLPMacroEngine(self.session)
         discourses = me.macro_expand('de', u'hallo (HAL|Computer|Du|lieber computer|) wie geht es dir (heute|)', 
-                                           u'foo @MACRO_0:TSTART bar @MACRO_0:TEND @MACRO_0:W baz @MACRO_1:TEND?', None)
+                                           u'foo @MACRO_0:TSTART_W_0 bar @MACRO_0:TEND_W_0 @MACRO_0:W baz @MACRO_1:TEND_W_0?', None)
 
         self.assertEqual(len(discourses), 10)
         self.assertEqual(discourses[0][1], u'foo 1 bar 2 HAL baz 7?')
 
+        discourses = me.macro_expand('de', u'foobar what is the full name of (foo|donald trump)', 
+                                           u'foo @MACRO_0:TSTART_W_0 bar @MACRO_0:TEND_W_0', None)
+
+        self.assertEqual(len(discourses), 2)
+        self.assertEqual(discourses[0][1], u'foo 7 bar 8')
+        self.assertEqual(discourses[1][1], u'foo 7 bar 9')
 
 
 if __name__ == "__main__":

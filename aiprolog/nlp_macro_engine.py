@@ -30,7 +30,7 @@ import logging
 import re
 import unittest
 import json
-from copy import copy
+from copy import copy, deepcopy
 
 from nltools import misc
 from nltools.tokenizer  import tokenize
@@ -123,21 +123,24 @@ class NLPMacroEngine(object):
 
         # extract all macros used
 
+        nlp_tokens = tokenize (nlp_input2, lang=lang, keep_macros=True)
+
+        #logging.debug('nlp_tokens: %s' % repr(nlp_tokens))
+
         macro_names = set()
 
-        # print nlp_input
-
-        for pos, char in enumerate(nlp_input2):
-
-            if char == '@':
-
-                macro = re.match(r'@([A-Z0-9_]+):', nlp_input2[pos:])
-
-                # print "MACRO:", macro.group(1)
-
-                macro_names.add(macro.group(1))
-
-        # print "macro names used: %s" % macro_names
+        for i, token in enumerate(nlp_tokens):
+            if token[0] != '@':
+                continue
+            token = token.upper()
+            nlp_tokens[i] = token
+            parts = token[1:].split(':')
+            if len(parts) != 2:
+                raise PrologError('invalid macro call detected: %s (@macroname:variable expected)' % token, location)
+                
+            macro_names.add(parts[0])
+                
+        #logging.debug('macro names used: %s' % repr(macro_names))
 
         # generate all macro-expansions
 
@@ -169,66 +172,67 @@ class NLPMacroEngine(object):
 
                 # generate discourse_round for this set of mappings
 
-                # print 'mappings:', repr(mappings)
+                resp_mappings = deepcopy(mappings)
+
+                #logging.debug('mappings: %s' % repr(mappings))
 
                 # process input from left to right, keep track of tokens
                 # while expanding macros
 
-                i = 0
-                s = u''
-                while i<len(nlp_input2):
-                    if nlp_input2[i] != '@':
-                        s += nlp_input2[i]
-                        i += 1
+                s = []
+                for i, token in enumerate(nlp_tokens):
+
+                    if token[0] != '@':
+                        s.append(token)
                         continue
 
-                    j = i+1
-
-                    while j<len(nlp_input2):
-                        if not (nlp_input2[j] in NAME_CHARS_EXTENDED):
-                            break
-                        j += 1
-                
-                    mexp = nlp_input2[i:j]
+                    mexp = token[1:]
 
                     mparts = mexp.split(':')
                     if len(mparts) != 2:
                         raise PrologError('invalid macro call detected: %s (@macroname:variable expected)' % mexp, location)
-                    mname = mparts[0][1:]
+                    mname = mparts[0]
                     if not mname in mappings:
                         raise PrologError('undefined macro used: %s' % mname, location)
                     mvar  = mparts[1]
                     if not mvar in mappings[mname]:
                         raise PrologError('undefined macro variable used: %s' % mexp, location)
 
-                    i = j
-
-                    tstart = len(tokenize(s, lang))
-                    s += mappings[mname][mvar]
-                    tend   = len(tokenize(s, lang))
+                    tstart = len(s)
+                    s.extend(tokenize(mappings[mname][mvar], lang=lang))
+                    tend   = len(s)
 
                     # logging.debug ('macro detected: "%s", tstart=%d, tend=%d' % (mexp, tstart, tend))
                     # logging.debug ('macro detected: s=%s' % s)
 
-                    if not 'TSTART' in mappings[mname]:
-                        mappings[mname]['TSTART'] = str(tstart)
-                        mappings[mname]['TEND']   = str(tend)
+                    #
+                    # create TSTART_VAR_OCCURENCE and TEND_VAR_OCCURENCE
+                    #
+
+                    occurence = 0
+                    while True:
+                        tvn = 'TSTART_%s_%s' % (mvar, occurence)
+                        if not tvn in resp_mappings[mname]:
+                            break
+                        occurence += 1
+
+                    resp_mappings[mname][tvn] = str(tstart)
+                    tvn = 'TEND_%s_%s' % (mvar, occurence)
+                    resp_mappings[mname][tvn] = str(tend)
+
+                #logging.debug('resp_mappings: %s' % repr(resp_mappings))
+
+                s = u' '.join(s)
 
                 p = response
 
-                for k in mappings:
+                for k in resp_mappings:
+                    for v in resp_mappings[k]:
+                        p = p.replace('@'+k+':'+v, resp_mappings[k][v])
 
-                    for v in mappings[k]:
-
-                        # s = s.replace('@'+k+':'+v, mappings[k][v])
-                        p = p.replace('@'+k+':'+v, mappings[k][v])
-
-                inp_raw = misc.compress_ws(s.lstrip().rstrip())
                 p       = misc.compress_ws(p.lstrip().rstrip())
 
-                inp_tokenized = ' '.join(tokenize(inp_raw, lang))
-
-                discourse = (inp_tokenized, p)
+                discourse = (s, p)
                 discourses.append(discourse)
 
                 # logging.debug ('macro_expand:    discourse : %s' % (repr(discourse)))

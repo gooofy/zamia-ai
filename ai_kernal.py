@@ -383,6 +383,8 @@ class AIKernal(object):
 
         if test_mode:
 
+            prolog_s = None
+
             for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
                                                                          model.DiscourseRound.lang==utt_lang):
             
@@ -390,6 +392,10 @@ class AIKernal(object):
 
                 logging.info("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
                 
+            if not prolog_s:
+                logging.error('test utterance %s not found!' % utterance)
+                return []
+
         else:
 
             x = self.nlp_model.compute_x(utterance)

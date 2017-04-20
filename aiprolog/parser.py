@@ -27,6 +27,7 @@ import logging
 import codecs
 import re
 import rdflib
+from time import time
 from rdflib.plugins.sparql.parserutils import CompValue
 
 from copy import copy
@@ -98,7 +99,9 @@ class AIPrologParser(PrologParser):
 
     def nlp_gen(self, module_name, clause, user_data):
 
-        logging.debug (u'nlp_gen: %s' % clause)
+        start_time = time()
+
+        logging.debug (u'%fs nlp_gen: %s' % (time()-start_time, clause))
 
         args = clause.head.args
 
@@ -171,11 +174,13 @@ class AIPrologParser(PrologParser):
 
         # generate all macro-expansions
 
-        logging.debug ("nlp_gen: %s: generating macro expansions..." % clause.location)
+        logging.debug ("%fs nlp_gen: %s: generating macro expansions..." % (time()-start_time, clause.location))
 
         cnt = 0
 
         ds = self.macro_engine.macro_expand(lang, nlp_input, response, clause.location)
+
+        logging.debug ("%fs nlp_gen: %s: creating discourse rounds..." % (time()-start_time, clause.location))
 
         rounds = []
 
@@ -213,10 +218,10 @@ class AIPrologParser(PrologParser):
                                                 resp      = resp))
             cnt += 1
 
-        logging.debug (u'nlp_gen: %s bulk save...' % clause)
+        logging.debug (u'%fs nlp_gen: %s bulk save...' % (time()-start_time, clause.location))
         self.db.session.bulk_save_objects(rounds)
 
-        logging.debug ("nlp_gen: %s: %d generating macro expansions generated." % (clause.location, cnt))
+        logging.debug (u"%fs nlp_gen: %s: %d generating macro expansions generated." % (time()-start_time, clause.location, cnt))
 
     def nlp_test(self, module_name, clause, user_data):
 

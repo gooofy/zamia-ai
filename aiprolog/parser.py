@@ -182,8 +182,6 @@ class AIPrologParser(PrologParser):
 
         logging.debug ("%fs nlp_gen: %s: creating discourse rounds..." % (time()-start_time, clause.location))
 
-        rounds = []
-
         for inp, resp in ds:
 
             if len(inp.strip()) == 0:
@@ -212,14 +210,11 @@ class AIPrologParser(PrologParser):
                         raise PrologError(msg, clause.location)
 
 
-            rounds.append(model.DiscourseRound( lang      = lang,
-                                                module    = module_name,
-                                                inp       = inp, 
-                                                resp      = resp))
+            self.discourse_rounds.append(model.DiscourseRound( lang      = lang,
+                                                               module    = module_name,
+                                                               inp       = inp, 
+                                                               resp      = resp))
             cnt += 1
-
-        logging.debug (u'%fs nlp_gen: %s bulk save...' % (time()-start_time, clause.location))
-        self.db.session.bulk_save_objects(rounds)
 
         logging.debug (u"%fs nlp_gen: %s: %d generating macro expansions generated." % (time()-start_time, clause.location, cnt))
 
@@ -254,12 +249,22 @@ class AIPrologParser(PrologParser):
 
         # setup compiler / test environment
 
-        self.macro_engine = NLPMacroEngine(db.session)
-        self.kb           = kb
-        self.db           = db
+        self.macro_engine     = NLPMacroEngine(db.session)
+        self.kb               = kb
+        self.db               = db
+        self.discourse_rounds = []
 
         if clear_module:
             self.clear_module(module_name, db)
 
         super(AIPrologParser, self).compile_file(filename, module_name, db)
+
+        if self.discourse_rounds:
+
+            # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+            start_time = time()
+            logging.info (u'bulk saving %d discourse rounds to db...' % len(self.discourse_rounds))
+            self.db.session.bulk_save_objects(self.discourse_rounds)
+            logging.info (u'bulk saving %d discourse rounds to db... done. Took %fs.' % (len(self.discourse_rounds), time()-start_time))
 

@@ -630,13 +630,14 @@ def builtin_tokenize(g, pe):
     if len(args) != 3:
         raise PrologRuntimeError('tokenize: 3 args expected.')
 
-    if not isinstance(args[0], Predicate):
+    arg_lang    = pe.prolog_eval (args[0], g.env)
+    if not isinstance(arg_lang, Predicate) or len(arg_lang.args) >0:
         raise PrologRuntimeError('tokenize: first argument: constant expected, %s found instead.' % repr(args[0]))
 
     arg_str     = pe.prolog_get_string   (args[1], g.env)
     arg_tokens  = pe.prolog_get_variable (args[2], g.env)
 
-    g.env[arg_tokens] = ListLiteral(tokenize(arg_str, lang=args[0].name))
+    g.env[arg_tokens] = ListLiteral(tokenize(arg_str, lang=arg_lang.name))
 
     return True
 

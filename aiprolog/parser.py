@@ -266,5 +266,6 @@ class AIPrologParser(PrologParser):
             start_time = time()
             logging.info (u'bulk saving %d discourse rounds to db...' % len(self.discourse_rounds))
             self.db.session.bulk_save_objects(self.discourse_rounds)
+            self.db.commit()
             logging.info (u'bulk saving %d discourse rounds to db... done. Took %fs.' % (len(self.discourse_rounds), time()-start_time))
 

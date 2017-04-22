@@ -16,7 +16,7 @@ is_female(PERSON) :- rdf (PERSON, wdpd:SexOrGender, wde:Female).
 %
 % i.e. known persons, persons relevant to the current topic, etc.
 %
-ner_score (person, PERSON, 100).
+ner_score (person, PERSON, 100) :- is_person(PERSON).
 
 ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
 
@@ -233,7 +233,7 @@ answer (birthdatePerson, en, PERSON, PERSON_LABEL, SCORE) :-
     context_push(topic, people),
     context_push(topic, birthday),
     context_push(topic, PERSON),
-    say_eoa(en, format_str('%s was born on %s.', PERSON_LABEL, TS_SCRIPT)).
+    say_eoa(en, format_str('%s was born on %s.', PERSON_LABEL, TS_SCRIPT), SCORE).
 answer (birthdatePerson, de, PERSON, PERSON_LABEL, SCORE) :-
     rdf (distinct, limit(1),
          PERSON,     wdpd:DateOfBirth, TS),
@@ -241,7 +241,7 @@ answer (birthdatePerson, de, PERSON, PERSON_LABEL, SCORE) :-
     context_push(topic, people),
     context_push(topic, birthday),
     context_push(topic, PERSON),
-    say_eoa(de, format_str('%s wurde am %s geboren.', PERSON_LABEL, TS_SCRIPT)).
+    say_eoa(de, format_str('%s wurde am %s geboren.', PERSON_LABEL, TS_SCRIPT), SCORE).
 
 answer (birthdatePersonTokens, en, TSTART, TEND) :-
     ner(en, person, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),

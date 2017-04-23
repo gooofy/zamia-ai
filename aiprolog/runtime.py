@@ -62,10 +62,10 @@ def builtin_context_get(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('context_get: 2 args expected.')
+        raise PrologRuntimeError('context_get: 2 args expected.', g.location)
 
     key     = args[0].name
-    arg_v   = pe.prolog_get_variable(args[1], g.env)
+    arg_v   = pe.prolog_get_variable(args[1], g.env, g.location)
 
     v = pe.read_context(key)
     if not v:
@@ -76,7 +76,7 @@ def builtin_context_get(g, pe):
 
     return True
 
-def builtin_context_get_fn(pred, env, rt):
+def builtin_context_get_fn(pred, env, rt, location):
 
     """ context_get(+Name) """
 
@@ -84,7 +84,7 @@ def builtin_context_get_fn(pred, env, rt):
 
     args = pred.args
     if len(args) != 1:
-        raise PrologRuntimeError('context_get: 1 arg expected.')
+        raise PrologRuntimeError('context_get: 1 arg expected.', location)
 
     key     = args[0].name
 
@@ -94,7 +94,7 @@ def builtin_context_get_fn(pred, env, rt):
 
     return v
 
-def builtin_action_context_set(pe, args):
+def builtin_action_context_set(pe, location, args):
 
     """ context_set(+Name, +Value) """
 
@@ -110,7 +110,7 @@ def builtin_action_context_set(pe, args):
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
     pe.write_context(key, value)
 
-def builtin_action_context_push(pe, args):
+def builtin_action_context_push(pe, location, args):
 
     """ context_push(+Name, +Value) """
 
@@ -135,17 +135,17 @@ def builtin_context_score(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) < 4:
-        raise PrologRuntimeError('context_score: at least 4 args expected.')
+        raise PrologRuntimeError('context_score: at least 4 args expected.', g.location)
     if len(args) > 5:
-        raise PrologRuntimeError('context_score: max 5 args expected.')
+        raise PrologRuntimeError('context_score: max 5 args expected.', g.location)
 
     key     = args[0].name
-    value   = pe.prolog_eval(args[1], g.env)
-    points  = pe.prolog_get_float(args[2], g.env)
-    scorev  = pe.prolog_get_variable(args[3], g.env)
+    value   = pe.prolog_eval(args[1], g.env, g.location)
+    points  = pe.prolog_get_float(args[2], g.env, g.location)
+    scorev  = pe.prolog_get_variable(args[3], g.env, g.location)
 
     if len(args) == 5:
-        min_score = pe.prolog_get_float(args[4], g.env)
+        min_score = pe.prolog_get_float(args[4], g.env, g.location)
     else:
         min_score = 0.0
 
@@ -169,7 +169,7 @@ def builtin_context_score(g, pe):
         return True
 
     if not isinstance (args[1], Variable):
-        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]))
+        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]), g.location)
 
     res = []
 
@@ -208,7 +208,7 @@ def builtin_action(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
 
-    evaluated_args = map (lambda v: pe.prolog_eval(v, g.env), args)
+    evaluated_args = map (lambda v: pe.prolog_eval(v, g.env, g.location), args)
 
     _queue_action (g, evaluated_args)
 
@@ -223,19 +223,19 @@ def builtin_say(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('say: 2 args expected.')
+        raise PrologRuntimeError('say: 2 args expected.', g.location)
 
-    arg_L   = pe.prolog_eval(args[0], g.env).name
-    arg_S   = pe.prolog_get_string(args[1], g.env)
+    arg_L   = pe.prolog_eval(args[0], g.env, g.location).name
+    arg_S   = pe.prolog_get_string(args[1], g.env, g.location)
 
     _queue_action (g, [Predicate('say'), arg_L, arg_S] )
 
     return True
 
-def _eoa (g, pe, score):
+def _eoa (g, pe, location, score):
 
     if not (ACTION_VARNAME in g.env):
-        raise PrologRuntimeError('eoa: no action defined.')
+        raise PrologRuntimeError('eoa: no action defined.', location)
 
     pe.end_action(g.env[ACTION_VARNAME], score)
 
@@ -251,13 +251,13 @@ def builtin_eoa(g, pe):
     args = pred.args
 
     if len(args)>1:
-        raise PrologRuntimeError('eoa: max 1 arg expected.')
+        raise PrologRuntimeError('eoa: max 1 arg expected.', g.location)
 
     score = 0.0
     if len(args)>0:
-        score = pe.prolog_get_float(args[0], g.env)
+        score = pe.prolog_get_float(args[0], g.env, g.location)
 
-    _eoa (g, pe, score)
+    _eoa (g, pe, g.location, score)
 
     return True
 
@@ -271,20 +271,20 @@ def builtin_say_eoa(g, pe):
     args = pred.args
 
     if len(args) < 2:
-        raise PrologRuntimeError('say_eoa: at least 2 args expected.')
+        raise PrologRuntimeError('say_eoa: at least 2 args expected.', g.location)
     if len(args) > 3:
-        raise PrologRuntimeError('say_eoa: max 3 args expected.')
+        raise PrologRuntimeError('say_eoa: max 3 args expected.', g.location)
 
-    arg_L   = pe.prolog_eval(args[0], g.env).name
-    arg_S   = pe.prolog_get_string(args[1], g.env)
+    arg_L   = pe.prolog_eval(args[0], g.env, g.location).name
+    arg_S   = pe.prolog_get_string(args[1], g.env, g.location)
 
     _queue_action (g, [Predicate('say'), arg_L, arg_S] )
 
     score = 0.0
     if len(args)>2:
-        score = pe.prolog_get_float(args[2], g.env)
+        score = pe.prolog_get_float(args[2], g.env, g.location)
 
-    _eoa (g, pe, score)
+    _eoa (g, pe, g.location, score)
 
     return True
 
@@ -292,15 +292,15 @@ def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
 
-    return _rdf_exec (g, pe)
+    return _rdf_exec (g, pe, g.location)
 
 def builtin_rdf_lists(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf_lists', g)
 
-    return _rdf_exec (g, pe, generate_lists=True)
+    return _rdf_exec (g, pe, g.location, generate_lists=True)
 
-def _rdf_exec (g, pe, generate_lists=False):
+def _rdf_exec (g, pe, location, generate_lists=False):
 
     # rdflib.plugins.sparql.parserutils.CompValue
     #
@@ -361,7 +361,7 @@ def _rdf_exec (g, pe, generate_lists=False):
             s_args = arg_s.args
 
             if len(s_args) != 3:
-                raise PrologRuntimeError('rdf: optional: triple arg expected')
+                raise PrologRuntimeError('rdf: optional: triple arg expected', location)
 
             arg_s = s_args[0]
             arg_p = s_args[1]
@@ -369,9 +369,9 @@ def _rdf_exec (g, pe, generate_lists=False):
 
             logging.debug ('rdf: optional arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            optional_triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
-                                     pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
-                                     pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
+            optional_triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb, location), 
+                                     pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb, location), 
+                                     pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb, location)))
 
             arg_idx += 1
 
@@ -388,7 +388,7 @@ def _rdf_exec (g, pe, generate_lists=False):
             for a in s_args[1:]:
                 pl_expr = Predicate('and', [pl_expr, a])
 
-            filters.append(prolog_to_filter_expression(pl_expr, g.env, pe, var_map, pe.kb))
+            filters.append(prolog_to_filter_expression(pl_expr, g.env, pe, var_map, pe.kb, location))
             
             arg_idx += 1
 
@@ -398,7 +398,7 @@ def _rdf_exec (g, pe, generate_lists=False):
 
             s_args = arg_s.args
             if len(s_args) != 0:
-                raise PrologRuntimeError('rdf: distinct: unexpected arguments.')
+                raise PrologRuntimeError('rdf: distinct: unexpected arguments.', location)
 
             distinct = True
             arg_idx += 1
@@ -408,33 +408,33 @@ def _rdf_exec (g, pe, generate_lists=False):
 
             s_args = arg_s.args
             if len(s_args) != 1:
-                raise PrologRuntimeError('rdf: limit: one argument expected.')
+                raise PrologRuntimeError('rdf: limit: one argument expected.', location)
 
-            limit = pe.prolog_get_int(s_args[0], g.env)
+            limit = pe.prolog_get_int(s_args[0], g.env, location)
             arg_idx += 1
 
         elif isinstance(arg_s, Predicate) and arg_s.name == 'offset':
 
             s_args = arg_s.args
             if len(s_args) != 1:
-                raise PrologRuntimeError('rdf: offset: one argument expected.')
+                raise PrologRuntimeError('rdf: offset: one argument expected.', location)
 
-            offset = pe.prolog_get_int(s_args[0], g.env)
+            offset = pe.prolog_get_int(s_args[0], g.env, location)
             arg_idx += 1
 
         else:
 
             if arg_idx > len(args)-3:
-                raise PrologRuntimeError('rdf: not enough arguments for triple')
+                raise PrologRuntimeError('rdf: not enough arguments for triple', location)
 
             arg_p = args[arg_idx+1]
             arg_o = args[arg_idx+2]
 
             logging.debug ('rdf: arg triple: %s' %repr((arg_s, arg_p, arg_o)))
 
-            triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb), 
-                            pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb), 
-                            pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb)))
+            triples.append((pl_to_rdf(arg_s, g.env, pe, var_map, pe.kb, location), 
+                            pl_to_rdf(arg_p, g.env, pe, var_map, pe.kb, location), 
+                            pl_to_rdf(arg_o, g.env, pe, var_map, pe.kb, location)))
 
             arg_idx += 3
 
@@ -443,7 +443,7 @@ def _rdf_exec (g, pe, generate_lists=False):
     logging.debug ('rdf: filters: %s' % repr(filters))
 
     if len(triples) == 0:
-        raise PrologRuntimeError('rdf: at least one non-optional triple expected')
+        raise PrologRuntimeError('rdf: at least one non-optional triple expected', location)
 
     var_list = var_map.values()
     var_set  = set(var_list)
@@ -517,22 +517,22 @@ def _rdf_exec (g, pe, generate_lists=False):
 
         return res_bindings
 
-def builtin_action_rdf_assert(pe, args):
+def builtin_action_rdf_assert(pe, location, args):
 
     """ rdf_assert (+S, +P, +O) """
 
     logging.debug ('CALLED BUILTIN ACTION rdf_assert %s' % repr(args))
 
     if len(args) != 3:
-        raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args))
+        raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args), location)
 
     arg_s = args[0]
     arg_p = args[1]
     arg_o = args[2]
 
-    quads = [ (pl_to_rdf(arg_s, {}, pe, {}, pe.kb), 
-               pl_to_rdf(arg_p, {}, pe, {}, pe.kb), 
-               pl_to_rdf(arg_o, {}, pe, {}, pe.kb),
+    quads = [ (pl_to_rdf(arg_s, {}, pe, {}, pe.kb, location), 
+               pl_to_rdf(arg_p, {}, pe, {}, pe.kb, location), 
+               pl_to_rdf(arg_o, {}, pe, {}, pe.kb, location),
                pe.context_gn) ]
 
     pe.kb.addN(quads)
@@ -545,13 +545,13 @@ def builtin_uriref(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('uriref: 2 args expected.')
+        raise PrologRuntimeError('uriref: 2 args expected.', g.location)
 
     if not isinstance(args[0], Predicate):
-        raise PrologRuntimeError('uriref: first argument: predicate expected, %s found instead.' % repr(args[0]))
+        raise PrologRuntimeError('uriref: first argument: predicate expected, %s found instead.' % repr(args[0]), g.location)
 
     if not isinstance(args[1], Variable):
-        raise PrologRuntimeError('uriref: second argument: variable expected, %s found instead.' % repr(args[1]))
+        raise PrologRuntimeError('uriref: second argument: variable expected, %s found instead.' % repr(args[1]), g.location)
 
     g.env[args[1].name] = StringLiteral(pe.kb.resolve_aliases_prefixes(args[0].name))
 
@@ -564,9 +564,9 @@ def builtin_sparql_query(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) < 1:
-        raise PrologRuntimeError('sparql_query: at least 1 argument expected.')
+        raise PrologRuntimeError('sparql_query: at least 1 argument expected.', g.location)
 
-    query = pe.prolog_get_string(args[0], g.env)
+    query = pe.prolog_get_string(args[0], g.env, g.location)
 
     # logging.debug("builtin_sparql_query called, query: '%s'" % query)
 
@@ -628,14 +628,14 @@ def builtin_tokenize(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 3:
-        raise PrologRuntimeError('tokenize: 3 args expected.')
+        raise PrologRuntimeError('tokenize: 3 args expected.', g.location)
 
-    arg_lang    = pe.prolog_eval (args[0], g.env)
+    arg_lang    = pe.prolog_eval (args[0], g.env, g.location)
     if not isinstance(arg_lang, Predicate) or len(arg_lang.args) >0:
-        raise PrologRuntimeError('tokenize: first argument: constant expected, %s found instead.' % repr(args[0]))
+        raise PrologRuntimeError('tokenize: first argument: constant expected, %s found instead.' % repr(args[0]), g.location)
 
-    arg_str     = pe.prolog_get_string   (args[1], g.env)
-    arg_tokens  = pe.prolog_get_variable (args[2], g.env)
+    arg_str     = pe.prolog_get_string   (args[1], g.env, g.location)
+    arg_tokens  = pe.prolog_get_variable (args[2], g.env, g.location)
 
     g.env[arg_tokens] = ListLiteral(tokenize(arg_str, lang=arg_lang.name))
 
@@ -650,11 +650,11 @@ def builtin_edit_distance(g, pe):
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 3:
-        raise PrologRuntimeError('edit_distance: 3 args expected.')
+        raise PrologRuntimeError('edit_distance: 3 args expected.', g.location)
 
-    arg_tok1  = pe.prolog_get_list     (args[0], g.env)
-    arg_tok2  = pe.prolog_get_list     (args[1], g.env)
-    arg_dist  = pe.prolog_get_variable (args[2], g.env)
+    arg_tok1  = pe.prolog_get_list     (args[0], g.env, g.location)
+    arg_tok2  = pe.prolog_get_list     (args[1], g.env, g.location)
+    arg_dist  = pe.prolog_get_variable (args[2], g.env, g.location)
 
     g.env[arg_dist] = NumberLiteral(edit_distance(arg_tok1.l, arg_tok2.l))
 
@@ -710,10 +710,10 @@ class AIPrologRuntime(PrologRuntime):
     def _builtin_action_wrapper (self, name, g, pe):
 
 
-        l = [Predicate(name)]
+        l = [Predicate(name), g.location]
         for arg in g.terms[g.inx].args:
             # logging.debug ('_builtin_action_wrapper: %s arg=%s' % (name, repr(arg)))
-            value = pe.prolog_eval(arg, g.env)
+            value = pe.prolog_eval(arg, g.env, g.location)
             l.append(value)
 
         if not ACTION_VARNAME in g.env:
@@ -738,11 +738,12 @@ class AIPrologRuntime(PrologRuntime):
 
             if not isinstance(action[0], Predicate):
                 continue
-            name = action[0].name
+            name     = action[0].name
+            location = action[1]
 
             if not name in self.builtin_actions:
                 continue
-            self.builtin_actions[name](self, action[1:])
+            self.builtin_actions[name](self, location, action[2:])
 
     def reset_actions(self):
         self.action_buffer = []

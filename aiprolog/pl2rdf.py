@@ -36,45 +36,12 @@ import logging
 from tzlocal import get_localzone # $ pip install tzlocal
 
 from zamiaprolog.errors  import PrologError, PrologRuntimeError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate, Literal
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate, Literal, json_to_prolog, prolog_to_json
 
 import model
 
 DT_LIST     = u'http://ai.zamia.org/types/list'
 DT_CONSTANT = u'http://ai.zamia.org/types/constant'
-
-class PrologJSONEncoder(json.JSONEncoder):
-
-    def default(self, o):
-        
-        if isinstance (o, NumberLiteral):
-            return {'pt': 'NumberLiteral', 'f': o.f}
-
-        elif isinstance (o, ListLiteral):
-            return {'pt': 'ListLiteral', 'l': o.l}
-        
-        elif isinstance (o, StringLiteral):
-            return {'pt': 'StringLiteral', 's': o.s}
-        
-        elif isinstance (o, Predicate) and len(o.args)==0:
-            return {'pt': 'Constant', 'name': o.name}
-        
-
-        return json.JSONEncoder.default(self, o)
-
-def _prolog_from_json(o):
-
-    if o['pt'] == 'Constant':
-        return Predicate(o['name'])
-    if o['pt'] == 'StringLiteral':
-        return StringLiteral (o['s'])
-    if o['pt'] == 'NumberLiteral':
-        return NumberLiteral (o['f'])
-    if o['pt'] == 'ListLiteral':
-        return ListLiteral (o['l'])
-
-    raise PrologRuntimeError('cannot convert from json: %s .' % repr(o))
-
 
 def rdf_to_pl(l):
 
@@ -98,7 +65,7 @@ def rdf_to_pl(l):
                 dt = dateutil.parser.parse(value)
                 value = NumberLiteral(time.mktime(dt.timetuple()))
             elif datatype == DT_LIST:
-                value = json.JSONDecoder(object_hook = _prolog_from_json).decode(value)
+                value = json_to_prolog(value)
             elif datatype == DT_CONSTANT:
                 value = Predicate (value)
             else:
@@ -114,7 +81,7 @@ def rdf_to_pl(l):
 
     return value
     
-def pl_literal_to_rdf(a, kb):
+def pl_literal_to_rdf(a, kb, location):
 
     if isinstance (a, NumberLiteral):
         return rdflib.term.Literal (str(a.f), datatype=rdflib.namespace.XSD.decimal)
@@ -125,12 +92,12 @@ def pl_literal_to_rdf(a, kb):
         return rdflib.term.Literal (a.s)
         
     if isinstance (a, ListLiteral):
-        return rdflib.term.Literal (PrologJSONEncoder().encode(a), datatype=DT_LIST)
+        return rdflib.term.Literal (prolog_to_json(a), datatype=DT_LIST)
 
     if isinstance (a, Predicate):
 
         if len(a.args) > 0:
-            raise PrologError('pl_literal_to_rdf: only constants are supported, found instead: %s (%s)' % (a.__class__, repr(a)))
+            raise PrologError('pl_literal_to_rdf: only constants are supported, found instead: %s (%s)' % (a.__class__, repr(a)), location)
 
         name = kb.resolve_aliases_prefixes(a.name)
 
@@ -139,12 +106,12 @@ def pl_literal_to_rdf(a, kb):
 
         return rdflib.term.Literal (a.name, datatype=DT_CONSTANT)
 
-    raise PrologError('pl_literal_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)))
+    raise PrologError('pl_literal_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)), location)
 
-def pl_to_rdf(term, env, pe, var_map, kb):
+def pl_to_rdf(term, env, pe, var_map, kb, location):
 
     if pe:
-        a = pe.prolog_eval(term, env)
+        a = pe.prolog_eval(term, env, location)
     else:
         a = term
 
@@ -153,15 +120,15 @@ def pl_to_rdf(term, env, pe, var_map, kb):
             var_map[term.name] = rdflib.term.Variable(term.name)
         return var_map[term.name]
 
-    return pl_literal_to_rdf(a, kb)
+    return pl_literal_to_rdf(a, kb, location)
 
-def _prolog_relational_expression (op, args, env, pe, var_map, kb):
+def _prolog_relational_expression (op, args, env, pe, var_map, kb, location):
 
     if len(args) != 2:
-        raise PrologError ('_prolog_relational_expression: 2 args expected.')
+        raise PrologError ('_prolog_relational_expression: 2 args expected.', location)
 
-    expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb)
-    other = prolog_to_filter_expression (args[1], env, pe, var_map, kb)
+    expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb, location)
+    other = prolog_to_filter_expression (args[1], env, pe, var_map, kb, location)
 
     return CompValue ('RelationalExpression', 
                       op=op, 
@@ -169,46 +136,46 @@ def _prolog_relational_expression (op, args, env, pe, var_map, kb):
                       other = other,
                       _vars = set(var_map.values()))
 
-def _prolog_conditional_expression (name, args, env, pe, var_map, kb):
+def _prolog_conditional_expression (name, args, env, pe, var_map, kb, location):
 
     if len(args) != 2:
-        raise PrologError ('_prolog_conditional_expression %s: 2 args expected.' % name)
+        raise PrologError ('_prolog_conditional_expression %s: 2 args expected.' % name, location)
 
     return CompValue (name, 
-                      expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb),
-                      other = [ prolog_to_filter_expression (args[1], env, pe, var_map, kb) ],
+                      expr  = prolog_to_filter_expression (args[0], env, pe, var_map, kb, location),
+                      other = [ prolog_to_filter_expression (args[1], env, pe, var_map, kb, location) ],
                       _vars = set(var_map.values()))
 
-def prolog_to_filter_expression(e, env, pe, var_map, kb):
+def prolog_to_filter_expression(e, env, pe, var_map, kb, location):
 
     if isinstance (e, Predicate):
     
         if e.name == '=':
-            return _prolog_relational_expression ('=', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('=', e.args, env, pe, var_map, kb, location)
         elif e.name == '\=':
-            return _prolog_relational_expression ('!=', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('!=', e.args, env, pe, var_map, kb, location)
         elif e.name == '<':
-            return _prolog_relational_expression ('<', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('<', e.args, env, pe, var_map, kb, location)
         elif e.name == '>':
-            return _prolog_relational_expression ('>', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('>', e.args, env, pe, var_map, kb, location)
         elif e.name == '=<':
-            return _prolog_relational_expression ('<=', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('<=', e.args, env, pe, var_map, kb, location)
         elif e.name == '>=':
-            return _prolog_relational_expression ('>=', e.args, env, pe, var_map, kb)
+            return _prolog_relational_expression ('>=', e.args, env, pe, var_map, kb, location)
         elif e.name == 'is':
-            pre = _prolog_relational_expression ('is', e.args, env, pe, var_map, kb)
+            pre = _prolog_relational_expression ('is', e.args, env, pe, var_map, kb, location)
             return pre
         elif e.name == 'and':
-            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map, kb)
+            return _prolog_conditional_expression ('ConditionalAndExpression', e.args, env, pe, var_map, kb, location)
         elif e.name == 'or':
-            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map, kb)
+            return _prolog_conditional_expression ('ConditionalOrExpression', e.args, env, pe, var_map, kb, location)
         elif e.name == 'lang':
             if len(e.args) != 1:
-                raise PrologError ('lang filter expression: one argument expected.')
+                raise PrologError ('lang filter expression: one argument expected.', location)
 
             return CompValue ('Builtin_LANG', 
-                              arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map, kb),
+                              arg  = prolog_to_filter_expression (e.args[0], env, pe, var_map, kb, location),
                               _vars = set(var_map.values()))
 
-    return pl_to_rdf (e, env, pe, var_map, kb)
+    return pl_to_rdf (e, env, pe, var_map, kb, location)
 

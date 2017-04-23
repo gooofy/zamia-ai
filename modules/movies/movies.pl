@@ -135,25 +135,32 @@ nlp_test(de,
          ivr(in('wer ist Alfred Hitchcock?'),
              out('Er ist ein Regisseur.'))).
 
-answer (movieCreationDate, en, MOVIE, MOVIE_LABEL) :-
+answer (movieCreationDate, en, MOVIE, MOVIE_LABEL, SCORE) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:PublicationDate, TS),
     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
     context_push(topic, movies),
     context_push(topic, MOVIE),
-    say_eoa(en, format_str('%s was produced in %s.', MOVIE_LABEL, Y), 100).
-answer (movieCreationDate, de, MOVIE, MOVIE_LABEL) :-
+    say_eoa(en, format_str('%s was produced in %s.', MOVIE_LABEL, Y), SCORE).
+answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:PublicationDate, TS),
     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
     context_push(topic, movies),
     context_push(topic, MOVIE),
-    say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y), 100).
+    say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y), SCORE).
+
+answer (movieCreationDateTokens, en, TSTART, TEND) :-
+    ner(en, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    answer (movieCreationDate, en, MOVIE, MOVIE_LABEL, SCORE).
+answer (movieCreationDateTokens, de, TSTART, TEND) :-
+    ner(de, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when was @MOVIES_EN:LABEL (produced|made)?',
-             answer(movieCreationDate, en, '@MOVIES_EN:MOVIE', "@MOVIES_EN:LABEL")). 
+             answer(movieCreationDateTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wann (ist|wurde) (eigentlich|) @MOVIES_DE:LABEL (gedreht|gemacht)?',
-             answer(movieCreationDate, de, '@MOVIES_DE:MOVIE', "@MOVIES_DE:LABEL")). 
+             answer(movieCreationDateTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
 
 nlp_test(en,
          ivr(in('when was the third man made?'),
@@ -198,14 +205,14 @@ answer (movieCreationDateFromContext, en) :-
          MOVIE, wdpd:InstanceOf, wde:Film,
          MOVIE, rdfs:label,      LABEL,
          filter (lang(LABEL) = 'en')),
-    answer(movieCreationDate, en, MOVIE, LABEL). 
+    answer(movieCreationDate, en, MOVIE, LABEL, S). 
 answer (movieCreationDateFromContext, de) :-
     context_score(topic, MOVIE, 100, S),
     rdf (distinct, limit(1),
          MOVIE, wdpd:InstanceOf, wde:Film,
          MOVIE, rdfs:label,      LABEL,
          filter (lang(LABEL) = 'de')),
-    answer(movieCreationDate, de, MOVIE, LABEL). 
+    answer(movieCreationDate, de, MOVIE, LABEL, S). 
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know when it was (made|produced) (by the way|)?',
              answer(movieCreationDateFromContext, en)).
@@ -218,14 +225,14 @@ answer(movieDirectorFromContext, en) :-
          MOVIE, wdpd:InstanceOf, wde:Film,
          MOVIE, rdfs:label,      LABEL,
          filter (lang(LABEL) = 'en')),
-    answer(movieDirector, en, MOVIE, LABEL). 
+    answer(movieDirector, en, MOVIE, LABEL, S). 
 answer(movieDirectorFromContext, de) :-
     context_score(topic, MOVIE, 100, S),
     rdf (distinct, limit(1),
          MOVIE, wdpd:InstanceOf, wde:Film,
          MOVIE, rdfs:label,      LABEL,
          filter (lang(LABEL) = 'de')),
-    answer(movieDirector, de, MOVIE, LABEL). 
+    answer(movieDirector, de, MOVIE, LABEL, S). 
     
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know who (made|produced) it (by the way|)?',
              answer(movieDirectorFromContext, en)).

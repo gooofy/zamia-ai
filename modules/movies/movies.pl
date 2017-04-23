@@ -1,5 +1,41 @@
 % prolog
 
+is_movie_director(PERSON) :- rdf (MOVIE, wdpd:Director, PERSON).
+
+%
+% named entity recognition (NER) stuff: extra points for movie directors, movie title NER
+%
+
+ner_score (person, PERSON, 200) :- is_movie_director(PERSON).
+
+ner_score (movie, MOVIE, 100). % FIXME: we should probably score by movie popularity or smth
+
+ner_movie(LANG, TITLE_TOKENS, MOVIE, LABEL) :-
+
+    atom_chars(LANG, LSTR),
+
+    rdf (distinct,
+         MOVIE, wdpd:InstanceOf,   wde:Film,
+         MOVIE, rdfs:label,        LABEL,
+         filter (lang(LABEL) = LSTR)),
+
+    tokenize (LANG, LABEL, LABEL_TOKENS),
+
+    TITLE_TOKENS = LABEL_TOKENS.
+
+ner(LANG, movie, TSTART, TEND, MOVIE, LABEL, SCORE) :-
+
+    rdf(ai:curin, ai:tokens, TOKENS),
+    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
+   
+    ner_movie(LANG, NAME_TOKENS, MOVIE, LABEL),
+
+    ner_score (movie, MOVIE, SCORE).
+
+%
+% movie related NLP macros/processing
+%
+
 nlp_macro ('MOVIES_EN', MOVIE, LABEL) :-
     rdf (distinct,
          MOVIE, wdpd:InstanceOf,   wde:Film,
@@ -16,7 +52,7 @@ answer(topic, en) :-
 answer(topic, de) :-
     context_score(topic, movies, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Filme.', SCORE).
 
-answer (movieDirector, en, MOVIE, MOVIE_LABEL) :-
+answer (movieDirector, en, MOVIE, MOVIE_LABEL, SCORE) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:Director, DIRECTOR,
          DIRECTOR, rdfs:label,    LABEL,
@@ -24,8 +60,8 @@ answer (movieDirector, en, MOVIE, MOVIE_LABEL) :-
     context_push(topic, movies),
     context_push(topic, MOVIE),
     context_push(topic, DIRECTOR),
-    say_eoa(en, format_str('The director of %s is %s.', MOVIE_LABEL, LABEL)).
-answer (movieDirector, de, MOVIE, MOVIE_LABEL) :-
+    say_eoa(en, format_str('The director of %s is %s.', MOVIE_LABEL, LABEL), SCORE).
+answer (movieDirector, de, MOVIE, MOVIE_LABEL, SCORE) :-
     rdf (distinct, limit(1),
          MOVIE,    wdpd:Director, DIRECTOR,
          DIRECTOR, rdfs:label,    LABEL,
@@ -33,17 +69,24 @@ answer (movieDirector, de, MOVIE, MOVIE_LABEL) :-
     context_push(topic, movies),
     context_push(topic, MOVIE),
     context_push(topic, DIRECTOR),
-    say_eoa(de, format_str('Der Regisseur von %s ist %s.', MOVIE_LABEL, LABEL)).
+    say_eoa(de, format_str('Der Regisseur von %s ist %s.', MOVIE_LABEL, LABEL), SCORE).
+
+answer (movieDirectorTokens, en, TSTART, TEND) :-
+    ner(en, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    answer (movieDirector, en, MOVIE, MOVIE_LABEL, SCORE).
+answer (movieDirectorTokens, de, TSTART, TEND) :-
+    ner(de, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    answer (movieDirector, de, MOVIE, MOVIE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (made|did) @MOVIES_EN:LABEL (by the way|)?',
-             answer(movieDirector, en, '@MOVIES_EN:MOVIE', "@MOVIES_EN:LABEL")). 
+             answer(movieDirectorTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer hat (eigentlich|) @MOVIES_DE:LABEL gedreht?',
-             answer(movieDirector, de, '@MOVIES_DE:MOVIE', "@MOVIES_DE:LABEL")). 
+             answer(movieDirectorTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (who is the director of|who directed) @MOVIES_EN:LABEL?',
-             answer(movieDirector, en, '@MOVIES_EN:MOVIE', "@MOVIES_EN:LABEL")). 
+             answer(movieDirectorTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer ist (eigentlich|) der Regisseur von @MOVIES_DE:LABEL?',
-             answer(movieDirector, de, '@MOVIES_DE:MOVIE', "@MOVIES_DE:LABEL")). 
+             answer(movieDirectorTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
 
 nlp_test(en,
          ivr(in('who is the director of the third man?'),
@@ -55,16 +98,14 @@ nlp_test(de,
 is_director(PERSON) :- 
     rdf(MOVIE, wdpd:Director, PERSON).
 
-answer (knownPerson, en, PERSON, LABEL) :-
-    SCORE is 10,
+answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_male(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
     say_eoa(en, 'He is a movie director.', SCORE).
-answer (knownPerson, de, PERSON, LABEL) :-
-    SCORE is 10,
+answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_male(PERSON),
@@ -72,16 +113,14 @@ answer (knownPerson, de, PERSON, LABEL) :-
     context_push(topic, PERSON),
     say_eoa(de, 'Er ist ein Regisseur.', SCORE).
 
-answer (knownPerson, en, PERSON, LABEL) :-
-    SCORE is 10,
+answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_female(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
     say_eoa(en, 'She is a movie director.', SCORE).
-answer (knownPerson, de, PERSON, LABEL) :-
-    SCORE is 10,
+answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_female(PERSON),

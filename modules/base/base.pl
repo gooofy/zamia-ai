@@ -1,5 +1,7 @@
 %prolog
 
+test_setup('base').
+
 % nlp_macro('SELF_ADDRESS_EN', LABEL) :- rdf (aiu:self, rdfs:label, LABEL, filter(lang(LABEL) = 'en')).
 nlp_macro('SELF_ADDRESS_EN', LABEL) :- rdf (aiu:self, ai:forename, LABEL, filter(lang(LABEL) = 'en')).
 nlp_macro('SELF_ADDRESS_EN', LABEL) :- LABEL is ''.

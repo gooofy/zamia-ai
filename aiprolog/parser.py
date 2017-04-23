@@ -87,7 +87,7 @@ class AIPrologParser(PrologParser):
             for v in macro_vars:
                 if not v in solution:
                     raise PrologError('Variable %s missing in macro %s solution' % (v, name), clause.location)
-                mapping[v] = ai_rt.prolog_get_string (solution[v], {})
+                mapping[v] = ai_rt.prolog_get_string (solution[v], {}, clause.location)
         
             mappings.append(mapping)
 

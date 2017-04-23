@@ -108,7 +108,7 @@ def builtin_action_context_set(pe, location, args):
     value = args[1]
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.write_context(key, value)
+    pe.write_context(key, value, location)
 
 def builtin_action_context_push(pe, location, args):
 
@@ -123,7 +123,7 @@ def builtin_action_context_push(pe, location, args):
     value = args[1]
 
     # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.push_context(key, value)
+    pe.push_context(key, value, location)
 
 
 def builtin_context_score(g, pe):
@@ -820,19 +820,19 @@ class AIPrologRuntime(PrologRuntime):
 
         return None
 
-    def write_context (self, key, value):
+    def write_context (self, key, value, location):
 
         # import pdb; pdb.set_trace()
 
         user = self.get_user()
 
-        v  = pl_literal_to_rdf(value, self.kb)
+        v  = pl_literal_to_rdf(value, self.kb, location)
 
         self.kb.remove (  (user, USER_PROP_PREFIX + key, None, self.context_gn)  )
         self.kb.addN   ([ (user, USER_PROP_PREFIX + key,    v, self.context_gn) ])
 
 
-    def push_context (self, key, value):
+    def push_context (self, key, value, location):
 
         l = self.read_context(key)
 
@@ -846,5 +846,5 @@ class AIPrologRuntime(PrologRuntime):
 
         # logging.debug ('context %s after push: %s' % (key, l))
 
-        self.write_context (key, l)
+        self.write_context (key, l, location)
 

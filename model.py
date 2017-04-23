@@ -61,6 +61,10 @@ class DiscourseRound(Base):
     inp               = Column(UnicodeText, index=True)
     resp              = Column(UnicodeText)
 
+    loc_fn            = Column(String(255))
+    loc_line          = Column(Integer)
+    loc_col           = Column(Integer)
+
     __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
 
 

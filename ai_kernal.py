@@ -39,7 +39,7 @@ from sqlalchemy.orm import sessionmaker
 import model
 
 from zamiaprolog.logicdb import LogicDB
-from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral
+from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral, SourceLocation
 from zamiaprolog.errors  import PrologError
 from aiprolog.pl2rdf     import pl_literal_to_rdf
 from aiprolog.runtime    import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER, \
@@ -365,16 +365,18 @@ class AIKernal(object):
 
         self.kb.remove((CURIN, None, None, gn))
 
-        quads = [ ( CURIN, KB_PREFIX+u'user',      user_uri,                                        gn),
-                  ( CURIN, KB_PREFIX+u'utterance', utterance,                                       gn),
-                  ( CURIN, KB_PREFIX+u'uttLang',   utt_lang,                                        gn),
-                  ( CURIN, KB_PREFIX+u'tokens',    pl_literal_to_rdf(ListLiteral(tokens), self.kb), gn)
+        sl = SourceLocation('<input>', 0, 0)
+
+        quads = [ ( CURIN, KB_PREFIX+u'user',      user_uri,                                            gn),
+                  ( CURIN, KB_PREFIX+u'utterance', utterance,                                           gn),
+                  ( CURIN, KB_PREFIX+u'uttLang',   utt_lang,                                            gn),
+                  ( CURIN, KB_PREFIX+u'tokens',    pl_literal_to_rdf(ListLiteral(tokens), self.kb, sl), gn)
                   ]
 
         if test_mode:
-            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(TEST_TIME), self.kb), gn ) )
+            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(TEST_TIME), self.kb, sl), gn ) )
         else:
-            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(time.time()), self.kb), gn ) )
+            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(time.time()), self.kb, sl), gn ) )
    
         self.kb.addN_resolve(quads)
 

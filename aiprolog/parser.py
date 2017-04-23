@@ -213,7 +213,11 @@ class AIPrologParser(PrologParser):
             self.discourse_rounds.append(model.DiscourseRound( lang      = lang,
                                                                module    = module_name,
                                                                inp       = inp, 
-                                                               resp      = resp))
+                                                               resp      = resp,
+                                                               loc_fn    = clause.location.fn, 
+                                                               loc_line  = clause.location.line,
+                                                               loc_col   = clause.location.col
+                                                               ))
             cnt += 1
 
         logging.debug (u"%fs nlp_gen: %s: %d generating macro expansions generated." % (time()-start_time, clause.location, cnt))

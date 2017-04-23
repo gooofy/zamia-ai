@@ -110,25 +110,30 @@ answer(topic, en) :-
 answer(topic, de) :-
     context_score(topic, people, 20, S), say_eoa(de, 'Wir hatten es von den Menschen.', S).
 
-answer (knownPerson, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, LABEL, SCORE),
+answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_push(topic, people),
     context_push(topic, PERSON),
     say_eoa(en, 'That name sounds familiar.', SCORE).
-answer (knownPerson, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, LABEL, SCORE),
+answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_push(topic, people),
     context_push(topic, PERSON),
     say_eoa(de, 'Ja, der Name ist mir bekannt.').
 
+answer (knownPersonTokens, en, TSTART, TEND) :-
+    ner(en, person, TSTART, TEND, PERSON, LABEL, SCORE),
+    answer(knownPerson, en, PERSON, LABEL, SCORE).
+answer (knownPersonTokens, de, TSTART, TEND) :-
+    ner(de, person, TSTART, TEND, PERSON, LABEL, SCORE),
+    answer(knownPerson, de, PERSON, LABEL, SCORE).
+
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what about | do you know | do you happen to know | who is|what is) @KNOWN_PERSONS_EN:LABEL',
-             answer(knownPerson, en, @KNOWN_PERSONS_EN:TSTART_LABEL_0, @KNOWN_PERSONS_EN:TEND_LABEL_0)). 
+             answer(knownPersonTokens, en, @KNOWN_PERSONS_EN:TSTART_LABEL_0, @KNOWN_PERSONS_EN:TEND_LABEL_0)). 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what about | do you know | do you happen to know | who is|what is) @KNOWN_PERSONS_FN_EN:FAMILY_NAME',
-             answer(knownPerson, en, @KNOWN_PERSONS_EN:TSTART_FAMILY_NAME_0, @KNOWN_PERSONS_EN:TEND_FAMILY_NAME_0)). 
+             answer(knownPersonTokens, en, @KNOWN_PERSONS_EN:TSTART_FAMILY_NAME_0, @KNOWN_PERSONS_EN:TEND_FAMILY_NAME_0)). 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kennst du|kennst du eigentlich|wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_PERSONS_DE:LABEL',
-             answer(knownPerson, de, @KNOWN_PERSONS_DE:TSTART_LABEL_0, @KNOWN_PERSONS_DE:TEND_LABEL_0)). 
+             answer(knownPersonTokens, de, @KNOWN_PERSONS_DE:TSTART_LABEL_0, @KNOWN_PERSONS_DE:TEND_LABEL_0)). 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kennst du|kennst du eigentlich|wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_PERSONS_FN_DE:FAMILY_NAME',
-             answer(knownPerson, de, @KNOWN_PERSONS_FN_DE:TSTART_FAMILY_NAME_0, @KNOWN_PERSONS_FN_DE:TEND_FAMILY_NAME_0)). 
+             answer(knownPersonTokens, de, @KNOWN_PERSONS_FN_DE:TSTART_FAMILY_NAME_0, @KNOWN_PERSONS_FN_DE:TEND_FAMILY_NAME_0)). 
 
 nlp_test(de,
          ivr(in('Kennst Du Angela Merkel?'),

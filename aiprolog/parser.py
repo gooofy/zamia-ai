@@ -231,7 +231,7 @@ class AIPrologParser(PrologParser):
 
         nlptest = model.NLPTest(module   = module_name,
                                 name     = name,
-                                test_src = unicode(clause),
+                                test_src = prolog_to_json(clause),
                                 location = str(clause.location))
 
         self.db.session.add(nlptest)

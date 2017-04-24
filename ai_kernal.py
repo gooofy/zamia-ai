@@ -39,7 +39,7 @@ from sqlalchemy.orm import sessionmaker
 import model
 
 from zamiaprolog.logicdb import LogicDB
-from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral, SourceLocation
+from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog
 from zamiaprolog.errors  import PrologError
 from aiprolog.pl2rdf     import pl_literal_to_rdf
 from aiprolog.runtime    import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER, \
@@ -493,6 +493,8 @@ class AIKernal(object):
 
         for nlpt in self.db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name):
 
+            logging.info ('running test %s ...' % nlpt.location)
+
             # import pdb; pdb.set_trace()
         
             # test setup predicate for this module
@@ -518,11 +520,11 @@ class AIKernal(object):
 
             # extract test rounds, look up matching discourse_rounds, execute them
 
-            clause = self.parser.parse_line_clause_body(nlpt.test_src)
+            clause = json_to_prolog(nlpt.test_src)
             clause.location = nlpt.location
             logging.debug( "Parse result: %s (%s)" % (clause, clause.__class__))
 
-            args = clause.body.args
+            args = clause.head.args
             lang = args[0].name
 
             round_num = 0

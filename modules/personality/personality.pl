@@ -43,59 +43,55 @@ nlp_macro('FEMALEFIRSTNAME_DE', NAME, LABEL) :-
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de')).
 
-answer(nameTold, en, GENDER, LABEL) :-
+answer(nameTold, en, TSTART, TEND) :-
+
+    rdf(ai:curin, ai:tokens, TOKENS),
+    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
+    list_str_join(' ', NAME_TOKENS, NAME_STR),
+
     myself_get (en, myname, MYNAME),
-    context_set(partner_name, LABEL),
-    context_set(partner_gender, GENDER),
+
+    context_set(partner_name, NAME_STR),
     say_eoa(en, format_str("Nice to meet you, my name is %s", MYNAME)),
-    context_set(partner_name, LABEL),
-    context_set(partner_gender, GENDER),
+
+    context_set(partner_name, NAME_STR),
     say_eoa(en, format_str("Cool, my name is %s", MYNAME)).
-answer(nameTold, de, GENDER, LABEL) :-
+
+answer(nameTold, de, TSTART, TEND) :-
+
+    rdf(ai:curin, ai:tokens, TOKENS),
+    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
+    list_str_join(' ', NAME_TOKENS, NAME_STR),
+
     myself_get (de, myname, MYNAME),
-    context_set(partner_name, LABEL),
-    context_set(partner_gender, GENDER),
+
+    context_set(partner_name, NAME_STR),
     say_eoa(de, format_str("Freut mich, ich heisse übrigens %s", MYNAME)),
-    context_set(partner_name, LABEL),
-    context_set(partner_gender, GENDER),
+
+    context_set(partner_name, NAME_STR),
     say_eoa(de, format_str("Cool, mein Name ist %s", MYNAME)).
     
 nlp_gen(en,
         '@SELF_ADDRESS_EN:LABEL (I am|my name is|I am called|Call me) @MALEFIRSTNAME_EN:LABEL',
-        uriref(wde:Male, URI),
-        answer(nameTold, en, URI, "@MALEFIRSTNAME_EN:LABEL")).
+        answer(nameTold, en, @MALEFIRSTNAME_EN:TSTART_LABEL_0, @MALEFIRSTNAME_EN:TEND_LABEL_0)).
 nlp_gen(de,
         '@SELF_ADDRESS_DE:LABEL (ich heisse|ich bin der|mein name ist) @MALEFIRSTNAME_DE:LABEL',
-        uriref(wde:Male, URI),
-        answer(nameTold, de, URI, "@MALEFIRSTNAME_DE:LABEL")).
+        answer(nameTold, de, @MALEFIRSTNAME_DE:TSTART_LABEL_0, @MALEFIRSTNAME_DE:TEND_LABEL_0)).
 
 nlp_gen(en,
         '@SELF_ADDRESS_EN:LABEL (I am|my name is|I am called|Call me) @FEMALEFIRSTNAME_EN:LABEL',
-        uriref(wde:Female, URI),
-        answer(nameTold, en, URI, "@FEMALEFIRSTNAME_EN:LABEL")).
+        answer(nameTold, en, @FEMALEFIRSTNAME_EN:TSTART_LABEL_0, @FEMALEFIRSTNAME_EN:TEND_LABEL_0)).
 nlp_gen(de,
         '@SELF_ADDRESS_DE:LABEL (ich heisse|ich bin die|mein name ist) @FEMALEFIRSTNAME_DE:LABEL',
-        uriref(wde:Female, URI),
-        answer(nameTold, de, URI, "@FEMALEFIRSTNAME_DE:LABEL")).
+        answer(nameTold, de, @FEMALEFIRSTNAME_DE:TSTART_LABEL_0, @FEMALEFIRSTNAME_DE:TEND_LABEL_0)).
 
 answer(partnerNameAsked, en) :-
     context_get(partner_name, LABEL),
-    context_get(partner_gender, GENDER),
     say_eoa(en, format_str("Your name is %s", LABEL)).
 
 answer(partnerNameAsked, de) :-
     context_get(partner_name, LABEL),
-    context_get(partner_gender, GENDER),
-    uriref(wde:Male, MALE),
-    GENDER is MALE,
-    say_eoa(de, format_str("Du bist der %s", LABEL)).
-
-answer(partnerNameAsked, de) :-
-    context_get(partner_name, LABEL),
-    context_get(partner_gender, GENDER),
-    uriref(wde:Female, FEMALE),
-    GENDER is FEMALE,
-    say_eoa(de, format_str("Du bist die %s", LABEL)).
+    say_eoa(de, format_str("Dein Name ist %s", LABEL)).
 
 nlp_gen(en,
         '@SELF_ADDRESS_EN:LABEL (do you remember my name|what is my name|do you know my name)?',
@@ -113,11 +109,11 @@ nlp_test(de,
          ivr(in('ich bin der wolfgang'),
              out('Cool, mein Name ist HAL 9000')),
          ivr(in('erinnerst du dich an meinen namen?'),
-             out("Du bist der Wolfgang.")),
+             out("Dein Name ist Wolfgang.")),
          ivr(in('ich heisse petra'),
              out("freut mich, ich heisse übrigens hal 9000")),
          ivr(in('erinnerst du dich an meinen namen?'),
-             out("Du bist die petra.")) ).
+             out("Dein Name ist Petra.")) ).
 
 answer(nameAsked, en) :-
     myself_get (en, myname, MYNAME),
@@ -294,10 +290,24 @@ nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you half human half machine?',
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du halb mensch halb maschine',
              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin vollsynthetisch.')).
 
+answer (runningOnHomeComputer, en, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
+    context_push(topic, home_computer), 
+    context_push(topic, HOME_COMPUTER), 
+    say_eoa(en, 'No, I am running on current hardware, but I love home computers.', SCORE).
+
+answer (runningOnHomeComputer, de, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
+    context_push(topic, home_computer), 
+    context_push(topic, HOME_COMPUTER), 
+    say_eoa(de, 'Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!', SCORE).
+
+answer (runningOnPlatformTokens, LANG, TSTART, TEND) :-
+    ner(LANG, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
+    answer (runningOnHomeComputer, LANG, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
+
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL are you (running on|) a @HOME_COMPUTER_EN:LABEL?',
-             context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(en, 'No, I am running on current hardware, but I love home computers.')).
+             answer(runningOnPlatformTokens, en, @HOME_COMPUTER_EN:TSTART_LABEL_0, @HOME_COMPUTER_EN:TEND_LABEL_0)).
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER_DE:LABEL?',
-             context_push(topic, home_computer), context_push(topic, "@HOME_COMPUTER_DE:NAME"), say_eoa(de, 'Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')).
+             answer(runningOnPlatformTokens, de, @HOME_COMPUTER_DE:TSTART_LABEL_0, @HOME_COMPUTER_DE:TEND_LABEL_0)).
 
 nlp_test(en,
          ivr(in('computer are you a commodore 64?'),
@@ -939,14 +949,14 @@ answer(meatheist, de) :-
 
 nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you programmed to believe in god?",
              answer(meatheist, en)).
-nlp_gen (en, "@SELF_ADDRESS_EN:LABEL do you believe in god?",
+nlp_gen (en, "@SELF_ADDRESS_EN:LABEL (oh my|do you believe in|is there a|by) god",
              answer(meatheist, en)).
 nlp_gen (en, "@SELF_ADDRESS_EN:LABEL are you (an atheist|christian|muslim|a jew|jewish|hindu|buddhist|religious)?",
              answer(meatheist, en)).
 
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) programmiert an gott zu glauben',
              answer(meatheist, de)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL glaubst du (eigentlich|) an gott?',
+nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (oh mein|glaubst du an|gibt es einen|bei) gott',
              answer(meatheist, de)).
 nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bist du (eigentlich|) (atheist|christ|muslim|jude|hindu|buddhist|buddhistisch|religiös)',
              answer(meatheist, de)).

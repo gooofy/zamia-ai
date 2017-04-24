@@ -574,6 +574,7 @@ class AIKernal(object):
                     if len(test_out) > 0:
                         if len(actual_out)>0:
                             actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                        logging.info("nlp_test: %s round %d actual_out  : %s" % (clause.location, round_num, actual_out) )
                         if actual_out != test_out:
                             logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
                             continue # no match

@@ -87,7 +87,7 @@ class NLPTest(Base):
     module            = Column(String(255), index=True)
     name              = Column(String(255), index=True)
 
-    test_src          = Column(UnicodeText)
+    test_src          = Column(Text)
     location          = Column(String(255), index=True)
 
 class NLPMacro(Base):

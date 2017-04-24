@@ -156,12 +156,9 @@ answer (knownProgrammingLanguage, de, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE
     context_push(topic, PROGRAMMING_LANGUAGE),
     say_eoa(de, format_str('%s ist eine Programmiersprache.', PROGRAMMING_LANGUAGE_LABEL), SCORE).
 
-answer (knownProgrammingLanguageTokens, en, TSTART, TEND) :-
-    ner(en, programming_language, TSTART, TEND, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE),
-    answer (knownProgrammingLanguage, en, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE).
-answer (knownProgrammingLanguageTokens, de, TSTART, TEND) :-
-    ner(de, programming_language, TSTART, TEND, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE),
-    answer (knownProgrammingLanguage, de, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE).
+answer (knownProgrammingLanguageTokens, LANG, TSTART, TEND) :-
+    ner(LANG, programming_language, TSTART, TEND, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE),
+    answer (knownProgrammingLanguage, LANG, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE).
 
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (do you know|what is) @PROGRAMMING_LANGUAGE_EN:LABEL?',
              answer(knownProgrammingLanguageTokens, en, @PROGRAMMING_LANGUAGE_EN:TSTART_LABEL_0, @PROGRAMMING_LANGUAGE_EN:TEND_LABEL_0)). 
@@ -199,12 +196,9 @@ answer (knownHomeComputer, de, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
     context_push(topic, HOME_COMPUTER),
     say_eoa(de, format_str('Der %s ist ein Heimcomputer.', HOME_COMPUTER_LABEL), SCORE).
 
-answer (knownHomeComputerTokens, en, TSTART, TEND) :-
-    ner(en, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
-    answer (knownHomeComputer, en, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
-answer (knownHomeComputerTokens, de, TSTART, TEND) :-
-    ner(de, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
-    answer (knownHomeComputer, de, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
+answer (knownHomeComputerTokens, LANG, TSTART, TEND) :-
+    ner(LANG, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
+    answer (knownHomeComputer, LANG, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
 
 nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (do you know|what is) @HOME_COMPUTER_EN:LABEL?',
             answer(knownHomeComputerTokens, en, @HOME_COMPUTER_EN:TSTART_LABEL_0, @HOME_COMPUTER_EN:TEND_LABEL_0)). 

@@ -237,6 +237,10 @@ class AIKernal(object):
 
                 self.session.commit()
 
+            if hasattr(m, 'init_module'):
+                initializer = getattr(m, 'init_module')
+                initializer(self.prolog_rt)
+
             if run_init:
                 gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
                 self.kb.remove((CURIN, None, None, gn))

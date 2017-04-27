@@ -300,6 +300,30 @@ def builtin_rdf_lists(g, pe):
 
     return _rdf_exec (g, pe, g.location, generate_lists=True)
 
+def build_algebra(var_map, triples, optional_triples=[], filters=[], limit=0, offset=0, distinct=False):
+
+    var_list = var_map.values()
+    var_set  = set(var_list)
+
+    p = CompValue('BGP', triples=triples, _vars=var_set)
+
+    for t in optional_triples:
+        p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
+                                  expr = CompValue('TrueFilter', _vars=set([])))
+
+    for f in filters:
+        p = CompValue('Filter', p=p, expr = f, _vars=var_set)
+
+    if limit>0:
+        p = CompValue('Slice', start=offset, length=limit, p=p, _vars=var_set)
+
+    if distinct:
+        p = CompValue('Distinct', p=p, _vars=var_set)
+
+    algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
+
+    return algebra
+
 def _rdf_exec (g, pe, location, generate_lists=False):
 
     # rdflib.plugins.sparql.parserutils.CompValue
@@ -445,25 +469,7 @@ def _rdf_exec (g, pe, location, generate_lists=False):
     if len(triples) == 0:
         raise PrologRuntimeError('rdf: at least one non-optional triple expected', location)
 
-    var_list = var_map.values()
-    var_set  = set(var_list)
-
-    p = CompValue('BGP', triples=triples, _vars=var_set)
-
-    for t in optional_triples:
-        p = CompValue('LeftJoin', p1=p, p2=CompValue('BGP', triples=[t], _vars=var_set),
-                                  expr = CompValue('TrueFilter', _vars=set([])))
-
-    for f in filters:
-        p = CompValue('Filter', p=p, expr = f, _vars=var_set)
-
-    if limit>0:
-        p = CompValue('Slice', start=offset, length=limit, p=p, _vars=var_set)
-
-    if distinct:
-        p = CompValue('Distinct', p=p, _vars=var_set)
-
-    algebra = CompValue ('SelectQuery', p = p, datasetClause = None, PV = var_list, _vars = var_set)
+    algebra = build_algebra(var_map, triples, optional_triples, filters, limit, offset, distinct)
     
     result = pe.kb.query_algebra (algebra)
 

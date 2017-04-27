@@ -3,6 +3,8 @@
 
 import rdflib
 
+from ner import builtin_ner_person
+
 DEPENDS    = [ 'config' ]
 
 PL_SOURCES = [
@@ -208,4 +210,8 @@ KB_SOURCES = [
               ),
               'tz.n3',
             ]
+
+def init_module(rt):
+
+    rt.register_builtin ('ner_person', builtin_ner_person)
 

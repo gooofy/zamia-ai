@@ -18,34 +18,35 @@ is_female(PERSON) :- rdf (PERSON, wdpd:SexOrGender, wde:Female).
 %
 ner_score (person, PERSON, 100) :- is_person(PERSON).
 
-ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
-
-    atom_chars(LANG, LSTR),
-
-    rdf (distinct,
-         PERSON, wdpd:InstanceOf,   wde:Human,
-         PERSON, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)),
-
-    tokenize (LANG, LABEL, LABEL_TOKENS),
-
-    NAME_TOKENS = LABEL_TOKENS.
-
-ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
-
-    atom_chars(LANG, LSTR),
-
-    rdf (distinct,
-         PERSON, wdpd:InstanceOf,   wde:Human,
-         PERSON, rdfs:label,        LABEL,
-         PERSON, wdpd:FamilyName,   FN,
-         FN,     rdfs:label,        FAMILY_NAME,
-         filter (lang(LABEL) = LSTR),
-         filter (lang(FAMILY_NAME) = LSTR)),
-
-    tokenize (LANG, FAMILY_NAME, FN_TOKENS),
-
-    NAME_TOKENS = FN_TOKENS.
+% implemented in ner.py (for speed)
+% ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
+% 
+%     atom_chars(LANG, LSTR),
+% 
+%     rdf (distinct,
+%          PERSON, wdpd:InstanceOf,   wde:Human,
+%          PERSON, rdfs:label,        LABEL,
+%          filter (lang(LABEL) = LSTR)),
+% 
+%     tokenize (LANG, LABEL, LABEL_TOKENS),
+% 
+%     NAME_TOKENS = LABEL_TOKENS.
+% 
+% ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
+% 
+%     atom_chars(LANG, LSTR),
+% 
+%     rdf (distinct,
+%          PERSON, wdpd:InstanceOf,   wde:Human,
+%          PERSON, rdfs:label,        LABEL,
+%          PERSON, wdpd:FamilyName,   FN,
+%          FN,     rdfs:label,        FAMILY_NAME,
+%          filter (lang(LABEL) = LSTR),
+%          filter (lang(FAMILY_NAME) = LSTR)),
+% 
+%     tokenize (LANG, FAMILY_NAME, FN_TOKENS),
+% 
+%     NAME_TOKENS = FN_TOKENS.
 
 ner(LANG, person, TSTART, TEND, PERSON, LABEL, SCORE) :-
 

@@ -50,6 +50,9 @@ from kb import AIKB
 from nltools import misc
 from nltools.tokenizer import tokenize
 
+# FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
+ENABLE_HAL_PREFIX_HACK = True
+
 class AIKernal(object):
 
     def __init__(self):
@@ -366,6 +369,10 @@ class AIKernal(object):
         gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
         tokens = tokenize(utterance, utt_lang)
+
+        if ENABLE_HAL_PREFIX_HACK:
+            if tokens[0] == u'hal':
+                del tokens[0]
 
         self.kb.remove((CURIN, None, None, gn))
 

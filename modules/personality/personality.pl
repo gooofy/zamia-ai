@@ -94,10 +94,10 @@ answer(partnerNameAsked, de) :-
     say_eoa(de, format_str("Dein Name ist %s", LABEL)).
 
 nlp_gen(en,
-        '@SELF_ADDRESS_EN:LABEL (do you remember my name|what is my name|do you know my name)?',
+        '@SELF_ADDRESS_EN:LABEL (do you remember my name|what was my name|what is my name|do you know my name)?',
         answer(partnerNameAsked, en)).
 nlp_gen(de,
-        '@SELF_ADDRESS_DE:LABEL (erinnerst Du Dich an meinen Namen|wie heisse ich|weisst Du meinen Namen)?',
+        '@SELF_ADDRESS_DE:LABEL (erinnerst Du Dich an meinen Namen|wie war mein name|wie heisse ich|weisst Du meinen Namen|weißt du noch wie ich heisse)?',
         answer(partnerNameAsked, de)).
 
 nlp_test(en,
@@ -109,6 +109,8 @@ nlp_test(de,
          ivr(in('ich bin der wolfgang'),
              out('Cool, mein Name ist HAL 9000')),
          ivr(in('erinnerst du dich an meinen namen?'),
+             out("Dein Name ist Wolfgang.")),
+         ivr(in('wie war mein name?'),
              out("Dein Name ist Wolfgang.")),
          ivr(in('ich heisse petra'),
              out("freut mich, ich heisse übrigens hal 9000")),

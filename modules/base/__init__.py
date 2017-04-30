@@ -3,7 +3,7 @@
 
 import rdflib
 
-from ner import builtin_ner_person
+from ner import builtin_ner_learn, builtin_ner
 
 DEPENDS    = [ 'config' ]
 
@@ -213,5 +213,6 @@ KB_SOURCES = [
 
 def init_module(rt):
 
-    rt.register_builtin ('ner_person', builtin_ner_person)
+    rt.register_builtin ('ner_learn', builtin_ner_learn)
+    rt.register_builtin ('ner',       builtin_ner)
 

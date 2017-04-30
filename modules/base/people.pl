@@ -9,59 +9,19 @@ is_female(PERSON) :- rdf (PERSON, wdpd:SexOrGender, wde:Female).
 % named entity recognition (NER)
 %
 
-%
-% ner_person_score: this is meant to be overloaded by 
-% other modules in order to prioritize certain matches 
-% (possibly limited to certain contexts)
-%
-% i.e. known persons, persons relevant to the current topic, etc.
-%
-ner_score (person, PERSON, 100) :- is_person(PERSON).
+ner_learn_humans(LANG) :-
+    atom_chars(LANG, LSTR),
 
-% implemented in ner.py (for speed)
-% ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
-% 
-%     atom_chars(LANG, LSTR),
-% 
-%     rdf (distinct,
-%          PERSON, wdpd:InstanceOf,   wde:Human,
-%          PERSON, rdfs:label,        LABEL,
-%          filter (lang(LABEL) = LSTR)),
-% 
-%     tokenize (LANG, LABEL, LABEL_TOKENS),
-% 
-%     NAME_TOKENS = LABEL_TOKENS.
-% 
-% ner_person(LANG, NAME_TOKENS, PERSON, LABEL) :-
-% 
-%     atom_chars(LANG, LSTR),
-% 
-%     rdf (distinct,
-%          PERSON, wdpd:InstanceOf,   wde:Human,
-%          PERSON, rdfs:label,        LABEL,
-%          PERSON, wdpd:FamilyName,   FN,
-%          FN,     rdfs:label,        FAMILY_NAME,
-%          filter (lang(LABEL) = LSTR),
-%          filter (lang(FAMILY_NAME) = LSTR)),
-% 
-%     tokenize (LANG, FAMILY_NAME, FN_TOKENS),
-% 
-%     NAME_TOKENS = FN_TOKENS.
+    rdf_lists (distinct,
+               HUMAN_ENTITIES, wdpd:InstanceOf,   wde:Human,
+               HUMAN_ENTITIES, rdfs:label,        HUMAN_LABELS,
+               filter (lang(HUMAN_LABELS) = LSTR)),
 
-ner(LANG, person, TSTART, TEND, PERSON, LABEL, SCORE) :-
+    ner_learn(LANG, human, HUMAN_ENTITIES, HUMAN_LABELS).
 
-    rdf(ai:curin, ai:tokens, TOKENS),
-    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
-   
-    ner_person(LANG, NAME_TOKENS, PERSON, LABEL),
-
-    % edit_distance (NAME_TOKENS, LABEL_TOKENS, ED),
-
-    % ED < list_len(NAME_TOKENS),
-
-    ner_score (person, PERSON, SCORE).
-
-    %SCORE is PS - ED*10. 
+init('base') :-
+    ner_learn_humans(en),
+    ner_learn_humans(de).
 
 %
 % macros listing all known persons with their LABELs
@@ -121,10 +81,10 @@ answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     say_eoa(de, 'Ja, der Name ist mir bekannt.').
 
 answer (knownPersonTokens, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, LABEL, SCORE),
+    ner(en, human, TSTART, TEND, PERSON, LABEL, SCORE),
     answer(knownPerson, en, PERSON, LABEL, SCORE).
 answer (knownPersonTokens, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, LABEL, SCORE),
+    ner(de, human, TSTART, TEND, PERSON, LABEL, SCORE),
     answer(knownPerson, de, PERSON, LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (what about | do you know | do you happen to know | who is|what is) @KNOWN_PERSONS_EN:LABEL',
@@ -169,10 +129,10 @@ answer (birthplacePerson, de, PERSON, PERSON_LABEL, SCORE) :-
     say_eoa(de, format_str('%s wurde in %s geboren.', PERSON_LABEL, LABEL), SCORE).
 
 answer (birthplacePersonTokens, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
+    ner(en, human, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
     answer (birthplacePerson, en, PERSON, PERSON_LABEL, SCORE).
 answer (birthplacePersonTokens, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
+    ner(de, human, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
     answer (birthplacePerson, de, PERSON, PERSON_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (where|in which town|in which city) (was|is) @KNOWN_PERSONS_EN:LABEL born?',
@@ -251,10 +211,10 @@ answer (birthdatePerson, de, PERSON, PERSON_LABEL, SCORE) :-
     say_eoa(de, format_str('%s wurde am %s geboren.', PERSON_LABEL, TS_SCRIPT), SCORE).
 
 answer (birthdatePersonTokens, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
+    ner(en, human, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
     answer (birthdatePerson, en, PERSON, PERSON_LABEL, SCORE).
 answer (birthdatePersonTokens, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
+    ner(de, human, TSTART, TEND, PERSON, PERSON_LABEL, SCORE),
     answer (birthdatePerson, de, PERSON, PERSON_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (when|in which year) (was|is) @KNOWN_PERSONS_EN:LABEL born?',

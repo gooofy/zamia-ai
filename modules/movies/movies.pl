@@ -6,31 +6,19 @@ is_movie_director(PERSON) :- rdf (MOVIE, wdpd:Director, PERSON).
 % named entity recognition (NER) stuff: extra points for movie directors, movie title NER
 %
 
-ner_score (person, PERSON, 200) :- is_movie_director(PERSON).
-
-ner_score (movie, MOVIE, 100). % FIXME: we should probably score by movie popularity or smth
-
-ner_movie(LANG, TITLE_TOKENS, MOVIE, LABEL) :-
-
+ner_learn_films(LANG) :-
     atom_chars(LANG, LSTR),
 
-    rdf (distinct,
-         MOVIE, wdpd:InstanceOf,   wde:Film,
-         MOVIE, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)),
+    rdf_lists (distinct,
+               FILM_ENTITIES, wdpd:InstanceOf,   wde:Film,
+               FILM_ENTITIES, rdfs:label,        FILM_LABELS,
+               filter (lang(FILM_LABELS) = LSTR)),
 
-    tokenize (LANG, LABEL, LABEL_TOKENS),
+    ner_learn(LANG, film, FILM_ENTITIES, FILM_LABELS).
 
-    TITLE_TOKENS = LABEL_TOKENS.
-
-ner(LANG, movie, TSTART, TEND, MOVIE, LABEL, SCORE) :-
-
-    rdf(ai:curin, ai:tokens, TOKENS),
-    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
-   
-    ner_movie(LANG, NAME_TOKENS, MOVIE, LABEL),
-
-    ner_score (movie, MOVIE, SCORE).
+init('movies') :-
+    ner_learn_films(en),
+    ner_learn_films(de).
 
 %
 % movie related NLP macros/processing
@@ -72,10 +60,10 @@ answer (movieDirector, de, MOVIE, MOVIE_LABEL, SCORE) :-
     say_eoa(de, format_str('Der Regisseur von %s ist %s.', MOVIE_LABEL, LABEL), SCORE).
 
 answer (movieDirectorTokens, en, TSTART, TEND) :-
-    ner(en, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(en, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieDirector, en, MOVIE, MOVIE_LABEL, SCORE).
 answer (movieDirectorTokens, de, TSTART, TEND) :-
-    ner(de, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(de, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieDirector, de, MOVIE, MOVIE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (made|did) @MOVIES_EN:LABEL (by the way|)?',
@@ -104,14 +92,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_male(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
-    say_eoa(en, 'He is a movie director.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'He is a movie director.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_male(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
-    say_eoa(de, 'Er ist ein Regisseur.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Er ist ein Regisseur.', RS).
 
 answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
@@ -119,14 +109,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_female(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
-    say_eoa(en, 'She is a movie director.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'She is a movie director.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, movies, 100, SCORE),
     is_director(PERSON),
     is_female(PERSON),
     context_push(topic, movies),
     context_push(topic, PERSON),
-    say_eoa(de, 'Sie ist eine Regisseurin.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Sie ist eine Regisseurin.', RS).
 
 nlp_test(en,
          ivr(in('Who is Alfred Hitchcock?'),
@@ -151,10 +143,10 @@ answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE) :-
     say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y), SCORE).
 
 answer (movieCreationDateTokens, en, TSTART, TEND) :-
-    ner(en, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(en, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieCreationDate, en, MOVIE, MOVIE_LABEL, SCORE).
 answer (movieCreationDateTokens, de, TSTART, TEND) :-
-    ner(de, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(de, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when was @MOVIES_EN:LABEL (produced|made)?',
@@ -179,10 +171,10 @@ answer (movieSeen, de, MOVIE, MOVIE_LABEL, SCORE) :-
     say_eoa(de, format_str('ja, %s kenne ich - ist ein bekannter Film.', MOVIE_LABEL), SCORE).
 
 answer (movieSeenTokens, en, TSTART, TEND) :-
-    ner(en, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(en, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieSeen, en, MOVIE, MOVIE_LABEL, SCORE).
 answer (movieSeenTokens, de, TSTART, TEND) :-
-    ner(de, movie, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
+    ner(de, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
     answer (movieSeen, de, MOVIE, MOVIE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL do you (happen to|) know (the movie|) @MOVIES_EN:LABEL?',

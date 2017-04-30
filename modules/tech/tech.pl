@@ -7,55 +7,31 @@ is_computer_scientist(PERSON) :- rdf (PERSON, wdpd:Occupation, wde:ComputerScien
 % FIXME: NER for operating systems, ...
 %
 
-ner_score (person, PERSON, 200) :- is_computer_scientist(PERSON).
-
-ner_score (programming_language, PROGRAMMING_LANGUAGE, 100). % FIXME: we should probably score by popularity or smth
-
-ner_programming_language(LANG, TITLE_TOKENS, PROGRAMMING_LANGUAGE, LABEL) :-
-
+ner_learn_programming_languages(LANG) :-
     atom_chars(LANG, LSTR),
 
-    rdf (distinct,
-         PROGRAMMING_LANGUAGE, wdpd:InstanceOf,   wde:ProgrammingLanguage,
-         PROGRAMMING_LANGUAGE, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)),
+    rdf_lists (distinct,
+               PROGRAMMING_LANGUAGE_ENTITIES, wdpd:InstanceOf,   wde:ProgrammingLanguage,
+               PROGRAMMING_LANGUAGE_ENTITIES, rdfs:label,        PROGRAMMING_LANGUAGE_LABELS,
+               filter (lang(PROGRAMMING_LANGUAGE_LABELS) = LSTR)),
 
-    tokenize (LANG, LABEL, LABEL_TOKENS),
+    ner_learn(LANG, programming_language, PROGRAMMING_LANGUAGE_ENTITIES, PROGRAMMING_LANGUAGE_LABELS).
 
-    TITLE_TOKENS = LABEL_TOKENS.
-
-ner(LANG, programming_language, TSTART, TEND, PROGRAMMING_LANGUAGE, LABEL, SCORE) :-
-
-    rdf(ai:curin, ai:tokens, TOKENS),
-    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
-   
-    ner_programming_language(LANG, NAME_TOKENS, PROGRAMMING_LANGUAGE, LABEL),
-
-    ner_score (programming_language, PROGRAMMING_LANGUAGE, SCORE).
-
-ner_score (home_computer, HOME_COMPUTER, 100). % FIXME: we should probably score by popularity or smth
-
-ner_home_computer(LANG, TITLE_TOKENS, HOME_COMPUTER, LABEL) :-
-
+ner_learn_home_computers(LANG) :-
     atom_chars(LANG, LSTR),
 
-    rdf (distinct,
-         HOME_COMPUTER, wdpd:InstanceOf,   wde:HomeComputer,
-         HOME_COMPUTER, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)),
+    rdf_lists (distinct,
+               HOME_COMPUTER_ENTITIES, wdpd:InstanceOf,   wde:HomeComputer,
+               HOME_COMPUTER_ENTITIES, rdfs:label,        HOME_COMPUTER_LABELS,
+               filter (lang(HOME_COMPUTER_LABELS) = LSTR)),
 
-    tokenize (LANG, LABEL, LABEL_TOKENS),
+    ner_learn(LANG, home_computer, HOME_COMPUTER_ENTITIES, HOME_COMPUTER_LABELS).
 
-    TITLE_TOKENS = LABEL_TOKENS.
-
-ner(LANG, home_computer, TSTART, TEND, HOME_COMPUTER, LABEL, SCORE) :-
-
-    rdf(ai:curin, ai:tokens, TOKENS),
-    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
-   
-    ner_home_computer(LANG, NAME_TOKENS, HOME_COMPUTER, LABEL),
-
-    ner_score (home_computer, HOME_COMPUTER, SCORE).
+init('tech') :-
+    ner_learn_home_computers(en),
+    ner_learn_home_computers(de),
+    ner_learn_programming_languages(en),
+    ner_learn_programming_languages(de).
 
 answer(topic, en) :-
     context_score(topic, computers, 100, SCORE), say_eoa(en, 'We were talking about computers and machines.', SCORE).
@@ -105,14 +81,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_male(PERSON),
     context_push(topic, computer_science),
     context_push(topic, PERSON),
-    say_eoa(en, 'He is a computer scientist.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'He is a computer scientist.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, computer_science, 100, SCORE),
     is_computer_scientist(PERSON),
     is_male(PERSON),
     context_push(topic, computer_science),
     context_push(topic, PERSON),
-    say_eoa(de, 'Er ist ein Informatiker.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Er ist ein Informatiker.', RS).
 
 answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_score (topic, computer_science, 100, SCORE),
@@ -120,14 +98,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_female(PERSON),
     context_push(topic, computer_science),
     context_push(topic, PERSON),
-    say_eoa(en, 'She is a computer scientist.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'She is a computer scientist.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, computer_science, 100, SCORE),
     is_computer_scientist(PERSON),
     is_female(PERSON),
     context_push(topic, computer_science),
     context_push(topic, PERSON),
-    say_eoa(de, 'Sie ist eine Informatikerin.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Sie ist eine Informatikerin.', RS).
 
 nlp_test(en,
          ivr(in('Who is Niklaus Wirth?'),

@@ -197,6 +197,12 @@ def builtin_ner(g, pe):
         if cnt > MAX_NER_RESULTS:
             break
 
+    # FIXME: debug only
+
+    # s = u' '.join(tokens)
+    # if 'kennst du das buch the stand' in s:
+    #     import pdb; pdb.set_trace()
+
     return res
 
 

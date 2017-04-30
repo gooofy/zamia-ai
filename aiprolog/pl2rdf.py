@@ -60,7 +60,7 @@ def rdf_to_pl(l):
                 value = NumberLiteral(float(value))
             elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
                 dt = dateutil.parser.parse(value)
-                value = NumberLiteral(time.mktime(dt.timetuple()))
+                value = StringLiteral(dt.isoformat())
             elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
                 dt = dateutil.parser.parse(value)
                 value = NumberLiteral(time.mktime(dt.timetuple()))

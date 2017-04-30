@@ -6,31 +6,19 @@ is_author(PERSON) :- rdf (LITERATURE, wdpd:Author, PERSON).
 % named entity recognition (NER) stuff: extra points for authors, literature title NER
 %
 
-ner_score (person, PERSON, 200) :- is_author(PERSON).
-
-ner_score (literature, LITERATURE, 100). % FIXME: we should probably score by literature popularity or smth
-
-ner_literature(LANG, TITLE_TOKENS, LITERATURE, LABEL) :-
-
+ner_learn_books(LANG) :-
     atom_chars(LANG, LSTR),
 
-    rdf (distinct,
-         LITERATURE, wdpd:InstanceOf,   wde:Book,
-         LITERATURE, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)),
+    rdf_lists (distinct,
+               BOOK_ENTITIES, wdpd:InstanceOf,   wde:Book,
+               BOOK_ENTITIES, rdfs:label,        BOOK_LABELS,
+               filter (lang(BOOK_LABELS) = LSTR)),
 
-    tokenize (LANG, LABEL, LABEL_TOKENS),
+    ner_learn(LANG, book, BOOK_ENTITIES, BOOK_LABELS).
 
-    TITLE_TOKENS = LABEL_TOKENS.
-
-ner(LANG, literature, TSTART, TEND, LITERATURE, LABEL, SCORE) :-
-
-    rdf(ai:curin, ai:tokens, TOKENS),
-    list_slice(TSTART, TEND, TOKENS, NAME_TOKENS),
-   
-    ner_literature(LANG, NAME_TOKENS, LITERATURE, LABEL),
-
-    ner_score (literature, LITERATURE, SCORE).
+init('literature') :-
+    ner_learn_books(en),
+    ner_learn_books(de).
 
 nlp_macro ('LITERATURE_EN', LITERATURE, LABEL) :-
     rdf (distinct,
@@ -68,10 +56,10 @@ answer (literatureAuthor, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
     say_eoa(de, format_str('Der Autor von %s ist %s.', LITERATURE_LABEL, LABEL), SCORE).
 
 answer (literatureAuthorTokens, en, TSTART, TEND) :-
-    ner(en, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureAuthor, en, LITERATURE, LITERATURE_LABEL, SCORE).
 answer (literatureAuthorTokens, de, TSTART, TEND) :-
-    ner(de, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureAuthor, de, LITERATURE, LITERATURE_LABEL, SCORE).
 
 
@@ -101,14 +89,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_male(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(en, 'He is an author.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'He is an author.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, literature, 100, SCORE),
     is_author(PERSON),
     is_male(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(de, 'Er ist ein Autor.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Er ist ein Autor.', RS).
 
 answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     context_score (topic, literature, 100, SCORE),
@@ -116,14 +106,16 @@ answer (knownPerson, en, PERSON, LABEL, SCORE) :-
     is_female(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(en, 'She is an author.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(en, 'She is an author.', RS).
 answer (knownPerson, de, PERSON, LABEL, SCORE) :-
     context_score (topic, literature, 100, SCORE),
     is_author(PERSON),
     is_female(PERSON),
     context_push(topic, literature),
     context_push(topic, PERSON),
-    say_eoa(de, 'Sie ist eine Autorin.', SCORE).
+    RS is SCORE + 100,
+    say_eoa(de, 'Sie ist eine Autorin.', RS).
 
 nlp_test(en,
          ivr(in('Who is Dan Brown?'),
@@ -148,10 +140,10 @@ answer (literatureCreationDate, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
     say_eoa(de, format_str('%s wurde %s geschrieben.', LITERATURE_LABEL, Y), SCORE).
 
 answer (literatureCreationDateTokens, en, TSTART, TEND) :-
-    ner(en, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureCreationDate, en, LITERATURE, LITERATURE_LABEL, SCORE).
 answer (literatureCreationDateTokens, de, TSTART, TEND) :-
-    ner(de, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureCreationDate, de, LITERATURE, LITERATURE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when was @LITERATURE_EN:LABEL (created|written|made)?',
@@ -176,10 +168,10 @@ answer (literatureKnown, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
     say_eoa(de, format_str('ja, %s kenne ich - ist ein bekanntes Stück Literatur.', LITERATURE_LABEL), SCORE).
 
 answer (literatureKnownTokens, en, TSTART, TEND) :-
-    ner(en, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureKnown, en, LITERATURE, LITERATURE_LABEL, SCORE).
 answer (literatureKnownTokens, de, TSTART, TEND) :-
-    ner(de, literature, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
+    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
     answer (literatureKnown, de, LITERATURE, LITERATURE_LABEL, SCORE).
 
 nlp_gen (en, '@SELF_ADDRESS_EN:LABEL do you (happen to|) know (the book|) @LITERATURE_EN:LABEL?',

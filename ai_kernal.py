@@ -89,9 +89,10 @@ class AIKernal(object):
         # module management, setup
         #
 
-        self.modules  = {}
+        self.modules             = {}
+        self.initialized_modules = set()
         s = self.config.get('semantics', 'modules')
-        self.all_modules = map (lambda s: s.strip(), s.split(','))
+        self.all_modules         = map (lambda s: s.strip(), s.split(','))
 
         #
         # prolog environment setup
@@ -170,8 +171,9 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def load_module (self, module_name, run_init=False, run_trace=False):
+    def load_module (self, module_name):
 
+        # import pdb; pdb.set_trace()
         if module_name in self.modules:
             return self.modules[module_name]
 
@@ -195,7 +197,7 @@ class AIKernal(object):
             #     print name
 
             for m2 in getattr (m, 'DEPENDS'):
-                self.load_module(m2, run_init=run_init, run_trace=run_trace)
+                self.load_module(m2)
 
             if hasattr(m, 'RDF_PREFIXES'):
                 prefixes = getattr(m, 'RDF_PREFIXES')
@@ -244,30 +246,6 @@ class AIKernal(object):
                 initializer = getattr(m, 'init_module')
                 initializer(self.prolog_rt)
 
-            if run_init:
-                gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
-                self.kb.remove((CURIN, None, None, gn))
-
-                quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, gn) ]
-
-                self.kb.addN_resolve(quads)
-
-                prolog_s = u'init(\'%s\')' % (module_name)
-                c = self.parser.parse_line_clause_body(prolog_s)
-
-                self.prolog_rt.set_trace(run_trace)
-
-                self.prolog_rt.reset_actions()
-            
-                solutions = self.prolog_rt.search(c)
-
-                # import pdb; pdb.set_trace()
-            
-                actions = self.prolog_rt.get_actions()
-                for action in actions:
-                    self.prolog_rt.execute_builtin_actions(action)
-
-
         except:
             logging.error(traceback.format_exc())
 
@@ -277,6 +255,44 @@ class AIKernal(object):
                 fp.close()
 
         return m
+
+    def init_module (self, module_name, run_trace=False):
+
+        # import pdb; pdb.set_trace()
+        if module_name in self.initialized_modules:
+            return
+
+        logging.debug("initializing module '%s'" % module_name)
+
+        self.initialized_modules.add(module_name)
+
+        m = self.load_module(module_name)
+
+        for m2 in getattr (m, 'DEPENDS'):
+            self.init_module(m2, run_trace=run_trace)
+
+        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+        self.kb.remove((CURIN, None, None, gn))
+
+        quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, gn) ]
+
+        self.kb.addN_resolve(quads)
+
+        prolog_s = u'init(\'%s\')' % (module_name)
+        c = self.parser.parse_line_clause_body(prolog_s)
+
+        self.prolog_rt.set_trace(run_trace)
+
+        self.prolog_rt.reset_actions()
+    
+        solutions = self.prolog_rt.search(c)
+
+        # import pdb; pdb.set_trace()
+    
+        actions = self.prolog_rt.get_actions()
+        for action in actions:
+            self.prolog_rt.execute_builtin_actions(action)
+
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
@@ -329,13 +345,13 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def compile_module (self, module_name, trace=False, print_utterances=False, warn_level=0):
+    def compile_module (self, module_name, run_trace=False, print_utterances=False, warn_level=0):
 
         m = self.modules[module_name]
 
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
-        compiler = AIPrologParser (trace=trace, print_utterances=print_utterances, warn_level=warn_level)
+        compiler = AIPrologParser (trace=run_trace, print_utterances=print_utterances, warn_level=warn_level)
 
         compiler.clear_module(module_name, self.db)
 
@@ -637,11 +653,14 @@ class AIKernal(object):
             if module_name == 'all':
 
                 for mn2 in self.all_modules:
-                    self.load_module (mn2, run_init=True, run_trace=run_trace)
+                    self.load_module (mn2)
+                    self.init_module (mn2, run_trace=run_trace)
                     self.test_module (mn2, run_trace)
 
             else:
-                self.load_module (module_name, run_init=True, run_trace=run_trace)
+                # import pdb; pdb.set_trace()
+                self.load_module (module_name)
+                self.init_module (module_name, run_trace=run_trace)
                 self.test_module (module_name, run_trace)
 
 
@@ -677,11 +696,13 @@ class AIKernal(object):
             if module_name == 'all':
 
                 for mn2 in self.all_modules:
-                    self.load_module (mn2, run_init=True, run_trace=run_trace)
+                    self.load_module (mn2)
+                    self.init_module (mn2, run_trace=run_trace)
                     self.run_cronjobs (mn2, force=force)
 
             else:
-                self.load_module (module_name, run_init=True, run_trace=run_trace)
+                self.load_module (module_name)
+                self.init_module (module_name, run_trace=run_trace)
                 self.run_cronjobs (module_name, force=force)
 
         self.session.commit()

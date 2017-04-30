@@ -12,6 +12,8 @@ from nltools.tokenizer  import tokenize
 from nltools.misc       import limit_str
 from aiprolog.pl2rdf    import rdf_to_pl
 
+MAX_NER_RESULTS = 5
+
 #     atom_chars(LANG, LSTR),
 # 
 #     rdf (distinct,
@@ -179,13 +181,21 @@ def builtin_ner(g, pe):
                     max_scores[entity] = scores[entity]
 
     res = []
+    cnt = 0
 
-    for entity in max_scores:
+    # for entity in max_scores:
+
+    for entity, max_score in sorted(max_scores.iteritems(), key=lambda x: x[1], reverse=True):
+
         res.append({
                      arg_Entity: StringLiteral(entity), 
                      arg_Label : StringLiteral(nl[entity]), 
-                     arg_Score : NumberLiteral(max_scores[entity])
+                     arg_Score : NumberLiteral(max_score)
                    })
+
+        cnt += 1
+        if cnt > MAX_NER_RESULTS:
+            break
 
     return res
 

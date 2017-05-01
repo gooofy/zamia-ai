@@ -80,7 +80,7 @@ def builtin_context_get_fn(pred, env, rt, location):
 
     """ context_get(+Name) """
 
-    rt._trace_fn ('CALLED FUNCTION context_get', g)
+    rt._trace_fn ('CALLED FUNCTION context_get', env)
 
     args = pred.args
     if len(args) != 1:
@@ -544,6 +544,21 @@ def builtin_action_rdf_assert(pe, location, args):
     pe.kb.addN(quads)
 
 
+def builtin_uriref_fn(pred, env, rt, location):
+
+    """ uriref(+URI) """
+
+    rt._trace_fn ('CALLED FUNCTION uriref', env)
+
+    args = pred.args
+    if len(args) != 1:
+        raise PrologRuntimeError('uriref: 1 arg (+URI) expected.', location)
+
+    if not isinstance(args[0], Predicate):
+        raise PrologRuntimeError('uriref: first argument: predicate expected, %s found instead.' % repr(args[0]), g.location)
+
+    return StringLiteral(rt.kb.resolve_aliases_prefixes(args[0].name))
+
 def builtin_uriref(g, pe):
 
     pe._trace ('CALLED BUILTIN uriref', g)
@@ -706,6 +721,7 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin          ('rdf_lists',       builtin_rdf_lists)
         self.register_builtin_action   ('rdf_assert',      builtin_action_rdf_assert)   # rdf_assert (+S, +P, +O)
         self.register_builtin          ('uriref',          builtin_uriref)
+        self.register_builtin_function ('uriref',          builtin_uriref_fn)           # uriref(+URI)
 
         # natural language processing
 

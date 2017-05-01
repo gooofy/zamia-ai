@@ -180,8 +180,8 @@ class TestAIProlog (unittest.TestCase):
               WEV, ai:precipitation, Precipitation,
               WEV, ai:clouds,        Clouds,
               WEV, ai:icon,          Icon,
-              filter (DT_START >= isoformat(EvTS, 'local'),
-                      DT_END   =< isoformat(EvTE, 'local'),
+              filter (DT_START >= EvTS,
+                      DT_END   =< EvTE,
                       lang(Label) = L2)
               )
          """)

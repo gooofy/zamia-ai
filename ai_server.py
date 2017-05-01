@@ -189,7 +189,8 @@ if __name__ == '__main__':
 
     kernal = AIKernal()
     for mn2 in kernal.all_modules:
-        kernal.load_module (mn2, run_init=True)
+        kernal.load_module (mn2)
+        kernal.init_module (mn2)
     kernal.setup_tf_model (True, True, args[0])
 
     #

@@ -148,7 +148,7 @@ Example input 'and where'
 ------------------------------------------------------------
 
 
-Layer 3: Thought process
+Layer 3: Thought Process
 ------------------------
 
 In this layer the deeper thought process happens. This starts by processing the 

@@ -13,3 +13,6 @@ NOTES
 run_training.sh
 modules/exp
 mestats
+doc/.asciidoctor
+doc/*.png
+doc/*.html

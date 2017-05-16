@@ -147,6 +147,33 @@ Example input 'and where'
     fnvm_exec (en, I, VMC)
 ------------------------------------------------------------
 
+TIP: Since in production the actual translation from natural language to the initial prolog
+terms is done by a seq2seq neural net it is important to give it a target sequence to work with.
+In Zamia-AI this is done by having a flat, uniform layer2 processing as shown above. 
+If you have multiple ''nlp_gen''s that you want to produce the same frame structure it is useful
+to put that code into an intermediate rule instead of copy-pasting it into each ''nlp_gen''.
+However this would mean the seq2seq net would only see a single target predicate so there is little
+it can learn from that. 
+To resolve this issue use the ''inline()'' predicate to have a macro-like expansion if the called
+predicate. For an example of how this is done, see below.
+
+[source,prolog]
+------------------------------------------------------------
+    l2proc_whatWasOurTopic :-
+        list_append(VMC, fe(top,  topic)),
+        list_append(VMC, fe(add,  uriref(aiu:self))),
+        ias(I, user, USER),
+        list_append(VMC, fe(spkr, USER)),
+        list_append(VMC, frame(fnQuestioning)),
+        
+        fnvm_exec (en, I, VMC).
+
+    nlp_gen(en, 'What (were we talking|did we talk) about (again|)?', 
+            inline (l2proc_whatWasOurTopic)).
+    nlp_gen(en, '(Which|What) was our topic (again|)?', 
+            inline (l2proc_whatWasOurTopic)).
+------------------------------------------------------------
+
 
 Layer 3: Thought Process
 ------------------------

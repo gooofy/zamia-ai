@@ -34,7 +34,7 @@ from tzlocal import get_localzone # $ pip install tzlocal
 
 from zamiaprolog.runtime import PrologRuntime
 from zamiaprolog.errors  import PrologRuntimeError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, DictLiteral, Variable, Predicate, Clause, SourceLocation
 from pl2rdf              import pl_to_rdf, pl_literal_to_rdf, prolog_to_filter_expression, rdf_to_pl
 from nltools.tokenizer   import tokenize
 from nltools.misc        import edit_distance
@@ -47,246 +47,6 @@ USER_PREFIX        = u'http://ai.zamia.org/kb/user/'
 USER_PROP_PREFIX   = u'http://ai.zamia.org/kb/user/prop/'
 CURIN              = u'http://ai.zamia.org/kb/curin'
 DEFAULT_USER       = USER_PREFIX + u'default'
-TEST_USER          = USER_PREFIX + u'test'
-TEST_TIME          = time.mktime(datetime.datetime(2016,12,06,13,28,6).timetuple())
-MAX_CONTEXT_LEN    = 6
-
-ACTION_VARNAME     = '__ACTION__'
-
-def builtin_context_get(g, pe):
-
-    """ context_get(+Name, -Value) """
-
-    pe._trace ('CALLED BUILTIN context_get', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 2:
-        raise PrologRuntimeError('context_get: 2 args expected.', g.location)
-
-    key     = args[0].name
-    arg_v   = pe.prolog_get_variable(args[1], g.env, g.location)
-
-    v = pe.read_context(key)
-    if not v:
-        # import pdb; pdb.set_trace()
-        return False
-
-    g.env[arg_v] = v
-
-    return True
-
-def builtin_context_get_fn(pred, env, rt, location):
-
-    """ context_get(+Name) """
-
-    rt._trace_fn ('CALLED FUNCTION context_get', env)
-
-    args = pred.args
-    if len(args) != 1:
-        raise PrologRuntimeError('context_get: 1 arg expected.', location)
-
-    key     = args[0].name
-
-    v = pe.read_context(key)
-    if not v:
-        return ListLiteral([])
-
-    return v
-
-def builtin_action_context_set(pe, location, args):
-
-    """ context_set(+Name, +Value) """
-
-    logging.debug ('CALLED BUILTIN ACTION context_set %s' % repr(args))
-
-    if len(args) != 2:
-        raise PrologRuntimeError('context_push: 2 args expected.')
-
-    key   = args[0].name
-    # value = pe.prolog_eval(args[1], g.env)
-    value = args[1]
-
-    # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.write_context(key, value, location)
-
-def builtin_action_context_push(pe, location, args):
-
-    """ context_push(+Name, +Value) """
-
-    logging.debug ('CALLED BUILTIN ACTION context_push %s' % repr(args))
-
-    if len(args) != 2:
-        raise PrologRuntimeError('context_push: 2 args expected.')
-
-    key   = args[0].name
-    value = args[1]
-
-    # print u"builtin_set_context: %s -> %s" % (key, unicode(value))
-    pe.push_context(key, value, location)
-
-
-def builtin_context_score(g, pe):
-
-    """ context_score(+Name, ?Value, +Points, ?Score [, +MinPoints]) """
-
-    pe._trace ('CALLED BUILTIN context_score', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) < 4:
-        raise PrologRuntimeError('context_score: at least 4 args expected.', g.location)
-    if len(args) > 5:
-        raise PrologRuntimeError('context_score: max 5 args expected.', g.location)
-
-    key     = args[0].name
-    value   = pe.prolog_eval(args[1], g.env, g.location)
-    points  = pe.prolog_get_float(args[2], g.env, g.location)
-    scorev  = pe.prolog_get_variable(args[3], g.env, g.location)
-
-    if len(args) == 5:
-        min_score = pe.prolog_get_float(args[4], g.env, g.location)
-    else:
-        min_score = 0.0
-
-    score = g.env[scorev].f if scorev in g.env else 0.0
-
-    if value:
-
-        stack = pe.read_context(key)
-
-        if stack:
-            i = 1
-            for v in stack.l:
-                if v == value:
-                    score += points / float(i)
-                    break
-                i += 1
-
-        if score < min_score:
-            return False
-        g.env[scorev] = NumberLiteral(score)
-        return True
-
-    if not isinstance (args[1], Variable):
-        raise PrologRuntimeError(u'score_context: arg 2 literal or variable expected, %s found instead.' % unicode(args[1]), g.location)
-
-    res = []
-
-    stack = pe.read_context(key)
-    if stack:
-        i = 1
-        for v in stack.l:
-            s = score + points / float(i)
-            if s >= min_score:
-                res.append({ 
-                             args[1].name : v, 
-                             scorev       : NumberLiteral(score + points / float(i))
-                            })
-            i += 1
-    else:
-        if score >= min_score:
-            res.append({ 
-                         args[1].name : ListLiteral([]), 
-                         scorev       : NumberLiteral(score)
-                        })
-
-    return res
-
-
-def _queue_action(g, action):
-
-    if not ACTION_VARNAME in g.env:
-        g.env[ACTION_VARNAME] = []
-
-    g.env[ACTION_VARNAME].append( action )
-
-def builtin_action(g, pe):
-
-    pe._trace ('CALLED BUILTIN action', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-
-    evaluated_args = map (lambda v: pe.prolog_eval(v, g.env, g.location), args)
-
-    _queue_action (g, evaluated_args)
-
-    return True
-
-def builtin_say(g, pe):
-
-    """ say ( +Lang, +Str ) """
-
-    pe._trace ('CALLED BUILTIN say', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 2:
-        raise PrologRuntimeError('say: 2 args expected.', g.location)
-
-    arg_L   = pe.prolog_eval(args[0], g.env, g.location).name
-    arg_S   = pe.prolog_get_string(args[1], g.env, g.location)
-
-    _queue_action (g, [Predicate('say'), arg_L, arg_S] )
-
-    return True
-
-def _eoa (g, pe, location, score):
-
-    if not (ACTION_VARNAME in g.env):
-        raise PrologRuntimeError('eoa: no action defined.', location)
-
-    pe.end_action(g.env[ACTION_VARNAME], score)
-
-    del g.env[ACTION_VARNAME]
-
-def builtin_eoa(g, pe):
-
-    """ eoa ( [+Score] ) """
-
-    pe._trace ('CALLED BUILTIN eoa', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-
-    if len(args)>1:
-        raise PrologRuntimeError('eoa: max 1 arg expected.', g.location)
-
-    score = 0.0
-    if len(args)>0:
-        score = pe.prolog_get_float(args[0], g.env, g.location)
-
-    _eoa (g, pe, g.location, score)
-
-    return True
-
-def builtin_say_eoa(g, pe):
-
-    """ say_eoa ( +Lang, +Str, [+Score] ) """
-
-    pe._trace ('CALLED BUILTIN say_eoa', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-
-    if len(args) < 2:
-        raise PrologRuntimeError('say_eoa: at least 2 args expected.', g.location)
-    if len(args) > 3:
-        raise PrologRuntimeError('say_eoa: max 3 args expected.', g.location)
-
-    arg_L   = pe.prolog_eval(args[0], g.env, g.location).name
-    arg_S   = pe.prolog_get_string(args[1], g.env, g.location)
-
-    _queue_action (g, [Predicate('say'), arg_L, arg_S] )
-
-    score = 0.0
-    if len(args)>2:
-        score = pe.prolog_get_float(args[2], g.env, g.location)
-
-    _eoa (g, pe, g.location, score)
-
-    return True
 
 def builtin_rdf(g, pe):
 
@@ -523,11 +283,14 @@ def _rdf_exec (g, pe, location, generate_lists=False):
 
         return res_bindings
 
-def builtin_action_rdf_assert(pe, location, args):
+def builtin_rdf_assert(g, pe):
 
     """ rdf_assert (+S, +P, +O) """
 
-    logging.debug ('CALLED BUILTIN ACTION rdf_assert %s' % repr(args))
+    pe._trace ('CALLED BUILTIN rdf_assert', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
 
     if len(args) != 3:
         raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args), location)
@@ -691,35 +454,12 @@ class AIPrologRuntime(PrologRuntime):
 
         self.kb = kb
 
-        # actions
-
-        self.action_buffer   = []
-        self.builtin_actions = {}
-
-        self.register_builtin          ('action',          builtin_action)   # 
-        self.register_builtin          ('eoa',             builtin_eoa)      # eoa: End Of Action ([+Score])
-
-        self.register_builtin          ('say',             builtin_say)      # shortcut for action(say, lang, str) (+Lang, +Str)
-        self.register_builtin          ('say_eoa',         builtin_say_eoa)  # shortcut for say followed by eoa (+Lang, +Str, [+Score])
-
-        #
-        # context related functions and predicates
-        #
-
-        self.context_gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
-
-        self.register_builtin          ('context_get',     builtin_context_get)         # context_get(+Name, -Value)
-        self.register_builtin_function ('context_get',     builtin_context_get_fn)      # context_get(+Name)
-        self.register_builtin_action   ('context_set',     builtin_action_context_set)  # context_set(+Name, +Value)
-        self.register_builtin_action   ('context_push',    builtin_action_context_push) # context_push(+Name, +Value)
-        self.register_builtin          ('context_score',   builtin_context_score)       # context_score(+Name, ?Value, +Points, -Score [, +MinPoints])
-
         # sparql / rdf
 
         self.register_builtin          ('sparql_query',    builtin_sparql_query)
         self.register_builtin          ('rdf',             builtin_rdf)
         self.register_builtin          ('rdf_lists',       builtin_rdf_lists)
-        self.register_builtin_action   ('rdf_assert',      builtin_action_rdf_assert)   # rdf_assert (+S, +P, +O)
+        self.register_builtin          ('rdf_assert',      builtin_rdf_assert)          # rdf_assert (+S, +P, +O)
         self.register_builtin          ('uriref',          builtin_uriref)
         self.register_builtin_function ('uriref',          builtin_uriref_fn)           # uriref(+URI)
 
@@ -728,145 +468,4 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin          ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
         self.register_builtin          ('edit_distance',   builtin_edit_distance)       # edit_distance (+Str1, +Str2, -Distance)
 
-
-    def _builtin_action_wrapper (self, name, g, pe):
-
-
-        l = [Predicate(name), g.location]
-        for arg in g.terms[g.inx].args:
-            # logging.debug ('_builtin_action_wrapper: %s arg=%s' % (name, repr(arg)))
-            value = pe.prolog_eval(arg, g.env, g.location)
-            l.append(value)
-
-        if not ACTION_VARNAME in g.env:
-            g.env[ACTION_VARNAME] = []
-
-        g.env[ACTION_VARNAME].append( l )
-        return True
-
-    def register_builtin_action (self, name, f):
-        """ builtin actions are not executed right away but added to the current
-            action buffer and will get executed when execute_builtin_actions() is called """
-
-        self.builtin_actions[name] = f
-
-        self.register_builtin (name, lambda g, pe: self._builtin_action_wrapper(name, g, pe))
-
-    def execute_builtin_actions(self, abuf):
-
-        # import pdb; pdb.set_trace()
-
-        for action in abuf['actions']:
-
-            if not isinstance(action[0], Predicate):
-                continue
-            name     = action[0].name
-            location = action[1]
-
-            if not name in self.builtin_actions:
-                continue
-            self.builtin_actions[name](self, location, action[2:])
-
-    def reset_actions(self):
-        self.action_buffer = []
-
-    def get_actions(self, highscore_only=True):
-
-        if not highscore_only:
-            return self.action_buffer
-
-        # determine highest score
-
-        highscore = 0
-        for ab in self.action_buffer:
-
-            logging.debug('get_actions: %s' % repr(ab))
-
-            if ab['score'] > highscore:
-                highscore = ab['score']
-
-        # filter out any lower scoring action:
-
-        hs_actions = []
-        for ab in self.action_buffer:
-            if ab['score'] < highscore:
-                continue
-            hs_actions.append(ab)
-        return hs_actions
-
-    def end_action(self, actions, score):
-
-        self.action_buffer.append({'actions': actions, 'score': score})
-        # logging.debug ('end_action -> %s' % repr(self.action_buffer))
-
-    #
-    # CURIN related helpers
-    #
-
-    def get_user (self):
-
-        for q in self.kb.filter_quads(s=CURIN, p=KB_PREFIX + u'user'):
-            return q[2]
-
-        return None
-
-    def read_curin (self, key):
-
-        user = self.get_user()
-
-        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
-            return rdf_to_pl(q[2])
-
-        user = DEFAULT_USER
-
-        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
-            return rdf_to_pl(q[2])
-
-        return None
-
-    #
-    # manage stored contexts in db
-    #
-
-    def read_context (self, key):
-
-        user = self.get_user()
-
-        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
-            return rdf_to_pl(q[2])
-
-        user = DEFAULT_USER
-
-        for q in self.kb.filter_quads(s=user, p=USER_PROP_PREFIX + key):
-            return rdf_to_pl(q[2])
-
-        return None
-
-    def write_context (self, key, value, location):
-
-        # import pdb; pdb.set_trace()
-
-        user = self.get_user()
-
-        v  = pl_literal_to_rdf(value, self.kb, location)
-
-        self.kb.remove (  (user, USER_PROP_PREFIX + key, None, self.context_gn)  )
-        self.kb.addN   ([ (user, USER_PROP_PREFIX + key,    v, self.context_gn) ])
-
-
-    def push_context (self, key, value, location):
-
-        l = self.read_context(key)
-
-        # logging.debug ('context %s before push: %s' % (key, l))
-
-        if not l:
-            l = ListLiteral([])
-        l.l.insert(0, value)
-
-        l.l = l.l[:MAX_CONTEXT_LEN]
-
-        # logging.debug ('context %s after push: %s' % (key, l))
-
-        self.write_context (key, l, location)
 

@@ -5,12 +5,13 @@ import logging
 import rdflib
 from rdflib.plugins.sparql.parserutils import CompValue
 
-from zamiaprolog.errors import PrologRuntimeError
-from zamiaprolog.logic  import StringLiteral, NumberLiteral, Predicate
-from aiprolog.runtime   import build_algebra, CURIN, KB_PREFIX
-from nltools.tokenizer  import tokenize
-from nltools.misc       import limit_str
-from aiprolog.pl2rdf    import rdf_to_pl
+from zamiaprolog.errors  import PrologRuntimeError
+from zamiaprolog.logic   import StringLiteral, NumberLiteral, Predicate, Clause
+from zamiaprolog.runtime import do_assertz
+from aiprolog.runtime    import build_algebra, CURIN, KB_PREFIX
+from nltools.tokenizer   import tokenize
+from nltools.misc        import limit_str
+from aiprolog.pl2rdf     import rdf_to_pl
 
 MAX_NER_RESULTS = 5
 
@@ -92,18 +93,13 @@ def builtin_ner_learn(g, pe):
 
     return True
 
-def _do_ner(g, pe, arg_Lang, arg_Class, arg_TStart, arg_TEnd, arg_Entity, arg_Label, arg_Score) :
+def _do_ner(g, pe, arg_Lang, arg_I, arg_Class, arg_TStart, arg_TEnd, arg_Entity) :
 
-    global ner_dict, ner_labels
-
-    base_score      = g.env[arg_Score].f if arg_Score in g.env else 0.0
+    global ner_dict
 
     nd = ner_dict[arg_Lang][arg_Class]
-    nl = ner_labels[arg_Lang]
 
-    quads = pe.kb.filter_quads ( s=CURIN, p=KB_PREFIX+u'tokens')
-
-    tokens = rdf_to_pl(quads[0][2]).l
+    tokens = pe.search_predicate('ias', [arg_I, 'tokens', 'TOKENS'], g.env)[0]['TOKENS'].l
 
     #
     # start scoring
@@ -134,7 +130,7 @@ def _do_ner(g, pe, arg_Lang, arg_Class, arg_TStart, arg_TEnd, arg_Entity, arg_La
                 for entity in nd[token]:
 
                     if not entity in scores:
-                        scores[entity] = base_score
+                        scores[entity] = 0.0
 
                     for eidx in nd[token][entity]:
                         points = 2.0-abs(eidx-toff)
@@ -157,145 +153,65 @@ def _do_ner(g, pe, arg_Lang, arg_Class, arg_TStart, arg_TEnd, arg_Entity, arg_La
 
     for entity, max_score in sorted(max_scores.iteritems(), key=lambda x: x[1], reverse=True):
 
-        res.append({
-                     arg_Entity: StringLiteral(entity), 
-                     arg_Label : StringLiteral(nl[entity]), 
-                     arg_Score : NumberLiteral(max_score)
-                   })
+        r = { arg_Entity: StringLiteral(entity) }
+
+        clause = Clause (head=Predicate(name='ias', args=[arg_I, Predicate('score'), NumberLiteral(max_score)]), location=g.location)
+        do_assertz(g.env, 'ias', clause, res=r)
+
+        res.append(r)
 
         cnt += 1
         if cnt > MAX_NER_RESULTS:
             break
-
-    # FIXME: debug only
-
-    # s = u' '.join(tokens)
-    # if 'kennst du das buch the stand' in s:
-    #     import pdb; pdb.set_trace()
-    nd = ner_dict[arg_Lang][arg_Class]
-    nl = ner_labels[arg_Lang]
-
-    quads = pe.kb.filter_quads ( s=CURIN, p=KB_PREFIX+u'tokens')
-
-    tokens = rdf_to_pl(quads[0][2]).l
-
-    #
-    # start scoring
-    #
-
-    max_scores = {}
-
-    for tstart in range (arg_TStart-1, arg_TStart+2):
-        if tstart <0:
-            continue
-
-        for tend in range (arg_TEnd-1, arg_TEnd+2):
-            if tend > len(tokens):
-                continue
-  
-            scores = {}
-
-            for tidx in range(tstart, tend):
-
-                toff = tidx-tstart
-
-                logging.debug('tidx: %d, toff: %d [%d - %d]' % (tidx, toff, tstart, tend))
-
-                token = tokens[tidx]
-                if not token in nd:
-                    continue
-
-                for entity in nd[token]:
-
-                    if not entity in scores:
-                        scores[entity] = base_score
-
-                    for eidx in nd[token][entity]:
-                        points = 2.0-abs(eidx-toff)
-                        if points>0:
-                            scores[entity] += points
-
-            logging.debug('scores: %s' % repr(scores))
-
-            for entity in scores:
-                if not entity in max_scores:
-                    max_scores[entity] = scores[entity]
-                    continue
-                if scores[entity]>max_scores[entity]:
-                    max_scores[entity] = scores[entity]
-
-    res = []
-    cnt = 0
-
-    # for entity in max_scores:
-
-    for entity, max_score in sorted(max_scores.iteritems(), key=lambda x: x[1], reverse=True):
-
-        res.append({
-                     arg_Entity: StringLiteral(entity), 
-                     arg_Label : StringLiteral(nl[entity]), 
-                     arg_Score : NumberLiteral(max_score)
-                   })
-
-        cnt += 1
-        if cnt > MAX_NER_RESULTS:
-            break
-
-    # FIXME: debug only
-
-    # s = u' '.join(tokens)
-    # if 'kennst du das buch the stand' in s:
-    #     import pdb; pdb.set_trace()
 
     return res
 
 def builtin_ner(g, pe):
 
-    global ner_dict, ner_labels
+    global ner_dict
 
-    """ ner ( +Lang, ?Class, +TStart, +Tend, -Entity, -Label, -Score ) """
+    """ ner ( +Lang, +I, ?Class, +TStart, +Tend, -Entity ) """
 
     pe._trace ('CALLED BUILTIN ner', g)
 
     pred = g.terms[g.inx]
     args = pred.args
 
-    if len(args) != 7:
-        raise PrologRuntimeError('ner: 7 args ( +Lang, ?Class, +TStart, +Tend, -Entity, -Label, -Score ) expected.', g.location)
+    if len(args) != 6:
+        raise PrologRuntimeError('ner: 6 args ( +Lang, +I, ?Class, +TStart, +Tend, -Entity ) expected.', g.location)
 
     #
     # extract args, tokens
     #
 
-    arg_Lang        = pe.prolog_get_constant(args[0], g.env, g.location)
-    arg_Class       = pe.prolog_eval        (args[1], g.env, g.location)
-    arg_TStart      = pe.prolog_get_int     (args[2], g.env, g.location)
-    arg_TEnd        = pe.prolog_get_int     (args[3], g.env, g.location)
-    arg_Entity      = pe.prolog_get_variable(args[4], g.env, g.location)
-    arg_Label       = pe.prolog_get_variable(args[5], g.env, g.location)
-    arg_Score       = pe.prolog_get_variable(args[6], g.env, g.location)
+    arg_Lang    = pe.prolog_get_constant(args[0], g.env, g.location)
+    arg_I       = pe.prolog_eval        (args[1], g.env, g.location)
+    arg_Class   = pe.prolog_eval        (args[2], g.env, g.location)
+    arg_TStart  = pe.prolog_get_int     (args[3], g.env, g.location)
+    arg_TEnd    = pe.prolog_get_int     (args[4], g.env, g.location)
+    arg_Entity  = pe.prolog_get_variable(args[5], g.env, g.location)
 
     if not arg_Lang in ner_dict:
         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
-    if not arg_Lang in ner_labels:
-        raise PrologRuntimeError('ner: lang %s unknown in labels.' % arg_Lang, g.location)
 
     if arg_Class:
 
         if not arg_Class.name in ner_dict[arg_Lang]:
             raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
 
-        res = _do_ner(g, pe, arg_Lang, arg_Class.name, arg_TStart, arg_TEnd, arg_Entity, arg_Label, arg_Score)
+        res = _do_ner(g, pe, arg_Lang, arg_I, arg_Class.name, arg_TStart, arg_TEnd, arg_Entity)
 
     else:
 
-        arg_Class = pe.prolog_get_variable(args[1], g.env, g.location)
+        # import pdb; pdb.set_trace()
+
+        arg_Class = pe.prolog_get_variable(args[2], g.env, g.location)
 
         res = []
 
         for c in ner_dict[arg_Lang]:
 
-            rs = _do_ner(g, pe, arg_Lang, c, arg_TStart, arg_TEnd, arg_Entity, arg_Label, arg_Score)
+            rs = _do_ner(g, pe, arg_Lang, arg_I, c, arg_TStart, arg_TEnd, arg_Entity)
             for r in rs:
 
                 r[arg_Class] = Predicate(c)

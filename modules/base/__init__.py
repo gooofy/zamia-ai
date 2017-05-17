@@ -3,13 +3,18 @@
 
 import rdflib
 
-from ner import builtin_ner_learn, builtin_ner
+from ner import  builtin_ner_learn, builtin_ner
+from fnvm import builtin_fnvm_graph
 
 DEPENDS    = [ 'config' ]
 
 PL_SOURCES = [
               'base.pl',
-              'conversation.pl',
+              'fnTelling.pl',
+              'fnQuestioning.pl',
+              'fnFamiliarity.pl',
+              'fnBeingBorn.pl',
+              'topics.pl',
               'math.pl',
               'time.pl',
               'people.pl',
@@ -213,6 +218,8 @@ KB_SOURCES = [
 
 def init_module(rt):
 
-    rt.register_builtin ('ner_learn', builtin_ner_learn)
-    rt.register_builtin ('ner',       builtin_ner)
+    rt.register_builtin ('ner_learn',  builtin_ner_learn)
+    rt.register_builtin ('ner',        builtin_ner)
+    rt.register_builtin ('ner',        builtin_ner)
+    rt.register_builtin ('fnvm_graph', builtin_fnvm_graph)
 

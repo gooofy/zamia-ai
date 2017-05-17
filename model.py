@@ -97,6 +97,7 @@ class NLPMacro(Base):
     id                = Column(Integer, primary_key=True)
 
     module            = Column(String(255), index=True)
+    lang              = Column(String(2),   index=True)
     name              = Column(String(255), index=True)
 
     mappings          = Column(Text)

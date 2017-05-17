@@ -32,26 +32,32 @@ import time
 import random
 import codecs
 import rdflib
+import datetime
 
 import numpy as np
 
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm       import sessionmaker
+
 import model
 
-from zamiaprolog.logicdb import LogicDB
-from zamiaprolog.logic   import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog
-from zamiaprolog.errors  import PrologError
-from aiprolog.pl2rdf     import pl_literal_to_rdf
-from aiprolog.runtime    import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER, \
-                                TEST_USER, TEST_TIME
-from aiprolog.parser     import AIPrologParser
+from zamiaprolog.logicdb  import LogicDB
+from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, Predicate, Clause
+from zamiaprolog.errors   import PrologError
+from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
+from aiprolog.pl2rdf      import pl_literal_to_rdf
+from aiprolog.runtime     import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
+from aiprolog.parser      import AIPrologParser
 
-from kb import AIKB
-from nltools import misc
-from nltools.tokenizer import tokenize
+from kb                   import AIKB
+from nltools              import misc
+from nltools.tokenizer    import tokenize
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
+
+TEST_USER    = USER_PREFIX + u'test'
+TEST_TIME    = datetime.datetime(2016,12,06,13,28,6).isoformat()
+TEST_MODULE  = '__test__'
 
 class AIKernal(object):
 
@@ -283,16 +289,7 @@ class AIKernal(object):
 
         self.prolog_rt.set_trace(run_trace)
 
-        self.prolog_rt.reset_actions()
-    
         solutions = self.prolog_rt.search(c)
-
-        # import pdb; pdb.set_trace()
-    
-        actions = self.prolog_rt.get_actions()
-        for action in actions:
-            self.prolog_rt.execute_builtin_actions(action)
-
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
@@ -390,24 +387,51 @@ class AIKernal(object):
             if tokens[0] == u'hal':
                 del tokens[0]
 
-        self.kb.remove((CURIN, None, None, gn))
+        #
+        # provide utterance related data via db overlay/environment
+        #
 
         sl = SourceLocation('<input>', 0, 0)
 
-        quads = [ ( CURIN, KB_PREFIX+u'user',      user_uri,                                            gn),
-                  ( CURIN, KB_PREFIX+u'utterance', utterance,                                           gn),
-                  ( CURIN, KB_PREFIX+u'uttLang',   utt_lang,                                            gn),
-                  ( CURIN, KB_PREFIX+u'tokens',    pl_literal_to_rdf(ListLiteral(tokens), self.kb, sl), gn)
-                  ]
+        cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
 
         if test_mode:
-            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(TEST_TIME), self.kb, sl), gn ) )
+            currentTime = StringLiteral(TEST_TIME)
         else:
-            quads.append( ( CURIN, KB_PREFIX+u'currentTime', pl_literal_to_rdf(NumberLiteral(time.time()), self.kb, sl), gn ) )
-   
-        self.kb.addN_resolve(quads)
+            currentTime = StringLiteral(datetime.now().isoformat())
 
-        self.prolog_rt.reset_actions()
+        # find prevIAS for this user, if any
+        # FIXME: there should be a more efficient way than linear search
+
+        prevIAS = None
+        for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], err_on_missing=False):
+
+            ias = s['I']
+
+            if not prevIAS:
+                prevIAS = ias
+                continue
+
+            if ias.name > prevIAS.name:
+                prevIAS = ias
+
+        ias_clauses = [
+                        Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl),
+                        Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl),
+                        Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl),
+                        Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl),
+                        Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl),
+                      ]
+        if prevIAS:
+            ias_clauses.append(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
+
+        ovl = { 'ias': ias_clauses }
+
+        env = {
+               'I'                     : cur_ias,
+               ASSERT_OVERLAY_VAR_NAME : ovl
+              }
+
         self.prolog_rt.set_trace(trace)
 
         if test_mode:
@@ -419,7 +443,7 @@ class AIKernal(object):
             
                 prolog_s = ','.join(dr.resp.split(';'))
 
-                logging.info("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
+                logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
                 
             if not prolog_s:
                 logging.error('test utterance %s not found!' % utterance)
@@ -485,14 +509,37 @@ class AIKernal(object):
 
         # logging.debug( "Searching for c: %s" % c )
 
-        solutions = self.prolog_rt.search(c)
+        solutions = self.prolog_rt.search(c, env=env)
 
         # if len(solutions) == 0:
         #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
 
-        # print "round %d utterances: %s" % (round_num, repr(prolog_rt.get_utterances())) 
+        # extract action buffers from overlay variable in solutions:
 
-        abufs = self.prolog_rt.get_actions()
+        abufs = []
+
+        # import pdb; pdb.set_trace()
+
+        for solution in solutions:
+
+            overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
+            if not overlay:
+                continue
+
+            actions = []
+            for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+                actions.append(s['A'])
+
+            score = 0.0
+            for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+                score += s['S'].f
+
+            # ias = overlay.get('ias')
+
+            # scores  = overlay.get('score')
+            # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
+           
+            abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
 
         return abufs
 
@@ -526,24 +573,19 @@ class AIKernal(object):
         
             # test setup predicate for this module
 
-            self.kb.remove((CURIN, None, None, gn))
+            # FIXME: port to prolog kb ?
+            # self.kb.remove((CURIN, None, None, gn))
+            # quads = [ ( CURIN, KB_PREFIX+u'user', TEST_USER, gn) ]
+            # self.kb.addN_resolve(quads)
 
-            quads = [ ( CURIN, KB_PREFIX+u'user', TEST_USER, gn) ]
-
-            self.kb.addN_resolve(quads)
+            self.prolog_rt.db.clear_module(TEST_MODULE)
 
             prolog_s = u'test_setup(\'%s\')' % (module_name)
             c = self.parser.parse_line_clause_body(prolog_s)
 
             self.prolog_rt.set_trace(trace)
 
-            self.prolog_rt.reset_actions()
-        
             solutions = self.prolog_rt.search(c)
-
-            actions = self.prolog_rt.get_actions()
-            for action in actions:
-                self.prolog_rt.execute_builtin_actions(action)
 
             # extract test rounds, look up matching discourse_rounds, execute them
 
@@ -588,22 +630,22 @@ class AIKernal(object):
                 matching_abuf = None
                 for abuf in action_buffers:
 
-                    logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                    # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                     # check utterance
 
                     actual_out = u''
                     utt_lang   = u'en'
                     for action in abuf['actions']:
-                        p = action[0].name
+                        p = action.name
                         if p == 'say':
-                            utt_lang = unicode(action[1])
-                            actual_out += u' ' + unicode(action[2])
+                            utt_lang = unicode(action.args[0])
+                            actual_out += u' ' + unicode(action.args[1])
 
                     if len(test_out) > 0:
                         if len(actual_out)>0:
                             actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                        logging.info("nlp_test: %s round %d actual_out  : %s" % (clause.location, round_num, actual_out) )
+                        logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (clause.location, round_num, actual_out, abuf['score']) )
                         if actual_out != test_out:
                             logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
                             continue # no match
@@ -640,7 +682,7 @@ class AIKernal(object):
                 if not matching_abuf:
                     raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
                
-                self.prolog_rt.execute_builtin_actions(matching_abuf)
+                self.prolog_rt.db.store_overlayZ(TEST_MODULE, matching_abuf['overlay'])
 
                 round_num += 1
 

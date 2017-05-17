@@ -47,7 +47,7 @@ def _bench_fn():
 
     start_time = time()
 
-    abufs = kernal.process_input(line, 'de', user_uri, test_mode=True, trace=False)
+    abufs = kernal.process_input(line, 'en', user_uri, test_mode=True, trace=False)
 
     logging.info ('process_input took %fs' % (time()-start_time))
 
@@ -61,12 +61,14 @@ logging.basicConfig(level=logging.INFO)
 
 kernal = AIKernal()
 
-line = u'kennst du obama'
+line = u'exp do you know obama'
 
 # MODEL = 'models/200ksteps_2_1024_de.ini'
 
 for mn2 in kernal.all_modules:
-    kernal.load_module (mn2, run_init=True, run_trace=False)
+    kernal.load_module (mn2)
+
+kernal.init_module ('exp', run_trace=False)
 # kernal.setup_tf_model(True, True, MODEL)
 
                 

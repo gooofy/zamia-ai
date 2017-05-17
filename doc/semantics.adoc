@@ -133,7 +133,7 @@ Example input 'when was he born'
     list_append(VMC, fe(addressee, uriref(aiu:self))),
     list_append(VMC, frame(fnQuestioning)),
     
-    fnvm_exec (en, I, VMC)
+    fnvm_exec (I, VMC)
 ------------------------------------------------------------
 
 Example input 'and where'
@@ -144,17 +144,17 @@ Example input 'and where'
     list_append(VMC, fe(addressee, uriref(aiu:self))),
     list_append(VMC, frame(fnQuestioning)),
     
-    fnvm_exec (en, I, VMC)
+    fnvm_exec (I, VMC)
 ------------------------------------------------------------
 
 TIP: Since in production the actual translation from natural language to the initial prolog
 terms is done by a seq2seq neural net it is important to give it a target sequence to work with.
 In Zamia-AI this is done by having a flat, uniform layer2 processing as shown above. 
-If you have multiple ''nlp_gen''s that you want to produce the same frame structure it is useful
-to put that code into an intermediate rule instead of copy-pasting it into each ''nlp_gen''.
+If you have multiple 'nlp_gen's that you want to produce the same frame structure it is useful
+to put that code into an intermediate rule instead of copy-pasting it into each 'nlp_gen'.
 However this would mean the seq2seq net would only see a single target predicate so there is little
 it can learn from that. 
-To resolve this issue use the ''inline()'' predicate to have a macro-like expansion if the called
+To resolve this issue use the 'inline()' predicate to have a macro-like expansion if the called
 predicate. For an example of how this is done, see below.
 
 [source,prolog]
@@ -166,7 +166,7 @@ predicate. For an example of how this is done, see below.
         list_append(VMC, fe(spkr, USER)),
         list_append(VMC, frame(fnQuestioning)),
         
-        fnvm_exec (en, I, VMC).
+        fnvm_exec (I, VMC).
 
     nlp_gen(en, 'What (were we talking|did we talk) about (again|)?', 
             inline (l2proc_whatWasOurTopic)).
@@ -210,7 +210,7 @@ this can happen inside the predicate or by invoking other l3proc predicates on t
   assertz(ias(I, rframe, RFRAME))
 
 - invoking layer 4 for adding actions appropriate to the response frame(s):
-  l4proc (LANG, I)
+  l4proc (I)
 
 NOTE: both uframe and rframe generation are typically ambigous, as are all NLP tasks. so score points
       should be added as appropriate during processing so the outer framework can act the/one of the best
@@ -255,13 +255,15 @@ Example prolog code for response action generation:
     answerz (I, en, personBeenBornWhere, LABEL, BP_LABEL, female) :- 
         sayz(I, en, format_str("she was born in %s", BP_LABEL)).
     
-    l4proc (LANG, I, F, fnTelling, place, MSGF, fnBeingBorn) :-
+    l4proc (I, F, fnTelling, place, MSGF, fnBeingBorn) :-
     
         frame (MSGF, child, PERSON),
         frame (MSGF, place, BP),    
     
         person_gender(PERSON, GENDER),
-    
+   
+        ias (I, uttLang, LANG),
+
         entity_label(LANG, PERSON, LABEL),
         entity_label(LANG, BP, BP_LABEL),
     

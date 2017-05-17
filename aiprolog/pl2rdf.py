@@ -36,12 +36,11 @@ import logging
 from tzlocal import get_localzone # $ pip install tzlocal
 
 from zamiaprolog.errors  import PrologError, PrologRuntimeError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, Variable, Predicate, Literal, json_to_prolog, prolog_to_json
+from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, DictLiteral, Variable, Predicate, Literal, json_to_prolog, prolog_to_json
 
 import model
 
-DT_LIST     = u'http://ai.zamia.org/types/list'
-DT_CONSTANT = u'http://ai.zamia.org/types/constant'
+DT_PROLOG     = u'http://ai.zamia.org/types/prolog'
 
 def rdf_to_pl(l):
 
@@ -64,10 +63,8 @@ def rdf_to_pl(l):
             elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
                 dt = dateutil.parser.parse(value)
                 value = NumberLiteral(time.mktime(dt.timetuple()))
-            elif datatype == DT_LIST:
+            elif datatype == DT_PROLOG:
                 value = json_to_prolog(value)
-            elif datatype == DT_CONSTANT:
-                value = Predicate (value)
             else:
                 raise PrologRuntimeError('sparql_query: unknown datatype %s .' % datatype)
         else:
@@ -92,19 +89,21 @@ def pl_literal_to_rdf(a, kb, location):
         return rdflib.term.Literal (a.s)
         
     if isinstance (a, ListLiteral):
-        return rdflib.term.Literal (prolog_to_json(a), datatype=DT_LIST)
+        return rdflib.term.Literal (prolog_to_json(a), datatype=DT_PROLOG)
+
+    if isinstance (a, DictLiteral):
+        return rdflib.term.Literal (prolog_to_json(a), datatype=DT_PROLOG)
 
     if isinstance (a, Predicate):
 
-        if len(a.args) > 0:
-            raise PrologError('pl_literal_to_rdf: only constants are supported, found instead: %s (%s)' % (a.__class__, repr(a)), location)
+        if len(a.args) == 0:
 
-        name = kb.resolve_aliases_prefixes(a.name)
+            name = kb.resolve_aliases_prefixes(a.name)
 
-        if name.startswith('http://'):
-            return rdflib.term.URIRef(name)
+            if name.startswith('http://'):
+                return rdflib.term.URIRef(name)
 
-        return rdflib.term.Literal (a.name, datatype=DT_CONSTANT)
+        return rdflib.term.Literal (prolog_to_json(a), datatype=DT_PROLOG)
 
     raise PrologError('pl_literal_to_rdf: unknown argument type: %s (%s)' % (a.__class__, repr(a)), location)
 

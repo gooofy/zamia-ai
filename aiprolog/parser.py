@@ -62,18 +62,22 @@ class AIPrologParser(PrologParser):
     def set_trace (self, trace):
         self.trace = trace
 
-    def _get_variable(self, term):
+    def _get_variable(self, term, location):
         if not isinstance(term, Variable):
-            raise PrologRuntimeError('Variable expected, %s found instead.' % term.__class__)
+            raise PrologError('Variable expected, %s found instead.' % term.__class__, location)
         return term.name
 
-    def nlp_macro(self, module_name, clause, user_data):
+    def nlp_macro(self, db, module_name, clause, user_data):
 
         args = clause.head.args
 
-        name = args[0].s
+        if len(args) < 3:
+            raise PrologError('nlp_macro: at least 3 args expected (+Lang, +MacroName, Vars...)', clause.location)
+            
+        lang = args[0].name
+        name = args[1].s
 
-        macro_vars = map (lambda v: self._get_variable (v), args[1:])
+        macro_vars = map (lambda v: self._get_variable (v, clause.location), args[2:])
 
         ai_rt = AIPrologRuntime(self.db, self.kb)
 
@@ -91,13 +95,13 @@ class AIPrologParser(PrologParser):
         
             mappings.append(mapping)
 
-        self.macro_engine.define_named_macro(name, mappings, module_name, clause.location)
+        self.macro_engine.define_named_macro(lang, name, mappings, module_name, clause.location)
 
     # nlp_gen(de, 
     #         '@HI:w @ADDRESSEE:w @VERB:w @PLEASE:w @MAL:w @WHAT:w @VERB:v',
     #         @WHAT:p, @VERB:p).
 
-    def nlp_gen(self, module_name, clause, user_data):
+    def nlp_gen(self, db, module_name, clause, user_data):
 
         start_time = time()
 
@@ -115,11 +119,37 @@ class AIPrologParser(PrologParser):
         nlp_input = args[1].s
         response = u''
 
-        argc = 2
+        response_parts = args[2:]
 
-        while argc < len(args):
+        # import pdb; pdb.set_trace()
 
-            a = args[argc]
+        # response part could be inlined
+        if len(response_parts)==1 and isinstance (response_parts[0], Predicate) and (response_parts[0].name==u'inline'):
+
+            p_inl = response_parts[0]
+            if len(p_inl.args) != 1 or not isinstance(p_inl.args[0], Predicate):
+                raise PrologError (u'nlp_gen: inline expects exactly one predicate name argument (got: %s)' % clause, clause.location)
+                
+            p = p_inl.args[0]
+
+            clauses = db.lookup (p.name)
+
+            if len(clauses) == 0:
+                raise PrologError (u'nlp_gen: inline predicate %s not found' % p.name, clause.location)
+            if len(clauses) > 1:
+                raise PrologError (u'nlp_gen: inline predicate %s not unique' % p.name, clause.location)
+
+            c = clauses[0].body
+            if isinstance(c, Predicate) and c.name == 'and':
+                response_parts = c.args
+            else:
+                response_parts = [c]
+            
+        argc = 0
+
+        while argc < len(response_parts):
+
+            a = response_parts[argc]
 
             if isinstance (a, Predicate):
                 if len(response)>0:
@@ -146,7 +176,7 @@ class AIPrologParser(PrologParser):
 
                         if len(response)>0:
                             response += u';'
-                        response += u'say(%s, "%s")' % (lang, t)
+                        response += u'sayz(I, %s, "%s")' % (lang, t)
 
                     if len(response)>0:
                         response += u';'
@@ -155,7 +185,7 @@ class AIPrologParser(PrologParser):
                 else:
                     if len(response)>0:
                         response += u';'
-                    response += u'say_eoa(%s, "%s")' % (lang, a.s)
+                    response += u'sayz(I, %s, "%s")' % (lang, a.s)
 
 
             elif isinstance (a, MacroCall):
@@ -166,10 +196,10 @@ class AIPrologParser(PrologParser):
 
             else:
 
-                raise PrologError (u'nlp_gen: unexpected argument: %s' % unicode(a))
+                raise PrologError (u'nlp_gen: unexpected response part: %s' % unicode(a), clause.location)
                 
 
-            logging.debug (u'arg[%d]: %s response: %s' % (argc, repr(args[argc]), response))
+            logging.debug (u'arg[%d]: %s response: %s' % (argc, repr(response_parts[argc]), response))
             argc += 1
 
         # generate all macro-expansions
@@ -222,7 +252,7 @@ class AIPrologParser(PrologParser):
 
         logging.debug (u"%fs nlp_gen: %s: %d generating macro expansions generated." % (time()-start_time, clause.location, cnt))
 
-    def nlp_test(self, module_name, clause, user_data):
+    def nlp_test(self, db, module_name, clause, user_data):
 
         # store test in DB
 

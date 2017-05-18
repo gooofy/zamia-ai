@@ -73,7 +73,10 @@ class AIPrologParser(PrologParser):
 
         if len(args) < 3:
             raise PrologError('nlp_macro: at least 3 args expected (+Lang, +MacroName, Vars...)', clause.location)
-            
+        
+        if not isinstance(args[0], Predicate):
+            raise PrologError('nlp_macro: arg 0: +Lang expected (e.g. en, de)', clause.location)
+
         lang = args[0].name
         name = args[1].s
 

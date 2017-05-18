@@ -44,18 +44,6 @@ a dedicated default user exists which can be used to store defaults for context 
                aiup:favMovie   wde:Q...
                ...
 ```
-when processing input, a special node ai:curin (http://ai.zamia.org/kb/curin) is set up with 
-context information about the current input:
-```
-    ai:curin  ai:user        aiu:Alice
-              ai:utterance   "hello computer"
-              ai:uttLang     en
-              ai:tokens      ["hello", "computer"]
-              ai:currentTime 1490816071.601048 (seconds since epoch)
-```
-while executing tests, currentTime is set to the fixed value of 1481027286.0, corresponding to
-December 6th, 2016 13:28:06 .
-
 === self context
 
 to store information the AI system knows about itself (i.e. its name, when it was born, favorite

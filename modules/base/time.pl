@@ -8,26 +8,26 @@
 % time/date calculations
 %
 
-time_span(today, TS, TE) :-
-    rdf(ai:curin, ai:currentTime, T),
+time_span(I, today, TS, TE) :-
+    ias(I, currentTime, T),
     stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
     date_time_stamp(date(Y,M,D, 0, 0, 0,'local'), TS),
     date_time_stamp(date(Y,M,D,23,59,59,'local'), TE).
 
-time_span(tomorrow, TS, TE) :-
-    rdf(ai:curin, ai:currentTime, T),
+time_span(I, tomorrow, TS, TE) :-
+    ias(I, currentTime, T),
     stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
     date_time_stamp(date(Y,M,D + 1, 0, 0, 0,'local'), TS),
     date_time_stamp(date(Y,M,D + 1,23,59,59,'local'), TE).
 
-time_span(dayAfterTomorrow, TS, TE) :-
-    rdf(ai:curin, ai:currentTime, T),
+time_span(I, dayAfterTomorrow, TS, TE) :-
+    ias(I, currentTime, T),
     stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
     date_time_stamp(date(Y,M,D + 2, 0, 0, 0,'local'), TS),
     date_time_stamp(date(Y,M,D + 2,23,59,59,'local'), TE).
 
-time_span(nextThreeDays, TS, TE) :-
-    rdf(ai:curin, ai:currentTime, T),
+time_span(I, nextThreeDays, TS, TE) :-
+    ias(I, currentTime, T),
     stamp_date_time(T, date(Y,M,D,H,Mn,S,'local')),
     date_time_stamp(date(Y,M,D,H,Mn,S,'local'), TS),
     date_time_stamp(date(Y,M,D+3,H,Mn,S,'local'), TE).

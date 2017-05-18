@@ -36,15 +36,15 @@ time_span(I, nextThreeDays, TS, TE) :-
 % time strings
 %
 
-time_str(en, today,            "today").
-time_str(en, tomorrow,         "tomorrow").
-time_str(en, dayAfterTomorrow, "day after tomorrow").
-time_str(en, nextThreeDays,    "in the next three days").
+time_label(en, today,            "today").
+time_label(en, tomorrow,         "tomorrow").
+time_label(en, dayAfterTomorrow, "day after tomorrow").
+time_label(en, nextThreeDays,    "in the next three days").
 
-time_str(de, today,            "heute").
-time_str(de, tomorrow,         "morgen").
-time_str(de, dayAfterTomorrow, "übermorgen").
-time_str(de, nextThreeDays,    "in den nächsten drei Tagen").
+time_label(de, today,            "heute").
+time_label(de, tomorrow,         "morgen").
+time_label(de, dayAfterTomorrow, "übermorgen").
+time_label(de, nextThreeDays,    "in den nächsten drei Tagen").
 
 transcribe_month(en,  1, 'january').
 transcribe_month(en,  2, 'feburary').

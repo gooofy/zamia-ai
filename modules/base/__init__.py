@@ -17,7 +17,7 @@ PL_SOURCES = [
               'topics.pl',
               'math.pl',
               'time.pl',
-              'people.pl',
+              'geo.pl',
              ]
 
 RDF_PREFIXES = {
@@ -64,6 +64,15 @@ RDF_ALIASES = {
                 u'wde:Male'                                : u'http://www.wikidata.org/entity/Q6581097',
                 u'wde:FemaleGivenName'                     : u'http://www.wikidata.org/entity/Q11879590',
                 u'wde:MaleGivenName'                       : u'http://www.wikidata.org/entity/Q12308941',
+
+                u'wde:City'                                : u'http://www.wikidata.org/entity/Q515',
+                u'wde:Municipality'                        : u'http://www.wikidata.org/entity/Q15284',
+                u'wde:GeographicRegion'                    : u'http://www.wikidata.org/entity/Q82794',
+                u'wde:MunicipalityOfGermany'               : u'http://www.wikidata.org/entity/Q262166',
+                u'wde:HumanSettlement'                     : u'http://www.wikidata.org/entity/Q486972',
+                u'wde:BigCity'                             : u'http://www.wikidata.org/entity/Q1549591',
+                u'wde:GeographicLocation'                  : u'http://www.wikidata.org/entity/Q2221906',
+                u'wde:Location'                            : u'http://www.wikidata.org/entity/Q17334923',
 
                 u'wde:AngelaMerkel'                        : u'http://www.wikidata.org/entity/Q567',
                 u'wde:GerhardSchröder'                     : u'http://www.wikidata.org/entity/Q2530',
@@ -126,6 +135,7 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'Genre'                                      , u'P136'),
                               (u'BasedOn'                                    , u'P144'),
                               (u'CastMember'                                 , u'P161'),
+                              (u'SubclassOf'                                 , u'P279'),
                               (u'DateOfBirth'                                , u'P569'),
                               (u'PublicationDate'                            , u'P577'),
                               (u'StartTime'                                  , u'P580'),
@@ -208,11 +218,31 @@ KB_SOURCES = [
                   u'wde:Fairbanks',
                 ],
                 [
-                
                   [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('ai:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
-                
+                  ['wdpd:InstanceOf'],
                 ]
               ),
+
+              # geo ontology
+
+              (
+                [
+                  u'wde:City',
+                  u'wde:Municipality',
+                  u'wde:GeographicRegion',
+                  u'wde:MunicipalityOfGermany',
+                  u'wde:HumanSettlement',
+                  u'wde:BigCity',
+                  u'wde:GeographicLocation',
+                  u'wde:Location',
+                  u'wde:BigCity',
+                ],
+                [
+                  ['wdpd:SubclassOf'],
+                  ['wdpd:InstanceOf'],
+                ]
+              ),
+
               'tz.n3',
             ]
 

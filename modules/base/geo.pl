@@ -23,7 +23,7 @@ ner_learn_geo_locations(LANG) :-
 
     geo_location_category(CAT),
 
-    log(info, format_str('learning geo location category %s', CAT)),
+    % log(info, format_str('learning geo location category %s', CAT)),
 
     rdf_lists (distinct,
                GEO_LOCATIONS, wdpd:InstanceOf,   CAT,

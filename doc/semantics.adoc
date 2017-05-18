@@ -1,5 +1,6 @@
 Guide to ZamiaAI Frame Semantics
 ================================
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
 Semantic Processing Flow Overview
 ---------------------------------
@@ -42,6 +43,7 @@ General Notes
 -------------
 
 - ZamiaAI's semantic frames are heavily based on FrameNet vocabulary but deviate and extend where it seems appropriate
+- For a catalog of ZamiaAI's frames see <<frames#,frames>>
 - ZamiaAI uses frames to try to represent the full semantics of uttterances and responses, so ZamiaAI frames form a true
   abstraction layer separating the semantic processing from the natural language input/output layer
 - each utterance is represented as a unique prolog atom iasN representing the current utterance processing step

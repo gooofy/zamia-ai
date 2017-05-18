@@ -1,0 +1,21 @@
+ZamiaAI Frame Catalog
+=====================
+
+NOTE: Frames originating from FrameNet are prefix with 'fn', ZamiaAI's custom frames are prefixed with 'zf'
+
+zfWeatherForecast
+-----------------
+
+Adds specific FEs for weather forecasts (temperature, precipitation, etc)
+
+Inherits: 'fnPredicting'
+
+|=== 
+| `eventuality` | fixed value: `weather`  
+| `topic`       | `weather` (all), `temperature`, `precipitation`
+| `time`        | atom representing the time span the prediction is valid for
+| `place`       | uriref representing the place the prediction is valid for
+| `temp_min`    | minimum temperature
+| `temp_max`    | maximum temperature
+| `prec`        | precipitation
+|=== 

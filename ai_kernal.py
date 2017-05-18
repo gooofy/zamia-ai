@@ -36,6 +36,7 @@ import datetime
 
 import numpy as np
 
+from tzlocal              import get_localzone # $ pip install tzlocal
 from sqlalchemy.orm       import sessionmaker
 
 import model
@@ -56,7 +57,7 @@ from nltools.tokenizer    import tokenize
 ENABLE_HAL_PREFIX_HACK = True
 
 TEST_USER    = USER_PREFIX + u'test'
-TEST_TIME    = datetime.datetime(2016,12,06,13,28,6).isoformat()
+TEST_TIME    = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE  = '__test__'
 
 class AIKernal(object):

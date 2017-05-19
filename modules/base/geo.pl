@@ -12,7 +12,7 @@ geo_location_category (CAT) :- CAT is uriref(wde:HumanSettlement).
 geo_location_category (CAT) :- CAT is uriref(wde:BigCity).
 geo_location_category (CAT) :- CAT is uriref(wde:GeographicLocation).
 geo_location_category (CAT) :- CAT is uriref(wde:Location).
-geo_location_category (CAT) :- CAT is uriref(wde:BigCity).
+geo_location_category (CAT) :- CAT is uriref(wde:Capital).
 
 %
 % named entity recognition (NER)

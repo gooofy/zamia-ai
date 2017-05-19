@@ -30,7 +30,6 @@ MAX_NER_RESULTS = 5
 #     NAME_TOKENS = FN_TOKENS.
 
 ner_dict   = {} # lang -> class -> token -> entity -> [idx1, idx2, ...]
-ner_labels = {} # lang -> entity -> label
 
 def builtin_ner_learn(g, pe):
 
@@ -51,22 +50,19 @@ def builtin_ner_learn(g, pe):
     arg_Entity_List = pe.prolog_get_list(args[2], g.env, g.location)
     arg_Label_List  = pe.prolog_get_list(args[3], g.env, g.location)
 
+    # import pdb; pdb.set_trace()
+
     if not arg_Lang in ner_dict:
         ner_dict[arg_Lang] = {}
-    if not arg_Lang in ner_labels:
-        ner_labels[arg_Lang] = {}
 
     if not arg_Class in ner_dict[arg_Lang]:
         ner_dict[arg_Lang][arg_Class] = {}
 
     nd = ner_dict[arg_Lang][arg_Class]
-    nl = ner_labels[arg_Lang]
 
     for i, entity in enumerate(arg_Entity_List.l):
 
         label = arg_Label_List.l[i]
-
-        nl[entity.s] = label.s
 
         # logging.debug ('ner_learn: %4d %s %s' % (i, entity, label))
 

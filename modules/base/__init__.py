@@ -10,13 +10,13 @@ DEPENDS    = [ 'config' ]
 
 PL_SOURCES = [
               'base.pl',
+              'time.pl',
               'fnTelling.pl',
               'fnQuestioning.pl',
               'fnFamiliarity.pl',
               'fnBeingBorn.pl',
               'topics.pl',
               'math.pl',
-              'time.pl',
               'geo.pl',
              ]
 
@@ -66,6 +66,7 @@ RDF_ALIASES = {
                 u'wde:MaleGivenName'                       : u'http://www.wikidata.org/entity/Q12308941',
 
                 u'wde:City'                                : u'http://www.wikidata.org/entity/Q515',
+                u'wde:Capital'                             : u'http://www.wikidata.org/entity/Q5119',
                 u'wde:Municipality'                        : u'http://www.wikidata.org/entity/Q15284',
                 u'wde:GeographicRegion'                    : u'http://www.wikidata.org/entity/Q82794',
                 u'wde:MunicipalityOfGermany'               : u'http://www.wikidata.org/entity/Q262166',
@@ -235,7 +236,7 @@ KB_SOURCES = [
                   u'wde:BigCity',
                   u'wde:GeographicLocation',
                   u'wde:Location',
-                  u'wde:BigCity',
+                  u'wde:Capital',
                 ],
                 [
                   ['wdpd:SubclassOf'],

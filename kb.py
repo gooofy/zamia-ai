@@ -37,7 +37,7 @@ import rdflib
 
 from nltools                     import misc
 from sparqlalchemy.sparqlalchemy import SPARQLAlchemyStore
-from sparqlalchemy.ldfmirror     import LDFMirror
+from sparqlalchemy.ldfmirror     import LDFMirror, LDFMirrorP2E
 
 #
 # essentially we have two graphs: dbpedia subset + our own entries
@@ -204,9 +204,9 @@ class AIKB(object):
     # LDF support
     #
 
-    def ldf_mirror(self, res_paths, context):
+    def ldf_mirror(self, res_paths, context, p2e_mapper):
 
-        ldfmirror = LDFMirror (self.sas, self.endpoints)
+        ldfmirror = LDFMirrorP2E (self.sas, self.endpoints, p2e_mapper)
 
         ldfmirror.mirror (res_paths, context)
 

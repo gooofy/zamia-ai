@@ -295,6 +295,13 @@ class AIKernal(object):
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
 
+    def _p2e_mapper(self, p):
+        if p.startswith('http://www.wikidata.org/prop/direct/'):
+            return 'http://www.wikidata.org/entity/' + p[36:]
+        if p.startswith('http://www.wikidata.org/prop/'):
+            return 'http://www.wikidata.org/entity/' + p[29:]
+        return None
+
     def import_kb (self, module_name):
 
         graph = self._module_graph_name(module_name)
@@ -314,7 +321,7 @@ class AIKernal(object):
 
         if len(res_paths)>0:
             logging.info('mirroring from LDF endpoints, target graph: %s ...' % graph)
-            quads = self.kb.ldf_mirror(res_paths, graph)
+            quads = self.kb.ldf_mirror(res_paths, graph, self._p2e_mapper)
 
         # now import files, if any
 

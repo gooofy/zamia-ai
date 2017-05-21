@@ -41,6 +41,27 @@ from zamiaprolog.logic  import *
 from nlp_macro_engine   import NLPMacroEngine
 from runtime            import AIPrologRuntime
 
+def apply_am (rp, am):
+
+    """ (recursive) helper function applying argument mapping to inlined predicate """
+
+    if type(rp) is list:
+
+        return map (lambda x: apply_am(x, am), rp)
+
+    if isinstance (rp, Predicate):
+
+        return Predicate (rp.name, map (lambda x: apply_am(x, am), rp.args))
+
+    if isinstance (rp, Variable):
+
+        if rp.name in am:
+            return am[rp.name]
+        else:
+            return rp
+
+    return rp
+
 class AIPrologParser(PrologParser):
 
     def __init__(self, trace = False, print_utterances=False, split_utterances=False, warn_level=0):
@@ -130,8 +151,8 @@ class AIPrologParser(PrologParser):
         if len(response_parts)==1 and isinstance (response_parts[0], Predicate) and (response_parts[0].name==u'inline'):
 
             p_inl = response_parts[0]
-            if len(p_inl.args) != 1 or not isinstance(p_inl.args[0], Predicate):
-                raise PrologError (u'nlp_gen: inline expects exactly one predicate name argument (got: %s)' % clause, clause.location)
+            if len(p_inl.args) < 1 or not isinstance(p_inl.args[0], Predicate):
+                raise PrologError (u'nlp_gen: inline expects at least one argument (predicate name, got: %s)' % clause, clause.location)
                 
             p = p_inl.args[0]
 
@@ -142,12 +163,23 @@ class AIPrologParser(PrologParser):
             if len(clauses) > 1:
                 raise PrologError (u'nlp_gen: inline predicate %s not unique' % p.name, clause.location)
 
+            h = clauses[0].head
+            if len(h.args) != len(p_inl.args)-1:
+                raise PrologError (u'nlp_gen: inline need %d additional args besides predicate name' % len(h.args), clause.location)
+
+            am = {} # formal -> actual
+
+            for i in range(len(h.args)):
+                am[h.args[i].name] = p_inl.args[i+1]
+                
             c = clauses[0].body
             if isinstance(c, Predicate) and c.name == 'and':
                 response_parts = c.args
             else:
                 response_parts = [c]
-            
+           
+            response_parts = apply_am(response_parts, am)
+
         argc = 0
 
         while argc < len(response_parts):

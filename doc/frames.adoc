@@ -20,3 +20,14 @@ Inherits: 'fnPredicting'
 | `code`        | condition code
 | `clouds`      | cloudiness
 |=== 
+
+zfQuestionAspect
+----------------
+
+[Questioning/...] subframe referring to a context frame while changing certain aspects in it
+
+|=== 
+| `time`        | changed time FE
+| `place`       | changed place FE
+|=== 
+

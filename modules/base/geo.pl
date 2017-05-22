@@ -31,6 +31,7 @@ nlp_macro(en, 'GEO_LOCATION', LABEL) :-
     rdf (limit(1),
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'en')).
+
 nlp_macro(de, 'GEO_LOCATION', LABEL) :- 
     geo_location(LOCATION),
     rdf (limit(1),

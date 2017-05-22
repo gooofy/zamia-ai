@@ -119,45 +119,13 @@ after_evening(TS)   :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H >= 18.
 %                                   D2 is D+1,
 %                                   date_time_stamp(date(Y,M,D2,12,0,0,'local'), X).
 
-nlp_macro(en, 'TIMESPEC', W, WF, P) :- 
-    W  is '',
-    WF is '',
-    P  is 'true'.
-nlp_macro(en, 'TIMESPEC', W, WF, P) :- 
-    W  is 'today',
-    WF is 'for today',
-    P  is 'list_append(VMC, fe(time, today))'.
-nlp_macro(en, 'TIMESPEC', W, WF, P) :- 
-    W  is 'tomorrow',
-    WF is 'for tomorrow',
-    P  is 'list_append(VMC, fe(time, tomorrow))'.
-nlp_macro(en, 'TIMESPEC', W, WF, P) :- 
-    W  is 'the day after tomorrow', 
-    WF is 'for the day after tomorrow', 
-    P  is 'list_append(VMC, fe(time, dayAfterTomorrow))'.
-nlp_macro(en, 'TIMESPEC', W, WF, P) :- 
-    W  is 'in the next three days', 
-    WF is 'for the next three days', 
-    P  is 'list_append(VMC, fe(time, nextThreeDays))'.
+nlp_macro(en, 'TIMESPEC', W, TIME) :- W is 'today',                  TIME is 'today'.
+nlp_macro(en, 'TIMESPEC', W, TIME) :- W is 'tomorrow',               TIME is 'tomorrow'.
+nlp_macro(en, 'TIMESPEC', W, TIME) :- W is 'the day after tomorrow', TIME is 'dayAfterTomorrow'.
+nlp_macro(en, 'TIMESPEC', W, TIME) :- W is 'in the next three days', TIME is 'nextThreeDays'.
 
-nlp_macro(de, 'TIMESPEC', W, WF, P) :- 
-    W  is '',
-    WF is '',
-    P  is 'true'.
-nlp_macro(de, 'TIMESPEC', W, WF, P) :- 
-    W  is 'heute',
-    WF is 'für heute',
-    P  is 'list_append(VMC, fe(time, today))'.
-nlp_macro(de, 'TIMESPEC', W, WF, P) :- 
-    W  is 'morgen',
-    WF is 'für morgen',
-    P  is 'list_append(VMC, fe(time, tomorrow))'.
-nlp_macro(de, 'TIMESPEC', W, WF, P) :- 
-    W  is 'übermorgen', 
-    WF is 'für übermorgen', 
-    P  is 'list_append(VMC, fe(time, dayAfterTomorrow))'.
-nlp_macro(de, 'TIMESPEC', W, WF, P) :- 
-    W  is 'in den nächsten Tagen', 
-    WF is 'für die nächsten Tage', 
-    P  is 'list_append(VMC, fe(time, nextThreeDays))'.
+nlp_macro(de, 'TIMESPEC', W, TIME) :- W is 'heute',                  TIME is 'today'.
+nlp_macro(de, 'TIMESPEC', W, TIME) :- W is 'morgen',                 TIME is 'tomorrow'.
+nlp_macro(de, 'TIMESPEC', W, TIME) :- W is 'übermorgen',             TIME is 'dayAfterTomorrow'.
+nlp_macro(de, 'TIMESPEC', W, TIME) :- W is 'in den nächsten Tagen',  TIME is 'nextThreeDays'.
 

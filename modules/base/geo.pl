@@ -14,6 +14,29 @@ geo_location_category (CAT) :- CAT is uriref(wde:GeographicLocation).
 geo_location_category (CAT) :- CAT is uriref(wde:Location).
 geo_location_category (CAT) :- CAT is uriref(wde:Capital).
 
+geo_location_rdf (LOC) :-
+    geo_location_category(CAT),
+    rdf(LOC, wdpd:InstanceOf, CAT).
+
+geo_locations (S)  :- set_findall(LOC, geo_location_rdf(LOC), S).
+
+geo_location (LOC) :- geo_locations(S), set_get(S, LOC).
+
+%
+% all known geo locations macro
+%
+
+nlp_macro(en, 'GEO_LOCATION', LABEL) :- 
+    geo_location(LOCATION),
+    rdf (limit(1),
+         LOCATION, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'en')).
+nlp_macro(de, 'GEO_LOCATION', LABEL) :- 
+    geo_location(LOCATION),
+    rdf (limit(1),
+         LOCATION, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'de')).
+
 %
 % named entity recognition (NER)
 %

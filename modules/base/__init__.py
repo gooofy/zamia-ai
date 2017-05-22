@@ -11,13 +11,13 @@ DEPENDS    = [ 'config' ]
 PL_SOURCES = [
               'base.pl',
               'time.pl',
+              'geo.pl',
               'fnTelling.pl',
               'fnQuestioning.pl',
               'fnFamiliarity.pl',
               'fnBeingBorn.pl',
               'topics.pl',
               'math.pl',
-              'geo.pl',
              ]
 
 RDF_PREFIXES = {
@@ -50,6 +50,13 @@ LDF_ENDPOINTS = {
                 }
 
 RDF_ALIASES = {
+                u'wde:WikidataProperty'                                 : u'http://www.wikidata.org/entity/Q18616576',
+                u'wde:TransitiveProperty'                               : u'http://www.wikidata.org/entity/Q18647515',
+                u'wde:AsymmetricProperty'                               : u'http://www.wikidata.org/entity/Q18647519',
+                u'wde:ReflexiveProperty'                                : u'http://www.wikidata.org/entity/Q18647521',
+                # u'wde:'                                                 : u'http://www.wikidata.org/entity/',
+                u'wde:WikidatapropertyForTheRelationshipBetweenClasses' : u'http://www.wikidata.org/entity/Q28326461',
+
                 u'wde:Human'                               : u'http://www.wikidata.org/entity/Q5',
                 u'wde:Computer'                            : u'http://www.wikidata.org/entity/Q68',
                 u'wde:Book'                                : u'http://www.wikidata.org/entity/Q571',
@@ -112,6 +119,7 @@ RDF_ALIASES = {
                 u'wde:Oberwiesenthal'                      : u'http://www.wikidata.org/entity/Q57926',
                 u'wde:Freudental'                          : u'http://www.wikidata.org/entity/Q61656',
                 u'wde:Fairbanks'                           : u'http://www.wikidata.org/entity/Q79638',
+                u'wde:Birenbach'                           : u'http://www.wikidata.org/entity/Q80455',
                 u'wde:BlombergNRW'                         : u'http://www.wikidata.org/entity/Q168646',
                 u'wde:Arnstorf'                            : u'http://www.wikidata.org/entity/Q582608',
               }
@@ -190,6 +198,8 @@ KB_SOURCES = [
                   ['wdpd:WorkLocation'],
                   ['wdpd:FamilyName'],
                   ['wdpd:GivenName'],
+                  ['wdpd:InstanceOf'],
+                  ['wdpd:SubclassOf'],
                 ]
               ),
 
@@ -217,10 +227,12 @@ KB_SOURCES = [
                   u'wde:BlombergNRW',
                   u'wde:WashingtonDC',
                   u'wde:Fairbanks',
+                  u'wde:Birenbach',
                 ],
                 [
                   [('wdpd:GeoNamesID', lambda l: (rdflib.URIRef('ai:GeoNames'), rdflib.URIRef('http://sws.geonames.org/%s/' % l)))], 
                   ['wdpd:InstanceOf'],
+                  ['wdpd:SubclassOf'],
                 ]
               ),
 
@@ -237,6 +249,22 @@ KB_SOURCES = [
                   u'wde:GeographicLocation',
                   u'wde:Location',
                   u'wde:Capital',
+                ],
+                [
+                  ['wdpd:SubclassOf'],
+                  ['wdpd:InstanceOf'],
+                ]
+              ),
+
+              # properties, ontology
+
+              (
+                [
+                  u'wde:WikidataProperty',
+                  u'wde:TransitiveProperty',
+                  u'wde:AsymmetricProperty',
+                  u'wde:ReflexiveProperty',
+                  u'wde:WikidatapropertyForTheRelationshipBetweenClasses',
                 ],
                 [
                   ['wdpd:SubclassOf'],

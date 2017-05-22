@@ -85,7 +85,26 @@ l2proc_andWhereContext :-
 
 nlp_gen (en, '(and|) (where|in which place|in which town) (again|)?',
          inline(l2proc_andWhereContext)).
-
 nlp_gen (de, '(und|) (wo|an welchem ort|in welcher stadt) (nochmal|)?',
          inline(l2proc_andWhereContext)).
+
+l2proc_andInLocationTokens(LANG) :-
+
+    ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(place, NER1ENTITY)),
+    list_append(VMC, frame(zfQuestionAspect)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '(and|) (for|in) @GEO_LOCATION:LABEL (again|)?',
+         inline(l2proc_andInLocationTokens, en)).
+nlp_gen (de, '(und|) (für|in) @GEO_LOCATION:LABEL (nochmal|)?',
+         inline(l2proc_andInLocationTokens, de)).
 

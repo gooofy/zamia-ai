@@ -41,9 +41,9 @@ nlp_macro (de, 'KNOWN_HUMANS', HUMAN, LABEL) :-
 % questions about humans known
 %
 
-l2proc_knowHumanTokens :-
+l2proc_knowHumanTokens(LANG) :-
 
-    ner(en, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
+    ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
 
     list_append(VMC, fe(ent, NER1ENTITY)),
     list_append(VMC, fe(entclass, NER1CLASS)),
@@ -62,9 +62,9 @@ l2proc_knowHumanTokens :-
 % FIXME: distinguish who/what (put indication about human/thing/... into question frame)
 
 nlp_gen (en, '@SELF_ADDRESS:LABEL (what about | do you know | do you happen to know | who is | what is) @KNOWN_HUMANS:LABEL',
-         inline(l2proc_knowHumanTokens)).
+         inline(l2proc_knowHumanTokens, en)).
 nlp_gen (de, '@SELF_ADDRESS:LABEL (kennst du|kennst du eigentlich|wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_HUMANS:LABEL',
-         inline(l2proc_knowHumanTokens)).
+         inline(l2proc_knowHumanTokens, de)).
 
 
 % this test only works as long as the politics module is active (and knowns better)
@@ -79,9 +79,9 @@ nlp_gen (de, '@SELF_ADDRESS:LABEL (kennst du|kennst du eigentlich|wer ist|wer is
 % birthplace and birtdate questions
 %
 
-l2proc_humanBornWhereTokens :-
+l2proc_humanBornWhereTokens(LANG) :-
 
-    ner(en, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
+    ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
 
     list_append(VMC, fe(child, NER1ENTITY)),
     list_append(VMC, fe(childclass, NER1CLASS)),
@@ -98,14 +98,14 @@ l2proc_humanBornWhereTokens :-
 
 
 nlp_gen (en, '@SELF_ADDRESS:LABEL (where|in which town|in which city) (was|is) @KNOWN_HUMANS:LABEL born?',
-         inline(l2proc_humanBornWhereTokens)).
+         inline(l2proc_humanBornWhereTokens, en)).
 nlp_gen (de, '@SELF_ADDRESS:LABEL (wo|in welcher stadt) (wurde|ist) (eigentlich|) @KNOWN_HUMANS:LABEL geboren?',
-         inline(l2proc_humanBornWhereTokens)).
+         inline(l2proc_humanBornWhereTokens, de)).
 
 nlp_gen (en, '@SELF_ADDRESS:LABEL which is (the birthplace|place of birth) of @KNOWN_HUMANS:LABEL?',
-         inline(l2proc_humanBornWhereTokens)).
+         inline(l2proc_humanBornWhereTokens, en)).
 nlp_gen (de, '@SELF_ADDRESS:LABEL welches ist (eigentlich|) (der Geburtsort|die Geburtsstadt) von @KNOWN_HUMANS:LABEL?',
-         inline(l2proc_humanBornWhereTokens)).
+         inline(l2proc_humanBornWhereTokens, de)).
 
 l2proc_humanBornWhereContext :-
 
@@ -148,9 +148,9 @@ nlp_test(de,
              out('angela merkel wurde in barmbek-nord geboren'))).
 
 
-l2proc_humanBornWhenTokens :-
+l2proc_humanBornWhenTokens(LANG) :-
 
-    ner(en, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
+    ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
 
     list_append(VMC, fe(child, NER1ENTITY)),
     list_append(VMC, fe(childclass, NER1CLASS)),
@@ -166,15 +166,16 @@ l2proc_humanBornWhenTokens :-
     % trace(on),
 
     fnvm_exec (I, VMC).
+
 nlp_gen (en, '@SELF_ADDRESS:LABEL (when|in which year) (was|is) @KNOWN_HUMANS:LABEL born?',
-         inline(l2proc_humanBornWhenTokens)).
+         inline(l2proc_humanBornWhenTokens, en)).
 nlp_gen (de, '@SELF_ADDRESS:LABEL (wann|in welchem Jahr) (wurde|ist) (eigentlich|) @KNOWN_HUMANS:LABEL geboren?',
-         inline(l2proc_humanBornWhenTokens)).
+         inline(l2proc_humanBornWhenTokens, de)).
 
 nlp_gen (en, "@SELF_ADDRESS:LABEL (when is|on what day is) @KNOWN_HUMANS:LABELS birthday?",
-         inline(l2proc_humanBornWhenTokens)).
+         inline(l2proc_humanBornWhenTokens, en)).
 nlp_gen (de, '@SELF_ADDRESS:LABEL (wann hat|an welchem Tag hat) (eigentlich|) @KNOWN_HUMANS:LABEL Geburtstag?',
-         inline(l2proc_humanBornWhenTokens)).
+         inline(l2proc_humanBornWhenTokens, de)).
 
 l2proc_humanBornWhenContext :-
 

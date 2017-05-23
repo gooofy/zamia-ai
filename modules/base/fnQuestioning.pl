@@ -74,6 +74,49 @@ l3proc (I, F, fnQuestioning) :-
 
     l4proc (I).
 
+%
+% re-run previous question while changing some aspect of it
+%
+
+l3proc (I, F, fnQuestioning, MSGF, zfQuestionAspect) :-
+
+    uriref (aiu:self, SELF),
+    frame (F, add, SELF),
+
+    % log (info, "l3proc looking for previous fnQuestioning msg frame..."),
+
+    context_search_l2(I, I, 100, 25, uframe, fnQuestioning, OL1F, msg, MSGFT, OMSGF),
+
+    % log (info, "l3proc looking for previous fnQuestioning msg frame... found one."),
+
+    % trace(on),
+
+    ignore (
+        or (
+            and (
+                frame (MSGF, place, PLACE), frame_modify (OMSGF, place, PLACE, TMSGF), scorez(I, 100)
+                ),
+            TMSGF is OMSGF
+           )   
+        ),
+    ignore (
+        or (
+            and (
+                frame (MSGF, time, TIME), frame_modify (TMSGF, time, TIME, NMSGF), scorez(I, 100)
+                ),
+            NMSGF is TMSGF
+           )   
+        ),
+    %ignore (and (frame (MSGF, time, TIME), frame_modify (OMSGF, time, TIME, NMSGF))),
+
+    frame_modify (OL1F, msg, NMSGF, NL1F),
+
+    % trace(off),
+
+    % assertz(frame(F, msg, NMSGF)),
+
+    l3proc (I, NL1F, fnQuestioning, NMSGF, MSGFT).
+
 l2proc_andWhereContext :-
     list_append(VMC, fe(top,  place)),
     list_append(VMC, fe(add,  uriref(aiu:self))),
@@ -83,9 +126,9 @@ l2proc_andWhereContext :-
     
     fnvm_exec (I, VMC) .
 
-nlp_gen (en, '(and|) (where|in which place|in which town) (again|)?',
+nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) (where|in which place|in which town) (again|)?',
          inline(l2proc_andWhereContext)).
-nlp_gen (de, '(und|) (wo|an welchem ort|in welcher stadt) (nochmal|)?',
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) (wo|an welchem ort|in welcher stadt) (nochmal|)?',
          inline(l2proc_andWhereContext)).
 
 l2proc_andInLocationTokens(LANG) :-
@@ -103,8 +146,54 @@ l2proc_andInLocationTokens(LANG) :-
 
     fnvm_exec (I, VMC).
    
-nlp_gen (en, '(and|) (for|in) @GEO_LOCATION:LABEL (again|)?',
+nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) (for|in|) @GEO_LOCATION:LABEL (again|)?',
          inline(l2proc_andInLocationTokens, en)).
-nlp_gen (de, '(und|) (für|in) @GEO_LOCATION:LABEL (nochmal|)?',
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) (für|in|) @GEO_LOCATION:LABEL (nochmal|)?',
          inline(l2proc_andInLocationTokens, de)).
+
+l2proc_andInTimespecTokens :-
+
+    list_append(VMC, fe(time, @TIMESPEC:TIME)),
+    list_append(VMC, frame(zfQuestionAspect)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '(and|) (for|in|) @TIMESPEC:W (again|)?',
+         inline(l2proc_andInTimespecTokens)).
+nlp_gen (de, '(und|) (für|in|) @TIMESPEC:W (nochmal|)?',
+         inline(l2proc_andInTimespecTokens)).
+
+l2proc_andInLocationTimespecTokens(LANG) :-
+
+    % trace(on),
+
+    ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(place, NER1ENTITY)),
+    list_append(VMC, fe(time, @TIMESPEC:TIME)),
+    list_append(VMC, frame(zfQuestionAspect)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '(and|) (for|in|) @TIMESPEC:W (and|) (for|in|) @GEO_LOCATION:LABEL (again|)?',
+         inline(l2proc_andInLocationTimespecTokens, en)).
+nlp_gen (de, '(und|) (für|in|) @TIMESPEC:W (und|) (für|in|) @GEO_LOCATION:LABEL (nochmal|)?',
+         inline(l2proc_andInLocationTimespecTokens, de)).
+
+nlp_gen (en, '(and|) (for|in|) @GEO_LOCATION:LABEL (and|) (for|in|) @TIMESPEC:W (again|)?',
+         inline(l2proc_andInLocationTimespecTokens, en)).
+nlp_gen (de, '(und|) (für|in|) @GEO_LOCATION:LABEL (und|) (für|in|) @TIMESPEC:W (nochmal|)?',
+         inline(l2proc_andInLocationTimespecTokens, de)).
 

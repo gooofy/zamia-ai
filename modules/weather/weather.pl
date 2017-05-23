@@ -591,6 +591,186 @@ nlp_test(de,
              out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus sieben und drei grad warm'))).
 
 %
+% explicit place
+%
+
+
+l2proc_askWeatherPrecCloudGeo(LANG) :-
+
+    ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, GEO_LOCATION_ENTITY), 
+    list_append(VMC, fe(place, GEO_LOCATION_ENTITY)),
+    list_append(VMC, fe(eventuality, weather)),
+    list_append(VMC, frame(zfWeatherForecast)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  prec_cloud)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+   
+l2proc_askWeatherReportGeo(LANG) :-
+
+    ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, GEO_LOCATION_ENTITY), 
+    list_append(VMC, fe(place, GEO_LOCATION_ENTITY)),
+    list_append(VMC, fe(eventuality, weather)),
+    list_append(VMC, frame(zfWeatherForecast)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  all)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL will it rain in @GEO_LOCATION:LABEL?',
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, will it rain in Freudental?'),
+             out('today it will be mostly sunny in freudental with little precipitation'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wird es in @GEO_LOCATION:LABEL (regnen|Regen geben)?',
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, wird es in Freudental regnen?'),
+             out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (what is the likelihood of|how likely is) rain in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('how likely is rain in Stuttgart?'),
+             out('today it will be mostly sunny in stuttgart with little precipitation'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL (was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('wie groß ist die Wahrscheinlichkeit für Regen in Stuttgart?'),
+             out('heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL how likely is it that it will rain in @GEO_LOCATION:LABEL?', 
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, how likely is it that it will rain in Freudental?'),
+             out('today it will be mostly sunny in Freudental with little precipitation.'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wie wahrscheinlich ist es, dass es in @GEO_LOCATION:LABEL regnen wird?', 
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, wie wahrscheinlich ist es, dass es in Freudental regnen wird?'),
+             out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL what (will the weather|is the weather gonna|is the weather going to) be like in @GEO_LOCATION:LABEL?', 
+        inline(l2proc_askWeatherReportGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, what will the weather be like in Tallinn?'),
+             out('today there will be some clouds in tallinn with temperatures between minus eight and minus four degrees'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wie wird in @GEO_LOCATION:LABEL das Wetter?', 
+        inline(l2proc_askWeatherReportGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, wie wird in Tallinn das Wetter?'),
+             out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (will the sun shine|will there be sunshine) in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('computer, will there be sunshine in stuttgart?'),
+             out('today it will be mostly sunny in stuttgart with little precipitation'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL scheint in @GEO_LOCATION:LABEL die Sonne?', 
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('computer, scheint in Stuttgart die Sonne?'),
+             out('heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (will it|does it) rain in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('Will it rain in Freudental?'),
+             out('today it will be mostly sunny in Freudental with little precipitation.'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL regnet es in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('Regnet es in Freudental?'),
+             out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (will rain come|is rain coming) in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, is rain coming in Tallinn?'),
+             out('today it will be mostly sunny in tallinn with little precipitation'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL kommt noch Regen in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherPrecCloudGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, kommt noch Regen in Tallinn?'),
+             out('heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL how (cold|warm) (is it going to|will it) (be|become) in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, how warm will it be in Stuttgart?'),
+             out('today will be mostly clear skies in stuttgart with temperatures between minus seven and three degrees'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wie (kalt|warm) wird es in @GEO_LOCATION:LABEL (werden|)?', 
+        inline(l2proc_askWeatherReportGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, wie warm wird es in Stuttgart?'),
+             out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus sieben und drei grad warm'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, en)).
+nlp_test(en,
+         ivr(in('computer, what will the weather be like in Tallinn?'),
+             out('today there will be some clouds in Tallinn with temperatures between -8 and -4 degrees.'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wie wird das Wetter in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, de)).
+nlp_test(de,
+         ivr(in('computer, wie wird das Wetter in Tallinn?'),
+             out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL (what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, en)).
+nlp_test(en,
+         ivr(in('what is the weather gonna be like in stuttgart?'),
+             out('today will be mostly clear skies in stuttgart with temperatures between minus seven and three degrees'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL wie wird das Wetter in @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, de)).
+nlp_test(de,
+         ivr(in('wie wird das Wetter in Stuttgart?'),
+             out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus sieben und drei grad warm'))).
+
+nlp_gen(en,
+        '@SELF_ADDRESS:LABEL what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, en)).
+nlp_test(en,
+         ivr(in('Computer, what does the weather forecast say for stuttgart?'),
+             out('today will be mostly clear skies in Stuttgart with temperatures between -7 and 3 degrees.'))).
+nlp_gen(de,
+        '@SELF_ADDRESS:LABEL (wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für @GEO_LOCATION:LABEL ?', 
+        inline(l2proc_askWeatherReportGeo, de)).
+nlp_test(de,
+         ivr(in('Computer, was sagt der Wetterbericht für Stuttgart?'),
+             out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus sieben und drei grad warm'))).
+
+%
 % explicit time and place
 %
 

@@ -76,3 +76,35 @@ def builtin_fnvm_graph (g, pe):
 
     return [r]
 
+def builtin_frame_modify (g, pe):
+
+    """ builtin_frame_modify ( +OldFrame, +FE, +V, -NewFrame ) """
+
+    pe._trace ('CALLED BUILTIN builtin_frame_modify', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    if len(args) != 4:
+        raise PrologRuntimeError('builtin_frame_modify: 4 args ( +OldFrame, +FE, +V, -NewFrame ) expected.', g.location)
+
+    arg_OldFrame  = pe.prolog_get_constant (args[0], g.env, g.location)
+    arg_FE        = pe.prolog_get_constant (args[1], g.env, g.location)
+    arg_V         = pe.prolog_eval         (args[2], g.env, g.location)
+    arg_NewFrame  = pe.prolog_get_variable (args[3], g.env, g.location)
+
+    solutions = pe.search_predicate('frame', [arg_OldFrame, 'FE', 'V'], env=g.env, location=g.location, err_on_missing=False)
+
+    framesym = do_gensym(pe, 'frame')
+
+    r = {}
+    for s in solutions:
+        if s['FE'].name != arg_FE:
+            r = do_assertz_predicate(g.env, 'frame', [framesym, s['FE'].name, s['V']], res=r)
+        else:
+            r = do_assertz_predicate(g.env, 'frame', [framesym, s['FE'].name, arg_V], res=r)
+
+    r[arg_NewFrame] = Predicate(framesym)
+
+    return [r]
+

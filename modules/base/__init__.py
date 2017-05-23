@@ -4,7 +4,7 @@
 import rdflib
 
 from ner import  builtin_ner_learn, builtin_ner
-from fnvm import builtin_fnvm_graph
+from fnvm import builtin_fnvm_graph, builtin_frame_modify
 
 DEPENDS    = [ 'config' ]
 
@@ -277,8 +277,9 @@ KB_SOURCES = [
 
 def init_module(rt):
 
-    rt.register_builtin ('ner_learn',  builtin_ner_learn)
-    rt.register_builtin ('ner',        builtin_ner)
-    rt.register_builtin ('ner',        builtin_ner)
-    rt.register_builtin ('fnvm_graph', builtin_fnvm_graph)
+    rt.register_builtin ('ner_learn',    builtin_ner_learn)
+    rt.register_builtin ('ner',          builtin_ner)
+    rt.register_builtin ('ner',          builtin_ner)
+    rt.register_builtin ('fnvm_graph',   builtin_fnvm_graph)
+    rt.register_builtin ('frame_modify', builtin_frame_modify)
 

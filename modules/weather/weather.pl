@@ -627,33 +627,33 @@ nlp_test(de,
 % %         context_score (topic, weather, 100, S), @TIMESPECN_DE:P, context_get(weatherPlace, P), answer (weather, de, EvT, P, S)).
 % % 
 % %
-% 
-% %
-% % test multiple iteraction steps
-% %
-% % FIXME: many more examples needed
-% %
-% 
-% nlp_test(en,
-%          ivr(in('computer, what is the weather going to be like?'),
-%              out('today will be mostly clear skies in Stuttgart with temperatures between -7 and 3 degrees.')),
-%          ivr(in('and in the next three days?'),
-%              out('in the next three days the sun will show up occasionally in Stuttgart with temperatures between -9 and 3 degrees.')),
-%          ivr(in('and in Freudental?'),
-%              out('in the next three days the sun will show up occasionally in Freudental with temperatures between -7 and 5 degrees.')),
-%          ivr(in('and tomorrow for Tallinn?'),
-%              out('in the next three days the sun will show up occasionally in Freudental with temperatures between -7 and 5 degrees.'))). 
-% nlp_test(de,
-%          ivr(in('computer, wie wird das wetter?'),
-%              out('heute wird es wenige Wolken geben in Stuttgart und es wird zwischen -7 und 3 Grad warm.')),
-%          ivr(in('und in den nächsten Tagen?'),
-%              out('in den nächsten drei Tagen zeigt sich ab und an die Sonne in Stuttgart und es wird zwischen -9 und 3 Grad warm.')),
-%          ivr(in('und morgen für Tallinn?'),
-%              out('in den nächsten drei Tagen zeigt sich ab und an die Sonne in Stuttgart und es wird zwischen -9 und 3 Grad warm.')),
-%          ivr(in('und in Freudental?'),
-%              out('in den nächsten drei Tagen zeigt sich ab und an die Sonne in Freudental und es wird zwischen -7 und 5 Grad warm.'))). 
-% 
-% 
+
+%
+% test multiple iteraction steps
+%
+% FIXME: many more examples needed
+%
+
+nlp_test(en,
+         ivr(in('computer, what is the weather going to be like?'),
+             out('today will be mostly clear skies in Stuttgart with temperatures between -7 and 3 degrees.')),
+         ivr(in('and in the next three days?'),
+             out('in the next three days the sun will show up occasionally in Stuttgart with temperatures between -9 and 3 degrees.')),
+         ivr(in('and in Freudental?'),
+             out('in the next three days the sun will show up occasionally in freudental with temperatures between minus seven and five degrees')),
+         ivr(in('and tomorrow for Tallinn?'),
+             out('tomorrow there might be a little rain in tallinn with temperatures between one and three degrees'))). 
+nlp_test(de,
+         ivr(in('computer, wie wird das wetter?'),
+             out('heute wird es wenige Wolken geben in Stuttgart und es wird zwischen -7 und 3 Grad warm.')),
+         ivr(in('und in den nächsten Tagen?'),
+             out('in den nächsten drei Tagen zeigt sich ab und an die Sonne in Stuttgart und es wird zwischen -9 und 3 Grad warm.')),
+         ivr(in('und in Freudental?'),
+             out('in den nächsten drei tagen zeigt sich ab und an die sonne in freudental und es wird zwischen minus sieben und fünf grad warm')),
+         ivr(in('und morgen für Tallinn?'),
+             out('morgen kann es etwas niederschlag geben in tallinn und es wird zwischen eins und drei grad warm'))). 
+
+
 % % FIXME: implement
 % % Wann geht die Sonne unter?
 % 

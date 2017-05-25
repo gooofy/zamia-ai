@@ -14,7 +14,7 @@ ner_learn_humans(LANG) :-
 
     ner_learn(LANG, human, HUMAN_ENTITIES, HUMAN_LABELS).
 
-init('base') :-
+init('humans') :-
     ner_learn_humans(en),
     ner_learn_humans(de).
 

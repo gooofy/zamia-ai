@@ -4,7 +4,7 @@
 DEPENDS    = [ 'base', 'config' ]
 
 PL_SOURCES = [
-              'radio.pl',
+              'media.pl',
              ]
 
 RDF_ALIASES = {

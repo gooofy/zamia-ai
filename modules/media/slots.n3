@@ -12,7 +12,7 @@ wde:Q795291               ai:MediaSlot  9 ;
                           ai:MediaTitle 1 .
 
 # music
-ai:MediaStationMusic     ai:MediaSlot  3 ;
+ai:MediaStationMusic      ai:MediaSlot  3 ;
                           rdfs:label     "Music"@en,
                                          "Musik"@de .
 
@@ -36,42 +36,42 @@ wde:Q166266               ai:MediaSlot  8 ;
                           rdfs:label     "RTL"@de.
 
 # aktuelles
-ai:MediaStationAktuelles ai:MediaSlot  9 ;
+ai:MediaStationAktuelles  ai:MediaSlot  9 ;
                           rdfs:label     "News"@en,
                                          "Aktuelles"@de .
 
 # Newstalk
-ai:MediaStationNewsTalk  ai:MediaSlot  13 ;
+ai:MediaStationNewsTalk   ai:MediaSlot  13 ;
                           rdfs:label     "Newstalk"@en,
                                          "Newstalk"@de .
 
 # New Rock
-ai:MediaStationNewRock   ai:MediaSlot  3 ;
+ai:MediaStationNewRock    ai:MediaSlot  3 ;
                           rdfs:label     "New Rock"@en,
                                          "New Rock"@de .
 
 # Rock
-ai:MediaStationRock      ai:MediaSlot  4 ;
+ai:MediaStationRock       ai:MediaSlot  4 ;
                           rdfs:label     "Rock"@en,
                                          "Rock"@de .
 
 # Pop
-ai:MediaStationPop       ai:MediaSlot  5 ;
+ai:MediaStationPop        ai:MediaSlot  5 ;
                           rdfs:label     "Pop"@en,
                                          "Pop"@de .
 
 # Dance
-ai:MediaStationDance     ai:MediaSlot  6 ;
+ai:MediaStationDance      ai:MediaSlot  6 ;
                           rdfs:label     "Dance"@en,
                                          "Dance"@de .
 
 # Tech News
-ai:MediaStationTechNews  ai:MediaSlot  1 ;
+ai:MediaStationTechNews   ai:MediaSlot  1 ;
                           rdfs:label     "Tech News"@en,
                                          "Tech News"@de .
 
 # Workout
-ai:MediaStationWorkout   ai:MediaSlot  15 ;
+ai:MediaStationWorkout    ai:MediaSlot  15 ;
                           rdfs:label     "Workout"@en,
                                          "Workout"@de .
 

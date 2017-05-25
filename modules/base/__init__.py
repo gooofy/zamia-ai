@@ -14,6 +14,7 @@ PL_SOURCES = [
               'geo.pl',
               'fnTelling.pl',
               'fnQuestioning.pl',
+              'fnRequest.pl',
               'fnFamiliarity.pl',
               'fnBeingBorn.pl',
               'topics.pl',

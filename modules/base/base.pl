@@ -37,18 +37,22 @@ fnvm_exec (I, VMC) :-
     fnvm_graph (VMC, F),
     l3proc(I, F).
 
-% context_search_l1_frame(TOPI, I, POINTS, MIN_POINTS, URFRAME, FRAMETYPE, FRAME) :-
-%     POINTS > MIN_POINTS,
-%     ias (I, URFRAME, FRAME),
-%     frame (FRAME, type, FRAMETYPE),
-%     assertz (ias(TOPI, score, POINTS)).
-% 
-% context_search_l1_frame(TOPI, I, POINTS, MIN_POINTS, URFRAME, FRAMETYPE, FRAME) :-
-%     POINTS > MIN_POINTS,
-%     ias(I, prevIAS, PREVI),
-%     P is POINTS  / 2,
-%     context_search_l1_frame(TOPI, PREVI, P, MIN_POINTS, URFRAME, FRAMETYPE, FRAME).
 %
+% recursive search for level 2 frames through conversation history
+%
+%
+context_search_l1_frame(TOPI, I, POINTS, MIN_POINTS, URFRAME, FRAMETYPE, FRAME) :-
+    POINTS > MIN_POINTS,
+    ias (I, URFRAME, FRAME),
+    frame (FRAME, type, FRAMETYPE),
+    assertz (ias(TOPI, score, POINTS)).
+
+context_search_l1_frame(TOPI, I, POINTS, MIN_POINTS, URFRAME, FRAMETYPE, FRAME) :-
+    POINTS > MIN_POINTS,
+    ias(I, prevIAS, PREVI),
+    P is POINTS  / 2,
+    context_search_l1_frame(TOPI, PREVI, P, MIN_POINTS, URFRAME, FRAMETYPE, FRAME).
+
 
 %
 % recursive search for level 2 frames through conversation history

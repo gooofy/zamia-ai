@@ -31,3 +31,14 @@ zfQuestionAspect
 | `place`       | changed place FE
 |=== 
 
+zfChangeMediaStation
+--------------------
+
+inherits from fnChangeOperationalState
+
+|=== 
+| `station`    | station FE
+| `slot`       | slot    FE
+| `title`      | title   FE
+|=== 
+

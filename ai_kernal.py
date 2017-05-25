@@ -621,7 +621,7 @@ class AIKernal(object):
                     elif e.name == 'out':
                         test_out = ' '.join(tokenize(e.args[0].s, lang))
                     elif e.name == 'action':
-                        test_actions.append(e.args)
+                        test_actions.append(e.args[0])
                     else:
                         raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
                    

@@ -166,40 +166,50 @@ nlp_test(de,
 %          ivr(in('wer ist Alfred Hitchcock?'),
 %              out('Er ist ein Regisseur.'))).
 % 
-% answer (movieCreationDate, en, MOVIE, MOVIE_LABEL, SCORE) :-
-%     rdf (distinct, limit(1),
-%          MOVIE,    wdpd:PublicationDate, TS),
-%     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(en, format_str('%s was produced in %s.', MOVIE_LABEL, Y), SCORE).
-% answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE) :-
-%     rdf (distinct, limit(1),
-%          MOVIE,    wdpd:PublicationDate, TS),
-%     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(de, format_str('%s wurde %s gedreht.', MOVIE_LABEL, Y), SCORE).
-% 
-% answer (movieCreationDateTokens, en, TSTART, TEND) :-
-%     ner(en, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
-%     answer (movieCreationDate, en, MOVIE, MOVIE_LABEL, SCORE).
-% answer (movieCreationDateTokens, de, TSTART, TEND) :-
-%     ner(de, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
-%     answer (movieCreationDate, de, MOVIE, MOVIE_LABEL, SCORE).
-% 
-% nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when was @MOVIES_EN:LABEL (produced|made)?',
-%              answer(movieCreationDateTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wann (ist|wurde) (eigentlich|) @MOVIES_DE:LABEL (gedreht|gemacht)?',
-%              answer(movieCreationDateTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
-% 
-% nlp_test(en,
-%          ivr(in('when was the third man made?'),
-%              out('The Third Man was produced in 1949.'))).
-% nlp_test(de,
-%          ivr(in('wann wurde der dritte mann gedreht?'),
-%              out('Der dritte Mann wurde 1949 gedreht.'))).
-% 
+
+answerz (I, en, movieCreationDate, M_LABEL, Y)   :- sayz(I, en, format_str("%s was produced in %s", M_LABEL, Y)).
+answerz (I, de, movieCreationDate, M_LABEL, Y)   :- sayz(I, de, format_str("%s wurde %s gedreht", M_LABEL, Y)).
+
+l4proc (I, F, fnTelling, pdate, MSGF, zfMovieCreation) :-
+
+    frame (MSGF, movie,    MOVIE),
+    frame (MSGF, pdate,    PDATE),
+
+    ias (I, uttLang, LANG),
+
+    entity_label(LANG, MOVIE,    M_LABEL),
+    stamp_date_time(PDATE, date(Y,M,D,H,Mn,S,'local')),
+
+    answerz (I, LANG, movieCreationDate, M_LABEL, Y).
+
+l2proc_movieCreationDateTokens(LANG) :-
+
+    ner(LANG, I, film, @MOVIES:TSTART_LABEL_0, @MOVIES:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(movie, NER1ENTITY)),
+    list_append(VMC, frame(zfMovieCreation)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  pdate)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '@SELF_ADDRESS:LABEL when was @MOVIES:LABEL (produced|made)?',
+         inline(l2proc_movieCreationDateTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wann (ist|wurde) (eigentlich|) @MOVIES:LABEL (gedreht|gemacht)?',
+         inline(l2proc_movieCreationDateTokens, de)).
+
+nlp_test(en,
+         ivr(in('when was the third man made?'),
+             out('The Third Man was produced in 1949.'))).
+nlp_test(de,
+         ivr(in('wann wurde der dritte mann gedreht?'),
+             out('Der dritte Mann wurde 1949 gedreht.'))).
+
 % answer (movieSeen, en, MOVIE, MOVIE_LABEL, SCORE) :-
 %     context_push(topic, movies),
 %     context_push(topic, MOVIE),

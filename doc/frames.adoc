@@ -42,3 +42,12 @@ inherits from fnChangeOperationalState
 | `title`      | title   FE
 |=== 
 
+zfMovieCreation
+---------------
+
+|===
+| `movie`      | movie FE
+| `director`   | director FE
+| `pdate`      | movie publication date FE
+|===
+

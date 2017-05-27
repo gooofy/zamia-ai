@@ -50,3 +50,21 @@ l3proc (I, F, fnQuestioning, MSGF, fnFamiliarity) :-
     % generate response actions
     
     l4proc (I).
+
+answerz (I, en, iAmFamiliar, LABEL) :- sayz(I, en, format_str("I know %s", LABEL)).
+answerz (I, en, iAmFamiliar, LABEL) :- sayz(I, en, format_str("%s sounds familiar", LABEL)).
+answerz (I, de, iAmFamiliar, LABEL) :- sayz(I, en, format_str("Ich kenne %s", LABEL)).
+answerz (I, de, iAmFamiliar, LABEL) :- sayz(I, en, format_str("%s ist mir ein Begriff", LABEL)).
+
+l4proc (I, F, fnFamiliarity) :-
+
+    frame (MSGF, ent,        ENT),
+    uriref (aiu:self, SELF),
+    frame (MSGF, cog,        SELF),
+
+    ias (I, uttLang, LANG),
+
+    entity_label(LANG, ENT, LABEL),
+
+    answerz (I, LANG, iAmFamiliar, LABEL).
+

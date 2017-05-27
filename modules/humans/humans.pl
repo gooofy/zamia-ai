@@ -61,19 +61,66 @@ l2proc_knowHumanTokens(LANG) :-
    
 % FIXME: distinguish who/what (put indication about human/thing/... into question frame)
 
-nlp_gen (en, '@SELF_ADDRESS:LABEL (what about | do you know | do you happen to know | who is | what is) @KNOWN_HUMANS:LABEL',
+nlp_gen (en, '@SELF_ADDRESS:LABEL (do you know | do you happen to know) @KNOWN_HUMANS:LABEL',
          inline(l2proc_knowHumanTokens, en)).
-nlp_gen (de, '@SELF_ADDRESS:LABEL (kennst du|kennst du eigentlich|wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_HUMANS:LABEL',
+nlp_gen (de, '@SELF_ADDRESS:LABEL (kennst du|kennst du eigentlich) @KNOWN_HUMANS:LABEL',
          inline(l2proc_knowHumanTokens, de)).
 
+nlp_test(de,
+         ivr(in('Kennst Du Angela Merkel?'),
+             out('Ja ich kenne Angela Merkel'))).
+nlp_test(en,
+         ivr(in('Do you know Angela Merkel?'),
+             out('Sure I know Angela Merkel'))).
 
-% this test only works as long as the politics module is active (and knowns better)
-% nlp_test(de,
-%          ivr(in('Kennst Du Angela Merkel?'),
-%              out('Ja, der Name ist mir bekannt'))).
-% nlp_test(en,
-%          ivr(in('What about Angela Merkel?'),
-%              out('That name sounds familiar'))).
+%
+% if we don't know anything else, we can tell the user about the human's birthplace
+%
+
+l3proc (I, F, fnQuestioning) :-
+
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
+
+    list_append(VMC, fe(child, HUMAN)),
+    list_append(VMC, fe(childclass, human)),
+    list_append(VMC, frame(fnBeingBorn)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  place)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+
+l2proc_infoHumanTokens(LANG) :-
+
+    ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ent,      NER1ENTITY)),
+    list_append(VMC, fe(entclass, NER1CLASS)),
+    list_append(VMC, fe(top,      general_info)),
+    list_append(VMC, fe(add,      uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '@SELF_ADDRESS:LABEL (what about | who is | what is) @KNOWN_HUMANS:LABEL',
+         inline(l2proc_infoHumanTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_HUMANS:LABEL',
+         inline(l2proc_infoHumanTokens, de)).
+
+nlp_test(de,
+         ivr(in('Wer ist Angela Merkel?'),
+             out('Angela Merkel wurde in Barmbek-Nord geboren'))).
+nlp_test(en,
+         ivr(in('What about Angela Merkel?'),
+             out('Angela Merkel was born in Barmbek-Nord'))).
 
 %
 % birthplace and birtdate questions

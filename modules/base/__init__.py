@@ -19,6 +19,7 @@ PL_SOURCES = [
               'fnFamiliarity.pl',
               'fnBeingBorn.pl',
               'fnCategorization.pl',
+              'fnIntentionallyCreate.pl',
               'topics.pl',
               'math.pl',
              ]

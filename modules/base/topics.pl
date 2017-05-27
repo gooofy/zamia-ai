@@ -56,11 +56,11 @@ l3proc (I, F, fnQuestioning) :-
     frame (F, top, topic),
     not (frame (F, msg, MSGF)),
 
-    log (info, "l3proc looking for fnQuestioning topic frame..."),
+    log (debug, "l3proc looking for fnQuestioning topic frame..."),
 
     context_search_l2(I, I, 8, 1, URFRAME, L1T, L1F, L1FE, L2FT, L2F),
 
-    log (info, "l3proc looking for fnQuestioning topic frame... found one."),
+    log (debug, "l3proc looking for fnQuestioning topic frame... found one."),
 
     assertz (ias(I, score, 10)),
 

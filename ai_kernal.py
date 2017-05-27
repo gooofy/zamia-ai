@@ -646,6 +646,7 @@ class AIKernal(object):
 
                     actual_out = u''
                     utt_lang   = u'en'
+                    # import pdb; pdb.set_trace()
                     for action in abuf['actions']:
                         p = action.name
                         if p == 'say':

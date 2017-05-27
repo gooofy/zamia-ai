@@ -18,6 +18,7 @@ PL_SOURCES = [
               'fnRequest.pl',
               'fnFamiliarity.pl',
               'fnBeingBorn.pl',
+              'fnCategorization.pl',
               'topics.pl',
               'math.pl',
              ]
@@ -68,6 +69,7 @@ RDF_ALIASES = {
                 u'wde:PresidentOfGermany'                  : u'http://www.wikidata.org/entity/Q25223',
                 u'wde:ComputerScientist'                   : u'http://www.wikidata.org/entity/Q82594',
                 u'wde:HomeComputer'                        : u'http://www.wikidata.org/entity/Q473708',
+                u'wde:FilmDirector'                        : u'http://www.wikidata.org/entity/Q2526255',
                 u'wde:FederalChancellorOfGermany'          : u'http://www.wikidata.org/entity/Q4970706',
                 u'wde:Female'                              : u'http://www.wikidata.org/entity/Q6581072',
                 u'wde:Male'                                : u'http://www.wikidata.org/entity/Q6581097',
@@ -269,6 +271,7 @@ KB_SOURCES = [
                   u'wde:AsymmetricProperty',
                   u'wde:ReflexiveProperty',
                   u'wde:WikidatapropertyForTheRelationshipBetweenClasses',
+                  u'wde:FilmDirector',
                 ],
                 [
                   ['wdpd:SubclassOf'],

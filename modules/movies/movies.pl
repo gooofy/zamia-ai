@@ -1,6 +1,6 @@
 % prolog
 
-is_movie_director(PERSON) :- rdf (MOVIE, wdpd:Director, PERSON).
+is_movie_director(HUMAN) :- rdf (MOVIE, wdpd:Director, HUMAN).
 
 %
 % named entity recognition (NER) stuff: extra points for movie directors, movie title NER
@@ -122,50 +122,59 @@ nlp_test(de,
          ivr(in('wer ist der regisseur von der dritte mann?'),
              out('Der Regisseur von Der dritte Mann ist Carol Reed.'))).
 
-% is_director(PERSON) :- 
-%     rdf(MOVIE, wdpd:Director, PERSON).
-% 
-% answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-%     context_score (topic, movies, 100, SCORE),
-%     is_director(PERSON),
-%     is_male(PERSON),
-%     context_push(topic, movies),
-%     context_push(topic, PERSON),
-%     RS is SCORE + 100,
-%     say_eoa(en, 'He is a movie director.', RS).
-% answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-%     context_score (topic, movies, 100, SCORE),
-%     is_director(PERSON),
-%     is_male(PERSON),
-%     context_push(topic, movies),
-%     context_push(topic, PERSON),
-%     RS is SCORE + 100,
-%     say_eoa(de, 'Er ist ein Regisseur.', RS).
-% 
-% answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-%     context_score (topic, movies, 100, SCORE),
-%     is_director(PERSON),
-%     is_female(PERSON),
-%     context_push(topic, movies),
-%     context_push(topic, PERSON),
-%     RS is SCORE + 100,
-%     say_eoa(en, 'She is a movie director.', RS).
-% answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-%     context_score (topic, movies, 100, SCORE),
-%     is_director(PERSON),
-%     is_female(PERSON),
-%     context_push(topic, movies),
-%     context_push(topic, PERSON),
-%     RS is SCORE + 100,
-%     say_eoa(de, 'Sie ist eine Regisseurin.', RS).
-% 
-% nlp_test(en,
-%          ivr(in('Who is Alfred Hitchcock?'),
-%              out('He is a movie director.'))).
-% nlp_test(de,
-%          ivr(in('wer ist Alfred Hitchcock?'),
-%              out('Er ist ein Regisseur.'))).
-% 
+%
+% human movie director categorization
+%
+
+l3proc (I, F, fnQuestioning) :-
+
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
+
+    is_movie_director(HUMAN),
+
+    assertz(ias(I, uframe, F)),
+
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:FilmDirector),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
+
+nlp_test(en,
+         ivr(in('Do you know Alfred Hitchcock?'),
+             out('Yes, I know Alfred Hitchcock.'))).
+nlp_test(en,
+         ivr(in('Who is Alfred Hitchcock?'),
+             out('alfred hitchcock is categorized as film director'))).
+nlp_test(de,
+         ivr(in('Kennst Du Alfred Hitchcock?'),
+             out('ja klar alfred hitchcock ist mir ein begriff'))).
+nlp_test(de,
+         ivr(in('wer ist Alfred Hitchcock?'),
+             out('Alfred Hitchcock ist in der Kategorie Filmregisseur.'))).
 
 answerz (I, en, movieCreationDate, M_LABEL, Y)   :- sayz(I, en, format_str("%s was produced in %s", M_LABEL, Y)).
 answerz (I, de, movieCreationDate, M_LABEL, Y)   :- sayz(I, de, format_str("%s wurde %s gedreht", M_LABEL, Y)).

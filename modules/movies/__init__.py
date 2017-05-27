@@ -3,7 +3,7 @@
 
 import rdflib
 
-DEPENDS    = [ 'base' ]
+DEPENDS    = [ 'base', 'humans' ]
 
 PL_SOURCES = [
               'movies.pl'

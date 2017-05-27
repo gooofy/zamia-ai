@@ -2,6 +2,11 @@
 
 is_movie_director(HUMAN) :- rdf (MOVIE, wdpd:Director, HUMAN).
 
+lookup_entity_creation_info (MOVIE, DIRECTOR, PDATE) :-
+    rdf (distinct, limit(1),
+         MOVIE,    wdpd:Director,        DIRECTOR,
+         MOVIE,    wdpd:PublicationDate, PDATE).
+
 %
 % named entity recognition (NER) stuff: extra points for movie directors, movie title NER
 %
@@ -35,69 +40,15 @@ nlp_macro (de, 'MOVIES', LABEL) :-
          MOVIE, rdfs:label,        LABEL,
          filter (lang(LABEL) = 'de')).
 
-answerz (I, en, movieDirector, M_LABEL, D_LABEL)   :- sayz(I, en, format_str("The director of %s is %s", M_LABEL, D_LABEL)).
-answerz (I, de, movieDirector, M_LABEL, D_LABEL)   :- sayz(I, de, format_str("Der Regisseur von %s ist %s", M_LABEL, D_LABEL)).
-
-l4proc (I, F, fnTelling, director, MSGF, zfMovieCreation) :-
-
-    frame (MSGF, movie,    MOVIE),
-    frame (MSGF, director, DIRECTOR),
-
-    ias (I, uttLang, LANG),
-
-    entity_label(LANG, DIRECTOR, D_LABEL),
-    entity_label(LANG, MOVIE,    M_LABEL),
-
-    answerz (I, LANG, movieDirector, M_LABEL, D_LABEL).
-
-l3proc (I, F, fnQuestioning, MSGF, zfMovieCreation) :-
-
-    frame (F,    top,   TOP),
-    frame (MSGF, movie, MOVIE),
-
-    % remember our utterance interpretation
-
-    assertz(ias(I, uframe, F)),
-
-    % produce response frame graph (here: tell user about some aspect of that movie)
-
-    rdf (distinct, limit(1),
-         MOVIE,    wdpd:Director,        DIRECTOR,
-         MOVIE,    wdpd:PublicationDate, PDATE),
-
-    list_append(VMC, fe(movie,       MOVIE)),
-    list_append(VMC, fe(director,    DIRECTOR)),
-    list_append(VMC, fe(pdate,       PDATE)),
-    list_append(VMC, frame(zfMovieCreation)),
-
-    list_append(VMC, fe(msg,  vm_frame_pop)),
-    list_append(VMC, fe(top,  TOP)),
-    frame (F, spkr, USER),
-    list_append(VMC, fe(add,  USER)),
-    list_append(VMC, fe(spkr, uriref(aiu:self))),
-    list_append(VMC, frame(fnTelling)),
-
-    fnvm_graph(VMC, RFRAME),
-
-    scorez(I, 100),
-
-    % remember response frame
-
-    assertz(ias(I, rframe, RFRAME)),
-
-    % generate response actions
-    
-    l4proc (I).
-
 l2proc_movieDirectorTokens(LANG) :-
 
     ner(LANG, I, film, @MOVIES:TSTART_LABEL_0, @MOVIES:TEND_LABEL_0, NER1ENTITY),
 
-    list_append(VMC, fe(movie, NER1ENTITY)),
-    list_append(VMC, frame(zfMovieCreation)),
+    list_append(VMC, fe(ent,  NER1ENTITY)),
+    list_append(VMC, frame(fnIntentionallyCreate)),
     
     list_append(VMC, fe(msg,  vm_frame_pop)),
-    list_append(VMC, fe(top,  director)),
+    list_append(VMC, fe(top,  creator)),
     list_append(VMC, fe(add,  uriref(aiu:self))),
     ias(I, user, USER),
     list_append(VMC, fe(spkr, USER)),
@@ -117,10 +68,10 @@ nlp_gen (de, '@SELF_ADDRESS:LABEL wer ist (eigentlich|) der Regisseur von @MOVIE
 
 nlp_test(en,
          ivr(in('who is the director of the third man?'),
-             out('The director of The Third Man is Carol Reed.'))).
+             out('The Third Man was created by Carol Reed.'))).
 nlp_test(de,
          ivr(in('wer ist der regisseur von der dritte mann?'),
-             out('Der Regisseur von Der dritte Mann ist Carol Reed.'))).
+             out('Der Dritte Mann wurde von Carol Reed gemacht.'))).
 
 %
 % human movie director categorization
@@ -176,30 +127,15 @@ nlp_test(de,
          ivr(in('wer ist Alfred Hitchcock?'),
              out('Alfred Hitchcock ist in der Kategorie Filmregisseur.'))).
 
-answerz (I, en, movieCreationDate, M_LABEL, Y)   :- sayz(I, en, format_str("%s was produced in %s", M_LABEL, Y)).
-answerz (I, de, movieCreationDate, M_LABEL, Y)   :- sayz(I, de, format_str("%s wurde %s gedreht", M_LABEL, Y)).
-
-l4proc (I, F, fnTelling, pdate, MSGF, zfMovieCreation) :-
-
-    frame (MSGF, movie,    MOVIE),
-    frame (MSGF, pdate,    PDATE),
-
-    ias (I, uttLang, LANG),
-
-    entity_label(LANG, MOVIE,    M_LABEL),
-    stamp_date_time(PDATE, date(Y,M,D,H,Mn,S,'local')),
-
-    answerz (I, LANG, movieCreationDate, M_LABEL, Y).
-
 l2proc_movieCreationDateTokens(LANG) :-
 
     ner(LANG, I, film, @MOVIES:TSTART_LABEL_0, @MOVIES:TEND_LABEL_0, NER1ENTITY),
 
-    list_append(VMC, fe(movie, NER1ENTITY)),
-    list_append(VMC, frame(zfMovieCreation)),
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, frame(fnIntentionallyCreate)),
     
     list_append(VMC, fe(msg,  vm_frame_pop)),
-    list_append(VMC, fe(top,  pdate)),
+    list_append(VMC, fe(top,  time)),
     list_append(VMC, fe(add,  uriref(aiu:self))),
     ias(I, user, USER),
     list_append(VMC, fe(spkr, USER)),
@@ -214,10 +150,10 @@ nlp_gen (de, '@SELF_ADDRESS:LABEL wann (ist|wurde) (eigentlich|) @MOVIES:LABEL (
 
 nlp_test(en,
          ivr(in('when was the third man made?'),
-             out('The Third Man was produced in 1949.'))).
+             out('The Third Man was created in 1949.'))).
 nlp_test(de,
          ivr(in('wann wurde der dritte mann gedreht?'),
-             out('Der dritte Mann wurde 1949 gedreht.'))).
+             out('Der Dritte Mann ist aus 1949.'))).
 
 l2proc_knowFilmTokens(LANG) :-
 
@@ -255,66 +191,25 @@ nlp_test(de,
          ivr(in('kennst du den film der dritte mann?'),
              out('ja, ich kenne der dritte mann.'))).
 
-% %
-% % movie context follow-up style questions
-% %
-% 
-% answer (movieCreationDateFromContext, en) :-
-%     context_score(topic, MOVIE, 100, S),
-%     rdf (distinct, limit(1),
-%          MOVIE, wdpd:InstanceOf, wde:Film,
-%          MOVIE, rdfs:label,      LABEL,
-%          filter (lang(LABEL) = 'en')),
-%     answer(movieCreationDate, en, MOVIE, LABEL, S). 
-% answer (movieCreationDateFromContext, de) :-
-%     context_score(topic, MOVIE, 100, S),
-%     rdf (distinct, limit(1),
-%          MOVIE, wdpd:InstanceOf, wde:Film,
-%          MOVIE, rdfs:label,      LABEL,
-%          filter (lang(LABEL) = 'de')),
-%     answer(movieCreationDate, de, MOVIE, LABEL, S). 
-% 
-% nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know when it was (made|produced) (by the way|)?',
-%              answer(movieCreationDateFromContext, en)).
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wann er (gedreht|gemacht) wurde?',
-%              answer(movieCreationDateFromContext, de)).
-% 
-% answer(movieDirectorFromContext, en) :-
-%     context_score(topic, MOVIE, 100, S),
-%     rdf (distinct, limit(1),
-%          MOVIE, wdpd:InstanceOf, wde:Film,
-%          MOVIE, rdfs:label,      LABEL,
-%          filter (lang(LABEL) = 'en')),
-%     answer(movieDirector, en, MOVIE, LABEL, S). 
-% answer(movieDirectorFromContext, de) :-
-%     context_score(topic, MOVIE, 100, S),
-%     rdf (distinct, limit(1),
-%          MOVIE, wdpd:InstanceOf, wde:Film,
-%          MOVIE, rdfs:label,      LABEL,
-%          filter (lang(LABEL) = 'de')),
-%     answer(movieDirector, de, MOVIE, LABEL, S). 
-%     
-% nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know who (made|produced) it (by the way|)?',
-%              answer(movieDirectorFromContext, en)).
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wer ihn (gedreht|gemacht) hat?',
-%              answer(movieDirectorFromContext, de)).
-% 
-% nlp_test(en,
-%          ivr(in('do you happen to know the movie the third man?'),
-%              out('Yes, I know The Third Man - that is a well known movie.')),
-%          ivr(in('and do you know who made it?'),
-%              out('The director of The Third Man is Carol Reed.')),
-%          ivr(in('do you know when it was produced?'),
-%              out('The Third Man was produced in 1949.'))).
-% 
-% nlp_test(de,
-%          ivr(in('kennst du den film der dritte mann?'),
-%              out('ja, der dritte mann kenne ich - ist ein bekannter film.')),
-%          ivr(in('weisst du, wer ihn gedreht hat?'),
-%              out('Der Regisseur von Der dritte Mann ist Carol Reed.')),
-%          ivr(in('und weisst du, wann er gedreht wurde?'),
-%              out('Der dritte Mann wurde 1949 gedreht.'))).
+%
+% movie context follow-up style questions
+%
 
+nlp_test(en,
+         ivr(in('do you happen to know the movie the third man?'),
+             out('Yes, I know The Third Man.')),
+         ivr(in('and do you know who made it?'),
+             out('The Third Man was created by Carol Reed.')),
+         ivr(in('do you know when it was produced?'),
+             out('The Third Man was created in 1949.'))).
+
+nlp_test(de,
+         ivr(in('kennst du den film der dritte mann?'),
+             out('ja, ich kenne der dritte mann.')),
+         ivr(in('weisst du, wer ihn gedreht hat?'),
+             out('Der Dritte Mann wurde von Carol Reed gemacht')),
+         ivr(in('und weisst du, wann er gedreht wurde?'),
+             out('Der dritte Mann ist aus 1949.'))).
 
 %
 % FIXME: cast members, genre, topics, ...

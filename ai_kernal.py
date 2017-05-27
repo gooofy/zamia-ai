@@ -567,7 +567,7 @@ class AIKernal(object):
         return abufs
 
 
-    def test_module (self, module_name, trace=False):
+    def test_module (self, module_name, trace=False, line=-1):
 
         logging.info('running tests of module %s ...' % (module_name))
 
@@ -575,7 +575,13 @@ class AIKernal(object):
 
         for nlpt in self.db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name):
 
-            logging.info ('running test %s ...' % nlpt.location)
+            clause = json_to_prolog(nlpt.clause)
+
+            if line>=0 and clause.location.line != line:
+                logging.info ('skipping test %s' % clause.location)
+                continue
+
+            logging.info ('running test %s ...' % clause.location)
 
             # import pdb; pdb.set_trace()
         
@@ -596,10 +602,6 @@ class AIKernal(object):
             solutions = self.prolog_rt.search(c)
 
             # extract test rounds, look up matching discourse_rounds, execute them
-
-            clause = json_to_prolog(nlpt.test_src)
-            clause.location = nlpt.location
-            logging.debug( "Parse result: %s (%s)" % (clause, clause.__class__))
 
             args = clause.head.args
             lang = args[0].name
@@ -696,7 +698,7 @@ class AIKernal(object):
 
         logging.info('running tests of module %s complete!' % (module_name))
 
-    def run_tests_multi (self, module_names, run_trace=False):
+    def run_tests_multi (self, module_names, run_trace=False, test_line=-1):
 
         for module_name in module_names:
 
@@ -705,13 +707,13 @@ class AIKernal(object):
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
                     self.init_module (mn2, run_trace=run_trace)
-                    self.test_module (mn2, run_trace)
+                    self.test_module (mn2, trace=run_trace, line=test_line)
 
             else:
                 # import pdb; pdb.set_trace()
                 self.load_module (module_name)
                 self.init_module (module_name, run_trace=run_trace)
-                self.test_module (module_name, run_trace)
+                self.test_module (module_name, trace=run_trace, line=test_line)
 
 
     def run_cronjobs (self, module_name, force=False):

@@ -241,6 +241,8 @@ class AICli(cmdln.Cmdln):
            help="enable tracing")
     @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
            help="run tests")
+    @cmdln.option("-L", "--test-line", dest="test_line", type="int", default=-1,
+           help="run test from specific line only, default: all tests are run")
     @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
            help="print generated utterances")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -268,7 +270,7 @@ class AICli(cmdln.Cmdln):
             self.kernal.compile_module_multi (paths, opts.run_trace, opts.print_utterances, opts.warn_level)
 
             if opts.run_tests:
-                self.kernal.run_tests_multi (paths, opts.run_trace)
+                self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_line=opts.test_line)
 
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)
@@ -279,6 +281,8 @@ class AICli(cmdln.Cmdln):
            help="enable tracing")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
+    @cmdln.option("-L", "--test-line", dest="test_line", type="int", default=-1,
+           help="run test from specific line only, default: all tests are run")
     def do_test(self, subcmd, opts, *paths):
         """${cmd_name}: run tests from module(s)
 
@@ -297,7 +301,7 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.run_tests_multi (paths, opts.run_trace)
+            self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_line=opts.test_line)
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)
 

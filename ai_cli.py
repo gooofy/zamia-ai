@@ -36,6 +36,7 @@ import psycopg2
 import model
 
 from zamiaprolog.logic   import Predicate
+from zamiaprolog.runtime import PROLOG_LOGGER_NAME
 from aiprolog.runtime    import USER_PREFIX
 from zamiaprolog.errors  import PrologError, PrologRuntimeError
 from ai_kernal           import AIKernal
@@ -245,8 +246,10 @@ class AICli(cmdln.Cmdln):
            help="run test from specific line only, default: all tests are run")
     @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
            help="print generated utterances")
+    @cmdln.option("-d", "--debug", dest="debug", action="store_true",
+           help="enable all debug logging")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
+           help="enable prolog debug logging")
     @cmdln.option("-w", "--warn-level", dest="warn_level", type = "int", default=0,
            help="warn level, default: 0 (none)")
     def do_compile(self, subcmd, opts, *paths):
@@ -260,9 +263,11 @@ class AICli(cmdln.Cmdln):
             logging.error ('specify at least one module name')
             return
 
-        if opts.verbose:
+        if opts.debug:
             logging.getLogger().setLevel(logging.DEBUG)
             logging.debug('verbose logging enabled.')
+        elif opts.verbose:
+            logging.getLogger(PROLOG_LOGGER_NAME).setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
 
@@ -276,6 +281,7 @@ class AICli(cmdln.Cmdln):
             logging.error("*** ERROR: %s" % e)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+        logging.getLogger(PROLOG_LOGGER_NAME).setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")

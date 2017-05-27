@@ -219,39 +219,42 @@ nlp_test(de,
          ivr(in('wann wurde der dritte mann gedreht?'),
              out('Der dritte Mann wurde 1949 gedreht.'))).
 
-% answer (movieSeen, en, MOVIE, MOVIE_LABEL, SCORE) :-
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(en, format_str('Yes, I know %s - that is a well known movie.', MOVIE_LABEL), SCORE).
-% answer (movieSeen, de, MOVIE, MOVIE_LABEL, SCORE) :-
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(de, format_str('ja, %s kenne ich - ist ein bekannter Film.', MOVIE_LABEL), SCORE).
-% 
-% answer (movieSeenTokens, en, TSTART, TEND) :-
-%     ner(en, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
-%     answer (movieSeen, en, MOVIE, MOVIE_LABEL, SCORE).
-% answer (movieSeenTokens, de, TSTART, TEND) :-
-%     ner(de, film, TSTART, TEND, MOVIE, MOVIE_LABEL, SCORE),
-%     answer (movieSeen, de, MOVIE, MOVIE_LABEL, SCORE).
-% 
-% nlp_gen (en, '@SELF_ADDRESS_EN:LABEL do you (happen to|) know (the movie|) @MOVIES_EN:LABEL?',
-%              answer(movieSeenTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL kennst du (eigentlich|) (den film|) @MOVIES_DE:LABEL?',
-%              answer(movieSeenTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
-% 
-% nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (have you seen|did you happen to see) (the movie|) @MOVIES_EN:LABEL?',
-%              answer(movieSeenTokens, en, @MOVIES_EN:TSTART_LABEL_0, @MOVIES_EN:TEND_LABEL_0)). 
-% nlp_gen (de, '@SELF_ADDRESS_DE:LABEL hast du (eigentlich|) (den film|) @MOVIES_DE:LABEL gesehen?',
-%              answer(movieSeenTokens, de, @MOVIES_DE:TSTART_LABEL_0, @MOVIES_DE:TEND_LABEL_0)). 
-% 
-% nlp_test(en,
-%          ivr(in('do you happen to know the movie the third man?'),
-%              out('Yes, I know The Third Man - that is a well known movie.'))).
-% nlp_test(de,
-%          ivr(in('kennst du den film der dritte mann?'),
-%              out('ja, der dritte mann kenne ich - ist ein bekannter film.'))).
-% 
+l2proc_knowFilmTokens(LANG) :-
+
+    ner(LANG, I, film, @MOVIES:TSTART_LABEL_0, @MOVIES:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, fe(entclass, film)),
+    list_append(VMC, fe(cog, uriref(aiu:self))),
+    list_append(VMC, frame(fnFamiliarity)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  existance)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '@SELF_ADDRESS:LABEL do you (happen to|) know (the movie|) @MOVIES:LABEL?',
+         inline(l2proc_knowFilmTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL kennst du (eigentlich|) (den film|) @MOVIES:LABEL?',
+         inline(l2proc_knowFilmTokens, de)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (have you seen|did you happen to see) (the movie|) @MOVIES:LABEL?',
+         inline(l2proc_knowFilmTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL hast du (eigentlich|) (den film|) @MOVIES:LABEL gesehen?',
+         inline(l2proc_knowFilmTokens, de)).
+
+
+nlp_test(en,
+         ivr(in('do you happen to know the movie the third man?'),
+             out('Yes, I know The Third Man.'))).
+nlp_test(de,
+         ivr(in('kennst du den film der dritte mann?'),
+             out('ja, ich kenne der dritte mann.'))).
+
 % %
 % % movie context follow-up style questions
 % %

@@ -58,12 +58,12 @@ RDF_ALIASES = {
                 u'wde:TransitiveProperty'                               : u'http://www.wikidata.org/entity/Q18647515',
                 u'wde:AsymmetricProperty'                               : u'http://www.wikidata.org/entity/Q18647519',
                 u'wde:ReflexiveProperty'                                : u'http://www.wikidata.org/entity/Q18647521',
-                # u'wde:'                                                 : u'http://www.wikidata.org/entity/',
                 u'wde:WikidatapropertyForTheRelationshipBetweenClasses' : u'http://www.wikidata.org/entity/Q28326461',
 
                 u'wde:Human'                               : u'http://www.wikidata.org/entity/Q5',
                 u'wde:Computer'                            : u'http://www.wikidata.org/entity/Q68',
                 u'wde:Book'                                : u'http://www.wikidata.org/entity/Q571',
+                u'wde:OperatingSystem'                     : u'http://www.wikidata.org/entity/Q9135',
                 u'wde:ProgrammingLanguage'                 : u'http://www.wikidata.org/entity/Q9143',
                 u'wde:Film'                                : u'http://www.wikidata.org/entity/Q11424',
                 u'wde:PresidentOfTheUnitedStatesOfAmerica' : u'http://www.wikidata.org/entity/Q11696',
@@ -77,6 +77,7 @@ RDF_ALIASES = {
                 u'wde:Male'                                : u'http://www.wikidata.org/entity/Q6581097',
                 u'wde:FemaleGivenName'                     : u'http://www.wikidata.org/entity/Q11879590',
                 u'wde:MaleGivenName'                       : u'http://www.wikidata.org/entity/Q12308941',
+                u'wde:MultitaskingOperatingSystem'         : u'http://www.wikidata.org/entity/Q28933706',
 
                 u'wde:City'                                : u'http://www.wikidata.org/entity/Q515',
                 u'wde:Capital'                             : u'http://www.wikidata.org/entity/Q5119',
@@ -275,6 +276,8 @@ KB_SOURCES = [
                   u'wde:WikidatapropertyForTheRelationshipBetweenClasses',
                   u'wde:Writer',
                   u'wde:FilmDirector',
+                  u'wde:OperatingSystem',
+                  u'wde:MultitaskingOperatingSystem',
                 ],
                 [
                   ['wdpd:SubclassOf'],

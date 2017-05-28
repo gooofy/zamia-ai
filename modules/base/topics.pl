@@ -34,12 +34,24 @@ answerz (I, de, weHaveBeenTalkingAbout, LABEL) :- sayz(I, de, format_str("Wir ha
 answerz (I, de, weHaveBeenTalkingAbout, LABEL) :- sayz(I, de, format_str("Unser Thema war %s", LABEL)).
 answerz (I, de, weHaveBeenTalkingAbout, LABEL) :- sayz(I, de, format_str("Sprachen wir nicht über %s ?", LABEL)).
 
-l4proc (LANG, I, F, fnTelling, topic, MSGF, fnCommunication) :-
+l4proc (I, F, fnTelling, topic, MSGF, fnCommunication) :-
 
     frame (MSGF, com,  we),
     frame (MSGF, top,  entity),    
     frame (MSGF, time, recently),    
     frame (MSGF, msg,  ENTITY),    
+
+    ias (I, uttLang, LANG),
+
+    entity_label(LANG, ENTITY, LABEL),
+
+    answerz (I, LANG, weHaveBeenTalkingAbout, LABEL).
+
+l4proc (I, F, fnTelling, topic, MSGF, fnFamiliarity) :-
+
+    frame (MSGF, ent,  ENTITY),    
+
+    ias (I, uttLang, LANG),
 
     entity_label(LANG, ENTITY, LABEL),
 

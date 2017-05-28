@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS    = [ 'base' ]
+DEPENDS    = [ 'base', 'humans' ]
 
 PL_SOURCES = [
               'literature.pl'

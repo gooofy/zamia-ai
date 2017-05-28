@@ -1,6 +1,12 @@
 % prolog
 
 is_author(PERSON) :- rdf (LITERATURE, wdpd:Author, PERSON).
+is_book(ENTITY) :- rdf (ENTITY, wdpd:InstanceOf, wde:Book).
+
+lookup_entity_creation_info (BOOK, AUTHOR, PDATE) :-
+    rdf (distinct, limit(1),
+         BOOK,    wdpd:Author,          AUTHOR,
+         BOOK,    wdpd:PublicationDate, PDATE).
 
 %
 % named entity recognition (NER) stuff: extra points for authors, literature title NER
@@ -20,136 +26,168 @@ init('literature') :-
     ner_learn_books(en),
     ner_learn_books(de).
 
-nlp_macro ('LITERATURE_EN', LITERATURE, LABEL) :-
+nlp_macro (en, 'LITERATURE', LITERATURE, LABEL) :-
     rdf (distinct,
          LITERATURE, wdpd:InstanceOf,   wde:Book,
          LITERATURE, rdfs:label,        LABEL,
          filter (lang(LABEL) = 'en')).
-nlp_macro ('LITERATURE_DE', LITERATURE, LABEL) :-
+nlp_macro (de, 'LITERATURE', LITERATURE, LABEL) :-
     rdf (distinct,
          LITERATURE, wdpd:InstanceOf,   wde:Book,
          LITERATURE, rdfs:label,        LABEL,
          filter (lang(LABEL) = 'de')).
 
-answer(topic, en) :-
-    context_score(topic, literature, 100, SCORE), say_eoa(en, 'We were talking about literature.', SCORE).
-answer(topic, de) :-
-    context_score(topic, literature, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Literatur.', SCORE).
+%
+% book author questions
+%
 
-answer (literatureAuthor, en, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    rdf (distinct, limit(1),
-         LITERATURE,    wdpd:Author, AUTHOR,
-         AUTHOR,        rdfs:label,  LABEL,
-         filter (lang(LABEL) = 'en')),
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    context_push(topic, AUTHOR),
-    say_eoa(en, format_str('The author of %s is %s.', LITERATURE_LABEL, LABEL), SCORE).
-answer (literatureAuthor, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    rdf (distinct, limit(1),
-         LITERATURE,    wdpd:Author,   AUTHOR,
-         AUTHOR,        rdfs:label,    LABEL,
-         filter (lang(LABEL) = 'de')),
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    context_push(topic, AUTHOR),
-    say_eoa(de, format_str('Der Autor von %s ist %s.', LITERATURE_LABEL, LABEL), SCORE).
+% provide nicer answers for books than stock entity creation answers
 
-answer (literatureAuthorTokens, en, TSTART, TEND) :-
-    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureAuthor, en, LITERATURE, LITERATURE_LABEL, SCORE).
-answer (literatureAuthorTokens, de, TSTART, TEND) :-
-    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureAuthor, de, LITERATURE, LITERATURE_LABEL, SCORE).
+answerz (I, en, bookWrittenBy, E_LABEL, C_LABEL) :- sayz(I, en, format_str("%s was written by %s", E_LABEL, C_LABEL)).
+answerz (I, de, bookWrittenBy, E_LABEL, C_LABEL) :- sayz(I, de, format_str("%s wurde von %s geschrieben", E_LABEL, C_LABEL)).
 
+l4proc (I, F, fnTelling, creator, MSGF, fnIntentionallyCreate) :-
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (wrote|authored|created) @LITERATURE_EN:LABEL (by the way|)?',
-             answer(literatureAuthorTokens, en, @LITERATURE_EN:TSTART_LABEL_0, @LITERATURE_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer hat (eigentlich|) @LITERATURE_DE:LABEL geschrieben?',
-             answer(literatureAuthorTokens, de, @LITERATURE_DE:TSTART_LABEL_0, @LITERATURE_DE:TEND_LABEL_0)). 
+    frame (MSGF, ent,     ENTITY),
+    frame (MSGF, creator, CREATOR),
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (who is the author of|who authored) @LITERATURE_EN:LABEL?',
-             answer(literatureAuthorTokens, en, @LITERATURE_EN:TSTART_LABEL_0, @LITERATURE_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer ist (eigentlich|) der Autor von @LITERATURE_DE:LABEL?',
-             answer(literatureAuthorTokens, de, @LITERATURE_DE:TSTART_LABEL_0, @LITERATURE_DE:TEND_LABEL_0)). 
+    ias (I, uttLang, LANG),
+
+    is_book(ENTITY),
+
+    scorez(I, 100),
+
+    entity_label(LANG, ENTITY,  E_LABEL),
+    entity_label(LANG, CREATOR, C_LABEL),
+
+    answerz (I, LANG, bookWrittenBy, E_LABEL, C_LABEL).
+
+l2proc_bookAuthorTokens(LANG) :-
+
+    ner(LANG, I, book, @LITERATURE:TSTART_LABEL_0, @LITERATURE:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ent,  NER1ENTITY)),
+    list_append(VMC, frame(fnIntentionallyCreate)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  creator)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    log (debug, 'l2proc_bookAuthorTokens for', NER1ENTITY),
+
+    fnvm_exec (I, VMC).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL who (wrote|authored|created) @LITERATURE:LABEL (by the way|)?',
+         inline(l2proc_bookAuthorTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wer hat (eigentlich|) @LITERATURE:LABEL geschrieben?',
+         inline(l2proc_bookAuthorTokens, de)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (who is the author of|who authored) @LITERATURE:LABEL?',
+         inline(l2proc_bookAuthorTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wer ist (eigentlich|) der Autor von @LITERATURE:LABEL?',
+         inline(l2proc_bookAuthorTokens, de)).
  
 nlp_test(en,
          ivr(in('who is the author of the stand?'),
-             out('The author of The Stand is Stephen King.'))).
+             out('The stand was written by Stephen King.'))).
 nlp_test(de,
          ivr(in('wer ist der autor von the stand?'),
-             out('Der Autor von The Stand ist Stephen King.'))).
+             out('The Stand wurde von Stephen King geschrieben.'))).
 
-is_author(PERSON) :- 
-    rdf(LITERATURE, wdpd:Author, PERSON).
+l3proc (I, F, fnQuestioning) :-
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, literature, 100, SCORE),
-    is_author(PERSON),
-    is_male(PERSON),
-    context_push(topic, literature),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(en, 'He is an author.', RS).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, literature, 100, SCORE),
-    is_author(PERSON),
-    is_male(PERSON),
-    context_push(topic, literature),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(de, 'Er ist ein Autor.', RS).
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, literature, 100, SCORE),
-    is_author(PERSON),
-    is_female(PERSON),
-    context_push(topic, literature),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(en, 'She is an author.', RS).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, literature, 100, SCORE),
-    is_author(PERSON),
-    is_female(PERSON),
-    context_push(topic, literature),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(de, 'Sie ist eine Autorin.', RS).
+    is_author(HUMAN),
+
+    assertz(ias(I, uframe, F)),
+
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:Writer),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
 
 nlp_test(en,
          ivr(in('Who is Dan Brown?'),
-             out('He is an author.'))).
+             out('Dan Brown is categorized as writer.'))).
 nlp_test(de,
          ivr(in('wer ist Dan Brown?'),
-             out('Er ist ein Autor.'))).
- 
-answer (literatureCreationDate, en, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    rdf (distinct, limit(1),
-         LITERATURE,    wdpd:PublicationDate, TS),
-    stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    say_eoa(en, format_str('%s was written in %s.', LITERATURE_LABEL, Y), SCORE).
-answer (literatureCreationDate, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    rdf (distinct, limit(1),
-         LITERATURE,    wdpd:PublicationDate, TS),
-    stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    say_eoa(de, format_str('%s wurde %s geschrieben.', LITERATURE_LABEL, Y), SCORE).
+             out('Dan Brown ist in der Kategorie Schriftsteller.'))).
 
-answer (literatureCreationDateTokens, en, TSTART, TEND) :-
-    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureCreationDate, en, LITERATURE, LITERATURE_LABEL, SCORE).
-answer (literatureCreationDateTokens, de, TSTART, TEND) :-
-    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureCreationDate, de, LITERATURE, LITERATURE_LABEL, SCORE).
+%
+% book creation date questions
+%
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL when was @LITERATURE_EN:LABEL (created|written|made)?',
-             answer(literatureCreationDateTokens, en, @LITERATURE_EN:TSTART_LABEL_0, @LITERATURE_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wann (ist|wurde) (eigentlich|) @LITERATURE_DE:LABEL (geschrieben|geschaffen)?',
-             answer(literatureCreationDateTokens, de, @LITERATURE_DE:TSTART_LABEL_0, @LITERATURE_DE:TEND_LABEL_0)). 
+% provide nicer answers for books than stock entity creation answers
+
+answerz (I, en, whenWasBookWritten, E_LABEL, Y)   :- sayz(I, en, format_str("%s was written in %s", E_LABEL, Y)).
+answerz (I, de, whenWasBookWritten, E_LABEL, Y)   :- sayz(I, de, format_str("%s wurde %s geschrieben",        E_LABEL, Y)).
+
+l4proc (I, F, fnTelling, time, MSGF, fnIntentionallyCreate) :-
+
+    frame (MSGF, ent,  ENTITY),
+    frame (MSGF, time, TIME),
+
+    ias (I, uttLang, LANG),
+
+    is_book(ENTITY),
+
+    scorez(I, 100),
+
+    entity_label(LANG, ENTITY, E_LABEL),
+    stamp_date_time(TIME, date(Y,M,D,H,Mn,S,'local')),
+
+    answerz (I, LANG, whenWasBookWritten, E_LABEL, Y).
+
+l2proc_bookWrittenWhenTokens(LANG) :-
+
+    ner(LANG, I, book, @LITERATURE:TSTART_LABEL_0, @LITERATURE:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ent,  NER1ENTITY)),
+    list_append(VMC, frame(fnIntentionallyCreate)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  time)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+
+    log (debug, 'l2proc_bookWrittenWhenTokens for', NER1ENTITY),
+
+    fnvm_exec (I, VMC).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL when was @LITERATURE:LABEL (created|written|made)?',
+         inline(l2proc_bookWrittenWhenTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wann (ist|wurde) (eigentlich|) @LITERATURE:LABEL (geschrieben|geschaffen)?',
+         inline(l2proc_bookWrittenWhenTokens, de)).
 
 nlp_test(en,
          ivr(in('when was the stand written?'),
@@ -158,96 +196,68 @@ nlp_test(de,
          ivr(in('wann wurde the stand geschrieben?'),
              out('The Stand wurde 1978 geschrieben.'))).
 
-answer (literatureKnown, en, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    say_eoa(en, format_str('Yes, I know %s - that is a well known piece of literature.', LITERATURE_LABEL), SCORE).
-answer (literatureKnown, de, LITERATURE, LITERATURE_LABEL, SCORE) :-
-    context_push(topic, literature),
-    context_push(topic, LITERATURE),
-    say_eoa(de, format_str('ja, %s kenne ich - ist ein bekanntes Stück Literatur.', LITERATURE_LABEL), SCORE).
+l2proc_knowBookTokens(LANG) :-
 
-answer (literatureKnownTokens, en, TSTART, TEND) :-
-    ner(en, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureKnown, en, LITERATURE, LITERATURE_LABEL, SCORE).
-answer (literatureKnownTokens, de, TSTART, TEND) :-
-    ner(de, book, TSTART, TEND, LITERATURE, LITERATURE_LABEL, SCORE),
-    answer (literatureKnown, de, LITERATURE, LITERATURE_LABEL, SCORE).
+    ner(LANG, I, book, @LITERATURE:TSTART_LABEL_0, @LITERATURE:TEND_LABEL_0, NER1ENTITY),
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL do you (happen to|) know (the book|) @LITERATURE_EN:LABEL?',
-             answer(literatureKnownTokens, en, @LITERATURE_EN:TSTART_LABEL_0, @LITERATURE_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL kennst du (eigentlich|) (das Buch|) @LITERATURE_DE:LABEL?',
-             answer(literatureKnownTokens, de, @LITERATURE_DE:TSTART_LABEL_0, @LITERATURE_DE:TEND_LABEL_0)). 
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, fe(entclass, book)),
+    list_append(VMC, fe(cog, uriref(aiu:self))),
+    list_append(VMC, frame(fnFamiliarity)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  existance)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (have you read|did you happen to read) (the book|) @LITERATURE_EN:LABEL?',
-             answer(literatureKnownTokens, en, @LITERATURE_EN:TSTART_LABEL_0, @LITERATURE_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL hast du (eigentlich|) (das Buch|) @LITERATURE_DE:LABEL gelesen?',
-             answer(literatureKnownTokens, de, @LITERATURE_DE:TSTART_LABEL_0, @LITERATURE_DE:TEND_LABEL_0)). 
+nlp_gen (en, '@SELF_ADDRESS:LABEL do you (happen to|) know (the book|) @LITERATURE:LABEL?',
+         inline(l2proc_knowBookTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL kennst du (eigentlich|) (das Buch|) @LITERATURE:LABEL?',
+         inline(l2proc_knowBookTokens, de)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (have you read|did you happen to read) (the book|) @LITERATURE:LABEL?',
+         inline(l2proc_knowBookTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL hast du (eigentlich|) (das Buch|) @LITERATURE:LABEL gelesen?',
+         inline(l2proc_knowBookTokens, de)).
 
 nlp_test(en,
          ivr(in('do you happen to know the book the stand?'),
-             out('Yes, I know The Stand - that is a well known piece of literature.'))).
+             out('sure i know the stand'))).
 nlp_test(de,
          ivr(in('kennst du das buch the stand?'),
-             out('ja, The Stand kenne ich - ist ein bekanntes Stück Literatur.'))).
+             out('ja ich kenne the stand'))).
 
 %
 % literature context follow-up style questions
 %
 
-answer (literatureCreationDateFromContext, en) :-
-    context_score(topic, LITERATURE, 100, S),
-    rdf (distinct, limit(1),
-         LITERATURE, wdpd:InstanceOf, wde:Book,
-         LITERATURE, rdfs:label,      LABEL,
-         filter (lang(LABEL) = 'en')),
-    answer(literatureCreationDate, en, LITERATURE, LABEL, S).
-answer (literatureCreationDateFromContext, de) :-
-    context_score(topic, LITERATURE, 100, S),
-    rdf (distinct, limit(1),
-         LITERATURE, wdpd:InstanceOf, wde:Book,
-         LITERATURE, rdfs:label,      LABEL,
-         filter (lang(LABEL) = 'de')),
-    answer(literatureCreationDate, de, LITERATURE, LABEL, S).
-
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know when it was (written|created) (by the way|)?',
-             answer(literatureCreationDateFromContext, en)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wann es (geschrieben|geschaffen) wurde?',
-             answer(literatureCreationDateFromContext, de)).
-
-answer(literatureAuthorFromContext, en) :-
-    context_score(topic, LITERATURE, 100, S),
-    rdf (distinct, limit(1),
-         LITERATURE, wdpd:InstanceOf, wde:Book,
-         LITERATURE, rdfs:label,      LABEL,
-         filter (lang(LABEL) = 'en')),
-    answer(literatureAuthor, en, LITERATURE, LABEL, S). 
-answer(literatureAuthorFromContext, de) :-
-    context_score(topic, LITERATURE, 100, S),
-    rdf (distinct, limit(1),
-         LITERATURE, wdpd:InstanceOf, wde:Book,
-         LITERATURE, rdfs:label,      LABEL,
-         filter (lang(LABEL) = 'de')),
-    answer(literatureAuthor, de, LITERATURE, LABEL, S). 
-    
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (and|) do you (happen to|) know who (wrote|created) it (by the way|)?',
-             answer(literatureAuthorFromContext, en)).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (und|) weisst du (eigentlich|) wer es (geschrieben|geschaffen) hat?',
-             answer(literatureAuthorFromContext, de)).
-
+nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) do you (happen to|) know when it was written (by the way|)?',
+         inline(l2proc_whenWasEntityCreatedContext)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wann (es|das) geschrieben wurde?',
+         inline(l2proc_whenWasEntityCreatedContext)).
+ 
+nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) do you (happen to|) know who wrote it (by the way|)?',
+         inline(l2proc_whoCreatedEntityContext)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wer (es|das) geschrieben hat?',
+         inline(l2proc_whoCreatedEntityContext)).
+ 
 nlp_test(en,
          ivr(in('do you happen to know the book the stand?'),
-             out('Yes, I know The Stand - that is a well known piece of literature.')),
+             out('sure i know the stand')),
          ivr(in('and do you know who wrote it?'),
-             out('The author of The Stand is Stephen King.')),
+             out('the stand was created by stephen king')),
          ivr(in('do you know when it was written?'),
              out('The Stand was written in 1978.'))).
 
 nlp_test(de,
          ivr(in('kennst du das buch the stand?'),
-             out('ja, The Stand kenne ich - ist ein bekanntes Stück Literatur.')),
+             out('ja klar ich kenne the stand')),
          ivr(in('weisst du, wer es geschrieben hat?'),
-             out('Der Autor von The Stand ist Stephen King.')),
+             out('the stand wurde von stephen king geschrieben')),
          ivr(in('und weisst du, wann es geschrieben wurde?'),
              out('The Stand wurde 1978 geschrieben.'))).
 
@@ -255,13 +265,13 @@ nlp_test(de,
 %
 % FIXME: genre, topics, ...
 %
-
+ 
 %
 % misc / random stuff
 %
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL agatha christie',
+nlp_gen (en, '@SELF_ADDRESS:LABEL agatha christie',
              'I like Miss Marple...').
-nlp_gen (de, '@SELF_ADDRESS_EN:LABEL agatha christie',
+nlp_gen (de, '@SELF_ADDRESS:LABEL agatha christie',
              'Ich mag Miss Marple...').
 

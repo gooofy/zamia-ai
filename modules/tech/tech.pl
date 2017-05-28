@@ -2,9 +2,20 @@
 
 is_computer_scientist(PERSON) :- rdf (PERSON, wdpd:Occupation, wde:ComputerScientist).
 
+operating_system_category (CAT) :- CAT is uriref(wde:MultitaskingOperatingSystem).
+operating_system_category (CAT) :- CAT is uriref(wde:OperatingSystem).
+
+operating_system_rdf (OS) :-
+    operating_system_category(CAT),
+    rdf(OS, wdpd:InstanceOf, CAT).
+
+operating_systems (S)  :- set_findall(OS, operating_system_rdf(OS), S).
+
+operating_system (OS) :- operating_systems(S), set_get(S, OS).
+
+
 %
-% named entity recognition (NER) stuff: extra points for computer scientists, programming language and home computer NER
-% FIXME: NER for operating systems, ...
+% named entity recognition (NER) stuff: extra points for computer scientists, programming language and home computer
 %
 
 ner_learn_programming_languages(LANG) :-
@@ -27,181 +38,207 @@ ner_learn_home_computers(LANG) :-
 
     ner_learn(LANG, home_computer, HOME_COMPUTER_ENTITIES, HOME_COMPUTER_LABELS).
 
+ner_learn_operating_systems(LANG) :-
+    atom_chars(LANG, LSTR),
+
+    operating_system_category(CAT),
+
+    rdf_lists (distinct,
+               OS_ENTITIES, wdpd:InstanceOf,   CAT,
+               OS_ENTITIES, rdfs:label,        OS_LABELS,
+               filter (lang(OS_LABELS) = LSTR)),
+
+    ner_learn(LANG, operating_system, OS_ENTITIES, OS_LABELS).
+
 init('tech') :-
+    ner_learn_operating_systems(en),
+    ner_learn_operating_systems(de),
     ner_learn_home_computers(en),
     ner_learn_home_computers(de),
     ner_learn_programming_languages(en),
     ner_learn_programming_languages(de).
 
-answer(topic, en) :-
-    context_score(topic, computers, 100, SCORE), say_eoa(en, 'We were talking about computers and machines.', SCORE).
-answer(topic, de) :-
-    context_score(topic, computers, 100, SCORE), say_eoa(de, 'Wir hatten das Thema Computer und Maschinen.', SCORE).
+nlp_macro(en, 'OPERATING_SYSTEM', LABEL) :- 
+    operating_system(OS),
+    rdf (limit(1),
+         OS, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'en')).
 
-answer(topic, en) :-
-    context_score(topic, artificial_intelligence, 100, SCORE), say_eoa(en, 'We were talking about artificial intelligence.', SCORE).
-answer(topic, de) :-
-    context_score(topic, artificial_intelligence, 100, SCORE), say_eoa(de, 'Wir hatten über künstliche Intelligenz gesprochen.', SCORE).
+nlp_macro(de, 'OPERATING_SYSTEM', LABEL) :- 
+    operating_system(OS),
+    rdf (limit(1),
+         OS, rdfs:label, LABEL,
+         filter(lang(LABEL) = 'de')).
 
-answer(topic, en) :-
-    context_score(topic, programming, 100, SCORE), say_eoa(en, 'We were talking about programming.', SCORE).
-answer(topic, de) :-
-    context_score(topic, programming, 100, SCORE), say_eoa(de, 'Wir hatten über Programmierung gesprochen.', SCORE).
+l2proc_knowOSTokens(LANG) :-
 
-answer(topic, en) :-
-    context_score(topic, home_computer, 100, SCORE), say_eoa(en, 'We were talking about home computers.', SCORE).
-answer(topic, de) :-
-    context_score(topic, home_computer, 100, SCORE), say_eoa(de, 'Wir hatten über Heimcomputer gesprochen.', SCORE).
+    ner(LANG, I, operating_system, @OPERATING_SYSTEM:TSTART_LABEL_0, @OPERATING_SYSTEM:TEND_LABEL_0, NER1ENTITY),
 
-answer(topic, en) :-
-    context_score(topic, computer_science, 100, SCORE), say_eoa(en, 'We were talking about computer science.', SCORE).
-answer(topic, de) :-
-    context_score(topic, computer_science, 100, SCORE), say_eoa(de, 'Wir hatten über Informatik gesprochen.', SCORE).
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, fe(entclass, operating_system)),
+    list_append(VMC, fe(cog, uriref(aiu:self))),
+    list_append(VMC, frame(fnFamiliarity)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  existance)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
 
-answer(topic, en) :-
-    context_score(topic, linux, 100, SCORE), say_eoa(en, 'We were talking about Linux.', SCORE).
-answer(topic, de) :-
-    context_score(topic, linux, 100, SCORE), say_eoa(de, 'Wir hatten über Linux gesprochen.', SCORE).
-
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL (do you know|what do you think about|have you tried|do you run|do you like) Linux',
-             context_push(topic, linux), say_eoa(en, 'Hey, Linux is my operating system, it is very cool.')).
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL (kennst du|was hältst du von|was denkst du über|läufst du unter|magst du) Linux',
-             context_push(topic, linux), say_eoa(en, 'Hey, Linux ist mein Betriebssystem, das ist richtig cool.')).
+nlp_gen (en, '@SELF_ADDRESS:LABEL (do you know|what do you think about|have you tried|do you run|do you like) @OPERATING_SYSTEM:LABEL',
+         inline(l2proc_knowOSTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (kennst du|was hältst du von|was denkst du über|läufst du unter|magst du) @OPERATING_SYSTEM:LABEL',
+         inline(l2proc_knowOSTokens, en)).
 
 nlp_test(en,
          ivr(in('do you know linux?'),
-             out("Hey, Linux is my operating system, it is very cool."))).
+             out("sure I know Linux"))).
 nlp_test(de,
          ivr(in('magst du linux?'),
-             out('Hey, Linux ist mein Betriebssystem, das ist richtig cool.'))).
+             out('ja ich kenne linux'))).
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, computer_science, 100, SCORE),
-    is_computer_scientist(PERSON),
-    is_male(PERSON),
-    context_push(topic, computer_science),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(en, 'He is a computer scientist.', RS).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, computer_science, 100, SCORE),
-    is_computer_scientist(PERSON),
-    is_male(PERSON),
-    context_push(topic, computer_science),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(de, 'Er ist ein Informatiker.', RS).
+l3proc (I, F, fnQuestioning) :-
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, computer_science, 100, SCORE),
-    is_computer_scientist(PERSON),
-    is_female(PERSON),
-    context_push(topic, computer_science),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(en, 'She is a computer scientist.', RS).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, computer_science, 100, SCORE),
-    is_computer_scientist(PERSON),
-    is_female(PERSON),
-    context_push(topic, computer_science),
-    context_push(topic, PERSON),
-    RS is SCORE + 100,
-    say_eoa(de, 'Sie ist eine Informatikerin.', RS).
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
+
+    is_computer_scientist(HUMAN),
+
+    assertz(ias(I, uframe, F)),
+
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:ComputerScientist),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
 
 nlp_test(en,
          ivr(in('Who is Niklaus Wirth?'),
-             out('He is a computer scientist.'))).
+             out('niklaus wirth is categorized as computer scientist'))).
 nlp_test(de,
          ivr(in('wer ist Niklaus Wirth?'),
-             out('Er ist ein Informatiker.'))).
+             out('niklaus wirth ist in der kategorie informatiker'))).
 
-nlp_macro('PROGRAMMING_LANGUAGE_EN', NAME, LABEL) :- 
+nlp_macro(en, 'PROGRAMMING_LANGUAGE', NAME, LABEL) :- 
     rdf(distinct,
         NAME, wdpd:InstanceOf, wde:ProgrammingLanguage,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'en')).
-nlp_macro('PROGRAMMING_LANGUAGE_DE', NAME, LABEL) :- 
+nlp_macro(de, 'PROGRAMMING_LANGUAGE', NAME, LABEL) :- 
     rdf(distinct,
         NAME, wdpd:InstanceOf, wde:ProgrammingLanguage,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de')).
 
-answer (knownProgrammingLanguage, en, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE) :-
-    context_push(topic, programming),
-    context_push(topic, PROGRAMMING_LANGUAGE),
-    say_eoa(en, format_str('%s is a programming language.', PROGRAMMING_LANGUAGE_LABEL), SCORE).
-answer (knownProgrammingLanguage, de, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE) :-
-    context_push(topic, programming),
-    context_push(topic, PROGRAMMING_LANGUAGE),
-    say_eoa(de, format_str('%s ist eine Programmiersprache.', PROGRAMMING_LANGUAGE_LABEL), SCORE).
+l2proc_knowProgrammingLanguageTokens(LANG) :-
 
-answer (knownProgrammingLanguageTokens, LANG, TSTART, TEND) :-
-    ner(LANG, programming_language, TSTART, TEND, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE),
-    answer (knownProgrammingLanguage, LANG, PROGRAMMING_LANGUAGE, PROGRAMMING_LANGUAGE_LABEL, SCORE).
+    ner(LANG, I, programming_language, @PROGRAMMING_LANGUAGE:TSTART_LABEL_0, @PROGRAMMING_LANGUAGE:TEND_LABEL_0, NER1ENTITY),
 
-nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (do you know|what is) @PROGRAMMING_LANGUAGE_EN:LABEL?',
-             answer(knownProgrammingLanguageTokens, en, @PROGRAMMING_LANGUAGE_EN:TSTART_LABEL_0, @PROGRAMMING_LANGUAGE_EN:TEND_LABEL_0)). 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (kennst Du|was ist) @PROGRAMMING_LANGUAGE_DE:LABEL?',
-             answer(knownProgrammingLanguageTokens, de, @PROGRAMMING_LANGUAGE_DE:TSTART_LABEL_0, @PROGRAMMING_LANGUAGE_DE:TEND_LABEL_0)). 
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, fe(entclass, programming_language)),
+    list_append(VMC, fe(cog, uriref(aiu:self))),
+    list_append(VMC, frame(fnFamiliarity)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  existance)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
 
+nlp_gen(en, '@SELF_ADDRESS:LABEL (do you know|what is) @PROGRAMMING_LANGUAGE:LABEL?',
+         inline(l2proc_knowProgrammingLanguageTokens, en)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL (kennst Du|was ist) @PROGRAMMING_LANGUAGE:LABEL?',
+         inline(l2proc_knowProgrammingLanguageTokens, de)).
+ 
 nlp_test(en,
          ivr(in('do you know prolog?'),
-             out("Prolog is a programming language")),
+             out("yes i know prolog")),
          ivr(in('what was our topic, again?'),
-             out("We were talking about prolog."))).
+             out("we have been talking about prolog"))).
 nlp_test(de,
          ivr(in('kennst du prolog?'),
-             out('Prolog ist eine Programmiersprache')),
+             out('ja klar ich kenne prolog')),
          ivr(in('Worüber hatten wir gesprochen?'),
              out("Wir hatten über prolog gesprochen."))).
 
-nlp_macro('HOME_COMPUTER_EN', NAME, LABEL) :- 
+nlp_macro(en, 'HOME_COMPUTER', NAME, LABEL) :- 
     rdf(distinct,
         NAME, wdpd:InstanceOf, wde:HomeComputer,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'en')).
-nlp_macro('HOME_COMPUTER_DE', NAME, LABEL) :- 
+nlp_macro(de, 'HOME_COMPUTER', NAME, LABEL) :- 
     rdf(distinct,
         NAME, wdpd:InstanceOf, wde:HomeComputer,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de')).
 
-answer (knownHomeComputer, en, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
-    context_push(topic, programming),
-    context_push(topic, HOME_COMPUTER),
-    say_eoa(en, format_str('The %s is a home computer.', HOME_COMPUTER_LABEL), SCORE).
-answer (knownHomeComputer, de, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
-    context_push(topic, programming),
-    context_push(topic, HOME_COMPUTER),
-    say_eoa(de, format_str('Der %s ist ein Heimcomputer.', HOME_COMPUTER_LABEL), SCORE).
+l2proc_knowHomeComputerTokens(LANG) :-
 
-answer (knownHomeComputerTokens, LANG, TSTART, TEND) :-
-    ner(LANG, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
-    answer (knownHomeComputer, LANG, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
+    ner(LANG, I, home_computer, @HOME_COMPUTER:TSTART_LABEL_0, @HOME_COMPUTER:TEND_LABEL_0, NER1ENTITY),
 
-nlp_gen(en, '@SELF_ADDRESS_EN:LABEL (do you know|what is) @HOME_COMPUTER_EN:LABEL?',
-            answer(knownHomeComputerTokens, en, @HOME_COMPUTER_EN:TSTART_LABEL_0, @HOME_COMPUTER_EN:TEND_LABEL_0)). 
-nlp_gen(de, '@SELF_ADDRESS_DE:LABEL (kennst Du|was ist) @HOME_COMPUTER_DE:LABEL?',
-            answer(knownHomeComputerTokens, de, @HOME_COMPUTER_DE:TSTART_LABEL_0, @HOME_COMPUTER_DE:TEND_LABEL_0)). 
+    list_append(VMC, fe(ent, NER1ENTITY)),
+    list_append(VMC, fe(entclass, home_computer)),
+    list_append(VMC, fe(cog, uriref(aiu:self))),
+    list_append(VMC, frame(fnFamiliarity)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  existance)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    fnvm_exec (I, VMC).
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL (do you know|what is) @HOME_COMPUTER:LABEL?',
+         inline(l2proc_knowHomeComputerTokens, en)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL (kennst Du|was ist) @HOME_COMPUTER:LABEL?',
+         inline(l2proc_knowHomeComputerTokens, de)).
 
 nlp_test(en,
          ivr(in('do you know commodore 64?'),
-             out("The Commodore 64 is a home computer")),
+             out("yes commodore 64 sounds familiar")),
          ivr(in('what was our topic, again?'),
-             out("We were talking about Commodore 64."))).
+             out("our topic was commodore 64."))).
 nlp_test(de,
-         ivr(in('kennst du sinclair ql?'),
-             out('Der Sinclair QL ist ein Heimcomputer')),
+         ivr(in('kennst du sinclair zx spectrum?'),
+             out('ja ich kenne sinclair zx spectrum')),
          ivr(in('Worüber hatten wir gesprochen?'),
-             out("Wir hatten über Sinclair QL gesprochen."))).
+             out("Wir hatten über Sinclair ZX Spectrum gesprochen."))).
 
 %
 % random / misc
 %
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL bill gates',
+nlp_gen (en, '@SELF_ADDRESS:LABEL bill gates',
              'What do you think about Bill Gates?').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL bill gates',
+nlp_gen (de, '@SELF_ADDRESS:LABEL bill gates',
              'Wie denkst Du über Bill Gates?').
-

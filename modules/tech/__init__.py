@@ -3,7 +3,7 @@
 
 import rdflib
 
-DEPENDS    = [ 'base', 'config' ]
+DEPENDS    = [ 'base', 'config', 'humans' ]
 
 PL_SOURCES = [
               'tech.pl',
@@ -35,6 +35,7 @@ RDF_ALIASES = {
                 u'wde:COBOL'                            : u'http://www.wikidata.org/entity/Q131140',
                 u'wde:Fortran'                          : u'http://www.wikidata.org/entity/Q83303',
                 u'wde:Perl'                             : u'http://www.wikidata.org/entity/Q42478',
+                u'wde:Prolog'                           : u'http://www.wikidata.org/entity/Q163468',
 
                 # home computers
                 u'wde:CommodoreVIC20'                   : u'http://www.wikidata.org/entity/Q918232',
@@ -97,6 +98,7 @@ KB_SOURCES = [
                   u'wde:COBOL',
                   u'wde:Fortran',
                   u'wde:Perl',
+                  u'wde:Prolog',
                   # ('wdpd:InstanceOf', 'wde:ProgrammingLanguage'),
                 ],
                 [

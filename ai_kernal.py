@@ -638,7 +638,7 @@ class AIKernal(object):
 
                 # check actual actions vs expected ones
                 matching_abuf = None
-                for abuf in action_buffers:
+                for abuf in sorted(action_buffers, key=lambda k: k['score'], reverse=True):
 
                     # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 

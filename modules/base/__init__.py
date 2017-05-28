@@ -68,6 +68,7 @@ RDF_ALIASES = {
                 u'wde:Film'                                : u'http://www.wikidata.org/entity/Q11424',
                 u'wde:PresidentOfTheUnitedStatesOfAmerica' : u'http://www.wikidata.org/entity/Q11696',
                 u'wde:PresidentOfGermany'                  : u'http://www.wikidata.org/entity/Q25223',
+                u'wde:Writer'                              : u'http://www.wikidata.org/entity/Q36180',
                 u'wde:ComputerScientist'                   : u'http://www.wikidata.org/entity/Q82594',
                 u'wde:HomeComputer'                        : u'http://www.wikidata.org/entity/Q473708',
                 u'wde:FilmDirector'                        : u'http://www.wikidata.org/entity/Q2526255',
@@ -272,6 +273,7 @@ KB_SOURCES = [
                   u'wde:AsymmetricProperty',
                   u'wde:ReflexiveProperty',
                   u'wde:WikidatapropertyForTheRelationshipBetweenClasses',
+                  u'wde:Writer',
                   u'wde:FilmDirector',
                 ],
                 [

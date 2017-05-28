@@ -18,7 +18,7 @@ l2proc_whenWasEntityCreatedContext :-
    
 nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) do you (happen to|) know when it was (made|produced) (by the way|)?',
          inline(l2proc_whenWasEntityCreatedContext)).
-nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wann er (gedreht|gemacht) wurde?',
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wann er (gedreht|gemacht|geschaffen) wurde?',
          inline(l2proc_whenWasEntityCreatedContext)).
 
 answerz (I, en, whenWasEntityCreated, E_LABEL, Y)   :- sayz(I, en, format_str("%s was created in %s", E_LABEL, Y)).
@@ -54,7 +54,7 @@ l2proc_whoCreatedEntityContext :-
    
 nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) do you (happen to|) know who (made|produced|created) it (by the way|)?',
          inline(l2proc_whoCreatedEntityContext)).
-nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wer (es|ihn|das|den) (gedreht|gemacht|produziert) hat?',
+nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) weisst du (eigentlich|) wer (es|ihn|das|den) (gedreht|gemacht|produziert|geschaffen) hat?',
          inline(l2proc_whoCreatedEntityContext)).
 
 l3proc (I, F, fnQuestioning, MSGF, fnIntentionallyCreate) :-

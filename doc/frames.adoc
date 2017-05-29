@@ -1,7 +1,8 @@
 ZamiaAI Frame Catalog
 =====================
 
-NOTE: Frames originating from FrameNet are prefix with 'fn', ZamiaAI's custom frames are prefixed with 'zf'
+NOTE: Frames originating from FrameNet are prefix with 'fn', those originating from PropBank carry the 'pb' prefix
+      while ZamiaAI's custom frames are prefixed with 'zf'
 
 zfWeatherForecast
 -----------------
@@ -40,5 +41,29 @@ inherits from fnChangeOperationalState
 | `station`    | station FE
 | `slot`       | slot    FE
 | `title`      | title   FE
+|=== 
+
+pbGreet01
+----------
+
+|=== 
+| `arg0`       | agent     FE
+| `arg1`       | addressee FE
+|=== 
+
+zfBye
+----------
+
+|=== 
+| `arg0`       | agent     FE
+| `arg1`       | addressee FE
+|=== 
+
+zfHowdy
+----------
+
+|=== 
+| `arg0`       | agent     FE
+| `arg1`       | addressee FE
 |=== 
 

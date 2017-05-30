@@ -442,16 +442,16 @@ class AIKernal(object):
 
         self.prolog_rt.set_trace(trace)
 
-        if test_mode:
+        # import pdb; pdb.set_trace()
 
-            prolog_s = None
+        prolog_s = []
+        if test_mode:
 
             for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
                                                                          model.DiscourseRound.lang==utt_lang):
-            
-                prolog_s = ','.join(dr.resp.split(';'))
+                prolog_s.append(u','.join(dr.resp.split(';')))
 
-                logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), prolog_s) )
+            logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), repr(prolog_s)) )
                 
             if not prolog_s:
                 logging.error('test utterance %s not found!' % utterance)
@@ -484,11 +484,10 @@ class AIKernal(object):
             preds = map (lambda o: self.inv_output_dict[o], outputs)
             logging.debug("preds: %s" % repr(preds))
 
+            # FIXME: handle ;;
             prolog_s = ''
 
             do_and = True
-
-            # import pdb; pdb.set_trace()
 
             for p in preds:
 
@@ -512,42 +511,42 @@ class AIKernal(object):
 
         abufs = []
 
-        c = self.parser.parse_line_clause_body(prolog_s)
-        # logging.debug( "Parse result: %s" % c)
+        for ps in prolog_s:
 
-        # logging.debug( "Searching for c: %s" % c )
+            c = self.parser.parse_line_clause_body(ps)
+            # logging.debug( "Parse result: %s" % c)
 
-        solutions = self.prolog_rt.search(c, env=env)
+            # logging.debug( "Searching for c: %s" % c )
 
-        # if len(solutions) == 0:
-        #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+            solutions = self.prolog_rt.search(c, env=env)
 
-        # extract action buffers from overlay variable in solutions:
+            # if len(solutions) == 0:
+            #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
 
-        abufs = []
+            # extract action buffers from overlay variable in solutions:
 
-        # import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
 
-        for solution in solutions:
+            for solution in solutions:
 
-            overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
-            if not overlay:
-                continue
+                overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
+                if not overlay:
+                    continue
 
-            actions = []
-            for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-                actions.append(s['A'])
+                actions = []
+                for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+                    actions.append(s['A'])
 
-            score = 0.0
-            for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-                score += s['S'].f
+                score = 0.0
+                for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+                    score += s['S'].f
 
-            # ias = overlay.get('ias')
+                # ias = overlay.get('ias')
 
-            # scores  = overlay.get('score')
-            # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
-           
-            abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
+                # scores  = overlay.get('score')
+                # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
+               
+                abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
 
         return abufs
 

@@ -130,6 +130,6 @@ nlp_test(en,
              out("sorry i dont know"))
              ).
 
-nlp_gen(en, '@SELF_ADDRESS:LABEL (uh|) now for a different subject!', 'What would you like to talk about?').
-nlp_gen(de, '@SELF_ADDRESS:LABEL (ach|) (jetzt ein|mal ein|) anderes thema', 'Worüber möchtest Du sprechen?').
+nlp_gens(en, '@SELF_ADDRESS:LABEL (uh|) now for a different subject!', 'What would you like to talk about?').
+nlp_gens(de, '@SELF_ADDRESS:LABEL (ach|) (jetzt ein|mal ein|) anderes thema', 'Worüber möchtest Du sprechen?').
 

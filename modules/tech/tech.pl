@@ -238,7 +238,7 @@ nlp_test(de,
 % random / misc
 %
 
-nlp_gen (en, '@SELF_ADDRESS:LABEL bill gates',
+nlp_gens(en, '@SELF_ADDRESS:LABEL bill gates',
              'What do you think about Bill Gates?').
-nlp_gen (de, '@SELF_ADDRESS:LABEL bill gates',
+nlp_gens(de, '@SELF_ADDRESS:LABEL bill gates',
              'Wie denkst Du über Bill Gates?').

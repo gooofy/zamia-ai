@@ -270,8 +270,8 @@ nlp_test(de,
 % misc / random stuff
 %
 
-nlp_gen (en, '@SELF_ADDRESS:LABEL agatha christie',
+nlp_gens(en, '@SELF_ADDRESS:LABEL agatha christie',
              'I like Miss Marple...').
-nlp_gen (de, '@SELF_ADDRESS:LABEL agatha christie',
+nlp_gens(de, '@SELF_ADDRESS:LABEL agatha christie',
              'Ich mag Miss Marple...').
 

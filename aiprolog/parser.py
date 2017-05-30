@@ -78,6 +78,7 @@ class AIPrologParser(PrologParser):
 
         self.register_directive('nlp_macro',           self.nlp_macro,           None)
         self.register_directive('nlp_gen',             self.nlp_gen,             None)
+        self.register_directive('nlp_gens',            self.nlp_gens,            None)
         self.register_directive('nlp_test',            self.nlp_test,            None)
 
     def set_trace (self, trace):
@@ -181,6 +182,7 @@ class AIPrologParser(PrologParser):
             response_parts = apply_am(response_parts, am)
 
         argc = 0
+        num_string_literals = 0
 
         while argc < len(response_parts):
 
@@ -190,38 +192,6 @@ class AIPrologParser(PrologParser):
                 if len(response)>0:
                     response += u';'
                 response += unicode(a)
-
-            elif isinstance (a, StringLiteral):
-
-                if self.split_utterances:
-
-                    # split strings into individual words
-                    # generate one say(lang, word) predicate per word
-                    # plus one eoa at the end to mark the end of the utterance
-
-                    # make sure we keep punctuation when tokenizing
-                    # so tts has a better chance at getting prosody right
-
-                    for token in tokenize(a.s, lang=lang, keep_punctuation=True):
-
-                        t = token.strip()
-
-                        if len(t) == 0:
-                            continue
-
-                        if len(response)>0:
-                            response += u';'
-                        response += u'sayz(I, %s, "%s")' % (lang, t)
-
-                    if len(response)>0:
-                        response += u';'
-                    response += u'eoa'
-
-                else:
-                    if len(response)>0:
-                        response += u';'
-                    response += u'sayz(I, %s, "%s")' % (lang, a.s)
-
 
             elif isinstance (a, MacroCall):
 
@@ -286,6 +256,110 @@ class AIPrologParser(PrologParser):
             cnt += 1
 
         logging.debug (u"%fs nlp_gen: %s: %d generating macro expansions generated." % (time()-start_time, clause.location, cnt))
+
+    def nlp_gens(self, db, module_name, clause, user_data):
+
+        """ nlp_gens (+Lang, +Input, +Responses...) """
+
+        args = clause.head.args
+
+        if len(args) < 3:
+            raise PrologError (u'nlp_gens: at least 3 arguments expected: +Lang, +Input, +Responses... (got: %s)' % clause, clause.location)
+
+        lang = args[0].name
+
+        # extract arguments
+
+        nlp_input = args[1].s
+        responses = []
+
+        response_parts = args[2:]
+
+        argc = 0
+
+        while argc < len(response_parts):
+
+            a = response_parts[argc]
+
+            if isinstance (a, StringLiteral):
+
+                if self.split_utterances:
+
+                    # split strings into individual words
+                    # generate one say(lang, word) predicate per word
+                    # plus one eoa at the end to mark the end of the utterance
+
+                    # make sure we keep punctuation when tokenizing
+                    # so tts has a better chance at getting prosody right
+
+                    response = u''
+
+                    for token in tokenize(a.s, lang=lang, keep_punctuation=True):
+
+                        t = token.strip()
+
+                        if len(t) == 0:
+                            continue
+
+                        if len(response)>0:
+                            response += u';'
+                        response += u'sayz(I, %s, "%s")' % (lang, t)
+
+                    responses.append(response)
+
+                else:
+                    responses.append(u'sayz(I, %s, "%s")' % (lang, a.s))
+
+            else:
+                raise PrologError (u'nlp_gens: unexpected response part: %s' % unicode(a), clause.location)
+
+            argc += 1
+
+        # generate all macro-expansions
+
+        cnt = 0
+
+        for response in responses:
+
+            ds = self.macro_engine.macro_expand(lang, nlp_input, response, clause.location)
+
+            for inp, resp in ds:
+
+                if len(inp.strip()) == 0:
+                    raise PrologError ('nlp_gens: empty input generated.', clause.location)
+
+                if self.print_utterances:
+                    logging.info(u'inp: %s' % inp)
+
+                if self.warn_level > 0 :
+                    # in an ideal world, inputs should be unique
+                    dr = self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==inp,  
+                                                                            model.DiscourseRound.lang==lang).first()
+                    if dr:
+                        msg = '%s: input not unique: found same input "%s" in module %s (r: %s vs %s)' % (clause.location, inp, dr.module, resp, dr.resp)
+                        diff = resp != dr.resp
+
+                        if self.warn_level == 1:
+                            if diff:
+                                logging.warning (msg) 
+                        elif self.warn_level == 2:
+                            if diff:
+                                raise PrologError(msg, clause.location)
+                            else:
+                                logging.warning(msg)
+                        else:
+                            raise PrologError(msg, clause.location)
+
+
+                self.discourse_rounds.append(model.DiscourseRound( lang      = lang,
+                                                                   module    = module_name,
+                                                                   inp       = inp, 
+                                                                   resp      = resp,
+                                                                   loc_fn    = clause.location.fn, 
+                                                                   loc_line  = clause.location.line,
+                                                                   loc_col   = clause.location.col
+                                                                   ))
+                cnt += 1
 
     def nlp_test(self, db, module_name, clause, user_data):
 

@@ -5,7 +5,7 @@ DEPENDS    = [ 'base' ]
 
 PL_SOURCES = [
               'greetings.pl',
-              # 'psychology.pl',
+              'psychology.pl',
               # 'cars.pl',
               # 'sex.pl',
               # 'music.pl',

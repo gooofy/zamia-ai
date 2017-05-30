@@ -1,7 +1,7 @@
 % prolog
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL berlin',
+nlp_gens(en, '@SELF_ADDRESS:LABEL berlin',
              'Berlin is a pretty big city...').
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL berlin',
+nlp_gens(de, '@SELF_ADDRESS:LABEL berlin',
              'Berlin ist eine ziemlich grosse Stadt...').
 

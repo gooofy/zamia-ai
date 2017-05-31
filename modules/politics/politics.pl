@@ -1,45 +1,45 @@
 %prolog
 
-answer(topic, en) :-
-    context_score(topic, politics, 100, SCORE), say_eoa(en, 'We were talking about politics.', SCORE).
-answer(topic, de) :-
-    context_score(topic, politics, 100, SCORE), say_eoa(de, 'Politik war unser Thema.', SCORE).
+% answer(topic, en) :-
+%     context_score(topic, politics, 100, SCORE), say_eoa(en, 'We were talking about politics.', SCORE).
+% answer(topic, de) :-
+%     context_score(topic, politics, 100, SCORE), say_eoa(de, 'Politik war unser Thema.', SCORE).
 
 %
 % all politicians we know of
 %
 
-nlp_macro ('KNOWN_POLITICIANS_EN', PERSON, LABEL) :-
+nlp_macro (en, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
          PERSON, wdpd:PositionHeld, wde:PresidentOfTheUnitedStatesOfAmerica,
          filter (lang(LABEL) = 'en')).
-nlp_macro ('KNOWN_POLITICIANS_DE', PERSON, LABEL) :-
+nlp_macro (de, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
          PERSON, wdpd:PositionHeld, wde:PresidentOfTheUnitedStatesOfAmerica,
          filter (lang(LABEL) = 'de')).
-nlp_macro ('KNOWN_POLITICIANS_EN', PERSON, LABEL) :-
+nlp_macro (en, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
          PERSON, wdpd:PositionHeld, wde:PresidentOfGermany,
          filter (lang(LABEL) = 'en')).
-nlp_macro ('KNOWN_POLITICIANS_DE', PERSON, LABEL) :-
+nlp_macro (de, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
          PERSON, wdpd:PositionHeld, wde:PresidentOfGermany,
          filter (lang(LABEL) = 'de')).
-nlp_macro ('KNOWN_POLITICIANS_EN', PERSON, LABEL) :-
+nlp_macro (en, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
          PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
          filter (lang(LABEL) = 'en')).
-nlp_macro ('KNOWN_POLITICIANS_DE', PERSON, LABEL) :-
+nlp_macro (de, 'KNOWN_POLITICIANS', PERSON, LABEL) :-
     rdf (distinct,
          PERSON, wdpd:InstanceOf,   wde:Human,
          PERSON, rdfs:label,        LABEL,
@@ -61,83 +61,64 @@ was_us_president(PERSON) :-
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:PresidentOfTheUnitedStatesOfAmerica).
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
+person_political_status(PERSON, STATUS) :- 
+    was_us_president(PERSON), 
+    not (is_us_president(PERSON)),
+    STATUS is former_us_president.
+person_political_status(PERSON, STATUS) :- 
     is_us_president(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't he the US president right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_us_president(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der ist doch gerade US Präsident!', SCORE).
+    STATUS is current_us_president.
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_us_president(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't she the US president right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_us_president(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die ist doch gerade US Präsidentin!', SCORE).
+l3proc (I, F, fnQuestioning) :-
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_us_president(PERSON), 
-    not (is_us_president(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't he a US president?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_us_president(PERSON), 
-    not (is_us_president(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der war doch mal US Präsident.', SCORE).
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_us_president(PERSON), 
-    not (is_us_president(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't she a US president?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_us_president(PERSON), 
-    not (is_us_president(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die war doch mal US Präsidentin.', SCORE).
+    was_us_president(HUMAN),
+
+    assertz(ias(I, uframe, F)),
+
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:PresidentOfTheUnitedStatesOfAmerica),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
 
 nlp_test(en,
          ivr(in('Computer, do you know Donald Trump?'),
-             out("Isn't he the US president right now?"))).
+             out("yes i know donald trump"))).
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Donald Trump?'),
-             out('der ist doch gerade US Präsident'))).
+             out('ja donald trump ist mir ein begriff'))).
 
 nlp_test(en,
-         ivr(in('Computer, do you happen to know Ronald Reagan?'),
-             out("Wasn't he a US president?"))).
+         ivr(in('Computer, who is Ronald Reagan?'),
+             out("ronald reagan is categorized as president of the united states of america"))).
 nlp_test(de,
-         ivr(in('Computer, kennst du eigentlich Ronald Reagan?'),
-             out('der war doch mal US Präsident.'))).
+         ivr(in('Computer, wer ist Ronald Reagan?'),
+             out('ronald reagan ist in der kategorie präsident der vereinigten staaten'))).
 %
 % german chancellors
 %
@@ -153,97 +134,56 @@ was_german_chancellor(PERSON) :-
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:FederalChancellorOfGermany).
 
-% FIXME: unused
-% nlp_macro ('KNOWN_CHANCELLORS_EN', PERSON, LABEL) :-
-%     rdf (distinct,
-%          PERSON, wdpd:InstanceOf,   wde:Human,
-%          PERSON, rdfs:label,        LABEL,
-%          PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
-%          filter (lang(LABEL) = 'en')).
-% nlp_macro ('KNOWN_CHANCELLORS_DE', PERSON, LABEL) :-
-%     rdf (distinct,
-%          PERSON, wdpd:InstanceOf,   wde:Human,
-%          PERSON, rdfs:label,        LABEL,
-%          PERSON, wdpd:PositionHeld, wde:FederalChancellorOfGermany,
-%          filter (lang(LABEL) = 'de')).
+l3proc (I, F, fnQuestioning) :-
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_chancellor(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't he chancellor in germany right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_chancellor(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der ist doch gerade Bundeskanzler!', SCORE).
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_chancellor(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't she chancellor in germany right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_chancellor(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die ist doch gerade Bundeskanzlerin!', SCORE).
+    was_german_chancellor(HUMAN),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_chancellor(PERSON), 
-    not (is_german_chancellor(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't he a german chancellor?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_chancellor(PERSON), 
-    not (is_german_chancellor(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der war doch mal Bundeskanzler.', SCORE).
+    assertz(ias(I, uframe, F)),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_chancellor(PERSON), 
-    not (is_german_chancellor(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't she a german chancellor?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_chancellor(PERSON), 
-    not (is_german_chancellor(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die war doch mal Bundeskanzlerin.', SCORE).
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:FederalChancellorOfGermany),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
 
 nlp_test(en,
          ivr(in('Computer, do you know Angela Merkel?'),
-             out("Isn't she chancellor in germany right now?"))).
+             out("yes i know angela merkel"))).
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Angela Merkel?'),
-             out('die ist doch gerade bundeskanzlerin'))).
+             out('ja ich kenne angela merkel'))).
 
 nlp_test(en,
-         ivr(in('Computer, do you happen to know Helmut Kohl?'),
-             out("Wasn't he a german chancellor?"))).
+         ivr(in('Computer, who is Helmut Kohl?'),
+             out("helmut kohl is categorized as federal chancellor of germany"))).
 nlp_test(de,
-         ivr(in('Computer, kennst du eigentlich Helmut Kohl?'),
-             out('der war doch mal Bundeskanzler.'))).
+         ivr(in('Computer, wer ist Helmut Kohl?'),
+             out('helmut kohl ist in der kategorie bundeskanzler'))).
 
 %
 % german presidents
@@ -260,192 +200,320 @@ was_german_president(PERSON) :-
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
         OFFICE_STMT, wdps:PositionHeld, wde:PresidentOfGermany).
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_president(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't he the german president right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_president(PERSON),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der ist doch gerade Bundespräsident!', SCORE).
+l3proc (I, F, fnQuestioning) :-
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_president(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Isn't she the german president right now?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    is_german_president(PERSON),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die ist doch gerade Bundespräsidentin!', SCORE).
+    frame (F, top,      general_info),
+    frame (F, ent,      HUMAN),
+    frame (F, entclass, human),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_president(PERSON), 
-    not (is_german_president(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't he a german president?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_president(PERSON), 
-    not (is_german_president(PERSON)),
-    is_male(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Der war doch mal Bundespräsident.', SCORE).
+    was_german_president(HUMAN),
 
-answer (knownPerson, en, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_president(PERSON), 
-    not (is_german_president(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(en, "Wasn't she a german president?", SCORE).
-answer (knownPerson, de, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    was_german_president(PERSON), 
-    not (is_german_president(PERSON)),
-    is_female(PERSON),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    say_eoa(de, 'Die war doch mal Bundespräsidentin.', SCORE).
+    assertz(ias(I, uframe, F)),
+
+    % produce response frame graph (here: tell user about person's status)
+    
+    CAT is uriref (wde:PresidentOfGermany),
+
+    list_append(VMC, fe(cat,   CAT)),
+    list_append(VMC, fe(item,  HUMAN)),
+    list_append(VMC, frame(fnCategorization)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   category)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    % generate response actions
+    
+    l4proc (I).
 
 nlp_test(en,
          ivr(in('Computer, do you know Frank-Walter Steinmeier?'),
-             out("Isn't he the german president right now?"))).
+             out("yes i know frank walter steinmeier"))).
 nlp_test(de,
          ivr(in('Computer, kennst du eigentlich Frank-Walter Steinmeier?'),
-             out('der ist doch gerade Bundespräsident'))).
+             out('ja ich kenne frank walter steinmeier'))).
 
 nlp_test(en,
-         ivr(in('Computer, do you happen to know Joachim Gauck?'),
-             out("Wasn't he a german president?"))).
+         ivr(in('Computer, who is Joachim Gauck?'),
+             out("joachim gauck is categorized as president of germany"))).
 nlp_test(de,
-         ivr(in('Computer, kennst du eigentlich Joachim Gauck?'),
-             out('der war doch mal Bundespräsident.'))).
+         ivr(in('Computer, wer ist Joachim Gauck?'),
+             out('joachim gauck ist in der kategorie bundespräsident'))).
+
 %
 % successors / predecessors in office
 %
 
-say_answer(en, LABEL, wdpq:Replaces, PREDECESSOR, PLABEL, SCORE) :- 
-    say_eoa(en, format_str('The predecessor of %s was %s.', LABEL, PLABEL), SCORE).
-say_answer(de, LABEL, wdpq:Replaces, PREDECESSOR, PLABEL, SCORE) :- 
-    is_male(PREDECESSOR),
-    say_eoa(de, format_str('Vorgänger von %s war %s.', LABEL, PLABEL), SCORE).
-say_answer(de, LABEL, wdpq:Replaces, PREDECESSOR, PLABEL, SCORE) :- 
-    is_female(PREDECESSOR),
-    say_eoa(de, format_str('Vorgängerin von %s war %s.', LABEL, PLABEL), SCORE).
+answerz (I, en, politicalPredecessor, P_LABEL, S_LABEL, R_LABEL) :- sayz(I, en, format_str("Predecessor of %s in the role %s was %s", S_LABEL, R_LABEL, P_LABEL)).
+answerz (I, de, politicalPredecessor, P_LABEL, S_LABEL, R_LABEL) :- sayz(I, de, format_str("Vorgänger von %s in der Rolle %s war %s", S_LABEL, R_LABEL, P_LABEL)).
 
-say_answer(en, LABEL, wdpq:ReplacedBy, SUCCESSOR, PLABEL, SCORE) :- 
-    say_eoa(en, format_str('The successor of %s is %s.', LABEL, PLABEL), SCORE).
-say_answer(de, LABEL, wdpq:ReplacedBy, SUCCESSOR, PLABEL, SCORE) :- 
-    is_male(SUCCESSOR),
-    say_eoa(de, format_str('Nachfolger von %s ist %s.', LABEL, PLABEL), SCORE).
-say_answer(de, LABEL, wdpq:ReplacedBy, SUCCESSOR, PLABEL, SCORE) :- 
-    is_female(SUCCESSOR),
-    say_eoa(de, format_str('Nachfolgerin von %s ist %s.', LABEL, PLABEL), SCORE).
+l4proc (I, F, fnTelling, ldr_o, MSGF, fnChangeOfLeadership) :-
 
-answer (politicianPredSucc, LANG, POSITION, RELATION, PERSON, LABEL, SCORE) :-
-    context_score (topic, politics, 100, SCORE),
-    atom_chars(LANG, LSTR),
+    frame (MSGF, ldr_o, PREDECESSOR),
+    frame (MSGF, ldr_n, SUCCESSOR),
+    frame (MSGF, role,  ROLE),    
+
+    ias (I, uttLang, LANG),
+
+    % entity_gender(HUMAN, GENDER),
+
+    entity_label(LANG, PREDECESSOR, P_LABEL),
+    entity_label(LANG, SUCCESSOR,   S_LABEL),
+    entity_label(LANG, ROLE,        R_LABEL),
+
+    answerz (I, LANG, politicalPredecessor, P_LABEL, S_LABEL, R_LABEL).
+
+political_predecessor (I, ROLE, PERSON, PREDECESSOR) :- 
+    ROLE is uriref (wde:PresidentOfTheUnitedStatesOfAmerica),
     rdf(limit(1),
         PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
-        OFFICE_STMT, wdps:PositionHeld, POSITION,
-        OFFICE_STMT, RELATION,          PREDSUCC,
-        PREDSUCC,    rdfs:label,        PLABEL,
-        filter (lang(PLABEL) = LSTR, PERSON \= PREDSUCC)),
-    context_push(topic, politics),
-    context_push(topic, PERSON),
-    context_push(topic, PREDSUCC),
-    say_answer(LANG, LABEL, RELATION, PREDSUCC, PLABEL, SCORE).
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:Replaces,     PREDECESSOR,
+        filter (PERSON \= PREDECESSOR)),
+    scorez (I, 100).
 
-answer (politicianPredecessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:PresidentOfTheUnitedStatesOfAmerica, wdpq:Replaces, PERSON, LABEL, SCORE).
-answer (politicianPredecessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:PresidentOfGermany, wdpq:Replaces, PERSON, LABEL, SCORE).
-answer (politicianPredecessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:FederalChancellorOfGermany, wdpq:Replaces, PERSON, LABEL, SCORE).
+political_predecessor (I, ROLE, PERSON, PREDECESSOR) :- 
+    ROLE is uriref (wde:FederalChancellorOfGermany),
+    rdf(limit(1),
+        PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:Replaces,     PREDECESSOR,
+        filter (PERSON \= PREDECESSOR)),
+    scorez (I, 100).
 
-answer (politicianSuccessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:PresidentOfTheUnitedStatesOfAmerica, wdpq:ReplacedBy, PERSON, LABEL, SCORE).
-answer (politicianSuccessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:PresidentOfGermany, wdpq:ReplacedBy, PERSON, LABEL, SCORE).
-answer (politicianSuccessor, LANG, PERSON, LABEL, SCORE) :-
-    answer (politicianPredSucc, LANG, wde:FederalChancellorOfGermany, wdpq:ReplacedBy, PERSON, LABEL, SCORE).
+political_predecessor (I, ROLE, PERSON, PREDECESSOR) :- 
+    ROLE is uriref (wde:PresidentOfGermany),
+    rdf(limit(1),
+        PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:Replaces,     PREDECESSOR,
+        filter (PERSON \= PREDECESSOR)),
+    scorez (I, 100).
 
-answer (politicianPredecessorTokens, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, LABEL, SCORE),
-    answer(politicianPredecessor, en, PERSON, LABEL, SCORE).
-answer (politicianPredecessorTokens, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, LABEL, SCORE),
-    answer(politicianPredecessor, de, PERSON, LABEL, SCORE).
+l3proc (I, F, fnQuestioning, MSGF, fnChangeOfLeadership) :-
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (is|was|happened to be) the predecessor of @KNOWN_POLITICIANS_EN:LABEL (by the way|) ?',
-             answer(politicianPredecessorTokens, en, @KNOWN_POLITICIANS_EN:TSTART_LABEL_0, @KNOWN_POLITICIANS_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer (ist|war) (eigentlich|) (die vorgängerin|der vorgänger) von @KNOWN_POLITICIANS_DE:LABEL ?',
-             answer(politicianPredecessorTokens, de, @KNOWN_POLITICIANS_DE:TSTART_LABEL_0, @KNOWN_POLITICIANS_DE:TEND_LABEL_0)). 
+    log (debug, 'l3proc: fnTelling (ldr_o) -> fnChangeOfLeadership'),
+
+    frame (F,    top,      ldr_o),
+    frame (MSGF, ldr_n,    SUCCESSOR),
+
+    ignore (frame(MSGF, role, ROLE)),
+
+    assertz(ias(I, uframe, F)),
+
+    political_predecessor (I, ROLE, SUCCESSOR, PREDECESSOR),
+
+    % produce response frame graph (here: tell user about person's predecessor)
+    
+    list_append(VMC, fe(ldr_n, SUCCESSOR)),
+    list_append(VMC, fe(ldr_o, PREDECESSOR)),
+    list_append(VMC, fe(role,  ROLE)),
+    list_append(VMC, frame(fnChangeOfLeadership)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   ldr_o)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    log (debug, 'l3proc: fnTelling (ldr_o) -> fnChangeOfLeadership ldr_n =', PREDECESSOR, ', role = ', ROLE),
+
+    % generate response actions
+    
+    l4proc (I).
+
+
+l2proc_politicianPredecessorTokens(LANG) :-
+
+    ner(LANG, I, human, @KNOWN_POLITICIANS:TSTART_LABEL_0, @KNOWN_POLITICIANS:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ldr_n, NER1ENTITY)),
+    list_append(VMC, frame(fnChangeOfLeadership)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  ldr_o)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    log (debug, 'l2proc: fnQuestioning (ldr_o) -> fnChangeOfLeadership ldr_n =', NER1ENTITY),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '@SELF_ADDRESS:LABEL who (is|was|happened to be) the predecessor of @KNOWN_POLITICIANS:LABEL (by the way|) ?',
+         inline(l2proc_politicianPredecessorTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wer (ist|war) (eigentlich|) (die vorgängerin|der vorgänger) von @KNOWN_POLITICIANS:LABEL ?',
+         inline(l2proc_politicianPredecessorTokens, en)).
 
 nlp_test(en,
          ivr(in('who happened to be the predecessor of Ronald Reagan?'),
-             out('The predecessor of Ronald Reagan was Jimmy Carter.'))).
+             out('predecessor of ronald reagan in the role president of the united states of america was jimmy carter'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der vorgänger von Ronald Reagan?'),
-             out('Vorgänger von Ronald Reagan war Jimmy Carter.'))).
+             out('vorgänger von ronald reagan in der rolle präsident der vereinigten staaten war jimmy carter'))).
 nlp_test(en,
          ivr(in('who happened to be the predecessor of Helmut Kohl?'),
-             out('The predecessor of Helmut Kohl was Helmut Schmidt.'))).
+             out('predecessor of helmut kohl in the role federal chancellor of germany was helmut schmidt'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der vorgänger von Helmut Kohl?'),
-             out('Vorgänger von Helmut Kohl war Helmut Schmidt.'))).
+             out('vorgänger von helmut kohl in der rolle bundeskanzler war helmut schmidt'))).
 nlp_test(en,
          ivr(in('who happened to be the predecessor of Richard von Weizsäcker?'),
-             out('The predecessor of Richard von Weizsäcker was Karl Carstens.'))).
+             out('predecessor of richard von weizsäcker in the role president of germany was karl carstens'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der vorgänger von Richard von Weizsäcker?'),
-             out('Vorgänger von Richard von Weizsäcker war Karl Carstens.'))).
+             out('vorgänger von richard von weizsäcker in der rolle bundespräsident war karl carstens'))).
 
-answer (politicianSuccessorTokens, en, TSTART, TEND) :-
-    ner(en, person, TSTART, TEND, PERSON, LABEL, SCORE),
-    answer(politicianSuccessor, en, PERSON, LABEL, SCORE).
-answer (politicianSuccessorTokens, de, TSTART, TEND) :-
-    ner(de, person, TSTART, TEND, PERSON, LABEL, SCORE),
-    answer(politicianSuccessor, de, PERSON, LABEL, SCORE).
+answerz (I, en, politicalSuccessor, P_LABEL, S_LABEL, R_LABEL) :- sayz(I, en, format_str("Successor of %s in the role %s was %s", P_LABEL, R_LABEL, S_LABEL)).
+answerz (I, de, politicalSuccessor, P_LABEL, S_LABEL, R_LABEL) :- sayz(I, de, format_str("Nachfolger von %s in der Rolle %s war %s", P_LABEL, R_LABEL, S_LABEL)).
 
-nlp_gen (en, '@SELF_ADDRESS_EN:LABEL who (is|was|happened to be) the successor of @KNOWN_POLITICIANS_EN:LABEL (by the way|) ?',
-             answer(politicianSuccessorTokens, en, @KNOWN_POLITICIANS_EN:TSTART_LABEL_0, @KNOWN_POLITICIANS_EN:TEND_LABEL_0)). 
-nlp_gen (de, '@SELF_ADDRESS_DE:LABEL wer (ist|war) (eigentlich|) (die nachfolgerin|der nachfolger) von @KNOWN_POLITICIANS_DE:LABEL ?',
-             answer(politicianSuccessorTokens, de, @KNOWN_POLITICIANS_DE:TSTART_LABEL_0, @KNOWN_POLITICIANS_DE:TEND_LABEL_0)). 
+l4proc (I, F, fnTelling, ldr_n, MSGF, fnChangeOfLeadership) :-
+
+    frame (MSGF, ldr_o, PREDECESSOR),
+    frame (MSGF, ldr_n, SUCCESSOR),
+    frame (MSGF, role,  ROLE),    
+
+    ias (I, uttLang, LANG),
+
+    % entity_gender(HUMAN, GENDER),
+
+    entity_label(LANG, PREDECESSOR, P_LABEL),
+    entity_label(LANG, SUCCESSOR,   S_LABEL),
+    entity_label(LANG, ROLE,        R_LABEL),
+
+    answerz (I, LANG, politicalSuccessor, P_LABEL, S_LABEL, R_LABEL).
+
+political_successor (I, ROLE, PERSON, SUCCESSOR) :- 
+    ROLE is uriref (wde:PresidentOfTheUnitedStatesOfAmerica),
+    rdf(limit(1),
+        PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:ReplacedBy,   SUCCESSOR,
+        filter (PERSON \= SUCCESSOR)),
+    scorez (I, 100).
+
+political_successor (I, ROLE, PERSON, SUCCESSOR) :- 
+    ROLE is uriref (wde:FederalChancellorOfGermany),
+    rdf(limit(1),
+        PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:ReplacedBy,   SUCCESSOR,
+        filter (PERSON \= SUCCESSOR)),
+    scorez (I, 100).
+
+political_successor (I, ROLE, PERSON, SUCCESSOR) :- 
+    ROLE is uriref (wde:PresidentOfGermany),
+    rdf(limit(1),
+        PERSON,      wdp:PositionHeld,  OFFICE_STMT,  
+        OFFICE_STMT, wdps:PositionHeld, ROLE,
+        OFFICE_STMT, wdpq:ReplacedBy,   SUCCESSOR,
+        filter (PERSON \= SUCCESSOR)),
+    scorez (I, 100).
+
+l3proc (I, F, fnQuestioning, MSGF, fnChangeOfLeadership) :-
+
+    log (debug, 'l3proc: fnTelling (ldr_n) -> fnChangeOfLeadership'),
+
+    frame (F,    top,      ldr_n),
+    frame (MSGF, ldr_o,    PREDECESSOR),
+
+    ignore (frame(MSGF, role, ROLE)),
+
+    assertz(ias(I, uframe, F)),
+
+    political_successor (I, ROLE, PREDECESSOR, SUCCESSOR),
+
+    % produce response frame graph (here: tell user about person's successor)
+    
+    list_append(VMC, fe(ldr_n, SUCCESSOR)),
+    list_append(VMC, fe(ldr_o, PREDECESSOR)),
+    list_append(VMC, fe(role,  ROLE)),
+    list_append(VMC, frame(fnChangeOfLeadership)),
+
+    list_append(VMC, fe(msg,   vm_frame_pop)),
+    list_append(VMC, fe(top,   ldr_n)),
+    frame (F, spkr, USER),
+    list_append(VMC, fe(add,   USER)),
+    list_append(VMC, fe(spkr,  uriref(aiu:self))),
+    list_append(VMC, frame(fnTelling)),
+
+    fnvm_graph(VMC, RFRAME),
+
+    scorez(I, 150),
+
+    % remember response frame
+
+    assertz(ias(I, rframe, RFRAME)),
+
+    log (debug, 'l3proc: fnTelling (ldr_n) -> fnChangeOfLeadership ldr_o =', PREDECESSOR, ', role = ', ROLE),
+
+    % generate response actions
+    
+    l4proc (I).
+
+
+l2proc_politicianSuccessorTokens(LANG) :-
+
+    ner(LANG, I, human, @KNOWN_POLITICIANS:TSTART_LABEL_0, @KNOWN_POLITICIANS:TEND_LABEL_0, NER1ENTITY),
+
+    list_append(VMC, fe(ldr_o, NER1ENTITY)),
+    list_append(VMC, frame(fnChangeOfLeadership)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(top,  ldr_n)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    ias(I, user, USER),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    log (debug, 'l2proc: fnQuestioning (ldr_o) -> fnChangeOfLeadership ldr_n =', NER1ENTITY),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen (en, '@SELF_ADDRESS:LABEL who (is|was|happened to be) the successor of @KNOWN_POLITICIANS:LABEL (by the way|) ?',
+         inline(l2proc_politicianSuccessorTokens, en)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wer (ist|war) (eigentlich|) (die nachfolgerin|der nachfolger) von @KNOWN_POLITICIANS:LABEL ?',
+         inline(l2proc_politicianSuccessorTokens, de)).
 
 nlp_test(en,
          ivr(in('who happened to be the successor of Ronald Reagan?'),
-             out('The successor of Ronald Reagan is george h w bush.'))).
+             out('successor of ronald reagan in the role president of the united states of america was george h w bush'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der nachfolger von Ronald Reagan?'),
-             out('Nachfolger von Ronald Reagan ist george h w bush.'))).
+             out('nachfolger von ronald reagan in der rolle präsident der vereinigten staaten war george h w bush'))).
 nlp_test(en,
          ivr(in('who happened to be the successor of Helmut Kohl?'),
-             out('The successor of Helmut Kohl is Gerhard Schröder.'))).
+             out('successor of helmut kohl in the role federal chancellor of germany was gerhard schröder'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der nachfolger von Helmut Kohl?'),
-             out('Nachfolger von Helmut Kohl ist Gerhard Schröder.'))).
+             out('nachfolger von helmut kohl in der rolle bundeskanzler war gerhard schröder'))).
 nlp_test(en,
          ivr(in('who happened to be the successor of Richard von Weizsäcker?'),
-             out('The successor of Richard von Weizsäcker is roman herzog.'))).
+             out('successor of richard von weizsäcker in the role president of germany was roman herzog'))).
 nlp_test(de,
          ivr(in('wer war eigentlich der nachfolger von Richard von Weizsäcker?'),
-             out('Nachfolger von Richard von Weizsäcker ist roman herzog.'))).
+             out('nachfolger von richard von weizsäcker in der rolle bundespräsident war roman herzog.'))).
+
+% FIXME: context-based follow-up style questions
 

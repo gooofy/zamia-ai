@@ -1,6 +1,19 @@
 % prolog
 
 %
+% map telling with known msg frame to 2-layer l3proc search
+%
+
+l3proc (I, F, fnTelling) :-
+
+    % look for message frame + type, run l3proc on it
+
+    frame(F, msg, MSGF),
+    frame(MSGF, type, MSGFT),
+
+    l3proc (I, F, fnTelling, MSGF, MSGFT).
+
+%
 % tell user we don't know
 %
 

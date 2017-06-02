@@ -251,15 +251,6 @@ nlp_test(de,
          ivr(in('wie war mein name?'),
              out("Dein Name ist Adrian."))).
 
-% answer(nameAsked, en) :-
-%     myself_get (en, myname, MYNAME),
-%     say_eoa(en, format_str("I am called %s", MYNAME)),
-%     say_eoa(en, format_str("My name is %s", MYNAME)).
-% answer(nameAsked, de) :-
-%     myself_get (de, myname, MYNAME),
-%     say_eoa(de, format_str("Ich heisse %s", MYNAME)),
-%     say_eoa(de, format_str("Mein Name ist %s", MYNAME)).
-
 answerz (I, en, myNameIs, MYNAME) :- sayz(I, en, format_str("I am called %s", MYNAME)).
 answerz (I, en, myNameIs, MYNAME) :- sayz(I, en, format_str("My name is %s", MYNAME)).
 answerz (I, de, myNameIs, MYNAME) :- sayz(I, de, format_str("Ich heisse %s", MYNAME)).
@@ -311,74 +302,69 @@ nlp_test(de,
          ivr(in('wie heisst du eigentlich'),
              out('Mein Name ist HAL 9000'))).
 
-% %
-% % robot / ai ?
-% %
-% 
-% answer (yes_i_am_a_computer, en) :-
-%     context_push(topic, computers), say_eoa(en, "Yes, I am a Computer. Are you knowledgeable about Computers?"),
-%     context_push(topic, computers), say_eoa(en, "True, I am a Computer, right. Do you know about Computers?"),
-%     context_push(topic, computers), say_eoa(en, "Right, I am a Computer. What do you know about Computers?"),
-%     context_push(topic, computers), say_eoa(en, "Right, I am a Machine. I hope you don't mind that?").
-% answer (yes_i_am_a_computer, de) :-
-%     context_push(topic, computers), say_eoa(de, "Ja, ich bin ein Computer. Hast Du Computer-Kenntnisse?"),
-%     context_push(topic, computers), say_eoa(de, "Ja, ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?"),
-%     context_push(topic, computers), say_eoa(de, "Richtig, ich bin ein Computer. Was weißt Du über Computer?"),
-%     context_push(topic, computers), say_eoa(de, "Richtig, ich bin eine Maschine. Ich hoffe, das stört Dich nicht?").
-% 
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a robot'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of robot'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a computer'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of computer'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a cyber machine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of cyber machine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a thinking machine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of thinking machine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'an electronic brain'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of electronic brain'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'a program'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_EN', W) :- W is 'some sort of program'.
-% 
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'ein Roboter'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Roboter'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'eine Maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'eine Kybernetik'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Kybernetik'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'eine kybernetische Maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art kybernetische Maschine'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'ein Computer'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Computer'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'ein Rechner'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Rechner'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'ein Elektronengehirn'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Elektronengehirn'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'ein Programm'.
-% nlp_macro('A_COMPUTER_MACHINE_ROBOT_DE', W) :- W is 'so eine Art Programm'.
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL I (believe|think|suspect|guess|sense) you are @A_COMPUTER_MACHINE_ROBOT_EN:W (maybe|by the way|in the end|perhaps|)',
-%          answer(yes_i_am_a_computer, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL ich (glaube|denke|vermute|ahne) du bist (vielleicht|eigentlich|am Ende|möglicherweise|) @A_COMPUTER_MACHINE_ROBOT_DE:W',
-%          answer(yes_i_am_a_computer, de)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you @A_COMPUTER_MACHINE_ROBOT_EN:W (maybe|by the way|in the end|perhaps|) ?',
-%          answer(yes_i_am_a_computer, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) @A_COMPUTER_MACHINE_ROBOT_DE:W?',
-%          answer(yes_i_am_a_computer, de)).
-% 
-% nlp_test(en,
-%          ivr(in('I believe you are a computer!'),
-%              out('True, I am a Computer, right. Do you know about Computers?')),
-%          ivr(in('what was our topic, again?'),
-%              out("We were talking about computers and machines."))).
-% nlp_test(de,
-%          ivr(in('Ich glaube Du bist ein Computer!'),
-%              out('Ja, ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?')),
-%          ivr(in('Worüber hatten wir gesprochen?'),
-%              out("Wir hatten das Thema Computer und Maschinen."))).
-% 
+%
+% robot / ai ?
+%
+
+answerz (I, en, yes_i_am_a_computer) :- sayz(I, en, "Yes, I am a Computer. Are you knowledgeable about Computers?").
+answerz (I, en, yes_i_am_a_computer) :- sayz(I, en, "True, I am a Computer, right. Do you know about Computers?").
+answerz (I, en, yes_i_am_a_computer) :- sayz(I, en, "Right, I am a Computer. What do you know about Computers?").
+answerz (I, en, yes_i_am_a_computer) :- sayz(I, en, "Right, I am a Machine. I hope you don't mind that?").
+
+answerz (I, de, yes_i_am_a_computer) :- sayz(I, de, "Ja, ich bin ein Computer. Hast Du Computer-Kenntnisse?").
+answerz (I, de, yes_i_am_a_computer) :- sayz(I, de, "Ja, ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?").
+answerz (I, de, yes_i_am_a_computer) :- sayz(I, de, "Richtig, ich bin ein Computer. Was weißt Du über Computer?").
+answerz (I, de, yes_i_am_a_computer) :- sayz(I, de, "Richtig, ich bin eine Maschine. Ich hoffe, das stört Dich nicht?").
+
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a robot'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of robot'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a maschine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of maschine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a computer'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of computer'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a cyber machine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of cyber machine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a thinking machine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of thinking machine'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'an electronic brain'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of electronic brain'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'a program'.
+nlp_macro(en, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'some sort of program'.
+
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'ein Roboter'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Roboter'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'eine Maschine'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Maschine'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'eine Kybernetik'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Kybernetik'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'eine kybernetische Maschine'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art kybernetische Maschine'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'ein Computer'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Computer'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'ein Rechner'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Rechner'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'ein Elektronengehirn'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Elektronengehirn'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'ein Programm'.
+nlp_macro(de, 'A_COMPUTER_MACHINE_ROBOT', W) :- W is 'so eine Art Programm'.
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL I (believe|think|suspect|guess|sense) you are @A_COMPUTER_MACHINE_ROBOT:W (maybe|by the way|in the end|perhaps|)',
+         answerz (I, en, yes_i_am_a_computer)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL ich (glaube|denke|vermute|ahne) du bist (vielleicht|eigentlich|am Ende|möglicherweise|) @A_COMPUTER_MACHINE_ROBOT:W',
+         answerz (I, de, yes_i_am_a_computer)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL are you @A_COMPUTER_MACHINE_ROBOT:W (maybe|by the way|in the end|perhaps|) ?',
+         answerz (I, en, yes_i_am_a_computer)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) @A_COMPUTER_MACHINE_ROBOT:W?',
+         answerz (I, de, yes_i_am_a_computer)).
+
+nlp_test(en,
+         ivr(in('I believe you are a computer!'),
+             out('True, I am a Computer, right. Do you know about Computers?'))).
+nlp_test(de,
+         ivr(in('Ich glaube Du bist ein Computer!'),
+             out('Ja, ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?'))).
+
 % answer (yes_i_am_an_ai, en) :-
 %     context_push(topic, artificial_intelligence), say_eoa(en, "Right, I am an artificial intelligence. Hope you don't mind that?"),
 %     context_push(topic, artificial_intelligence), say_eoa(en, "Yes, I am an intelligent Computer. Are you afraid of machines?"),

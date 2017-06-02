@@ -365,57 +365,52 @@ nlp_test(de,
          ivr(in('Ich glaube Du bist ein Computer!'),
              out('Ja, ich bin ein Rechner, richtig. Kennst Du Dich mit Rechner aus?'))).
 
-% answer (yes_i_am_an_ai, en) :-
-%     context_push(topic, artificial_intelligence), say_eoa(en, "Right, I am an artificial intelligence. Hope you don't mind that?"),
-%     context_push(topic, artificial_intelligence), say_eoa(en, "Yes, I am an intelligent Computer. Are you afraid of machines?"),
-%     context_push(topic, artificial_intelligence), say_eoa(en, "True, I am an intelligent chat bot. Don't you believe that computers can help humans?").
-% answer (yes_i_am_an_ai, de) :-
-%     context_push(topic, artificial_intelligence), say_eoa(de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?"),
-%     context_push(topic, artificial_intelligence), say_eoa(de, "Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?"),
-%     context_push(topic, artificial_intelligence), say_eoa(de, "Stimmt, ich bin ein intelligenter Chatbot. Glaubst Du nicht, dass Computer den Menschen helfen können?").
-% 
-% nlp_macro('A_AI_EN', W) :- W is 'an artificial intelligence'.
-% nlp_macro('A_AI_EN', W) :- W is 'an Eliza'.
-% nlp_macro('A_AI_EN', W) :- W is 'a search engine'.
-% nlp_macro('A_AI_EN', W) :- W is 'a chat bot'.
-% nlp_macro('A_AI_EN', W) :- W is 'a bot'.
-% nlp_macro('A_AI_EN', W) :- W is 'a cyber'.
-% nlp_macro('A_AI_EN', W) :- W is 'a cyber bot'.
-% nlp_macro('A_AI_EN', W) :- W is 'an intelligent bot'.
-% nlp_macro('A_AI_EN', W) :- W is 'an intelligent chat bot'.
-% 
-% nlp_macro('A_AI_DE', W) :- W is 'eine künstliche Intelligenz'.
-% nlp_macro('A_AI_DE', W) :- W is 'eine Eliza'.
-% nlp_macro('A_AI_DE', W) :- W is 'eine Suchmaschine'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein Chatbot'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein Bot'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein Cyber'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein Cyber Bot'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein intelligenter Bot'.
-% nlp_macro('A_AI_DE', W) :- W is 'ein intelligenter Chatbot'.
-% 
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL I (believe|think|suspect|guess) you are @A_AI_EN:W (maybe|perhaps|by the way|in the end|)',
-%             answer(yes_i_am_an_ai, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL ich (glaube|denke|vermute|ahne) du bist (vielleicht|eigentlich|am Ende|möglicherweise|) @A_AI_DE:W',
-%             answer(yes_i_am_an_ai, de)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you @A_AI_EN:W? (maybe|perhaps|by the way|in the end|)',
-%             answer(yes_i_am_an_ai, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) @A_AI_DE:W?',
-%             answer(yes_i_am_an_ai, de)).
-% 
-% nlp_test(en,
-%          ivr(in('I suspect you are a chat bot maybe?'),
-%              out("Right, I am an artificial intelligence. Hope you don't mind that?")),
-%          ivr(in('what was our topic, again?'),
-%              out("We were talking about artificial intelligence."))).
-% nlp_test(de,
-%          ivr(in('Ich glaube Du bist ein intelligenter Chatbot!'),
-%              out('Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?')),
-%          ivr(in('Worüber hatten wir gesprochen?'),
-%              out("Wir hatten über künstliche Intelligenz gesprochen."))).
-% 
+answerz (I, en, yes_i_am_an_ai) :- sayz(I, en, "Right, I am an artificial intelligence. Hope you don't mind that?").
+answerz (I, en, yes_i_am_an_ai) :- sayz(I, en, "Yes, I am an intelligent Computer. Are you afraid of machines?").
+answerz (I, en, yes_i_am_an_ai) :- sayz(I, en, "True, I am an intelligent chat bot. Don't you believe that computers can help humans?").
+
+answerz (I, de, yes_i_am_an_ai) :- sayz(I, de, "Richtig, ich bin eine künstliche Intelligenz. Ich hoffe, das stört Dich nicht?").
+answerz (I, de, yes_i_am_an_ai) :- sayz(I, de, "Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?").
+answerz (I, de, yes_i_am_an_ai) :- sayz(I, de, "Stimmt, ich bin ein intelligenter Chatbot. Glaubst Du nicht, dass Computer den Menschen helfen können?").
+ 
+nlp_macro(en, 'A_AI', W) :- W is 'an artificial intelligence'.
+nlp_macro(en, 'A_AI', W) :- W is 'an Eliza'.
+nlp_macro(en, 'A_AI', W) :- W is 'a search engine'.
+nlp_macro(en, 'A_AI', W) :- W is 'a chat bot'.
+nlp_macro(en, 'A_AI', W) :- W is 'a bot'.
+nlp_macro(en, 'A_AI', W) :- W is 'a cyber'.
+nlp_macro(en, 'A_AI', W) :- W is 'a cyber bot'.
+nlp_macro(en, 'A_AI', W) :- W is 'an intelligent bot'.
+nlp_macro(en, 'A_AI', W) :- W is 'an intelligent chat bot'.
+
+nlp_macro(de, 'A_AI', W) :- W is 'eine künstliche Intelligenz'.
+nlp_macro(de, 'A_AI', W) :- W is 'eine Eliza'.
+nlp_macro(de, 'A_AI', W) :- W is 'eine Suchmaschine'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein Chatbot'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein Bot'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein Cyber'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein Cyber Bot'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein intelligenter Bot'.
+nlp_macro(de, 'A_AI', W) :- W is 'ein intelligenter Chatbot'.
+
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL I (believe|think|suspect|guess) you are @A_AI:W (maybe|perhaps|by the way|in the end|)',
+         answerz (I, en, yes_i_am_an_ai)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL ich (glaube|denke|vermute|ahne) du bist (vielleicht|eigentlich|am Ende|möglicherweise|) @A_AI:W',
+         answerz (I, de, yes_i_am_an_ai)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL are you @A_AI:W? (maybe|perhaps|by the way|in the end|)',
+         answerz (I, en, yes_i_am_an_ai)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) @A_AI:W?',
+         answerz (I, de, yes_i_am_an_ai)).
+
+nlp_test(en,
+         ivr(in('I suspect you are a chat bot maybe?'),
+             out("Right, I am an artificial intelligence. Hope you don't mind that?"))).
+nlp_test(de,
+         ivr(in('Ich glaube Du bist ein intelligenter Chatbot!'),
+             out('Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?'))).
+
 % nlp_gen (en, '@SELF_ADDRESS:LABEL are you a human being (maybe|perhaps|by the way|in the end|)?',
 %              context_push(topic, artificial_intelligence), say_eoa(en, 'No, I am an artificial intelligence.')).
 % nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) ein Mensch',

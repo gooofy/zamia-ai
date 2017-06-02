@@ -13,6 +13,9 @@ myself_get (en, myname, NAME) :-
 myself_get (de, myname, NAME) :-
     rdf(limit(1), aiu:self, rdfs:label, NAME, filter(lang(NAME) = 'de')).
 
+name ('http://ai.zamia.org/kb/user/self', NAME_STR) :-
+    myself_get(en, myname, NAME_STR).
+
 % ich heise <name>
 % FIMXE: those names could and should come from wikidata, probably at some point.
 %        for now, we're using the top-1000 male/female german names from wiktionary
@@ -71,7 +74,7 @@ nlp_macro(de, 'FIRSTNAME', NAME, LABEL) :-
      
 answerz (I, en, niceToMeetYou, MYNAME) :- sayz(I, en, format_str("Nice to meet you, my name is %s", MYNAME)).
 answerz (I, en, niceToMeetYou, MYNAME) :- sayz(I, en, format_str("Cool, my name is %s", MYNAME)).
-answerz (I, de, niceToMeetYou, MYNAME) :- sayz(I, de, format_str("Freut mich, ich heisse übrigens%s", MYNAME)).
+answerz (I, de, niceToMeetYou, MYNAME) :- sayz(I, de, format_str("Freut mich, ich heisse übrigens %s", MYNAME)).
 answerz (I, de, niceToMeetYou, MYNAME) :- sayz(I, de, format_str("Cool, mein Name ist %s", MYNAME)).
 
 l4proc (I, F, fnTelling, all, MSGF, fnEmotionDirected) :-
@@ -224,7 +227,7 @@ l2proc_partnerNameAsked :-
     list_append(VMC, fe(spkr, USER)),
     list_append(VMC, frame(fnQuestioning)),
     
-    log (debug, 'l2proc: fnTelling -> fnBeingNamed ent=self'),
+    log (debug, 'l2proc: fnTelling -> fnBeingNamed ent =', USER),
 
     fnvm_exec (I, VMC).
    
@@ -256,24 +259,58 @@ nlp_test(de,
 %     myself_get (de, myname, MYNAME),
 %     say_eoa(de, format_str("Ich heisse %s", MYNAME)),
 %     say_eoa(de, format_str("Mein Name ist %s", MYNAME)).
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL What (was|is) your (true|actual|) name (by the way|again|)?',
-%             answer(nameAsked, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL Wie heisst Du (wirklich|eigentlich|tatsächlich|) ?',
-%             answer(nameAsked, de)).
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL what are you called (by the way|again|)?',
-%             answer(nameAsked, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL Wie (ist|ist eigentlich|war|war nochmal) Dein Name (eigentlich|nochmal|) ?',
-%             answer(nameAsked, de)).
-% 
-% nlp_test(en,
-%          ivr(in('what was your name again?'),
-%              out('My name is HAL 9000'))).
-% nlp_test(de,
-%          ivr(in('wie heisst du eigentlich'),
-%              out('Mein Name ist HAL 9000'))).
-% 
+
+answerz (I, en, myNameIs, MYNAME) :- sayz(I, en, format_str("I am called %s", MYNAME)).
+answerz (I, en, myNameIs, MYNAME) :- sayz(I, en, format_str("My name is %s", MYNAME)).
+answerz (I, de, myNameIs, MYNAME) :- sayz(I, de, format_str("Ich heisse %s", MYNAME)).
+answerz (I, de, myNameIs, MYNAME) :- sayz(I, de, format_str("Mein Name ist %s", MYNAME)).
+
+l4proc (I, F, fnTelling, name, MSGF, fnBeingNamed) :-
+
+    SELF is uriref(aiu:self),
+    ias(I, user, USER),
+
+    frame (MSGF, name,  NAME_STR),
+    frame (MSGF, ent,   SELF),
+
+    ias (I, uttLang, LANG),
+
+    answerz (I, LANG, myNameIs, NAME_STR).
+
+l2proc_myNameAsked :-
+
+    ias(I, user, USER),
+    SELF is uriref(aiu:self),
+    list_append(VMC, fe(ent, SELF)),
+    list_append(VMC, frame(fnBeingNamed)),
+    
+    list_append(VMC, fe(msg,  vm_frame_pop)),
+    list_append(VMC, fe(add,  uriref(aiu:self))),
+    list_append(VMC, fe(top,  name)),
+    list_append(VMC, fe(spkr, USER)),
+    list_append(VMC, frame(fnQuestioning)),
+    
+    log (debug, 'l2proc: fnTelling -> fnBeingNamed ent=self'),
+
+    fnvm_exec (I, VMC).
+   
+nlp_gen(en, '@SELF_ADDRESS:LABEL What (was|is) your (true|actual|) name (by the way|again|)?',
+        inline(l2proc_myNameAsked)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL Wie heisst Du (wirklich|eigentlich|tatsächlich|) ?',
+        inline(l2proc_myNameAsked)).
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL what are you called (by the way|again|)?',
+        inline(l2proc_myNameAsked)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL Wie (ist|ist eigentlich|war|war nochmal) Dein Name (eigentlich|nochmal|) ?',
+        inline(l2proc_myNameAsked)).
+
+nlp_test(en,
+         ivr(in('what was your name again?'),
+             out('My name is HAL 9000'))).
+nlp_test(de,
+         ivr(in('wie heisst du eigentlich'),
+             out('Mein Name ist HAL 9000'))).
+
 % %
 % % robot / ai ?
 % %

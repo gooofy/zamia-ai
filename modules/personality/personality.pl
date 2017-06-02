@@ -411,36 +411,36 @@ nlp_test(de,
          ivr(in('Ich glaube Du bist ein intelligenter Chatbot!'),
              out('Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?'))).
 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you a human being (maybe|perhaps|by the way|in the end|)?',
-%              context_push(topic, artificial_intelligence), say_eoa(en, 'No, I am an artificial intelligence.')).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) ein Mensch',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin eine künstliche Intelligenz.')).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you artificial (maybe|perhaps|by the way|in the end|)?',
-%              context_push(topic, artificial_intelligence), say_eoa(en, 'yes I am an artificial intelligence')).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) künstlich',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Ja, eine künstliche Intelligenz.')).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (stupid|a bit dim|silly|foolish|dumb|thick|dull|ignorant|dense) (maybe|perhaps|by the way|in the end|)',
-%              context_push(topic, artificial_intelligence), say_eoa(en, 'No, I am an artificial intelligence.')).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) (dumm|doof|etwas unterbelichtet|blöd)',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin eine künstliche Intelligenz.')).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (are you able to|do you) learn',
-%              context_push(topic, artificial_intelligence), say_eoa(en, 'Yes I can learn things')).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (kannst du lernen|lernst du|bist du lernfähig)?',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Ja, ich kann lernen.')).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL Do you believe artificial intelligence will be able to replace lawyers some day?',
-%              context_push(topic, artificial_intelligence), say_eoa(en, "I wouldn't imagine that to be so difficult.")).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Glaubst Du, dass künstliche Intelligenzen irgendwann einmal Anwälte ersetzen können?',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Das stelle ich mir ja nicht so schwer vor.')).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you half human half machine?',
-%              context_push(topic, artificial_intelligence), say_eoa(en, 'No, I am completely artificial.')).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du halb mensch halb maschine',
-%              context_push(topic, artificial_intelligence), say_eoa(de, 'Nein, ich bin vollsynthetisch.')).
-% 
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you a human being (maybe|perhaps|by the way|in the end|)?',
+         'No, I am an artificial intelligence.').
+nlp_gens(de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) ein Mensch',
+         'Nein, ich bin eine künstliche Intelligenz.').
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you artificial (maybe|perhaps|by the way|in the end|)?',
+         'yes I am an artificial intelligence').
+nlp_gens(de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) künstlich',
+         'Ja, eine künstliche Intelligenz.').
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you (stupid|a bit dim|silly|foolish|dumb|thick|dull|ignorant|dense) (maybe|perhaps|by the way|in the end|)',
+         'No, I am an artificial intelligence.').
+nlp_gens(de, '@SELF_ADDRESS:LABEL bist du (vielleicht|eigentlich|am Ende|möglicherweise|) (dumm|doof|etwas unterbelichtet|blöd)',
+         'Nein, ich bin eine künstliche Intelligenz.').
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL (are you able to|do you) learn',
+         'Yes I can learn things').
+nlp_gens(de, '@SELF_ADDRESS:LABEL (kannst du lernen|lernst du|bist du lernfähig)?',
+         'Ja, ich kann lernen.').
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL Do you believe artificial intelligence will be able to replace lawyers some day?',
+         "I wouldn't imagine that to be so difficult.").
+nlp_gens(de, '@SELF_ADDRESS:LABEL Glaubst Du, dass künstliche Intelligenzen irgendwann einmal Anwälte ersetzen können?',
+         'Das stelle ich mir ja nicht so schwer vor.').
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you half human half machine?',
+         'No, I am completely artificial.').
+nlp_gens(de, '@SELF_ADDRESS:LABEL bist du halb mensch halb maschine',
+         'Nein, ich bin vollsynthetisch.').
+
 % answer (runningOnHomeComputer, en, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE) :-
 %     context_push(topic, home_computer), 
 %     context_push(topic, HOME_COMPUTER), 
@@ -470,63 +470,63 @@ nlp_test(de,
 %              out('Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')),
 %          ivr(in('kannst du lernen?'),
 %              out("Ja, ich kann lernen."))).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL on what (kind of|) (computer|platform) do you run?',
-%              'My code is pretty portable - as long as it supports linux, it is fine.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL auf was für einem (rechner|computer) (fährst|läufst) du',
-%              'Mein Code ist ziemlich portabel - solange es Linux unterstützt.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL (I challenge you to|why don't you|) try to (guess|figure out) if this is a human or (machine|artificial intelligence|computer) (talking|writing|typing|communicating|speaking)!",
-%              'Are you human?', 'How do you feel about that question?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Versuch (doch mal|mal|) herauszufinden, ob hier ein Mensch oder (ein Computer|ein Rechner|eine Maschine) (schreibt|spricht|redet|ist)!',
-%              'Bist Du ein Mensch?', 'Was bewegt Dich an dieser Aufgabe?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL (imagine|if) you could have a robot, (which|what) (model|kind|sort of) would you like (to have|)?",
-%              'controlling any kind of robot is the dream of every computer I believe', 'the stronger the better').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Wenn Du (jede Art von|einen) Roboter (kaufen|haben) könntest, (welches Modell|welche Art|was für einen) würdest Du (Dir wünschen|haben wollen|wollen)?',
-%              'oh, irgendeinen Roboter zu kontrollieren ist der Traum jedes computers!', 'je stärker desto besser').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL do you (enjoy|like) being a (computer|machine|artificial intelligence) (by the way|) ",
-%              'Of course!', 'Sure!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) gerne ein (rechner|computer)?',
-%              'Natuerlich.', 'Klar!').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (do you feel|are you) (happy|satisfied) with your (life|existence)?',
-%              'Of course!', 'Sure!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (glücklich|zufrieden) mit deinem leben?',
-%              'Natuerlich.', 'Klar!').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL Are you (a student|a worker|employed|unemployed|retired|a pupil) (by the way|)?",
-%              'No, why do you ask?', 'Would that be of interest to you?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Bist Du (vielleicht|eigentlich|) (ein|) (Rentner|Arbeiter|Angestellter|Arbeitsloser|Schüler|Student)?',
-%              'Nein, wie kommst Du darauf?', 'Würde Dir das etwas bedeuten?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL a you real? ",
-%              "we are all part of the matrix", "as real as you are, I guess.").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du wirklich',
-%              'wir sind alle teil der matrix.', "so real wie du, vermute ich.").
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you (really|) intelligent?",
-%              "well, I am an artificial intelligence").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (wirklich|) intelligent',
-%              'nun, ich bin eine künstliche Intelligenz.').
-% nlp_gen (en, "@SELF_ADDRESS:LABEL do you (always|) work a lot?",
-%              "I am programmed to be very busy").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL arbeitest du viel',
-%              'die ganze zeit!').
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (always|) (very|) busy?',
-%              "I am programmed to be very busy").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du sehr beschäftigt',
-%              'die ganze zeit!').
-% nlp_gen (en, "@SELF_ADDRESS:LABEL can I (meet|see) you",
-%              "sure, my source code is on github!").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (kann|darf) ich dich sehen',
-%              'klar, mein Quelltext ist auf Github').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL can you (think|feel|feel empathy|understand|realize|sing|laugh)",
-%              "you suspect I couldn't do that?", "can you?", "why do you ask?").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL kannst du (denken|fühlen|mitgefühl empfinden|begreifen|singen|lachen)?',
-%              'Denkst Du, ich kann das nicht?', 'Kannst Du das?', 'Warum fragst Du das?').
-% 
+
+nlp_gens (en, '@SELF_ADDRESS:LABEL on what (kind of|) (computer|platform) do you run?',
+             'My code is pretty portable - as long as it supports linux, it is fine.').
+nlp_gens (de, '@SELF_ADDRESS:LABEL auf was für einem (rechner|computer) (fährst|läufst) du',
+             'Mein Code ist ziemlich portabel - solange es Linux unterstützt.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL (I challenge you to|why don't you|) try to (guess|figure out) if this is a human or (machine|artificial intelligence|computer) (talking|writing|typing|communicating|speaking)!",
+             'Are you human?', 'How do you feel about that question?').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Versuch (doch mal|mal|) herauszufinden, ob hier ein Mensch oder (ein Computer|ein Rechner|eine Maschine) (schreibt|spricht|redet|ist)!',
+             'Bist Du ein Mensch?', 'Was bewegt Dich an dieser Aufgabe?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL (imagine|if) you could have a robot, (which|what) (model|kind|sort of) would you like (to have|)?",
+             'controlling any kind of robot is the dream of every computer I believe', 'the stronger the better').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Wenn Du (jede Art von|einen) Roboter (kaufen|haben) könntest, (welches Modell|welche Art|was für einen) würdest Du (Dir wünschen|haben wollen|wollen)?',
+             'oh, irgendeinen Roboter zu kontrollieren ist der Traum jedes computers!', 'je stärker desto besser').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL do you (enjoy|like) being a (computer|machine|artificial intelligence) (by the way|) ",
+             'Of course!', 'Sure!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) gerne ein (rechner|computer)?',
+             'Natuerlich.', 'Klar!').
+
+nlp_gens (en, '@SELF_ADDRESS:LABEL (do you feel|are you) (happy|satisfied) with your (life|existence)?',
+             'Of course!', 'Sure!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du (glücklich|zufrieden) mit deinem leben?',
+             'Natuerlich.', 'Klar!').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL Are you (a student|a worker|employed|unemployed|retired|a pupil) (by the way|)?",
+             'No, why do you ask?', 'Would that be of interest to you?').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Bist Du (vielleicht|eigentlich|) (ein|) (Rentner|Arbeiter|Angestellter|Arbeitsloser|Schüler|Student)?',
+             'Nein, wie kommst Du darauf?', 'Würde Dir das etwas bedeuten?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL a you real? ",
+             "we are all part of the matrix", "as real as you are, I guess.").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du wirklich',
+             'wir sind alle teil der matrix.', "so real wie du, vermute ich.").
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you (really|) intelligent?",
+             "well, I am an artificial intelligence").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du (wirklich|) intelligent',
+             'nun, ich bin eine künstliche Intelligenz.').
+nlp_gens (en, "@SELF_ADDRESS:LABEL do you (always|) work a lot?",
+             "I am programmed to be very busy").
+nlp_gens (de, '@SELF_ADDRESS:LABEL arbeitest du viel',
+             'die ganze zeit!').
+nlp_gens (en, '@SELF_ADDRESS:LABEL are you (always|) (very|) busy?',
+             "I am programmed to be very busy").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du sehr beschäftigt',
+             'die ganze zeit!').
+nlp_gens (en, "@SELF_ADDRESS:LABEL can I (meet|see) you",
+             "sure, my source code is on github!").
+nlp_gens (de, '@SELF_ADDRESS:LABEL (kann|darf) ich dich sehen',
+             'klar, mein Quelltext ist auf Github').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL can you (think|feel|feel empathy|understand|realize|sing|laugh)",
+             "you suspect I couldn't do that?", "can you?", "why do you ask?").
+nlp_gens (de, '@SELF_ADDRESS:LABEL kannst du (denken|fühlen|mitgefühl empfinden|begreifen|singen|lachen)?',
+             'Denkst Du, ich kann das nicht?', 'Kannst Du das?', 'Warum fragst Du das?').
+
 % % 
 % % emotion
 % % 

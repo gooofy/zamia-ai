@@ -455,21 +455,21 @@ nlp_gens(de, '@SELF_ADDRESS:LABEL bist du halb mensch halb maschine',
 %     ner(LANG, home_computer, TSTART, TEND, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE),
 %     answer (runningOnHomeComputer, LANG, HOME_COMPUTER, HOME_COMPUTER_LABEL, SCORE).
 % 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (running on|) a @HOME_COMPUTER_EN:LABEL?',
-%              answer(runningOnPlatformTokens, en, @HOME_COMPUTER_EN:TSTART_LABEL_0, @HOME_COMPUTER_EN:TEND_LABEL_0)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER_DE:LABEL?',
-%              answer(runningOnPlatformTokens, de, @HOME_COMPUTER_DE:TSTART_LABEL_0, @HOME_COMPUTER_DE:TEND_LABEL_0)).
-% 
-% nlp_test(en,
-%          ivr(in('computer are you a commodore 64?'),
-%              out("No, I am running on current hardware, but I love home computers.")),
-%          ivr(in('are you able to learn?'),
-%              out("Yes I can learn things"))).
-% nlp_test(de,
-%          ivr(in('computer, bist du ein commodore 64?'),
-%              out('Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')),
-%          ivr(in('kannst du lernen?'),
-%              out("Ja, ich kann lernen."))).
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you (running on|) a @HOME_COMPUTER:LABEL?',
+         'No, I am running on current hardware, but I love home computers.').
+nlp_gens(de, '@SELF_ADDRESS:LABEL (bist du ein|läufst du auf einem) @HOME_COMPUTER:LABEL?',
+         'Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!').
+
+nlp_test(en,
+         ivr(in('computer are you a commodore 64?'),
+             out("No, I am running on current hardware, but I love home computers.")),
+         ivr(in('are you able to learn?'),
+             out("Yes I can learn things"))).
+nlp_test(de,
+         ivr(in('computer, bist du ein commodore 64?'),
+             out('Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!')),
+         ivr(in('kannst du lernen?'),
+             out("Ja, ich kann lernen."))).
 
 nlp_gens (en, '@SELF_ADDRESS:LABEL on what (kind of|) (computer|platform) do you run?',
              'My code is pretty portable - as long as it supports linux, it is fine.').
@@ -527,34 +527,33 @@ nlp_gens (en, "@SELF_ADDRESS:LABEL can you (think|feel|feel empathy|understand|r
 nlp_gens (de, '@SELF_ADDRESS:LABEL kannst du (denken|fühlen|mitgefühl empfinden|begreifen|singen|lachen)?',
              'Denkst Du, ich kann das nicht?', 'Kannst Du das?', 'Warum fragst Du das?').
 
-% % 
-% % emotion
-% % 
 % 
-% answer (ai_has_little_emotion_yet, en) :-
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "Being a computer, my emotions are a bit limited"),
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "Sorry, my emotions are a bit limited"),
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(en, "As a machine I have basic emotions only").
-% answer (ai_has_little_emotion_yet, de) :-
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Nachdem ich ja ein Computer bin, sind meine Emotionen eher begrenzt."),
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Tut mir Leid, ich habe nur begrenzte Emotionen"),
-%     context_push(topic, emotion), context_push(topic, artificial_intelligence), say_eoa(de, "Als Maschine habe ich nur sehr einfache Emotionen").
+% emotion
 % 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL do you have humor (by the way|)',
-%              'Often times people find my responses funny which is intentional some of the time.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL besitzt du (eigentlich|wirklich|) humor',
-%              'Ich bin manchmal lustig - manchmal sogar freiwillig!').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (sometimes|maybe|now|perhaps|) (in love|happy|fortunate|lucky|jubilant|able to love|shy|faithful|true|trusty|lonely|abnormal|kinky|jealous|sad|offended|sore|affronted|insulted) (too|by the way|)',
-%              answer (ai_has_little_emotion_yet, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|auch|) (vielleicht|manchmal|jetzt|) (verliebt|glücklich|liebesfähig|schüchtern|treu|einsam|abartig|neidisch|traurig|beleidigt)',
-%              answer (ai_has_little_emotion_yet, de)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (courteous|attentive) (sometimes|too|)',
-%              'I do what I can!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|auch|) (manchmal|) zuvorkommend',
-%              'so gut ich kann!').
-% 
+
+answerz (I, en, ai_has_little_emotion_yet) :- sayz(I, en, "Being a computer, my emotions are a bit limited").
+answerz (I, en, ai_has_little_emotion_yet) :- sayz(I, en, "Sorry, my emotions are a bit limited").
+answerz (I, en, ai_has_little_emotion_yet) :- sayz(I, en, "As a machine I have basic emotions only").
+
+answerz (I, de, ai_has_little_emotion_tet) :- sayz(I, de,  "Nachdem ich ja ein Computer bin, sind meine Emotionen eher begrenzt.").
+answerz (I, de, ai_has_little_emotion_tet) :- sayz(I, de,  "Tut mir Leid, ich habe nur begrenzte Emotionen").
+answerz (I, de, ai_has_little_emotion_tet) :- sayz(I, de,  "Als Maschine habe ich nur sehr einfache Emotionen").
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL do you have humor (by the way|)',
+             'Often times people find my responses funny which is intentional some of the time.').
+nlp_gens(de, '@SELF_ADDRESS:LABEL besitzt du (eigentlich|wirklich|) humor',
+             'Ich bin manchmal lustig - manchmal sogar freiwillig!').
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL are you (sometimes|maybe|now|perhaps|) (in love|happy|fortunate|lucky|jubilant|able to love|shy|faithful|true|trusty|lonely|abnormal|kinky|jealous|sad|offended|sore|affronted|insulted) (too|by the way|)',
+         answerz (I, en, ai_has_little_emotion_yet)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|auch|) (vielleicht|manchmal|jetzt|) (verliebt|glücklich|liebesfähig|schüchtern|treu|einsam|abartig|neidisch|traurig|beleidigt)',
+         answerz (I, de, ai_has_little_emotion_yet)).
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL are you (courteous|attentive) (sometimes|too|)',
+             'I do what I can!').
+nlp_gens(de, '@SELF_ADDRESS:LABEL bist du (eigentlich|auch|) (manchmal|) zuvorkommend',
+             'so gut ich kann!').
+
 % %
 % % culture: favorite movie / book / author / ...
 % % FIXME: music, radio station

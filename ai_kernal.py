@@ -635,6 +635,8 @@ class AIKernal(object):
                 # FIXME: nlp_test should probably let the user specify a user
                 action_buffers = self.process_input (test_in, lang, TEST_USER, test_mode=True, trace=trace)
 
+                # import pdb; pdb.set_trace()
+
                 # check actual actions vs expected ones
                 matching_abuf = None
                 for abuf in sorted(action_buffers, key=lambda k: k['score'], reverse=True):
@@ -645,12 +647,11 @@ class AIKernal(object):
 
                     actual_out = u''
                     utt_lang   = u'en'
-                    # import pdb; pdb.set_trace()
                     for action in abuf['actions']:
                         p = action.name
                         if p == 'say':
                             utt_lang = unicode(action.args[0])
-                            actual_out += u' ' + unicode(action.args[1])
+                            actual_out += u' ' + action.args[1].s
 
                     if len(test_out) > 0:
                         if len(actual_out)>0:

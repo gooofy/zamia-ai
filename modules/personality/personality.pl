@@ -655,46 +655,46 @@ nlp_test(de,
          ivr(in('Computer, welcher ist dein liebster Autor?'),
              out('Arthur C. Clarke'))).
 
-% answer(favbook, en) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favBook,  BOOK,
-%         BOOK,     wdpd:Author, AUTHOR,
-%         AUTHOR,   rdfs:label,  AUTHLABEL,
-%         BOOK,     rdfs:label,  LABEL,
-%         filter(lang(LABEL) = 'en', lang(AUTHLABEL) = 'en')),
-%     context_push(topic, books),
-%     context_push(topic, BOOK),
-%     say_eoa(en, format_str("%s by %s", LABEL, AUTHLABEL)).
-% 
-% answer(favbook, de) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favBook, BOOK,
-%         BOOK, wdpd:Author, AUTHOR,
-%         AUTHOR, rdfs:label, AUTHLABEL,
-%         BOOK, rdfs:label, LABEL,
-%         filter(lang(LABEL) = 'de', lang(AUTHLABEL) = 'de')),
-%     context_push(topic, books),
-%     context_push(topic, BOOK),
-%     say_eoa(de, format_str("%s von %s", LABEL, AUTHLABEL)).
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) is your favorite book?',
-%             answer(favbook, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL (Welches|Was) ist Dein (liebstes Buch|Lieblingsbuch)?',
-%             answer(favbook, de)).
-% nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) do you read (by the way|)?',
-%             answer(favbook, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL Was ließt Du (eigentlich|) (so|)?',
-%             answer(favbook, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer, what is your favorite book?'),
-%              out('2001: A Space Odyssey by Arthur C. Clarke'))).
-% nlp_test(de,
-%          ivr(in('Computer, was ließt Du so?'),
-%              out('2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke'))).
-% 
+answerz(I, en, favbook) :-
+
+    rdf(distinct,
+        aiu:self, ai:favBook,  BOOK,
+        BOOK,     wdpd:Author, AUTHOR,
+        AUTHOR,   rdfs:label,  AUTHLABEL,
+        BOOK,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'en', lang(AUTHLABEL) = 'en')),
+    % context_push(topic, books),
+    % context_push(topic, BOOK),
+    sayz(I, en, format_str("%s by %s", LABEL, AUTHLABEL)).
+
+answerz(I, de, favbook) :-
+
+    rdf(distinct,
+        aiu:self, ai:favBook, BOOK,
+        BOOK, wdpd:Author, AUTHOR,
+        AUTHOR, rdfs:label, AUTHLABEL,
+        BOOK, rdfs:label, LABEL,
+        filter(lang(LABEL) = 'de', lang(AUTHLABEL) = 'de')),
+    % context_push(topic, books),
+    % context_push(topic, BOOK),
+    sayz(I, de, format_str("%s von %s", LABEL, AUTHLABEL)).
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) is your favorite book?',
+            answerz(I, en, favbook)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL (Welches|Was) ist Dein (liebstes Buch|Lieblingsbuch)?',
+            answerz(I, de, favbook)).
+nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) do you read (by the way|)?',
+            answerz(I, en, favbook)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL Was ließt Du (eigentlich|) (so|)?',
+            answerz(I, de, favbook)).
+
+nlp_test(en,
+         ivr(in('Computer, what is your favorite book?'),
+             out('2001: A Space Odyssey by Arthur C. Clarke'))).
+nlp_test(de,
+         ivr(in('Computer, was ließt Du so?'),
+             out('2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke'))).
+
 % answer(idol, en) :-
 % 
 %     rdf(distinct,

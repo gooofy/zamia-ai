@@ -554,50 +554,50 @@ nlp_gens(en, '@SELF_ADDRESS:LABEL are you (courteous|attentive) (sometimes|too|)
 nlp_gens(de, '@SELF_ADDRESS:LABEL bist du (eigentlich|auch|) (manchmal|) zuvorkommend',
              'so gut ich kann!').
 
-% %
-% % culture: favorite movie / book / author / ...
-% % FIXME: music, radio station
-% %
-% 
-% answer(favmovie, en) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favMovie, MOVIE,
-%         MOVIE, wdpd:Director, DIRECTOR,
-%         DIRECTOR, rdfs:label, DIRLABEL,
-%         MOVIE, rdfs:label, LABEL,
-%         filter(lang(LABEL) = 'en', lang(DIRLABEL) = 'en')),
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(en, format_str("%s by %s", LABEL, DIRLABEL)).
-% 
-% answer(favmovie, de) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favMovie, MOVIE,
-%         MOVIE, wdpd:Director, DIRECTOR,
-%         DIRECTOR, rdfs:label, DIRLABEL,
-%         MOVIE, rdfs:label, LABEL,
-%         filter(lang(LABEL) = 'de', lang(DIRLABEL) = 'de')),
-%     context_push(topic, movies),
-%     context_push(topic, MOVIE),
-%     say_eoa(de, format_str("%s von %s", LABEL, DIRLABEL)).
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) is your (favorite|fave) (film|movie)?',
-%             answer(favmovie, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL (Was|Welcher|Welches) ist Dein (liebster Film|Lieblingsfilm)?',
-%             answer(favmovie, de)).
-% nlp_gen(en, '@SELF_ADDRESS:LABEL (What|Which) (movie|film) do you (enjoy|like) (best|most)?',
-%             answer(favmovie, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL Welchen Film (gefällt Dir|magst Du) am (besten|liebsten)?',
-%             answer(favmovie, de)).
-% nlp_test(en,
-%          ivr(in('Computer, which movie do you like best?'),
-%              out('2001: A Space Odyssey by Stanley Kubrick'))).
-% nlp_test(de,
-%          ivr(in('Computer, welcher ist dein liebster film?'),
-%              out('2001: Odyssee im Weltraum von Stanley Kubrick'))).
-% 
+%
+% culture: favorite movie / book / author / ...
+% FIXME: music, radio station
+%
+
+answerz(I, en, favmovie) :-
+
+    rdf(distinct,
+        aiu:self, ai:favMovie, MOVIE,
+        MOVIE, wdpd:Director, DIRECTOR,
+        DIRECTOR, rdfs:label, DIRLABEL,
+        MOVIE, rdfs:label, LABEL,
+        filter(lang(LABEL) = 'en', lang(DIRLABEL) = 'en')),
+    % context_push(topic, movies),
+    % context_push(topic, MOVIE),
+    sayz(I, en, format_str("%s by %s", LABEL, DIRLABEL)).
+
+answerz(I, de, favmovie) :-
+
+    rdf(distinct,
+        aiu:self, ai:favMovie, MOVIE,
+        MOVIE, wdpd:Director, DIRECTOR,
+        DIRECTOR, rdfs:label, DIRLABEL,
+        MOVIE, rdfs:label, LABEL,
+        filter(lang(LABEL) = 'de', lang(DIRLABEL) = 'de')),
+    % context_push(topic, movies),
+    % context_push(topic, MOVIE),
+    sayz(I, de, format_str("%s von %s", LABEL, DIRLABEL)).
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL (Which|What) is your (favorite|fave) (film|movie)?',
+            answerz(I, en, favmovie)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL (Was|Welcher|Welches) ist Dein (liebster Film|Lieblingsfilm)?',
+            answerz(I, de, favmovie)).
+nlp_gen(en, '@SELF_ADDRESS:LABEL (What|Which) (movie|film) do you (enjoy|like) (best|most)?',
+            answerz(I, en, favmovie)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL Welchen Film (gefällt Dir|magst Du) am (besten|liebsten)?',
+            answerz(I, de, favmovie)).
+nlp_test(en,
+         ivr(in('Computer, which movie do you like best?'),
+             out('2001: A Space Odyssey by Stanley Kubrick'))).
+nlp_test(de,
+         ivr(in('Computer, welcher ist dein liebster film?'),
+             out('2001: Odyssee im Weltraum von Stanley Kubrick'))).
+
 % nlp_test(en,
 %          ivr(in('What did we talk about?'),
 %              out('We have had many topics.')),

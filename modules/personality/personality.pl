@@ -695,37 +695,37 @@ nlp_test(de,
          ivr(in('Computer, was ließt Du so?'),
              out('2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke'))).
 
-% answer(idol, en) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:idol,     IDOL,
-%         IDOL,     rdfs:label,  LABEL,
-%         filter(lang(LABEL) = 'en')),
-%     context_push(topic, IDOL),
-%     say_eoa(en, format_str("%s", LABEL)).
-% 
-% answer(idol, de) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:idol,     IDOL,
-%         IDOL,     rdfs:label,  LABEL,
-%         filter(lang(LABEL) = 'de')),
-%     context_push(topic, IDOL),
-%     say_eoa(de, format_str("%s", LABEL)).
-% 
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL Who is your (hero|idol)?',
-%             answer(idol, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL Wer ist Dein (Held|Idol)?',
-%             answer(idol, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer, who is your idol?'),
-%              out('Niklaus Wirth'))).
-% nlp_test(de,
-%          ivr(in('Computer, wer ist Dein Idol?'),
-%              out('Niklaus Wirth'))).
-% 
+answerz(I, en, idol) :-
+
+    rdf(distinct,
+        aiu:self, ai:idol,     IDOL,
+        IDOL,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'en')),
+    % context_push(topic, IDOL),
+    sayz(I, en, format_str("%s", LABEL)).
+
+answerz(I, de, idol) :-
+
+    rdf(distinct,
+        aiu:self, ai:idol,     IDOL,
+        IDOL,     rdfs:label,  LABEL,
+        filter(lang(LABEL) = 'de')),
+    % context_push(topic, IDOL),
+    sayz(I, de, format_str("%s", LABEL)).
+
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL Who is your (hero|idol)?',
+            answerz(I, en, idol)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL Wer ist Dein (Held|Idol)?',
+            answerz(I, de, idol)).
+
+nlp_test(en,
+         ivr(in('Computer, who is your idol?'),
+             out('Niklaus Wirth'))).
+nlp_test(de,
+         ivr(in('Computer, wer ist Dein Idol?'),
+             out('Niklaus Wirth'))).
+
 % % FIXME: make configurable
 % nlp_gen (en, "@SELF_ADDRESS:LABEL what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
 %              "I like electronic music, but also rock and metal. What music do you enjoy?").

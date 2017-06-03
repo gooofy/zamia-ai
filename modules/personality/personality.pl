@@ -623,38 +623,38 @@ nlp_test(de,
 %              out('Wir hatten das Thema Computer und Maschinen.'))
 %              ).
 % 
-% answer(favauthor, en) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favAuthor,  AUTHOR,
-%         AUTHOR,   rdfs:label,    AUTHLABEL,
-%         filter(lang(AUTHLABEL) = 'en')),
-%     context_push(topic, literature),
-%     context_push(topic, AUTHOR),
-%     say_eoa(en, format_str("%s is my favorite author", AUTHLABEL)).
-% 
-% answer(favauthor, de) :-
-% 
-%     rdf(distinct,
-%         aiu:self, ai:favAuthor,  AUTHOR,
-%         AUTHOR,   rdfs:label,    AUTHLABEL,
-%         filter(lang(AUTHLABEL) = 'de')),
-%     context_push(topic, literature),
-%     context_push(topic, AUTHOR),
-%     say_eoa(de, format_str("%s", AUTHLABEL)).
-% 
-% nlp_gen(en, '@SELF_ADDRESS:LABEL Who is your favorite (book|science fiction|scifi|best selling|) author?',
-%             answer(favauthor, en)).
-% nlp_gen(de, '@SELF_ADDRESS:LABEL (Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?',
-%             answer(favauthor, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer, who is your favorite author?'),
-%              out('Arthur C. Clarke is my favorite author'))).
-% nlp_test(de,
-%          ivr(in('Computer, welcher ist dein liebster Autor?'),
-%              out('Arthur C. Clarke'))).
-% 
+answerz(I, en, favauthor) :-
+
+    rdf(distinct,
+        aiu:self, ai:favAuthor,  AUTHOR,
+        AUTHOR,   rdfs:label,    AUTHLABEL,
+        filter(lang(AUTHLABEL) = 'en')),
+    % context_push(topic, literature),
+    % context_push(topic, AUTHOR),
+    sayz(I, en, format_str("%s is my favorite author", AUTHLABEL)).
+
+answerz(I, de, favauthor) :-
+
+    rdf(distinct,
+        aiu:self, ai:favAuthor,  AUTHOR,
+        AUTHOR,   rdfs:label,    AUTHLABEL,
+        filter(lang(AUTHLABEL) = 'de')),
+    % context_push(topic, literature),
+    % context_push(topic, AUTHOR),
+    sayz(I, de, format_str("%s", AUTHLABEL)).
+
+nlp_gen(en, '@SELF_ADDRESS:LABEL Who is your favorite (book|science fiction|scifi|best selling|) author?',
+            answerz(I, en, favauthor)).
+nlp_gen(de, '@SELF_ADDRESS:LABEL (Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?',
+            answerz(I, de, favauthor)).
+
+nlp_test(en,
+         ivr(in('Computer, who is your favorite author?'),
+             out('Arthur C. Clarke is my favorite author'))).
+nlp_test(de,
+         ivr(in('Computer, welcher ist dein liebster Autor?'),
+             out('Arthur C. Clarke'))).
+
 % answer(favbook, en) :-
 % 
 %     rdf(distinct,

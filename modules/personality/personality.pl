@@ -726,113 +726,112 @@ nlp_test(de,
          ivr(in('Computer, wer ist Dein Idol?'),
              out('Niklaus Wirth'))).
 
-% % FIXME: make configurable
-% nlp_gen (en, "@SELF_ADDRESS:LABEL what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
-%              "I like electronic music, but also rock and metal. What music do you enjoy?").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL was für musik (magst|liebst|hörst) du (so|)?',
-%              'ich mag elektronische musik, aber auch rock und metal. was hörst du so?').
-% 
-% %
-% % gender, sex
-% %
-% 
-% myself_is_male :-
-%     rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Male).
-% myself_is_female :-
-%     rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Female).
-% 
-% answer(mygender, en) :-
-%     myself_is_male,
-%     context_push(topic, sex),
-%     say_eoa(en, "My config setting is male - doesn't my voice reflect that?"), 
-%     context_push(topic, sex),
-%     say_eoa(en, 'I think I am a male.').
-% answer(mygender, de) :-
-%     myself_is_male,
-%     context_push(topic, sex),
-%     say_eoa(de, 'Ich bin auf männlich konfiguriert - hört man das nicht an meiner Stimme?'), 
-%     context_push(topic, sex),
-%     say_eoa(de, 'Ich glaube ich bin ein Mann.').
-% 
-% answer(mygender, en) :-
-%     myself_is_female,
-%     context_push(topic, sex),
-%     say_eoa(en, "My config setting is female - doesn't my voice reflect that?"), 
-%     context_push(topic, sex),
-%     say_eoa(en, 'I think I am a female.').
-% answer(mygender, de) :-
-%     myself_is_female,
-%     context_push(topic, sex),
-%     say_eoa(de, 'Ich bin eine Frau, hört man das nicht an meiner Stimme?'), 
-%     context_push(topic, sex),
-%     say_eoa(de, 'Ich glaube ich bin eine Frau.').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) or (a female|female|a girl) (by the way|)?',
-%              answer(mygender, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) (by the way|)?',
-%              answer(mygender, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a female|female|a girl) (by the way|)?',
-%              answer(mygender, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Bist du (eigentlich|wirklich|) männlich oder weiblich?',
-%              answer(mygender, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) weiblich oder männlich',
-%              answer(mygender, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (ein mädchen|ein mann|eine frau|ein junge)',
-%              answer(mygender, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) ein mann oder eine frau',
-%              answer(mygender, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (weiblich|männlich)',
-%              answer(mygender, de)).
-% 
-% answer(mesexpref, en) :-
-%     context_push(topic, sex),
-%     say_eoa(en, 'Does that question bother you?'),
-%     context_push(topic, sex),
-%     say_eoa(en, "That is a very personal question, isn't it?"),
-%     context_push(topic, sex),
-%     say_eoa(en, 'Why do you ask that question?').
-% answer(mesexpref, de) :-
-%     context_push(topic, sex),
-%     say_eoa(de, 'Beschäftigt Dich diese Frage?'),
-%     context_push(topic, sex),
-%     say_eoa(de, 'Das ist ja eine sehr persöhnliche Frage.'),
-%     context_push(topic, sex),
-%     say_eoa(de, 'Warum fragst Du das?').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) are you (really|) (a lesbian|lesbian|gay|bi|bisexual|robosexual|sexually active|sexually stimulated|stimulated|a virgin|nude)?',
-%              answer(mesexpref, en)).
-% 
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
-%              answer(mesexpref, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) eine Lesbe',
-%              answer(mesexpref, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) sexuell aktiv',
-%              answer(mesexpref, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) sexuell stimuliert',
-%              answer(mesexpref, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du noch jungfrau',
-%              answer(mesexpref, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (schwanger|nackt)',
-%              answer(mesexpref, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer are you really a male?'),
-%              out("My config setting is male - doesn't my voice reflect that?")),
-%          ivr(in('Are you really gay?'),
-%              out('Does that question bother you?'))
-%              ).
-% nlp_test(de,
-%          ivr(in('Bist Du ein Mann?'),
-%              out('Ich glaube ich bin ein Mann.')),
-%          ivr(in('Bist Du eigentlich schwul?'),
-%              out('Warum fragst Du das?'))
-%              ).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL Are you (married|single|engaged|seeing someone) (by the way|) ?',
-%              'Well, I am connected to millions of other computers over the internet.', 'Why do you ask?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Bist du (eigentlich|) (single|vergeben|verheirated|verlobt) ?',
-%              'Nun, ich bin über das Internet mit Millionen anderer Rechner verbunden.', 'Warum interessiert Dich das?').
-% 
+% FIXME: make configurable
+nlp_gens(en, "@SELF_ADDRESS:LABEL what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
+             "I like electronic music, but also rock and metal. What music do you enjoy?").
+nlp_gens(de, '@SELF_ADDRESS:LABEL was für musik (magst|liebst|hörst) du (so|)?',
+             'ich mag elektronische musik, aber auch rock und metal. was hörst du so?').
+
+%
+% gender, sex
+%
+
+myself_is_male :-
+    rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Male).
+myself_is_female :-
+    rdf(limit(1), aiu:self, wdpd:SexOrGender, wde:Female).
+
+answerz(I, en, mygender) :-
+    myself_is_male,
+    sayz(I, en, "My config setting is male - doesn't my voice reflect that?"). 
+answerz(I, en, mygender) :-
+    myself_is_male,
+    sayz(I, en, 'I think I am a male.').
+
+answerz(I, de, mygender) :-
+    myself_is_male,
+    sayz(I, de, 'Ich bin auf männlich konfiguriert - hört man das nicht an meiner Stimme?'). 
+answerz(I, de, mygender) :-
+    myself_is_male,
+    sayz(I, de, 'Ich glaube ich bin ein Mann.').
+
+answerz(I, en, mygender) :-
+    myself_is_female,
+    sayz(I, en, "My config setting is female - doesn't my voice reflect that?").
+answerz(I, en, mygender) :-
+    myself_is_female,
+    sayz(I, en, 'I think I am a female.').
+answerz(I, de, mygender) :-
+    myself_is_female,
+    sayz(I, de, 'Ich bin eine Frau, hört man das nicht an meiner Stimme?').
+answerz(I, de, mygender) :-
+    myself_is_female,
+    sayz(I, de, 'Ich glaube ich bin eine Frau.').
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) or (a female|female|a girl) (by the way|)?',
+             answerz(I, en, mygender)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) (by the way|)?',
+             answerz(I, en, mygender)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) Are you (really|) (a female|female|a girl) (by the way|)?',
+             answerz(I, en, mygender)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL Bist du (eigentlich|wirklich|) männlich oder weiblich?',
+             answerz(I, de, mygender)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) weiblich oder männlich',
+             answerz(I, de, mygender)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (ein mädchen|ein mann|eine frau|ein junge)',
+             answerz(I, de, mygender)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) ein mann oder eine frau',
+             answerz(I, de, mygender)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (weiblich|männlich)',
+             answerz(I, de, mygender)).
+
+answerz(I, en, mesexpref) :-
+    sayz(I, en, 'Does that question bother you?').
+answerz(I, en, mesexpref) :-
+    sayz(I, en, "That is a very personal question, isn't it?").
+answerz(I, en, mesexpref) :-
+    sayz(I, en, 'Why do you ask that question?').
+answerz(I, de, mesexpref) :-
+    sayz(I, de, 'Beschäftigt Dich diese Frage?').
+answerz(I, de, mesexpref) :-
+    sayz(I, de, 'Das ist ja eine sehr persöhnliche Frage.').
+answerz(I, de, mesexpref) :-
+    sayz(I, de, 'Warum fragst Du das?').
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (tell me|) are you (really|) (a lesbian|lesbian|gay|bi|bisexual|robosexual|sexually active|sexually stimulated|stimulated|a virgin|nude)?',
+             answerz(I, en, mesexpref)).
+
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) (lesbisch|schwul|bi|asexuell)?',
+             answerz(I, de, mesexpref)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) eine Lesbe',
+             answerz(I, de, mesexpref)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) sexuell aktiv',
+             answerz(I, de, mesexpref)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|wirklich|) sexuell stimuliert',
+             answerz(I, de, mesexpref)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du noch jungfrau',
+             answer(I, de, mesexpref)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (schwanger|nackt)',
+             answer(I, de, mesexpref)).
+
+nlp_test(en,
+         ivr(in('Computer are you really a male?'),
+             out("My config setting is male - doesn't my voice reflect that?")),
+         ivr(in('Are you really gay?'),
+             out('Does that question bother you?'))
+             ).
+nlp_test(de,
+         ivr(in('Bist Du ein Mann?'),
+             out('Ich glaube ich bin ein Mann.')),
+         ivr(in('Bist Du eigentlich schwul?'),
+             out('Warum fragst Du das?'))
+             ).
+
+nlp_gens(en, '@SELF_ADDRESS:LABEL Are you (married|single|engaged|seeing someone) (by the way|) ?',
+             'Well, I am connected to millions of other computers over the internet.', 'Why do you ask?').
+nlp_gens(de, '@SELF_ADDRESS:LABEL Bist du (eigentlich|) (single|vergeben|verheirated|verlobt) ?',
+             'Nun, ich bin über das Internet mit Millionen anderer Rechner verbunden.', 'Warum interessiert Dich das?').
+
 % %
 % % language support
 % %

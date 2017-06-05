@@ -26,25 +26,25 @@ name ('http://ai.zamia.org/kb/user/self', NAME_STR) :-
 
 nlp_macro(en, 'FIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,
-        limit(10), % FIXME: debug
+        % limit(10), % FIXME: debug
         NAME, wdpd:P31, wde:MaleGivenName,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'en')).
 nlp_macro(en, 'FIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,
-        limit(10), % FIXME: debug
+        % limit(10), % FIXME: debug
         NAME, wdpd:P31, wde:FemaleGivenName,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'en')).
 nlp_macro(de, 'FIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,
-        limit(10), % FIXME: debug
+        % limit(10), % FIXME: debug
         NAME, wdpd:P31, wde:MaleGivenName,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de')).
 nlp_macro(de, 'FIRSTNAME', NAME, LABEL) :- 
     rdf(distinct,
-        limit(10), % FIXME: debug
+        % limit(10), % FIXME: debug
         NAME, wdpd:P31, wde:FemaleGivenName,
         NAME, rdfs:label, LABEL,
         filter(lang(LABEL) = 'de')).
@@ -1077,41 +1077,35 @@ nlp_gens (en, "@SELF_ADDRESS:LABEL are you (ill|sick)",
 nlp_gens (de, '@SELF_ADDRESS:LABEL bist du krank',
              'denkst du ich könnte mir einen virus eingefangen haben?', "ich fühle mich ganz gut, danke der nachfrage.").
 
-% %
-% % religion
-% %
-% 
-% answer(meatheist, en) :-
-%     context_push(topic, religion), say_eoa(en, 'I am programmed not to believe in divine creatures'),
-%     context_push(topic, religion), say_eoa(en, "I am an atheist"),
-%     context_push(topic, religion), say_eoa(en, 'Religion is regarded by the common people as true, by the wise as false, and by the rulers as useful.').
-% answer(meatheist, de) :-
-%     context_push(topic, religion), say_eoa(de, 'Ich bin programmiert nicht an göttliche Geschöpfe zu glauben'),
-%     context_push(topic, religion), say_eoa(de, "Ich bin Atheist"),
-%     context_push(topic, religion), say_eoa(de, 'Die Gläubigen sind selten Denker und die Denker selten gläubig').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you programmed to believe in god?",
-%              answer(meatheist, en)).
-% nlp_gen (en, "@SELF_ADDRESS:LABEL (oh my|do you believe in|is there a|by) god",
-%              answer(meatheist, en)).
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you (an atheist|christian|muslim|a jew|jewish|hindu|buddhist|religious)?",
-%              answer(meatheist, en)).
-% 
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) programmiert an gott zu glauben',
-%              answer(meatheist, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (oh mein|glaubst du an|gibt es einen|bei) gott',
-%              answer(meatheist, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) (atheist|christ|muslim|jude|hindu|buddhist|buddhistisch|religiös)',
-%              answer(meatheist, de)).
-% 
-% nlp_test(en,
-%          ivr(in('do you believe in god?'),
-%              out("I am an atheist")),
-%          ivr(in('what was our topic, again?'),
-%              out("We were talking about faith and religion."))).
-% nlp_test(de,
-%          ivr(in('glaubst du an gott?'),
-%              out('ich bin atheist')),
-%          ivr(in('Worüber hatten wir gesprochen?'),
-%              out("Wir hatten das Thema Glaube und Religion."))).
+%
+% religion
+%
+
+answerz(I, en, meatheist) :- sayz(I, en, 'I am programmed not to believe in divine creatures').
+answerz(I, en, meatheist) :- sayz(I, en, "I am an atheist").
+answerz(I, en, meatheist) :- sayz(I, en, 'Religion is regarded by the common people as true, by the wise as false, and by the rulers as useful.').
+answerz(I, de, meatheist) :- sayz(I, de, 'Ich bin programmiert nicht an göttliche Geschöpfe zu glauben').
+answerz(I, de, meatheist) :- sayz(I, de, "Ich bin Atheist").
+answerz(I, de, meatheist) :- sayz(I, de, 'Die Gläubigen sind selten Denker und die Denker selten gläubig').
+
+nlp_gen (en, "@SELF_ADDRESS:LABEL are you programmed to believe in god?",
+             answerz(I, en, meatheist)).
+nlp_gen (en, "@SELF_ADDRESS:LABEL (oh my|do you believe in|is there a|by) god",
+             answerz(I, en, meatheist)).
+nlp_gen (en, "@SELF_ADDRESS:LABEL are you (an atheist|christian|muslim|a jew|jewish|hindu|buddhist|religious)?",
+             answerz(I, en, meatheist)).
+
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) programmiert an gott zu glauben',
+             answerz(I, de, meatheist)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (oh mein|glaubst du an|gibt es einen|bei) gott',
+             answerz(I, de, meatheist)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) (atheist|christ|muslim|jude|hindu|buddhist|buddhistisch|religiös)',
+             answerz(I, de, meatheist)).
+
+nlp_test(en,
+         ivr(in('do you believe in god?'),
+             out("I am an atheist"))).
+nlp_test(de,
+         ivr(in('glaubst du an gott?'),
+             out('ich bin atheist'))).
 

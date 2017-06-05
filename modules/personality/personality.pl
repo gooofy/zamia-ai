@@ -832,47 +832,41 @@ nlp_gens(en, '@SELF_ADDRESS:LABEL Are you (married|single|engaged|seeing someone
 nlp_gens(de, '@SELF_ADDRESS:LABEL Bist du (eigentlich|) (single|vergeben|verheirated|verlobt) ?',
              'Nun, ich bin über das Internet mit Millionen anderer Rechner verbunden.', 'Warum interessiert Dich das?').
 
-% %
-% % language support
-% %
-% 
-% answer(languagesupport, en) :-
-%     context_push(topic, language), say_eoa(en, 'My system supports german and english but this instance is configured for english'),
-%     context_push(topic, language), say_eoa(en, "I am currently running in english mode but I can be configured for german, too"),
-%     context_push(topic, language), say_eoa(en, 'This seems to be my english configuration, but I can be run in german mode, too').
-% answer(languagesupport, de) :-
-%     context_push(topic, language), say_eoa(de, 'Mein System unterstützt Deutsch und Englisch aber diese Instanz ist für Deutsch konfiguriert'),
-%     context_push(topic, language), say_eoa(de, "Ich laufe gerade im deutschen Modus aber man kann mich auch auf Englisch umschalten"),
-%     context_push(topic, language), say_eoa(de, 'Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (do you speak | are you) (english|american|german) (well|) (by the way|really|)',
-%              answer (languagesupport, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL can you (speak|understand|talk in) (english|american|german) (well|) (by the way|really|)',
-%              answer (languagesupport, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL are you (really|) as good as your (english|american|german) program (by the way|)?',
-%              answer (languagesupport, en)).
-% 
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (sprichst|bist) du (eigentlich|auch|) (gut|) (englisch|amerikanisch|deutsch)',
-%              answer (languagesupport, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL kannst du (eigentlich|) (gut|) (englisch|amerikanisch|deutsch) (verstehen|sprechen)',
-%              answer (languagesupport, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) so gut wie dein (englisches|amerikanisches|deutsches) programm?',
-%              answer (languagesupport, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer do you speak german?'),
-%              out("My system supports german and english but this instance is configured for english")),
-%          ivr(in('What were we talking about?'),
-%              out('We were talking about languages.'))
-%              ).
-% nlp_test(de,
-%          ivr(in('Computer sprichst Du auch englisch?'),
-%              out('Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben')),
-%          ivr(in('Worüber hatten wir gesprochen?'),
-%              out('Wir hatten das Thema Sprachen.'))
-%              ).
-% 
-% 
+%
+% language support
+%
+
+answerz(I, en, languagesupport) :- sayz(I, en, 'My system supports german and english but this instance is configured for english').
+answerz(I, en, languagesupport) :- sayz(I, en, "I am currently running in english mode but I can be configured for german, too").
+answerz(I, en, languagesupport) :- sayz(I, en, 'This seems to be my english configuration, but I can be run in german mode, too').
+answerz(I, de, languagesupport) :- sayz(I, de, 'Mein System unterstützt Deutsch und Englisch aber diese Instanz ist für Deutsch konfiguriert').
+answerz(I, de, languagesupport) :- sayz(I, de, "Ich laufe gerade im deutschen Modus aber man kann mich auch auf Englisch umschalten").
+answerz(I, de, languagesupport) :- sayz(I, de, 'Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben').
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (do you speak | are you) (english|american|german) (well|) (by the way|really|)',
+             answerz (I, en, languagesupport)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL can you (speak|understand|talk in) (english|american|german) (well|) (by the way|really|)',
+             answerz (I, en, languagesupport)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL are you (really|) as good as your (english|american|german) program (by the way|)?',
+             answerz (I, en, languagesupport)).
+
+nlp_gen (de, '@SELF_ADDRESS:LABEL (sprichst|bist) du (eigentlich|auch|) (gut|) (englisch|amerikanisch|deutsch)',
+             answerz (I, de, languagesupport)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL kannst du (eigentlich|) (gut|) (englisch|amerikanisch|deutsch) (verstehen|sprechen)',
+             answerz (I, de, languagesupport)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (eigentlich|) so gut wie dein (englisches|amerikanisches|deutsches) programm?',
+             answerz (I, de, languagesupport)).
+
+nlp_test(en,
+         ivr(in('Computer do you speak german?'),
+             out("My system supports german and english but this instance is configured for english"))
+             ).
+nlp_test(de,
+         ivr(in('Computer sprichst Du auch englisch?'),
+             out('Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben'))
+             ).
+
+
 % %
 % % age, place of birth, where I live
 % %

@@ -61,8 +61,8 @@ def rdf_to_pl(l):
                 dt = dateutil.parser.parse(value)
                 value = StringLiteral(dt.isoformat())
             elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                dt = dateutil.parser.parse(value)
-                value = NumberLiteral(time.mktime(dt.timetuple()))
+                dt = dateutil.parser.parse(value).replace(tzinfo=get_localzone())
+                value = StringLiteral(dt.isoformat())
             elif datatype == DT_PROLOG:
                 value = json_to_prolog(value)
             else:

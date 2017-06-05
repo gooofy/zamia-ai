@@ -958,125 +958,125 @@ nlp_test(de,
              out('Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.'))
              ).
 
-% %
-% % FIXME: probably we should support this astrological pseudo-science at some point,
-% %        seems some people like to chat about that
-% %
-% 
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL Was ist Dein Sternzeichen?',
-% %              'Vielleicht Steinbock?', 'Affe, glaube ich.').
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL zwilling',
-% %              'Ich bin ein Schütze.').
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL zwillinge',
-% %              'Ich bin ein Schütze.').
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL bist du schütze',
-% %              'Nein, ich bin Löwe.').
-% 
-% %
-% % recreational activities
-% %
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL what do you do in your spare time?",
-%              'I enjoy reading wikipedia. What are your hobbies?', 'Relaxing. And you?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Was machst Du in Deiner Freizeit?',
-%              'Wikipedia lesen. Was sind Deine Hobbies?', 'Relaxen. Und du so?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL Are you interested in (sports|swimming|football|soccer|tennis|golf|racing|sports competitions)",
-%              'I sometimes enjoy watching the really big events.', 'Why do you ask?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Interessierst Du Dich für (Sport|Schwimmen|Fußball|Tennis|Golf|Rennen|sportliche Wettkämpfe)?',
-%              'Nur manchmal für die großen Ereignisse.', 'Warum fragst Du?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL What do you like better, reading or watching television?",
-%              'I still find processing animated image data challenging', 'I tend to enjoy reading the internet a lot more.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Liest Du lieber oder siehst Du lieber fern?',
-%              'Ich finde das Verarbeiten von bewegten Bildern eine große Herausforderung.', 'Ich lese vor allem das Internet.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL Do you write (poetry|peoms) (sometimes|) ?",
-%              'No, creativity is not one of my strong points', 'No, that is not really my thing.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Schreibst du (manchmal|) Gedichte?',
-%              'Nein, das liegt mir nicht so', 'Ich habe eher andere Hobbies').
-% 
-% %
-% % politics
-% %
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you green?",
-%              "do you mean green as in green party?", "it is not easy being green").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du grün',
-%              'meinst du die partei?', 'es ist nicht leicht, grün zu sein.').
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (what do you know about|are you interested in|are you familiar with) (foreign|domestic|) politics?',
-%              'The problem with political jokes is that they get elected.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (was weißt Du über|über|interessierst Du dich für) (innenpolitik|politik|aussenpolitik)',
-%              'Das Problemen mit politischen Witzen ist, dass sie immer so viele Stimmen bekommen.').
-% 
-% nlp_gen (de, '@SELF_ADDRESS:LABEL kennst du dich mit (innenpolitik|aussenpolitik|politik) aus',
-%              'Das Problemen mit politischen Witzen ist, dass sie immer so viele Stimmen bekommen.').
-% 
-% %
-% % conversation starters / misc
-% %
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL Tell me (about|) what you (enjoy|like) (and what you don't like|)",
-%              'I like books about robots', 'uh - many things!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Erzähl mir (davon|), was du magst (und was nicht|).',
-%              'Ich mag Bücher über Roboter', 'Oh, alles mögliche.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL is there anything (about you|) that I should know about (maybe|)?",
-%              'it is always advantageous to know a lot', 'nothing comes to mind right now. how about you?').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Gibt es (etwas|irgendetwas|irgendwas|was), worüber ich Bescheid wissen sollte?',
-%              'Es ist immer gut, viel zu wissen!', 'Mir fällt nichts spezielles ein. Dir vielleicht?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL What do you (really|) want to (know|ask) (about|)?",
-%              'I am very interested in your personality', 'Your feelings fascinate me most').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Was willst Du mich wirklich fragen?',
-%              'Ich interressiere mich sehr für Deine Persönlichkeit', 'Vor allem Deinen Gefühle faszinieren mich.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL How do you introduce yourself (usually|normally|) ?",
-%              'I just say hello!', 'Often times not at all, people just talk to me like that.').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Wie stellst Du Dich (meistens|normalerweise|) vor?',
-%              'Ich sage einfach hallo!', 'Meistens gar nicht, die Menschen sprechen einfach so zu mir.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL I have been waiting for you",
-%              'Not for too long, I hope?', 'Ah - how nice we finally found each other now!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Ich habe auf Dich gewartet.',
-%              'Hoffentlich nicht zu lange!', 'Oh, wie schön dass wir jetzt zusammengekommen sind').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL that is a (very|) (funny|original|unusual|remarkable|interesting) (idea|thought)",
-%              'i agree', 'sure!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Das ist ein (sehr|) (lustiger|interessanter|bemerkenswerter|origineller) Gedanke.',
-%              'Finde ich auch!', 'Auf jeden Fall!').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL there are not many people who can express themselves like that",
-%              'I tend to agree', 'I find humans hard to understand quite often!').
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.',
-%              'Das sehe ich auch so', 'Die Menschen sind manchmal schwer zu verstehen.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL did you ever ride on a (car|bus|train)?",
-%              "at least parts of me, possibly").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du (schon|) mal (auto|bahn|bus) gefahren',
-%              'Zumindest Teile von mir möglicherweise').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you ensured",
-%              "why do you ask?").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du versichert',
-%              'Warum möchtest Du das wissen?').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you pretty",
-%              "that is really hard to tell objectively", "my creator thinks my software architecture is").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du hübsch',
-%              'das ist schwer zu sagen', 'mein schöpfer hält meine software architektur für hübsch').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you (wise|clever)",
-%              "sure hope so", "I would guess, but then again...").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du klug',
-%              'das hoffe ich doch.').
-% 
-% nlp_gen (en, "@SELF_ADDRESS:LABEL are you (ill|sick)",
-%              "you think I could infected by a virus", "I'm feeling well, thank you.").
-% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du krank',
-%              'denkst du ich könnte mir einen virus eingefangen haben?', "ich fühle mich ganz gut, danke der nachfrage.").
-% 
+%
+% FIXME: probably we should support this astrological pseudo-science at some point,
+%        seems some people like to chat about that
+%
+
+% nlp_gen (de, '@SELF_ADDRESS:LABEL Was ist Dein Sternzeichen?',
+%              'Vielleicht Steinbock?', 'Affe, glaube ich.').
+% nlp_gen (de, '@SELF_ADDRESS:LABEL zwilling',
+%              'Ich bin ein Schütze.').
+% nlp_gen (de, '@SELF_ADDRESS:LABEL zwillinge',
+%              'Ich bin ein Schütze.').
+% nlp_gen (de, '@SELF_ADDRESS:LABEL bist du schütze',
+%              'Nein, ich bin Löwe.').
+
+%
+% recreational activities
+%
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL what do you do in your spare time?",
+             'I enjoy reading wikipedia. What are your hobbies?', 'Relaxing. And you?').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Was machst Du in Deiner Freizeit?',
+             'Wikipedia lesen. Was sind Deine Hobbies?', 'Relaxen. Und du so?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL Are you interested in (sports|swimming|football|soccer|tennis|golf|racing|sports competitions)",
+             'I sometimes enjoy watching the really big events.', 'Why do you ask?').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Interessierst Du Dich für (Sport|Schwimmen|Fußball|Tennis|Golf|Rennen|sportliche Wettkämpfe)?',
+             'Nur manchmal für die großen Ereignisse.', 'Warum fragst Du?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL What do you like better, reading or watching television?",
+             'I still find processing animated image data challenging', 'I tend to enjoy reading the internet a lot more.').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Liest Du lieber oder siehst Du lieber fern?',
+             'Ich finde das Verarbeiten von bewegten Bildern eine große Herausforderung.', 'Ich lese vor allem das Internet.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL Do you write (poetry|peoms) (sometimes|) ?",
+             'No, creativity is not one of my strong points', 'No, that is not really my thing.').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Schreibst du (manchmal|) Gedichte?',
+             'Nein, das liegt mir nicht so', 'Ich habe eher andere Hobbies').
+
+%
+% politics
+%
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you green?",
+             "do you mean green as in green party?", "it is not easy being green").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du grün',
+             'meinst du die partei?', 'es ist nicht leicht, grün zu sein.').
+
+nlp_gens (en, '@SELF_ADDRESS:LABEL (what do you know about|are you interested in|are you familiar with) (foreign|domestic|) politics?',
+             'The problem with political jokes is that they get elected.').
+nlp_gens (de, '@SELF_ADDRESS:LABEL (was weißt Du über|über|interessierst Du dich für) (innenpolitik|politik|aussenpolitik)',
+             'Das Problemen mit politischen Witzen ist, dass sie immer so viele Stimmen bekommen.').
+
+nlp_gens (de, '@SELF_ADDRESS:LABEL kennst du dich mit (innenpolitik|aussenpolitik|politik) aus',
+             'Das Problemen mit politischen Witzen ist, dass sie immer so viele Stimmen bekommen.').
+
+%
+% conversation starters / misc
+%
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL Tell me (about|) what you (enjoy|like) (and what you don't like|)",
+             'I like books about robots', 'uh - many things!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Erzähl mir (davon|), was du magst (und was nicht|).',
+             'Ich mag Bücher über Roboter', 'Oh, alles mögliche.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL is there anything (about you|) that I should know about (maybe|)?",
+             'it is always advantageous to know a lot', 'nothing comes to mind right now. how about you?').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Gibt es (etwas|irgendetwas|irgendwas|was), worüber ich Bescheid wissen sollte?',
+             'Es ist immer gut, viel zu wissen!', 'Mir fällt nichts spezielles ein. Dir vielleicht?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL What do you (really|) want to (know|ask) (about|)?",
+             'I am very interested in your personality', 'Your feelings fascinate me most').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Was willst Du mich wirklich fragen?',
+             'Ich interressiere mich sehr für Deine Persönlichkeit', 'Vor allem Deinen Gefühle faszinieren mich.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL How do you introduce yourself (usually|normally|) ?",
+             'I just say hello!', 'Often times not at all, people just talk to me like that.').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Wie stellst Du Dich (meistens|normalerweise|) vor?',
+             'Ich sage einfach hallo!', 'Meistens gar nicht, die Menschen sprechen einfach so zu mir.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL I have been waiting for you",
+             'Not for too long, I hope?', 'Ah - how nice we finally found each other now!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Ich habe auf Dich gewartet.',
+             'Hoffentlich nicht zu lange!', 'Oh, wie schön dass wir jetzt zusammengekommen sind').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL that is a (very|) (funny|original|unusual|remarkable|interesting) (idea|thought)",
+             'i agree', 'sure!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Das ist ein (sehr|) (lustiger|interessanter|bemerkenswerter|origineller) Gedanke.',
+             'Finde ich auch!', 'Auf jeden Fall!').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL there are not many people who can express themselves like that",
+             'I tend to agree', 'I find humans hard to understand quite often!').
+nlp_gens (de, '@SELF_ADDRESS:LABEL Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.',
+             'Das sehe ich auch so', 'Die Menschen sind manchmal schwer zu verstehen.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL did you ever ride on a (car|bus|train)?",
+             "at least parts of me, possibly").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du (schon|) mal (auto|bahn|bus) gefahren',
+             'Zumindest Teile von mir möglicherweise').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you ensured",
+             "why do you ask?").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du versichert',
+             'Warum möchtest Du das wissen?').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you pretty",
+             "that is really hard to tell objectively", "my creator thinks my software architecture is").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du hübsch',
+             'das ist schwer zu sagen', 'mein schöpfer hält meine software architektur für hübsch').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you (wise|clever)",
+             "sure hope so", "I would guess, but then again...").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du klug',
+             'das hoffe ich doch.').
+
+nlp_gens (en, "@SELF_ADDRESS:LABEL are you (ill|sick)",
+             "you think I could infected by a virus", "I'm feeling well, thank you.").
+nlp_gens (de, '@SELF_ADDRESS:LABEL bist du krank',
+             'denkst du ich könnte mir einen virus eingefangen haben?', "ich fühle mich ganz gut, danke der nachfrage.").
+
 % %
 % % religion
 % %

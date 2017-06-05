@@ -867,97 +867,97 @@ nlp_test(de,
              ).
 
 
-% %
-% % age, place of birth, where I live
-% %
-% 
-% answer (meBirthdate, en) :-
-%     rdf (distinct, limit(1),
-%          aiu:self, wdpd:DateOfBirth, TS),
-%     transcribe_date(en, dativ, TS, TS_SCRIPT),
-%     context_push(topic, birthday),
-%     say_eoa(en, format_str('I became operational on %s for the first time.', TS_SCRIPT)).
-% answer (meBirthdate, de) :-
-%     rdf (distinct, limit(1),
-%          aiu:self, wdpd:DateOfBirth, TS),
-%     transcribe_date(de, dativ, TS, TS_SCRIPT),
-%     context_push(topic, birthday),
-%     say_eoa(de, format_str('Ich ging am %s zum ersten Mal in Betrieb.', TS_SCRIPT)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL when did you (really|) (become operational|get into operation|get switched on|) (for the first time|first|) ?',
-%              answer(meBirthdate, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL when were you (really|) born (by the way|)?',
-%              answer(meBirthdate, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (what is your age|how old are you) (by the way|really|) ?',
-%              answer(meBirthdate, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL wann bist du (eigentlich|wirklich|) (zum ersten Mal|) in Betrieb gegangen?',
-%              answer(meBirthdate, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL wann wurdest du (eigentlich|wirklich|) geboren?',
-%              answer(meBirthdate, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL Wie alt bist Du (eigentlich|wirklich|) ?',
-%              answer(meBirthdate, de)).
-% 
-% answer (meBirthplace, en) :-
-%     rdf (distinct, limit(1),
-%          aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
-%          BIRTHPLACE, rdfs:label,        LABEL,
-%          filter (lang(LABEL) = 'en')),
-%     context_push(topic, BIRTHPLACE),
-%     say_eoa(en, format_str('I became operational for the first time in %s.', LABEL)).
-% answer (meBirthplace, de) :-
-%     rdf (distinct, limit(1),
-%          aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
-%          BIRTHPLACE, rdfs:label,        LABEL,
-%          filter (lang(LABEL) = 'de')),
-%     context_push(topic, BIRTHPLACE),
-%     say_eoa(de, format_str('Ich bin in %s zum ersten Mal in Betrieb gegangen.', LABEL)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (where|in which town|in which place) (have you been|were you) (really|) born (by the way|)?',
-%              answer(meBirthplace, en)).
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (where|from which town|from which place) do you (really|) come from (by the way|)?',
-%              answer(meBirthplace, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (An welchem Ort|in welcher Stadt|wo) (bist|wurdest) Du (eigentlich|wirklich|) geboren?',
-%              answer(meBirthplace, de)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (Aus welchem Ort|aus welcher Stadt|wo) kommst Du (eigentlich|) her?',
-%              answer(meBirthplace, de)).
-% 
-% answer (meLocation, en) :-
-%     rdf (distinct, limit(1),
-%          aiu:self, wdpd:LocatedIn, LOCATION,
-%          LOCATION, rdfs:label,     LABEL,
-%          filter (lang(LABEL) = 'en')),
-%     context_push(topic, LOCATION),
-%     say_eoa(en, format_str('I am locted in %s.', LABEL)).
-% answer (meLocation, de) :-
-%     rdf (distinct, limit(1),
-%          aiu:self, wdpd:LocatedIn, LOCATION,
-%          LOCATION, rdfs:label,     LABEL,
-%          filter (lang(LABEL) = 'de')),
-%     context_push(topic, LOCATION),
-%     say_eoa(de, format_str('Ich befinde mich in %s.', LABEL)).
-% 
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (in which town|in which place|where) (are you living|are you located|are you|do you live|do you reside) (by the way|at the moment|currently|now|)?',
-%              answer(meLocation, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (an welchem Ort|in welcher Stadt|wo) (wohnst|lebst|bist) Du (eigentlich|im Moment|derzeit|)?',
-%              answer(meLocation, de)).
-% 
-% nlp_test(en,
-%          ivr(in('Computer where were you born?'),
-%              out("I became operational for the first time in Stuttgart.")),
-%          ivr(in('Computer where are you living now?'),
-%              out("I am locted in Stuttgart.")),
-%          ivr(in('How old are you?'),
-%              out('I became operational on january seven, 2017 for the first time.'))
-%              ).
-% nlp_test(de,
-%          ivr(in('Computer, wo wurdest du geboren?'),
-%              out('Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen.')),
-%          ivr(in('wo wohnst du?'),
-%              out('ich befinde mich in stuttgart.')),
-%          ivr(in('Wie alt bist du eigentlich?'),
-%              out('Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.'))
-%              ).
-% 
+%
+% age, place of birth, where I live
+%
+
+answerz (I, en, meBirthdate) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:DateOfBirth, TS),
+    transcribe_date(en, dativ, TS, TS_SCRIPT),
+    % context_push(topic, birthday),
+    sayz(I, en, format_str('I became operational on %s for the first time.', TS_SCRIPT)).
+answerz (I, de, meBirthdate) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:DateOfBirth, TS),
+    transcribe_date(de, dativ, TS, TS_SCRIPT),
+    % context_push(topic, birthday),
+    sayz(I, de, format_str('Ich ging am %s zum ersten Mal in Betrieb.', TS_SCRIPT)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL when did you (really|) (become operational|get into operation|get switched on|) (for the first time|first|) ?',
+             answerz(I, en, meBirthdate)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL when were you (really|) born (by the way|)?',
+             answerz(I, en, meBirthdate)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL (what is your age|how old are you) (by the way|really|) ?',
+             answerz(I, en, meBirthdate)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wann bist du (eigentlich|wirklich|) (zum ersten Mal|) in Betrieb gegangen?',
+             answerz(I, de, meBirthdate)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL wann wurdest du (eigentlich|wirklich|) geboren?',
+             answerz(I, de, meBirthdate)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL Wie alt bist Du (eigentlich|wirklich|) ?',
+             answerz(I, de, meBirthdate)).
+
+answerz (I, en, meBirthplace) :-
+    rdf (distinct, limit(1),
+         aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
+         BIRTHPLACE, rdfs:label,        LABEL,
+         filter (lang(LABEL) = 'en')),
+    % context_push(topic, BIRTHPLACE),
+    sayz(I, en, format_str('I became operational for the first time in %s.', LABEL)).
+answerz (I, de, meBirthplace) :-
+    rdf (distinct, limit(1),
+         aiu:self,   wdpd:PlaceOfBirth, BIRTHPLACE,
+         BIRTHPLACE, rdfs:label,        LABEL,
+         filter (lang(LABEL) = 'de')),
+    % context_push(topic, BIRTHPLACE),
+    sayz(I, de, format_str('Ich bin in %s zum ersten Mal in Betrieb gegangen.', LABEL)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (where|in which town|in which place) (have you been|were you) (really|) born (by the way|)?',
+             answerz(I, en, meBirthplace)).
+nlp_gen (en, '@SELF_ADDRESS:LABEL (where|from which town|from which place) do you (really|) come from (by the way|)?',
+             answerz(I, en, meBirthplace)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (An welchem Ort|in welcher Stadt|wo) (bist|wurdest) Du (eigentlich|wirklich|) geboren?',
+             answerz(I, de, meBirthplace)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (Aus welchem Ort|aus welcher Stadt|wo) kommst Du (eigentlich|) her?',
+             answerz(I, de, meBirthplace)).
+
+answerz (I, en, meLocation) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:LocatedIn, LOCATION,
+         LOCATION, rdfs:label,     LABEL,
+         filter (lang(LABEL) = 'en')),
+    % context_push(topic, LOCATION),
+    sayz(I, en, format_str('I am locted in %s.', LABEL)).
+answerz (I, de, meLocation) :-
+    rdf (distinct, limit(1),
+         aiu:self, wdpd:LocatedIn, LOCATION,
+         LOCATION, rdfs:label,     LABEL,
+         filter (lang(LABEL) = 'de')),
+    % context_push(topic, LOCATION),
+    sayz(I, de, format_str('Ich befinde mich in %s.', LABEL)).
+
+nlp_gen (en, '@SELF_ADDRESS:LABEL (in which town|in which place|where) (are you living|are you located|are you|do you live|do you reside) (by the way|at the moment|currently|now|)?',
+             answerz(I, en, meLocation)).
+nlp_gen (de, '@SELF_ADDRESS:LABEL (an welchem Ort|in welcher Stadt|wo) (wohnst|lebst|bist) Du (eigentlich|im Moment|derzeit|)?',
+             answerz(I, de, meLocation)).
+
+nlp_test(en,
+         ivr(in('Computer where were you born?'),
+             out("I became operational for the first time in Stuttgart.")),
+         ivr(in('Computer where are you living now?'),
+             out("I am locted in Stuttgart.")),
+         ivr(in('How old are you?'),
+             out('I became operational on january seven, 2017 for the first time.'))
+             ).
+nlp_test(de,
+         ivr(in('Computer, wo wurdest du geboren?'),
+             out('Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen.')),
+         ivr(in('wo wohnst du?'),
+             out('ich befinde mich in stuttgart.')),
+         ivr(in('Wie alt bist du eigentlich?'),
+             out('Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.'))
+             ).
+
 % %
 % % FIXME: probably we should support this astrological pseudo-science at some point,
 % %        seems some people like to chat about that

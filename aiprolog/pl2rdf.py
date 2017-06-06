@@ -114,7 +114,7 @@ def pl_to_rdf(term, env, pe, var_map, kb, location):
     else:
         a = term
 
-    if (not pe or not a) and isinstance (term, Variable):
+    if (not pe or isinstance(a, Variable)) and isinstance (term, Variable):
         if not term.name in var_map:
             var_map[term.name] = rdflib.term.Variable(term.name)
         return var_map[term.name]

@@ -293,15 +293,15 @@ def builtin_rdf_assert(g, pe):
     args = pred.args
 
     if len(args) != 3:
-        raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args), location)
+        raise PrologRuntimeError('rdf_assert: 3 args expected, got %d args' % len(args), g.location)
 
     arg_s = args[0]
     arg_p = args[1]
     arg_o = args[2]
 
-    quads = [ (pl_to_rdf(arg_s, {}, pe, {}, pe.kb, location), 
-               pl_to_rdf(arg_p, {}, pe, {}, pe.kb, location), 
-               pl_to_rdf(arg_o, {}, pe, {}, pe.kb, location),
+    quads = [ (pl_to_rdf(arg_s, {}, pe, {}, pe.kb, g.location), 
+               pl_to_rdf(arg_p, {}, pe, {}, pe.kb, g.location), 
+               pl_to_rdf(arg_o, {}, pe, {}, pe.kb, g.location),
                pe.context_gn) ]
 
     pe.kb.addN(quads)
@@ -421,7 +421,9 @@ def builtin_tokenize(g, pe):
     arg_str     = pe.prolog_get_string   (args[1], g.env, g.location)
     arg_tokens  = pe.prolog_get_variable (args[2], g.env, g.location)
 
-    g.env[arg_tokens] = ListLiteral(tokenize(arg_str, lang=arg_lang.name))
+    tokens = map(lambda s: StringLiteral(s), tokenize(arg_str, lang=arg_lang.name))
+
+    g.env[arg_tokens] = ListLiteral(tokens)
 
     return True
 
@@ -455,6 +457,8 @@ class AIPrologRuntime(PrologRuntime):
         self.kb = kb
 
         # sparql / rdf
+
+        self.context_gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
         self.register_builtin          ('sparql_query',    builtin_sparql_query)
         self.register_builtin          ('rdf',             builtin_rdf)

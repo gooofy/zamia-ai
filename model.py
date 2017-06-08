@@ -68,6 +68,20 @@ class DiscourseRound(Base):
     __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
 
 
+class TrainingData(Base):
+
+    __tablename__ = 'training_data'
+
+    id                = Column(Integer, primary_key=True)
+
+    lang              = Column(String(2), index=True)
+    module            = Column(String(255), index=True)
+
+    layer             = Column(Integer)
+
+    inp               = Column(Text)
+    resp              = Column(Text)
+
 class Cronjob(Base):
 
     __tablename__ = 'cronjobs'

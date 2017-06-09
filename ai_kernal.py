@@ -37,12 +37,13 @@ import datetime
 import numpy as np
 
 from tzlocal              import get_localzone # $ pip install tzlocal
+from copy                 import deepcopy
 from sqlalchemy.orm       import sessionmaker
 
 import model
 
 from zamiaprolog.logicdb  import LogicDB
-from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, Predicate, Clause
+from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause
 from zamiaprolog.errors   import PrologError
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
 from aiprolog.pl2rdf      import pl_literal_to_rdf
@@ -383,6 +384,207 @@ class AIKernal(object):
 
         self.session.commit()
 
+    def compile2_module (self, module_name, run_trace=False, print_utterances=False, warn_level=0):
+
+        m = self.modules[module_name]
+
+        logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
+
+        compiler = AIPrologParser (trace=run_trace, print_utterances=print_utterances, warn_level=warn_level)
+
+        compiler.clear_module(module_name, self.db)
+
+        for pl_fn in getattr (m, 'PL_SOURCES'):
+            
+            pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
+
+            logging.debug('   parsing %s ...' % pl_pathname)
+            compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
+
+        # delete old NLP training data
+
+        self.db.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+
+        # extract NLP training data
+
+        sl = SourceLocation('<input>', 0, 0)
+        solutions = self.prolog_rt.search_predicate ('nlp_train', [StringLiteral(module_name), 'LANG', 'DATA'], env={}, location=sl, err_on_missing=True)
+
+        todo = []
+        for solution in solutions:
+
+            utt_lang  = solution['LANG'].name
+
+            data = solution['DATA'].l
+
+            if len(data) % 3 != 0:
+                raise PrologException ('Error: training data length has to be multiple of 3!', sl)
+
+            data_pos = 0
+            context  = []
+
+            todo.append((data, data_pos, context, None, {}))
+
+        # now: simulate all conversations to extract context training information
+
+        self.prolog_rt.db.clear_module(TEST_MODULE)
+
+        while len(todo)>0:
+
+            data, data_pos, context, prevIAS, prevOVL = todo.pop()
+            if data_pos >= len(data):
+                continue
+
+            tokens    = data[data_pos].l
+            gcode     = data[data_pos+1].l
+            rcode     = data[data_pos+2].l
+            inp       = context + tokens
+            utterance = u' '.join(map(lambda s: s.s, tokens))
+
+            logging.info (u'utterance : %s' % unicode(utterance))
+            logging.info (u'gcode     : %s' % unicode(gcode))
+
+            data_pos += 3
+
+            cur_ias, env = self._setup_ias (sl, test_mode = True, 
+                                                user_uri  = TEST_USER, 
+                                                utterance = utterance, 
+                                                utt_lang  = utt_lang, 
+                                                tokens    = tokens,
+                                                prevIAS   = prevIAS,
+                                                prevOVL   = prevOVL)
+
+            import pdb; pdb.set_trace()
+               
+            self.db.session.add(model.TrainingData(lang   = utt_lang,
+                                                   module = module_name,
+                                                   layer  = 0,
+                                                   inp    = prolog_to_json(inp),
+                                                   resp   = prolog_to_json(gcode)))
+            
+            c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
+            s2s = self.prolog_rt.search(c2, env=env)
+
+            for s2 in s2s:
+
+                # logging.info ('s2: %s' % repr(s2))
+
+                # extract context from ias
+                context = self._ias_context(s2, cur_ias, sl)
+                todo.append((data, data_pos, context, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+
+                c3 = Clause (body=Predicate(name='and', args=rcode), location=sl)
+                s3s = self.prolog_rt.search(c3, env=s2)
+
+                for s3 in s3s:
+
+                    # logging.info ('s3: %s' % repr(s3))
+
+                    inp = self._ias_context(s3, cur_ias, sl)
+
+                    s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'action', 'V'], env=s3, location=sl, err_on_missing=True)
+
+                    resp = []
+
+                    for s4 in s4s:
+                        resp.append(s4['V'])
+
+                    self.db.session.add(model.TrainingData(lang   = utt_lang,
+                                                           module = module_name,
+                                                           layer  = 1,
+                                                           inp    = prolog_to_json(inp),
+                                                           resp   = prolog_to_json(resp)))
+
+                    # for s4 in s4s:
+                    #     logging.info ('s4: K=%s, V=%s' % (s4['K'], s4['V']))
+
+        self.db.session.commit()
+            
+    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'utterance', 'uttLang', 'tokens', 'currentTime', 'prevIAS', 'action' ])
+
+    def _ias_context (self, solution, cur_ias, location):
+
+        context = []
+
+        s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=solution, location=location, err_on_missing=True)
+
+        for s4 in s4s:
+
+            k = s4['K']
+            v = s4['V']
+
+            if not isinstance(k, Predicate):
+                continue
+            if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
+                continue
+
+            context.append(k)
+            context.append(v)
+
+        return context
+
+
+    def compile2_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
+
+        for module_name in module_names:
+
+            if module_name == 'all':
+
+                for mn2 in self.all_modules:
+                    self.load_module (mn2)
+                    self.compile2_module (mn2, run_trace, print_utterances, warn_level)
+
+            else:
+                self.load_module (module_name)
+                self.compile2_module (module_name, run_trace, print_utterances, warn_level)
+
+        self.session.commit()
+
+    def _setup_ias (self, sl, test_mode, user_uri, utterance, utt_lang, tokens, prevIAS, prevOVL):
+
+        cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
+
+        if test_mode:
+            currentTime = StringLiteral(TEST_TIME)
+        else:
+            currentTime = StringLiteral(datetime.now().isoformat())
+
+        if not prevIAS:
+            # find prevIAS for this user, if any
+            # FIXME: there should be a more efficient way than linear search
+
+            prevIAS = None
+            for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], err_on_missing=False):
+
+                ias = s['I']
+
+                if not prevIAS:
+                    prevIAS = ias
+                    continue
+
+                if ias.name > prevIAS.name:
+                    prevIAS = ias
+
+        ovl = deepcopy(prevOVL)
+        if not 'ias' in ovl:
+            ovl['ias'] = []
+
+        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
+        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl))
+        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
+        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
+        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
+
+        if prevIAS:
+            ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
+
+        env = {
+               'I'                     : cur_ias,
+               ASSERT_OVERLAY_VAR_NAME : ovl
+              }
+
+        return cur_ias, env
+
     def process_input (self, utterance, utt_lang, user_uri, test_mode=False, trace=False):
 
         """ process user input, return action(s) """
@@ -401,44 +603,7 @@ class AIKernal(object):
 
         sl = SourceLocation('<input>', 0, 0)
 
-        cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
-
-        if test_mode:
-            currentTime = StringLiteral(TEST_TIME)
-        else:
-            currentTime = StringLiteral(datetime.now().isoformat())
-
-        # find prevIAS for this user, if any
-        # FIXME: there should be a more efficient way than linear search
-
-        prevIAS = None
-        for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], err_on_missing=False):
-
-            ias = s['I']
-
-            if not prevIAS:
-                prevIAS = ias
-                continue
-
-            if ias.name > prevIAS.name:
-                prevIAS = ias
-
-        ias_clauses = [
-                        Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl),
-                        Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl),
-                        Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl),
-                        Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl),
-                        Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl),
-                      ]
-        if prevIAS:
-            ias_clauses.append(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
-
-        ovl = { 'ias': ias_clauses }
-
-        env = {
-               'I'                     : cur_ias,
-               ASSERT_OVERLAY_VAR_NAME : ovl
-              }
+        cur_ias, env = self._setup_ias(sl, test_mode, user_uri, utterance, utt_lang, tokens, None, {})
 
         self.prolog_rt.set_trace(trace)
 

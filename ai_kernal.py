@@ -368,42 +368,9 @@ class AIKernal(object):
             logging.debug('   parsing %s ...' % pl_pathname)
             compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
 
-    def compile_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
-
-        for module_name in module_names:
-
-            if module_name == 'all':
-
-                for mn2 in self.all_modules:
-                    self.load_module (mn2)
-                    self.compile_module (mn2, run_trace, print_utterances, warn_level)
-
-            else:
-                self.load_module (module_name)
-                self.compile_module (module_name, run_trace, print_utterances, warn_level)
-
-        self.session.commit()
-
-    def compile2_module (self, module_name, run_trace=False, print_utterances=False, warn_level=0):
-
-        m = self.modules[module_name]
-
-        logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
-
-        compiler = AIPrologParser (trace=run_trace, print_utterances=print_utterances, warn_level=warn_level)
-
-        compiler.clear_module(module_name, self.db)
-
-        for pl_fn in getattr (m, 'PL_SOURCES'):
-            
-            pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
-
-            logging.debug('   parsing %s ...' % pl_pathname)
-            compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
-
         # delete old NLP training data
 
-        self.db.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
 
         # extract NLP training data
 
@@ -454,13 +421,12 @@ class AIKernal(object):
                                                 prevIAS   = prevIAS,
                                                 prevOVL   = prevOVL)
 
-            import pdb; pdb.set_trace()
-               
-            self.db.session.add(model.TrainingData(lang   = utt_lang,
-                                                   module = module_name,
-                                                   layer  = 0,
-                                                   inp    = prolog_to_json(inp),
-                                                   resp   = prolog_to_json(gcode)))
+            self.session.add(model.TrainingData(lang      = utt_lang,
+                                                module    = module_name,
+                                                layer     = 0,
+                                                utterance = utterance,
+                                                inp       = prolog_to_json(inp),
+                                                resp      = prolog_to_json(gcode)))
             
             c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
             s2s = self.prolog_rt.search(c2, env=env)
@@ -484,22 +450,44 @@ class AIKernal(object):
 
                     s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'action', 'V'], env=s3, location=sl, err_on_missing=True)
 
-                    resp = []
+                    resp      = []
+                    utterance = u''
 
                     for s4 in s4s:
-                        resp.append(s4['V'])
+                        p = s4['V']
+                        if p.name == 'say':
+                            l = p.args[0]
+                            for word in p.args[1].l:
+                                if len(utterance)>0:
+                                    utterance += u' '
+                                utterance += word.s
+                                resp.append(Predicate(name='say', args=[l, word]))
 
-                    self.db.session.add(model.TrainingData(lang   = utt_lang,
-                                                           module = module_name,
-                                                           layer  = 1,
-                                                           inp    = prolog_to_json(inp),
-                                                           resp   = prolog_to_json(resp)))
+                        elif p.name == 'sayv':
+                            if len(utterance)>0:
+                                utterance += u' '
+                            utterance += u'$' + p.args[1].name
+                            resp.append(p)
+                        else:
+                            resp.append(p)
 
-                    # for s4 in s4s:
-                    #     logging.info ('s4: K=%s, V=%s' % (s4['K'], s4['V']))
+                    self.session.add(model.TrainingData(lang      = utt_lang,
+                                                        module    = module_name,
+                                                        layer     = 1,
+                                                        utterance = utterance,
+                                                        inp       = prolog_to_json(inp),
+                                                        resp      = prolog_to_json(resp)))
 
-        self.db.session.commit()
-            
+        # if self.discourse_rounds:
+
+        #     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+        #     start_time = time()
+        #     logging.info (u'bulk saving %d discourse rounds to db...' % len(self.discourse_rounds))
+        #     self.db.session.bulk_save_objects(self.discourse_rounds)
+        #     self.db.commit()
+        #     logging.info (u'bulk saving %d discourse rounds to db... done. Took %fs.' % (len(self.discourse_rounds), time()-start_time))
+
     _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'utterance', 'uttLang', 'tokens', 'currentTime', 'prevIAS', 'action' ])
 
     def _ias_context (self, solution, cur_ias, location):
@@ -524,7 +512,7 @@ class AIKernal(object):
         return context
 
 
-    def compile2_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
+    def compile_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
 
         for module_name in module_names:
 
@@ -532,11 +520,11 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile2_module (mn2, run_trace, print_utterances, warn_level)
+                    self.compile_module (mn2, run_trace, print_utterances, warn_level)
 
             else:
                 self.load_module (module_name)
-                self.compile2_module (module_name, run_trace, print_utterances, warn_level)
+                self.compile_module (module_name, run_trace, print_utterances, warn_level)
 
         self.session.commit()
 

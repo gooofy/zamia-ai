@@ -49,25 +49,6 @@ Base = declarative_base()
 # NLP stuff
 #
 
-class DiscourseRound(Base):
-
-    __tablename__ = 'discourse_rounds'
-
-    id                = Column(Integer, primary_key=True)
-
-    lang              = Column(String(2), index=True)
-    module            = Column(String(255), index=True)
-
-    inp               = Column(UnicodeText, index=True)
-    resp              = Column(UnicodeText)
-
-    loc_fn            = Column(String(255))
-    loc_line          = Column(Integer)
-    loc_col           = Column(Integer)
-
-    __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
-
-
 class TrainingData(Base):
 
     __tablename__ = 'training_data'
@@ -79,8 +60,16 @@ class TrainingData(Base):
 
     layer             = Column(Integer)
 
+    utterance         = Column(UnicodeText, index=True)
+
     inp               = Column(Text)
     resp              = Column(Text)
+
+    # loc_fn            = Column(String(255))
+    # loc_line          = Column(Integer)
+    # loc_col           = Column(Integer)
+
+    # __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
 
 class Cronjob(Base):
 

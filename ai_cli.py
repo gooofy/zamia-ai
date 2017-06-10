@@ -285,52 +285,6 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")
-    @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
-           help="run tests")
-    @cmdln.option("-L", "--test-line", dest="test_line", type="int", default=-1,
-           help="run test from specific line only, default: all tests are run")
-    @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
-           help="print generated utterances")
-    @cmdln.option("-d", "--debug", dest="debug", action="store_true",
-           help="enable all debug logging")
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="enable prolog debug logging")
-    @cmdln.option("-w", "--warn-level", dest="warn_level", type = "int", default=0,
-           help="warn level, default: 0 (none)")
-    def do_compile2(self, subcmd, opts, *paths):
-        """${cmd_name}: compile2 module(s)
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if len(paths)==0:
-            logging.error ('specify at least one module name')
-            return
-
-        if opts.debug:
-            logging.getLogger().setLevel(logging.DEBUG)
-            logging.debug('verbose logging enabled.')
-        elif opts.verbose:
-            logging.getLogger(PROLOG_LOGGER_NAME).setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
-
-        try:
-            self.kernal.compile2_module_multi (paths, opts.run_trace, opts.print_utterances, opts.warn_level)
-
-            if opts.run_tests:
-                raise Exception ('FIXME: sorry, run_tests2 is not implemented yet.')
-                # self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_line=opts.test_line)
-
-        except PrologError as e:
-            logging.error("*** ERROR: %s" % e)
-
-        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-        logging.getLogger(PROLOG_LOGGER_NAME).setLevel(DEFAULT_LOGLEVEL)
-
-    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
-           help="enable tracing")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     @cmdln.option("-L", "--test-line", dest="test_line", type="int", default=-1,

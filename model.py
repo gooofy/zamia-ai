@@ -81,29 +81,5 @@ class Cronjob(Base):
     name              = Column(String, index=True)
     last_run          = Column(Integer, index=True)
 
-class NLPTest(Base):
-
-    __tablename__ = 'nlp_tests'
-
-    id                = Column(Integer, primary_key=True)
-
-    module            = Column(String(255), index=True)
-    name              = Column(String(255), index=True)
-
-    clause            = Column(Text)
-
-class NLPMacro(Base):
-
-    __tablename__ = 'nlp_macros'
-
-    id                = Column(Integer, primary_key=True)
-
-    module            = Column(String(255), index=True)
-    lang              = Column(String(2),   index=True)
-    name              = Column(String(255), index=True)
-
-    mappings          = Column(Text)
-    location          = Column(String(255), index=True)
-
 Base.metadata.create_all(engine)
 

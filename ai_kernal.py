@@ -46,9 +46,9 @@ from zamiaprolog.logicdb  import LogicDB
 from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause
 from zamiaprolog.errors   import PrologError
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
+from zamiaprolog.parser   import PrologParser
 from aiprolog.pl2rdf      import pl_literal_to_rdf
 from aiprolog.runtime     import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
-from aiprolog.parser      import AIPrologParser
 
 from kb                   import AIKB
 from nltools              import misc
@@ -107,7 +107,7 @@ class AIKernal(object):
         #
 
         self.prolog_rt = AIPrologRuntime(self.db, self.kb)
-        self.parser    = AIPrologParser()
+        self.parser    = PrologParser ()
 
 
     # FIXME: this will work only on the first call
@@ -357,7 +357,7 @@ class AIKernal(object):
 
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 
-        compiler = AIPrologParser (trace=run_trace, print_utterances=print_utterances, warn_level=warn_level)
+        compiler = PrologParser ()
 
         compiler.clear_module(module_name, self.db)
 
@@ -366,7 +366,7 @@ class AIKernal(object):
             pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
 
             logging.debug('   parsing %s ...' % pl_pathname)
-            compiler.compile_file (pl_pathname, module_name, self.db, self.kb)
+            compiler.compile_file (pl_pathname, module_name, self.db, clear_module=False)
 
         # delete old NLP training data
 
@@ -721,136 +721,147 @@ class AIKernal(object):
 
     def test_module (self, module_name, trace=False, line=-1):
 
-        logging.info('running tests of module %s ...' % (module_name))
+        logging.info('extracting tests of module %s ...' % (module_name))
 
-        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+        sl = SourceLocation('<input>', 0, 0)
+        solutions = self.prolog_rt.search_predicate ('nlp_test', [StringLiteral(module_name), 'LANG', 'NAME', 'DATA'], env={}, location=sl, err_on_missing=False)
 
-        for nlpt in self.db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name):
+        if len(solutions)==0:
+            logging.warn('module %s has no tests.' % module_name)
+            return
 
-            clause = json_to_prolog(nlpt.clause)
+        logging.info('running %d tests of module %s ...' % (len(solutions), module_name))
 
-            if line>=0 and clause.location.line != line:
-                logging.info ('skipping test %s' % clause.location)
-                continue
+        #FIXME: for solution in solutions:
 
-            logging.info ('running test %s ...' % clause.location)
+        # gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
-            # import pdb; pdb.set_trace()
-        
-            # test setup predicate for this module
+        # for nlpt in self.db.session.query(model.NLPTest).filter(model.NLPTest.module==module_name):
 
-            # FIXME: port to prolog kb ?
-            # self.kb.remove((CURIN, None, None, gn))
-            # quads = [ ( CURIN, KB_PREFIX+u'user', TEST_USER, gn) ]
-            # self.kb.addN_resolve(quads)
+        #     clause = json_to_prolog(nlpt.clause)
 
-            self.prolog_rt.db.clear_module(TEST_MODULE)
+        #     if line>=0 and clause.location.line != line:
+        #         logging.info ('skipping test %s' % clause.location)
+        #         continue
 
-            prolog_s = u'test_setup(\'%s\')' % (module_name)
-            c = self.parser.parse_line_clause_body(prolog_s)
+        #     logging.info ('running test %s ...' % clause.location)
 
-            self.prolog_rt.set_trace(trace)
+        #     # import pdb; pdb.set_trace()
+        # 
+        #     # test setup predicate for this module
 
-            solutions = self.prolog_rt.search(c)
+        #     # FIXME: port to prolog kb ?
+        #     # self.kb.remove((CURIN, None, None, gn))
+        #     # quads = [ ( CURIN, KB_PREFIX+u'user', TEST_USER, gn) ]
+        #     # self.kb.addN_resolve(quads)
 
-            # extract test rounds, look up matching discourse_rounds, execute them
+        #     self.prolog_rt.db.clear_module(TEST_MODULE)
 
-            args = clause.head.args
-            lang = args[0].name
+        #     prolog_s = u'test_setup(\'%s\')' % (module_name)
+        #     c = self.parser.parse_line_clause_body(prolog_s)
 
-            round_num = 0
-            for ivr in args[1:]:
+        #     self.prolog_rt.set_trace(trace)
 
-                if ivr.name != 'ivr':
-                    raise PrologError ('nlp_test: ivr predicate args expected.')
+        #     solutions = self.prolog_rt.search(c)
 
-                test_in = ''
-                test_out = ''
-                test_actions = []
+        #     # extract test rounds, look up matching discourse_rounds, execute them
 
-                for e in ivr.args:
+        #     args = clause.head.args
+        #     lang = args[0].name
 
-                    if e.name == 'in':
-                        test_in = ' '.join(tokenize(e.args[0].s, lang))
-                    elif e.name == 'out':
-                        test_out = ' '.join(tokenize(e.args[0].s, lang))
-                    elif e.name == 'action':
-                        test_actions.append(e.args[0])
-                    else:
-                        raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
-                   
-                logging.info("nlp_test: %s round %d test_in     : %s" % (clause.location, round_num, test_in) )
-                logging.info("nlp_test: %s round %d test_out    : %s" % (clause.location, round_num, test_out) )
-                logging.info("nlp_test: %s round %d test_actions: %s" % (clause.location, round_num, test_actions) )
+        #     round_num = 0
+        #     for ivr in args[1:]:
 
-                # execute all matching clauses, collect actions
+        #         if ivr.name != 'ivr':
+        #             raise PrologError ('nlp_test: ivr predicate args expected.')
 
-                # FIXME: nlp_test should probably let the user specify a user
-                action_buffers = self.process_input (test_in, lang, TEST_USER, test_mode=True, trace=trace)
+        #         test_in = ''
+        #         test_out = ''
+        #         test_actions = []
 
-                # import pdb; pdb.set_trace()
+        #         for e in ivr.args:
 
-                # check actual actions vs expected ones
-                matching_abuf = None
-                for abuf in sorted(action_buffers, key=lambda k: k['score'], reverse=True):
+        #             if e.name == 'in':
+        #                 test_in = ' '.join(tokenize(e.args[0].s, lang))
+        #             elif e.name == 'out':
+        #                 test_out = ' '.join(tokenize(e.args[0].s, lang))
+        #             elif e.name == 'action':
+        #                 test_actions.append(e.args[0])
+        #             else:
+        #                 raise PrologError (u'nlp_test: ivr predicate: unexpected arg: ' + unicode(e))
+        #            
+        #         logging.info("nlp_test: %s round %d test_in     : %s" % (clause.location, round_num, test_in) )
+        #         logging.info("nlp_test: %s round %d test_out    : %s" % (clause.location, round_num, test_out) )
+        #         logging.info("nlp_test: %s round %d test_actions: %s" % (clause.location, round_num, test_actions) )
 
-                    # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+        #         # execute all matching clauses, collect actions
 
-                    # check utterance
+        #         # FIXME: nlp_test should probably let the user specify a user
+        #         action_buffers = self.process_input (test_in, lang, TEST_USER, test_mode=True, trace=trace)
 
-                    actual_out = u''
-                    utt_lang   = u'en'
-                    for action in abuf['actions']:
-                        p = action.name
-                        if p == 'say':
-                            utt_lang = unicode(action.args[0])
-                            actual_out += u' ' + action.args[1].s
+        #         # import pdb; pdb.set_trace()
 
-                    if len(test_out) > 0:
-                        if len(actual_out)>0:
-                            actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                        logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (clause.location, round_num, actual_out, abuf['score']) )
-                        if actual_out != test_out:
-                            logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
-                            continue # no match
+        #         # check actual actions vs expected ones
+        #         matching_abuf = None
+        #         for abuf in sorted(action_buffers, key=lambda k: k['score'], reverse=True):
 
-                    logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (clause.location, round_num))
+        #             # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                    # check actions
+        #             # check utterance
 
-                    if len(test_actions)>0:
+        #             actual_out = u''
+        #             utt_lang   = u'en'
+        #             for action in abuf['actions']:
+        #                 p = action.name
+        #                 if p == 'say':
+        #                     utt_lang = unicode(action.args[0])
+        #                     actual_out += u' ' + action.args[1].s
 
-                        # import pdb; pdb.set_trace()
+        #             if len(test_out) > 0:
+        #                 if len(actual_out)>0:
+        #                     actual_out = u' '.join(tokenize(actual_out, utt_lang))
+        #                 logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (clause.location, round_num, actual_out, abuf['score']) )
+        #                 if actual_out != test_out:
+        #                     logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (clause.location, round_num))
+        #                     continue # no match
 
-                        # print repr(test_actions)
+        #             logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (clause.location, round_num))
 
-                        actions_matched = True
-                        for action in test_actions:
-                            for act in abuf['actions']:
-                                # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                if action == act:
-                                    break
-                            if action != act:
-                                actions_matched = False
-                                break
+        #             # check actions
 
-                        if not actions_matched:
-                            logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (clause.location, round_num))
-                            continue
+        #             if len(test_actions)>0:
 
-                        logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (clause.location, round_num))
+        #                 # import pdb; pdb.set_trace()
 
-                    matching_abuf = abuf
-                    break
+        #                 # print repr(test_actions)
 
-                if not matching_abuf:
-                    raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
-               
-                self.prolog_rt.db.store_overlayZ(TEST_MODULE, matching_abuf['overlay'])
+        #                 actions_matched = True
+        #                 for action in test_actions:
+        #                     for act in abuf['actions']:
+        #                         # print "    check action match: %s vs %s" % (repr(action), repr(act))
+        #                         if action == act:
+        #                             break
+        #                     if action != act:
+        #                         actions_matched = False
+        #                         break
 
-                round_num += 1
+        #                 if not actions_matched:
+        #                     logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (clause.location, round_num))
+        #                     continue
 
-        logging.info('running tests of module %s complete!' % (module_name))
+        #                 logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (clause.location, round_num))
+
+        #             matching_abuf = abuf
+        #             break
+
+        #         if not matching_abuf:
+        #             raise PrologError (u'nlp_test: %s round %d no matching abuf found.' % (clause.location, round_num))
+        #        
+        #         self.prolog_rt.db.store_overlayZ(TEST_MODULE, matching_abuf['overlay'])
+
+        #         round_num += 1
+
+        # logging.info('running tests of module %s complete!' % (module_name))
 
     def run_tests_multi (self, module_names, run_trace=False, test_line=-1):
 

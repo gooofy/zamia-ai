@@ -62,14 +62,14 @@ class TrainingData(Base):
 
     utterance         = Column(UnicodeText, index=True)
 
-    inp               = Column(Text)
+    inp               = Column(Text, index=True)
     resp              = Column(Text)
 
     # loc_fn            = Column(String(255))
     # loc_line          = Column(Integer)
     # loc_col           = Column(Integer)
 
-    # __table_args__    = (Index('idx_dr_inp_lang', "inp", "lang"), )
+    __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), )
 
 class Cronjob(Base):
 

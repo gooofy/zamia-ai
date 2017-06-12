@@ -57,9 +57,11 @@ from nltools.tokenizer    import tokenize
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
 
-TEST_USER    = USER_PREFIX + u'test'
-TEST_TIME    = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
-TEST_MODULE  = '__test__'
+TEST_USER          = USER_PREFIX + u'test'
+TEST_TIME          = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
+TEST_MODULE        = '__test__'
+
+NUM_CONTEXT_ROUNDS = 3
 
 class AIKernal(object):
 
@@ -384,13 +386,12 @@ class AIKernal(object):
 
             data = solution['DATA'].l
 
-            if len(data) % 3 != 0:
-                raise PrologException ('Error: training data length has to be multiple of 3!', sl)
+            if len(data) % 4 != 0:
+                raise PrologError ('Error: training data length has to be multiple of 4!', sl)
 
             data_pos = 0
-            context  = []
 
-            todo.append((data, data_pos, context, None, {}))
+            todo.append((data, data_pos, None, {}))
 
         # now: simulate all conversations to extract context training information
 
@@ -398,20 +399,21 @@ class AIKernal(object):
 
         while len(todo)>0:
 
-            data, data_pos, context, prevIAS, prevOVL = todo.pop()
+            data, data_pos, prevIAS, prevOVL = todo.pop()
             if data_pos >= len(data):
                 continue
 
-            tokens    = data[data_pos].l
-            gcode     = data[data_pos+1].l
-            rcode     = data[data_pos+2].l
-            inp       = context + tokens
-            utterance = u' '.join(map(lambda s: s.s, tokens))
+            prep      = data[data_pos].l
+            tokens    = data[data_pos+1].l
+            gcode     = data[data_pos+2].l
+            rcode     = data[data_pos+3].l
+            tokenss   = map(lambda s: s.s, tokens)
+            utterance = u' '.join(tokenss)
 
             logging.info (u'utterance : %s' % unicode(utterance))
             logging.info (u'gcode     : %s' % unicode(gcode))
 
-            data_pos += 3
+            data_pos += 4
 
             cur_ias, env = self._setup_ias (sl, test_mode = True, 
                                                 user_uri  = TEST_USER, 
@@ -421,12 +423,34 @@ class AIKernal(object):
                                                 prevIAS   = prevIAS,
                                                 prevOVL   = prevOVL)
 
-            self.session.add(model.TrainingData(lang      = utt_lang,
-                                                module    = module_name,
-                                                layer     = 0,
-                                                utterance = utterance,
-                                                inp       = prolog_to_json(inp),
-                                                resp      = prolog_to_json(gcode)))
+            if prep:
+                p = Clause (body=Predicate(name='and', args=prep), location=sl)
+                solutions = self.prolog_rt.search(p, env=env)
+                if len(solutions) != 1:
+                    raise PrologError("Expected exactly one solution when running the preparation code, got %d" % len(solutions), sl)
+                env = solutions[0]
+
+            inp = self._compute_net_input (env, cur_ias, sl)
+
+            found     = False
+            inp_json  = prolog_to_json(inp)
+            resp_json = prolog_to_json(gcode)
+            for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                                                                     model.TrainingData.layer == 0,
+                                                                     model.TrainingData.inp   == inp_json):
+                if tdr.resp == resp_json:
+                    found = True
+                    break
+
+            if not found:
+                self.session.add(model.TrainingData(lang      = utt_lang,
+                                                    module    = module_name,
+                                                    layer     = 0,
+                                                    utterance = utterance,
+                                                    inp       = inp_json,
+                                                    resp      = resp_json))
+            else:
+                logging.debug ('tdr for "%s" already in DB' % utterance)
             
             c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
             s2s = self.prolog_rt.search(c2, env=env)
@@ -434,49 +458,17 @@ class AIKernal(object):
             for s2 in s2s:
 
                 # logging.info ('s2: %s' % repr(s2))
+                    
+                inp = self._compute_net_input (s2, cur_ias, sl)
 
-                # extract context from ias
-                context = self._ias_context(s2, cur_ias, sl)
-                todo.append((data, data_pos, context, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+                todo.append((data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
 
-                c3 = Clause (body=Predicate(name='and', args=rcode), location=sl)
-                s3s = self.prolog_rt.search(c3, env=s2)
-
-                for s3 in s3s:
-
-                    # logging.info ('s3: %s' % repr(s3))
-
-                    inp = self._ias_context(s3, cur_ias, sl)
-
-                    s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'action', 'V'], env=s3, location=sl, err_on_missing=True)
-
-                    resp      = []
-                    utterance = u''
-
-                    for s4 in s4s:
-                        p = s4['V']
-                        if p.name == 'say':
-                            l = p.args[0]
-                            for word in p.args[1].l:
-                                if len(utterance)>0:
-                                    utterance += u' '
-                                utterance += word.s
-                                resp.append(Predicate(name='say', args=[l, word]))
-
-                        elif p.name == 'sayv':
-                            if len(utterance)>0:
-                                utterance += u' '
-                            utterance += u'$' + p.args[1].name
-                            resp.append(p)
-                        else:
-                            resp.append(p)
-
-                    self.session.add(model.TrainingData(lang      = utt_lang,
-                                                        module    = module_name,
-                                                        layer     = 1,
-                                                        utterance = utterance,
-                                                        inp       = prolog_to_json(inp),
-                                                        resp      = prolog_to_json(resp)))
+                self.session.add(model.TrainingData(lang      = utt_lang,
+                                                    module    = module_name,
+                                                    layer     = 1,
+                                                    utterance = utterance,
+                                                    inp       = prolog_to_json(inp),
+                                                    resp      = prolog_to_json(rcode)))
 
         # if self.discourse_rounds:
 
@@ -490,27 +482,70 @@ class AIKernal(object):
 
     _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'utterance', 'uttLang', 'tokens', 'currentTime', 'prevIAS', 'action' ])
 
-    def _ias_context (self, solution, cur_ias, location):
+    # FIXME: remove
+    # def _ias2context (self, solution, cur_ias, location):
+
+    #     context = []
+
+    #     s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=solution, location=location, err_on_missing=True)
+
+    #     for s4 in s4s:
+
+    #         k = s4['K']
+    #         v = s4['V']
+
+    #         if not isinstance(k, Predicate):
+    #             continue
+    #         if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
+    #             continue
+
+    #         context.append(k)
+    #         context.append(v)
+
+    #     return context
+
+    def _compute_net_input (self, env, cur_ias, location):
 
         context = []
+        for r in range(NUM_CONTEXT_ROUNDS):
 
-        s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=solution, location=location, err_on_missing=True)
+            s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=env, location=location, err_on_missing=True)
+           
+            prev_ias = None
+            tokens   = None
 
-        for s4 in s4s:
+            d = {}
 
-            k = s4['K']
-            v = s4['V']
+            for s4 in s4s:
 
-            if not isinstance(k, Predicate):
-                continue
-            if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
-                continue
+                k = s4['K']
+                v = s4['V']
 
-            context.append(k)
-            context.append(v)
+                if not isinstance(k, Predicate):
+                    continue
+
+                if k.name == 'prevIAS':
+                    prev_ias = v.s
+
+                if k.name == 'tokens':
+                    tokens = v.l
+
+                if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
+                    continue
+
+                d[k.name] = v
+
+            for t in reversed(tokens):
+                context.insert(0, t.s)
+            for k in sorted(d):
+                context.insert(0, d[k])
+                context.insert(0, k)
+
+            if not prev_ias:
+                break
+            cur_ias = prev_ias
 
         return context
-
 
     def compile_module_multi (self, module_names, run_trace=False, print_utterances=False, warn_level=0):
 
@@ -531,11 +566,6 @@ class AIKernal(object):
     def _setup_ias (self, sl, test_mode, user_uri, utterance, utt_lang, tokens, prevIAS, prevOVL):
 
         cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
-
-        if test_mode:
-            currentTime = StringLiteral(TEST_TIME)
-        else:
-            currentTime = StringLiteral(datetime.now().isoformat())
 
         if not prevIAS:
             # find prevIAS for this user, if any
@@ -558,10 +588,13 @@ class AIKernal(object):
             ovl['ias'] = []
 
         ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
-        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl))
+        # ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl))
         ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
         ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
-        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
+
+        if not test_mode:
+            currentTime = StringLiteral(datetime.now().isoformat())
+            ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]), location=sl))
 
         if prevIAS:
             ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
@@ -595,7 +628,6 @@ class AIKernal(object):
 
         self.prolog_rt.set_trace(trace)
 
-        # import pdb; pdb.set_trace()
 
         prolog_s = []
         if test_mode:
@@ -678,8 +710,6 @@ class AIKernal(object):
 
             # extract action buffers from overlay variable in solutions:
 
-            # import pdb; pdb.set_trace()
-
             for solution in solutions:
 
                 overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
@@ -718,21 +748,195 @@ class AIKernal(object):
 
         return abufs
 
+    def _extract_response (self, cur_ias, env, sl):
+
+        solutions = self.prolog_rt.search_predicate ('ias', [cur_ias, 'action', 'V'], env=env, location=sl, err_on_missing=True)
+
+        resp      = []
+        utterance = u''
+        utt_lang  = u'en'
+        actions   = []
+        score     = 0.0
+
+        for solution in solutions:
+            p = solution['V']
+            if p.name == 'say':
+                l          = p.args[0]
+                word       = p.args[1]
+                if len(utterance)>0:
+                    utterance += u' '
+                utterance += word.s
+                utt_lang   = l.name
+                resp.append(p)
+
+            elif p.name == 'sayv':
+                # FIXME: variable expansion
+                if len(utterance)>0:
+                    utterance += u' '
+                utterance += u'$' + p.args[1].name
+                resp.append(p)
+
+            elif p.name == 'score':
+
+                score += p.args[0].f
+
+            else:
+                actions.append(p)
+                resp.append(p)
+                               
+        return resp, utterance, utt_lang, actions, score
+
 
     def test_module (self, module_name, trace=False, line=-1):
 
         logging.info('extracting tests of module %s ...' % (module_name))
 
         sl = SourceLocation('<input>', 0, 0)
-        solutions = self.prolog_rt.search_predicate ('nlp_test', [StringLiteral(module_name), 'LANG', 'NAME', 'DATA'], env={}, location=sl, err_on_missing=False)
+        nlp_tests = self.prolog_rt.search_predicate ('nlp_test', [StringLiteral(module_name), 'LANG', 'NAME', 'PREP', 'DATA'], env={}, location=sl, err_on_missing=False)
 
-        if len(solutions)==0:
+        if len(nlp_tests)==0:
             logging.warn('module %s has no tests.' % module_name)
             return
 
-        logging.info('running %d tests of module %s ...' % (len(solutions), module_name))
+        logging.info('running %d tests of module %s ...' % (len(nlp_tests), module_name))
 
-        #FIXME: for solution in solutions:
+        for nlp_test in nlp_tests:
+
+            prep = nlp_test['PREP'].l
+            data = nlp_test['DATA'].l
+            if len(data) % 3 != 0:
+                raise PrologError ('Error: test data length has to be multiple of 3!', sl)
+
+            utt_lang  = nlp_test['LANG'].name
+            context   = []
+            prevIAS   = None
+            prevOVL   = {}
+            round_num = 0
+
+            test_in      = data[round_num*3].s
+            test_out     = data[round_num*3+1].s
+            test_actions = data[round_num*3+2].l
+
+            logging.info("nlp_test: %s round %d test_in     : %s" % (sl, round_num, test_in) )
+            logging.info("nlp_test: %s round %d test_out    : %s" % (sl, round_num, test_out) )
+            logging.info("nlp_test: %s round %d test_actions: %s" % (sl, round_num, test_actions) )
+
+            tokenss   = tokenize(test_in, utt_lang)
+            tokens    = map (lambda t: StringLiteral(t), tokenss)
+
+            cur_ias, env = self._setup_ias (sl, test_mode = True, 
+                                                user_uri  = TEST_USER, 
+                                                utterance = test_in, 
+                                                utt_lang  = utt_lang, 
+                                                tokens    = tokens,
+                                                prevIAS   = prevIAS,
+                                                prevOVL   = prevOVL)
+
+            if prep:
+                import pdb; pdb.set_trace()
+
+                p = Clause (body=Predicate(name='and', args=prep), location=sl)
+                solutions = self.prolog_rt.search(p, env=env)
+                if len(solutions) != 1:
+                    raise PrologError("Expected exactly one solution when running the preparation code, got %d" % len(solutions), sl)
+                env = solutions[0]
+
+            inp = self._compute_net_input (env, cur_ias, sl)
+
+            # look up g-code in DB
+
+            gcode = None
+            for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                                                                     model.TrainingData.layer == 0,
+                                                                     model.TrainingData.inp   == prolog_to_json(inp)):
+                if gcode:
+                    logging.warn (u'%s: more than one gcode for test_in "%s" found in DB!' % (sl, test_in))
+
+                gcode = json_to_prolog (tdr.resp)
+
+            if not gcode:
+                raise PrologError (u'Error: no training data for test_in %s found in DB!' % test_in, sl)
+                
+            c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
+            s2s = self.prolog_rt.search(c2, env=env)
+
+            if len(s2s) == 0:
+                raise PrologError ('G code for utterance "%s" failed!' % test_in, sl)
+
+            for s2 in s2s:
+
+                # logging.info ('s2: %s' % repr(s2))
+
+                inp = self._compute_net_input (s2, cur_ias, sl)
+
+                # look up r-code in DB
+
+                rcode = None
+                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                                                                         model.TrainingData.layer == 1,
+                                                                         model.TrainingData.inp   == prolog_to_json(inp)):
+                    if rcode:
+                        logging.warn (u'more than one rcode for test_in %s found in DB!' % test_in, sl)
+
+                    rcode = json_to_prolog (tdr.resp)
+
+                    c3 = Clause (body=Predicate(name='and', args=rcode), location=sl)
+                    s3s = self.prolog_rt.search(c3, env=s2)
+
+                    matching_resp = False
+
+                    for s3 in s3s:
+
+                        # logging.info ('s3: %s' % repr(s3))
+
+                        resp, actual_out, actual_lang, actual_actions, score = self._extract_response (cur_ias, s3, sl)
+
+                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+
+                        if len(test_out) > 0:
+                            if len(actual_out)>0:
+                                actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (sl, round_num, actual_out, score) )
+                            if actual_out != test_out:
+                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (sl, round_num))
+                                continue # no match
+
+                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (sl, round_num))
+
+                        # check actions
+
+                        if len(test_actions)>0:
+
+                            # print repr(test_actions)
+
+                            actions_matched = True
+                            for action in test_actions:
+                                for act in actual_actions:
+                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                    if action == act:
+                                        break
+                                if action != act:
+                                    actions_matched = False
+                                    break
+
+                            if not actions_matched:
+                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (sl, round_num))
+                                continue
+
+                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (sl, round_num))
+
+                        matching_resp = True
+                        break
+
+                    if not matching_resp:
+                        raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
+                   
+                if not rcode:
+                    raise PrologError (u'Error: no training data for utterance %s found in DB!' % utterance, sl)
+                
+            round_num += 1
+
+
 
         # gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 

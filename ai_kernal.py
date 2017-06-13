@@ -43,7 +43,7 @@ from sqlalchemy.orm       import sessionmaker
 import model
 
 from zamiaprolog.logicdb  import LogicDB
-from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause
+from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause, Literal
 from zamiaprolog.errors   import PrologError
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
 from zamiaprolog.parser   import PrologParser
@@ -748,43 +748,53 @@ class AIKernal(object):
 
         return abufs
 
-    def _extract_response (self, cur_ias, env, sl):
+    def _extract_response (self, resp, cur_ias, env, sl):
 
-        solutions = self.prolog_rt.search_predicate ('ias', [cur_ias, 'action', 'V'], env=env, location=sl, err_on_missing=True)
+        # prepare IAS value dict, sum up scores
+        d     = {}
+        score = 0.0
+        for s in self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=env, location=sl, err_on_missing=True):
+            
+            k = s['K']
+            v = s['V']
 
-        resp      = []
+            if not isinstance(k, Predicate):
+                continue
+
+            if k.name == 'score':
+                score += v.f
+                continue
+
+            if not isinstance(v, Literal):
+                continue
+
+            d[k.name] = unicode(v)
+
         utterance = u''
         utt_lang  = u'en'
         actions   = []
-        score     = 0.0
 
-        for solution in solutions:
-            p = solution['V']
-            if p.name == 'say':
-                l          = p.args[0]
-                word       = p.args[1]
+        for r in resp:
+            if r.name == 'say':
+                l          = r.args[0]
+                word       = r.args[1]
                 if len(utterance)>0:
                     utterance += u' '
                 utterance += word.s
                 utt_lang   = l.name
-                resp.append(p)
 
-            elif p.name == 'sayv':
-                # FIXME: variable expansion
+            elif r.name == 'sayv':
                 if len(utterance)>0:
                     utterance += u' '
-                utterance += u'$' + p.args[1].name
-                resp.append(p)
 
-            elif p.name == 'score':
+                vn = r.args[1].name
 
-                score += p.args[0].f
+                utterance += d[vn] if vn in d else u'???'
 
             else:
-                actions.append(p)
-                resp.append(p)
+                actions.append(r)
                                
-        return resp, utterance, utt_lang, actions, score
+        return utterance, utt_lang, actions, score
 
 
     def test_module (self, module_name, trace=False, line=-1):
@@ -814,7 +824,7 @@ class AIKernal(object):
             round_num = 0
 
             test_in      = data[round_num*3].s
-            test_out     = data[round_num*3+1].s
+            test_out     = u' '.join(tokenize(data[round_num*3+1].s, lang=utt_lang))
             test_actions = data[round_num*3+2].l
 
             logging.info("nlp_test: %s round %d test_in     : %s" % (sl, round_num, test_in) )
@@ -833,8 +843,6 @@ class AIKernal(object):
                                                 prevOVL   = prevOVL)
 
             if prep:
-                import pdb; pdb.set_trace()
-
                 p = Clause (body=Predicate(name='and', args=prep), location=sl)
                 solutions = self.prolog_rt.search(p, env=env)
                 if len(solutions) != 1:
@@ -871,69 +879,61 @@ class AIKernal(object):
 
                 # look up r-code in DB
 
-                rcode = None
+                response      = None
+                matching_resp = False
+
                 for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
                                                                          model.TrainingData.layer == 1,
                                                                          model.TrainingData.inp   == prolog_to_json(inp)):
-                    if rcode:
-                        logging.warn (u'more than one rcode for test_in %s found in DB!' % test_in, sl)
 
-                    rcode = json_to_prolog (tdr.resp)
+                    # import pdb; pdb.set_trace()
 
-                    c3 = Clause (body=Predicate(name='and', args=rcode), location=sl)
-                    s3s = self.prolog_rt.search(c3, env=s2)
+                    response = json_to_prolog (tdr.resp)
+                    actual_out, actual_lang, actual_actions, score = self._extract_response (response, cur_ias, s2, sl)
 
-                    matching_resp = False
+                    # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                    for s3 in s3s:
+                    if len(test_out) > 0:
+                        if len(actual_out)>0:
+                            actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                        logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (sl, round_num, actual_out, score) )
+                        if actual_out != test_out:
+                            logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (sl, round_num))
+                            continue # no match
 
-                        # logging.info ('s3: %s' % repr(s3))
+                    logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (sl, round_num))
 
-                        resp, actual_out, actual_lang, actual_actions, score = self._extract_response (cur_ias, s3, sl)
+                    # check actions
 
-                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                    if len(test_actions)>0:
 
-                        if len(test_out) > 0:
-                            if len(actual_out)>0:
-                                actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (sl, round_num, actual_out, score) )
-                            if actual_out != test_out:
-                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (sl, round_num))
-                                continue # no match
+                        # print repr(test_actions)
 
-                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (sl, round_num))
-
-                        # check actions
-
-                        if len(test_actions)>0:
-
-                            # print repr(test_actions)
-
-                            actions_matched = True
-                            for action in test_actions:
-                                for act in actual_actions:
-                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                    if action == act:
-                                        break
-                                if action != act:
-                                    actions_matched = False
+                        actions_matched = True
+                        for action in test_actions:
+                            for act in actual_actions:
+                                # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                if action == act:
                                     break
+                            if action != act:
+                                actions_matched = False
+                                break
 
-                            if not actions_matched:
-                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (sl, round_num))
-                                continue
+                        if not actions_matched:
+                            logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (sl, round_num))
+                            continue
 
-                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (sl, round_num))
+                        logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (sl, round_num))
 
-                        matching_resp = True
-                        break
+                    matching_resp = True
+                    break
 
-                    if not matching_resp:
-                        raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
-                   
-                if not rcode:
+                if not response:
                     raise PrologError (u'Error: no training data for utterance %s found in DB!' % utterance, sl)
                 
+                if not matching_resp:
+                    raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
+                   
             round_num += 1
 
 

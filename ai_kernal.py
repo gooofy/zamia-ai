@@ -451,25 +451,40 @@ class AIKernal(object):
                                                     inp       = inp_json,
                                                     resp      = resp_json))
             else:
-                logging.debug ('tdr for "%s" already in DB' % utterance)
+                logging.debug ('layer 0 tdr for "%s" already in DB' % utterance)
             
             c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
             s2s = self.prolog_rt.search(c2, env=env)
 
             for s2 in s2s:
 
+                todo.append((data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+
                 # logging.info ('s2: %s' % repr(s2))
                     
                 inp = self._compute_net_input (s2, cur_ias, sl)
 
-                todo.append((data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+                found     = False
+                inp_json  = prolog_to_json(inp)
+                resp_json = prolog_to_json(rcode)
 
-                self.session.add(model.TrainingData(lang      = utt_lang,
-                                                    module    = module_name,
-                                                    layer     = 1,
-                                                    utterance = utterance,
-                                                    inp       = prolog_to_json(inp),
-                                                    resp      = prolog_to_json(rcode)))
+                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                                                                         model.TrainingData.layer == 1,
+                                                                         model.TrainingData.inp   == inp_json):
+
+                    if tdr.resp == resp_json:
+                        found = True
+                        break
+
+                if not found:
+                    self.session.add(model.TrainingData(lang      = utt_lang,
+                                                        module    = module_name,
+                                                        layer     = 1,
+                                                        utterance = utterance,
+                                                        inp       = inp_json,
+                                                        resp      = resp_json))
+                else:
+                    logging.debug ('layer 1 tdr for "%s" already in DB' % utterance)
 
         # if self.discourse_rounds:
 
@@ -876,6 +891,8 @@ class AIKernal(object):
 
             if len(s2s) == 0:
                 raise PrologError ('G code for utterance "%s" failed!' % test_in, sl)
+            else:
+                logging.info("nlp_test: %s round %d got %s result(s) from g-code." % (sl, round_num, len(s2s)))
 
             for s2 in s2s:
 
@@ -883,7 +900,7 @@ class AIKernal(object):
 
                 inp = self._compute_net_input (s2, cur_ias, sl)
 
-                # look up r-code in DB
+                # look up response in DB
 
                 response      = None
                 matching_resp = False
@@ -891,8 +908,6 @@ class AIKernal(object):
                 for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
                                                                          model.TrainingData.layer == 1,
                                                                          model.TrainingData.inp   == prolog_to_json(inp)):
-
-                    # import pdb; pdb.set_trace()
 
                     response = json_to_prolog (tdr.resp)
                     actual_out, actual_lang, actual_actions, score = self._extract_response (response, cur_ias, s2, sl)

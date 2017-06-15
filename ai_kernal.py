@@ -42,7 +42,7 @@ from sqlalchemy.orm       import sessionmaker
 
 import model
 
-from zamiaprolog.logicdb  import LogicDB
+from zamiaprolog.logicdb  import LogicDB, LogicDBOverlay
 from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause, Literal
 from zamiaprolog.errors   import PrologError
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
@@ -480,7 +480,7 @@ class AIKernal(object):
         #     self.db.commit()
         #     logging.info (u'bulk saving %d discourse rounds to db... done. Took %fs.' % (len(self.discourse_rounds), time()-start_time))
 
-    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'utterance', 'uttLang', 'tokens', 'currentTime', 'prevIAS', 'action' ])
+    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'uttLang', 'tokens', 'currentTime', 'prevIAS' ])
 
     # FIXME: remove
     # def _ias2context (self, solution, cur_ias, location):
@@ -583,21 +583,16 @@ class AIKernal(object):
                 if ias.name > prevIAS.name:
                     prevIAS = ias
 
-        ovl = deepcopy(prevOVL)
-        if not 'ias' in ovl:
-            ovl['ias'] = []
+        ovl = prevOVL.clone if prevOVL else LogicDBOverlay()
 
-        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
-        # ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('utterance'),   StringLiteral(utterance)]), location=sl))
-        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
-        ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
-
-        if not test_mode:
-            currentTime = StringLiteral(datetime.now().isoformat())
-            ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]), location=sl))
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
+        currentTime = StringLiteral(datetime.datetime.now().isoformat())
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
 
         if prevIAS:
-            ovl['ias'].append(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
+            ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
 
         env = {
                'I'                     : cur_ias,

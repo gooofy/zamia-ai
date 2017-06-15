@@ -33,6 +33,7 @@ import random
 import codecs
 import rdflib
 import datetime
+import pytz
 
 import numpy as np
 
@@ -399,7 +400,7 @@ class AIKernal(object):
 
         while len(todo)>0:
 
-            data, data_pos, prevIAS, prevOVL = todo.pop()
+            data, data_pos, prev_ias, prev_ovl = todo.pop()
             if data_pos >= len(data):
                 continue
 
@@ -420,8 +421,8 @@ class AIKernal(object):
                                                 utterance = utterance, 
                                                 utt_lang  = utt_lang, 
                                                 tokens    = tokens,
-                                                prevIAS   = prevIAS,
-                                                prevOVL   = prevOVL)
+                                                prev_ias  = prev_ias,
+                                                prev_ovl  = prev_ovl)
 
             if prep:
                 p = Clause (body=Predicate(name='and', args=prep), location=sl)
@@ -525,7 +526,7 @@ class AIKernal(object):
                     continue
 
                 if k.name == 'prevIAS':
-                    prev_ias = v.s
+                    prev_ias = v.name
 
                 if k.name == 'tokens':
                     tokens = v.l
@@ -563,41 +564,51 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def _setup_ias (self, sl, test_mode, user_uri, utterance, utt_lang, tokens, prevIAS, prevOVL):
+    def _setup_ias (self, sl, test_mode, user_uri, utterance, utt_lang, tokens, prev_ias, prev_ovl):
 
         cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
 
-        if not prevIAS:
-            # find prevIAS for this user, if any
-            # FIXME: there should be a more efficient way than linear search
-
-            prevIAS = None
-            for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], err_on_missing=False):
-
-                ias = s['I']
-
-                if not prevIAS:
-                    prevIAS = ias
-                    continue
-
-                if ias.name > prevIAS.name:
-                    prevIAS = ias
-
-        ovl = prevOVL.clone if prevOVL else LogicDBOverlay()
-
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
-        currentTime = StringLiteral(datetime.datetime.now().isoformat())
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
-
-        if prevIAS:
-            ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prevIAS]), location=sl))
-
+        ovl = prev_ovl.clone() if prev_ovl else LogicDBOverlay()
         env = {
                'I'                     : cur_ias,
                ASSERT_OVERLAY_VAR_NAME : ovl
               }
+
+        if not prev_ias:
+            # find prev_ias for this user, if any
+            # FIXME: there should be a more efficient way than linear search
+
+            prev_ias = None
+            for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
+
+                ias = s['I']
+
+                if not prev_ias:
+                    prev_ias = ias
+                    continue
+
+                if ias.name > prev_ias.name:
+                    prev_ias = ias
+
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
+        currentTime = StringLiteral(datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat())
+        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
+
+        if prev_ias:
+            ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prev_ias]), location=sl))
+
+            # copy over all previous statements to the new one
+
+            s4s = self.prolog_rt.search_predicate ('ias', [prev_ias, 'K', 'V'], location=sl, env=env, err_on_missing=False)
+            for s4 in s4s:
+                k = s4['K']
+                if not isinstance(k, Predicate):
+                    continue
+                if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
+                    continue
+                ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate(k.name), s4['V']]), location=sl))
 
         return cur_ias, env
 
@@ -814,8 +825,8 @@ class AIKernal(object):
 
             utt_lang  = nlp_test['LANG'].name
             context   = []
-            prevIAS   = None
-            prevOVL   = {}
+            prev_ias  = None
+            prev_ovl  = {}
             round_num = 0
 
             test_in      = data[round_num*3].s
@@ -834,8 +845,8 @@ class AIKernal(object):
                                                 utterance = test_in, 
                                                 utt_lang  = utt_lang, 
                                                 tokens    = tokens,
-                                                prevIAS   = prevIAS,
-                                                prevOVL   = prevOVL)
+                                                prev_ias  = prev_ias,
+                                                prev_ovl  = prev_ovl)
 
             if prep:
                 p = Clause (body=Predicate(name='and', args=prep), location=sl)

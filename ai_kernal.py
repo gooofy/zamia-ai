@@ -504,9 +504,6 @@ class AIKernal(object):
             tokenss   = map(lambda s: s.s, tokens)
             utterance = u' '.join(tokenss)
 
-            logging.info (u'utterance : %s' % unicode(utterance))
-            logging.info (u'gcode     : %s' % unicode(gcode))
-
             data_pos += 4
 
             cur_ias, env = self._setup_ias (sl, test_mode = True, 
@@ -525,6 +522,10 @@ class AIKernal(object):
                 env = solutions[0]
 
             inp = self._compute_net_input (env, cur_ias, sl)
+
+            if print_utterances:
+                logging.info (u'utterance  : %s' % unicode(utterance))
+                logging.info (u'layer 0 inp: %s' % repr(inp))
 
             found     = False
             inp_json  = prolog_to_json(inp)
@@ -556,6 +557,10 @@ class AIKernal(object):
                 # logging.info ('s2: %s' % repr(s2))
                     
                 inp = self._compute_net_input (s2, cur_ias, sl)
+
+                if print_utterances:
+                    logging.info (u'layer 1 inp: %s' % repr(inp))
+                    logging.info (u'layer 1 res: %s' % repr(rcode))
 
                 found     = False
                 inp_json  = prolog_to_json(inp)
@@ -645,8 +650,16 @@ class AIKernal(object):
                     utterance += u' '
 
                 vn = r.args[1].name
+                fc = r.args[2].name
+                if vn in d:
+                    if fc == 'd':
+                        utterance += unicode(int(round(float(d[vn]))))
+                    else:
+                        utterance += unicode(d[vn])
+                else:
+                    utterance += u'???'
 
-                utterance += d[vn] if vn in d else u'???'
+                # utterance += d[vn] if vn in d else u'???'
 
             else:
                 actions.append(r)
@@ -728,7 +741,6 @@ class AIKernal(object):
                     gcode = json_to_prolog (tdr.resp)
 
                 if gcode is None:
-                    import pdb; pdb.set_trace()
                     raise PrologError (u'Error: layer 0 no training data for test_in "%s" found in DB!' % test_in, sl)
                     
                 c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
@@ -799,7 +811,7 @@ class AIKernal(object):
                         break
 
                     if not response:
-                        raise PrologError (u'Error: no training data for utterance %s found in DB!' % utterance, sl)
+                        raise PrologError (u'Error: no layer1 training data for inp %s found in DB!' % repr(inp), sl)
                     
                     if not matching_resp:
                         raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))

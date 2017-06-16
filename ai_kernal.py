@@ -723,13 +723,13 @@ class AIKernal(object):
                                                                          model.TrainingData.layer == 0,
                                                                          model.TrainingData.inp   == prolog_to_json(inp)):
                     if gcode:
-                        logging.warn (u'%s: more than one gcode for test_in "%s" found in DB!' % (sl, test_in))
+                        logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (sl, test_in))
 
                     gcode = json_to_prolog (tdr.resp)
 
-                if not gcode:
+                if gcode is None:
                     import pdb; pdb.set_trace()
-                    raise PrologError (u'Error: no training data for test_in "%s" found in DB!' % test_in, sl)
+                    raise PrologError (u'Error: layer 0 no training data for test_in "%s" found in DB!' % test_in, sl)
                     
                 c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
                 s2s = self.prolog_rt.search(c2, env=env)

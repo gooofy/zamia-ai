@@ -41,7 +41,7 @@ nlp_geo_location_s(de, S, LOCATION, LABEL, TSTART, TEND) :-
          LOCATION, rdfs:label, LABEL,
          filter(lang(LABEL) = 'de')),
     length(S, TSTART),
-    hears (en, S, LABEL),
+    hears (de, S, LABEL),
     length(S, TEND).
 
 

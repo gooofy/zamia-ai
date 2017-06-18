@@ -5,13 +5,13 @@ import logging
 import rdflib
 from rdflib.plugins.sparql.parserutils import CompValue
 
-from zamiaprolog.errors  import PrologRuntimeError
-from zamiaprolog.logic   import StringLiteral, NumberLiteral, Predicate, Clause, Variable
-from zamiaprolog.runtime import do_assertz
-from aiprolog.runtime    import build_algebra, CURIN, KB_PREFIX
-from nltools.tokenizer   import tokenize
-from nltools.misc        import limit_str
-from aiprolog.pl2rdf     import rdf_to_pl
+from zamiaprolog.errors   import PrologRuntimeError
+from zamiaprolog.logic    import StringLiteral, NumberLiteral, Predicate, Clause, Variable
+from zamiaprolog.builtins import do_assertz
+from aiprolog.runtime     import build_algebra, CURIN, KB_PREFIX
+from nltools.tokenizer    import tokenize
+from nltools.misc         import limit_str
+from aiprolog.pl2rdf      import rdf_to_pl
 
 MAX_NER_RESULTS = 5
 
@@ -64,8 +64,6 @@ def builtin_ner_learn(g, pe):
 
         label = arg_Label_List.l[i]
 
-        # logging.debug ('ner_learn: %4d %s %s' % (i, entity, label))
-
         for j, token in enumerate(tokenize(label.s, lang=arg_Lang)):
 
             if not token in nd:
@@ -75,6 +73,8 @@ def builtin_ner_learn(g, pe):
                 nd[token][entity.s] = set([])
 
             nd[token][entity.s].add(j)
+
+            # logging.debug ('ner_learn: %4d %s %s: %s -> %s %s' % (i, entity, label, token, arg_Class, arg_Lang))
 
     cnt = 0
     for token in nd:
@@ -117,10 +117,11 @@ def _do_ner(g, pe, arg_Lang, arg_I, arg_Class, arg_TStart, arg_TEnd, arg_Entity)
 
                 toff = tidx-tstart
 
-                logging.debug('tidx: %d, toff: %d [%d - %d]' % (tidx, toff, tstart, tend))
+                # logging.debug('tidx: %d, toff: %d [%d - %d]' % (tidx, toff, tstart, tend))
 
-                token = tokens[tidx]
+                token = tokens[tidx].s
                 if not token in nd:
+                    # logging.debug('token %s not in nd %s %s' % (repr(token), repr(arg_Lang), repr(arg_Class)))
                     continue
 
                 for entity in nd[token]:
@@ -152,7 +153,7 @@ def _do_ner(g, pe, arg_Lang, arg_I, arg_Class, arg_TStart, arg_TEnd, arg_Entity)
         r = { arg_Entity: StringLiteral(entity) }
 
         clause = Clause (head=Predicate(name='ias', args=[arg_I, Predicate('score'), NumberLiteral(max_score)]), location=g.location)
-        do_assertz(g.env, 'ias', clause, res=r)
+        do_assertz(g.env, clause, res=r)
 
         res.append(r)
 
@@ -176,6 +177,8 @@ def builtin_ner(g, pe):
     if len(args) != 6:
         raise PrologRuntimeError('ner: 6 args ( +Lang, +I, ?Class, +TStart, +Tend, -Entity ) expected.', g.location)
 
+    # import pdb; pdb.set_trace()
+
     #
     # extract args, tokens
     #
@@ -191,7 +194,6 @@ def builtin_ner(g, pe):
         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
 
     if isinstance(arg_Class, Variable):
-        # import pdb; pdb.set_trace()
 
         res = []
 

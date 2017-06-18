@@ -491,6 +491,9 @@ class AIKernal(object):
 
         self.prolog_rt.db.clear_module(TEST_MODULE)
 
+        self.load_module (module_name)
+        self.init_module (module_name, run_trace=run_trace)
+
         training_data_cnt = 0
         logging.info ('module %s training data extraction...' % module_name)
 

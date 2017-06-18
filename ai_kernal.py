@@ -485,7 +485,7 @@ class AIKernal(object):
 
             data_pos = 0
 
-            todo.append((data, data_pos, None, {}))
+            todo.append((utt_lang, data, data_pos, None, {}))
 
         # now: simulate all conversations to extract context training information
 
@@ -499,7 +499,7 @@ class AIKernal(object):
 
         while len(todo)>0:
 
-            data, data_pos, prev_ias, prev_ovl = todo.pop()
+            utt_lang, data, data_pos, prev_ias, prev_ovl = todo.pop()
             if data_pos >= len(data):
                 continue
 
@@ -561,7 +561,7 @@ class AIKernal(object):
 
             for s2 in s2s:
 
-                todo.append((data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+                todo.append((utt_lang, data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
 
                 # logging.info ('s2: %s' % repr(s2))
                     
@@ -765,6 +765,7 @@ class AIKernal(object):
                 else:
                     logging.info("nlp_test: %s round %d got %s result(s) from g-code." % (sl, round_num, len(s2s)))
 
+                matching_resp = False
                 for s2 in s2s:
 
                     # logging.info ('s2: %s' % repr(s2))
@@ -774,7 +775,6 @@ class AIKernal(object):
                     # look up response in DB
 
                     response      = None
-                    matching_resp = False
 
                     for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
                                                                              model.TrainingData.layer == 1,
@@ -824,11 +824,14 @@ class AIKernal(object):
 
                         break
 
-                    if not response:
-                        raise PrologError (u'Error: no layer1 training data for inp %s found in DB!' % repr(inp), sl)
-                    
-                    if not matching_resp:
-                        raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
+                    if matching_resp:
+                        break
+
+                if not response:
+                    raise PrologError (u'Error: no layer1 training data for inp %s found in DB!' % repr(inp), sl)
+                
+                if not matching_resp:
+                    raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
                        
                 round_num += 1
 
@@ -844,7 +847,6 @@ class AIKernal(object):
                     self.test_module (mn2, trace=run_trace, test_name=test_name)
 
             else:
-                # import pdb; pdb.set_trace()
                 self.load_module (module_name)
                 self.init_module (module_name, run_trace=run_trace)
                 self.test_module (module_name, trace=run_trace, test_name=test_name)

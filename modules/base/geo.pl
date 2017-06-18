@@ -26,17 +26,24 @@ geo_location (LOC) :- geo_locations(S), set_get(S, LOC).
 % all known geo locations macro
 %
 
-nlp_macro(en, 'GEO_LOCATION', LABEL) :- 
+nlp_geo_location_s(en, S, LOCATION, LABEL, TSTART, TEND) :-
     geo_location(LOCATION),
     rdf (limit(1),
          LOCATION, rdfs:label, LABEL,
-         filter(lang(LABEL) = 'en')).
+         filter(lang(LABEL) = 'en')),
+    length(S, TSTART),
+    hears (en, S, LABEL),
+    length(S, TEND).
 
-nlp_macro(de, 'GEO_LOCATION', LABEL) :- 
+nlp_geo_location_s(de, S, LOCATION, LABEL, TSTART, TEND) :-
     geo_location(LOCATION),
     rdf (limit(1),
          LOCATION, rdfs:label, LABEL,
-         filter(lang(LABEL) = 'de')).
+         filter(lang(LABEL) = 'de')),
+    length(S, TSTART),
+    hears (en, S, LABEL),
+    length(S, TEND).
+
 
 %
 % named entity recognition (NER)

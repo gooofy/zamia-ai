@@ -3,24 +3,19 @@
 
 import rdflib
 
-from ner import  builtin_ner_learn, builtin_ner
-from fnvm import builtin_fnvm_graph, builtin_frame_modify
+from copy               import deepcopy
+
+from nltools.tokenizer  import tokenize
+from zamiaprolog.parser import NAME_CHARS
+from zamiaprolog.logic  import Predicate, StringLiteral, ListLiteral
+from ner                import builtin_ner_learn, builtin_ner
 
 DEPENDS    = [ 'config' ]
 
 PL_SOURCES = [
               'base.pl',
-              'time.pl',
+              'conversation.pl',
               'geo.pl',
-              'fnTelling.pl',
-              'fnQuestioning.pl',
-              'fnAffirmOrDeny.pl',
-              'fnRequest.pl',
-              'fnFamiliarity.pl',
-              'fnBeingBorn.pl',
-              'fnCategorization.pl',
-              'fnIntentionallyCreate.pl',
-              'topics.pl',
               'math.pl',
              ]
 
@@ -288,11 +283,68 @@ KB_SOURCES = [
               'tz.n3',
             ]
 
+def builtin_says(g, pe):
+
+    """ says ( +Lang, ?List, +Str ) """
+
+    pe._trace ('CALLED BUILTIN says', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    if len(args) != 3:
+        raise PrologRuntimeError('says: 3 args ( +Lang, ?List, +Str ) expected.', g.location)
+
+    arg_Lang  = pe.prolog_get_constant(args[0], g.env, g.location)
+    arg_List  = pe.prolog_get_variable(args[1], g.env, g.location)
+    arg_Str   = pe.prolog_get_string(args[2], g.env, g.location)
+
+    parts1 = arg_Str.split('%')
+    cnt = 0
+
+    l = []
+
+    for p1 in parts1:
+
+        o = 0
+
+        if cnt > 0:
+           
+            o += 2
+
+            while p1[o] != ')':
+                o += 1
+
+            var_name = p1[1:o]
+            o += 1
+
+            format_char = p1[o]
+            l.append(Predicate('sayv', [ Predicate(arg_Lang), Predicate(var_name), Predicate(format_char) ]))
+
+            o += 1
+
+        parts2 = tokenize(p1[o:], lang=arg_Lang, keep_punctuation=True)
+
+        for p2 in parts2:
+            l.append(Predicate('say', [ Predicate(arg_Lang), StringLiteral(p2) ]))
+
+        cnt += 1
+    
+    # if len(parts1)>2:
+    #     import pdb; pdb.set_trace()
+
+    if not arg_List in g.env:
+        g.env[arg_List] = ListLiteral(l)
+    else:
+        l2 = deepcopy(g.env[arg_List].l)
+        l2.extend(l)
+        g.env[arg_List] = ListLiteral(l2)
+
+    return True
+
 def init_module(rt):
 
     rt.register_builtin ('ner_learn',    builtin_ner_learn)
     rt.register_builtin ('ner',          builtin_ner)
-    rt.register_builtin ('ner',          builtin_ner)
-    rt.register_builtin ('fnvm_graph',   builtin_fnvm_graph)
-    rt.register_builtin ('frame_modify', builtin_frame_modify)
+    rt.register_builtin ('says',         builtin_says)
 

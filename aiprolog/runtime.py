@@ -307,13 +307,12 @@ def builtin_rdf_assert(g, pe):
     pe.kb.addN(quads)
 
 
-def builtin_uriref_fn(pred, env, rt, location):
+def builtin_uriref_fn(args, env, rt, location):
 
     """ uriref(+URI) """
 
     rt._trace_fn ('CALLED FUNCTION uriref', env)
 
-    args = pred.args
     if len(args) != 1:
         raise PrologRuntimeError('uriref: 1 arg (+URI) expected.', location)
 

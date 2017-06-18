@@ -471,7 +471,7 @@ class AIKernal(object):
         # extract NLP training data
 
         sl = SourceLocation('<input>', 0, 0)
-        solutions = self.prolog_rt.search_predicate ('nlp_train', [StringLiteral(module_name), 'LANG', 'DATA'], env={}, location=sl, err_on_missing=True)
+        solutions = self.prolog_rt.search_predicate ('nlp_train', [StringLiteral(module_name), 'LANG', 'DATA'], env={}, location=sl, err_on_missing=False)
 
         todo = []
         for solution in solutions:

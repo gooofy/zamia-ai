@@ -491,6 +491,9 @@ class AIKernal(object):
 
         self.prolog_rt.db.clear_module(TEST_MODULE)
 
+        training_data_cnt = 0
+        logging.info ('module %s training data extraction...' % module_name)
+
         while len(todo)>0:
 
             data, data_pos, prev_ias, prev_ovl = todo.pop()
@@ -544,6 +547,9 @@ class AIKernal(object):
                                                     utterance = utterance,
                                                     inp       = inp_json,
                                                     resp      = resp_json))
+                training_data_cnt += 1
+                if training_data_cnt % 100 == 0:
+                    logging.info ('...module %s training data cnt: %d' %(module_name, training_data_cnt))
             else:
                 logging.debug ('layer 0 tdr for "%s" already in DB' % utterance)
             
@@ -581,8 +587,13 @@ class AIKernal(object):
                                                         utterance = utterance,
                                                         inp       = inp_json,
                                                         resp      = resp_json))
+                    training_data_cnt += 1
+                    if training_data_cnt % 100 == 0:
+                        logging.info ('...module %s training data cnt: %d' %(module_name, training_data_cnt))
                 else:
                     logging.debug ('layer 1 tdr for "%s" already in DB' % utterance)
+
+        logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, training_data_cnt))
 
         # if self.discourse_rounds:
 

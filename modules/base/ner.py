@@ -6,7 +6,7 @@ import rdflib
 from rdflib.plugins.sparql.parserutils import CompValue
 
 from zamiaprolog.errors  import PrologRuntimeError
-from zamiaprolog.logic   import StringLiteral, NumberLiteral, Predicate, Clause
+from zamiaprolog.logic   import StringLiteral, NumberLiteral, Predicate, Clause, Variable
 from zamiaprolog.runtime import do_assertz
 from aiprolog.runtime    import build_algebra, CURIN, KB_PREFIX
 from nltools.tokenizer   import tokenize
@@ -190,18 +190,8 @@ def builtin_ner(g, pe):
     if not arg_Lang in ner_dict:
         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
 
-    if arg_Class:
-
-        if not arg_Class.name in ner_dict[arg_Lang]:
-            raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
-
-        res = _do_ner(g, pe, arg_Lang, arg_I, arg_Class.name, arg_TStart, arg_TEnd, arg_Entity)
-
-    else:
-
+    if isinstance(arg_Class, Variable):
         # import pdb; pdb.set_trace()
-
-        arg_Class = pe.prolog_get_variable(args[2], g.env, g.location)
 
         res = []
 
@@ -210,8 +200,16 @@ def builtin_ner(g, pe):
             rs = _do_ner(g, pe, arg_Lang, arg_I, c, arg_TStart, arg_TEnd, arg_Entity)
             for r in rs:
 
-                r[arg_Class] = Predicate(c)
+                r[arg_Class.name] = Predicate(c)
                 res.append(r)
+
+    else:
+
+        if not arg_Class.name in ner_dict[arg_Lang]:
+            raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
+
+        res = _do_ner(g, pe, arg_Lang, arg_I, arg_Class.name, arg_TStart, arg_TEnd, arg_Entity)
+
             
     return res
 

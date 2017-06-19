@@ -3,12 +3,13 @@
 
 import rdflib
 
-from copy               import deepcopy
+from copy                 import deepcopy, copy
 
-from nltools.tokenizer  import tokenize
-from zamiaprolog.parser import NAME_CHARS
-from zamiaprolog.logic  import Predicate, StringLiteral, ListLiteral
-from ner                import builtin_ner_learn, builtin_ner
+from nltools.tokenizer    import tokenize
+from zamiaprolog.parser   import NAME_CHARS
+from zamiaprolog.logic    import Predicate, StringLiteral, ListLiteral
+from zamiaprolog.builtins import do_list_extend
+from ner                  import builtin_ner_learn, builtin_ner
 
 DEPENDS    = [ 'config' ]
 
@@ -283,6 +284,81 @@ KB_SOURCES = [
               'tz.n3',
             ]
 
+def builtin_hears(g, pe):
+
+    """ hears ( +Lang, ?S, +List/+Str ) """
+
+    pe._trace ('CALLED BUILTIN hears', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    if len(args) != 3:
+        raise PrologRuntimeError('hears: 3 args ( +Lang, ?S, +List/+Str ) expected.', g.location)
+
+    arg_Lang  = pe.prolog_get_constant(args[0], g.env, g.location)
+    arg_S     = pe.prolog_get_variable(args[1], g.env, g.location)
+    arg_LS    = pe.prolog_eval        (args[2], g.env, g.location)
+
+
+    if isinstance(arg_LS, StringLiteral):
+
+        tokens = tokenize(arg_LS.s, lang=arg_Lang)
+
+        token_list = ListLiteral(map(lambda t: StringLiteral(t), tokens))
+
+        return do_list_extend(g.env, arg_S, token_list)
+
+    elif isinstance (arg_LS, ListLiteral):
+
+        todo = [(arg_LS.l, 0, [])]
+
+        done = []
+
+        while todo:
+
+            l, pos, res = todo.pop()
+
+            if pos >= len(l):
+                done.append(res)
+                continue
+
+            e = l[pos]
+            if isinstance(e, StringLiteral):
+
+                tokens = tokenize(e.s, lang=arg_Lang)
+                res = copy(res)
+                res.extend(tokens)
+                todo.append((l, pos+1, res))
+
+            else:
+
+                for e2 in e.l:
+                    tokens = tokenize(e2.s, lang=arg_Lang)
+                    res2 = copy(res)
+                    res2.extend(tokens)
+                    todo.append((l, pos+1, res2))
+
+        if not arg_S in g.env:
+            start = []
+        else:
+            start = g.env[arg_S].l
+
+        res = []
+
+        for d in done:
+
+            r = deepcopy(start)
+
+            for token in d:
+                r.append(StringLiteral(token))
+
+            res.append ({arg_S: ListLiteral(r)})
+
+        return res
+
+    raise PrologRuntimeError('hears: 3rd arg expected to be either a list or string', g.location)
+
 def builtin_says(g, pe):
 
     """ says ( +Lang, ?List, +Str ) """
@@ -346,5 +422,6 @@ def init_module(rt):
 
     rt.register_builtin ('ner_learn',    builtin_ner_learn)
     rt.register_builtin ('ner',          builtin_ner)
+    rt.register_builtin ('hears',        builtin_hears)
     rt.register_builtin ('says',         builtin_says)
 

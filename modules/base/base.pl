@@ -26,16 +26,10 @@ entity_gender(ENTITY, GENDER) :- is_male(ENTITY), GENDER is male.
 entity_gender(ENTITY, GENDER) :- is_female(ENTITY), GENDER is female.
 
 %
-% hears/says/score utilities
+% score utilities (hears/says are implemented in python now)
 %
 
 scorez(I, SCORE) :- assertz(ias(I, score, SCORE)).
-
-hears (LANG, S, STR) :-
-    tokenize (LANG, STR, TOKENS),
-    list_extend(S, TOKENS).
-
-% says is implemented in python
 
 %
 % some self address NLP macros

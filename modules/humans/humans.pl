@@ -4,7 +4,7 @@
 % named entity recognition (NER)
 %
 
-nlp_known_humans_debug_limit(0). % set to 0 for unlimited (production)
+nlp_known_humans_debug_limit(10). % set to 0 for unlimited (production)
 
 ner_learn_humans(LANG) :-
     atom_chars(LANG, LSTR),
@@ -62,24 +62,6 @@ nlp_known_humans_s (de, S, HUMAN, LABEL, TSTART, TEND) :-
 % questions about humans known
 %
 
-% l2proc_knowHumanTokens(LANG) :-
-% 
-%     ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
-% 
-%     list_append(VMC, fe(ent, NER1ENTITY)),
-%     list_append(VMC, fe(entclass, NER1CLASS)),
-%     list_append(VMC, fe(cog, uriref(aiu:self))),
-%     list_append(VMC, frame(fnFamiliarity)),
-%     
-%     list_append(VMC, fe(msg,  vm_frame_pop)),
-%     list_append(VMC, fe(top,  existance)),
-%     list_append(VMC, fe(add,  uriref(aiu:self))),
-%     ias(I, user, USER),
-%     list_append(VMC, fe(spkr, USER)),
-%     list_append(VMC, frame(fnQuestioning)),
-%     
-%     fnvm_exec (I, VMC).
-   
 nlp_knowHumanTokens_s (en, S, TSTART, TEND) :- hears (en, S, "do you know"),           nlp_known_humans_s (en, S, _, _, TSTART, TEND).
 nlp_knowHumanTokens_s (en, S, TSTART, TEND) :- hears (en, S, "do you happen to know"), nlp_known_humans_s (en, S, _, _, TSTART, TEND).
 
@@ -129,55 +111,58 @@ nlp_test('humans', de, 'know1', [],
 nlp_test('humans', en, 'know2', [],
          ['Do you know Stephen King?', 'Sure I know Stephen King', []]).
 
-% %
-% % if we don't know anything else, we can tell the user about the human's birthplace
-% %
-% 
-% l3proc (I, F, fnQuestioning) :-
-% 
-%     frame (F, top,      general_info),
-%     frame (F, ent,      HUMAN),
-%     frame (F, entclass, human),
-% 
-%     list_append(VMC, fe(child, HUMAN)),
-%     list_append(VMC, fe(childclass, human)),
-%     list_append(VMC, frame(fnBeingBorn)),
-%     
-%     list_append(VMC, fe(msg,  vm_frame_pop)),
-%     list_append(VMC, fe(top,  place)),
-%     list_append(VMC, fe(add,  uriref(aiu:self))),
-%     ias(I, user, USER),
-%     list_append(VMC, fe(spkr, USER)),
-%     list_append(VMC, frame(fnQuestioning)),
-%     
-%     fnvm_exec (I, VMC).
-% 
-% l2proc_infoHumanTokens(LANG) :-
-% 
-%     ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
-% 
-%     list_append(VMC, fe(ent,      NER1ENTITY)),
-%     list_append(VMC, fe(entclass, NER1CLASS)),
-%     list_append(VMC, fe(top,      general_info)),
-%     list_append(VMC, fe(add,      uriref(aiu:self))),
-%     ias(I, user, USER),
-%     list_append(VMC, fe(spkr, USER)),
-%     list_append(VMC, frame(fnQuestioning)),
-%     
-%     fnvm_exec (I, VMC).
-%    
-% nlp_gen (en, '@SELF_ADDRESS:LABEL (what about | who is | what is) @KNOWN_HUMANS:LABEL',
-%          inline(l2proc_infoHumanTokens, en)).
-% nlp_gen (de, '@SELF_ADDRESS:LABEL (wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_HUMANS:LABEL',
-%          inline(l2proc_infoHumanTokens, de)).
-% 
-% nlp_test(de,
-%          ivr(in('Wer ist Angela Merkel?'),
-%              out('Angela Merkel wurde in Barmbek-Nord geboren'))).
-% nlp_test(en,
-%          ivr(in('What about Angela Merkel?'),
-%              out('Angela Merkel was born in Barmbek-Nord'))).
-% 
+%
+% if we don't know anything else, we can tell the user about the human's birthplace
+%
+
+nlp_whatabouttokens_g (LANG, G, TSTART, TEND) :-
+    G is [
+        % trace(on),
+        ner(LANG, I, NER1CLASS, TSTART, TEND, NER1ENTITY),
+
+        setz(ias(I, f1_type,     _), question),
+        setz(ias(I, f1_topic,    _), familiarity),
+        setz(ias(I, f1_entclass, _), NER1CLASS),
+        setz(ias(I, f1_ent,      _), NER1ENTITY),
+
+        entity_label(LANG, NER1ENTITY, ENT1LABEL),
+        setz(ias(I, f1_entlabel, _), ENT1LABEL),
+
+        rdf (distinct, limit(1),
+             NER1ENTITY, wdpd:PlaceOfBirth, BIRTHPLACE),
+        setz(ias(I, f1_loc, _), BIRTHPLACE),
+
+        entity_label(LANG, BIRTHPLACE, BPLABEL),
+
+        setz(ias(I, f1_loclabel, _), BPLABEL)
+        ].
+
+nlp_train('humans', en, [[], S1, G1, R1]) :-
+
+    self_address(en, S1, _),
+    hears (en, S1, [ [ "what about", "who is", "what is", "what do you know about", "what do you know of" ] ] ),
+    nlp_known_humans_s (en, S1, _, _, TSTART, TEND),    
+
+    nlp_whatabouttokens_g(en, G1, TSTART, TEND),
+
+    says (en, R1, "%(f1_entlabel)s was born in %(f1_loclabel)s.").
+
+nlp_train('humans', de, [[], S1, G1, R1]) :-
+
+    self_address(de, S1, _),
+    hears (de, S1, [ [ "wer ist", "wer ist eigentlich", "was ist mit", "was ist eigentlich mit", "was weisst du über", "was weisst du eigentlich über" ] ] ),
+    nlp_known_humans_s (de, S1, _, _, TSTART, TEND),    
+
+    nlp_whatabouttokens_g(de, G1, TSTART, TEND),
+
+    says (de, R1, "%(f1_entlabel)s wurde in %(f1_loclabel)s geboren.").
+
+nlp_test('humans', en, 'whatabout1', [],
+         ['What about Stephen King?', 'Stephen King was born in Portland.', []]).
+ 
+nlp_test('humans', de, 'whatabout2', [],
+         ['Was ist mit Stephen King?', 'Stephen King wurde in Portland geboren.', []]).
+ 
 % %
 % % birthplace and birtdate questions
 % %

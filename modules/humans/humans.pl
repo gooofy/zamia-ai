@@ -270,34 +270,75 @@ nlp_test('humans', de, 'whereborn2', [],
 % %              out('angela merkel wurde in barmbek-nord geboren'))).
 % % 
 % % 
-% % l2proc_humanBornWhenTokens(LANG) :-
-% % 
-% %     ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY),
-% % 
-% %     list_append(VMC, fe(child, NER1ENTITY)),
-% %     list_append(VMC, fe(childclass, NER1CLASS)),
-% %     list_append(VMC, frame(fnBeingBorn)),
-% %     
-% %     list_append(VMC, fe(msg,  vm_frame_pop)),
-% %     list_append(VMC, fe(top,  time)),
-% %     list_append(VMC, fe(add,  uriref(aiu:self))),
-% %     ias(I, user, USER),
-% %     list_append(VMC, fe(spkr, USER)),
-% %     list_append(VMC, frame(fnQuestioning)),
-% %    
-% %     % trace(on),
-% % 
-% %     fnvm_exec (I, VMC).
-% % 
-% % nlp_gen (en, '@SELF_ADDRESS:LABEL (when|in which year) (was|is) @KNOWN_HUMANS:LABEL born?',
-% %          inline(l2proc_humanBornWhenTokens, en)).
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL (wann|in welchem Jahr) (wurde|ist) (eigentlich|) @KNOWN_HUMANS:LABEL geboren?',
-% %          inline(l2proc_humanBornWhenTokens, de)).
-% % 
-% % nlp_gen (en, "@SELF_ADDRESS:LABEL (when is|on what day is) @KNOWN_HUMANS:LABELS birthday?",
-% %          inline(l2proc_humanBornWhenTokens, en)).
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL (wann hat|an welchem Tag hat) (eigentlich|) @KNOWN_HUMANS:LABEL Geburtstag?',
-% %          inline(l2proc_humanBornWhenTokens, de)).
+
+nlp_whenborntokens_g (LANG, G, TSTART, TEND) :-
+    G is [
+        % trace(on),
+        ner(LANG, I, NER1CLASS, TSTART, TEND, NER1ENTITY),
+
+        setz(ias(I, f1_type,     _), question),
+        setz(ias(I, f1_topic,    _), birthdate),
+        setz(ias(I, f1_entclass, _), NER1CLASS),
+        setz(ias(I, f1_ent,      _), NER1ENTITY),
+
+        nlp_f1_ent_human (LANG, I, NER1ENTITY),
+
+        rdf (distinct, limit(1),
+             NER1ENTITY,   wdpd:DateOfBirth,  BIRTHDATE),
+        setz(ias(I, f1_time, _), BIRTHDATE),
+
+        transcribe_date(LANG, dativ, BIRTHDATE, BDLABEL),
+        setz(ias(I, f1_timelabel, _), BDLABEL)
+
+        ].
+
+nlp_whenborntokens_s (en, S, TSTART, TEND) :-
+    hears (en, S, [ [ "when", "in which year"], ["was", "is"] ] ),
+    nlp_known_humans_s (en, S, _, _, TSTART, TEND),    
+    hears (en, S, "born?").
+nlp_whenborntokens_s (en, S, TSTART, TEND) :-
+    hears (en, S, [ ["when is", "on what day is"] ] ),
+    nlp_known_humans_s (en, S, _, _, TSTART, TEND),
+    hears (en, S, "birthday?").
+
+nlp_whenborntokens_s (de, S, TSTART, TEND) :-
+    hears (de, S, [ [ "wann", "in welchem Jahr"], ["wurde", "ist"], ["eigentlich", ""] ] ),
+    nlp_known_humans_s (de, S, _, _, TSTART, TEND),    
+    hears (de, S, "geboren?").
+nlp_whenborntokens_s (de, S, TSTART, TEND) :-
+    hears (de, S, [ ["wann hat", "an welchem Tag hat"], [ "eigentlich", ""] ] ),
+    nlp_known_humans_s (de, S, _, _, TSTART, TEND),
+    hears (de, S, "Geburtstag?").
+
+nlp_whenborn_r (en, R) :- says (en, R, "%(f1_entlabel)s was born on %(f1_timelabel)s.").
+nlp_whenborn_r (en, R) :- says (en, R, "%(f1_ent_pp3s)s was born on %(f1_timelabel)s.").
+nlp_whenborn_r (de, R) :- says (de, R, "%(f1_entlabel)s wurde am %(f1_timelabel)s geboren.").
+nlp_whenborn_r (de, R) :- says (de, R, "%(f1_ent_pp3s)s wurde am %(f1_timelabel)s geboren.").
+
+nlp_train('humans', en, [[], S1, G1, R1]) :-
+
+    self_address(en, S1, _),
+    nlp_whenborntokens_s (en, S1, TSTART, TEND),
+
+    nlp_whenborntokens_g (en, G1, TSTART, TEND),
+
+    nlp_whenborn_r (en, R1).
+
+nlp_train('humans', de, [[], S1, G1, R1]) :-
+
+    self_address(de, S1, _),
+    nlp_whenborntokens_s (de, S1, TSTART, TEND),
+
+    nlp_whenborntokens_g(de, G1, TSTART, TEND),
+
+    nlp_whenborn_r (de, R1).
+
+nlp_test('humans', en, 'whenborn1', [],
+         ['When was Stephen King born?', 'Stephen King was born on September 21, 1947.', []]).
+
+nlp_test('humans', de, 'whenborn2', [],
+         ['Wann wurde Stephen King geboren?', 'Stephen King wurde am einundzwanzigsten September 1947 geboren.', []]).
+ 
 % % 
 % % l2proc_humanBornWhenContext :-
 % % 

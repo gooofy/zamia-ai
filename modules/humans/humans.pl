@@ -8,24 +8,6 @@
 % debug turn-around cycle times low
 debug_mode('humans').
 
-known_humans_data(en, HUMAN, LABEL) :-
-    debug_mode('humans'),
-    HUMAN is 'http://www.wikidata.org/entity/Q39829',
-    LABEL is 'Stephen King'.
-
-known_humans_data(de, HUMAN, LABEL) :-
-    debug_mode('humans'),
-    HUMAN is 'http://www.wikidata.org/entity/Q39829',
-    LABEL is 'Stephen King'.
-
-known_humans_data(LANG, HUMAN, LABEL) :-
-    not(debug_mode('humans')),
-    atom_chars(LANG, LSTR),
-    rdf (distinct, 
-         HUMAN, wdpd:InstanceOf,   wde:Human,
-         HUMAN, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)).
-
 ner_learn_humans(LANG) :-
     atom_chars(LANG, LSTR),
 
@@ -80,24 +62,59 @@ nlp_f1_ent_human(LANG, I, HUMAN) :-
     nlp_f1_ent_pp(LANG, I, HUMAN).
 
 %
-% macros listing all known humans with their LABELs
+% datasets
 %
 
-nlp_known_humans_s (en, S, HUMAN, LABEL, TSTART, TEND) :-
-    known_humans_data(en, HUMAN, LABEL),
+% debug
+
+known_humans_data(en, SIZE, HUMAN, LABEL) :-
+    debug_mode('humans'),
+    HUMAN is 'http://www.wikidata.org/entity/Q39829',
+    LABEL is 'Stephen King'.
+
+known_humans_data(de, SIZE, HUMAN, LABEL) :-
+    debug_mode('humans'),
+    HUMAN is 'http://www.wikidata.org/entity/Q39829',
+    LABEL is 'Stephen King'.
+
+% production
+
+known_humans_data(LANG, small, HUMAN, LABEL) :-
+    not(debug_mode('humans')),
+    atom_chars(LANG, LSTR),
+    rdf (distinct, 
+         limit(23),
+         HUMAN, wdpd:InstanceOf,   wde:Human,
+         HUMAN, rdfs:label,        LABEL,
+         filter (lang(LABEL) = LSTR)).
+
+known_humans_data(LANG, large, HUMAN, LABEL) :-
+    not(debug_mode('humans')),
+    atom_chars(LANG, LSTR),
+    rdf (distinct, 
+         HUMAN, wdpd:InstanceOf,   wde:Human,
+         HUMAN, rdfs:label,        LABEL,
+         filter (lang(LABEL) = LSTR)).
+
+%
+% known humans with their LABELs
+%
+
+nlp_known_humans_s (en, SIZE, S, HUMAN, LABEL, TSTART, TEND) :-
+    known_humans_data(en, SIZE, HUMAN, LABEL),
     length(S, TSTART),
     hears (en, S, LABEL),
     length(S, TEND).
     
-nlp_known_humans_gen_s (en, S, HUMAN, LABEL, TSTART, TEND) :-
-    known_humans_data(en, HUMAN, L),
+nlp_known_humans_gen_s (en, SIZE, S, HUMAN, LABEL, TSTART, TEND) :-
+    known_humans_data(en, SIZE, HUMAN, L),
     LABEL is format_str("%s's", L),
     length(S, TSTART),
     hears (en, S, LABEL),
     length(S, TEND).
 
-nlp_known_humans_s (de, S, HUMAN, LABEL, TSTART, TEND) :-
-    known_humans_data(de, HUMAN, LABEL),
+nlp_known_humans_s (de, SIZE, S, HUMAN, LABEL, TSTART, TEND) :-
+    known_humans_data(de, SIZE, HUMAN, LABEL),
     length(S, TSTART),
     hears (de, S, LABEL),
     length(S, TEND).
@@ -106,22 +123,22 @@ nlp_known_humans_s (de, S, HUMAN, LABEL, TSTART, TEND) :-
 % questions about humans known
 %
 
-nlp_knowHumanTokens_s (en, S, TSTART, TEND) :- hears (en, S, "do you know"),           nlp_known_humans_s (en, S, _, _, TSTART, TEND).
-nlp_knowHumanTokens_s (en, S, TSTART, TEND) :- hears (en, S, "do you happen to know"), nlp_known_humans_s (en, S, _, _, TSTART, TEND).
+nlp_humans_s (en, SIZE, start, doyouknow, S, TSTART, TEND) :- hears (en, S, "do you know"),           nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND).
+nlp_humans_s (en, SIZE, start, doyouknow, S, TSTART, TEND) :- hears (en, S, "do you happen to know"), nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND).
 
-nlp_knowHumanTokens_s (de, S, TSTART, TEND) :- hears (de, S, "kennst Du"),             nlp_known_humans_s (de, S, _, _, TSTART, TEND).
-nlp_knowHumanTokens_s (de, S, TSTART, TEND) :- hears (de, S, "kennst Du eigentlich"),  nlp_known_humans_s (de, S, _, _, TSTART, TEND).
+nlp_humans_s (de, SIZE, start, doyouknow, S, TSTART, TEND) :- hears (de, S, "kennst Du"),             nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND).
+nlp_humans_s (de, SIZE, start, doyouknow, S, TSTART, TEND) :- hears (de, S, "kennst Du eigentlich"),  nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND).
 
-nlp_knowHumanTokens_r (en, R) :- says (en, R, "Sure I know %(f1_entlabel)s.").
-nlp_knowHumanTokens_r (en, R) :- says (en, R, "Yes I know %(f1_entlabel)s.").
-nlp_knowHumanTokens_r (en, R) :- says (en, R, "Sure I know %(f1_ent_pp3o)s.").
-nlp_knowHumanTokens_r (en, R) :- says (en, R, "Yes I know %(f1_ent_pp3o)s.").
-nlp_knowHumanTokens_r (de, R) :- says (de, R, "Klar kenne ich %(f1_entlabel)s.").
-nlp_knowHumanTokens_r (de, R) :- says (de, R, "Ja ich kenne %(f1_entlabel)s.").
-nlp_knowHumanTokens_r (de, R) :- says (de, R, "Klar kenne ich %(f1_ent_pp3o)s.").
-nlp_knowHumanTokens_r (de, R) :- says (de, R, "Ja ich kenne %(f1_ent_pp3o)s.").
+nlp_humans_r (en, doyouknow, R) :- says (en, R, "Sure I know %(f1_entlabel)s.").
+nlp_humans_r (en, doyouknow, R) :- says (en, R, "Yes I know %(f1_entlabel)s.").
+nlp_humans_r (en, doyouknow, R) :- says (en, R, "Sure I know %(f1_ent_pp3o)s.").
+nlp_humans_r (en, doyouknow, R) :- says (en, R, "Yes I know %(f1_ent_pp3o)s.").
+nlp_humans_r (de, doyouknow, R) :- says (de, R, "Klar kenne ich %(f1_entlabel)s.").
+nlp_humans_r (de, doyouknow, R) :- says (de, R, "Ja ich kenne %(f1_entlabel)s.").
+nlp_humans_r (de, doyouknow, R) :- says (de, R, "Klar kenne ich %(f1_ent_pp3o)s.").
+nlp_humans_r (de, doyouknow, R) :- says (de, R, "Ja ich kenne %(f1_ent_pp3o)s.").
 
-nlp_knowHumanTokens_g(LANG, G) :-
+nlp_humans_g(LANG, start, doyouknow, G, TSTART, TEND) :-
     G is [
         % trace(on),
         ner(LANG, I, NER1CLASS, TSTART, TEND, NER1ENTITY),
@@ -134,23 +151,18 @@ nlp_knowHumanTokens_g(LANG, G) :-
         nlp_f1_ent_human(LANG, I, NER1ENTITY)
         ].
 
+nlp_humans_sgr(LANG, SIZE, start, TOPIC, S, G, R) :-
+    nlp_humans_s (LANG, SIZE, start, TOPIC, S, TSTART, TEND),
+    nlp_humans_g (LANG, start, TOPIC, G, TSTART, TEND),
+    nlp_humans_r (LANG, TOPIC, R).
+
 nlp_train('humans', en, [[], S1, G1, R1]) :-
-
     self_address(en, S1, _),
-    nlp_knowHumanTokens_s (en, S1, TSTART, TEND),
-
-    nlp_knowHumanTokens_g (en, G1),
-
-    nlp_knowHumanTokens_r (en, R1).
+    nlp_humans_sgr(en, large, start, doyouknow, S1, G1, R1).
 
 nlp_train('humans', de, [[], S1, G1, R1]) :-
-
     self_address(de, S1, _),
-    nlp_knowHumanTokens_s (de, S1, TSTART, TEND),
-
-    nlp_knowHumanTokens_g (de, G1),
-
-    nlp_knowHumanTokens_r (de, R1).
+    nlp_humans_sgr(de, large, start, doyouknow, S1, G1, R1).
 
 nlp_test('humans', de, 'know1', [],
          ['Kennst Du Stephen King?', 'Ja ich kenne Stephen King', []]).
@@ -163,7 +175,7 @@ nlp_test('humans', en, 'know3', [],
 % birthplace and birtdate questions
 %
 
-nlp_whereborntokens_g (LANG, G, TSTART, TEND) :-
+nlp_humans_g (LANG, start, birthplace, G, TSTART, TEND) :-
     G is [
         % trace(on),
         ner(LANG, I, NER1CLASS, TSTART, TEND, NER1ENTITY),
@@ -184,44 +196,34 @@ nlp_whereborntokens_g (LANG, G, TSTART, TEND) :-
         setz(ias(I, f1_loclabel, _), BPLABEL)
         ].
 
-nlp_whereborntokens_s (en, S, TSTART, TEND) :-
+nlp_humans_s (en, SIZE, start, birthplace, S, TSTART, TEND) :-
     hears (en, S, [ [ "where", "in which town", "in which city"], ["was", "is"] ] ),
-    nlp_known_humans_s (en, S, _, _, TSTART, TEND),    
+    nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND),    
     hears (en, S, "born?").
-nlp_whereborntokens_s (en, S, TSTART, TEND) :-
+nlp_humans_s (en, SIZE, start, birthplace, S, TSTART, TEND) :-
     hears (en, S, [ "which is", [ "the birthplace", "the place of birth"], "of" ] ),
-    nlp_known_humans_s (en, S, _, _, TSTART, TEND).
+    nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND).
 
-nlp_whereborntokens_s (de, S, TSTART, TEND) :-
+nlp_humans_s (de, SIZE, start, birthplace, S, TSTART, TEND) :-
     hears (de, S, [ [ "wo", "in welcher Stadt", "an welchem Ort"], ["wurde", "ist"], ["eigentlich", ""] ] ),
-    nlp_known_humans_s (de, S, _, _, TSTART, TEND),    
+    nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND),    
     hears (de, S, "geboren?").
-nlp_whereborntokens_s (de, S, TSTART, TEND) :-
+nlp_humans_s (de, SIZE, start, birthplace, S, TSTART, TEND) :-
     hears (de, S, [ ["welches", "was"], "ist", [ "der Geburtsort", "die Geburtsstadt"], "von" ] ),
-    nlp_known_humans_s (de, S, _, _, TSTART, TEND).
+    nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND).
 
-nlp_whereborn_r (en, R) :- says (en, R, "%(f1_entlabel)s was born in %(f1_loclabel)s.").
-nlp_whereborn_r (en, R) :- says (en, R, "%(f1_ent_pp3s)s was born in %(f1_loclabel)s.").
-nlp_whereborn_r (de, R) :- says (de, R, "%(f1_entlabel)s wurde in %(f1_loclabel)s geboren.").
-nlp_whereborn_r (de, R) :- says (de, R, "%(f1_ent_pp3s)s wurde in %(f1_loclabel)s geboren.").
+nlp_humans_r (en, birthplace, R) :- says (en, R, "%(f1_entlabel)s was born in %(f1_loclabel)s.").
+nlp_humans_r (en, birthplace, R) :- says (en, R, "%(f1_ent_pp3s)s was born in %(f1_loclabel)s.").
+nlp_humans_r (de, birthplace, R) :- says (de, R, "%(f1_entlabel)s wurde in %(f1_loclabel)s geboren.").
+nlp_humans_r (de, birthplace, R) :- says (de, R, "%(f1_ent_pp3s)s wurde in %(f1_loclabel)s geboren.").
 
 nlp_train('humans', en, [[], S1, G1, R1]) :-
-
     self_address(en, S1, _),
-    nlp_whereborntokens_s (en, S1, TSTART, TEND),
-
-    nlp_whereborntokens_g (en, G1, TSTART, TEND),
-
-    nlp_whereborn_r (en, R1).
+    nlp_humans_sgr(en, large, start, birthplace, S1, G1, R1).
 
 nlp_train('humans', de, [[], S1, G1, R1]) :-
-
     self_address(de, S1, _),
-    nlp_whereborntokens_s (de, S1, TSTART, TEND),
-
-    nlp_whereborntokens_g(de, G1, TSTART, TEND),
-
-    nlp_whereborn_r (de, R1).
+    nlp_humans_sgr(de, large, start, birthplace, S1, G1, R1).
 
 nlp_test('humans', en, 'whereborn1', [],
          ['Where was Stephen King born?', 'Stephen King was born in Portland.', []]).
@@ -229,49 +231,8 @@ nlp_test('humans', en, 'whereborn1', [],
 nlp_test('humans', de, 'whereborn2', [],
          ['Wo wurde Stephen King geboren?', 'Stephen King wurde in Portland geboren.', []]).
  
-% % l2proc_humanBornWhereContext :-
-% % 
-% %     list_append(VMC, frame(fnBeingBorn)),
-% %     
-% %     list_append(VMC, fe(msg,  vm_frame_pop)),
-% %     list_append(VMC, fe(top,  place)),
-% %     list_append(VMC, fe(add,  uriref(aiu:self))),
-% %     ias(I, user, USER),
-% %     list_append(VMC, fe(spkr, USER)),
-% %     list_append(VMC, frame(fnQuestioning)),
-% %    
-% %     % trace(on),
-% % 
-% %     fnvm_exec (I, VMC).
-% % 
-% % nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) (where|in which town|in which city) (was|is) (she|he) born (again|)?',
-% %          inline(l2proc_humanBornWhereContext)).
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) (wo|in welcher stadt) (wurde|ist) (eigentlich|) (er|sie) (nochmal|) geboren?',
-% %          inline(l2proc_humanBornWhereContext)).
-% % 
-% % nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) which is (the birthplace|place of birth) of (him|her) (again|)?',
-% %          inline(l2proc_humanBornWhereContext)).
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) welches ist (eigentlich|nochmal|) (der Geburtsort|die Geburtsstadt) von (ihm|ihr)?',
-% %          inline(l2proc_humanBornWhereContext)).
-% % 
-% % nlp_test(en,
-% %          ivr(in('Where was Angela Merkel born?'),
-% %              out('angela merkel was born in barmbek-nord')),
-% %          ivr(in('What were we talking about?'),
-% %              out('angela merkels birthday')),
-% %          ivr(in('and where was she born again?'),
-% %              out('angela merkel was born in barmbek-nord'))).
-% % nlp_test(de,
-% %          ivr(in('Wo wurde Angela Merkel geboren?'),
-% %              out('angela merkel wurde in barmbek-nord geboren')),
-% %          ivr(in('Welches Thema hatten wir?'),
-% %              out('angela merkels geburtstag.')),
-% %          ivr(in('und wo wurde sie nochmal geboren?'),
-% %              out('angela merkel wurde in barmbek-nord geboren'))).
-% % 
-% % 
 
-nlp_whenborntokens_g (LANG, G, TSTART, TEND) :-
+nlp_humans_g (LANG, start, birthdate, G, TSTART, TEND) :-
     G is [
         % trace(on),
         ner(LANG, I, NER1CLASS, TSTART, TEND, NER1ENTITY),
@@ -292,46 +253,36 @@ nlp_whenborntokens_g (LANG, G, TSTART, TEND) :-
 
         ].
 
-nlp_whenborntokens_s (en, S, TSTART, TEND) :-
+nlp_humans_s (en, SIZE, start, birthdate, S, TSTART, TEND) :-
     hears (en, S, [ [ "when", "in which year"], ["was", "is"] ] ),
-    nlp_known_humans_s (en, S, _, _, TSTART, TEND),    
+    nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND),    
     hears (en, S, "born?").
-nlp_whenborntokens_s (en, S, TSTART, TEND) :-
+nlp_humans_s (en, SIZE, start, birthdate, S, TSTART, TEND) :-
     hears (en, S, [ ["when is", "on what day is"] ] ),
-    nlp_known_humans_s (en, S, _, _, TSTART, TEND),
+    nlp_known_humans_s (en, SIZE, S, _, _, TSTART, TEND),
     hears (en, S, "birthday?").
 
-nlp_whenborntokens_s (de, S, TSTART, TEND) :-
+nlp_humans_s (de, SIZE, start, birthdate, S, TSTART, TEND) :-
     hears (de, S, [ [ "wann", "in welchem Jahr"], ["wurde", "ist"], ["eigentlich", ""] ] ),
-    nlp_known_humans_s (de, S, _, _, TSTART, TEND),    
+    nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND),    
     hears (de, S, "geboren?").
-nlp_whenborntokens_s (de, S, TSTART, TEND) :-
+nlp_humans_s (de, SIZE, start, birthdate, S, TSTART, TEND) :-
     hears (de, S, [ ["wann hat", "an welchem Tag hat"], [ "eigentlich", ""] ] ),
-    nlp_known_humans_s (de, S, _, _, TSTART, TEND),
+    nlp_known_humans_s (de, SIZE, S, _, _, TSTART, TEND),
     hears (de, S, "Geburtstag?").
 
-nlp_whenborn_r (en, R) :- says (en, R, "%(f1_entlabel)s was born on %(f1_timelabel)s.").
-nlp_whenborn_r (en, R) :- says (en, R, "%(f1_ent_pp3s)s was born on %(f1_timelabel)s.").
-nlp_whenborn_r (de, R) :- says (de, R, "%(f1_entlabel)s wurde am %(f1_timelabel)s geboren.").
-nlp_whenborn_r (de, R) :- says (de, R, "%(f1_ent_pp3s)s wurde am %(f1_timelabel)s geboren.").
+nlp_humans_r (en, birthdate, R) :- says (en, R, "%(f1_entlabel)s was born on %(f1_timelabel)s.").
+nlp_humans_r (en, birthdate, R) :- says (en, R, "%(f1_ent_pp3s)s was born on %(f1_timelabel)s.").
+nlp_humans_r (de, birthdate, R) :- says (de, R, "%(f1_entlabel)s wurde am %(f1_timelabel)s geboren.").
+nlp_humans_r (de, birthdate, R) :- says (de, R, "%(f1_ent_pp3s)s wurde am %(f1_timelabel)s geboren.").
 
 nlp_train('humans', en, [[], S1, G1, R1]) :-
-
     self_address(en, S1, _),
-    nlp_whenborntokens_s (en, S1, TSTART, TEND),
-
-    nlp_whenborntokens_g (en, G1, TSTART, TEND),
-
-    nlp_whenborn_r (en, R1).
+    nlp_humans_sgr(en, large, start, birthdate, S1, G1, R1).
 
 nlp_train('humans', de, [[], S1, G1, R1]) :-
-
     self_address(de, S1, _),
-    nlp_whenborntokens_s (de, S1, TSTART, TEND),
-
-    nlp_whenborntokens_g(de, G1, TSTART, TEND),
-
-    nlp_whenborn_r (de, R1).
+    nlp_humans_sgr(de, large, start, birthdate, S1, G1, R1).
 
 nlp_test('humans', en, 'whenborn1', [],
          ['When was Stephen King born?', 'Stephen King was born on September 21, 1947.', []]).
@@ -339,49 +290,133 @@ nlp_test('humans', en, 'whenborn1', [],
 nlp_test('humans', de, 'whenborn2', [],
          ['Wann wurde Stephen King geboren?', 'Stephen King wurde am einundzwanzigsten September 1947 geboren.', []]).
  
-% % 
-% % l2proc_humanBornWhenContext :-
-% % 
-% %     list_append(VMC, frame(fnBeingBorn)),
-% %     
-% %     list_append(VMC, fe(msg,  vm_frame_pop)),
-% %     list_append(VMC, fe(top,  time)),
-% %     list_append(VMC, fe(add,  uriref(aiu:self))),
-% %     ias(I, user, USER),
-% %     list_append(VMC, fe(spkr, USER)),
-% %     list_append(VMC, frame(fnQuestioning)),
-% %    
-% %     % trace(on),
-% % 
-% %     fnvm_exec (I, VMC).
-% % 
-% % % FIXME: he/she gender indicator
-% % nlp_gen (en, '@SELF_ADDRESS:LABEL (and|) (when|in which year) (was|is) (he|she) born (again|)?',
-% %          inline(l2proc_humanBornWhenContext)).
-% % nlp_gen (de, '@SELF_ADDRESS:LABEL (und|) (wann|in welchem Jahr) (wurde|ist) (eigentlich|) (sie|er) (nochmal|) geboren?',
-% %          inline(l2proc_humanBornWhenContext)).
-% % 
-% % nlp_test(en,
-% %          ivr(in('When was Angela Merkel born?'),
-% %              out('Angela Merkel was born on july seventeen, 1954.')),
-% %          ivr(in('What were we talking about?'),
-% %              out('angela merkels birthday')),
-% %          ivr(in('and when was she born?'),
-% %              out('Angela Merkel was born on july seventeen, 1954.')),
-% %          ivr(in('and where?'),
-% %              out('she was born in barmbek nord'))
-% %         ).
-% % 
-% % nlp_test(de,
-% %          ivr(in('Wann wurde Angela Merkel geboren?'),
-% %              out('Angela Merkel wurde am siebzehnten juli 1954 geboren.')),
-% %          ivr(in('Welches Thema hatten wir?'),
-% %              out('angela merkels geburtstag')),
-% %          ivr(in('und wann wurde sie nochmal geboren?'),
-% %              out('Angela Merkel wurde am siebzehnten juli 1954 geboren.')),
-% %          ivr(in('und wo?'),
-% %              out('Angela Merkel wurde in barmbek nord geboren.'))
-% %         ).
+%
+% multi-round / followup birthday/birthplace questions
+%
+
+nlp_humans_g (LANG, followup, birthplace, G) :-
+    G is [
+        setz(ias(I, f1_type,     _), question),
+        setz(ias(I, f1_topic,    _), birthplace),
+        
+        ias(I, f1_ent, NER1ENTITY),
+
+        nlp_f1_ent_human (LANG, I, NER1ENTITY),
+
+        rdf (distinct, limit(1),
+             NER1ENTITY, wdpd:PlaceOfBirth, BIRTHPLACE),
+        setz(ias(I, f1_loc, _), BIRTHPLACE),
+
+        entity_label(LANG, BIRTHPLACE, BPLABEL),
+
+        setz(ias(I, f1_loclabel, _), BPLABEL)
+        ].
+
+nlp_humans_s (en, followup, birthplace, S) :-
+    hears (en, S, [["and",""], ["where","in which town","in which city"] ] ).
+nlp_humans_s (de, followup, birthplace, S) :-
+    hears (de, S, [["und",""], ["wo","in welcher stadt","an welchem ort"]] ).
+nlp_humans_s (en, followup, birthplace, S) :-
+    not(debug_mode('humans')),
+    hears (en, S, [["and",""], ["where","in which town","in which city"], ["was","is"], ["she","he"], "born", ["again",""] ] ).
+nlp_humans_s (de, followup, birthplace, S) :-
+    not(debug_mode('humans')),
+    hears (de, S, [["und",""], ["wo","in welcher stadt","an welchem ort"], ["wurde","ist"], ["sie","er"], ["eigentlich",""], ["nochmal",""], "geboren" ] ).
+
+nlp_humans_s (en, followup, birthplace, S) :-
+    not(debug_mode('humans')),
+    hears (en, S, [["and",""], "which", "is", ["the birthplace","place of birth"], "of", ["him","her"], ["again",""]]).
+nlp_humans_s (de, followup, birthplace, S) :-
+    not(debug_mode('humans')),
+    hears (de, S, [["und",""], "welches", "ist", ["eigentlich","nochmal",""], ["der Geburtsort","die Geburtsstadt"], "von", ["ihm","ihr"]] ).
+
+
+nlp_humans_g (LANG, followup, birthdate, G) :-
+    G is [
+        setz(ias(I, f1_type,     _), question),
+        setz(ias(I, f1_topic,    _), birthdate),
+        
+        ias(I, f1_ent, NER1ENTITY),
+
+        nlp_f1_ent_human (LANG, I, NER1ENTITY),
+
+        rdf (distinct, limit(1),
+             NER1ENTITY,   wdpd:DateOfBirth,  BIRTHDATE),
+        setz(ias(I, f1_time, _), BIRTHDATE),
+
+        transcribe_date(LANG, dativ, BIRTHDATE, BDLABEL),
+        setz(ias(I, f1_timelabel, _), BDLABEL)
+        ].
+
+nlp_humans_s (en, followup, birthdate, S) :-
+    hears (en, S, [["and",""], ["when","in which year"] ] ).
+nlp_humans_s (de, followup, birthdate, S) :-
+    hears (de, S, [["und",""], ["wann","in welchem Jahr"] ] ).
+nlp_humans_s (en, followup, birthdate, S) :-
+    not(debug_mode('humans')),
+    hears (en, S, [["and",""], ["when","in which year"], ["was","is"], ["she","he"], "born", ["again",""] ] ).
+nlp_humans_s (de, followup, birthdate, S) :-
+    not(debug_mode('humans')),
+    hears (de, S, [["und",""], ["wann","in welchem Jahr"], ["wurde","ist"], ["sie","er"], ["eigentlich",""], ["nochmal",""], "geboren" ] ).
+
+nlp_humans_sgr(LANG, followup, TOPIC, S, G, R) :-
+    nlp_humans_s (LANG, followup, TOPIC, S),
+    nlp_humans_g (LANG, followup, TOPIC, G),
+    nlp_humans_r (LANG, TOPIC, R).
+
+nlp_train('humans', en, [P1, S1, G1, R1, P2, S2, G2, R2]) :-
+    nlp_humans_sgr(en, small, start, TOPIC1, S1, G1, R1),
+    nlp_humans_sgr(en, followup, TOPIC2, S2, G2, R2).
+
+nlp_train('humans', de, [[], S1, G1, R1, [], S2, G2, R2]) :-
+    nlp_humans_sgr(de, small, start, TOPIC1, S1, G1, R1),
+    nlp_humans_sgr(de, followup, TOPIC2, S2, G2, R2).
+
+nlp_test('humans', en, 'multi1', [],
+         ['When was Stephen King born?', 'Stephen King was born on September 21, 1947.', [],
+          'and where?', 'Stephen King was born in Portland.', []]).
+
+nlp_test('humans', de, 'multi2', [],
+         ['Wo wurde Stephen King geboren?', 'Stephen King wurde am September 21, 1947 geboren.', [],
+          'und wo?', 'Stephen King wurde in Portland geboren.', []]).
+
+% nlp_test(en,
+%          ivr(in('Where was Angela Merkel born?'),
+%              out('angela merkel was born in barmbek-nord')),
+%          ivr(in('What were we talking about?'),
+%              out('angela merkels birthday')),
+%          ivr(in('and where was she born again?'),
+%              out('angela merkel was born in barmbek-nord'))).
+% nlp_test(de,
+%          ivr(in('Wo wurde Angela Merkel geboren?'),
+%              out('angela merkel wurde in barmbek-nord geboren')),
+%          ivr(in('Welches Thema hatten wir?'),
+%              out('angela merkels geburtstag.')),
+%          ivr(in('und wo wurde sie nochmal geboren?'),
+%              out('angela merkel wurde in barmbek-nord geboren'))).
+%
+
+% nlp_test(en,
+%          ivr(in('When was Angela Merkel born?'),
+%              out('Angela Merkel was born on july seventeen, 1954.')),
+%          ivr(in('What were we talking about?'),
+%              out('angela merkels birthday')),
+%          ivr(in('and when was she born?'),
+%              out('Angela Merkel was born on july seventeen, 1954.')),
+%          ivr(in('and where?'),
+%              out('she was born in barmbek nord'))
+%         ).
+% 
+% nlp_test(de,
+%          ivr(in('Wann wurde Angela Merkel geboren?'),
+%              out('Angela Merkel wurde am siebzehnten juli 1954 geboren.')),
+%          ivr(in('Welches Thema hatten wir?'),
+%              out('angela merkels geburtstag')),
+%          ivr(in('und wann wurde sie nochmal geboren?'),
+%              out('Angela Merkel wurde am siebzehnten juli 1954 geboren.')),
+%          ivr(in('und wo?'),
+%              out('Angela Merkel wurde in barmbek nord geboren.'))
+%         ).
 
 %
 % if we don't know anything else, we can tell the user about the human's birthplace
@@ -391,7 +426,7 @@ nlp_train('humans', en, [[], S1, G1, R1]) :-
 
     self_address(en, S1, _),
     hears (en, S1, [ [ "what about", "who is", "what is", "what do you know about", "what do you know of" ] ] ),
-    nlp_known_humans_s (en, S1, _, _, TSTART, TEND),    
+    nlp_known_humans_s (en, large, S1, _, _, TSTART, TEND),    
 
     nlp_whereborntokens_g (en, G1, TSTART, TEND),
 
@@ -401,7 +436,7 @@ nlp_train('humans', de, [[], S1, G1, R1]) :-
 
     self_address(de, S1, _),
     hears (de, S1, [ [ "wer ist", "wer ist eigentlich", "was ist mit", "was ist eigentlich mit", "was weisst du über", "was weisst du eigentlich über" ] ] ),
-    nlp_known_humans_s (de, S1, _, _, TSTART, TEND),    
+    nlp_known_humans_s (de, large, S1, _, _, TSTART, TEND),    
 
     nlp_whereborntokens_g (de, G1, TSTART, TEND),
 
@@ -413,4 +448,3 @@ nlp_test('humans', en, 'whatabout1', [],
 nlp_test('humans', de, 'whatabout2', [],
          ['Was ist mit Stephen King?', 'Stephen King wurde in Portland geboren.', []]).
  
-

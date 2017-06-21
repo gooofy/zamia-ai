@@ -41,7 +41,7 @@ from nltools                   import misc
 
 def _bench_fn():
 
-    kernal.compile_module_multi (['base'], False, False, 0)
+    kernal.compile_module_multi (['humans'], run_trace=False, print_utterances=False)
 
 
 logging.basicConfig(level=logging.INFO)

@@ -48,6 +48,8 @@ USER_PROP_PREFIX   = u'http://ai.zamia.org/kb/user/prop/'
 CURIN              = u'http://ai.zamia.org/kb/curin'
 DEFAULT_USER       = USER_PREFIX + u'default'
 
+rdf_cache = {} # query -> result
+
 def builtin_rdf(g, pe):
 
     pe._trace ('CALLED BUILTIN rdf', g)
@@ -85,6 +87,8 @@ def build_algebra(var_map, triples, optional_triples=[], filters=[], limit=0, of
     return algebra
 
 def _rdf_exec (g, pe, location, generate_lists=False):
+
+    global rdf_cache
 
     # rdflib.plugins.sparql.parserutils.CompValue
     #
@@ -229,9 +233,21 @@ def _rdf_exec (g, pe, location, generate_lists=False):
     if len(triples) == 0:
         raise PrologRuntimeError('rdf: at least one non-optional triple expected', location)
 
-    algebra = build_algebra(var_map, triples, optional_triples, filters, limit, offset, distinct)
+    rdf_signature = repr((var_map, triples, optional_triples, filters, limit, offset, distinct))
+
+    if rdf_signature in rdf_cache:
+        # print "HIT  _rdf (%s)" % rdf_signature
+
+        result = rdf_cache[rdf_signature]
+
+    else:
+        # print "MISS _rdf (%s)" % rdf_signature
+
+        algebra = build_algebra(var_map, triples, optional_triples, filters, limit, offset, distinct)
     
-    result = pe.kb.query_algebra (algebra)
+        result = pe.kb.query_algebra (algebra)
+
+        rdf_cache[rdf_signature] = result
 
     logging.debug ('rdf: result (len: %d): %s' % (len(result), repr(result)))
 
@@ -285,6 +301,8 @@ def _rdf_exec (g, pe, location, generate_lists=False):
 
 def builtin_rdf_assert(g, pe):
 
+    global rdf_cache
+
     """ rdf_assert (+S, +P, +O) """
 
     pe._trace ('CALLED BUILTIN rdf_assert', g)
@@ -305,6 +323,8 @@ def builtin_rdf_assert(g, pe):
                pe.context_gn) ]
 
     pe.kb.addN(quads)
+
+    rdf_cache = {}
 
 
 def builtin_uriref_fn(args, env, rt, location):

@@ -364,7 +364,7 @@ nlp_humans_sgr(LANG, followup, TOPIC, S, G, R) :-
     nlp_humans_g (LANG, followup, TOPIC, G),
     nlp_humans_r (LANG, TOPIC, R).
 
-nlp_train('humans', en, [P1, S1, G1, R1, P2, S2, G2, R2]) :-
+nlp_train('humans', en, [[], S1, G1, R1, [], S2, G2, R2]) :-
     nlp_humans_sgr(en, small, start, TOPIC1, S1, G1, R1),
     nlp_humans_sgr(en, followup, TOPIC2, S2, G2, R2).
 
@@ -377,7 +377,7 @@ nlp_test('humans', en, 'multi1', [],
           'and where?', 'Stephen King was born in Portland.', []]).
 
 nlp_test('humans', de, 'multi2', [],
-         ['Wo wurde Stephen King geboren?', 'Stephen King wurde am September 21, 1947 geboren.', [],
+         ['Wann wurde Stephen King geboren?', 'Stephen King wurde am einundzwanzigsten September 1947 geboren.', [],
           'und wo?', 'Stephen King wurde in Portland geboren.', []]).
 
 % nlp_test(en,
@@ -428,7 +428,7 @@ nlp_train('humans', en, [[], S1, G1, R1]) :-
     hears (en, S1, [ [ "what about", "who is", "what is", "what do you know about", "what do you know of" ] ] ),
     nlp_known_humans_s (en, large, S1, _, _, TSTART, TEND),    
 
-    nlp_whereborntokens_g (en, G1, TSTART, TEND),
+    nlp_humans_g (en, start, birthplace, G1, TSTART, TEND),
 
     says (en, R1, "%(f1_entlabel)s was born in %(f1_loclabel)s.").
 
@@ -438,7 +438,7 @@ nlp_train('humans', de, [[], S1, G1, R1]) :-
     hears (de, S1, [ [ "wer ist", "wer ist eigentlich", "was ist mit", "was ist eigentlich mit", "was weisst du über", "was weisst du eigentlich über" ] ] ),
     nlp_known_humans_s (de, large, S1, _, _, TSTART, TEND),    
 
-    nlp_whereborntokens_g (de, G1, TSTART, TEND),
+    nlp_humans_g (de, start, birthplace, G1, TSTART, TEND),
 
     says (de, R1, "%(f1_entlabel)s wurde in %(f1_loclabel)s geboren.").
 

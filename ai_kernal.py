@@ -184,7 +184,6 @@ class AIKernal(object):
 
     def load_module (self, module_name):
 
-        # import pdb; pdb.set_trace()
         if module_name in self.modules:
             return self.modules[module_name]
 
@@ -470,7 +469,12 @@ class AIKernal(object):
 
         # extract NLP training data
 
+        training_data_cnt = 0
+        logging.info ('module %s training data extraction...' % module_name)
+
         sl = SourceLocation('<input>', 0, 0)
+
+        self.prolog_rt.set_trace(run_trace)
         solutions = self.prolog_rt.search_predicate ('nlp_train', [StringLiteral(module_name), 'LANG', 'DATA'], env={}, location=sl, err_on_missing=False)
 
         todo = []
@@ -487,15 +491,14 @@ class AIKernal(object):
 
             todo.append((utt_lang, data, data_pos, None, {}))
 
+        logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
+
         # now: simulate all conversations to extract context training information
 
         self.prolog_rt.db.clear_module(TEST_MODULE)
 
         self.load_module (module_name)
         self.init_module (module_name, run_trace=run_trace)
-
-        training_data_cnt = 0
-        logging.info ('module %s training data extraction...' % module_name)
 
         while len(todo)>0:
 
@@ -531,7 +534,7 @@ class AIKernal(object):
 
             if print_utterances:
                 logging.info (u'utterance  : %s' % unicode(utterance))
-                logging.info (u'layer 0 inp: %s' % repr(inp))
+                # logging.info (u'layer 0 inp: %s' % repr(inp))
 
             found     = False
             inp_json  = prolog_to_json(inp)
@@ -567,9 +570,9 @@ class AIKernal(object):
                     
                 inp = self._compute_net_input (s2, cur_ias, sl)
 
-                if print_utterances:
-                    logging.info (u'layer 1 inp: %s' % repr(inp))
-                    logging.info (u'layer 1 res: %s' % repr(rcode))
+                # if print_utterances:
+                #     logging.info (u'layer 1 inp: %s' % repr(inp))
+                #     logging.info (u'layer 1 res: %s' % repr(rcode))
 
                 found     = False
                 inp_json  = prolog_to_json(inp)

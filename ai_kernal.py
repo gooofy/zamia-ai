@@ -481,8 +481,7 @@ class AIKernal(object):
         for solution in solutions:
 
             utt_lang  = solution['LANG'].name
-
-            data = solution['DATA'].l
+            data      = solution['DATA'].l
 
             if len(data) % 4 != 0:
                 raise PrologError ('Error: training data length has to be multiple of 4!', sl)
@@ -555,7 +554,7 @@ class AIKernal(object):
                                                     resp      = resp_json))
                 training_data_cnt += 1
                 if training_data_cnt % 100 == 0:
-                    logging.info ('...module %s training data cnt: %d' %(module_name, training_data_cnt))
+                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
             else:
                 logging.debug ('layer 0 tdr for "%s" already in DB' % utterance)
             
@@ -595,11 +594,13 @@ class AIKernal(object):
                                                         resp      = resp_json))
                     training_data_cnt += 1
                     if training_data_cnt % 100 == 0:
-                        logging.info ('...module %s training data cnt: %d' %(module_name, training_data_cnt))
+                        logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
                 else:
                     logging.debug ('layer 1 tdr for "%s" already in DB' % utterance)
 
         logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, training_data_cnt))
+
+        self.session.commit()
 
         # if self.discourse_rounds:
 

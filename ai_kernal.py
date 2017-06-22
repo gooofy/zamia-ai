@@ -759,6 +759,7 @@ class AIKernal(object):
                     gcode = json_to_prolog (tdr.resp)
 
                 if gcode is None:
+                    # logging.error('inp: %s' % prolog_to_json(inp))
                     raise PrologError (u'Error: layer 0 no training data for test_in "%s" found in DB!' % test_in, sl)
                     
                 c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)

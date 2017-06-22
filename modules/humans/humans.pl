@@ -6,7 +6,7 @@
 
 % this will switch to much smaller training sets so we can keep 
 % debug turn-around cycle times low
-debug_mode('humans').
+% debug_mode('humans').
 
 ner_learn_humans(LANG) :-
     atom_chars(LANG, LSTR),
@@ -83,7 +83,7 @@ known_humans_data(LANG, small, HUMAN, LABEL) :-
     not(debug_mode('humans')),
     atom_chars(LANG, LSTR),
     rdf (distinct, 
-         limit(23),
+         limit(3),
          HUMAN, wdpd:InstanceOf,   wde:Human,
          HUMAN, rdfs:label,        LABEL,
          filter (lang(LABEL) = LSTR)).

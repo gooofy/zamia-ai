@@ -79,14 +79,25 @@ known_humans_data(de, SIZE, HUMAN, LABEL) :-
 
 % production
 
-known_humans_data(LANG, small, HUMAN, LABEL) :-
+known_humans_data(en, small, HUMAN, LABEL) :-
     not(debug_mode('humans')),
-    atom_chars(LANG, LSTR),
-    rdf (distinct, 
-         limit(3),
-         HUMAN, wdpd:InstanceOf,   wde:Human,
-         HUMAN, rdfs:label,        LABEL,
-         filter (lang(LABEL) = LSTR)).
+    HUMAN is 'http://www.wikidata.org/entity/Q39829',
+    LABEL is 'Stephen King'.
+
+known_humans_data(en, small, HUMAN, LABEL) :-
+    not(debug_mode('humans')),
+    HUMAN is 'http://www.wikidata.org/entity/Q76',
+    LABEL is 'Barack Obama'.
+
+known_humans_data(de, small, HUMAN, LABEL) :-
+    not(debug_mode('humans')),
+    HUMAN is 'http://www.wikidata.org/entity/Q39829',
+    LABEL is 'Stephen King'.
+
+known_humans_data(de, small, HUMAN, LABEL) :-
+    not(debug_mode('humans')),
+    HUMAN is 'http://www.wikidata.org/entity/Q76',
+    LABEL is 'Barack Obama'.
 
 known_humans_data(LANG, large, HUMAN, LABEL) :-
     not(debug_mode('humans')),

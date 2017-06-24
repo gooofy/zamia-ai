@@ -44,6 +44,9 @@ from tensorflow.models.rnn.translate import seq2seq_model
 from tensorflow.models.rnn.translate.data_utils import _PAD, PAD_ID, _GO, GO_ID, _EOS, EOS_ID, _UNK, UNK_ID
 
 from nltools.misc import mkdirs
+from zamiaprolog.logic import json_to_prolog, prolog_to_json
+
+OR_SYMBOL = '__OR__'
 
 # We use a number of buckets and pad to the closest one for efficiency.
 # See seq2seq_model.Seq2SeqModel for details of how they work.
@@ -134,32 +137,36 @@ class NLPModel(object):
         self.config = ConfigParser.RawConfigParser()
         self.config.read(ini_fn)
 
-        self.lang   = self.config.get("training", "lang")
+        self.lang    = self.config.get("training", "lang")
+        self.network = self.config.get("model", "network")
 
         # load discourses from db, resolve non-unique inputs (implicit or of responses)
 
-        self.drs = {} 
+        drs = {} 
 
-        for dr in self.session.query(model.DiscourseRound).filter(model.DiscourseRound.lang==self.lang):
+        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang, model.TrainingData.layer==self.network):
 
-            inp = ' '.join(tokenize (dr.inp))
+            if not dr.inp in drs:
+                drs[dr.inp] = set()
 
-            if not inp in self.drs:
-                self.drs[inp] = set()
+            drs[dr.inp].add(dr.resp)
 
-            self.drs[inp].add(dr.resp)
+        # parse json, implicit or responses:
 
-        # implicit or responses:
+        self.training_data = []
 
-        for inp in self.drs:
-            self.drs[inp] = reduce (lambda a,b: a+';or;'+b, self.drs[inp])
+        for inp in drs:
 
-        # cnt = 0
-        # for inp in self.drs:
-        #     print inp, '->', self.drs[inp]
-        #     cnt += 1
-        #     if cnt>100:
-        #         sys.exit(1)
+            td_inp = map (lambda a: unicode(a), json_to_prolog(inp))
+
+            td_resp = []
+            for r in drs[inp]:
+                td_r = map (lambda a: unicode(a), json_to_prolog(r))
+                if len(td_resp)>0:
+                    td_resp.append(OR_SYMBOL)
+                td_resp.extend(td_r)
+
+            self.training_data.append((td_inp, td_resp))
 
         self.buckets = []
 
@@ -183,10 +190,10 @@ class NLPModel(object):
 
         dia = []
 
-        for inp, resp in self.drs.iteritems():
+        for inp, resp in self.training_data:
 
-            inp_len   = len(tokenize (inp))
-            resp_len  = len(resp.split(';')) + 1 # +1 because EOS_ID gets appended later
+            inp_len   = len(inp)
+            resp_len  = len(resp) + 1 # +1 because EOS_ID gets appended later
 
             while len(dia)<=inp_len:
                 dia.append([])
@@ -205,14 +212,12 @@ class NLPModel(object):
 
         hist = {}
 
-        for inp, resp in self.drs.iteritems():
+        for inp, resp in self.training_data:
 
-            preds = resp.split(';')
+            if not (len(resp) in hist):
+                hist[len(resp)] = 0
 
-            if not (len(preds) in hist):
-                hist[len(preds)] = 0
-
-            hist[len(preds)] += 1
+            hist[len(resp)] += 1
             
         return hist
 
@@ -229,56 +234,37 @@ class NLPModel(object):
 
         self.num_segments = 0
 
-        inputs_seen = set()
-
-        unique = True
-
-        
-        for inp, resp in self.drs.iteritems():
+        for inp, resp in self.training_data:
 
             # input
 
-            tokens = tokenize (inp)
-
-            # enforce unique inputs
-            inputs = u' '.join(tokens)
-            if inputs in inputs_seen:
-                unique = False
-                logging.error (u'input not unique: %s' % inputs)
-            inputs_seen.add(inputs)
-
-            l = len(tokens)
+            l = len(inp)
 
             if l > self.input_max_len:
                 self.input_max_len = l
 
             i = 0
-            for token in tokens:
+            for token in inp:
 
                 if not token in self.input_dict:
                     self.input_dict[token] = len(self.input_dict)
 
             # output
 
-            preds = resp.split(';')
-            l = len(preds) + 1 # +1 to account for _EOS token
+            l = len(resp) + 1 # +1 to account for _EOS token
 
             if l > self.output_max_len:
                 self.output_max_len = l
 
             i = 0
-            for pred in preds:
+            for pred in resp:
                 if not pred in self.output_dict:
                     self.output_dict[pred] = len(self.output_dict)
 
             self.num_segments += 1
 
-        logging.info ('dicts done. input: %d enties, input_max_len=%d. output: %d enties, output_max_len=%d.  num_segments: %d' %
+        logging.info ('dicts done. input: %d entries, input_max_len=%d. output: %d entries, output_max_len=%d.  num_segments: %d' %
                       (len(self.input_dict), self.input_max_len, len(self.output_dict), self.output_max_len, self.num_segments))
-
-        if not unique:
-            raise Exception ('Inputs not unique.')
-
 
     def save_dicts(self):
 
@@ -342,11 +328,9 @@ class NLPModel(object):
 
         logging.info ('%s read, %d entries, output_max_len=%d.' % (self.out_dict_fn, len(self.output_dict), self.output_max_len))
 
-    def compute_x(self, txt):
+    def compute_x(self, inp):
 
-        tokens = tokenize(txt)
-
-        return map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, tokens)
+        return map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, inp)
 
         # x = np.zeros(self.input_max_len, np.int32)
         #l = len(tokens)
@@ -359,7 +343,7 @@ class NLPModel(object):
 
     def compute_y(self, response):
 
-        preds = map(lambda pred: self.output_dict[pred] if pred in self.output_dict else UNK_ID, response.split(';'))
+        preds = map(lambda pred: self.output_dict[pred] if pred in self.output_dict else UNK_ID, response)
 
         preds.append(EOS_ID)
 
@@ -466,8 +450,7 @@ class NLPModel(object):
 
         dia = self.compute_2d_diagram()
 
-              # 3     o  *  o  ;  .     ;           .           .
-        print "    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20"
+        print "    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39"
 
         for inp_len in range(len(dia)):
             print '%2d' % inp_len,
@@ -509,7 +492,7 @@ class NLPModel(object):
         ds_dev   = [[] for _ in self.buckets]
 
         cnt = 0
-        for inp, resp in self.drs.iteritems():
+        for inp, resp in self.training_data:
 
             x = self.compute_x(inp)
             # print dr.inp, x

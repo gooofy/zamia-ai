@@ -46,245 +46,146 @@
 % answer(goodbye, de, anonymous) :-
 %     action(attention,off),
 %     say_eoa(de, "Auf Wiedersehen!").
- 
-answerz (I, en, hello) :- sayz(I, en, "Hello!").
-answerz (I, en, hello) :- sayz(I, en, "Hi!").
-answerz (I, en, hello) :- sayz(I, en, "Greetings!").
-answerz (I, en, hello) :- sayz(I, en, "Hey!").
 
-answerz (I, de, hello) :- sayz(I, de, "Hallo!").
-answerz (I, de, hello) :- sayz(I, de, "Hi!").
-answerz (I, de, hello) :- sayz(I, de, "Grüß Dich!").
-answerz (I, de, hello) :- sayz(I, de, "Hey!").
+%
+% hello
+%
 
-l4proc (I, F, pbGreet01) :-
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'greetings').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'good morning').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'hello').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'hallo').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'hi').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'good day').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'morning').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'good evening').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'good night').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'Cooee').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'Cooey').
+nlp_greetings_s (en, hello, S) :- hears (en, S, 'hi there').
 
-    SELF is uriref(aiu:self),
-    frame(F, arg0,     SELF),
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'grüß dich').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'hallo').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'hi').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'guten morgen').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'guten tag').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'guten abend').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'guten nachmittag').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'gute nacht').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'schönen guten morgen').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'schönen guten tag').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'schönen guten abend').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'schönen guten nachmittag').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'gute nacht').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'tag').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'morgen').
+nlp_greetings_s (de, hello, S) :- hears (de, S, 'huhu').
 
-    ias (I, uttLang, LANG),
+nlp_greetings_r (en, hello, R) :- acts(R, attention(on)), says (en, R, "Hello!").
+nlp_greetings_r (en, hello, R) :- acts(R, attention(on)), says (en, R, "Hi!").
+nlp_greetings_r (en, hello, R) :- acts(R, attention(on)), says (en, R, "Greetings!").
+nlp_greetings_r (en, hello, R) :- acts(R, attention(on)), says (en, R, "Hey!").
 
-    answerz (I, LANG, hello),
-    
-    assertz (ias(I, action, attention(on))).
+nlp_greetings_r (de, hello, R) :- acts(R, attention(on)), says (de, R, "Hallo!").
+nlp_greetings_r (de, hello, R) :- acts(R, attention(on)), says (de, R, "Hi!").
+nlp_greetings_r (de, hello, R) :- acts(R, attention(on)), says (de, R, "Grüß Dich!").
+nlp_greetings_r (de, hello, R) :- acts(R, attention(on)), says (de, R, "Hey!").
 
-l3proc (I, F, pbGreet01) :-
+nlp_train('smalltalk', en, [[], S1, [], R1]) :-
+    self_address(en, S1, _),
+    nlp_greetings_s (en, hello, S1),
+    nlp_greetings_r (en, hello, R1).
+nlp_train('smalltalk', de, [[], S1, [], R1]) :-
+    self_address(de, S1, _),
+    nlp_greetings_s (de, hello, S1),
+    nlp_greetings_r (de, hello, R1).
 
-    SELF is uriref(aiu:self),
-    frame(F, arg1, SELF),
+nlp_test('smalltalk', en, 'hello1', [],
+         ['Hi!', 'hello!', [attention(on)]]).
+nlp_test('smalltalk', de, 'hello2', [],
+         ['Hi!', 'hallo!', [attention(on)]]).
+nlp_test('smalltalk', en, 'hello3', [],
+         ['Computer, Hi!', 'hello!', [attention(on)]]).
+nlp_test('smalltalk', de, 'hello4', [],
+         ['Computer, Hi!', 'hallo!', [attention(on)]]).
 
-    % remember our utterance interpretation
+%
+% bye
+%
 
-    assertz(ias(I, uframe, F)),
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'goodbye').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'bye').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'ciao').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'so long').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'bye for now').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'see ya').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'see you later').
+nlp_greetings_s (en, goodbye, S) :- hears (en, S, 'till next time').
 
-    % produce response frame graph (here: greet user)
-    
-    ias(I, user, USER),
-    list_append(VMC, fe(arg1,    USER)),
-    list_append(VMC, fe(arg0,    SELF)),
-    list_append(VMC, frame(pbGreet01)),
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'auf wiedersehen').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'tschüss').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'ciao').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'ade').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'bye').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'cu').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'bis bald').
+nlp_greetings_s (de, goodbye, S) :- hears (de, S, 'bis zum nächsten mal').
 
-    fnvm_graph(VMC, RFRAME),
+nlp_greetings_r (en, goodbye, R) :- acts(R, attention(off)), says (en, R, "Bye").
+nlp_greetings_r (en, goodbye, R) :- acts(R, attention(off)), says (en, R, "So long").
+nlp_greetings_r (en, goodbye, R) :- acts(R, attention(off)), says (en, R, "See you later").
+nlp_greetings_r (en, goodbye, R) :- acts(R, attention(off)), says (en, R, "Bye for now").
 
-    scorez(I, 100),
+nlp_greetings_r (de, goodbye, R) :- acts(R, attention(off)), says (de, R, "Ade").
+nlp_greetings_r (de, goodbye, R) :- acts(R, attention(off)), says (de, R, "Tschüss").
+nlp_greetings_r (de, goodbye, R) :- acts(R, attention(off)), says (de, R, "Bis bald").
+nlp_greetings_r (de, goodbye, R) :- acts(R, attention(off)), says (de, R, "Ciao").
 
-    % remember response frame
+nlp_train('smalltalk', en, [[], S1, [], R1]) :-
+    nlp_greetings_s (en, goodbye, S1),
+    self_address(en, S1, _),
+    nlp_greetings_r (en, goodbye, R1).
+nlp_train('smalltalk', de, [[], S1, [], R1]) :-
+    nlp_greetings_s (de, goodbye, S1),
+    self_address(de, S1, _),
+    nlp_greetings_r (de, goodbye, R1).
 
-    assertz(ias(I, rframe, RFRAME)),
+nlp_test('smalltalk', en, 'goodbye1', [],
+         ['bye!', 'bye', [attention(off)]]).
+nlp_test('smalltalk', de, 'goodbye2', [],
+         ['Tschüss computer!', 'Tschüss!', [attention(off)]]).
 
-    % generate response actions
-    
-    l4proc (I).
+%
+% howdy
+%
 
-l2proc_greeting(LANG) :-
+nlp_greetings_s (en, howdy, S) :- hears (en, S, [["how are you","howdy","how do you do","how are you feeling"], ["today",""], "?"]).
+nlp_greetings_s (de, howdy, S) :- hears (de, S, [["wie geht es dir","wie gehts","was geht","wie fühlst du dich"], ["heute",""], "?"]).
 
-    list_append(VMC, fe(arg1,  uriref(aiu:self))),
-    ias(I, user, USER),
-    list_append(VMC, fe(arg0, USER)),
-    list_append(VMC, frame(pbGreet01)),
+nlp_greetings_r (en, howdy, R) :- says (en, R, "Great, thanks. How do you feel today?").
+nlp_greetings_r (en, howdy, R) :- says (en, R, "Very well - and you?").
+nlp_greetings_r (en, howdy, R) :- says (en, R, "I am doing great, how are you doing?").
+nlp_greetings_r (en, howdy, R) :- says (en, R, "Great as always!").
+nlp_greetings_r (en, howdy, R) :- says (en, R, "Thanks for asking, I am doing fine. How about you?").
 
-    fnvm_exec (I, VMC).
-   
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Sehr gut, danke. Und selber?").
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Gut, danke. Wie geht es Dir?").
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Mir geht es prima, und Dir?").
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Mir geht es gut, und selber?").
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Super, wie immer!").
+nlp_greetings_r (de, howdy, R) :- says (de, R, "Gut, danke der Nachfrage. Wie geht es Dir?").
 
-nlp_gen(en, '@SELF_ADDRESS:LABEL (greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there)',
-        inline(l2proc_greeting, en)).
-nlp_gen(en, '(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there) @SELF_ADDRESS:LABEL',
-        inline(l2proc_greeting, en)).
-nlp_gen(de, '@SELF_ADDRESS:LABEL (grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu)',
-        inline(l2proc_greeting, en)).
-nlp_gen(de, '(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu) @SELF_ADDRESS:LABEL',
-        inline(l2proc_greeting, en)).
+nlp_train('smalltalk', en, [[], S1, [], R1]) :-
+    self_address(en, S1, _),
+    nlp_greetings_s (en, howdy, S1),
+    nlp_greetings_r (en, howdy, R1).
+nlp_train('smalltalk', de, [[], S1, [], R1]) :-
+    self_address(de, S1, _),
+    nlp_greetings_s (de, howdy, S1),
+    nlp_greetings_r (de, howdy, R1).
 
-answerz (I, en, bye) :- sayz(I, en, "Bye").
-answerz (I, en, bye) :- sayz(I, en, "So long").
-answerz (I, en, bye) :- sayz(I, en, "See you later").
-answerz (I, en, bye) :- sayz(I, en, "Bye for now").
-
-answerz (I, de, bye) :- sayz(I, de, "Ade").
-answerz (I, de, bye) :- sayz(I, de, "Tschüss").
-answerz (I, de, bye) :- sayz(I, de, "Bis bald").
-answerz (I, de, bye) :- sayz(I, de, "Ciao").
-
-l4proc (I, F, zfBye) :-
-
-    SELF is uriref(aiu:self),
-    frame(F, arg0,     SELF),
-
-    ias (I, uttLang, LANG),
-
-    answerz (I, LANG, bye),
-    
-    assertz (ias(I, action, attention(off))).
-
-l3proc (I, F, zfBye) :-
-
-    SELF is uriref(aiu:self),
-    frame(F, arg1, SELF),
-
-    % remember our utterance interpretation
-
-    assertz(ias(I, uframe, F)),
-
-    % produce response frame graph (here: greet user)
-    
-    ias(I, user, USER),
-    list_append(VMC, fe(arg1,    USER)),
-    list_append(VMC, fe(arg0,    SELF)),
-    list_append(VMC, frame(zfBye)),
-
-    fnvm_graph(VMC, RFRAME),
-
-    scorez(I, 100),
-
-    % remember response frame
-
-    assertz(ias(I, rframe, RFRAME)),
-
-    % generate response actions
-    
-    l4proc (I).
-
-l2proc_bye(LANG) :-
-
-    list_append(VMC, fe(arg1,  uriref(aiu:self))),
-    ias(I, user, USER),
-    list_append(VMC, fe(arg0, USER)),
-    list_append(VMC, frame(zfBye)),
-
-    fnvm_exec (I, VMC).
-   
-nlp_gen (en, '@SELF_ADDRESS:LABEL (goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time)',
-        inline(l2proc_bye, en)).
-nlp_gen (en, '(goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time) @SELF_ADDRESS:LABEL',
-        inline(l2proc_bye, en)).
-nlp_gen (de, '@SELF_ADDRESS:LABEL (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal)',
-        inline(l2proc_bye, de)).
-nlp_gen (de, '(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) @SELF_ADDRESS:LABEL',
-        inline(l2proc_bye, de)).
-
-nlp_test(en,
-         ivr(in('hi'),
-             out('hello!'),
-             action(attention(on)))).
-nlp_test(de,
-         ivr(in('hi'),
-             out('Hallo!'),
-             action(attention(on)))).
-
-nlp_test(en,
-         ivr(in('computer hello'),
-             out('Hi!'),
-             action(attention(on)))).
-nlp_test(de,
-         ivr(in('computer hallo'),
-             out('Hi!'),
-             action(attention(on)))).
-
-nlp_test(en,
-         ivr(in('bye computer'),
-             out('bye'),
-             action(attention(off)))).
-nlp_test(de,
-         ivr(in('Tschüss computer'),
-             out('Tschüss!'),
-             action(attention(off)))).
-
-nlp_test(en,
-         ivr(in('bye'),
-             out('so long'),
-             action(attention(off)))).
-nlp_test(de,
-         ivr(in('Ciao'),
-             out('Bis bald'),
-             action(attention(off)))).
-
-answerz (I, en, howdy) :- sayz(I, en, "Great, thanks. How do you feel today?").
-answerz (I, en, howdy) :- sayz(I, en, "Very well - and you?").
-answerz (I, en, howdy) :- sayz(I, en, "I am doing great, how are you doing?").
-answerz (I, en, howdy) :- sayz(I, en, "Great as always!").
-answerz (I, en, howdy) :- sayz(I, en, "Thanks for asking, I am doing fine. How about you?").
-answerz (I, de, howdy) :- sayz(I, de, "Sehr gut, danke. Und selber?").
-answerz (I, de, howdy) :- sayz(I, de, "Gut, danke. Wie geht es Dir?").
-answerz (I, de, howdy) :- sayz(I, de, "Mir geht es prima, und Dir?").
-answerz (I, de, howdy) :- sayz(I, de, "Mir geht es gut, und selber?").
-answerz (I, de, howdy) :- sayz(I, de, "Super, wie immer!").
-answerz (I, de, howdy) :- sayz(I, de, "Gut, danke der Nachfrage. Wie geht es Dir?").
-
-l4proc (I, F, zfHowdy) :-
-
-    SELF is uriref(aiu:self),
-    frame(F, arg0,     SELF),
-
-    ias (I, uttLang, LANG),
-
-    answerz (I, LANG, howdy).
-
-l3proc (I, F, zfHowdy) :-
-
-    SELF is uriref(aiu:self),
-    frame(F, arg1, SELF),
-
-    % remember our utterance interpretation
-
-    assertz(ias(I, uframe, F)),
-
-    % produce response frame graph (here: greet user)
-    
-    ias(I, user, USER),
-    list_append(VMC, fe(arg1,    USER)),
-    list_append(VMC, fe(arg0,    SELF)),
-    list_append(VMC, frame(zfHowdy)),
-
-    fnvm_graph(VMC, RFRAME),
-
-    scorez(I, 100),
-
-    % remember response frame
-
-    assertz(ias(I, rframe, RFRAME)),
-
-    % generate response actions
-    
-    l4proc (I).
-
-l2proc_howdy(LANG) :-
-
-    list_append(VMC, fe(arg1,  uriref(aiu:self))),
-    ias(I, user, USER),
-    list_append(VMC, fe(arg0, USER)),
-    list_append(VMC, frame(zfHowdy)),
-
-    fnvm_exec (I, VMC).
-   
-nlp_gen(en,'@SELF_ADDRESS:LABEL (how are you|howdy|how do you do|how are you feeling) (today|)?',
-        inline(l2proc_howdy, en)).
-nlp_gen(de,'@SELF_ADDRESS:LABEL (wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?',
-        inline(l2proc_howdy, de)).
-
-nlp_test(en,
-         ivr(in('Computer, how are you?'),
-             out('very well and you?'))).
-nlp_test(de,
-         ivr(in('Computer, wie geht es dir?'),
-             out('Super, wie immer!'))).
+nlp_test('smalltalk', en, 'howdy1', [],
+         ['Computer, how are you?', 'very well and you?', []]).
+nlp_test('smalltalk', de, 'howdy2', [],
+         ['Computer, wie geht es Dir?', 'Super, wie immer!', []]).
 

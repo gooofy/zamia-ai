@@ -268,7 +268,6 @@ class AIKernal(object):
 
     def init_module (self, module_name, run_trace=False):
 
-        # import pdb; pdb.set_trace()
         if module_name in self.initialized_modules:
             return
 
@@ -649,6 +648,8 @@ class AIKernal(object):
                 continue
 
             d[k.name] = unicode(v)
+
+        # import pdb; pdb.set_trace()
 
         utterance = u''
         utt_lang  = u'en'

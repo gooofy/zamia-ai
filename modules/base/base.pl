@@ -56,3 +56,13 @@ self_address_ne(de, S, LABEL) :-
     rdf (aiu:self, ai:forename, LABEL, filter(lang(LABEL) = 'de')),
     hears(de, S, LABEL).
 
+
+%
+% nlp helper for simple input->response training samples
+%
+
+nlp_train(MODULE, LANG, [[], S1, [], R1]) :-
+    nlp_gens(MODULE, LANG, INP, RESP),
+    hears (LANG, S1, INP),
+    says (LANG, R1, RESP).
+

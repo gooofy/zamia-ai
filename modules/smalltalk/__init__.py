@@ -12,10 +12,10 @@ PL_SOURCES = [
               'health.pl',
               'humor.pl',
               'languages.pl',
-              # 'religion.pl',
-              # 'social.pl',
-              # 'astro.pl',
-              # 'geo.pl',
+              'religion.pl',
+              'social.pl',
+              'astro.pl',
+              'geo.pl',
              ]
 
 KB_SOURCES = [

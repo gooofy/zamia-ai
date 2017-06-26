@@ -36,7 +36,7 @@ from zamiaprolog.logic   import StringLiteral, ListLiteral, Predicate, Variable,
 from nltools             import misc
 
 INPUT_FN = 'foo.pl'
-MODULE_NAME = 'smalltalk'
+MODULE_NAME = 'weather'
 
 # nlp_gens (en,"@SELF_ADDRESS:LABEL (all|) (men|women) are (all|) (alike|the same)",
 #              "in what way?").
@@ -44,6 +44,8 @@ MODULE_NAME = 'smalltalk'
 STATE_NORMAL = 0
 STATE_MACRO  = 1
 STATE_CHOICE = 2
+
+TEST_OFFSET=1
 
 def convert_macro_string(ms):
 
@@ -112,7 +114,7 @@ def convert_nlp_gens(pred):
     
 def convert_nlp_gen(pred):
 
-    print "# ", unicode(pred)
+    print "% ", unicode(pred)
 
     lang = pred.args[0].name
     ms   = pred.args[1].s
@@ -151,6 +153,32 @@ def convert_answerz(c):
 
     # import pdb; pdb.set_trace()
     
+test_cnt = TEST_OFFSET
+
+def convert_nlp_test(pred):
+
+    global test_cnt
+
+    # print "% ", unicode(pred)
+
+    lang    = pred.args[0].name
+    ivr_in  = pred.args[1].args[0].args[0]
+    ivr_out = pred.args[1].args[1].args[0]
+
+    head = Predicate(name='nlp_test', args=[StringLiteral(MODULE_NAME), 
+                                            Predicate(name=lang), 
+                                            StringLiteral('t%04d' % test_cnt),
+                                            Predicate(name='FIXME'),
+                                            ListLiteral([ivr_in, ivr_out, ListLiteral([])])])
+
+    test_cnt += 1
+
+    clause = Clause (head=head)
+
+    print unicode(clause)
+
+    # import pdb; pdb.set_trace()
+    
 misc.init_app('nlp_gens_conv')
 
 parser = PrologParser()
@@ -170,6 +198,8 @@ with codecs.open(INPUT_FN, 'r', 'utf8') as f:
                 convert_nlp_gen(clause.head)
             elif clause.head.name == 'answerz':
                 convert_answerz(clause)
+            elif clause.head.name == 'nlp_test':
+                convert_nlp_test(clause.head)
                 
             else:
                 print "%", unicode(clause)

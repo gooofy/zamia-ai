@@ -18,6 +18,7 @@ PL_SOURCES = [
               'conversation.pl',
               'geo.pl',
               'math.pl',
+              'time.pl',
              ]
 
 RDF_PREFIXES = {

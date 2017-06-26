@@ -9,6 +9,7 @@ from nltools.tokenizer    import tokenize
 from zamiaprolog.parser   import NAME_CHARS
 from zamiaprolog.logic    import Predicate, StringLiteral, ListLiteral
 from zamiaprolog.builtins import do_list_extend
+from zamiaprolog.errors   import PrologRuntimeError
 from ner                  import builtin_ner_learn, builtin_ner
 
 DEPENDS    = [ 'config' ]

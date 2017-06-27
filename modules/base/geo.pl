@@ -23,7 +23,7 @@ geo_locations (S)  :- set_findall(LOC, geo_location_rdf(LOC), S).
 geo_location (LOC) :- geo_locations(S), set_get(S, LOC).
 
 %
-% all known geo locations macro
+% geo locations datasets
 %
 
 nlp_geo_location_s(en, S, LOCATION, LABEL, TSTART, TEND) :-

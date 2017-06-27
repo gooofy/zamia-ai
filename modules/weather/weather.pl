@@ -42,6 +42,22 @@ time_label(CT, de, weatherNearFuture, "morgen") :-
     after_evening(CT).
 
 %
+% small weather location dataset (that matches the weather training data we have in our DB)
+%
+
+weather_location('http://www.wikidata.org/entity/Q1022',  'Stuttgart').
+weather_location('http://www.wikidata.org/entity/Q1770',  'Tallinn').
+weather_location('http://www.wikidata.org/entity/Q61',    'Washington, D.C.').
+weather_location('http://www.wikidata.org/entity/Q61656', 'Freudental').
+
+nlp_weather_location_s(LANG, S, PLACE1, LABEL, TS, TE) :- 
+    weather_location(PLACE1, LABEL),
+    length(S, TS),
+    hears (en, S, LABEL),
+    length(S, TE).
+
+
+%
 % weather answers 
 %
 
@@ -176,8 +192,8 @@ nlp_weather_g_ext(LANG, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_
     R_CLOUDS   is list_avg(R_CLOUDS_L).
     
 nlp_weather_sgr(LANG, ROUND, PLACE1, TIME1, TOPIC, S, G, R, R_CT) :-
-    nlp_weather_s (LANG, ROUND, PLACE1, TIME1, TOPIC, S),
-    nlp_weather_g (LANG, PLACE1, TIME1, TOPIC, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS),
+    nlp_weather_s (LANG, ROUND, PLACE1, TIME1, TOPIC, TSTART, TEND, S),
+    nlp_weather_g (LANG, PLACE1, TIME1, TOPIC, TSTART, TEND, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS),
     nlp_weather_r (LANG, PLACE1, TIME1, TOPIC, R, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS).
 
 nlp_train('weather', en, [P1, S1, G1, R1]) :-
@@ -200,30 +216,30 @@ nlp_train('weather', de, [P1, S1, G1, R1]) :-
 % start, default time and place
 %
 
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, ["will it rain?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, ["wird es",["regnen","Regen geben"],"?"]).
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, [["what is the likelihood of","how likely is"],"rain ?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen ?"]).
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, ["how likely is it that it will rain ?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, ["wie wahrscheinlich ist es, dass es regnen wird?"]).
-nlp_weather_s(en, start, default, default, full, S)       :- hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like ?"]).
-nlp_weather_s(de, start, default, default, full, S)       :- hears(de, S, ["wie wird das Wetter?"]).
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, [["will the sun shine","will there be sunshine"],"?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, ["scheint die Sonne?"]).
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, [["will it","does it"],"rain ?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, ["regnet es ?"]).
-nlp_weather_s(en, start, default, default, prec_cloud, S) :- hears(en, S, [["will rain come","is rain coming"],"?"]).
-nlp_weather_s(de, start, default, default, prec_cloud, S) :- hears(de, S, ["kommt noch Regen ?"]).
-nlp_weather_s(en, start, default, default, full, S)       :- hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"],"?"]).
-nlp_weather_s(de, start, default, default, full, S)       :- hears(de, S, ["wie",["kalt","warm"],"wird es",["werden",""],"?"]).
-nlp_weather_s(en, start, default, default, full, S)       :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"?"]).
-nlp_weather_s(de, start, default, default, full, S)       :- hears(de, S, ["wie wird das Wetter ?"]).
-nlp_weather_s(en, start, default, default, full, S)       :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"?"]).
-nlp_weather_s(de, start, default, default, full, S)       :- hears(de, S, ["wie wird das Wetter ?"]).
-nlp_weather_s(en, start, default, default, full, S)       :- hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"?"]).
-nlp_weather_s(de, start, default, default, full, S)       :- hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, ["will it rain?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, ["wird es",["regnen","Regen geben"],"?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, [["what is the likelihood of","how likely is"],"rain ?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen ?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, ["how likely is it that it will rain ?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, ["wie wahrscheinlich ist es, dass es regnen wird?"]).
+nlp_weather_s(en, start, default, default,       full, n, n, S) :- hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like ?"]).
+nlp_weather_s(de, start, default, default,       full, n, n, S) :- hears(de, S, ["wie wird das Wetter?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, [["will the sun shine","will there be sunshine"],"?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, ["scheint die Sonne?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, [["will it","does it"],"rain ?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, ["regnet es ?"]).
+nlp_weather_s(en, start, default, default, prec_cloud, n, n, S) :- hears(en, S, [["will rain come","is rain coming"],"?"]).
+nlp_weather_s(de, start, default, default, prec_cloud, n, n, S) :- hears(de, S, ["kommt noch Regen ?"]).
+nlp_weather_s(en, start, default, default,       full, n, n, S) :- hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"],"?"]).
+nlp_weather_s(de, start, default, default,       full, n, n, S) :- hears(de, S, ["wie",["kalt","warm"],"wird es",["werden",""],"?"]).
+nlp_weather_s(en, start, default, default,       full, n, n, S) :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"?"]).
+nlp_weather_s(de, start, default, default,       full, n, n, S) :- hears(de, S, ["wie wird das Wetter ?"]).
+nlp_weather_s(en, start, default, default,       full, n, n, S) :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"?"]).
+nlp_weather_s(de, start, default, default,       full, n, n, S) :- hears(de, S, ["wie wird das Wetter ?"]).
+nlp_weather_s(en, start, default, default,       full, n, n, S) :- hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"?"]).
+nlp_weather_s(de, start, default, default,       full, n, n, S) :- hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"?"]).
 
-nlp_weather_g(LANG, default, default, TOPIC, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :-
+nlp_weather_g(LANG, default, default, TOPIC, n, n, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :-
     G is [
         assertz(ias(I, f1_topic,  TOPIC)),
 
@@ -462,7 +478,7 @@ nlp_test("weather", de, 't0022',
 % start, explicit time  and default place
 %
  
-nlp_weather_g(LANG, default, TIME1, TOPIC, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :-
+nlp_weather_g(LANG, default, TIME1, TOPIC, n, n, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :-
 
     not (TIME1 is default),
 
@@ -481,26 +497,26 @@ nlp_weather_g(LANG, default, TIME1, TOPIC, G, R_CT, R_TIME, R_PLACE, R_CODE, R_P
 
     nlp_weather_g_ext(LANG, G, R_CT, TIME1, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS).
 
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, ["will it rain"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, "wird es"), nlp_timespec(de, S, TIME1), hears(de, S, [["regnen","Regen geben"]]).
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, [["what is the likelihood of","how likely is"],"rain"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen"]), nlp_timespec(de, S, TIME1).
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, ["how likely is it that it will rain"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, "wie wahrscheinlich ist es, dass es"), nlp_timespec(de, S, TIME1), hears(de, S, "regnen wird?").
-nlp_weather_s(en, start, default, TIME1, full, S)       :- hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, full, S)       :- hears(de, S, "wie wird"), nlp_timespec(de, S, TIME1), hears(de, S, "das Wetter?").
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, [["will the sun shine","will there be sunshine"]]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, "scheint"), nlp_timespec(de, S, TIME1), hears(de, S, "die Sonne?").
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, [["will it","does it"],"rain"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, ["regnet es"]), nlp_timespec(de, S, TIME1).
-nlp_weather_s(en, start, default, TIME1, prec_cloud, S) :- hears(en, S, [["will rain come","is rain coming"]]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, prec_cloud, S) :- hears(de, S, "kommt"), nlp_timespec(de, S, TIME1), hears(de, S, "noch Regen ?").
-nlp_weather_s(en, start, default, TIME1, full, S)       :- hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"]]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, full, S)       :- hears(de, S, ["wie",["kalt","warm"],"wird es"]), nlp_timespec(de, S, TIME1), hears(de, S, [["werden",""]]).
-nlp_weather_s(en, start, default, TIME1, full, S)       :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""]]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, full, S)       :- hears(de, S, ["wie wird das Wetter"]), nlp_timespec(de, S, TIME1).
-nlp_weather_s(en, start, default, TIME1, full, S)       :- hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"for"]), nlp_timespec(en, S, TIME1).
-nlp_weather_s(de, start, default, TIME1, full, S)       :- hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"für"]), nlp_timespec(de, S, TIME1).
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, ["will it rain"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, "wird es"), nlp_timespec(de, S, TIME1), hears(de, S, [["regnen","Regen geben"]]).
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, [["what is the likelihood of","how likely is"],"rain"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen"]), nlp_timespec(de, S, TIME1).
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, ["how likely is it that it will rain"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, "wie wahrscheinlich ist es, dass es"), nlp_timespec(de, S, TIME1), hears(de, S, "regnen wird?").
+nlp_weather_s(en, start, default, TIME1,       full, n, n, S) :- hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1,       full, n, n, S) :- hears(de, S, "wie wird"), nlp_timespec(de, S, TIME1), hears(de, S, "das Wetter?").
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, [["will the sun shine","will there be sunshine"]]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, "scheint"), nlp_timespec(de, S, TIME1), hears(de, S, "die Sonne?").
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, [["will it","does it"],"rain"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, ["regnet es"]), nlp_timespec(de, S, TIME1).
+nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- hears(en, S, [["will rain come","is rain coming"]]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- hears(de, S, "kommt"), nlp_timespec(de, S, TIME1), hears(de, S, "noch Regen ?").
+nlp_weather_s(en, start, default, TIME1,       full, n, n, S) :- hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"]]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1,       full, n, n, S) :- hears(de, S, ["wie",["kalt","warm"],"wird es"]), nlp_timespec(de, S, TIME1), hears(de, S, [["werden",""]]).
+nlp_weather_s(en, start, default, TIME1,       full, n, n, S) :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""]]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1,       full, n, n, S) :- hears(de, S, ["wie wird das Wetter"]), nlp_timespec(de, S, TIME1).
+nlp_weather_s(en, start, default, TIME1,       full, n, n, S) :- hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"for"]), nlp_timespec(en, S, TIME1).
+nlp_weather_s(de, start, default, TIME1,       full, n, n, S) :- hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"für"]), nlp_timespec(de, S, TIME1).
 
 nlp_test("weather", en, "t0100", 
          [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
@@ -569,186 +585,119 @@ nlp_test("weather", de, "t0121",
          [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
          ["Computer, was sagt der Wetterbericht für heute?","heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm",[]]).
 
-% %
-% % explicit place
-% %
-% 
-% 
-% l2proc_askWeatherPrecCloudGeo(LANG) :-
-% 
-%     ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, GEO_LOCATION_ENTITY), 
-%     list_append(VMC, fe(place, GEO_LOCATION_ENTITY)),
-%     list_append(VMC, fe(eventuality, weather)),
-%     list_append(VMC, frame(zfWeatherForecast)),
-%     
-%     list_append(VMC, fe(msg,  vm_frame_pop)),
-%     list_append(VMC, fe(top,  prec_cloud)),
-%     list_append(VMC, fe(add,  uriref(aiu:self))),
-%     ias(I, user, USER),
-%     list_append(VMC, fe(spkr, USER)),
-%     list_append(VMC, frame(fnQuestioning)),
-%     
-%     fnvm_exec (I, VMC).
-%    
-% l2proc_askWeatherReportGeo(LANG) :-
-% 
-%     ner(LANG, I, geo_location, @GEO_LOCATION:TSTART_LABEL_0, @GEO_LOCATION:TEND_LABEL_0, GEO_LOCATION_ENTITY), 
-%     list_append(VMC, fe(place, GEO_LOCATION_ENTITY)),
-%     list_append(VMC, fe(eventuality, weather)),
-%     list_append(VMC, frame(zfWeatherForecast)),
-%     
-%     list_append(VMC, fe(msg,  vm_frame_pop)),
-%     list_append(VMC, fe(top,  all)),
-%     list_append(VMC, fe(add,  uriref(aiu:self))),
-%     ias(I, user, USER),
-%     list_append(VMC, fe(spkr, USER)),
-%     list_append(VMC, frame(fnQuestioning)),
-% 
-%     fnvm_exec (I, VMC).
-%    
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL will it rain in @GEO_LOCATION:LABEL?',
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, will it rain in Freudental?'),
-%              out('today it will be mostly sunny in freudental with little precipitation'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wird es in @GEO_LOCATION:LABEL (regnen|Regen geben)?',
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, wird es in Freudental regnen?'),
-%              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (what is the likelihood of|how likely is) rain in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('how likely is rain in Stuttgart?'),
-%              out('today it will be mostly sunny in stuttgart with little precipitation'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL (was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('wie groß ist die Wahrscheinlichkeit für Regen in Stuttgart?'),
-%              out('heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL how likely is it that it will rain in @GEO_LOCATION:LABEL?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, how likely is it that it will rain in Freudental?'),
-%              out('today it will be mostly sunny in Freudental with little precipitation.'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wie wahrscheinlich ist es, dass es in @GEO_LOCATION:LABEL regnen wird?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, wie wahrscheinlich ist es, dass es in Freudental regnen wird?'),
-%              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL what (will the weather|is the weather gonna|is the weather going to) be like in @GEO_LOCATION:LABEL?', 
-%         inline(l2proc_askWeatherReportGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, what will the weather be like in Tallinn?'),
-%              out('today there will be some clouds in tallinn with temperatures between minus eight and minus four degrees'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wie wird in @GEO_LOCATION:LABEL das Wetter?', 
-%         inline(l2proc_askWeatherReportGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, wie wird in Tallinn das Wetter?'),
-%              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (will the sun shine|will there be sunshine) in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('computer, will there be sunshine in stuttgart?'),
-%              out('today it will be mostly sunny in stuttgart with little precipitation'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL scheint in @GEO_LOCATION:LABEL die Sonne?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('computer, scheint in Stuttgart die Sonne?'),
-%              out('heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (will it|does it) rain in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('Will it rain in Freudental?'),
-%              out('today it will be mostly sunny in Freudental with little precipitation.'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL regnet es in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('Regnet es in Freudental?'),
-%              out('heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (will rain come|is rain coming) in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, is rain coming in Tallinn?'),
-%              out('today it will be mostly sunny in tallinn with little precipitation'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL kommt noch Regen in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherPrecCloudGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, kommt noch Regen in Tallinn?'),
-%              out('heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL how (cold|warm) (is it going to|will it) (be|become) in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, how warm will it be in Stuttgart?'),
-%              out('today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wie (kalt|warm) wird es in @GEO_LOCATION:LABEL (werden|)?', 
-%         inline(l2proc_askWeatherReportGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, wie warm wird es in Stuttgart?'),
-%              out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, en)).
-% nlp_test(en,
-%          ivr(in('computer, what will the weather be like in Tallinn?'),
-%              out('today there will be some clouds in Tallinn with temperatures between -8 and -4 degrees.'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wie wird das Wetter in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, de)).
-% nlp_test(de,
-%          ivr(in('computer, wie wird das Wetter in Tallinn?'),
-%              out('heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus vier grad warm'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL (what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, en)).
-% nlp_test(en,
-%          ivr(in('what is the weather gonna be like in stuttgart?'),
-%              out('today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL wie wird das Wetter in @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, de)).
-% nlp_test(de,
-%          ivr(in('wie wird das Wetter in Stuttgart?'),
-%              out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm'))).
-% 
-% nlp_gen(en,
-%         '@SELF_ADDRESS:LABEL what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, en)).
-% nlp_test(en,
-%          ivr(in('Computer, what does the weather forecast say for stuttgart?'),
-%              out('today will be mostly clear skies in Stuttgart with temperatures between -7 and 3 degrees.'))).
-% nlp_gen(de,
-%         '@SELF_ADDRESS:LABEL (wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für @GEO_LOCATION:LABEL ?', 
-%         inline(l2proc_askWeatherReportGeo, de)).
-% nlp_test(de,
-%          ivr(in('Computer, was sagt der Wetterbericht für Stuttgart?'),
-%              out('heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm'))).
-% 
+%
+% start, default time and explicit place
+%
+ 
+nlp_weather_g(LANG, PLACE1, default, TOPIC, TS, TE, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :-
+
+    not (PLACE1 is default),
+
+    G is [
+        assertz(ias(I, f1_topic,  TOPIC)),
+
+        % explicit place (NER)
+        ner(LANG, I, geo_location, TS, TE, P), 
+        assertz(ias(I, f1_place,  P)),
+
+        % default time
+        assertz(ias(I, f1_time, weatherNearFuture))],
+
+    nlp_weather_g_ext(LANG, G, R_CT, weatherNearFuture, PLACE1, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS).
+
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, ["will it rain in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["wird es in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, [["regnen","Regen geben"]]).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, [["what is the likelihood of","how likely is"],"rain in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, ["how likely is it that it will rain in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["wie wahrscheinlich ist es, dass es in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, ["regnen wird?"]).
+nlp_weather_s(en, start, PLACE1, default,       full, TS, TE, S) :- hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default,       full, TS, TE, S) :- hears(de, S, ["wie wird in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, ["das Wetter?"]).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, [["will the sun shine","will there be sunshine"],"in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["scheint in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, ["die Sonne?"]).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, [["will it","does it"],"rain in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["regnet es in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, [["will rain come","is rain coming"],"in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["kommt noch Regen in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"],"in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- hears(de, S, ["wie",["kalt","warm"],"wird es in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, [["werden",""]]).
+nlp_weather_s(en, start, PLACE1, default,       full, TS, TE, S) :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default,       full, TS, TE, S) :- hears(de, S, ["wie wird das Wetter in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(en, start, PLACE1, default,       full, TS, TE, S) :- hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""],"in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default,       full, TS, TE, S) :- hears(de, S, ["wie wird das Wetter in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(en, start, PLACE1, default,       full, TS, TE, S) :- hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"for"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE).
+nlp_weather_s(de, start, PLACE1, default,       full, TS, TE, S) :- hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"für"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE).
+ 
+ 
+nlp_test("weather", en, "t0200", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, will it rain in Freudental?","today it will be mostly sunny in freudental with little precipitation",[]]).
+nlp_test("weather", de, "t0201", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, wird es in Freudental regnen?","heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0202", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["how likely is rain in Stuttgart?","today it will be mostly sunny in stuttgart with little precipitation",[]]).
+nlp_test("weather", de, "t0203", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["wie groß ist die Wahrscheinlichkeit für Regen in Stuttgart?","heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0204", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, how likely is it that it will rain in Freudental?","today it will be mostly sunny in Freudental with little precipitation.",[]]).
+nlp_test("weather", de, "t0205", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, wie wahrscheinlich ist es, dass es in Freudental regnen wird?","heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0206", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, what will the weather be like in Tallinn?","today there will be some clouds in tallinn with temperatures between minus eight and minus five degrees",[]]).
+nlp_test("weather", de, "t0207", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, wie wird in Tallinn das Wetter?","heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus fünf grad warm",[]]).
+nlp_test("weather", en, "t0208", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["computer, will there be sunshine in stuttgart?","today it will be mostly sunny in stuttgart with little precipitation",[]]).
+nlp_test("weather", de, "t0209", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["computer, scheint in Stuttgart die Sonne?","heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0210", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Will it rain in Freudental?","today it will be mostly sunny in Freudental with little precipitation.",[]]).
+nlp_test("weather", de, "t0211", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Regnet es in Freudental?","heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0212", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, is rain coming in Tallinn?","today it will be mostly sunny in tallinn with little precipitation",[]]).
+nlp_test("weather", de, "t0213", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, kommt noch Regen in Tallinn?","heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0214", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, how warm will it be in Stuttgart?","today it will be mostly sunny in stuttgart with little precipitation",[]]).
+nlp_test("weather", de, "t0215", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, wie warm wird es in Stuttgart?","heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben",[]]).
+nlp_test("weather", en, "t0216", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["computer, what will the weather be like in Tallinn?","today there will be some clouds in tallinn with temperatures between minus eight and minus five degrees",[]]).
+nlp_test("weather", de, "t0217", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["computer, wie wird das Wetter in Tallinn?","heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus fünf grad warm",[]]).
+nlp_test("weather", en, "t0218", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["what is the weather gonna be like in stuttgart?","today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees",[]]).
+nlp_test("weather", de, "t0219", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["wie wird das Wetter in Stuttgart?","heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm",[]]).
+nlp_test("weather", en, "t0220", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, what does the weather forecast say for stuttgart?","today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees",[]]).
+nlp_test("weather", de, "t0221", 
+         [ date_time_stamp(date(2016,12,06,11, 0, 0, 'local'), TS), setz(ias(I, currentTime, _), TS) ],
+         ["Computer, was sagt der Wetterbericht für Stuttgart?","heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm",[]]).
+
+
+
 % %
 % % explicit time and place
 % %

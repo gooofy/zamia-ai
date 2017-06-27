@@ -45,7 +45,7 @@ STATE_NORMAL = 0
 STATE_MACRO  = 1
 STATE_CHOICE = 2
 
-TEST_OFFSET=1
+TEST_OFFSET=200
 
 def convert_macro_string(ms):
 

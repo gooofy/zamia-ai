@@ -20,7 +20,7 @@
 #
 # ai kernal, central hub for all the other components to hook into
 #
-# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> prolog -> [ prolog engine ] -> say/action preds
+# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> python -> [ AIS ] -> seq2seq -> actions/says
 #
 
 import os
@@ -448,6 +448,13 @@ class AIKernal(object):
     def compile_module (self, module_name, run_trace=False, print_utterances=False):
 
         m = self.modules[module_name]
+
+        if hasattr(m, 'nlp_train'):
+            nlp_train = getattr(m, 'nlp_train')
+            train_ds = nlp_train(self)
+            for i in range(5):
+                print "%3d/%5d" % (i, len(train_ds)), repr(train_ds[i])
+            import pdb; pdb.set_trace()
 
         logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
 

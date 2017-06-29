@@ -153,6 +153,20 @@ def nlp_dt_r(lang, r, t_h, t_m):
 
 def nlp_dt_en_start_time(res):
 
+    g = [
+
+        "t = ias['currentTime']",
+
+        "ias['f1_type']  = 'question'",
+        "ias['f1_topic'] = 'time'",
+
+        "t_h12 = t.hour if t.hour<13 else t.hour-12",
+
+        "ias['f1_minute'] = t_h12",
+        "ias['f1_hour']   = t.minute",
+
+        ]
+
     for ts in nlp_datetime_train_time_ts_small:
 
         p1 = [ "ias['currentTime'] = dateutil.parser.parse('%s')" % ts.isoformat() ]
@@ -161,9 +175,10 @@ def nlp_dt_en_start_time(res):
             s = []
             for s1 in nlp_base_self_address_s(lang, s):
                 for s2 in nlp_dt_time_s(lang, s1):
+
                     r = []
                     for r1 in nlp_dt_r(lang, r, ts.hour, ts.minute):
-                        res.append((lang, [p1, s2, [], r1]))
+                        res.append((lang, [p1, s2, g, r1]))
 
 
 def nlp_train (kernal):

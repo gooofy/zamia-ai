@@ -34,6 +34,7 @@ import codecs
 import rdflib
 import datetime
 import pytz
+import json
 
 import numpy as np
 
@@ -43,13 +44,13 @@ from sqlalchemy.orm       import sessionmaker
 
 import model
 
-from zamiaprolog.logicdb  import LogicDB, LogicDBOverlay
-from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause, Literal
-from zamiaprolog.errors   import PrologError
-from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
-from zamiaprolog.parser   import PrologParser
-from aiprolog.pl2rdf      import pl_literal_to_rdf
-from aiprolog.runtime     import AIPrologRuntime, CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
+# from zamiaprolog.logicdb  import LogicDB, LogicDBOverlay
+# from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause, Literal
+# from zamiaprolog.errors   import PrologError
+# from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
+# from zamiaprolog.parser   import PrologParser
+# from aiprolog.pl2rdf      import pl_literal_to_rdf
+from aiprolog.runtime     import CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
 
 from kb                   import AIKB
 from nltools              import misc
@@ -78,12 +79,6 @@ class AIKernal(object):
         self.session = Session()
 
         #
-        # logic DB
-        #
-
-        self.db = LogicDB(model.url)
-
-        #
         # knowledge base
         #
 
@@ -104,14 +99,6 @@ class AIKernal(object):
         self.initialized_modules = set()
         s = self.config.get('semantics', 'modules')
         self.all_modules         = map (lambda s: s.strip(), s.split(','))
-
-        #
-        # prolog environment setup
-        #
-
-        self.prolog_rt = AIPrologRuntime(self.db, self.kb)
-        self.parser    = PrologParser ()
-
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, forward_only, load_model, ini_fn):
@@ -254,7 +241,7 @@ class AIKernal(object):
 
             if hasattr(m, 'init_module'):
                 initializer = getattr(m, 'init_module')
-                initializer(self.prolog_rt)
+                initializer(self)
 
         except:
             logging.error(traceback.format_exc())
@@ -286,13 +273,6 @@ class AIKernal(object):
         quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, gn) ]
 
         self.kb.addN_resolve(quads)
-
-        prolog_s = u'init(\'%s\')' % (module_name)
-        c = self.parser.parse_line_clause_body(prolog_s)
-
-        self.prolog_rt.set_trace(run_trace)
-
-        solutions = self.prolog_rt.search(c)
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
@@ -456,8 +436,8 @@ class AIKernal(object):
             todo = []
             for utt_lang, data in train_ds:
 
-                if len(todo)<5:
-                    print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
+                # if len(todo)<5:
+                #     print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
 
                 if len(data) % 4 != 0:
                     raise Exception ('Error: training data length has to be multiple of 4!')
@@ -497,8 +477,8 @@ class AIKernal(object):
                     logging.info (u'utterance  : %s' % unicode(utterance))
                     # logging.info (u'layer 0 inp: %s' % repr(inp))
 
-                inp_json  = prolog_to_json(inp)
-                resp_json = prolog_to_json(gcode)
+                inp_json  = json.dumps(inp)
+                resp_json = json.dumps(gcode)
 
                 k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
                 if not k in td_set:
@@ -521,8 +501,8 @@ class AIKernal(object):
                     logging.info (u'layer 1 inp: %s' % repr(inp))
                     logging.info (u'layer 1 res: %s' % repr(rcode))
 
-                inp_json  = prolog_to_json(inp)
-                resp_json = prolog_to_json(rcode)
+                inp_json  = json.dumps(inp)
+                resp_json = json.dumps(rcode)
 
                 k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
                 if not k in td_set:
@@ -540,8 +520,8 @@ class AIKernal(object):
 
             start_time = time.time()
             logging.info (u'bulk saving to db...')
-            self.db.session.bulk_save_objects(td_list)
-            self.db.commit()
+            self.session.bulk_save_objects(td_list)
+            self.session.commit()
             logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
         # import pdb; pdb.set_trace()
@@ -625,158 +605,152 @@ class AIKernal(object):
 
     def test_module (self, module_name, trace=False, test_name=None):
 
-        logging.info('extracting tests of module %s ...' % (module_name))
+        m = self.modules[module_name]
 
-        sl = SourceLocation('<input>', 0, 0)
-        nlp_tests = self.prolog_rt.search_predicate ('nlp_test', [StringLiteral(module_name), 'LANG', 'NAME', 'PREP', 'DATA'], env={}, location=sl, err_on_missing=False)
+        if hasattr(m, 'nlp_test'):
 
-        if len(nlp_tests)==0:
-            logging.warn('module %s has no tests.' % module_name)
-            return
+            logging.info('extracting tests of module %s ...' % (module_name))
 
-        logging.info('running %d tests of module %s ...' % (len(nlp_tests), module_name))
+            nlp_test = getattr(m, 'nlp_test')
+            nlp_tests = nlp_test(self)
 
-        for nlp_test in nlp_tests:
+            if len(nlp_tests)==0:
+                logging.warn('module %s has no tests.' % module_name)
+                return
 
-            if test_name:
-                name = nlp_test['NAME'].s
-                if name != test_name:
-                    logging.info ('skipping test %s' % name)
-                    continue
+            logging.info('running %d tests of module %s ...' % (len(nlp_tests), module_name))
 
-            prep = nlp_test['PREP'].l
-            data = nlp_test['DATA'].l
-            if len(data) % 3 != 0:
-                raise PrologError ('Error: test data length has to be multiple of 3!', sl)
+            for utt_lang, name, prep, data in nlp_tests:
 
-            utt_lang  = nlp_test['LANG'].name
-            context   = []
-            prev_ias  = None
-            prev_ovl  = {}
-            round_num = 0
+                if test_name:
+                    if name != test_name:
+                        logging.info ('skipping test %s' % name)
+                        continue
 
-            while len(data)>round_num*3:
+                if len(data) % 3 != 0:
+                    raise Exception ('Error: test data length has to be multiple of 3!')
 
-                test_in      = u' '.join(tokenize(data[round_num*3].s, lang=utt_lang))
-                test_out     = u' '.join(tokenize(data[round_num*3+1].s, lang=utt_lang))
-                test_actions = data[round_num*3+2].l
+                context   = []
+                prev_ias  = None
+                round_num = 0
 
-                logging.info("nlp_test: %s round %d test_in     : %s" % (sl, round_num, test_in) )
-                logging.info("nlp_test: %s round %d test_out    : %s" % (sl, round_num, test_out) )
-                logging.info("nlp_test: %s round %d test_actions: %s" % (sl, round_num, test_actions) )
+                while len(data)>round_num*3:
 
-                tokenss   = tokenize(test_in, utt_lang)
-                tokens    = map (lambda t: StringLiteral(t), tokenss)
+                    test_in      = u' '.join(tokenize(data[round_num*3], lang=utt_lang))
+                    test_out     = u' '.join(tokenize(data[round_num*3+1], lang=utt_lang))
+                    test_actions = data[round_num*3+2]
 
-                cur_ias, env = self._setup_ias (sl, test_mode = True, 
-                                                    user_uri  = TEST_USER, 
-                                                    utterance = test_in, 
-                                                    utt_lang  = utt_lang, 
-                                                    tokens    = tokens,
-                                                    prev_ias  = prev_ias,
-                                                    prev_ovl  = prev_ovl)
+                    logging.info("nlp_test: %s round %d test_in     : %s" % (name, round_num, test_in) )
+                    logging.info("nlp_test: %s round %d test_out    : %s" % (name, round_num, test_out) )
+                    logging.info("nlp_test: %s round %d test_actions: %s" % (name, round_num, test_actions) )
 
-                if prep:
-                    p = Clause (body=Predicate(name='and', args=prep), location=sl)
-                    solutions = self.prolog_rt.search(p, env=env)
-                    if len(solutions) != 1:
-                        raise PrologError("Expected exactly one solution when running the preparation code, got %d" % len(solutions), sl)
-                    env = solutions[0]
+                    tokens  = tokenize(test_in, utt_lang)
 
-                inp = self._compute_net_input (env, cur_ias, sl)
+                    cur_ias = self._setup_ias ( user_uri  = TEST_USER, 
+                                                utterance = test_in, 
+                                                utt_lang  = utt_lang, 
+                                                tokens    = tokens,
+                                                prev_ias  = prev_ias)
 
-                # look up g-code in DB
+                    env_locals = {'ias': cur_ias}
+                    if prep:
+                        exec u'\n'.join(prep) in env_locals
 
-                gcode = None
-                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                         model.TrainingData.layer == 0,
-                                                                         model.TrainingData.inp   == prolog_to_json(inp)):
-                    if gcode:
-                        logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (sl, test_in))
+                    # gcode input
 
-                    gcode = json_to_prolog (tdr.resp)
+                    inp = self._compute_net_input (env_locals['ias'])
 
-                if gcode is None:
-                    # logging.error('inp: %s' % prolog_to_json(inp))
-                    raise PrologError (u'Error: layer 0 no training data for test_in "%s" found in DB!' % test_in, sl)
-                    
-                c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
-                s2s = self.prolog_rt.search(c2, env=env)
+                    # look up g-code in DB
 
-                if len(s2s) == 0:
-                    raise PrologError ('G code for utterance "%s" failed!' % test_in, sl)
-                else:
-                    logging.info("nlp_test: %s round %d got %s result(s) from g-code." % (sl, round_num, len(s2s)))
-
-                matching_resp = False
-                for s2 in s2s:
-
-                    # logging.info ('s2: %s' % repr(s2))
-
-                    inp = self._compute_net_input (s2, cur_ias, sl)
-
-                    # look up response in DB
-
-                    response      = None
-
+                    gcode = None
                     for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                             model.TrainingData.layer == 1,
-                                                                             model.TrainingData.inp   == prolog_to_json(inp)):
+                                                                             model.TrainingData.layer == 0,
+                                                                             model.TrainingData.inp   == json.dumps(inp)):
+                        if gcode:
+                            logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (sl, test_in))
 
-                        response = json_to_prolog (tdr.resp)
-                        actual_out, actual_lang, actual_actions, score = self._extract_response (response, cur_ias, s2, sl)
+                        gcode = json.loads (tdr.resp)
 
-                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                    if gcode is None:
+                        raise Exception (u'Error: layer 0 no training data for test_in "%s" found in DB!' % test_in)
+                #         
+                #     c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
+                #     s2s = self.prolog_rt.search(c2, env=env)
 
-                        if len(test_out) > 0:
-                            if len(actual_out)>0:
-                                actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (sl, round_num, actual_out, score) )
-                            if actual_out != test_out:
-                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (sl, round_num))
-                                continue # no match
+                #     if len(s2s) == 0:
+                #         raise PrologError ('G code for utterance "%s" failed!' % test_in, sl)
+                #     else:
+                #         logging.info("nlp_test: %s round %d got %s result(s) from g-code." % (sl, round_num, len(s2s)))
 
-                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (sl, round_num))
+                #     matching_resp = False
+                #     for s2 in s2s:
 
-                        # check actions
+                #         # logging.info ('s2: %s' % repr(s2))
 
-                        if len(test_actions)>0:
+                #         inp = self._compute_net_input (s2, cur_ias, sl)
 
-                            # print repr(test_actions)
+                #         # look up response in DB
 
-                            actions_matched = True
-                            for action in test_actions:
-                                for act in actual_actions:
-                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                    if action == act:
-                                        break
-                                if action != act:
-                                    actions_matched = False
-                                    break
+                #         response      = None
 
-                            if not actions_matched:
-                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (sl, round_num))
-                                continue
+                #         for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                #                                                                  model.TrainingData.layer == 1,
+                #                                                                  model.TrainingData.inp   == json.dumps(inp)):
 
-                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (sl, round_num))
+                #             response = json.loads (tdr.resp)
+                #             actual_out, actual_lang, actual_actions, score = self._extract_response (response, cur_ias, s2, sl)
 
-                        matching_resp = True
+                #             # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                        prev_ias = cur_ias
-                        prev_ovl = s2[ASSERT_OVERLAY_VAR_NAME]
+                #             if len(test_out) > 0:
+                #                 if len(actual_out)>0:
+                #                     actual_out = u' '.join(tokenize(actual_out, utt_lang))
+                #                 logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (sl, round_num, actual_out, score) )
+                #                 if actual_out != test_out:
+                #                     logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (sl, round_num))
+                #                     continue # no match
 
-                        break
+                #             logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (sl, round_num))
 
-                    if matching_resp:
-                        break
+                #             # check actions
 
-                if not response:
-                    raise PrologError (u'Error: no layer1 training data for inp %s found in DB!' % repr(inp), sl)
-                
-                if not matching_resp:
-                    raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
-                       
-                round_num += 1
+                #             if len(test_actions)>0:
+
+                #                 # print repr(test_actions)
+
+                #                 actions_matched = True
+                #                 for action in test_actions:
+                #                     for act in actual_actions:
+                #                         # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                #                         if action == act:
+                #                             break
+                #                     if action != act:
+                #                         actions_matched = False
+                #                         break
+
+                #                 if not actions_matched:
+                #                     logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (sl, round_num))
+                #                     continue
+
+                #                 logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (sl, round_num))
+
+                #             matching_resp = True
+
+                #             prev_ias = cur_ias
+                #             prev_ovl = s2[ASSERT_OVERLAY_VAR_NAME]
+
+                #             break
+
+                #         if matching_resp:
+                #             break
+
+                #     if not response:
+                #         raise PrologError (u'Error: no layer1 training data for inp %s found in DB!' % repr(inp), sl)
+                #     
+                #     if not matching_resp:
+                #         raise PrologError (u'nlp_test: %s round %d no matching response found.' % (sl, round_num))
+                #            
+                    round_num += 1
 
     def run_tests_multi (self, module_names, run_trace=False, test_name=None):
 

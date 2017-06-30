@@ -38,7 +38,7 @@ import pytz
 import numpy as np
 
 from tzlocal              import get_localzone # $ pip install tzlocal
-from copy                 import deepcopy
+from copy                 import deepcopy, copy
 from sqlalchemy.orm       import sessionmaker
 
 import model
@@ -354,39 +354,35 @@ class AIKernal(object):
 
     _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'uttLang', 'tokens', 'currentTime', 'prevIAS' ])
 
-    def _compute_net_input (self, env, cur_ias, location):
+    def _compute_net_input (self, cur_ias):
 
         context = []
         for r in range(NUM_CONTEXT_ROUNDS):
 
-            s4s = self.prolog_rt.search_predicate ('ias', [cur_ias, 'K', 'V'], env=env, location=location, err_on_missing=True)
-           
             prev_ias = None
             tokens   = None
 
             d = {}
 
-            for s4 in s4s:
+            for k in cur_ias:
 
-                k = s4['K']
-                v = s4['V']
+                v = cur_ias[k]
 
-                if not isinstance(k, Predicate):
-                    continue
-
-                if k.name == 'prevIAS':
+                if k == 'prevIAS':
                     prev_ias = v.name
-
-                if k.name == 'tokens':
-                    tokens = v.l
-
-                if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
                     continue
 
-                d[k.name] = v
+                if k == 'tokens':
+                    tokens = v
+                    continue
+
+                if k in self._CONTEXT_IGNORE_IAS_KEYS:
+                    continue
+
+                d[k] = v
 
             for t in reversed(tokens):
-                context.insert(0, t.s)
+                context.insert(0, t)
             for k in sorted(d):
                 context.insert(0, d[k])
                 context.insert(0, k)
@@ -397,61 +393,62 @@ class AIKernal(object):
 
         return context
 
-    def _setup_ias (self, sl, test_mode, user_uri, utterance, utt_lang, tokens, prev_ias, prev_ovl):
+    def _setup_ias (self, user_uri, utterance, utt_lang, tokens, prev_ias):
 
-        cur_ias = Predicate(do_gensym(self.prolog_rt, 'ias'))
-
-        ovl = prev_ovl.clone() if prev_ovl else LogicDBOverlay()
-        env = {
-               'I'                     : cur_ias,
-               ASSERT_OVERLAY_VAR_NAME : ovl
-              }
+        cur_ias = {}
 
         if not prev_ias:
             # find prev_ias for this user, if any
-            # FIXME: there should be a more efficient way than linear search
+            # FIXME: port, make efficient
 
-            prev_ias = None
-            for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
+            # prev_ias = None
+            # for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
 
-                ias = s['I']
+            #     ias = s['I']
 
-                if not prev_ias:
-                    prev_ias = ias
-                    continue
+            #     if not prev_ias:
+            #         prev_ias = ias
+            #         continue
 
-                if ias.name > prev_ias.name:
-                    prev_ias = ias
+            #     if ias.name > prev_ias.name:
+            #         prev_ias = ias
+            pass
 
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('user'),        StringLiteral(user_uri)]),  location=sl))
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('uttLang'),     Predicate(name=utt_lang)]), location=sl))
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('tokens'),      ListLiteral(tokens)]),      location=sl))
-        currentTime = StringLiteral(datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat())
-        ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('currentTime'), currentTime]),              location=sl))
+        cur_ias['user']     = user_uri
+        cur_ias['uttLang']  = utt_lang
+        cur_ias['tokens']   = tokens
+
+        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)
+        cur_ias['currentTime'] = currentTime
 
         if prev_ias:
-            ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate('prevIAS'), prev_ias]), location=sl))
+
+            cur_ias['prevIAS'] = prev_ias
 
             # copy over all previous statements to the new one
 
-            s4s = self.prolog_rt.search_predicate ('ias', [prev_ias, 'K', 'V'], location=sl, env=env, err_on_missing=False)
-            for s4 in s4s:
-                k = s4['K']
-                if not isinstance(k, Predicate):
+            for k in prev_ias:
+                if k in self._CONTEXT_IGNORE_IAS_KEYS:
                     continue
-                if k.name in self._CONTEXT_IGNORE_IAS_KEYS:
-                    continue
-                ovl.assertz(Clause(Predicate('ias', [cur_ias, Predicate(k.name), s4['V']]), location=sl))
+                ias[k] = prev_ias[k]
 
-        return cur_ias, env
+        return cur_ias
 
     def compile_module (self, module_name, run_trace=False, print_utterances=False):
 
         m = self.modules[module_name]
 
+        # delete old NLP training data
+
+        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+
         if hasattr(m, 'nlp_train'):
 
-            training_data_cnt = 0
+            # training_data_cnt = 0
+
+            td_set  = set()
+            td_list = []
+
             logging.info ('module %s training data extraction...' % module_name)
 
             nlp_train = getattr(m, 'nlp_train')
@@ -465,19 +462,17 @@ class AIKernal(object):
                 if len(data) % 4 != 0:
                     raise Exception ('Error: training data length has to be multiple of 4!')
 
-                todo.append((utt_lang, data, 0, None, {}))
+                todo.append((utt_lang, data, 0, None))
 
             logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
 
-            import pdb; pdb.set_trace()
-
             while len(todo)>0:
 
-                utt_lang, data, data_pos, prev_ias, prev_ovl = todo.pop()
+                utt_lang, data, data_pos, prev_ias = todo.pop()
                 if data_pos >= len(data):
                     continue
 
-                prep      = data[data_pos]
+                prep      = '\n'.join(data[data_pos])
                 tokens    = data[data_pos+1]
                 gcode     = data[data_pos+2]
                 rcode     = data[data_pos+3]
@@ -485,250 +480,73 @@ class AIKernal(object):
 
                 data_pos += 4
 
-                # cur_ias, env = self._setup_ias (sl, test_mode = True, 
-                #                                     user_uri  = TEST_USER, 
-                #                                     utterance = utterance, 
-                #                                     utt_lang  = utt_lang, 
-                #                                     tokens    = tokens,
-                #                                     prev_ias  = prev_ias,
-                #                                     prev_ovl  = prev_ovl)
+                env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
+                                                      utterance = utterance, 
+                                                      utt_lang  = utt_lang, 
+                                                      tokens    = tokens,
+                                                      prev_ias  = prev_ias) }
 
-                # if prep:
-                #     p = Clause (body=Predicate(name='and', args=prep), location=sl)
-                #     solutions = self.prolog_rt.search(p, env=env)
-                #     if len(solutions) != 1:
-                #         raise PrologError("Expected exactly one solution when running the preparation code, got %d" % len(solutions), sl)
-                #     env = solutions[0]
 
-                # inp = self._compute_net_input (env, cur_ias, sl)
+                exec prep in env_locals
 
-                # if print_utterances:
-                #     logging.info (u'utterance  : %s' % unicode(utterance))
-                #     # logging.info (u'layer 0 inp: %s' % repr(inp))
+                # gcode input
 
-                # found     = False
-                # inp_json  = prolog_to_json(inp)
-                # resp_json = prolog_to_json(gcode)
-                # for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                #                                                          model.TrainingData.layer == 0,
-                #                                                          model.TrainingData.inp   == inp_json):
-                #     if tdr.resp == resp_json:
-                #         found = True
-                #         break
+                inp = self._compute_net_input (env_locals['ias'])
 
-                # if not found:
-                #     self.session.add(model.TrainingData(lang      = utt_lang,
-                #                                         module    = module_name,
-                #                                         layer     = 0,
-                #                                         utterance = utterance,
-                #                                         inp       = inp_json,
-                #                                         resp      = resp_json))
-                #     training_data_cnt += 1
-                #     if training_data_cnt % 100 == 0:
-                #         logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
-                # else:
-                #     logging.debug ('layer 0 tdr for "%s" already in DB' % utterance)
-                # 
-                # c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
-                # s2s = self.prolog_rt.search(c2, env=env)
+                if print_utterances:
+                    logging.info (u'utterance  : %s' % unicode(utterance))
+                    # logging.info (u'layer 0 inp: %s' % repr(inp))
 
-                # for s2 in s2s:
+                inp_json  = prolog_to_json(inp)
+                resp_json = prolog_to_json(gcode)
 
-                #     todo.append((utt_lang, data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
+                k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+                if not k in td_set:
+                    td_set.add(k)
+                    td_list.append(model.TrainingData(lang      = utt_lang,
+                                                      module    = module_name,
+                                                      layer     = 0,
+                                                      utterance = utterance,
+                                                      inp       = inp_json,
+                                                      resp      = resp_json))
+                exec u'\n'.join(gcode) in env_locals
 
-                #     # logging.info ('s2: %s' % repr(s2))
-                #         
-                #     inp = self._compute_net_input (s2, cur_ias, sl)
+                todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
 
-                #     # if print_utterances:
-                #     #     logging.info (u'layer 1 inp: %s' % repr(inp))
-                #     #     logging.info (u'layer 1 res: %s' % repr(rcode))
+                # rcode input
 
-                #     found     = False
-                #     inp_json  = prolog_to_json(inp)
-                #     resp_json = prolog_to_json(rcode)
+                inp = self._compute_net_input (env_locals['ias'])
 
-                #     for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                #                                                              model.TrainingData.layer == 1,
-                #                                                              model.TrainingData.inp   == inp_json):
+                if print_utterances:
+                    logging.info (u'layer 1 inp: %s' % repr(inp))
+                    logging.info (u'layer 1 res: %s' % repr(rcode))
 
-                #         if tdr.resp == resp_json:
-                #             found = True
-                #             break
-
-                #     if not found:
-                #         self.session.add(model.TrainingData(lang      = utt_lang,
-                #                                             module    = module_name,
-                #                                             layer     = 1,
-                #                                             utterance = utterance,
-                #                                             inp       = inp_json,
-                #                                             resp      = resp_json))
-                #         training_data_cnt += 1
-                #         if training_data_cnt % 100 == 0:
-                #             logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
-                #     else:
-                #         logging.debug ('layer 1 tdr for "%s" already in DB' % utterance)
-        logging.debug('parsing sources of module %s (print_utterances: %s) ...' % (module_name, print_utterances))
-
-        compiler = PrologParser ()
-
-        compiler.clear_module(module_name, self.db)
-
-        for pl_fn in getattr (m, 'PL_SOURCES'):
-            
-            pl_pathname = 'modules/%s/%s' % (module_name, pl_fn)
-
-            logging.debug('   parsing %s ...' % pl_pathname)
-            compiler.compile_file (pl_pathname, module_name, self.db, clear_module=False)
-
-        # delete old NLP training data
-
-        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
-
-        # extract NLP training data
-
-        training_data_cnt = 0
-        logging.info ('module %s training data extraction...' % module_name)
-
-        sl = SourceLocation('<input>', 0, 0)
-
-        self.prolog_rt.set_trace(run_trace)
-        solutions = self.prolog_rt.search_predicate ('nlp_train', [StringLiteral(module_name), 'LANG', 'DATA'], env={}, location=sl, err_on_missing=False)
-
-        todo = []
-        for solution in solutions:
-
-            utt_lang  = solution['LANG'].name
-            data      = solution['DATA'].l
-
-            if len(data) % 4 != 0:
-                raise PrologError ('Error: training data length has to be multiple of 4!', sl)
-
-            data_pos = 0
-
-            todo.append((utt_lang, data, data_pos, None, {}))
-
-        logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
-
-        # now: simulate all conversations to extract context training information
-
-        self.prolog_rt.db.clear_module(TEST_MODULE)
-
-        self.load_module (module_name)
-        self.init_module (module_name, run_trace=run_trace)
-
-        while len(todo)>0:
-
-            utt_lang, data, data_pos, prev_ias, prev_ovl = todo.pop()
-            if data_pos >= len(data):
-                continue
-
-            prep      = data[data_pos].l
-            tokens    = data[data_pos+1].l
-            gcode     = data[data_pos+2].l
-            rcode     = data[data_pos+3].l
-            tokenss   = map(lambda s: s.s, tokens)
-            utterance = u' '.join(tokenss)
-
-            data_pos += 4
-
-            cur_ias, env = self._setup_ias (sl, test_mode = True, 
-                                                user_uri  = TEST_USER, 
-                                                utterance = utterance, 
-                                                utt_lang  = utt_lang, 
-                                                tokens    = tokens,
-                                                prev_ias  = prev_ias,
-                                                prev_ovl  = prev_ovl)
-
-            if prep:
-                p = Clause (body=Predicate(name='and', args=prep), location=sl)
-                solutions = self.prolog_rt.search(p, env=env)
-                if len(solutions) != 1:
-                    raise PrologError("Expected exactly one solution when running the preparation code, got %d" % len(solutions), sl)
-                env = solutions[0]
-
-            inp = self._compute_net_input (env, cur_ias, sl)
-
-            if print_utterances:
-                logging.info (u'utterance  : %s' % unicode(utterance))
-                # logging.info (u'layer 0 inp: %s' % repr(inp))
-
-            found     = False
-            inp_json  = prolog_to_json(inp)
-            resp_json = prolog_to_json(gcode)
-            for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                     model.TrainingData.layer == 0,
-                                                                     model.TrainingData.inp   == inp_json):
-                if tdr.resp == resp_json:
-                    found = True
-                    break
-
-            if not found:
-                self.session.add(model.TrainingData(lang      = utt_lang,
-                                                    module    = module_name,
-                                                    layer     = 0,
-                                                    utterance = utterance,
-                                                    inp       = inp_json,
-                                                    resp      = resp_json))
-                training_data_cnt += 1
-                if training_data_cnt % 100 == 0:
-                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
-            else:
-                logging.debug ('layer 0 tdr for "%s" already in DB' % utterance)
-            
-            c2 = Clause (body=Predicate(name='and', args=gcode), location=sl)
-            s2s = self.prolog_rt.search(c2, env=env)
-
-            for s2 in s2s:
-
-                todo.append((utt_lang, data, data_pos, cur_ias, s2[ASSERT_OVERLAY_VAR_NAME]))
-
-                # logging.info ('s2: %s' % repr(s2))
-                    
-                inp = self._compute_net_input (s2, cur_ias, sl)
-
-                # if print_utterances:
-                #     logging.info (u'layer 1 inp: %s' % repr(inp))
-                #     logging.info (u'layer 1 res: %s' % repr(rcode))
-
-                found     = False
                 inp_json  = prolog_to_json(inp)
                 resp_json = prolog_to_json(rcode)
 
-                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                         model.TrainingData.layer == 1,
-                                                                         model.TrainingData.inp   == inp_json):
+                k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
+                if not k in td_set:
+                    td_set.add(k)
+                    td_list.append(model.TrainingData(lang      = utt_lang,
+                                                      module    = module_name,
+                                                      layer     = 1,
+                                                      utterance = utterance,
+                                                      inp       = inp_json,
+                                                      resp      = resp_json))
+                if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
+                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
 
-                    if tdr.resp == resp_json:
-                        found = True
-                        break
+            logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, len(td_list)))
 
-                if not found:
-                    self.session.add(model.TrainingData(lang      = utt_lang,
-                                                        module    = module_name,
-                                                        layer     = 1,
-                                                        utterance = utterance,
-                                                        inp       = inp_json,
-                                                        resp      = resp_json))
-                    training_data_cnt += 1
-                    if training_data_cnt % 100 == 0:
-                        logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, training_data_cnt, len(todo)))
-                else:
-                    logging.debug ('layer 1 tdr for "%s" already in DB' % utterance)
+            start_time = time.time()
+            logging.info (u'bulk saving to db...')
+            self.db.session.bulk_save_objects(td_list)
+            self.db.commit()
+            logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-        logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, training_data_cnt))
+        # import pdb; pdb.set_trace()
 
         self.session.commit()
-
-        # if self.discourse_rounds:
-
-        #     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
-        #     start_time = time()
-        #     logging.info (u'bulk saving %d discourse rounds to db...' % len(self.discourse_rounds))
-        #     self.db.session.bulk_save_objects(self.discourse_rounds)
-        #     self.db.commit()
-        #     logging.info (u'bulk saving %d discourse rounds to db... done. Took %fs.' % (len(self.discourse_rounds), time()-start_time))
 
     def compile_module_multi (self, module_names, run_trace=False, print_utterances=False):
 

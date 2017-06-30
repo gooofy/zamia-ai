@@ -14,6 +14,8 @@ PL_SOURCES = [
               'dt.pl',
              ]
 
+DEBUG_MODE = False
+
 def hears(lang, s, txt):
     s1 = copy(s)
     s1.extend(tokenize(txt, lang=lang))
@@ -85,6 +87,18 @@ nlp_datetime_train_time_ts_small = [
     datetime(2017,  6, 12, 12, 15, tzinfo=localzone)
     
     ]
+
+def nlp_datetime_train_time_ts():
+
+    if DEBUG_MODE:
+        dataset = nlp_datetime_train_time_ts_small
+    else:
+        dataset = []
+        for h in range(24):
+            for m in range(60):
+                dataset.append(datetime(2017,  6, 12,  h,  m, tzinfo=localzone))
+
+    return dataset
 
 NLP_DT_TIME_S = {'en': [ "do you know what time it is",
                          "what time is it",
@@ -167,9 +181,9 @@ def nlp_dt_en_start_time(res):
 
         ]
 
-    for ts in nlp_datetime_train_time_ts_small:
+    for ts in nlp_datetime_train_time_ts():
 
-        p1 = [ "ias['currentTime'] = dateutil.parser.parse('%s')" % ts.isoformat() ]
+        p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('%s')" % ts.isoformat() ]
 
         for lang in ['en', 'de']:
             s = []

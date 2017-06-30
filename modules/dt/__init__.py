@@ -10,11 +10,7 @@ from nltools.tokenizer import tokenize
 
 DEPENDS    = [ 'config', 'base' ]
 
-PL_SOURCES = [
-              'dt.pl',
-             ]
-
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 def hears(lang, s, txt):
     s1 = copy(s)
@@ -202,4 +198,14 @@ def nlp_train (kernal):
     nlp_dt_en_start_time(res)
 
     return res
+
+def nlp_test (kernal):
+
+    p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T05:30:00+01:00')" ]
+    p2 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T12:15:00+01:00')" ]
+
+    return [ ('en', 'time1', p1, ["what time is it", "It is half past 6.", []]),
+             ('en', 'time2', p2, ["what time is it", "It is a quarter past 1.", []]),
+             ('de', 'time3', p1, ["wie spät ist es", "Es ist eine halbe Stunde nach 6.", []]),
+             ('de', 'time4', p2, ["wie spät ist es", "Es ist viertel nach 1.", []]) ]
 

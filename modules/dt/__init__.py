@@ -42,14 +42,14 @@ def says (lang, r, txt):
             o += 1
 
             format_char = p1[o]
-            r1.append(u"sayv('%s', '%s', '%s')" % (lang, var_name, format_char))
+            r1.append(['sayv', lang, var_name, format_char])
 
             o += 1
 
         parts2 = tokenize(p1[o:], lang=lang, keep_punctuation=True)
 
         for p2 in parts2:
-            r1.append(u"say('%s', '%s')" % (lang, p2))
+            r1.append(['say', lang, p2])
 
         cnt += 1
     
@@ -79,8 +79,8 @@ localzone = get_localzone()
 
 nlp_datetime_train_time_ts_small = [
 
-    datetime(2017,  6, 12,  5, 30, tzinfo=localzone),
-    datetime(2017,  6, 12, 12, 15, tzinfo=localzone)
+    datetime(2017,  6, 12,  6, 30, tzinfo=localzone),
+    datetime(2017,  6, 12, 13, 15, tzinfo=localzone)
     
     ]
 
@@ -172,8 +172,8 @@ def nlp_dt_en_start_time(res):
 
         "t_h12 = t.hour if t.hour<13 else t.hour-12",
 
-        "ias['f1_minute'] = t_h12",
-        "ias['f1_hour']   = t.minute",
+        "ias['f1_hour']   = t_h12",
+        "ias['f1_minute'] = t.minute",
 
         ]
 
@@ -201,8 +201,8 @@ def nlp_train (kernal):
 
 def nlp_test (kernal):
 
-    p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T05:30:00+01:00')" ]
-    p2 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T12:15:00+01:00')" ]
+    p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T06:30:00+01:00')" ]
+    p2 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T13:15:00+01:00')" ]
 
     return [ ('en', 'time1', p1, ["what time is it", "It is half past 6.", []]),
              ('en', 'time2', p2, ["what time is it", "It is a quarter past 1.", []]),

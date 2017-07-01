@@ -6,21 +6,13 @@ import rdflib
 from copy                 import deepcopy, copy
 
 from nltools.tokenizer    import tokenize
-from zamiaprolog.parser   import NAME_CHARS
-from zamiaprolog.logic    import Predicate, StringLiteral, ListLiteral
-from zamiaprolog.builtins import do_list_extend
-from zamiaprolog.errors   import PrologRuntimeError
+# from zamiaprolog.parser   import NAME_CHARS
+# from zamiaprolog.logic    import Predicate, StringLiteral, ListLiteral
+# from zamiaprolog.builtins import do_list_extend
+# from zamiaprolog.errors   import PrologRuntimeError
 from ner                  import builtin_ner_learn, builtin_ner
 
 DEPENDS    = [ 'config' ]
-
-PL_SOURCES = [
-              'base.pl',
-              'conversation.pl',
-              'geo.pl',
-              'math.pl',
-              'time.pl',
-             ]
 
 RDF_PREFIXES = {
                 'rdf':     'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -285,6 +277,55 @@ KB_SOURCES = [
 
               'tz.n3',
             ]
+
+
+#
+# very basic utilities
+#
+
+def hears(lang, s, txt):
+    s1 = copy(s)
+    s1.extend(tokenize(txt, lang=lang))
+    return s1
+
+def says (lang, r, txt):
+    r1 = copy(r)
+    # for t in tokenize(txt, lang=lang):
+    #     r1.append(u"say('%s', '%s')" % (lang, t))
+
+    parts1 = txt.split('%')
+    cnt = 0
+
+    l = []
+
+    for p1 in parts1:
+
+        o = 0
+
+        if cnt > 0:
+           
+            o += 2
+
+            while p1[o] != ')':
+                o += 1
+
+            var_name = p1[1:o]
+            o += 1
+
+            format_char = p1[o]
+            r1.append(['sayv', lang, var_name, format_char])
+
+            o += 1
+
+        parts2 = tokenize(p1[o:], lang=lang, keep_punctuation=True)
+
+        for p2 in parts2:
+            r1.append(['say', lang, p2])
+
+        cnt += 1
+    
+    return r1
+
 
 # def builtin_hears(g, pe):
 # 

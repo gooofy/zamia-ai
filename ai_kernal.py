@@ -99,6 +99,7 @@ class AIKernal(object):
         self.initialized_modules = set()
         s = self.config.get('semantics', 'modules')
         self.all_modules         = map (lambda s: s.strip(), s.split(','))
+        sys.path.append('modules')
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, forward_only, load_model, ini_fn):
@@ -176,7 +177,8 @@ class AIKernal(object):
 
         logging.debug("loading module '%s'" % module_name)
 
-        fp, pathname, description = imp.find_module(module_name, ['modules'])
+        # fp, pathname, description = imp.find_module(module_name, ['modules'])
+        fp, pathname, description = imp.find_module(module_name)
 
         # print fp, pathname, description
 

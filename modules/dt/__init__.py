@@ -8,23 +8,11 @@ from datetime import datetime
 from copy import copy
 from nltools.tokenizer import tokenize
 
-from base import hears, says
+from base.utils import hears, says, nlp_base_self_address_s
 
 DEPENDS    = [ 'config', 'base' ]
 
 DEBUG_MODE = True
-
-NLP_BASE_SELF_ADDRESS_S = {'en': ['hal', 'computer', ''],
-                           'de': ['hal', 'computer', '']}
-
-def nlp_base_self_address_s(lang, s):
-
-    res = []
-    for txt in NLP_BASE_SELF_ADDRESS_S[lang]:
-        res.append(hears (lang, s, txt))
-
-    return res
-
 
 # def nlp_greetings_s (res, s, nextf):
 #     for txt in ['greetings','good morning','hello','hallo','hi','good day','morning','good evening','good night','Cooee','Cooey','hi there']:
@@ -120,7 +108,7 @@ def nlp_dt_r(lang, r, t_h, t_m):
     return res
                
 
-def nlp_dt_en_start_time(res):
+def nlp_dt_en_start_time(kernal, res):
 
     g = [
 
@@ -142,7 +130,7 @@ def nlp_dt_en_start_time(res):
 
         for lang in ['en', 'de']:
             s = []
-            for s1 in nlp_base_self_address_s(lang, s):
+            for s1 in nlp_base_self_address_s(kernal, lang, s):
                 for s2 in nlp_dt_time_s(lang, s1):
 
                     r = []
@@ -154,7 +142,7 @@ def nlp_train (kernal):
 
     res = []
 
-    nlp_dt_en_start_time(res)
+    nlp_dt_en_start_time(kernal, res)
 
     return res
 

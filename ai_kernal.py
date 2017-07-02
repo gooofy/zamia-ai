@@ -632,6 +632,9 @@ class AIKernal(object):
 
                 while len(data)>round_num*3:
 
+                    # if round_num>0:
+                    #     import pdb; pdb.set_trace()
+
                     test_in      = u' '.join(tokenize(data[round_num*3], lang=utt_lang))
                     test_out     = u' '.join(tokenize(data[round_num*3+1], lang=utt_lang))
                     test_actions = data[round_num*3+2]
@@ -726,7 +729,7 @@ class AIKernal(object):
 
                             matching_resp = True
 
-                            prev_ias = cur_ias
+                            prev_ias = env_l['ias']
 
                             break
 
@@ -734,6 +737,7 @@ class AIKernal(object):
                             break
 
                     if gcode is None:
+                        logging.error('failed to find layer 0 db entry for %s' % json.dumps(inp))
                         raise Exception (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
 
                     if not response:

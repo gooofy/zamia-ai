@@ -351,7 +351,7 @@ class AIKernal(object):
                 v = cur_ias[k]
 
                 if k == 'prevIAS':
-                    prev_ias = v.name
+                    prev_ias = v
                     continue
 
                 if k == 'tokens':

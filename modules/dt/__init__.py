@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-import rdflib
 from tzlocal import get_localzone # $ pip install tzlocal
 import dateutil.parser
 from datetime import datetime
@@ -9,18 +8,11 @@ from copy import copy
 from nltools.tokenizer import tokenize
 
 from base.utils import hears, says, nlp_base_self_address_s
+from base.conversation import nlp_base_sayagain_s, nlp_base_isaid_r, nlp_base_whatwasourtopic_s
 
 DEPENDS    = [ 'config', 'base' ]
 
 DEBUG_MODE = True
-
-# def nlp_greetings_s (res, s, nextf):
-#     for txt in ['greetings','good morning','hello','hallo','hi','good day','morning','good evening','good night','Cooee','Cooey','hi there']:
-#         s1 = hears(res, s, txt, nextf)
-#         
-# res=[]
-# self_address(res, [], [nlp_greetings_s])
-# print res
 
 localzone = get_localzone()
 
@@ -107,6 +99,21 @@ def nlp_dt_r(lang, r, t_h, t_m):
                
     return res
                
+def nlp_dt_topic_time_r (lang, r):
+
+    if lang == 'en':
+
+        return [ says ('en', r, 'We were talking about the time'),
+                 says ('en', r, 'The time was our topic') ]
+
+    elif lang == 'de':
+
+        return [ says ('de', r, 'Wir haben über die Zeit gesprochen'),
+                 says ('de', r, 'Die Uhrzeit war unser Thema'),
+               ] 
+
+    else:
+        raise Exception ('unsupported language: %s' % lang)
 
 def nlp_dt_en_start_time(kernal, res):
 
@@ -124,6 +131,8 @@ def nlp_dt_en_start_time(kernal, res):
 
         ]
 
+    # single-round training
+
     for ts in nlp_datetime_train_time_ts():
 
         p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('%s')" % ts.isoformat() ]
@@ -136,6 +145,28 @@ def nlp_dt_en_start_time(kernal, res):
                     r = []
                     for r1 in nlp_dt_r(lang, r, ts.hour, ts.minute):
                         res.append((lang, [p1, s2, g, r1]))
+
+    # multi-round / followup
+
+    for ts in nlp_datetime_train_time_ts_small:
+
+        p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('%s')" % ts.isoformat() ]
+
+        for lang in ['en', 'de']:
+            s1_1 = []
+            for s1_2 in nlp_base_self_address_s(kernal, lang, s1_1):
+                for s1_2 in nlp_dt_time_s(lang, s1_1):
+
+                    for r1 in nlp_dt_r(lang, [], ts.hour, ts.minute):
+
+                        for s2 in nlp_base_whatwasourtopic_s(lang, []):
+                            for r2 in nlp_dt_topic_time_r(lang, []):
+                                res.append((lang, [p1, s1_2, g, r1, p1, s2, [], r2]))
+
+                        for s2 in nlp_base_sayagain_s(lang, []):
+                            for r2_1 in nlp_base_isaid_r(lang, []):
+                                for r2_2 in nlp_dt_r(lang, r2_1, ts.hour, ts.minute):
+                                    res.append((lang, [p1, s1_2, g, r1, p1, s2, [], r2_2]))
 
 
 def nlp_train (kernal):
@@ -153,6 +184,11 @@ def nlp_test (kernal):
 
     return [ ('en', 'time1', p1, ["what time is it", "It is half past 6.", []]),
              ('en', 'time2', p2, ["what time is it", "It is a quarter past 1.", []]),
-             ('de', 'time3', p1, ["wie spät ist es", "Es ist eine halbe Stunde nach 6.", []]),
-             ('de', 'time4', p2, ["wie spät ist es", "Es ist viertel nach 1.", []]) ]
+             ('en', 'time3', p2, ["what time is it", "It is a quarter past 1.", [], "huh?", "I said it is a quarter past 1.", []]),
+             ('en', 'time3', p2, ["what time is it", "It is a quarter past 1.", [], "what was our topic?", "We were talking about the time.", []]),
+             ('de', 'time4', p1, ["wie spät ist es", "Es ist eine halbe Stunde nach 6.", []]),
+             ('de', 'time5', p2, ["wie spät ist es", "Es ist viertel nach 1.", []]),
+             ('de', 'time6', p2, ["wie spät ist es", "Es ist viertel nach 1.", [], "was?", "Ich sagte es ist viertel nach eins.", []]),
+             ('de', 'time6', p2, ["wie spät ist es", "Es ist viertel nach 1.", [], "worüber haben wir gesprochen?", "Die Uhrzeit war unser Thema.", []]),
+           ]
 

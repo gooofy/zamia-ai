@@ -412,7 +412,7 @@ class AIKernal(object):
             for k in prev_ias:
                 if k in self._CONTEXT_IGNORE_IAS_KEYS:
                     continue
-                ias[k] = prev_ias[k]
+                cur_ias[k] = prev_ias[k]
 
         return cur_ias
 

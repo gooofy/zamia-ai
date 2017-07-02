@@ -397,7 +397,7 @@ class AIKernal(object):
             pass
 
         cur_ias['user']     = user_uri
-        cur_ias['uttLang']  = utt_lang
+        cur_ias['lang']     = utt_lang
         cur_ias['tokens']   = tokens
 
         currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)

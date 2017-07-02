@@ -11,9 +11,56 @@ from rdf                  import rdf
 #
 
 def hears(lang, s, txt):
-    s1 = copy(s)
-    s1.extend(tokenize(txt, lang=lang))
-    return s1
+
+    if isinstance (txt, basestring):
+        s1 = copy(s)
+        s1.extend(tokenize(txt, lang=lang))
+        return s1
+
+    todo = [(txt, 0, [])]
+
+    done = []
+
+    while todo:
+
+        l, pos, res = todo.pop()
+
+        if pos >= len(l):
+            done.append(res)
+            continue
+
+        e = l[pos]
+        if isinstance(e, basestring):
+
+            tokens = tokenize(e, lang=lang)
+            res = copy(res)
+            res.extend(tokens)
+            todo.append((l, pos+1, res))
+
+        else:
+
+            for e2 in e:
+                tokens = tokenize(e2, lang=lang)
+                res2 = copy(res)
+                res2.extend(tokens)
+                todo.append((l, pos+1, res2))
+
+    start = s
+
+    res = []
+
+    for d in done:
+
+        r = deepcopy(start)
+
+        for token in d:
+            r.append(token)
+
+        res.append (r)
+
+    # import pdb; pdb.set_trace()
+
+    return res
 
 def says (lang, r, txt):
     r1 = copy(r)

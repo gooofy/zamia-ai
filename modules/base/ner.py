@@ -5,29 +5,10 @@ import logging
 import rdflib
 from rdflib.plugins.sparql.parserutils import CompValue
 
-# from zamiaprolog.errors   import PrologRuntimeError
-# from zamiaprolog.logic    import StringLiteral, NumberLiteral, Predicate, Clause, Variable
-# from zamiaprolog.builtins import do_assertz
-# from aiprolog.runtime     import build_algebra, CURIN, KB_PREFIX
 from nltools.tokenizer    import tokenize
 from nltools.misc         import limit_str
-# from aiprolog.pl2rdf      import rdf_to_pl
 
 MAX_NER_RESULTS = 5
-
-#     atom_chars(LANG, LSTR),
-# 
-#     rdf (distinct,
-#          PERSON, wdpd:InstanceOf,   wde:Human,
-#          PERSON, rdfs:label,        LABEL,
-#          PERSON, wdpd:FamilyName,   FN,
-#          FN,     rdfs:label,        FAMILY_NAME,
-#          filter (lang(LABEL) = LSTR),
-#          filter (lang(FAMILY_NAME) = LSTR)),
-# 
-#     tokenize (LANG, FAMILY_NAME, FN_TOKENS),
-# 
-#     NAME_TOKENS = FN_TOKENS.
 
 ner_dict   = {} # lang -> class -> token -> entity -> [idx1, idx2, ...]
 
@@ -146,56 +127,4 @@ def ner(lang, ias, cls, tstart, tend):
 def ner_best(ner_res, ias):
     # FIXME: provide hook(s) for scoring functions
     return ner_res[0]
-
-# def builtin_ner(g, pe):
-# 
-#     global ner_dict
-# 
-#     """ ner ( +Lang, +I, ?Class, +TStart, +Tend, -Entity ) """
-# 
-#     pe._trace ('CALLED BUILTIN ner', g)
-# 
-#     pred = g.terms[g.inx]
-#     args = pred.args
-# 
-#     if len(args) != 6:
-#         raise PrologRuntimeError('ner: 6 args ( +Lang, +I, ?Class, +TStart, +Tend, -Entity ) expected.', g.location)
-# 
-#     # import pdb; pdb.set_trace()
-# 
-#     #
-#     # extract args, tokens
-#     #
-# 
-#     arg_Lang    = pe.prolog_get_constant(args[0], g.env, g.location)
-#     arg_I       = pe.prolog_eval        (args[1], g.env, g.location)
-#     arg_Class   = pe.prolog_eval        (args[2], g.env, g.location)
-#     arg_TStart  = pe.prolog_get_int     (args[3], g.env, g.location)
-#     arg_TEnd    = pe.prolog_get_int     (args[4], g.env, g.location)
-#     arg_Entity  = pe.prolog_get_variable(args[5], g.env, g.location)
-# 
-#     if not arg_Lang in ner_dict:
-#         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
-# 
-#     if isinstance(arg_Class, Variable):
-# 
-#         res = []
-# 
-#         for c in ner_dict[arg_Lang]:
-# 
-#             rs = _do_ner(g, pe, arg_Lang, arg_I, c, arg_TStart, arg_TEnd, arg_Entity)
-#             for r in rs:
-# 
-#                 r[arg_Class.name] = Predicate(c)
-#                 res.append(r)
-# 
-#     else:
-# 
-#         if not arg_Class.name in ner_dict[arg_Lang]:
-#             raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
-# 
-#         res = _do_ner(g, pe, arg_Lang, arg_I, arg_Class.name, arg_TStart, arg_TEnd, arg_Entity)
-# 
-#             
-#     return res
 

@@ -147,10 +147,16 @@ def says (lang, r, txt):
 
 def entity_label(kernal, lang, entity):
 
-    # import pdb; pdb.set_trace()
 
     res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
                distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), lang) ])
+
+    if len(res)!=1:
+        # try the english label instead
+        res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
+                   distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), 'en') ])
+        if len(res)!=1:
+            import pdb; pdb.set_trace()
 
     # print "entity_label: %s -> %s" % (entity, repr(res))
     return res[0]['LABEL']

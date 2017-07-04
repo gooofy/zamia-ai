@@ -244,10 +244,10 @@ def nlp_dt_date_s(lang, s):
 
         res = []
 
-        res.extend(hears ('en', s, ['weisst du', ['welchen tag', 'welches datum'], 'wir', ['heute',''], 'haben']))
+        res.extend(hears ('de', s, ['weisst du', ['welchen tag', 'welches datum'], 'wir', ['heute',''], 'haben']))
         res.extend(hears ('de', s, [['welchen tag','welches datum'], 'haben wir', ['heute','']]))
-        res.extend(hears ('en', s, ['was ist heute für ein', ['tag','datum']]))
-        res.extend(hears ('en', s, ['welchen haben wir heute']))
+        res.extend(hears ('de', s, ['was ist heute für ein', ['tag','datum']]))
+        res.extend(hears ('de', s, ['welchen haben wir heute']))
 
     else:
         raise Exception ('unsupported language: %s' % lang)

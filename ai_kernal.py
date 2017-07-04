@@ -466,7 +466,8 @@ class AIKernal(object):
                                                       utterance = utterance, 
                                                       utt_lang  = utt_lang, 
                                                       tokens    = tokens,
-                                                      prev_ias  = prev_ias) }
+                                                      prev_ias  = prev_ias),
+                              'kernal': self}
 
 
                 exec prep in env_locals
@@ -671,7 +672,8 @@ class AIKernal(object):
 
                         gcode = json.loads (tdr.resp)
 
-                        env_l = {'ias': deepcopy(cur_ias)}
+                        env_l = {'ias'   : deepcopy(cur_ias),
+                                 'kernal': self}
 
                         exec u'\n'.join(gcode) in env_l
         

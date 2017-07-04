@@ -28,32 +28,45 @@ from rdf                  import rdf
 # very basic utilities
 #
 
-def hears(lang, s, txt):
+def hears(lang, s, txt, label=None):
 
     if isinstance (txt, basestring):
         s1 = copy(s)
         s1.extend(tokenize(txt, lang=lang))
         return s1
 
-    todo = [(txt, 0, [])]
+    # import pdb; pdb.set_trace()
 
-    done = []
+    todo = [(txt, 0, [], None, None)]
+
+    done   = []
 
     while todo:
 
-        l, pos, res = todo.pop()
+        # print repr(todo)
+
+        l, pos, res, tstart, tend = todo.pop()
 
         if pos >= len(l):
-            done.append(res)
+            if label:
+                done.append((res, tstart, tend))
+            else:
+                done.append(res)
             continue
 
         e = l[pos]
         if isinstance(e, basestring):
 
-            tokens = tokenize(e, lang=lang)
+            if label and e=='$':
+                tstart = len(res)
+                tokens = tokenize(label, lang=lang)
+                tend = tstart + len(tokens)
+            else:
+                tokens = tokenize(e, lang=lang)
+
             res = copy(res)
             res.extend(tokens)
-            todo.append((l, pos+1, res))
+            todo.append((l, pos+1, res, tstart, tend))
 
         else:
 
@@ -61,22 +74,32 @@ def hears(lang, s, txt):
                 tokens = tokenize(e2, lang=lang)
                 res2 = copy(res)
                 res2.extend(tokens)
-                todo.append((l, pos+1, res2))
+                todo.append((l, pos+1, res2, tstart, tend))
 
     start = s
 
     res = []
 
-    for d in done:
+    if label:
 
-        r = deepcopy(start)
+        for d, tstart, tend in done:
 
-        for token in d:
-            r.append(token)
+            r = deepcopy(start)
 
-        res.append (r)
+            for token in d:
+                r.append(token)
 
-    # import pdb; pdb.set_trace()
+            res.append ((r, tstart, tend))
+
+    else:
+        for d in done:
+
+            r = deepcopy(start)
+
+            for token in d:
+                r.append(token)
+
+            res.append (r)
 
     return res
 
@@ -121,13 +144,17 @@ def says (lang, r, txt):
 #
 # wikidata / rdf related utils
 #
- 
-# entity_label(LANG, ENTITY, LABEL) :-
-#     atom_chars(LANG, LSTR),
-#     rdf (distinct,
-#          ENTITY, rdfs:label, LABEL,
-#          filter (lang(LABEL) = LSTR)).
-# 
+
+def entity_label(kernal, lang, entity):
+
+    # import pdb; pdb.set_trace()
+
+    res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
+               distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), lang) ])
+
+    # print "entity_label: %s -> %s" % (entity, repr(res))
+    return res[0]['LABEL']
+
 # is_entity(ENTITY) :-
 #     rdf (limit(1), ENTITY, rdfs:label, LABEL).
  
@@ -135,9 +162,11 @@ def says (lang, r, txt):
  
 # is_human(ENTITY) :- rdf (ENTITY, wdpd:InstanceOf, wde:Human).
  
-# is_male(ENTITY) :- rdf (ENTITY, wdpd:SexOrGender, wde:Male).
-# is_female(ENTITY) :- rdf (ENTITY, wdpd:SexOrGender, wde:Female). 
- 
+def is_male(kernal, entity):
+    return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Male')]))>0
+def is_female(kernal, entity):
+    return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Female')]))>0
+
 # entity_gender(ENTITY, GENDER) :- is_male(ENTITY), GENDER is male.
 # entity_gender(ENTITY, GENDER) :- is_female(ENTITY), GENDER is female.
  

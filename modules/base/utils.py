@@ -156,7 +156,9 @@ def entity_label(kernal, lang, entity):
         res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
                    distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), 'en') ])
         if len(res)!=1:
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
+            print 'warning: no label found for %s' % entity
+            return 'unknown'
 
     # print "entity_label: %s -> %s" % (entity, repr(res))
     return res[0]['LABEL']

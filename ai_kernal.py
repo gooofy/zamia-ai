@@ -718,6 +718,7 @@ class AIKernal(object):
 
                                 # print repr(test_actions)
 
+                                #import pdb; pdb.set_trace()
                                 actions_matched = True
                                 for action in test_actions:
                                     for act in actual_actions:

@@ -103,7 +103,7 @@ def hears(lang, s, txt, label=None):
 
     return res
 
-def says (lang, r, txt):
+def says (lang, r, txt, actions=None):
     r1 = copy(r)
     # for t in tokenize(txt, lang=lang):
     #     r1.append(u"say('%s', '%s')" % (lang, t))
@@ -138,7 +138,10 @@ def says (lang, r, txt):
             r1.append(['say', lang, p2])
 
         cnt += 1
-    
+   
+    if actions:
+        r1.extend(actions)
+
     return r1
 
 #

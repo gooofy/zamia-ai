@@ -454,70 +454,75 @@ class AIKernal(object):
                 if data_pos >= len(data):
                     continue
 
-                prep      = '\n'.join(data[data_pos])
-                tokens    = data[data_pos+1]
-                gcode     = data[data_pos+2]
-                rcode     = data[data_pos+3]
-                utterance = u' '.join(tokens)
+                try:
+                    prep      = '\n'.join(data[data_pos])
+                    tokens    = data[data_pos+1]
+                    gcode     = data[data_pos+2]
+                    rcode     = data[data_pos+3]
+                    utterance = u' '.join(tokens)
 
-                data_pos += 4
+                    data_pos += 4
 
-                env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
-                                                      utterance = utterance, 
-                                                      utt_lang  = utt_lang, 
-                                                      tokens    = tokens,
-                                                      prev_ias  = prev_ias),
-                              'kernal': self}
+                    env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
+                                                          utterance = utterance, 
+                                                          utt_lang  = utt_lang, 
+                                                          tokens    = tokens,
+                                                          prev_ias  = prev_ias),
+                                  'kernal': self}
 
 
-                exec prep in env_locals
+                    exec prep in env_locals
 
-                # gcode input
+                    # gcode input
 
-                inp = self._compute_net_input (env_locals['ias'])
+                    inp = self._compute_net_input (env_locals['ias'])
 
-                if print_utterances:
-                    logging.info (u'utterance  : %s' % unicode(utterance))
-                    # logging.info (u'layer 0 inp: %s' % repr(inp))
+                    if print_utterances:
+                        logging.info (u'utterance  : %s' % unicode(utterance))
+                        # logging.info (u'layer 0 inp: %s' % repr(inp))
 
-                inp_json  = json.dumps(inp)
-                resp_json = json.dumps(gcode)
+                    inp_json  = json.dumps(inp)
+                    resp_json = json.dumps(gcode)
 
-                k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-                if not k in td_set:
-                    td_set.add(k)
-                    td_list.append(model.TrainingData(lang      = utt_lang,
-                                                      module    = module_name,
-                                                      layer     = 0,
-                                                      utterance = utterance,
-                                                      inp       = inp_json,
-                                                      resp      = resp_json))
-                exec u'\n'.join(gcode) in env_locals
+                    k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+                    if not k in td_set:
+                        td_set.add(k)
+                        td_list.append(model.TrainingData(lang      = utt_lang,
+                                                          module    = module_name,
+                                                          layer     = 0,
+                                                          utterance = utterance,
+                                                          inp       = inp_json,
+                                                          resp      = resp_json))
+                    exec u'\n'.join(gcode) in env_locals
 
-                todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
+                    todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
 
-                # rcode input
+                    # rcode input
 
-                inp = self._compute_net_input (env_locals['ias'])
+                    inp = self._compute_net_input (env_locals['ias'])
 
-                if print_utterances:
-                    logging.info (u'layer 1 inp: %s' % repr(inp))
-                    logging.info (u'layer 1 res: %s' % repr(rcode))
+                    if print_utterances:
+                        logging.info (u'layer 1 inp: %s' % repr(inp))
+                        logging.info (u'layer 1 res: %s' % repr(rcode))
 
-                inp_json  = json.dumps(inp)
-                resp_json = json.dumps(rcode)
+                    inp_json  = json.dumps(inp)
+                    resp_json = json.dumps(rcode)
 
-                k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
-                if not k in td_set:
-                    td_set.add(k)
-                    td_list.append(model.TrainingData(lang      = utt_lang,
-                                                      module    = module_name,
-                                                      layer     = 1,
-                                                      utterance = utterance,
-                                                      inp       = inp_json,
-                                                      resp      = resp_json))
-                if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
-                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
+                    k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
+                    if not k in td_set:
+                        td_set.add(k)
+                        td_list.append(model.TrainingData(lang      = utt_lang,
+                                                          module    = module_name,
+                                                          layer     = 1,
+                                                          utterance = utterance,
+                                                          inp       = inp_json,
+                                                          resp      = resp_json))
+                    if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
+                        logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
+
+                except:
+                    logging.error('exception caught while extracting training data')
+                    logging.error(traceback.format_exc())
 
             logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, len(td_list)))
 
@@ -740,13 +745,16 @@ class AIKernal(object):
 
                     if gcode is None:
                         logging.error('failed to find layer 0 db entry for %s' % json.dumps(inp))
-                        raise Exception (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
+                        logging.error (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
+                        break
 
                     if not response:
-                        raise Exception (u'Error: %s: no layer1 training data for inp %s found in DB!' % (name, repr(inp)))
+                        logging.error (u'Error: %s: no layer1 training data for inp %s found in DB!' % (name, repr(inp)))
+                        break
                     
                     if not matching_resp:
-                        raise Exception (u'nlp_test: %s round %d no matching response found.' % (name, round_num))
+                        logging.error (u'nlp_test: %s round %d no matching response found.' % (name, round_num))
+                        break
                            
                     round_num += 1
 

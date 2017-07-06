@@ -144,6 +144,17 @@ def says (lang, r, txt, actions=None):
 
     return r1
 
+def nlp_add_round(res, lang, question, answer):
+
+    s = hears(lang, [], question)
+    
+    r = says (lang, [], answer)
+
+    res.append((lang, [[], s, [], r]))
+
+    return res
+
+
 #
 # wikidata / rdf related utils
 #

@@ -12,6 +12,7 @@ TODO
 NOTES
 run_training.sh
 modules/exp
+modules/ms
 mestats
 doc/.asciidoctor
 doc/*.png

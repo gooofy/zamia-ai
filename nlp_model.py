@@ -47,6 +47,7 @@ from nltools.misc import mkdirs
 from zamiaprolog.logic import json_to_prolog, prolog_to_json
 
 OR_SYMBOL = '__OR__'
+MAX_NUM_RESP = 3
 
 # We use a number of buckets and pad to the closest one for efficiency.
 # See seq2seq_model.Seq2SeqModel for details of how they work.
@@ -159,12 +160,17 @@ class NLPModel(object):
 
             td_inp = map (lambda a: unicode(a), json_to_prolog(inp))
 
-            td_resp = []
+            td_resp  = []
+            num_resp = 0
             for r in drs[inp]:
                 td_r = map (lambda a: unicode(a), json_to_prolog(r))
                 if len(td_resp)>0:
                     td_resp.append(OR_SYMBOL)
                 td_resp.extend(td_r)
+                if len(td_r)>0:
+                    num_resp += 1
+                if num_resp > MAX_NUM_RESP:
+                    break
 
             self.training_data.append((td_inp, td_resp))
 
@@ -190,6 +196,9 @@ class NLPModel(object):
 
         dia = []
 
+        longest_inp  = []
+        longest_resp = []
+
         for inp, resp in self.training_data:
 
             inp_len   = len(inp)
@@ -205,6 +214,14 @@ class NLPModel(object):
 
             # if inp_len == 8 and 'tallinn' in inp:
             #     print "2d diagram: %d -> %d %s %s" % (inp_len, resp_len, inp, resp)
+
+            if inp_len > len(longest_inp):
+                longest_inp = inp
+            if resp_len > len(longest_resp):
+                longest_resp = resp
+
+        logging.info('longest input: %s' % repr(longest_inp))
+        logging.info('longest resp : %s' % repr(longest_resp))
 
         return dia
 
@@ -450,13 +467,27 @@ class NLPModel(object):
 
         dia = self.compute_2d_diagram()
 
-        print "    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39"
+        print "     n  i  o 01020304050607080910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455"
+
+        mol = 0
 
         for inp_len in range(len(dia)):
-            print '%2d' % inp_len,
+            s          = 0
+            l          = ''
+            output_len = 0
+            cnt        = 0
             for n in dia[inp_len]:
-                print ' ' + self._ascii_art(n),
-            print
+                if cnt<56:
+                    l   += ' ' + self._ascii_art(n)
+                s   += n
+                cnt += 1
+                if n>0:
+                    output_len = cnt
+
+            if output_len > mol:
+                mol = output_len
+
+            print '%6d %2d %2d %s' % (s, inp_len+1, mol, l)
 
 
         #

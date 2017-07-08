@@ -50,11 +50,11 @@ from seq2seq_model     import Seq2SeqModel, GO_ID, EOS_ID, UNK_ID, _GO, _EOS, _U
 OR_SYMBOL = '__OR__'
 MAX_NUM_RESP = 3
 
-STEPS_PER_STAT             = 25
+STEPS_PER_STAT             = 100
 
 DEBUG_LIMIT                = 0
 
-NUM_EVAL_STEPS             = 23
+NUM_EVAL_STEPS             = 20
 
 class NLPModel(object):
 
@@ -547,18 +547,20 @@ class NLPModel(object):
 
                         # get a random dev batch and perform an eval step on it
 
-                        source, source_len, target, target_len = self._prepare_batch(self.ds_dev)
 
                         sum_dev_loss = 0.0
 
                         for i in range (NUM_EVAL_STEPS):
 
+                            source, source_len, target, target_len = self._prepare_batch(self.ds_dev)
                             dev_loss, summary = tf_model.eval (tf_session, 
                                                                 encoder_inputs=source, encoder_inputs_length=source_len, 
                                                                 decoder_inputs=target, decoder_inputs_length=target_len)
                             sum_dev_loss += dev_loss
 
-                        dev_perplexity = math.exp(sum_dev_loss/NUM_EVAL_STEPS) if sum_dev_loss < 300 else float('inf')
+                        sum_dev_loss /= NUM_EVAL_STEPS
+
+                        dev_perplexity = math.exp(sum_dev_loss) if sum_dev_loss < 300 else float('inf')
 
                         log_str = "global step %6d/%6d step-time %.6fs ETA %.2fs train_perpl %.6f dev_perpl %.6f" % \
                                   (steps_done, num_steps, step_time, eta, perplexity, dev_perplexity)

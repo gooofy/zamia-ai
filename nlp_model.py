@@ -33,6 +33,7 @@ import codecs
 import math
 import ConfigParser
 import json
+import shutil
 
 import numpy      as np
 import tensorflow as tf
@@ -69,6 +70,12 @@ class NLPModel(object):
         #
 
         self.model_dir   = ini_fn[:len(ini_fn)-4]
+
+        try:
+            shutil.rmtree(self.model_dir)
+        except:
+            pass
+
         mkdirs(self.model_dir)
 
         self.model_fn    = '%s/latest.ckpt' % (self.model_dir)

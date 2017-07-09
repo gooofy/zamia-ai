@@ -155,11 +155,13 @@ with codecs.open(inputfn, 'r', 'utf8', errors='ignore') as inputf:
                 skipped += 1
                 continue
 
-            outputf.write (u"    res = nlp_add_round(res, \"%s\", u\"%s\", u\"%s\")\n" % (lang, question, answer))
+            for prefix in [u'', u'Computer, ']:
 
-            cnt += 1
-            if cnt % 1000 == 0:
-                print "%6d rounds, %6d skipped" % (cnt, skipped)
+                outputf.write (u"    res = nlp_add_round(res, \"%s\", u\"%s%s\", u\"%s\")\n" % (lang, prefix, question, answer))
+
+                cnt += 1
+                if cnt % 1000 == 0:
+                    print "%6d rounds, %6d skipped" % (cnt, skipped)
 
         outputf.write ('\n    return res\n')
 

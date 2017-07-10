@@ -59,26 +59,18 @@ NUM_EVAL_STEPS             = 20
 
 class NLPModel(object):
 
-    def __init__(self, session, ini_fn ):
+    def __init__(self, session, ini_fn, global_step=0 ):
         self.session     = session
         
         if not ini_fn.endswith('.ini'):
             raise Exception ("no .ini filename extension detected.")
 
-        #
-        # set up model dir
-        #
-
         self.model_dir   = ini_fn[:len(ini_fn)-4]
 
-        try:
-            shutil.rmtree(self.model_dir)
-        except:
-            pass
-
-        mkdirs(self.model_dir)
-
-        self.model_fn    = '%s/latest.ckpt' % (self.model_dir)
+        if global_step>0:
+            self.model_fn    = '%s/latest.ckpt-%d' % (self.model_dir, global_step)
+        else:
+            self.model_fn    = '%s/latest.ckpt' % (self.model_dir)
         self.in_dict_fn  = '%s/in_dict.csv' % (self.model_dir)
         self.out_dict_fn = '%s/out_dict.csv' % (self.model_dir)
 
@@ -89,63 +81,6 @@ class NLPModel(object):
 
         self.lang       = self.config.get("training", "lang")
         self.network    = 1 if self.config.get("training", "network") == 'output' else 0
-        self.batch_size = self.config.getint("training", "batch_size")
-
-        # load discourses from db, resolve non-unique inputs (implicit or of responses)
-        
-        logging.info('load discourses from db...')
-
-        drs = {} 
-
-        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang, model.TrainingData.layer==self.network):
-
-            if not dr.inp in drs:
-                drs[dr.inp] = set()
-
-            drs[dr.inp].add(dr.resp)
-            if DEBUG_LIMIT>0 and len(drs)>=DEBUG_LIMIT:
-                logging.warn('  stopped loading discourses because DEBUG_LIMIT of %d was reached.' % DEBUG_LIMIT)
-                break
-
-        # parse json, implicit or responses:
-
-        self.training_data = []
-
-        for inp in drs:
-
-            td_inp = map (lambda a: unicode(a), json.loads(inp))
-
-            td_resp  = []
-            num_resp = 0
-            for r in drs[inp]:
-                td_r = map (lambda a: unicode(a), json.loads(r))
-                if len(td_resp)>0:
-                    td_resp.append(OR_SYMBOL)
-                td_resp.extend(td_r)
-                if len(td_r)>0:
-                    num_resp += 1
-                if num_resp > MAX_NUM_RESP:
-                    break
-
-            self.training_data.append((td_inp, td_resp))
-
-        self.buckets = []
-
-        bucket_idx = 1
-        while True:
-            bucket_id = 'bucket%02d' % bucket_idx
-            if not self.config.has_option('model', bucket_id):
-                break
-
-            bucket_str = self.config.get('model', bucket_id)
-            parts      = bucket_str.split(',')
-            if len(parts) != 2:
-                raise Exception ('Error parsing bucket specification for %s: 2 numbers separated by comma expected, got: "%s"' % (bucket_id, bucket_str))
-
-            self.buckets.append((int(parts[0]), int(parts[1])))
-
-            bucket_idx += 1
-
 
     def compute_2d_diagram(self):
 
@@ -362,8 +297,14 @@ class NLPModel(object):
 
             'use_fp16'             : self.config.getboolean('model', 'use_fp16'),
 
+            'beam_width'           : self.config.getint('decode', 'beam_width'),
+            'max_decode_step'      : self.config.getint('decode', 'max_decode_step'),
             }
 
+        if mode == 'train':
+            self.batch_size = self.config.getint("training", "batch_size")
+        else:
+            self.batch_size = 1
 
         logging.info("creating %s seq2seq model: %d layer(s) of %d units." % (mode, config['depth'], config['hidden_units']))
 
@@ -374,18 +315,19 @@ class NLPModel(object):
 
         return self.model
 
-    def save_model (self, tf_session, fn=None):
-        if not fn:
-            fn = self.model_fn
-        # self.model.saver.save(tf_session, fn, global_step=self.model.global_step)
-        self.model.saver.save(tf_session, fn)
-        logging.info("model saved to %s ." % fn)
+    # FIXME: remove old code
+    # def save_model (self, tf_session, fn=None):
+    #     if not fn:
+    #         fn = self.model_fn
+    #     # self.model.saver.save(tf_session, fn, global_step=self.model.global_step)
+    #     self.model.saver.save(tf_session, fn)
+    #     logging.info("model saved to %s ." % fn)
 
-    def load_model(self, tf_session, fn=None):
-        if not fn:
-            fn = self.model_fn
-        self.model.saver.restore(tf_session, fn)
-        logging.info("model restored from %s ." % fn)
+    # def load_model(self, tf_session, fn=None):
+    #     if not fn:
+    #         fn = self.model_fn
+    #     self.model.saver.restore(tf_session, fn)
+    #     logging.info("model restored from %s ." % fn)
 
     def _ascii_art(self, n):
 
@@ -402,15 +344,22 @@ class NLPModel(object):
 
         return 'X'
 
-    def _prepare_batch(self, ds):
+    def _prepare_batch(self, ds, offset = -1):
 
         seqs_x    = []
         seqs_y    = []
 
-        for i in range(self.batch_size):
-            data = ds[randint(0, len(ds)-1)]
-            seqs_x.append(data[0])
-            seqs_y.append(data[1])
+        if offset == -1:
+            for i in range(self.batch_size):
+                data = ds[randint(0, len(ds)-1)]
+                seqs_x.append(data[0])
+                seqs_y.append(data[1])
+        else:
+            # logging.info('_prepare_batch, offset: %d' % offset)
+            for i in range(self.batch_size):
+                data = ds[(offset + i) % len(ds)]
+                seqs_x.append(data[0])
+                seqs_y.append(data[1])
 
         # seqs_x, seqs_y: a list of sentences
         lengths_x = [len(s) for s in seqs_x]
@@ -432,6 +381,55 @@ class NLPModel(object):
 
 
     def train(self):
+
+        # load discourses from db, resolve non-unique inputs (implicit or of responses)
+        
+        logging.info('load discourses from db...')
+
+        drs = {} 
+
+        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang, model.TrainingData.layer==self.network):
+
+            if not dr.inp in drs:
+                drs[dr.inp] = set()
+
+            drs[dr.inp].add(dr.resp)
+            if DEBUG_LIMIT>0 and len(drs)>=DEBUG_LIMIT:
+                logging.warn('  stopped loading discourses because DEBUG_LIMIT of %d was reached.' % DEBUG_LIMIT)
+                break
+
+        # parse json, implicit or responses:
+
+        self.training_data = []
+
+        for inp in drs:
+
+            td_inp = map (lambda a: unicode(a), json.loads(inp))
+
+            td_resp  = []
+            num_resp = 0
+            for r in drs[inp]:
+                td_r = map (lambda a: unicode(a), json.loads(r))
+                if len(td_resp)>0:
+                    td_resp.append(OR_SYMBOL)
+                td_resp.extend(td_r)
+                if len(td_r)>0:
+                    num_resp += 1
+                if num_resp > MAX_NUM_RESP:
+                    break
+
+            self.training_data.append((td_inp, td_resp))
+
+        #
+        # set up model dir
+        #
+
+        try:
+            shutil.rmtree(self.model_dir)
+        except:
+            pass
+
+        mkdirs(self.model_dir)
 
         #
         # get config
@@ -495,7 +493,7 @@ class NLPModel(object):
             y = self.compute_y(resp)
             # print dr.resp, y
 
-            if cnt % 10 == 9:
+            if cnt % 50 == 9:
                 data_set = self.ds_dev
             else:
                 data_set = self.ds_train
@@ -552,20 +550,32 @@ class NLPModel(object):
                         #     tf_session.run(tf_model.learning_rate_decay_op)
                         # previous_losses.append(loss)
 
-                        # get a random dev batch and perform an eval step on it
-
-
                         sum_dev_loss = 0.0
 
-                        for i in range (NUM_EVAL_STEPS):
+                        # for i in range (NUM_EVAL_STEPS):
 
-                            source, source_len, target, target_len = self._prepare_batch(self.ds_dev)
+                        #     # get a random dev batch and perform an eval step on it
+
+                        #     source, source_len, target, target_len = self._prepare_batch(self.ds_dev)
+                        #     dev_loss, summary = tf_model.eval (tf_session, 
+                        #                                         encoder_inputs=source, encoder_inputs_length=source_len, 
+                        #                                         decoder_inputs=target, decoder_inputs_length=target_len)
+                        #     sum_dev_loss += dev_loss
+                        # sum_dev_loss /= NUM_EVAL_STEPS
+
+                        num_eval_steps = len(self.ds_dev)/self.batch_size
+
+                        for i in range (num_eval_steps):
+
+                            # get a random dev batch and perform an eval step on it
+
+                            source, source_len, target, target_len = self._prepare_batch(self.ds_dev, i*self.batch_size)
                             dev_loss, summary = tf_model.eval (tf_session, 
                                                                 encoder_inputs=source, encoder_inputs_length=source_len, 
                                                                 decoder_inputs=target, decoder_inputs_length=target_len)
                             sum_dev_loss += dev_loss
 
-                        sum_dev_loss /= NUM_EVAL_STEPS
+                        sum_dev_loss /= num_eval_steps
 
                         dev_perplexity = math.exp(sum_dev_loss) if sum_dev_loss < 300 else float('inf')
 

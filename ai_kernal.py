@@ -102,7 +102,7 @@ class AIKernal(object):
         sys.path.append('modules')
 
     # FIXME: this will work only on the first call
-    def setup_tf_model (self, forward_only, load_model, ini_fn):
+    def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
 
         if not self.tf_session:
 
@@ -110,7 +110,7 @@ class AIKernal(object):
 
             # setup config to use BFC allocator
             config = tf.ConfigProto()  
-            config.gpu_options.allocator_type = 'BFC'
+            # config.gpu_options.allocator_type = 'BFC'
 
             self.tf_session = tf.Session(config=config)
 
@@ -118,7 +118,7 @@ class AIKernal(object):
 
             from nlp_model import NLPModel
 
-            self.nlp_model = NLPModel(self.session, ini_fn)
+            self.nlp_model = NLPModel(self.session, ini_fn, global_step = global_step)
 
             if load_model:
 
@@ -128,10 +128,10 @@ class AIKernal(object):
 
                 self.inv_output_dict = {v: k for k, v in self.nlp_model.output_dict.iteritems()}
 
-                self.tf_model = self.nlp_model.create_tf_model(self.tf_session, forward_only = forward_only) 
+                self.tf_model = self.nlp_model.create_tf_model(self.tf_session, mode = mode) 
                 self.tf_model.batch_size = 1
 
-                self.nlp_model.load_model(self.tf_session)
+                self.tf_model.restore(self.tf_session, self.nlp_model.model_fn)
 
 
     def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
@@ -776,130 +776,185 @@ class AIKernal(object):
                 self.test_module (module_name, trace=run_trace, test_name=test_name)
 
     # FIXME: old code, needs to be ported or removed
-    def process_input (self, utterance, utt_lang, user_uri, test_mode=False, trace=False):
+    def process_input (self, utterance, utt_lang, user_uri, test_mode=False):
 
         """ process user input, return action(s) """
 
+        # FIXME
+        prev_ias = None
+
         gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
-        tokens = tokenize(utterance, utt_lang)
+        tokens  = tokenize(utterance, utt_lang)
 
-        if ENABLE_HAL_PREFIX_HACK:
-            if tokens[0] == u'hal':
-                del tokens[0]
+        cur_ias = self._setup_ias ( user_uri  = user_uri, 
+                                    utterance = utterance, 
+                                    utt_lang  = utt_lang, 
+                                    tokens    = tokens,
+                                    prev_ias  = prev_ias)
 
-        #
-        # provide utterance related data via db overlay/environment
-        #
+        env_locals = {'ias': cur_ias}
 
-        sl = SourceLocation('<input>', 0, 0)
+        # gcode input
 
-        cur_ias, env = self._setup_ias(sl, test_mode, user_uri, utterance, utt_lang, tokens, None, {})
+        inp = self._compute_net_input (env_locals['ias'])
 
-        self.prolog_rt.set_trace(trace)
+        import pdb; pdb.set_trace()
+
+        x = self.nlp_model.compute_x(inp)
+
+        logging.debug("x: %s -> %s" % (utterance, x))
+
+        source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+
+        # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
+        # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
+        predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
+                                              encoder_inputs_length=source_len)
+
+        for seq_batch in predicted_ids:
+            for k in range(5):
+                logging.debug('--------- k: %d ----------' % k)
+                seq = seq_batch[:,k]
+                for p in seq:
+                    if p == -1:
+                        break
+                    decoded = self.inv_output_dict[p]
+                    logging.debug (u'%s: %s' %(p, decoded))
 
 
-        prolog_s = []
-        if test_mode:
+        ## preds = map (lambda o: , outputs)
 
-            for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
-                                                                         model.DiscourseRound.lang==utt_lang):
-                prolog_s.append(u','.join(dr.resp.split(';')))
+        ## # get output logits for the sentence
+        ## _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
 
-            logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), repr(prolog_s)) )
-                
-            if not prolog_s:
-                logging.error('test utterance %s not found!' % utterance)
-                return []
+        ## logging.debug("output_logits: %s" % repr(output_logits))
 
-        else:
+        ## # this is a greedy decoder - outputs are just argmaxes of output_logits.
+        ## outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
 
-            x = self.nlp_model.compute_x(utterance)
+        ## # print "outputs", outputs
 
-            logging.debug("x: %s -> %s" % (utterance, x))
+        ## preds = map (lambda o: self.inv_output_dict[o], outputs)
+        ## logging.debug("preds: %s" % repr(preds))
 
-            # which bucket does it belong to?
-            bucket_id = min([b for b in xrange(len(self.nlp_model.buckets)) if self.nlp_model.buckets[b][0] > len(x)])
 
-            # get a 1-element batch to feed the sentence to the model
-            encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
 
-            # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
+        # tokens = tokenize(utterance, utt_lang)
 
-            # get output logits for the sentence
-            _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+        # if ENABLE_HAL_PREFIX_HACK:
+        #     if tokens[0] == u'hal':
+        #         del tokens[0]
 
-            logging.debug("output_logits: %s" % repr(output_logits))
+        # #
+        # # provide utterance related data via db overlay/environment
+        # #
 
-            # this is a greedy decoder - outputs are just argmaxes of output_logits.
-            outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
+        # sl = SourceLocation('<input>', 0, 0)
 
-            # print "outputs", outputs
+        # cur_ias, env = self._setup_ias(sl, test_mode, user_uri, utterance, utt_lang, tokens, None, {})
 
-            preds = map (lambda o: self.inv_output_dict[o], outputs)
-            logging.debug("preds: %s" % repr(preds))
+        # prolog_s = []
+        # if test_mode:
 
-            # FIXME: handle ;;
-            prolog_s = ''
+        #     for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
+        #                                                                  model.DiscourseRound.lang==utt_lang):
+        #         prolog_s.append(u','.join(dr.resp.split(';')))
 
-            do_and = True
+        #     logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), repr(prolog_s)) )
+        #         
+        #     if not prolog_s:
+        #         logging.error('test utterance %s not found!' % utterance)
+        #         return []
 
-            for p in preds:
+        # else:
 
-                if p[0] == '_':
-                    continue # skip _EOS
+        #     x = self.nlp_model.compute_x(utterance)
 
-                if p == u'or':
-                    do_and = False
-                    continue
+        #     logging.debug("x: %s -> %s" % (utterance, x))
 
-                if len(prolog_s)>0:
-                    if do_and:
-                        prolog_s += ', '
-                    else:
-                        prolog_s += '; '
-                prolog_s += p
+        #     # which bucket does it belong to?
+        #     bucket_id = min([b for b in xrange(len(self.nlp_model.buckets)) if self.nlp_model.buckets[b][0] > len(x)])
 
-                do_and = True
+        #     # get a 1-element batch to feed the sentence to the model
+        #     encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
 
-            logging.debug('?- %s' % prolog_s)
+        #     # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
 
-        abufs = []
+        #     # get output logits for the sentence
+        #     _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
 
-        for ps in prolog_s:
+        #     logging.debug("output_logits: %s" % repr(output_logits))
 
-            c = self.parser.parse_line_clause_body(ps)
-            # logging.debug( "Parse result: %s" % c)
+        #     # this is a greedy decoder - outputs are just argmaxes of output_logits.
+        #     outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
 
-            # logging.debug( "Searching for c: %s" % c )
+        #     # print "outputs", outputs
 
-            solutions = self.prolog_rt.search(c, env=env)
+        #     preds = map (lambda o: self.inv_output_dict[o], outputs)
+        #     logging.debug("preds: %s" % repr(preds))
 
-            # if len(solutions) == 0:
-            #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+        #     # FIXME: handle ;;
+        #     prolog_s = ''
 
-            # extract action buffers from overlay variable in solutions:
+        #     do_and = True
 
-            for solution in solutions:
+        #     for p in preds:
 
-                overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
-                if not overlay:
-                    continue
+        #         if p[0] == '_':
+        #             continue # skip _EOS
 
-                actions = []
-                for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-                    actions.append(s['A'])
+        #         if p == u'or':
+        #             do_and = False
+        #             continue
 
-                score = 0.0
-                for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-                    score += s['S'].f
+        #         if len(prolog_s)>0:
+        #             if do_and:
+        #                 prolog_s += ', '
+        #             else:
+        #                 prolog_s += '; '
+        #         prolog_s += p
 
-                # ias = overlay.get('ias')
+        #         do_and = True
 
-                # scores  = overlay.get('score')
-                # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
-               
-                abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
+        #     logging.debug('?- %s' % prolog_s)
+
+        # abufs = []
+
+        # for ps in prolog_s:
+
+        #     c = self.parser.parse_line_clause_body(ps)
+        #     # logging.debug( "Parse result: %s" % c)
+
+        #     # logging.debug( "Searching for c: %s" % c )
+
+        #     solutions = self.prolog_rt.search(c, env=env)
+
+        #     # if len(solutions) == 0:
+        #     #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+
+        #     # extract action buffers from overlay variable in solutions:
+
+        #     for solution in solutions:
+
+        #         overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
+        #         if not overlay:
+        #             continue
+
+        #         actions = []
+        #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+        #             actions.append(s['A'])
+
+        #         score = 0.0
+        #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+        #             score += s['S'].f
+
+        #         # ias = overlay.get('ias')
+
+        #         # scores  = overlay.get('score')
+        #         # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
+        #        
+        #         abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
 
         return abufs
 
@@ -964,7 +1019,7 @@ class AIKernal(object):
 
     def train (self, ini_fn):
 
-        self.setup_tf_model (False, False, ini_fn)
+        self.setup_tf_model ('train', False, ini_fn)
         self.nlp_model.train()
 
 

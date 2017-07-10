@@ -358,12 +358,12 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
-           help="enable tracing")
     @cmdln.option ("-u", "--user", dest="username", type = "str", default="chat",
            help="username, default: chat")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
+    @cmdln.option ("-s", "--global-step", dest="global_step", type = "int", default=0,
+           help="global step to load, default: 0 (latest)")
     def do_chat(self, subcmd, opts, *paths):
         """${cmd_name}: chat with model in natural language
 
@@ -380,8 +380,10 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         for mn2 in self.kernal.all_modules:
-            self.kernal.load_module (mn2, run_init=True, run_trace=opts.run_trace)
-        self.kernal.setup_tf_model(True, True, paths[0])
+            self.kernal.load_module (mn2)
+            self.kernal.init_module (mn2)
+
+        self.kernal.setup_tf_model('decode', True, paths[0], global_step=opts.global_step)
 
         user_uri = USER_PREFIX + opts.username
 
@@ -393,7 +395,7 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                abufs = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, test_mode=False, trace=opts.run_trace)
+                abufs = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, test_mode=False)
 
                 for abuf in abufs:
                     logging.debug ("abuf: %s" % repr(abuf))

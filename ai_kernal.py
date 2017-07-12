@@ -334,7 +334,7 @@ class AIKernal(object):
 
         self.session.commit()
 
-    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'uttLang', 'tokens', 'currentTime', 'prevIAS' ])
+    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevIAS' ])
 
     def _compute_net_input (self, cur_ias):
 

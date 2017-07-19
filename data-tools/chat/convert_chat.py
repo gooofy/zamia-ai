@@ -55,7 +55,7 @@ session = Session()
 
 misc.init_app('convert_chat')
 
-parser = OptionParser("usage: %prog [options] foo.txt")
+parser = OptionParser("usage: %prog [options] foo.chat [ bar.chat ... ]")
 
 parser.add_option ("-L", "--limit", dest="limit", type = "int", default=DEFAULT_LIMIT,
                    help="length limit, default: %d" % DEFAULT_LIMIT)
@@ -73,7 +73,6 @@ if options.verbose:
 else:
     logging.basicConfig(level=logging.INFO)
 
-inputfn  = args[0]
 outputfn = options.outputfn
 lang     = options.lang
 
@@ -96,10 +95,8 @@ for td in session.query(model.TrainingData).filter(model.TrainingData.lang==opti
 logging.info('reading existing utterances done, %d utterances found.' % len(utterances))
 
 #
-# main
+# regexp compile
 #
-
-logging.info('processing %s ...' % inputfn)
 
 MINUS_LINE_PATTERN = re.compile(r"([-]+)")
 
@@ -109,61 +106,69 @@ def replace_minus_line (m):
 
     return s.replace(m.group(1), u"-")
 
+#
+# main
+#
 
 cnt     = 0
 skipped = 0
-with codecs.open(inputfn, 'r', 'utf8', errors='ignore') as inputf:
-    with codecs.open(outputfn, 'w', 'utf8') as outputf:
 
-        outputf.write ('#!/usr/bin/env python\n')
-        outputf.write ('# -*- coding: utf-8 -*- \n')
+with codecs.open(outputfn, 'w', 'utf8') as outputf:
 
-        outputf.write ('from base.utils import nlp_add_round\n')
+    outputf.write ('#!/usr/bin/env python\n')
+    outputf.write ('# -*- coding: utf-8 -*- \n')
 
-        outputf.write ('\ndef nlp_train(res):\n')
+    outputf.write ('from base.utils import nlp_add_round\n')
 
-        while True:
+    outputf.write ('\ndef nlp_train(res):\n')
 
-            question = inputf.readline()
-            if not question:
-                break
-            question = question.strip().replace('"', ' ').replace('+++$+++','').replace('...','.')
-            answer   = inputf.readline().strip().replace('"', ' ').replace('%', ' percent ').replace('+++$+++','').replace('...','.')
+    for inputfn in args:
 
-            question = MINUS_LINE_PATTERN.sub(replace_minus_line, question)
-            answer   = MINUS_LINE_PATTERN.sub(replace_minus_line, answer)
+        logging.info('processing %s ...' % inputfn)
 
-            tq = tokenizer.tokenize(question, lang=lang)
-            ta = tokenizer.tokenize(answer,   lang=lang)
+        with codecs.open(inputfn, 'r', 'utf8', errors='ignore') as inputf:
+            while True:
 
-            utt = u' '.join(tq)
-            if utt in utterances:
-                skipped += 1
-                continue
+                question = inputf.readline()
+                if not question:
+                    break
+                question = question.strip().replace('"', ' ').replace('+++$+++','').replace('...','.')
+                answer   = inputf.readline().strip().replace('"', ' ').replace('%', ' percent ').replace('+++$+++','').replace('...','.')
 
-            utterances.add(utt)
+                question = MINUS_LINE_PATTERN.sub(replace_minus_line, question)
+                answer   = MINUS_LINE_PATTERN.sub(replace_minus_line, answer)
 
-            # tokenizer debugging
-            # if u"'" in question:
-            #     logging.info(question)
-            #     logging.info(utt)
+                tq = tokenizer.tokenize(question, lang=lang)
+                ta = tokenizer.tokenize(answer,   lang=lang)
 
-            lq = len(tq)
-            la = len(ta)
+                utt = u' '.join(tq)
+                if utt in utterances:
+                    skipped += 1
+                    continue
 
-            if lq>options.limit or la>options.limit:
-                skipped += 1
-                continue
+                utterances.add(utt)
 
-            for prefix in [u'', u'Computer, ']:
+                # tokenizer debugging
+                # if u"'" in question:
+                #     logging.info(question)
+                #     logging.info(utt)
 
-                outputf.write (u"    res = nlp_add_round(res, \"%s\", u\"%s%s\", u\"%s\")\n" % (lang, prefix, question, answer))
+                lq = len(tq)
+                la = len(ta)
 
-                cnt += 1
-                if cnt % 1000 == 0:
-                    print "%6d rounds, %6d skipped" % (cnt, skipped)
+                if lq>options.limit or la>options.limit:
+                    skipped += 1
+                    continue
 
-        outputf.write ('\n    return res\n')
+                for prefix in [u'', u'Computer, ']:
+
+                    outputf.write (u"    res = nlp_add_round(res, \"%s\", u\"%s%s\", u\"%s\")\n" % (lang, prefix, question, answer))
+
+                    cnt += 1
+                    if cnt % 1000 == 0:
+                        print "%6d rounds, %6d skipped" % (cnt, skipped)
+
+    outputf.write ('\n    return res\n')
 
 logging.info ('%s written. %d rounds, %d skipped.' % (outputfn, cnt, skipped))
 

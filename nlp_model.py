@@ -490,6 +490,10 @@ class NLPModel(object):
             x = self.compute_x(inp)
             # print dr.inp, x
 
+            if len(x)<=0:
+                logging.error("len(x)<=0: %s -> %s" % (repr(inp), repr(resp)))
+                continue
+
             y = self.compute_y(resp)
             # print dr.resp, y
 

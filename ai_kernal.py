@@ -65,6 +65,9 @@ TEST_MODULE        = '__test__'
 
 NUM_CONTEXT_ROUNDS = 3
 
+GCODE_PREAMBLE = [u"from base.utils import *",
+                  u"resp=[]"]
+
 class AIKernal(object):
 
     def __init__(self):
@@ -334,7 +337,7 @@ class AIKernal(object):
 
         self.session.commit()
 
-    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevIAS' ])
+    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevIAS', 'resp' ])
 
     def _compute_net_input (self, cur_ias):
 
@@ -399,6 +402,7 @@ class AIKernal(object):
         cur_ias['user']     = user_uri
         cur_ias['lang']     = utt_lang
         cur_ias['tokens']   = tokens
+        cur_ias['resp']     = []
 
         currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)
         cur_ias['currentTime'] = currentTime
@@ -441,8 +445,8 @@ class AIKernal(object):
                 # if len(todo)<5:
                 #     print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
 
-                if len(data) % 4 != 0:
-                    raise Exception ('Error: training data length has to be multiple of 4!')
+                if len(data) % 3 != 0:
+                    raise Exception ('Error: training data length has to be multiple of 3!')
 
                 todo.append((utt_lang, data, 0, None))
 
@@ -458,10 +462,9 @@ class AIKernal(object):
                     prep      = '\n'.join(data[data_pos])
                     tokens    = data[data_pos+1]
                     gcode     = data[data_pos+2]
-                    rcode     = data[data_pos+3]
                     utterance = u' '.join(tokens)
 
-                    data_pos += 4
+                    data_pos += 3
 
                     env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
                                                           utterance = utterance, 
@@ -482,7 +485,22 @@ class AIKernal(object):
                         # logging.info (u'layer 0 inp: %s' % repr(inp))
 
                     inp_json  = json.dumps(inp)
+
+                    gcode_e = copy(GCODE_PREAMBLE)
+                    gcode_e.extend(gcode)
+                    exec u'\n'.join(gcode_e) in env_locals
+
+                    todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
+
+                    # # gcode response: gcode + rcode
+
+                    # resp = copy(gcode)
+                    # resp.append(42)    # just a marker separating python code vs response
+                    # resp.extend(rcode)
+
                     resp_json = json.dumps(gcode)
+
+                    # gcode response
 
                     k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
                     if not k in td_set:
@@ -493,30 +511,26 @@ class AIKernal(object):
                                                           utterance = utterance,
                                                           inp       = inp_json,
                                                           resp      = resp_json))
-                    exec u'\n'.join(gcode) in env_locals
+                    # # rcode input
 
-                    todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
+                    # inp = self._compute_net_input (env_locals['ias'])
 
-                    # rcode input
+                    # if print_utterances:
+                    #     logging.info (u'layer 1 inp: %s' % repr(inp))
+                    #     logging.info (u'layer 1 res: %s' % repr(rcode))
 
-                    inp = self._compute_net_input (env_locals['ias'])
+                    # inp_json  = json.dumps(inp)
+                    # resp_json = json.dumps(rcode)
 
-                    if print_utterances:
-                        logging.info (u'layer 1 inp: %s' % repr(inp))
-                        logging.info (u'layer 1 res: %s' % repr(rcode))
-
-                    inp_json  = json.dumps(inp)
-                    resp_json = json.dumps(rcode)
-
-                    k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
-                    if not k in td_set:
-                        td_set.add(k)
-                        td_list.append(model.TrainingData(lang      = utt_lang,
-                                                          module    = module_name,
-                                                          layer     = 1,
-                                                          utterance = utterance,
-                                                          inp       = inp_json,
-                                                          resp      = resp_json))
+                    # k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
+                    # if not k in td_set:
+                    #     td_set.add(k)
+                    #     td_list.append(model.TrainingData(lang      = utt_lang,
+                    #                                       module    = module_name,
+                    #                                       layer     = 1,
+                    #                                       utterance = utterance,
+                    #                                       inp       = inp_json,
+                    #                                       resp      = resp_json))
                     if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
                         logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
 
@@ -799,8 +813,6 @@ class AIKernal(object):
 
         inp = self._compute_net_input (env_locals['ias'])
 
-        import pdb; pdb.set_trace()
-
         x = self.nlp_model.compute_x(inp)
 
         logging.debug("x: %s -> %s" % (utterance, x))
@@ -821,6 +833,8 @@ class AIKernal(object):
                         break
                     decoded = self.inv_output_dict[p]
                     logging.debug (u'%s: %s' %(p, decoded))
+
+        import pdb; pdb.set_trace()
 
 
         ## preds = map (lambda o: , outputs)

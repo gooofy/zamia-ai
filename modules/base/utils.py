@@ -103,10 +103,14 @@ def hears(lang, s, txt, label=None):
 
     return res
 
-def says (lang, r, txt, actions=None):
+def says (lang, r, txt, actions=None, bor=False):
+
     r1 = copy(r)
     # for t in tokenize(txt, lang=lang):
     #     r1.append(u"say('%s', '%s')" % (lang, t))
+
+    if bor:
+        r1.append(u"r_bor(ias)")
 
     parts1 = txt.split('%')
     cnt = 0
@@ -128,29 +132,44 @@ def says (lang, r, txt, actions=None):
             o += 1
 
             format_char = p1[o]
-            r1.append(['sayv', lang, var_name, format_char])
+            r1.append(u"r_sayv(ias, '%s', '%s')" % (var_name, format_char))
 
             o += 1
 
         parts2 = tokenize(p1[o:], lang=lang, keep_punctuation=True)
 
         for p2 in parts2:
-            r1.append(['say', lang, p2])
+            r1.append(u"r_say(ias, u'%s')" % p2.replace("'", "\\'"))
 
         cnt += 1
    
     if actions:
-        r1.extend(actions)
+        for a in actions:
+            r1.append(u"r_action(ias, %s)" % resp(a))
 
     return r1
+
+def r_say (ias, s):
+
+    r = ias['resp']
+
+    if len(r)==0:
+        r.append([])
+
+    r[len(r)-1].append(s)
+
+    # print "r_say (%s) called -> %s" % (s, repr(r[len(r)-1]))
+
+def r_bor (ias):
+    ias['resp'].append([])
 
 def nlp_add_round(res, lang, question, answer):
 
     s = hears(lang, [], question)
     
-    r = says (lang, [], answer)
+    r = says (lang, [], answer, bor=True)
 
-    res.append((lang, [[], s, [], r]))
+    res.append((lang, [[], s, r]))
 
     return res
 

@@ -142,7 +142,7 @@ with codecs.open(outputfn, 'w', 'utf8') as outputf:
                 ta = tokenizer.tokenize(answer,   lang=lang)
 
                 utt = u' '.join(tq)
-                if utt in utterances:
+                if utt in utterances or len(tq)==0:
                     skipped += 1
                     continue
 

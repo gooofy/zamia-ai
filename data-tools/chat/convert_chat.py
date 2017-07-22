@@ -77,12 +77,6 @@ outputfn = options.outputfn
 lang     = options.lang
 
 #
-# logging
-#
-
-logging.basicConfig(level=DEFAULT_LOGLEVEL)
-
-#
 # existing utterances
 #
 

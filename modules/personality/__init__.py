@@ -3,11 +3,11 @@
 
 DEPENDS    = [ 'base', 'config', 'smalltalk', 'tech', 'movies', 'literature' ]
 
-PL_SOURCES = [
-              'personality.pl',
-             ]
+NLP_SOURCES = [
+               'personality.nlp',
+              ]
 
-KB_SOURCES = [
-              'givennames.n3',
-             ]
+KB_SOURCES  = [
+               'givennames.n3',
+              ]
 

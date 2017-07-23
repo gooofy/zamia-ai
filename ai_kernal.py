@@ -44,17 +44,11 @@ from sqlalchemy.orm       import sessionmaker
 
 import model
 
-# from zamiaprolog.logicdb  import LogicDB, LogicDBOverlay
-# from zamiaprolog.logic    import StringLiteral, ListLiteral, NumberLiteral, SourceLocation, json_to_prolog, prolog_to_json, Predicate, Clause, Literal
-# from zamiaprolog.errors   import PrologError
-# from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME, do_gensym
-# from zamiaprolog.parser   import PrologParser
-# from aiprolog.pl2rdf      import pl_literal_to_rdf
 from aiprolog.runtime     import CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
-
 from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize
+from nlp_parser           import NLPParser
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
@@ -103,6 +97,12 @@ class AIKernal(object):
         s = self.config.get('semantics', 'modules')
         self.all_modules         = map (lambda s: s.strip(), s.split(','))
         sys.path.append('modules')
+
+        #
+        # NLP parser
+        #
+
+        self.nlp_parser = NLPParser(self)
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -258,7 +258,7 @@ class AIKernal(object):
 
         return m
 
-    def init_module (self, module_name, run_trace=False):
+    def init_module (self, module_name):
 
         if module_name in self.initialized_modules:
             return
@@ -270,7 +270,7 @@ class AIKernal(object):
         m = self.load_module(module_name)
 
         for m2 in getattr (m, 'DEPENDS'):
-            self.init_module(m2, run_trace=run_trace)
+            self.init_module(m2)
 
         gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
         self.kb.remove((CURIN, None, None, gn))
@@ -420,7 +420,7 @@ class AIKernal(object):
 
         return cur_ias
 
-    def compile_module (self, module_name, run_trace=False, print_utterances=False):
+    def compile_module (self, module_name):
 
         m = self.modules[module_name]
 
@@ -428,18 +428,19 @@ class AIKernal(object):
 
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
 
+        todo    = []
+        td_set  = set()
+        td_list = []
+
         if hasattr(m, 'nlp_train'):
 
             # training_data_cnt = 0
-
-            td_set  = set()
-            td_list = []
 
             logging.info ('module %s training data extraction...' % module_name)
 
             nlp_train = getattr(m, 'nlp_train')
             train_ds = nlp_train(self)
-            todo = []
+
             for utt_lang, data in train_ds:
 
                 # if len(todo)<5:
@@ -450,106 +451,116 @@ class AIKernal(object):
 
                 todo.append((utt_lang, data, 0, None))
 
-            logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
+        if hasattr(m, 'NLP_SOURCES'):
 
-            while len(todo)>0:
+            for inputfn in m.NLP_SOURCES:
+                train_ds = self.nlp_parser.parse('modules/%s/%s' % (module_name, inputfn))
 
-                utt_lang, data, data_pos, prev_ias = todo.pop()
-                if data_pos >= len(data):
-                    continue
+                for utt_lang, data in train_ds:
 
-                try:
-                    prep      = '\n'.join(data[data_pos])
-                    tokens    = data[data_pos+1]
-                    gcode     = data[data_pos+2]
-                    utterance = u' '.join(tokens)
+                    # if len(todo)<5:
+                    #     print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
 
-                    data_pos += 3
+                    if len(data) % 3 != 0:
+                        raise Exception ('Error: training data length has to be multiple of 3!')
 
-                    env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
-                                                          utterance = utterance, 
-                                                          utt_lang  = utt_lang, 
-                                                          tokens    = tokens,
-                                                          prev_ias  = prev_ias),
-                                  'kernal': self}
+                    todo.append((utt_lang, data, 0, None))
+
+        logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
+
+        while len(todo)>0:
+
+            utt_lang, data, data_pos, prev_ias = todo.pop()
+            if data_pos >= len(data):
+                continue
+
+            try:
+                prep      = '\n'.join(data[data_pos])
+                tokens    = data[data_pos+1]
+                gcode     = data[data_pos+2]
+                utterance = u' '.join(tokens)
+
+                data_pos += 3
+
+                env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
+                                                      utterance = utterance, 
+                                                      utt_lang  = utt_lang, 
+                                                      tokens    = tokens,
+                                                      prev_ias  = prev_ias),
+                              'kernal': self}
 
 
-                    exec prep in env_locals
+                exec prep in env_locals
 
-                    # gcode input
+                # gcode input
 
-                    inp = self._compute_net_input (env_locals['ias'])
+                inp = self._compute_net_input (env_locals['ias'])
 
-                    if print_utterances:
-                        logging.info (u'utterance  : %s' % unicode(utterance))
-                        # logging.info (u'layer 0 inp: %s' % repr(inp))
+                inp_json  = json.dumps(inp)
 
-                    inp_json  = json.dumps(inp)
+                gcode_e = copy(GCODE_PREAMBLE)
+                gcode_e.extend(gcode)
+                exec u'\n'.join(gcode_e) in env_locals
 
-                    gcode_e = copy(GCODE_PREAMBLE)
-                    gcode_e.extend(gcode)
-                    exec u'\n'.join(gcode_e) in env_locals
+                todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
 
-                    todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
+                # # gcode response: gcode + rcode
 
-                    # # gcode response: gcode + rcode
+                # resp = copy(gcode)
+                # resp.append(42)    # just a marker separating python code vs response
+                # resp.extend(rcode)
 
-                    # resp = copy(gcode)
-                    # resp.append(42)    # just a marker separating python code vs response
-                    # resp.extend(rcode)
+                resp_json = json.dumps(gcode)
 
-                    resp_json = json.dumps(gcode)
+                # gcode response
 
-                    # gcode response
+                k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+                if not k in td_set:
+                    td_set.add(k)
+                    td_list.append(model.TrainingData(lang      = utt_lang,
+                                                      module    = module_name,
+                                                      layer     = 0,
+                                                      utterance = utterance,
+                                                      inp       = inp_json,
+                                                      resp      = resp_json))
+                # # rcode input
 
-                    k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-                    if not k in td_set:
-                        td_set.add(k)
-                        td_list.append(model.TrainingData(lang      = utt_lang,
-                                                          module    = module_name,
-                                                          layer     = 0,
-                                                          utterance = utterance,
-                                                          inp       = inp_json,
-                                                          resp      = resp_json))
-                    # # rcode input
+                # inp = self._compute_net_input (env_locals['ias'])
 
-                    # inp = self._compute_net_input (env_locals['ias'])
+                # if print_utterances:
+                #     logging.info (u'layer 1 inp: %s' % repr(inp))
+                #     logging.info (u'layer 1 res: %s' % repr(rcode))
 
-                    # if print_utterances:
-                    #     logging.info (u'layer 1 inp: %s' % repr(inp))
-                    #     logging.info (u'layer 1 res: %s' % repr(rcode))
+                # inp_json  = json.dumps(inp)
+                # resp_json = json.dumps(rcode)
 
-                    # inp_json  = json.dumps(inp)
-                    # resp_json = json.dumps(rcode)
+                # k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
+                # if not k in td_set:
+                #     td_set.add(k)
+                #     td_list.append(model.TrainingData(lang      = utt_lang,
+                #                                       module    = module_name,
+                #                                       layer     = 1,
+                #                                       utterance = utterance,
+                #                                       inp       = inp_json,
+                #                                       resp      = resp_json))
+                if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
+                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
 
-                    # k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
-                    # if not k in td_set:
-                    #     td_set.add(k)
-                    #     td_list.append(model.TrainingData(lang      = utt_lang,
-                    #                                       module    = module_name,
-                    #                                       layer     = 1,
-                    #                                       utterance = utterance,
-                    #                                       inp       = inp_json,
-                    #                                       resp      = resp_json))
-                    if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
-                        logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
+            except:
+                logging.error('exception caught while extracting training data')
+                logging.error(traceback.format_exc())
 
-                except:
-                    logging.error('exception caught while extracting training data')
-                    logging.error(traceback.format_exc())
+        logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, len(td_list)))
 
-            logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, len(td_list)))
-
-            start_time = time.time()
-            logging.info (u'bulk saving to db...')
-            self.session.bulk_save_objects(td_list)
-            self.session.commit()
-            logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
-
+        start_time = time.time()
+        logging.info (u'bulk saving to db...')
+        self.session.bulk_save_objects(td_list)
+        self.session.commit()
+        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
         self.session.commit()
 
-    def compile_module_multi (self, module_names, run_trace=False, print_utterances=False):
+    def compile_module_multi (self, module_names):
 
         for module_name in module_names:
 
@@ -557,11 +568,11 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile_module (mn2, run_trace, print_utterances)
+                    self.compile_module (mn2)
 
             else:
                 self.load_module (module_name)
-                self.compile_module (module_name, run_trace, print_utterances)
+                self.compile_module (module_name)
 
         self.session.commit()
 
@@ -773,7 +784,7 @@ class AIKernal(object):
                            
                     round_num += 1
 
-    def run_tests_multi (self, module_names, run_trace=False, test_name=None):
+    def run_tests_multi (self, module_names, test_name=None):
 
         for module_name in module_names:
 
@@ -781,13 +792,13 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.init_module (mn2, run_trace=run_trace)
-                    self.test_module (mn2, trace=run_trace, test_name=test_name)
+                    self.init_module (mn2)
+                    self.test_module (mn2, test_name=test_name)
 
             else:
                 self.load_module (module_name)
-                self.init_module (module_name, run_trace=run_trace)
-                self.test_module (module_name, trace=run_trace, test_name=test_name)
+                self.init_module (module_name, )
+                self.test_module (module_name, test_name=test_name)
 
     # FIXME: old code, needs to be ported or removed
     def process_input (self, utterance, utt_lang, user_uri, test_mode=False):
@@ -1013,7 +1024,7 @@ class AIKernal(object):
 
                 cronjob.last_run = t
 
-    def run_cronjobs_multi (self, module_names, force, run_trace=False):
+    def run_cronjobs_multi (self, module_names, force):
 
         for module_name in module_names:
 
@@ -1021,12 +1032,12 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.init_module (mn2, run_trace=run_trace)
+                    self.init_module (mn2)
                     self.run_cronjobs (mn2, force=force)
 
             else:
                 self.load_module (module_name)
-                self.init_module (module_name, run_trace=run_trace)
+                self.init_module (module_name)
                 self.run_cronjobs (module_name, force=force)
 
         self.session.commit()

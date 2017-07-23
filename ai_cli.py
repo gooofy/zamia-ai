@@ -238,18 +238,12 @@ class AICli(cmdln.Cmdln):
 
     #         qres = self.kb.sparql(query)
 
-    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
-           help="enable tracing")
     @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
            help="run tests")
     @cmdln.option("-N", "--test-name", dest="test_name", type="str",
            help="run specific test only, default: all tests are run")
-    @cmdln.option("-u", "--print-utterances", dest="print_utterances", action="store_true",
-           help="print generated utterances")
-    @cmdln.option("-d", "--debug", dest="debug", action="store_true",
-           help="enable all debug logging")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="enable prolog debug logging")
+           help="enable verbose logging")
     def do_compile(self, subcmd, opts, *paths):
         """${cmd_name}: compile module(s)
 
@@ -261,19 +255,16 @@ class AICli(cmdln.Cmdln):
             logging.error ('specify at least one module name')
             return
 
-        if opts.debug:
+        if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
-            logging.debug('verbose logging enabled.')
-        elif opts.verbose:
-            logging.getLogger(PROLOG_LOGGER_NAME).setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (paths, opts.run_trace, opts.print_utterances)
+            self.kernal.compile_module_multi (paths)
 
             if opts.run_tests:
-                self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+                self.kernal.run_tests_multi (paths)
 
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)

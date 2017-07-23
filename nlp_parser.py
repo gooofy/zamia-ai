@@ -159,6 +159,10 @@ class NLPParser(object):
                             r1.extend(r3[vn])
                             todo.append((parts, cnt+1, r1))
                         
+                elif sub_parts[0] == 'empty':
+                    r  = copy(r)
+                    todo.append((parts, cnt+1, r))
+
                 else:
 
                     r  = copy(r)
@@ -222,10 +226,14 @@ class NLPParser(object):
 
             for resp in resps:
                 r = self._says(lang, r, resp, bor=True)
-            
-            logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
-            self.ds.append((lang, [[], d, r]))
+            # get rid of punctuation for the input
+            utt = u' '.join(d)
+            u = tokenize(utt, lang=lang, keep_punctuation=False)
+
+            logging.debug( '%s -> %s' % (repr(u), repr(r)))
+
+            self.ds.append((lang, [[], u, r]))
     
     def _parse_macro(self):
 
@@ -292,9 +300,16 @@ class NLPParser(object):
         if not lang in self.named_macros:
             self.named_macros[lang] = {}
 
-        self.named_macros[lang][name] = res
+        resps = []
+        for r in res:
+            r2 = {}
+            for vn in r:    
+                r2[vn]= tokenize(r[vn], lang=lang, keep_punctuation=True)
+            resps.append(r2)
 
-        logging.debug ('new named macro defined: %s -> %s' % (name, repr(res)))
+        self.named_macros[lang][name] = resps
+
+        logging.debug ('new named macro defined: %s -> %s' % (name, repr(resps)))
 
     def parse(self, inputfn):
 

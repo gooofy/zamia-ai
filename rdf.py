@@ -179,7 +179,7 @@ def build_algebra(var_map, triples, optional_triples=[], filters=[], limit=0, of
 
 rdf_cache = {} # query -> result
 
-def rdf ( kernal, 
+def rdf ( kb, 
           triples          = [],
           distinct         = False,
           optional_triples = [],
@@ -223,7 +223,6 @@ def rdf ( kernal,
     #   _vars = set([rdflib.term.Variable(u'leaderobj'), rdflib.term.Variable(u'label'), rdflib.term.Variable(u'leader')])
     # )
 
-    kb       = kernal.kb
     var_map  = {} # string -> rdflib.term.Variable
 
     # convert triples/filters to rdflib

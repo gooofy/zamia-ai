@@ -145,7 +145,7 @@ def says (lang, r, txt, actions=None, bor=False):
    
     if actions:
         for a in actions:
-            r1.append(u"r_action(ias, %s)" % resp(a))
+            r1.append(u"r_action(ias, %s)" % repr(a))
 
     return r1
 

@@ -58,8 +58,6 @@ class TrainingData(Base):
     lang              = Column(String(2), index=True)
     module            = Column(String(255), index=True)
 
-    layer             = Column(Integer)
-
     utterance         = Column(UnicodeText, index=True)
 
     inp               = Column(Text, index=True)
@@ -70,6 +68,25 @@ class TrainingData(Base):
     # loc_col           = Column(Integer)
 
     __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), )
+
+class TestCase(Base):
+
+    __tablename__ = 'test_case'
+
+    id                = Column(Integer, primary_key=True)
+
+    lang              = Column(String(2), index=True)
+    module            = Column(String(255), index=True)
+
+    name              = Column(Unicode(255), index=True)
+
+    rounds            = Column(Text)
+
+    # loc_fn            = Column(String(255))
+    # loc_line          = Column(Integer)
+    # loc_col           = Column(Integer)
+
+    # __table_args__    = (Index('idx_tc_inp_lang', "inp", "lang"), )
 
 class Cronjob(Base):
 

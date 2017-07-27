@@ -35,41 +35,175 @@ from nltools.tokenizer import tokenize
 from kb                import AIKB
 from rdf               import rdf
 
+LX_MODE_NORMAL   = 0
+LX_MODE_VERBATIM = 1
+LX_MODE_CODE     = 2
+
+SYM_EOF          = 0
+
+SYM_LPAREN       = 1
+SYM_RPAREN       = 2
+SYM_COMMA        = 3
+SYM_NAME         = 4
+SYM_STRING       = 5
+SYM_LINE         = 6
+SYM_EQUALS       = 7
+SYM_COLON        = 8
+
+SYM_MACRO        = 10
+SYM_TRAIN        = 11
+SYM_TEST         = 12
+SYM_CONTEXT      = 13
+SYM_BEGIN        = 14
+SYM_END          = 15
+SYM_INCLUDE      = 16
+
+SYM_PROC         = 20
+SYM_SET          = 21
+SYM_TOKENS       = 22
+SYM_RDF          = 23
+SYM_INLINE       = 24
+SYM_TSTART       = 25
+SYM_TEND         = 26
+
+class NLPLexer(object):
+
+    NAME_CHARS = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
+
+    def __init__(self, inputf):
+
+        self.inputf       = inputf
+        self.linecnt      = 1
+        self.cur_c        = None
+        self.cur_sym      = None
+
+    def report_error(self, msg):
+        logging.error('%s:%d: %s' % (self.inputf.name, self.linecnt, msg))
+        sys.exit(2)
+
+    def getc(self):
+        self.cur_c = self.inputf.read(1)
+        if self.cur_c == '\n':
+            self.linecnt += 1
+
+    def getsym(self):
+
+        # skip comments, whitespace
+        seen_nl = False
+        ws      = u''
+        while self.cur_c and (self.cur_c.isspace() or self.cur_c==u'#'):
+            if self.cur_c == u'#':
+                while self.cur_c and self.cur_c != '\n':
+                    self.getc()
+            else:
+                if self.cur_c == '\n':
+                    seen_nl = True
+                    ws      = u''
+                else:
+                    ws     += self.cur_c
+                self.getc()
+
+        if not self.cur_c:
+            self.cur_sym = SYM_EOF
+            return
+      
+        if seen_nl and self.cur_c != '@':
+            self.cur_s = ws
+            while self.cur_c != '\n':
+                self.cur_s += self.cur_c
+                self.getc()
+            self.cur_sym = SYM_LINE
+            return
+
+        if self.cur_c == u'@':
+            self.getc()
+            self.cur_s = u''
+            while self.cur_c and (self.cur_c in self.NAME_CHARS) :
+                self.cur_s += self.cur_c
+                self.getc()
+
+            if self.cur_s == 'macro':
+                self.cur_sym = SYM_MACRO
+            elif self.cur_s == 'train':
+                self.cur_sym = SYM_TRAIN
+            elif self.cur_s == 'test':
+                self.cur_sym = SYM_TEST
+            elif self.cur_s == 'context':
+                self.cur_sym = SYM_CONTEXT
+            elif self.cur_s == 'begin':
+                self.cur_sym = SYM_BEGIN
+            elif self.cur_s == 'end':
+                self.cur_sym = SYM_END
+            elif self.cur_s == 'include':
+                self.cur_sym = SYM_INCLUDE
+            elif self.cur_s == 'proc':
+                self.cur_sym = SYM_PROC
+            elif self.cur_s == 'set':
+                self.cur_sym = SYM_SET
+            elif self.cur_s == 'tokens':
+                self.cur_sym = SYM_TOKENS
+            elif self.cur_s == 'rdf':
+                self.cur_sym = SYM_RDF
+            elif self.cur_s == 'inline':
+                self.cur_sym = SYM_INLINE
+            elif self.cur_s == 'tstart':
+                self.cur_sym = SYM_TSTART
+            elif self.cur_s == 'tend':
+                self.cur_sym = SYM_TEND
+            else:
+                self.report_error ('unknown keyword @%s found.' % self.cur_s)
+
+        elif self.cur_c == u'(':
+            self.cur_sym = SYM_LPAREN
+            self.getc()
+        elif self.cur_c == u')':
+            self.cur_sym = SYM_RPAREN
+            self.getc()
+        elif self.cur_c == u',':
+            self.cur_sym = SYM_COMMA
+            self.getc()
+        elif self.cur_c == u'=':
+            self.cur_sym = SYM_EQUALS
+            self.getc()
+        elif self.cur_c == u':':
+            self.cur_sym = SYM_COLON
+            self.getc()
+
+        elif self.cur_c == u"'":
+            self.cur_sym = SYM_STRING
+            self.cur_s   = u''
+            self.getc()
+            while self.cur_c and (self.cur_c !="'"):
+                if self.cur_c == '\n':
+                    self.report_error ('lexer error: unterminated string literal')
+                self.cur_s += self.cur_c
+                self.getc()
+            self.getc()
+
+        elif self.cur_c in self.NAME_CHARS:
+
+            self.cur_sym = SYM_NAME
+            self.cur_s   = u''
+            while self.cur_c and (self.cur_c in self.NAME_CHARS):
+                self.cur_s += self.cur_c
+                self.getc()
+
+        else:
+            self.report_error ('FIXME: lexer error, unexpected char: %s' % repr(self.cur_c))
+
+
 class NLPParser(object):
+
 
     def __init__(self, kernal):
         self.kernal = kernal
         self.reset()
 
     def reset(self):
-        self.linecnt      = 0
         self.named_macros = {}
+        self.procs        = {}
         self.ds           = []
-
-    #
-    # line parser support functions
-    #
-
-    def report_error(self, msg):
-        logging.error('Error in line %d: %s' % (self.linecnt, msg))
-        sys.exit(2)
-
-    def next_line(self):
-
-        while True:
-
-            self.cur_line = self.inputf.readline()
-            if not self.cur_line:
-                return
-
-            self.cur_line = self.cur_line.strip()
-            self.linecnt += 1
-           
-            # skip empty lines, comments
-            if len(self.cur_line)==0 or self.cur_line[0] == '#':
-                continue
-
-            break
+        self.tests        = []
 
     def _expand_macros (self, lang, txt):
 
@@ -187,15 +321,15 @@ class NLPParser(object):
         for r2 in self._expand_macros(lang, txt):
 
             if bor:
-                r1.append(u"r_bor(ias)")
+                r1.append(u"r_bor(context)")
 
             response = []
             for r3 in r2:
 
                 if isinstance (r3, basestring):
-                    response.append(u"r_say(ias, u'%s')" % r3.replace("'", "\\'"))
+                    response.append(u"r_say(context, u'%s')" % r3.replace("'", "\\'"))
                 elif r3[0] == 'action':
-                    response.append(u"r_action(ias, %s)" % repr(r3[1:]))
+                    response.append(u"r_action(context, %s)" % repr(r3[1:]))
                 else:
                     raise Exception ('unknown brace command "%s"' % r3[0])
 
@@ -203,64 +337,195 @@ class NLPParser(object):
 
         return r1
 
-    def _parse_start(self):
+    def _parse_context(self, lx):
+        lx.getsym()
+        
+        if lx.cur_sym != SYM_LPAREN:
+            self.report_error('( expected.')
+        lx.getsym()
 
-        lang = self.cur_line.split(':')[1]
+        if lx.cur_sym != SYM_STRING:
+            self.report_error('field name expected.')
+        f = lx.cur_s
+        lx.getsym()
 
-        self.next_line()
+        if lx.cur_sym != SYM_COMMA:
+            self.report_error(', expected.')
+        lx.getsym()
 
-        inp = self.cur_line
-        self.next_line()
+        if lx.cur_sym != SYM_STRING:
+            self.report_error('value expected.')
+        v = lx.cur_s
+        lx.getsym()
 
-        resps = []
+        if lx.cur_sym != SYM_RPAREN:
+            self.report_error('@context: ) expected.')
+        lx.getsym()
 
-        while self.cur_line and (self.cur_line[0] != '@'):
-            resps.append(self.cur_line)
-            self.next_line()
+        return (f,v)
 
-        for d in self._expand_macros(lang, inp):
+    def _parse_train(self, lx):
 
-            # print repr(d)
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            self.report_error('( expected.')
+        lx.getsym()
 
-            r = []
+        if lx.cur_sym != SYM_NAME:
+            self.report_error('language name expected.')
+        lang = lx.cur_s
+        lx.getsym()
 
-            for resp in resps:
-                r = self._says(lang, r, resp, bor=True)
+        if lx.cur_sym != SYM_RPAREN:
+            self.report_error('@train: ) expected.')
+        lx.getsym()
 
-            # get rid of punctuation for the input
-            utt = u' '.join(d)
-            u = tokenize(utt, lang=lang, keep_punctuation=False)
+        contexts = []
+        while lx.cur_sym == SYM_CONTEXT:
+            contexts.append(self._parse_context(lx))
 
-            logging.debug( '%s -> %s' % (repr(u), repr(r)))
+        if lx.cur_sym != SYM_LINE:
+            self.report_error('input line expected.')
+        inp = lx.cur_s
+        lx.getsym()
 
-            self.ds.append((lang, [[], u, r]))
+        code = self._parse_code (lx, [], lang)
+
+        import pdb; pdb.set_trace()
+        # resps = []
+        # while lx.cur_sym == SYM_LINE:
+        #     resps.append(lx.cur_s)
+        #     lx.getsym()
+
+        # code = []
+        # if lx.cur_sym == SYM_BEGIN:
+        #     code = self._parse_begin(lx)
+
+        # if len(resps) == 0 and not code:
+        #     lx.report_error('at least one response line or code expected')
+
+        # for d in self._expand_macros(lang, inp):
+
+        #     # print repr(d)
+
+        #     r = copy(code)
+
+        #     for resp in resps:
+        #         r = self._says(lang, r, resp, bor=True)
+
+        #     # get rid of punctuation for the input, prepend context
+        #     utt = u' '.join(d)
+        #     u = tokenize(utt, lang=lang, keep_punctuation=False)
+
+        #     logging.debug( '%s -> %s' % (repr(u), repr(r)))
+
+        #     self.ds.append((lang, contexts, u, r))
+        raise Exception ("FIXME: sorry, this code is not finished yet.")
     
-    def _parse_macro(self):
+    def _parse_begin(self, lx):
 
-        lang = self.cur_line.split(':')[1]
-        name = self.cur_line.split(':')[2]
-        vs   = self.cur_line.split(':')[3:]
+        lx.getsym()
 
-        self.next_line()
+        code = []
 
-        resps = []
+        num_spaces = -1
 
-        while self.cur_line and (self.cur_line[0] != '@'):
+        while lx.cur_sym == SYM_LINE:
 
-            line_parts = self.cur_line.split('@')
+            if num_spaces < 0:
+                num_spaces = 0
+                while (num_spaces < len(lx.cur_s)) and lx.cur_s[num_spaces].isspace():
+                    num_spaces += 1
 
+            code.append(lx.cur_s[num_spaces:])
+            lx.getsym()
 
-            for el in self._expand_macros (lang, line_parts[0]):
+        if lx.cur_sym != SYM_END:
+            self.report_error('@end expected.')
+        lx.getsym()
 
-                r = {vs[0] : el}
+        # import pdb; pdb.set_trace()
+        return code
 
-                for vn, val in zip (vs, line_parts)[1:]:
-                    r[vn] = val
+    def _parse_macro(self, lx):
 
-                resps.append(r)
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            self.report_error('( expected.')
+        lx.getsym()
 
-            self.next_line()
+        if lx.cur_sym != SYM_NAME:
+            self.report_error('language name expected.')
+        lang = lx.cur_s
+        lx.getsym()
 
+        if lx.cur_sym != SYM_COMMA:
+            self.report_error(', expected.')
+        lx.getsym()
+
+        if lx.cur_sym != SYM_NAME:
+            self.report_error('macro name expected.')
+        name = lx.cur_s
+        lx.getsym()
+
+        vs = []
+        while lx.cur_sym == SYM_COMMA:
+            lx.getsym()
+            if lx.cur_sym != SYM_NAME:
+                self.report_error('variable name expected.')
+            vs.append(lx.cur_s)
+            lx.getsym()
+
+        if lx.cur_sym != SYM_RPAREN:
+            self.report_error('@macro: ) expected.')
+        lx.getsym()
+
+        if lx.cur_sym == SYM_BEGIN:
+
+            code = self._parse_begin(lx)
+            code_s = u'\n'.join(code)
+
+            env_locals = { 'rdf'   : rdf,
+                           'lang'  : lang,
+                           'kernal': self.kernal,
+                           'kb'    : self.kernal.kb }
+
+            exec code_s in env_locals
+
+            resps = []
+            for r in env_locals['data']:
+                r2 = {}
+                for vn in r:    
+                    r2[vn]= tokenize(r[vn], lang=lang, keep_punctuation=True)
+                resps.append(r2)
+
+        elif lx.cur_sym == SYM_LINE:
+
+            # vs   = self.cur_line.split(':')[3:]
+
+            # self.next_line()
+
+            resps = []
+
+            while lx.cur_sym == SYM_LINE:
+
+            # while self.cur_line and (self.cur_line[0] != '@'):
+
+                line_parts = lx.cur_s.split('@')
+
+                for el in self._expand_macros (lang, line_parts[0]):
+
+                    r = {vs[0] : el}
+
+                    for vn, val in zip (vs, line_parts)[1:]:
+                        r[vn] = val
+
+                    resps.append(r)
+
+                lx.getsym()
+
+        else:
+            self.report_error ('FIXME: unexpected symbol in macro')
 
         if not lang in self.named_macros:
             self.named_macros[lang] = {}
@@ -269,70 +534,349 @@ class NLPParser(object):
 
         logging.debug ('new named macro defined: %s -> %s' % (name, repr(resps)))
 
-    def _parse_rdf(self):
+    def _parse_test(self, lx):
 
-        lang = self.cur_line.split(':')[1]
-        name = self.cur_line.split(':')[2]
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
 
-        self.next_line()
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('language name expected.')
+        lang = lx.cur_s
+        lx.getsym()
 
-        triples = []
-        limit   = 0
-        filters = []
+        if lx.cur_sym != SYM_COMMA:
+            lx.report_error(', expected.')
+        lx.getsym()
 
-        while self.cur_line and (self.cur_line[0] != '@'):
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('test name expected.')
+        name = lx.cur_s
+        lx.getsym()
 
-            if self.cur_line.startswith('limit'):
-                limit = int(self.cur_line.split(':')[1])
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@test: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
 
-            elif self.cur_line.startswith('lang'):
-                parts = self.cur_line.split(':')
-                filters.append( ('=', ('lang', parts[1]), parts[2]) )
+        rounds = []
+
+        while lx.cur_sym == SYM_LINE:
+            inp = self._expand_macros(lang, lx.cur_s)[0]
+            lx.getsym()
+            if lx.cur_sym != SYM_LINE:
+                lx.report_error('test response expected.')
+            r = self._expand_macros(lang, lx.cur_s)[0]
+            lx.getsym()
+
+            # filter words vs actions
+            resp    = []
+            actions = []
+            for rs in r:
+                if isinstance(rs, basestring):
+                    resp.append(rs)
+                else:
+                    actions.append(rs)
+            
+
+            rounds.append((inp, resp, actions))
+
+        self.tests.append((name, lang, rounds))
+
+        logging.debug ('added test: %s' % repr(rounds))
+  
+    def _parse_name (self, lx, args):
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('name expected')
+        n = lx.cur_s
+        lx.getsym()
+        if lx.cur_sym == SYM_COLON:
+            lx.getsym()
+            if lx.cur_sym != SYM_NAME:
+                lx.report_error('name expected')
+            n2 = lx.cur_s
+            lx.getsym()
+
+            return ('ref', n, n2)
+        else:
+            if n in args:
+                return ('arg', n)
+            else:
+                return ('local', n)
+
+    def _parse_tokens(self, lx, args):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
+
+        ts = self._parse_expression(lx, args)
+
+        if lx.cur_sym != SYM_COMMA:
+            lx.report_error(', expected.')
+        lx.getsym()
+
+        te = self._parse_expression(lx, args)
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@tokens: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        return ('tokens', ts, te)
+
+    def _parse_rdf(self, lx, args):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
+
+        n1 = self._parse_name(lx, args)
+
+        if lx.cur_sym != SYM_COMMA:
+            lx.report_error(', expected.')
+        lx.getsym()
+
+        n2 = self._parse_name(lx, args)
+
+        if lx.cur_sym == SYM_COMMA:
+            lx.getsym()
+            n3 = self._parse_name(lx, args)
+        else:
+            n3 = None
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@rdf: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        return ('rdf', n1, n2, n3)
+
+    def _parse_tstart(self, lx, args):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
+
+        ts = self._parse_expression(lx, args)
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@tstart: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        return ('tstart', ts)
+
+    def _parse_tend(self, lx, args):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
+
+        ts = self._parse_expression(lx, args)
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@tend: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        return ('tend', ts)
+
+    def _parse_expression (self, lx, args):
+        
+        if lx.cur_sym == SYM_NAME:
+            return self._parse_name(lx, args)
+        elif lx.cur_sym == SYM_TOKENS:
+            return self._parse_tokens(lx, args)
+        elif lx.cur_sym == SYM_RDF:
+            return self._parse_rdf(lx, args)
+        elif lx.cur_sym == SYM_TSTART:
+            return self._parse_tstart(lx, args)
+        elif lx.cur_sym == SYM_TEND:
+            return self._parse_tend(lx, args)
+        else:
+            lx.report_error('expression expected, sym %d found instead.' % lx.cur_sym)
+
+    def _parse_set (self, lx, args):
+        
+        lx.getsym()
+        dst = self._parse_name (lx, args)
+
+        if lx.cur_sym != SYM_EQUALS:
+            lx.report_error('set: = expected')
+
+        lx.getsym()
+
+        src = self._parse_expression (lx, args)
+
+        return ('set', dst, src)
+
+    def _apply_bindings (self, node, bindings):
+        
+        if not isinstance (node, tuple):
+            return node
+
+        if node[0] == 'arg':
+            if node[1] in bindings:
+                return bindings[node[1]]
+            else:
+                return node
+
+        n2 = [node[0]]
+        for n3 in node[1:]:
+            n2.append(self._apply_bindings (n3, bindings))
+
+        return tuple(n2)
+
+    def _parse_code(self, lx, args, lang):
+
+        code = []
+
+        while True:
+
+            if lx.cur_sym == SYM_SET:
+                code.append(self._parse_set(lx, args))
+
+            elif lx.cur_sym == SYM_LINE:
+                code.append(('line', lx.cur_s))
+                lx.getsym()
+
+            elif lx.cur_sym == SYM_INLINE:
+                lx.getsym()
+
+                if lx.cur_sym != SYM_LPAREN:
+                    lx.report_error ('@inline: ( expected.')
+                lx.getsym()
+
+                if lx.cur_sym != SYM_NAME:
+                    lx.report_error ('@inline: proc name expected.')
+                name = lx.cur_s
+                if not name in self.procs[lang]:
+                    lx.report_error ('@inline: unknown proc "%s".' % name)
+                pa, pc = self.procs[lang][name]
+                lx.getsym()
+
+                i = 0
+                bindings = {}
+                while lx.cur_sym == SYM_COMMA:
+                    lx.getsym()
+
+                    if i >= len(pa):
+                        lx.report_error ('@inline: %d args expected.' % len(pa))
+
+                    x = self._parse_expression(lx, args)
+                    bindings[pa[i]] = x
+                    i += 1
+
+                if lx.cur_sym != SYM_RPAREN:
+                    lx.report_error ('@inline: ) expected.')
+                lx.getsym()
+
+                for c in pc:
+                    code.append(self._apply_bindings(c, bindings))
 
             else:
+                break
 
-                triples.append(self.cur_line.split(','))
+        return code
 
-            self.next_line()
 
-        res = rdf(self.kernal.kb, triples=triples, limit=limit, filters=filters)
+    def _parse_proc(self, lx):
 
-        if not lang in self.named_macros:
-            self.named_macros[lang] = {}
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
 
-        resps = []
-        for r in res:
-            r2 = {}
-            for vn in r:    
-                r2[vn]= tokenize(r[vn], lang=lang, keep_punctuation=True)
-            resps.append(r2)
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('language name expected.')
+        lang = lx.cur_s
+        lx.getsym()
 
-        self.named_macros[lang][name] = resps
+        if lx.cur_sym != SYM_COMMA:
+            lx.report_error(', expected.')
+        lx.getsym()
 
-        logging.debug ('new named macro defined: %s -> %s' % (name, repr(resps)))
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('proc name expected.')
+        name = lx.cur_s
+        lx.getsym()
+
+        args = []
+        while lx.cur_sym == SYM_COMMA:
+            lx.getsym()
+            if lx.cur_sym != SYM_NAME:
+                lx.report_error('arg name expected.')
+            args.append(lx.cur_s)
+            lx.getsym()
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@proc: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        code = self._parse_code(lx, args, lang)
+
+        if not lang in self.procs:
+            self.procs[lang] = {}
+
+        self.procs[lang][name] = (args, code)
+
+        logging.debug ('added proc: %s' % name)
+    
+    def _parse_file(self, lx):
+
+        while lx.cur_sym and lx.cur_sym != SYM_EOF:
+
+            if lx.cur_sym == SYM_MACRO:
+                self._parse_macro(lx)
+            elif lx.cur_sym == SYM_TRAIN:
+                self._parse_train(lx)
+            elif lx.cur_sym == SYM_TEST:
+                self._parse_test(lx)
+            elif lx.cur_sym == SYM_INCLUDE:
+                self._parse_include(lx)
+            elif lx.cur_sym == SYM_PROC:
+                self._parse_proc(lx)
+            else:
+                lx.report_error ('@macro/@train/@test/@include/@proc expected.')
+    
+    def _parse_include(self, lx):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('( expected.')
+        lx.getsym()
+
+        if lx.cur_sym != SYM_STRING:
+            lx.report_error('include filename / path expected.')
+        inputfn = lx.cur_s
+        lx.getsym()
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@test: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        with codecs.open('modules/%s' % inputfn, 'r', 'utf8', errors='ignore') as inputf:
+
+            lx2 = NLPLexer(inputf)
+            lx2.getc()
+            lx2.getsym()
+
+            self._parse_file(lx2)
 
     def parse(self, inputfn):
 
-        self.inputfn = inputfn
-
         logging.info('processing %s ...' % inputfn)
 
-        with codecs.open(self.inputfn, 'r', 'utf8', errors='ignore') as self.inputf:
+        with codecs.open(inputfn, 'r', 'utf8', errors='ignore') as inputf:
 
             self.reset()
 
-            self.next_line()
+            lx = NLPLexer(inputf)
+            lx.getc()
+            lx.getsym()
 
-            while self.cur_line:
+            self._parse_file(lx)
 
-                if self.cur_line.startswith('@start'):
-                    self._parse_start()
-                elif self.cur_line.startswith('@macro'):
-                    self._parse_macro()
-                elif self.cur_line.startswith('@rdf'):
-                    self._parse_rdf()
-                else:
-                    self.report_error ('syntax error')
-
-        return self.ds
+        return self.ds, self.tests
 

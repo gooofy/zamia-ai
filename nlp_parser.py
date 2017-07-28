@@ -257,14 +257,14 @@ class NLPParser(object):
 
         done = []
 
-        todo = [ (parts, 0, []) ]
+        todo = [ (parts, 0, [], {}) ]
 
         while len(todo)>0:
 
-            parts1, cnt, r = todo.pop()
+            parts1, cnt, r, mpos = todo.pop()
 
             if cnt >= len(parts1):
-                done.append(r)
+                done.append((r, mpos))
                 continue
 
             p1 = parts1[cnt]
@@ -280,9 +280,13 @@ class NLPParser(object):
 
                     if name in self.named_macros[lang]:
                         for r3 in self.named_macros[lang][name]:
-                            r1  = copy(r)
+                            r1    = copy(r)
+                            # FIXME: multiple invocactions of the same macro ?!
+                            mpos1 = copy(mpos)
+                            mpos1[name + '_start'] = len(r1)
                             r1.extend(r3[vn])
-                            todo.append((parts, cnt+1, r1))
+                            mpos1[name + '_end']   = len(r1)
+                            todo.append((parts, cnt+1, r1, mpos1))
 
                     else:
                         if not name in implicit_macros:
@@ -290,18 +294,22 @@ class NLPParser(object):
 
                         for r3 in implicit_macros[name]:
                             r1  = copy(r)
+                            # FIXME: multiple invocactions of the same macro ?!
+                            mpos1 = copy(mpos)
+                            mpos1[name + '_start'] = len(r1)
                             r1.extend(r3[vn])
-                            todo.append((parts, cnt+1, r1))
+                            mpos1[name + '_end']   = len(r1)
+                            todo.append((parts, cnt+1, r1, mpos1))
                         
                 elif sub_parts[0] == 'empty':
                     r  = copy(r)
-                    todo.append((parts, cnt+1, r))
+                    todo.append((parts, cnt+1, r, mpos))
 
                 else:
 
                     r  = copy(r)
                     r.append(sub_parts)
-                    todo.append((parts, cnt+1, r))
+                    todo.append((parts, cnt+1, r, mpos))
 
             else:
 
@@ -310,7 +318,7 @@ class NLPParser(object):
                 r  = copy(r)
                 r.extend(sub_parts)
 
-                todo.append((parts, cnt+1, r))
+                todo.append((parts, cnt+1, r, mpos))
 
         return done
 
@@ -364,6 +372,62 @@ class NLPParser(object):
 
         return (f,v)
 
+    def _compile_expr (self, expr):
+
+        res = u''
+
+        if expr[0] == u'tokens':
+
+            t0 = self._compile_expr(expr[1])
+            t1 = self._compile_expr(expr[2])
+
+            res = u"context['tokens'][%s:%s]" % (t0, t1)
+
+        elif expr[0] == u'tstart':
+
+            res = u'FIXME' 
+
+        elif expr[0] == u'tend':
+
+            res = u'FIXME' 
+
+        else:
+
+            raise Exception ('FIXME: expr node type %s not implemented yet.' % repr(expr[0]))
+
+        return res
+
+    def _compile_code (self, code, indent=u''):
+
+        pcode = []
+
+        for c in code:
+
+            if c[0] == 'set':
+
+                if c[1][0] == 'ref':
+
+                    if c[1][1] == 'user':
+            
+                        t = self._compile_expr (c[2])
+
+                        pcode.append(u"%srdf_retractall (context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
+                        pcode.append(u"%srdf_assert     (context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
+
+                    else :
+                        raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[2]))
+
+                else:
+                    raise Exception ('FIXME: target %s not implemented yet.' % repr(c[1]))
+
+            else:
+                raise Exception ('FIXME: command %s not implemented yet.' % repr(c[0]))
+
+            import pdb; pdb.set_trace()
+
+        return pcode
+
+
     def _parse_train(self, lx):
 
         lx.getsym()
@@ -391,7 +455,13 @@ class NLPParser(object):
 
         code = self._parse_code (lx, [], lang)
 
-        import pdb; pdb.set_trace()
+
+        for d in self._expand_macros(lang, inp):
+
+            import pdb; pdb.set_trace()
+
+            pcode = self._compile_code (code)
+
         # resps = []
         # while lx.cur_sym == SYM_LINE:
         #     resps.append(lx.cur_s)
@@ -513,7 +583,7 @@ class NLPParser(object):
 
                 line_parts = lx.cur_s.split('@')
 
-                for el in self._expand_macros (lang, line_parts[0]):
+                for el, empos in self._expand_macros (lang, line_parts[0]):
 
                     r = {vs[0] : el}
 

@@ -63,6 +63,7 @@ SYM_INLINE       = 24
 SYM_TSTART       = 25
 SYM_TEND         = 26
 SYM_SPJ          = 27
+SYM_ACTION       = 28
 
 class NLPLexer(object):
 
@@ -152,6 +153,8 @@ class NLPLexer(object):
                 self.cur_sym = SYM_SPJ
             elif self.cur_s == 'prefix':
                 self.cur_sym = SYM_PREFIX
+            elif self.cur_s == 'action':
+                self.cur_sym = SYM_ACTION
             else:
                 self.report_error ('unknown keyword @%s found.' % self.cur_s)
 
@@ -321,29 +324,6 @@ class NLPParser(object):
 
         return done
 
-    def _says (self, lang, r, txt, bor=False):
-
-        r1 = copy(r)
-
-        for r2, mpos in self._expand_macros(lang, txt, lx):
-
-            if bor:
-                r1.append(u"r_bor(context)")
-
-            response = []
-            for r3 in r2:
-
-                if isinstance (r3, basestring):
-                    response.append(u"r_say(context, u'%s')" % r3.replace("'", "\\'"))
-                elif r3[0] == 'action':
-                    response.append(u"r_action(context, %s)" % repr(r3[1:]))
-                else:
-                    raise Exception ('unknown brace command "%s"' % r3[0])
-
-            r1.extend(response)
-
-        return r1
-
     def _parse_context(self, lx):
         lx.getsym()
         
@@ -426,7 +406,7 @@ class NLPParser(object):
 
         return res
 
-    def _compile_code (self, code, mpos, indent, lx):
+    def _compile_code (self, code, mpos, indent, lx, lang):
 
         pcode = []
 
@@ -453,10 +433,36 @@ class NLPParser(object):
                 else:
                     raise Exception ('FIXME: target %s not implemented yet.' % repr(c[1]))
 
+            elif c[0] == 'line':
+
+                pcode.append(u"%sr_bor(context)" % indent)
+
+                parts = []
+                for p1 in c[1].split('{'):
+                    for p2 in p1.split('}'):
+                        parts.append(p2)
+
+                cnt = 0
+                for part in parts:
+
+                    if cnt % 2 == 1:
+                        pcode.append(u"%sr_sayv('%s')" % (indent, part))
+
+                    else:
+
+                        for t in tokenize(part, lang=lang, keep_punctuation=True):
+                            pcode.append(u"%sr_say(u\"%s\")" % (indent, t.replace('"', "'")))
+
+                    cnt += 1
+
+            elif c[0] == 'action':
+
+                s = u"%sr_action(%s)" % (indent, repr(list(c[1:])))
+
+                pcode.append(s)
+
             else:
                 raise Exception ('FIXME: command %s not implemented yet.' % repr(c[0]))
-
-            import pdb; pdb.set_trace()
 
         return pcode
 
@@ -488,43 +494,18 @@ class NLPParser(object):
 
         code = self._parse_code (lx, [], lang)
 
-
         for d, mpos in self._expand_macros(lang, inp, lx):
 
-            pcode = self._compile_code (code, mpos, '', lx)
+            r = self._compile_code (code, mpos, '', lx, lang)
 
-            import pdb; pdb.set_trace()
+            # get rid of punctuation for the input, prepend context
+            utt = u' '.join(d)
+            u = tokenize(utt, lang=lang, keep_punctuation=False)
 
-        # resps = []
-        # while lx.cur_sym == SYM_LINE:
-        #     resps.append(lx.cur_s)
-        #     lx.getsym()
+            logging.debug( '%s -> %s' % (repr(u), repr(r)))
 
-        # code = []
-        # if lx.cur_sym == SYM_BEGIN:
-        #     code = self._parse_begin(lx)
+            self.ds.append((lang, contexts, u, r))
 
-        # if len(resps) == 0 and not code:
-        #     lx.report_error('at least one response line or code expected')
-
-        # for d in self._expand_macros(lang, inp):
-
-        #     # print repr(d)
-
-        #     r = copy(code)
-
-        #     for resp in resps:
-        #         r = self._says(lang, r, resp, bor=True)
-
-        #     # get rid of punctuation for the input, prepend context
-        #     utt = u' '.join(d)
-        #     u = tokenize(utt, lang=lang, keep_punctuation=False)
-
-        #     logging.debug( '%s -> %s' % (repr(u), repr(r)))
-
-        #     self.ds.append((lang, contexts, u, r))
-        raise Exception ("FIXME: sorry, this code is not finished yet.")
-    
     def _parse_begin(self, lx):
 
         lx.getsym()
@@ -847,6 +828,30 @@ class NLPParser(object):
 
         return ('set', dst, src)
 
+    def _parse_action (self, lx, args):
+        
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('action: ( expected')
+        lx.getsym()
+
+        res = ['action']
+
+        while lx.cur_sym and lx.cur_sym != SYM_RPAREN:
+            if lx.cur_sym != SYM_NAME:
+                lx.report_error('action: name expected')
+            res.append(lx.cur_s)
+            lx.getsym()
+
+            if lx.cur_sym == SYM_COMMA:
+                lx.getsym()
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('action: ) expected')
+        lx.getsym()
+
+        return tuple(res)
+
     def _apply_bindings (self, node, bindings):
         
         if not isinstance (node, tuple):
@@ -876,6 +881,9 @@ class NLPParser(object):
             elif lx.cur_sym == SYM_LINE:
                 code.append(('line', lx.cur_s))
                 lx.getsym()
+
+            elif lx.cur_sym == SYM_ACTION:
+                code.append(self._parse_action(lx, args))
 
             elif lx.cur_sym == SYM_INLINE:
                 lx.getsym()

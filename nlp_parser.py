@@ -407,8 +407,18 @@ class NLPParser(object):
         elif expr[0] == u'spj':
 
             t = self._compile_expr(expr[1], mpos, lx)
-
             res = u"u' '.join(%s)" % t
+
+        elif expr[0] == u'local':
+
+            res = expr[1]
+
+        elif expr[0] == u'rdf':
+
+            res = u"rdf_get_single('%s', '%s'" % (expr[1], expr[2])
+            if expr[3]:
+                res += u", langfilter='%s'" % expr[3]
+            res += u")"
 
         else:
 
@@ -424,17 +434,21 @@ class NLPParser(object):
 
             if c[0] == 'set':
 
+                t = self._compile_expr (c[2], mpos, lx)
+
                 if c[1][0] == 'ref':
 
                     if c[1][1] == 'user':
-            
-                        t = self._compile_expr (c[2], mpos, lx)
 
                         pcode.append(u"%srdf_retractall (context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
                         pcode.append(u"%srdf_assert     (context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
 
                     else :
                         raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[2]))
+
+                elif c[1][0] == 'local':
+
+                    pcode.append(u"%s%s = %s" % (indent, c[1][1], t))
 
                 else:
                     raise Exception ('FIXME: target %s not implemented yet.' % repr(c[1]))
@@ -723,15 +737,25 @@ class NLPParser(object):
 
         n1 = self._parse_name(lx, args)
 
+        if n1[0] != 'ref':
+            lx.report_error('rdf: URI shorthand "prefix:l" expected')
+
         if lx.cur_sym != SYM_COMMA:
             lx.report_error(', expected.')
         lx.getsym()
 
         n2 = self._parse_name(lx, args)
+        if n2[0] != 'ref':
+            lx.report_error('rdf: URI shorthand "prefix:l" expected')
 
         if lx.cur_sym == SYM_COMMA:
             lx.getsym()
-            n3 = self._parse_name(lx, args)
+
+            if lx.cur_sym != SYM_NAME:
+                lx.report_error('@rdf: language filter name expected.')
+            n3 = lx.cur_s
+            lx.getsym()
+
         else:
             n3 = None
 
@@ -739,7 +763,7 @@ class NLPParser(object):
             lx.report_error('@rdf: ) expected (sym %d found instead).' % lx.cur_sym)
         lx.getsym()
 
-        return ('rdf', n1, n2, n3)
+        return ('rdf', '%s:%s' % (n1[1], n1[2]), '%s:%s' % (n2[1], n2[2]), n3)
 
     def _parse_tstart(self, lx, args):
 

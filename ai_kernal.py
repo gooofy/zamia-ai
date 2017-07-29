@@ -428,129 +428,110 @@ class AIKernal(object):
 
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
 
-        todo    = []
-        td_set  = set()
-        td_list = []
+        # extract new training data for this module
+
+        train_ds = []
+        tests    = []
 
         if hasattr(m, 'nlp_train'):
 
             # training_data_cnt = 0
 
-            logging.info ('module %s training data extraction...' % module_name)
+            logging.info ('module %s python training data extraction...' % module_name)
 
             nlp_train = getattr(m, 'nlp_train')
-            train_ds = nlp_train(self)
-
-            for utt_lang, data in train_ds:
-
-                # if len(todo)<5:
-                #     print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
-
-                if len(data) % 3 != 0:
-                    raise Exception ('Error: training data length has to be multiple of 3!')
-
-                todo.append((utt_lang, data, 0, None))
+            train_ds.extend(nlp_train(self))
 
         if hasattr(m, 'NLP_SOURCES'):
 
+            logging.info ('module %s NLP training data extraction...' % module_name)
+
             for inputfn in m.NLP_SOURCES:
-                train_ds = self.nlp_parser.parse('modules/%s/%s' % (module_name, inputfn))
+                ds, ts = self.nlp_parser.parse('modules/%s/%s' % (module_name, inputfn))
 
-                for utt_lang, data in train_ds:
+                train_ds.extend(ds)
+                tests.extend(ts)
 
-                    # if len(todo)<5:
-                    #     print "%3d/%5d" % (len(todo), len(train_ds)), repr(data)
+        logging.info ('module %s training data extraction done. %d training samples, %d tests' % (module_name, len(train_ds), len(tests)))
 
-                    if len(data) % 3 != 0:
-                        raise Exception ('Error: training data length has to be multiple of 3!')
+        # put training data into our DB
 
-                    todo.append((utt_lang, data, 0, None))
+        td_set  = set()
+        td_list = []
 
-        logging.info ('module %s training data extraction... initial todo list len: %d' % (module_name, len(todo)))
+        for utt_lang, contexts, i, resp in train_ds:
 
-        while len(todo)>0:
+            inp = copy(contexts)
+            inp.extend(i)
 
-            utt_lang, data, data_pos, prev_ias = todo.pop()
-            if data_pos >= len(data):
-                continue
+            inp_json  = json.dumps(inp)
+            resp_json = json.dumps(resp)
 
-            try:
-                prep      = '\n'.join(data[data_pos])
-                tokens    = data[data_pos+1]
-                gcode     = data[data_pos+2]
-                utterance = u' '.join(tokens)
+            utterance = u' '.join(map(lambda c: unicode(c), contexts))
+            if utterance:
+                utterance += u' '
+            utterance += u' '.join(i)
 
-                data_pos += 3
+            k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+            if not k in td_set:
+                td_set.add(k)
+                td_list.append(model.TrainingData(lang      = utt_lang,
+                                                  module    = module_name,
+                                                  utterance = utterance,
+                                                  inp       = inp_json,
+                                                  resp      = resp_json))
 
-                env_locals = {'ias': self._setup_ias (user_uri  = TEST_USER, 
-                                                      utterance = utterance, 
-                                                      utt_lang  = utt_lang, 
-                                                      tokens    = tokens,
-                                                      prev_ias  = prev_ias),
-                              'kernal': self}
+        # put training data into our DB
 
+        td_set  = set()
+        td_list = []
 
-                exec prep in env_locals
+        for utt_lang, contexts, i, resp in train_ds:
 
-                # gcode input
+            inp = copy(contexts)
+            inp.extend(i)
 
-                inp = self._compute_net_input (env_locals['ias'])
+            inp_json  = json.dumps(inp)
+            resp_json = json.dumps(resp)
 
-                inp_json  = json.dumps(inp)
+            utterance = u' '.join(map(lambda c: unicode(c), contexts))
+            if utterance:
+                utterance += u' '
+            utterance += u' '.join(i)
 
-                gcode_e = copy(GCODE_PREAMBLE)
-                gcode_e.extend(gcode)
-                exec u'\n'.join(gcode_e) in env_locals
+            k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+            if not k in td_set:
+                td_set.add(k)
+                td_list.append(model.TrainingData(lang      = utt_lang,
+                                                  module    = module_name,
+                                                  utterance = utterance,
+                                                  inp       = inp_json,
+                                                  resp      = resp_json))
 
-                todo.append((utt_lang, data, data_pos, copy(env_locals['ias'])))
+        logging.info ('module %s training data conversion done. %d unique training samples.' %(module_name, len(td_list)))
 
-                # # gcode response: gcode + rcode
+        start_time = time.time()
+        logging.info (u'bulk saving to db...')
+        self.session.bulk_save_objects(td_list)
+        self.session.commit()
+        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-                # resp = copy(gcode)
-                # resp.append(42)    # just a marker separating python code vs response
-                # resp.extend(rcode)
+        # import pdb; pdb.set_trace()
 
-                resp_json = json.dumps(gcode)
+        # put test data into our DB
 
-                # gcode response
+        td_list = []
 
-                k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-                if not k in td_set:
-                    td_set.add(k)
-                    td_list.append(model.TrainingData(lang      = utt_lang,
-                                                      module    = module_name,
-                                                      layer     = 0,
-                                                      utterance = utterance,
-                                                      inp       = inp_json,
-                                                      resp      = resp_json))
-                # # rcode input
+        for name, lang, rounds in tests:
 
-                # inp = self._compute_net_input (env_locals['ias'])
+            rounds_json = json.dumps(rounds)
 
-                # if print_utterances:
-                #     logging.info (u'layer 1 inp: %s' % repr(inp))
-                #     logging.info (u'layer 1 res: %s' % repr(rcode))
+            td_list.append(model.TestCase(lang      = lang,
+                                          module    = module_name,
+                                          name      = name,
+                                          rounds    = rounds_json))
 
-                # inp_json  = json.dumps(inp)
-                # resp_json = json.dumps(rcode)
-
-                # k = utt_lang + '#1#' + '#' + inp_json + '#' + resp_json
-                # if not k in td_set:
-                #     td_set.add(k)
-                #     td_list.append(model.TrainingData(lang      = utt_lang,
-                #                                       module    = module_name,
-                #                                       layer     = 1,
-                #                                       utterance = utterance,
-                #                                       inp       = inp_json,
-                #                                       resp      = resp_json))
-                if (len(td_list) % 100 == 0) or (len(todo) % 100 == 0):
-                    logging.info ('...module %s training data cnt: %d (todo: %d)' %(module_name, len(td_list), len(todo)))
-
-            except:
-                logging.error('exception caught while extracting training data')
-                logging.error(traceback.format_exc())
-
-        logging.info ('module %s training data extraction done. total cnt: %d' %(module_name, len(td_list)))
+        logging.info ('module %s test data conversion done. %d tests.' %(module_name, len(td_list)))
 
         start_time = time.time()
         logging.info (u'bulk saving to db...')
@@ -591,7 +572,6 @@ class AIKernal(object):
 
             d[k] = unicode(v)
 
-        # import pdb; pdb.set_trace()
 
         utterance = u''
         utt_lang  = u'en'

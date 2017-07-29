@@ -205,7 +205,7 @@ class NLPParser(object):
         self.ds           = []
         self.tests        = []
 
-    def _expand_macros (self, lang, txt):
+    def _expand_macros (self, lang, txt, lx):
 
         logging.debug(u"expand macros  : %s" % txt)
 
@@ -223,7 +223,7 @@ class NLPParser(object):
 
                 j = txt[i+1:].find(')')
                 if j<0:
-                    raise Exception (') missing')
+                    lx.report_error (') missing')
                 j += i
 
                 # extract macro
@@ -239,7 +239,7 @@ class NLPParser(object):
                     sub_parts = tokenize(s, lang=lang, keep_punctuation=True)
                     implicit_macros[macro_name].append({'W': sub_parts})
 
-                txt2 += '{macro:' + macro_name + ':W}'
+                txt2 += '{' + macro_name + ':W}'
 
                 i = j+2
             else:
@@ -272,45 +272,42 @@ class NLPParser(object):
             if cnt % 2 == 1:
                 
                 sub_parts = p1.split(':')
+                name = sub_parts[0]
 
-                if sub_parts[0] == 'macro':
-
-                    name = sub_parts[1]
-                    vn   = sub_parts[2]
-
-                    if name in self.named_macros[lang]:
-                        for r3 in self.named_macros[lang][name]:
-                            r1    = copy(r)
-                            # FIXME: multiple invocactions of the same macro ?!
-                            mpos1 = copy(mpos)
-                            mpos1[name + '_start'] = len(r1)
-                            r1.extend(r3[vn])
-                            mpos1[name + '_end']   = len(r1)
-                            todo.append((parts, cnt+1, r1, mpos1))
-
-                    else:
-                        if not name in implicit_macros:
-                            raise Exception ('unknown macro "%s" called' % name)
-
-                        for r3 in implicit_macros[name]:
-                            r1  = copy(r)
-                            # FIXME: multiple invocactions of the same macro ?!
-                            mpos1 = copy(mpos)
-                            mpos1[name + '_start'] = len(r1)
-                            r1.extend(r3[vn])
-                            mpos1[name + '_end']   = len(r1)
-                            todo.append((parts, cnt+1, r1, mpos1))
-                        
-                elif sub_parts[0] == 'empty':
+                if name == 'empty':
                     r  = copy(r)
                     todo.append((parts, cnt+1, r, mpos))
-
                 else:
 
-                    r  = copy(r)
-                    r.append(sub_parts)
-                    todo.append((parts, cnt+1, r, mpos))
+                    vn    = sub_parts[1]
 
+                    macro = None
+
+                    if lang in self.named_macros:
+                        macro = self.named_macros[lang].get(name, None)
+                    if not macro:
+                        macro = implicit_macros.get(name, None)
+                    if not macro:
+                        lx.report_error ('unknown macro "%s"[%s] called' % (name, lang))
+
+                    for r3 in macro:
+                        r1    = copy(r)
+                        mpos1 = copy(mpos)
+
+                        # take care of multiple invocactions of the same macro
+        
+                        mpnn = 0
+                        while True:
+                            mpn = '%s_%d_start' % (name, mpnn)
+                            if not mpn in mpos1:
+                                break
+                            mpnn += 1
+
+                        mpos1['%s_%d_start' % (name, mpnn)] = len(r1)
+                        r1.extend(r3[vn])
+                        mpos1['%s_%d_end' % (name, mpnn)]   = len(r1)
+                        todo.append((parts, cnt+1, r1, mpos1))
+                        
             else:
 
                 sub_parts = tokenize(p1, lang=lang, keep_punctuation=True)
@@ -326,7 +323,7 @@ class NLPParser(object):
 
         r1 = copy(r)
 
-        for r2 in self._expand_macros(lang, txt):
+        for r2, mpos in self._expand_macros(lang, txt, lx):
 
             if bor:
                 r1.append(u"r_bor(context)")
@@ -456,7 +453,7 @@ class NLPParser(object):
         code = self._parse_code (lx, [], lang)
 
 
-        for d in self._expand_macros(lang, inp):
+        for d, mpos in self._expand_macros(lang, inp, lx):
 
             import pdb; pdb.set_trace()
 
@@ -583,7 +580,7 @@ class NLPParser(object):
 
                 line_parts = lx.cur_s.split('@')
 
-                for el, empos in self._expand_macros (lang, line_parts[0]):
+                for el, empos in self._expand_macros (lang, line_parts[0], lx):
 
                     r = {vs[0] : el}
 
@@ -632,11 +629,11 @@ class NLPParser(object):
         rounds = []
 
         while lx.cur_sym == SYM_LINE:
-            inp = self._expand_macros(lang, lx.cur_s)[0]
+            inp, mpos = self._expand_macros(lang, lx.cur_s, lx)[0]
             lx.getsym()
             if lx.cur_sym != SYM_LINE:
                 lx.report_error('test response expected.')
-            r = self._expand_macros(lang, lx.cur_s)[0]
+            r, mpos = self._expand_macros(lang, lx.cur_s, lx)[0]
             lx.getsym()
 
             # filter words vs actions

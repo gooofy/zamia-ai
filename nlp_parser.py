@@ -35,10 +35,6 @@ from nltools.tokenizer import tokenize
 from kb                import AIKB
 from rdf               import rdf
 
-LX_MODE_NORMAL   = 0
-LX_MODE_VERBATIM = 1
-LX_MODE_CODE     = 2
-
 SYM_EOF          = 0
 
 SYM_LPAREN       = 1
@@ -57,6 +53,7 @@ SYM_CONTEXT      = 13
 SYM_BEGIN        = 14
 SYM_END          = 15
 SYM_INCLUDE      = 16
+SYM_PREFIX       = 17
 
 SYM_PROC         = 20
 SYM_SET          = 21
@@ -65,6 +62,7 @@ SYM_RDF          = 23
 SYM_INLINE       = 24
 SYM_TSTART       = 25
 SYM_TEND         = 26
+SYM_SPJ          = 27
 
 class NLPLexer(object):
 
@@ -150,6 +148,10 @@ class NLPLexer(object):
                 self.cur_sym = SYM_TSTART
             elif self.cur_s == 'tend':
                 self.cur_sym = SYM_TEND
+            elif self.cur_s == 'spj':
+                self.cur_sym = SYM_SPJ
+            elif self.cur_s == 'prefix':
+                self.cur_sym = SYM_PREFIX
             else:
                 self.report_error ('unknown keyword @%s found.' % self.cur_s)
 
@@ -369,24 +371,44 @@ class NLPParser(object):
 
         return (f,v)
 
-    def _compile_expr (self, expr):
+    def _compile_expr (self, expr, mpos, lx):
 
         res = u''
 
         if expr[0] == u'tokens':
 
-            t0 = self._compile_expr(expr[1])
-            t1 = self._compile_expr(expr[2])
+            t0 = self._compile_expr(expr[1], mpos, lx)
+            t1 = self._compile_expr(expr[2], mpos, lx)
 
             res = u"context['tokens'][%s:%s]" % (t0, t1)
 
         elif expr[0] == u'tstart':
 
-            res = u'FIXME' 
+            mn = expr[1]
+            mi = expr[2] if len(expr)>2 else 0
+
+            mpn = '%s_%d_start' % (mn, mi)
+            if not mpn in mpos:
+                lx.report_error('failed to find tstart of macro %s idx %d' % (mn, mi))
+
+            res = unicode(mpos[mpn])
 
         elif expr[0] == u'tend':
 
-            res = u'FIXME' 
+            mn = expr[1]
+            mi = expr[2] if len(expr)>2 else 0
+
+            mpn = '%s_%d_end' % (mn, mi)
+            if not mpn in mpos:
+                lx.report_error('failed to find tend of macro %s idx %d' % (mn, mi))
+
+            res = unicode(mpos[mpn])
+
+        elif expr[0] == u'spj':
+
+            t = self._compile_expr(expr[1], mpos, lx)
+
+            res = u"u' '.join(%s)" % t
 
         else:
 
@@ -394,7 +416,7 @@ class NLPParser(object):
 
         return res
 
-    def _compile_code (self, code, indent=u''):
+    def _compile_code (self, code, mpos, indent, lx):
 
         pcode = []
 
@@ -406,7 +428,7 @@ class NLPParser(object):
 
                     if c[1][1] == 'user':
             
-                        t = self._compile_expr (c[2])
+                        t = self._compile_expr (c[2], mpos, lx)
 
                         pcode.append(u"%srdf_retractall (context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
                         pcode.append(u"%srdf_assert     (context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
@@ -455,9 +477,9 @@ class NLPParser(object):
 
         for d, mpos in self._expand_macros(lang, inp, lx):
 
-            import pdb; pdb.set_trace()
+            pcode = self._compile_code (code, mpos, '', lx)
 
-            pcode = self._compile_code (code)
+            import pdb; pdb.set_trace()
 
         # resps = []
         # while lx.cur_sym == SYM_LINE:
@@ -726,7 +748,10 @@ class NLPParser(object):
             lx.report_error('( expected.')
         lx.getsym()
 
-        ts = self._parse_expression(lx, args)
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('macro name expected.')
+        ts = lx.cur_s
+        lx.getsym()
 
         if lx.cur_sym != SYM_RPAREN:
             lx.report_error('@tstart: ) expected (sym %d found instead).' % lx.cur_sym)
@@ -741,13 +766,31 @@ class NLPParser(object):
             lx.report_error('( expected.')
         lx.getsym()
 
-        ts = self._parse_expression(lx, args)
+        if lx.cur_sym != SYM_NAME:
+            lx.report_error('macro name expected.')
+        ts = lx.cur_s
+        lx.getsym()
 
         if lx.cur_sym != SYM_RPAREN:
             lx.report_error('@tend: ) expected (sym %d found instead).' % lx.cur_sym)
         lx.getsym()
 
         return ('tend', ts)
+
+    def _parse_spj(self, lx, args):
+
+        lx.getsym()
+        if lx.cur_sym != SYM_LPAREN:
+            lx.report_error('@spj: ( expected.')
+        lx.getsym()
+
+        e = self._parse_expression(lx, args)
+
+        if lx.cur_sym != SYM_RPAREN:
+            lx.report_error('@spj: ) expected (sym %d found instead).' % lx.cur_sym)
+        lx.getsym()
+
+        return ('spj', e)
 
     def _parse_expression (self, lx, args):
         
@@ -761,6 +804,8 @@ class NLPParser(object):
             return self._parse_tstart(lx, args)
         elif lx.cur_sym == SYM_TEND:
             return self._parse_tend(lx, args)
+        elif lx.cur_sym == SYM_SPJ:
+            return self._parse_spj(lx, args)
         else:
             lx.report_error('expression expected, sym %d found instead.' % lx.cur_sym)
 

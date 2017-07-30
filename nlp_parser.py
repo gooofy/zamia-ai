@@ -33,7 +33,7 @@ from copy              import copy
 from nltools           import misc
 from nltools.tokenizer import tokenize
 from kb                import AIKB
-from rdf               import rdf
+from support           import rdf
 
 SYM_EOF          = 0
 
@@ -404,7 +404,7 @@ class NLPParser(object):
 
         elif expr[0] == u'rdf':
 
-            res = u"rdf_get_single('%s', '%s'" % (expr[1], expr[2])
+            res = u"rdf_get_single(kernal, '%s', '%s'" % (expr[1], expr[2])
             if expr[3]:
                 res += u", langfilter='%s'" % expr[3]
             res += u")"
@@ -413,7 +413,7 @@ class NLPParser(object):
 
             if expr[1] == 'user':
 
-                res = u"rdf_get_single(context['user'], 'ai:%s')" % (expr[2])
+                res = u"rdf_get_single(kernal, context['user'], 'ai:%s')" % (expr[2])
 
             else :
                 raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(expr))
@@ -438,8 +438,8 @@ class NLPParser(object):
 
                     if c[1][1] == 'user':
 
-                        pcode.append(u"%srdf_retractall (context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
-                        pcode.append(u"%srdf_assert     (context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
+                        pcode.append(u"%srdf_retractall (kernal, context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
+                        pcode.append(u"%srdf_assert     (kernal, context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
 
                     else :
                         raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[1]))
@@ -464,12 +464,44 @@ class NLPParser(object):
                 for part in parts:
 
                     if cnt % 2 == 1:
-                        pcode.append(u"%sr_sayv('%s')" % (indent, part))
+
+                        subparts = part.split(':')
+
+
+
+                        if len(subparts)==2:
+
+                            # implicit 'local'
+
+                            var_s = subparts[0]
+                            fmt_s = subparts[1]
+
+                        elif len(subparts)==3:
+
+                            if subparts[0] == 'user':
+                                var_s = u"rdf_get_single(kernal, context['user'], 'ai:%s')" % subparts[1]
+                            else:
+                                raise lx.report_error ('FIXME: URI scheme %s not recognized .' % repr(part))
+                            fmt_s = subparts[2]
+
+                        else:
+                            raise lx.report_error ('FIXME: variable string "%s" not recognized .' % repr(part))
+
+                        if fmt_s == 's':
+
+                            pcode.append(u"%sr_say(context, unicode(%s))" % (indent, var_s))
+
+                        elif fmt_s == 'd':
+                        
+                            pcode.append(u"%sr_say(context, unicode(int(round(float(%s)))))" % (indent, var_s))
+
+                        else:
+                            raise lx.report_error ('FIXME: unknown format character %s.' % fmt_s)
 
                     else:
 
                         for t in tokenize(part, lang=lang, keep_punctuation=True):
-                            pcode.append(u"%sr_say(u\"%s\")" % (indent, t.replace('"', "'")))
+                            pcode.append(u"%sr_say(context, u\"%s\")" % (indent, t.replace('"', "'")))
 
                     cnt += 1
 

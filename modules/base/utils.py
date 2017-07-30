@@ -149,20 +149,6 @@ def says (lang, r, txt, actions=None, bor=False):
 
     return r1
 
-def r_say (ias, s):
-
-    r = ias['resp']
-
-    if len(r)==0:
-        r.append([])
-
-    r[len(r)-1].append(s)
-
-    # print "r_say (%s) called -> %s" % (s, repr(r[len(r)-1]))
-
-def r_bor (ias):
-    ias['resp'].append([])
-
 def nlp_add_round(res, lang, question, answer):
 
     s = hears(lang, [], question)

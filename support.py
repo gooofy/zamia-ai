@@ -18,6 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#
+# all sorts of support/convenience functions to support python code generated 
+#
+
 import sys
 import datetime
 import dateutil.parser
@@ -278,4 +282,51 @@ def rdf ( kb,
     logging.debug ('rdf: res_bindings: %s' % repr(res_bindings))
 
     return res_bindings
+
+def rdf_get_single ( kernal, s, p, langfilter = None ) :
+
+    # import pdb; pdb.set_trace()
+
+    filters = []
+    if langfilter:
+        filters = [ ('=', ('lang', 'X'), langfilter) ]
+
+    res = rdf (kernal.kb, triples = [ ( s, p, 'X') ], distinct=True, filters=filters, limit=1)
+
+    if not res:
+        return None
+
+    return res[0]
+
+def r_say (context, s):
+
+    r = context['resp']
+
+    if len(r)==0:
+        r.append([])
+
+    r[len(r)-1].append(('say', s))
+
+    # print "r_say (%s) called -> %s" % (s, repr(r[len(r)-1]))
+
+def r_bor (context):
+    context['resp'].append([])
+
+def r_action (context, a):
+
+    r = context['resp']
+
+    if len(r)==0:
+        r.append([])
+
+    r[len(r)-1].append(('action', a))
+
+def r_score (context, s):
+
+    r = context['resp']
+
+    if len(r)==0:
+        r.append([])
+
+    r[len(r)-1].append(('score', s))
 

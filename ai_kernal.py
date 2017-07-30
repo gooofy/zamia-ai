@@ -57,8 +57,6 @@ TEST_USER          = USER_PREFIX + u'test'
 TEST_TIME          = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
 
-NUM_CONTEXT_ROUNDS = 3
-
 GCODE_PREAMBLE = [u"from base.utils import *",
                   u"resp=[]"]
 
@@ -337,89 +335,6 @@ class AIKernal(object):
 
         self.session.commit()
 
-    _CONTEXT_IGNORE_IAS_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevIAS', 'resp' ])
-
-    def _compute_net_input (self, cur_ias):
-
-        context = []
-        for r in range(NUM_CONTEXT_ROUNDS):
-
-            prev_ias = None
-            tokens   = None
-
-            d = {}
-
-            for k in cur_ias:
-
-                v = cur_ias[k]
-
-                if k == 'prevIAS':
-                    prev_ias = v
-                    continue
-
-                if k == 'tokens':
-                    tokens = v
-                    continue
-
-                if k in self._CONTEXT_IGNORE_IAS_KEYS:
-                    continue
-
-                d[k] = v
-
-            for t in reversed(tokens):
-                context.insert(0, t)
-            for k in sorted(d):
-                context.insert(0, d[k])
-                context.insert(0, k)
-
-            if not prev_ias:
-                break
-            cur_ias = prev_ias
-
-        return context
-
-    def _setup_ias (self, user_uri, utterance, utt_lang, tokens, prev_ias):
-
-        cur_ias = {}
-
-        if not prev_ias:
-            # find prev_ias for this user, if any
-            # FIXME: port, make efficient
-
-            # prev_ias = None
-            # for s in self.prolog_rt.search_predicate('ias', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
-
-            #     ias = s['I']
-
-            #     if not prev_ias:
-            #         prev_ias = ias
-            #         continue
-
-            #     if ias.name > prev_ias.name:
-            #         prev_ias = ias
-            pass
-
-        cur_ias['user']     = user_uri
-        cur_ias['lang']     = utt_lang
-        cur_ias['tokens']   = tokens
-        cur_ias['resp']     = []
-
-        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)
-        cur_ias['currentTime'] = currentTime
-
-        if prev_ias:
-
-            cur_ias['prevIAS'] = prev_ias
-
-            # copy over all previous statements to the new one
-
-            for k in prev_ias:
-                if k in self._CONTEXT_IGNORE_IAS_KEYS:
-                    continue
-                cur_ias[k] = prev_ias[k]
-
-        return cur_ias
-
     def compile_module (self, module_name):
 
         m = self.modules[module_name]
@@ -443,6 +358,14 @@ class AIKernal(object):
             nlp_train = getattr(m, 'nlp_train')
             train_ds.extend(nlp_train(self))
 
+        if hasattr(m, 'nlp_test'):
+
+            logging.info ('module %s python test case extraction...' % module_name)
+
+            nlp_test = getattr(m, 'nlp_test')
+            nlp_tests = nlp_test(self)
+            tests.extend(nlp_tests)
+
         if hasattr(m, 'NLP_SOURCES'):
 
             logging.info ('module %s NLP training data extraction...' % module_name)
@@ -454,33 +377,6 @@ class AIKernal(object):
                 tests.extend(ts)
 
         logging.info ('module %s training data extraction done. %d training samples, %d tests' % (module_name, len(train_ds), len(tests)))
-
-        # put training data into our DB
-
-        td_set  = set()
-        td_list = []
-
-        for utt_lang, contexts, i, resp in train_ds:
-
-            inp = copy(contexts)
-            inp.extend(i)
-
-            inp_json  = json.dumps(inp)
-            resp_json = json.dumps(resp)
-
-            utterance = u' '.join(map(lambda c: unicode(c), contexts))
-            if utterance:
-                utterance += u' '
-            utterance += u' '.join(i)
-
-            k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-            if not k in td_set:
-                td_set.add(k)
-                td_list.append(model.TrainingData(lang      = utt_lang,
-                                                  module    = module_name,
-                                                  utterance = utterance,
-                                                  inp       = inp_json,
-                                                  resp      = resp_json))
 
         # put training data into our DB
 
@@ -523,14 +419,19 @@ class AIKernal(object):
 
         td_list = []
 
-        for name, lang, rounds in tests:
+        for name, lang, prep, rounds, loc_fn, loc_line, loc_col in tests:
 
+            prep_json   = json.dumps(prep)
             rounds_json = json.dumps(rounds)
 
             td_list.append(model.TestCase(lang      = lang,
                                           module    = module_name,
                                           name      = name,
-                                          rounds    = rounds_json))
+                                          prep      = prep_json,
+                                          rounds    = rounds_json,
+                                          loc_fn    = loc_fn,
+                                          loc_line  = loc_line,
+                                          loc_col   = loc_col))
 
         logging.info ('module %s test data conversion done. %d tests.' %(module_name, len(td_list)))
 
@@ -558,212 +459,327 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def _extract_response (self, resp, cur_ias):
+    _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevContext', 'resp' ])
 
-        # prepare IAS value dict, sum up scores
-        d     = {}
-        score = 0.0
-        for k in cur_ias:
-            
-            v = cur_ias[k]
+    def _compute_net_input (self, cur_context):
 
-            if k == 'score':
-                score += v.f
+        inp = []
+
+        d = {}
+
+        for k in cur_context:
+
+            v = cur_context[k]
+
+            if k == 'prevContext':
+                prev_context = v
                 continue
 
-            d[k] = unicode(v)
+            if k == 'tokens':
+                tokens = v
+                continue
+
+            if k in self._IGNORE_CONTEXT_KEYS:
+                continue
+
+            d[k] = v
+
+        for t in reversed(tokens):
+            inp.insert(0, t)
+
+        for k in sorted(d):
+            inp.insert(0, d[k])
+            inp.insert(0, k)
+
+        return inp
+
+    def _setup_context (self, user_uri, lang, inp, prev_context):
+
+        cur_context = {}
+
+        if not prev_context:
+            # find prev_context for this user, if any
+            # FIXME: port, make efficient
+
+            # prev_context = None
+            # for s in self.prolog_rt.search_predicate('context', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
+
+            #     context = s['I']
+
+            #     if not prev_context:
+            #         prev_context = context
+            #         continue
+
+            #     if context.name > prev_context.name:
+            #         prev_context = context
+            pass
+
+        cur_context['user']     = user_uri
+        cur_context['lang']     = lang
+        cur_context['tokens']   = inp
+        cur_context['resp']     = []
+
+        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)
+        cur_context['currentTime'] = currentTime
+
+        if prev_context:
+
+            cur_context['prevContext'] = prev_context
+
+            # copy over all previous statements to the new one
+
+            for k in prev_context:
+                if k in self._CONTEXT_IGNORE_KEYS:
+                    continue
+                cur_context[k] = prev_context[k]
+
+        return cur_context
+
+    # def _extract_response (self, resp, cur_ias):
+
+    #     # prepare IAS value dict, sum up scores
+    #     d     = {}
+    #     score = 0.0
+    #     for k in cur_ias:
+    #         
+    #         v = cur_ias[k]
+
+    #         if k == 'score':
+    #             score += v.f
+    #             continue
+
+    #         d[k] = unicode(v)
 
 
-        utterance = u''
-        utt_lang  = u'en'
-        actions   = []
+    #     utterance = u''
+    #     utt_lang  = u'en'
+    #     actions   = []
 
-        for r in resp:
-            if r[0] == 'say':
-                l          = r[1]
-                word       = r[2]
-                if len(utterance)>0:
-                    utterance += u' '
-                utterance += word
-                utt_lang   = l
+    #     for r in resp:
+    #         if r[0] == 'say':
+    #             l          = r[1]
+    #             word       = r[2]
+    #             if len(utterance)>0:
+    #                 utterance += u' '
+    #             utterance += word
+    #             utt_lang   = l
 
-            elif r[0] == 'sayv':
-                if len(utterance)>0:
-                    utterance += u' '
+    #         elif r[0] == 'sayv':
+    #             if len(utterance)>0:
+    #                 utterance += u' '
 
-                l  = r[1]
-                vn = r[2]
-                fc = r[3]
-                if vn in d:
-                    if fc == 'd':
-                        utterance += unicode(int(round(float(d[vn]))))
-                    else:
-                        utterance += unicode(d[vn])
-                else:
-                    utterance += u'???'
+    #             l  = r[1]
+    #             vn = r[2]
+    #             fc = r[3]
+    #             if vn in d:
+    #                 if fc == 'd':
+    #                     utterance += unicode(int(round(float(d[vn]))))
+    #                 else:
+    #                     utterance += unicode(d[vn])
+    #             else:
+    #                 utterance += u'???'
 
-                utt_lang   = l
-                # utterance += d[vn] if vn in d else u'???'
+    #             utt_lang   = l
+    #             # utterance += d[vn] if vn in d else u'???'
 
-            else:
-                actions.append(r)
-                               
-        return utterance, utt_lang, actions, score
+    #         else:
+    #             actions.append(r)
+    #                            
+    #     return utterance, utt_lang, actions, score
 
 
-    def test_module (self, module_name, trace=False, test_name=None):
+    def test_module (self, module_name, test_name=None):
 
         m = self.modules[module_name]
 
-        if hasattr(m, 'nlp_test'):
+        logging.info('running tests of module %s ...' % (module_name))
 
-            logging.info('extracting tests of module %s ...' % (module_name))
+        for tc in self.session.query(model.TestCase).filter(model.TestCase.module==module_name):
 
-            nlp_test = getattr(m, 'nlp_test')
-            nlp_tests = nlp_test(self)
+            if test_name:
+                if tc.name != test_name:
+                    logging.info ('skipping test %s' % name)
+                    continue
 
-            if len(nlp_tests)==0:
-                logging.warn('module %s has no tests.' % module_name)
-                return
+            rounds = json.loads(tc.rounds)
 
-            logging.info('running %d tests of module %s ...' % (len(nlp_tests), module_name))
+            round_num    = 0
+            prev_context = None
 
-            for utt_lang, name, prep, data in nlp_tests:
+            for test_in, test_out, test_actions in rounds:
+                
+                logging.info("nlp_test: %s round %d test_in     : %s" % (tc.name, round_num, repr(test_in)) )
+                logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
+                logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
 
-                if test_name:
-                    if name != test_name:
-                        logging.info ('skipping test %s' % name)
-                        continue
+                cur_context = self._setup_context ( user_uri      = TEST_USER, 
+                                                    lang          = tc.lang, 
+                                                    inp           = test_in,
+                                                    prev_context  = prev_context)
+                env_locals = {
+                              'context': cur_context,
+                              'kernal' : self        
+                             }
 
-                if len(data) % 3 != 0:
-                    raise Exception ('Error: test data length has to be multiple of 3!')
+                # prep
 
-                context   = []
-                prev_ias  = None
-                round_num = 0
+                if tc.prep:
+                    exec u'\n'.join(tc.prep) in env_locals
 
-                while len(data)>round_num*3:
+                # inp / resp
 
-                    # if round_num>0:
-                    #     import pdb; pdb.set_trace()
+                inp = self._compute_net_input (env_locals['context'])
 
-                    test_in      = u' '.join(tokenize(data[round_num*3], lang=utt_lang))
-                    test_out     = u' '.join(tokenize(data[round_num*3+1], lang=utt_lang))
-                    test_actions = data[round_num*3+2]
+                # look up code in DB
 
-                    logging.info("nlp_test: %s round %d test_in     : %s" % (name, round_num, test_in) )
-                    logging.info("nlp_test: %s round %d test_out    : %s" % (name, round_num, test_out) )
-                    logging.info("nlp_test: %s round %d test_actions: %s" % (name, round_num, test_actions) )
+                resp = None
+                matching_resp = False
+                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == tc.lang,
+                                                                         model.TrainingData.inp   == json.dumps(inp)):
+                    if resp:
+                        logging.warn (u'%s: more than one resp for test_in "%s" found in DB!' % (name, test_in))
 
-                    tokens  = tokenize(test_in, utt_lang)
+                    resp = json.loads (tdr.resp)
 
-                    cur_ias = self._setup_ias ( user_uri  = TEST_USER, 
-                                                utterance = test_in, 
-                                                utt_lang  = utt_lang, 
-                                                tokens    = tokens,
-                                                prev_ias  = prev_ias)
+                    jresp = u'\n'.join(resp)
 
-                    env_locals = {'ias': cur_ias}
-                    if prep:
-                        exec u'\n'.join(prep) in env_locals
+                    print jresp
 
-                    # gcode input
+                    exec jresp in env_locals
 
-                    inp = self._compute_net_input (env_locals['ias'])
+                round_num += 1
 
-                    # look up g-code in DB
+                import pdb; pdb.set_trace()
 
-                    gcode = None
-                    matching_resp = False
-                    for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                             model.TrainingData.layer == 0,
-                                                                             model.TrainingData.inp   == json.dumps(inp)):
-                        if gcode:
-                            logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (name, test_in))
 
-                        gcode = json.loads (tdr.resp)
+            #     if len(data) % 3 != 0:
+            #         raise Exception ('Error: test data length has to be multiple of 3!')
 
-                        env_l = {'ias'   : deepcopy(cur_ias),
-                                 'kernal': self}
+            #     context   = []
+            #     prev_ias  = None
+            #     round_num = 0
 
-                        exec u'\n'.join(gcode) in env_l
+            #     while len(data)>round_num*3:
+
+            #         # if round_num>0:
+
+            #         test_in      = u' '.join(tokenize(data[round_num*3], lang=utt_lang))
+            #         test_out     = u' '.join(tokenize(data[round_num*3+1], lang=utt_lang))
+            #         test_actions = data[round_num*3+2]
+
+            #         logging.info("nlp_test: %s round %d test_in     : %s" % (name, round_num, test_in) )
+            #         logging.info("nlp_test: %s round %d test_out    : %s" % (name, round_num, test_out) )
+            #         logging.info("nlp_test: %s round %d test_actions: %s" % (name, round_num, test_actions) )
+
+            #         tokens  = tokenize(test_in, utt_lang)
+
+            #         cur_ias = self._setup_ias ( user_uri  = TEST_USER, 
+            #                                     utterance = test_in, 
+            #                                     utt_lang  = utt_lang, 
+            #                                     tokens    = tokens,
+            #                                     prev_ias  = prev_ias)
+
+            #         env_locals = {'ias': cur_ias}
+            #         if prep:
+            #             exec u'\n'.join(prep) in env_locals
+
+            #         # gcode input
+
+            #         inp = self._compute_net_input (env_locals['ias'])
+
+            #         # look up g-code in DB
+
+            #         gcode = None
+            #         matching_resp = False
+            #         for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+            #                                                                  model.TrainingData.layer == 0,
+            #                                                                  model.TrainingData.inp   == json.dumps(inp)):
+            #             if gcode:
+            #                 logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (name, test_in))
+
+            #             gcode = json.loads (tdr.resp)
+
+            #             env_l = {'ias'   : deepcopy(cur_ias),
+            #                      'kernal': self}
+
+            #             exec u'\n'.join(gcode) in env_l
         
-                        # rcode input
+            #             # rcode input
 
-                        inp = self._compute_net_input (env_l['ias'])
+            #             inp = self._compute_net_input (env_l['ias'])
 
-                        # look up response(s) in DB
+            #             # look up response(s) in DB
 
-                        response      = None
+            #             response      = None
 
-                        for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-                                                                                 model.TrainingData.layer == 1,
-                                                                                 model.TrainingData.inp   == json.dumps(inp)):
+            #             for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+            #                                                                      model.TrainingData.layer == 1,
+            #                                                                      model.TrainingData.inp   == json.dumps(inp)):
 
-                            response = json.loads (tdr.resp)
+            #                 response = json.loads (tdr.resp)
 
-                            # import pdb; pdb.set_trace()
+            #                 # import pdb; pdb.set_trace()
 
-                            actual_out, actual_lang, actual_actions, score = self._extract_response (response, env_l['ias'])
+            #                 actual_out, actual_lang, actual_actions, score = self._extract_response (response, env_l['ias'])
 
-                            # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+            #                 # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                            if len(test_out) > 0:
-                                if len(actual_out)>0:
-                                    actual_out = u' '.join(tokenize(actual_out, utt_lang))
-                                logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (name, round_num, actual_out, score) )
-                                if actual_out != test_out:
-                                    logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (name, round_num))
-                                    continue # no match
+            #                 if len(test_out) > 0:
+            #                     if len(actual_out)>0:
+            #                         actual_out = u' '.join(tokenize(actual_out, utt_lang))
+            #                     logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (name, round_num, actual_out, score) )
+            #                     if actual_out != test_out:
+            #                         logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (name, round_num))
+            #                         continue # no match
 
-                            logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (name, round_num))
+            #                 logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (name, round_num))
 
-                            # check actions
+            #                 # check actions
 
-                            if len(test_actions)>0:
+            #                 if len(test_actions)>0:
 
-                                # print repr(test_actions)
+            #                     # print repr(test_actions)
 
-                                #import pdb; pdb.set_trace()
-                                actions_matched = True
-                                for action in test_actions:
-                                    for act in actual_actions:
-                                        # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                        if action == act:
-                                            break
-                                    if action != act:
-                                        actions_matched = False
-                                        break
+            #                     #import pdb; pdb.set_trace()
+            #                     actions_matched = True
+            #                     for action in test_actions:
+            #                         for act in actual_actions:
+            #                             # print "    check action match: %s vs %s" % (repr(action), repr(act))
+            #                             if action == act:
+            #                                 break
+            #                         if action != act:
+            #                             actions_matched = False
+            #                             break
 
-                                if not actions_matched:
-                                    logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (name, round_num))
-                                    continue
+            #                     if not actions_matched:
+            #                         logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (name, round_num))
+            #                         continue
 
-                                logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (name, round_num))
+            #                     logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (name, round_num))
 
-                            matching_resp = True
+            #                 matching_resp = True
 
-                            prev_ias = env_l['ias']
+            #                 prev_ias = env_l['ias']
 
-                            break
+            #                 break
 
-                        if matching_resp:
-                            break
+            #             if matching_resp:
+            #                 break
 
-                    if gcode is None:
-                        logging.error('failed to find layer 0 db entry for %s' % json.dumps(inp))
-                        logging.error (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
-                        break
+            #         if gcode is None:
+            #             logging.error('failed to find layer 0 db entry for %s' % json.dumps(inp))
+            #             logging.error (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
+            #             break
 
-                    if not response:
-                        logging.error (u'Error: %s: no layer1 training data for inp %s found in DB!' % (name, repr(inp)))
-                        break
-                    
-                    if not matching_resp:
-                        logging.error (u'nlp_test: %s round %d no matching response found.' % (name, round_num))
-                        break
-                           
-                    round_num += 1
+            #         if not response:
+            #             logging.error (u'Error: %s: no layer1 training data for inp %s found in DB!' % (name, repr(inp)))
+            #             break
+            #         
+            #         if not matching_resp:
+            #             logging.error (u'nlp_test: %s round %d no matching response found.' % (name, round_num))
+            #             break
+            #                
+            #         round_num += 1
 
     def run_tests_multi (self, module_names, test_name=None):
 
@@ -782,187 +798,187 @@ class AIKernal(object):
                 self.test_module (module_name, test_name=test_name)
 
     # FIXME: old code, needs to be ported or removed
-    def process_input (self, utterance, utt_lang, user_uri, test_mode=False):
+    # def process_input (self, utterance, utt_lang, user_uri, test_mode=False):
 
-        """ process user input, return action(s) """
+    #     """ process user input, return action(s) """
 
-        # FIXME
-        prev_ias = None
+    #     # FIXME
+    #     prev_ias = None
 
-        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+    #     gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
-        tokens  = tokenize(utterance, utt_lang)
+    #     tokens  = tokenize(utterance, utt_lang)
 
-        cur_ias = self._setup_ias ( user_uri  = user_uri, 
-                                    utterance = utterance, 
-                                    utt_lang  = utt_lang, 
-                                    tokens    = tokens,
-                                    prev_ias  = prev_ias)
+    #     cur_ias = self._setup_ias ( user_uri  = user_uri, 
+    #                                 utterance = utterance, 
+    #                                 utt_lang  = utt_lang, 
+    #                                 tokens    = tokens,
+    #                                 prev_ias  = prev_ias)
 
-        env_locals = {'ias': cur_ias}
+    #     env_locals = {'ias': cur_ias}
 
-        # gcode input
+    #     # gcode input
 
-        inp = self._compute_net_input (env_locals['ias'])
+    #     inp = self._compute_net_input (env_locals['ias'])
 
-        x = self.nlp_model.compute_x(inp)
+    #     x = self.nlp_model.compute_x(inp)
 
-        logging.debug("x: %s -> %s" % (utterance, x))
+    #     logging.debug("x: %s -> %s" % (utterance, x))
 
-        source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+    #     source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
 
-        # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
-        # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
-        predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
-                                              encoder_inputs_length=source_len)
+    #     # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
+    #     # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
+    #     predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
+    #                                           encoder_inputs_length=source_len)
 
-        for seq_batch in predicted_ids:
-            for k in range(5):
-                logging.debug('--------- k: %d ----------' % k)
-                seq = seq_batch[:,k]
-                for p in seq:
-                    if p == -1:
-                        break
-                    decoded = self.inv_output_dict[p]
-                    logging.debug (u'%s: %s' %(p, decoded))
+    #     for seq_batch in predicted_ids:
+    #         for k in range(5):
+    #             logging.debug('--------- k: %d ----------' % k)
+    #             seq = seq_batch[:,k]
+    #             for p in seq:
+    #                 if p == -1:
+    #                     break
+    #                 decoded = self.inv_output_dict[p]
+    #                 logging.debug (u'%s: %s' %(p, decoded))
 
-        import pdb; pdb.set_trace()
+    #     import pdb; pdb.set_trace()
 
 
-        ## preds = map (lambda o: , outputs)
+    #     ## preds = map (lambda o: , outputs)
 
-        ## # get output logits for the sentence
-        ## _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+    #     ## # get output logits for the sentence
+    #     ## _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
 
-        ## logging.debug("output_logits: %s" % repr(output_logits))
+    #     ## logging.debug("output_logits: %s" % repr(output_logits))
 
-        ## # this is a greedy decoder - outputs are just argmaxes of output_logits.
-        ## outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
+    #     ## # this is a greedy decoder - outputs are just argmaxes of output_logits.
+    #     ## outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
 
-        ## # print "outputs", outputs
+    #     ## # print "outputs", outputs
 
-        ## preds = map (lambda o: self.inv_output_dict[o], outputs)
-        ## logging.debug("preds: %s" % repr(preds))
+    #     ## preds = map (lambda o: self.inv_output_dict[o], outputs)
+    #     ## logging.debug("preds: %s" % repr(preds))
 
 
 
-        # tokens = tokenize(utterance, utt_lang)
+    #     # tokens = tokenize(utterance, utt_lang)
 
-        # if ENABLE_HAL_PREFIX_HACK:
-        #     if tokens[0] == u'hal':
-        #         del tokens[0]
+    #     # if ENABLE_HAL_PREFIX_HACK:
+    #     #     if tokens[0] == u'hal':
+    #     #         del tokens[0]
 
-        # #
-        # # provide utterance related data via db overlay/environment
-        # #
+    #     # #
+    #     # # provide utterance related data via db overlay/environment
+    #     # #
 
-        # sl = SourceLocation('<input>', 0, 0)
+    #     # sl = SourceLocation('<input>', 0, 0)
 
-        # cur_ias, env = self._setup_ias(sl, test_mode, user_uri, utterance, utt_lang, tokens, None, {})
+    #     # cur_ias, env = self._setup_ias(sl, test_mode, user_uri, utterance, utt_lang, tokens, None, {})
 
-        # prolog_s = []
-        # if test_mode:
+    #     # prolog_s = []
+    #     # if test_mode:
 
-        #     for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
-        #                                                                  model.DiscourseRound.lang==utt_lang):
-        #         prolog_s.append(u','.join(dr.resp.split(';')))
+    #     #     for dr in self.db.session.query(model.DiscourseRound).filter(model.DiscourseRound.inp==utterance, 
+    #     #                                                                  model.DiscourseRound.lang==utt_lang):
+    #     #         prolog_s.append(u','.join(dr.resp.split(';')))
 
-        #     logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), repr(prolog_s)) )
-        #         
-        #     if not prolog_s:
-        #         logging.error('test utterance %s not found!' % utterance)
-        #         return []
+    #     #     logging.debug("test tokens=%s prolog_s=%s" % (repr(tokens), repr(prolog_s)) )
+    #     #         
+    #     #     if not prolog_s:
+    #     #         logging.error('test utterance %s not found!' % utterance)
+    #     #         return []
 
-        # else:
+    #     # else:
 
-        #     x = self.nlp_model.compute_x(utterance)
+    #     #     x = self.nlp_model.compute_x(utterance)
 
-        #     logging.debug("x: %s -> %s" % (utterance, x))
+    #     #     logging.debug("x: %s -> %s" % (utterance, x))
 
-        #     # which bucket does it belong to?
-        #     bucket_id = min([b for b in xrange(len(self.nlp_model.buckets)) if self.nlp_model.buckets[b][0] > len(x)])
+    #     #     # which bucket does it belong to?
+    #     #     bucket_id = min([b for b in xrange(len(self.nlp_model.buckets)) if self.nlp_model.buckets[b][0] > len(x)])
 
-        #     # get a 1-element batch to feed the sentence to the model
-        #     encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
+    #     #     # get a 1-element batch to feed the sentence to the model
+    #     #     encoder_inputs, decoder_inputs, target_weights = self.tf_model.get_batch( {bucket_id: [(x, [])]}, bucket_id )
 
-        #     # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
+    #     #     # print "encoder_inputs, decoder_inputs, target_weights", encoder_inputs, decoder_inputs, target_weights
 
-        #     # get output logits for the sentence
-        #     _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
+    #     #     # get output logits for the sentence
+    #     #     _, _, output_logits = self.tf_model.step(self.tf_session, encoder_inputs, decoder_inputs, target_weights, bucket_id, True)
 
-        #     logging.debug("output_logits: %s" % repr(output_logits))
+    #     #     logging.debug("output_logits: %s" % repr(output_logits))
 
-        #     # this is a greedy decoder - outputs are just argmaxes of output_logits.
-        #     outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
+    #     #     # this is a greedy decoder - outputs are just argmaxes of output_logits.
+    #     #     outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
 
-        #     # print "outputs", outputs
+    #     #     # print "outputs", outputs
 
-        #     preds = map (lambda o: self.inv_output_dict[o], outputs)
-        #     logging.debug("preds: %s" % repr(preds))
+    #     #     preds = map (lambda o: self.inv_output_dict[o], outputs)
+    #     #     logging.debug("preds: %s" % repr(preds))
 
-        #     # FIXME: handle ;;
-        #     prolog_s = ''
+    #     #     # FIXME: handle ;;
+    #     #     prolog_s = ''
 
-        #     do_and = True
+    #     #     do_and = True
 
-        #     for p in preds:
+    #     #     for p in preds:
 
-        #         if p[0] == '_':
-        #             continue # skip _EOS
+    #     #         if p[0] == '_':
+    #     #             continue # skip _EOS
 
-        #         if p == u'or':
-        #             do_and = False
-        #             continue
+    #     #         if p == u'or':
+    #     #             do_and = False
+    #     #             continue
 
-        #         if len(prolog_s)>0:
-        #             if do_and:
-        #                 prolog_s += ', '
-        #             else:
-        #                 prolog_s += '; '
-        #         prolog_s += p
+    #     #         if len(prolog_s)>0:
+    #     #             if do_and:
+    #     #                 prolog_s += ', '
+    #     #             else:
+    #     #                 prolog_s += '; '
+    #     #         prolog_s += p
 
-        #         do_and = True
+    #     #         do_and = True
 
-        #     logging.debug('?- %s' % prolog_s)
+    #     #     logging.debug('?- %s' % prolog_s)
 
-        # abufs = []
+    #     # abufs = []
 
-        # for ps in prolog_s:
+    #     # for ps in prolog_s:
 
-        #     c = self.parser.parse_line_clause_body(ps)
-        #     # logging.debug( "Parse result: %s" % c)
+    #     #     c = self.parser.parse_line_clause_body(ps)
+    #     #     # logging.debug( "Parse result: %s" % c)
 
-        #     # logging.debug( "Searching for c: %s" % c )
+    #     #     # logging.debug( "Searching for c: %s" % c )
 
-        #     solutions = self.prolog_rt.search(c, env=env)
+    #     #     solutions = self.prolog_rt.search(c, env=env)
 
-        #     # if len(solutions) == 0:
-        #     #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
+    #     #     # if len(solutions) == 0:
+    #     #     #     raise PrologError ('nlp_test: %s no solution found.' % clause.location)
 
-        #     # extract action buffers from overlay variable in solutions:
+    #     #     # extract action buffers from overlay variable in solutions:
 
-        #     for solution in solutions:
+    #     #     for solution in solutions:
 
-        #         overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
-        #         if not overlay:
-        #             continue
+    #     #         overlay = solution.get(ASSERT_OVERLAY_VAR_NAME)
+    #     #         if not overlay:
+    #     #             continue
 
-        #         actions = []
-        #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-        #             actions.append(s['A'])
+    #     #         actions = []
+    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+    #     #             actions.append(s['A'])
 
-        #         score = 0.0
-        #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-        #             score += s['S'].f
+    #     #         score = 0.0
+    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+    #     #             score += s['S'].f
 
-        #         # ias = overlay.get('ias')
+    #     #         # ias = overlay.get('ias')
 
-        #         # scores  = overlay.get('score')
-        #         # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
-        #        
-        #         abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
+    #     #         # scores  = overlay.get('score')
+    #     #         # score = reduce(lambda a,b: a+b, scores) if scores else 0.0
+    #     #        
+    #     #         abufs.append({'actions': actions, 'score': score, 'overlay': overlay})
 
-        return abufs
+    #     return abufs
 
     def do_eliza (self, utterance, utt_lang, trace=False):
 

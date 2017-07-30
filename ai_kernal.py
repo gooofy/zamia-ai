@@ -49,6 +49,7 @@ from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize
 from nlp_parser           import NLPParser
+from support              import rdf_get_single, r_say, r_bor, r_action, r_score
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
@@ -529,63 +530,40 @@ class AIKernal(object):
             # copy over all previous statements to the new one
 
             for k in prev_context:
-                if k in self._CONTEXT_IGNORE_KEYS:
+                if k in self._IGNORE_CONTEXT_KEYS:
                     continue
                 cur_context[k] = prev_context[k]
 
         return cur_context
 
-    # def _extract_response (self, resp, cur_ias):
+    def _extract_responses (self, cur_context):
 
-    #     # prepare IAS value dict, sum up scores
-    #     d     = {}
-    #     score = 0.0
-    #     for k in cur_ias:
-    #         
-    #         v = cur_ias[k]
+        # import pdb; pdb.set_trace()
 
-    #         if k == 'score':
-    #             score += v.f
-    #             continue
+        resps = []
 
-    #         d[k] = unicode(v)
+        for resp in cur_context['resp']:
 
+            res       = []
+            actions   = []
+            score     = 0.0
 
-    #     utterance = u''
-    #     utt_lang  = u'en'
-    #     actions   = []
+            for r in resp:
+                if r[0] == 'say':
+                    res.append(r[1])
 
-    #     for r in resp:
-    #         if r[0] == 'say':
-    #             l          = r[1]
-    #             word       = r[2]
-    #             if len(utterance)>0:
-    #                 utterance += u' '
-    #             utterance += word
-    #             utt_lang   = l
+                elif r[0] == 'score':
+                    score += r[1]
 
-    #         elif r[0] == 'sayv':
-    #             if len(utterance)>0:
-    #                 utterance += u' '
+                elif r[0] == 'action':
+                    actions.append(r[1])
 
-    #             l  = r[1]
-    #             vn = r[2]
-    #             fc = r[3]
-    #             if vn in d:
-    #                 if fc == 'd':
-    #                     utterance += unicode(int(round(float(d[vn]))))
-    #                 else:
-    #                     utterance += unicode(d[vn])
-    #             else:
-    #                 utterance += u'???'
+                else:
+                    raise Exception ("Error: invalid response token encountered: %s" % repr(r))
+                    
+            resps.append((res, actions, score))
 
-    #             utt_lang   = l
-    #             # utterance += d[vn] if vn in d else u'???'
-
-    #         else:
-    #             actions.append(r)
-    #                            
-    #     return utterance, utt_lang, actions, score
+        return resps
 
 
     def test_module (self, module_name, test_name=None):
@@ -606,19 +584,27 @@ class AIKernal(object):
             round_num    = 0
             prev_context = None
 
-            for test_in, test_out, test_actions in rounds:
-                
+            for t_in, t_out, test_actions in rounds:
+               
+                test_in  = u' '.join(t_in)
+                test_out = u' '.join(t_out)
+
                 logging.info("nlp_test: %s round %d test_in     : %s" % (tc.name, round_num, repr(test_in)) )
                 logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
                 logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
 
                 cur_context = self._setup_context ( user_uri      = TEST_USER, 
                                                     lang          = tc.lang, 
-                                                    inp           = test_in,
+                                                    inp           = t_in,
                                                     prev_context  = prev_context)
                 env_locals = {
-                              'context': cur_context,
-                              'kernal' : self        
+                              'context'        : cur_context,
+                              'kernal'         : self,
+                              'rdf_get_single' : rdf_get_single,
+                              'r_say'          : r_say,
+                              'r_bor'          : r_bor,
+                              'r_action'       : r_action,
+                              'r_score'        : r_score,
                              }
 
                 # prep
@@ -632,7 +618,7 @@ class AIKernal(object):
 
                 # look up code in DB
 
-                resp = None
+                resp          = None
                 matching_resp = False
                 for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == tc.lang,
                                                                          model.TrainingData.inp   == json.dumps(inp)):
@@ -643,9 +629,62 @@ class AIKernal(object):
 
                     jresp = u'\n'.join(resp)
 
-                    print jresp
+                    # print jresp
 
                     exec jresp in env_locals
+
+                    for actual_out, actions, score in self._extract_responses (env_locals['context']):
+
+                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+
+                        if len(test_out) > 0:
+                            if len(actual_out)>0:
+                                actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
+                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
+                            if actual_out != test_out:
+                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
+                                continue # no match
+
+                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
+
+                        # check actions
+
+                        if len(test_actions)>0:
+
+                            # print repr(test_actions)
+
+                            #import pdb; pdb.set_trace()
+                            actions_matched = True
+                            for action in test_actions:
+                                for act in actual_actions:
+                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                    if action == act:
+                                        break
+                                if action != act:
+                                    actions_matched = False
+                                    break
+
+                            if not actions_matched:
+                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
+                                continue
+
+                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
+
+                        matching_resp = True
+
+                    prev_context = env_locals['context']
+
+                    if matching_resp:
+                        break
+
+                if resp is None:
+                    logging.error('failed to find db entry for %s' % json.dumps(inp))
+                    logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
+                    break
+
+                if not matching_resp:
+                    logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
+                    break
 
                 round_num += 1
 

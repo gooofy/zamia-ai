@@ -427,6 +427,7 @@ class AIKernal(object):
         # delete old NLP training data
 
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+        self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
 
         # extract new training data for this module
 

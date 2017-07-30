@@ -250,7 +250,7 @@ class NLPParser(object):
 
                 implicit_macros[macro_name] = []
                 for s in macro_s.split('|'):
-                    sub_parts = tokenize(s, lang=lang, keep_punctuation=True)
+                    sub_parts = tokenize(s, lang=lang, keep_punctuation=False)
                     implicit_macros[macro_name].append({'W': sub_parts})
 
                 txt2 += '{' + macro_name + ':W}'
@@ -324,7 +324,7 @@ class NLPParser(object):
                         
             else:
 
-                sub_parts = tokenize(p1, lang=lang, keep_punctuation=True)
+                sub_parts = tokenize(p1, lang=lang, keep_punctuation=False)
 
                 r  = copy(r)
                 r.extend(sub_parts)
@@ -528,13 +528,9 @@ class NLPParser(object):
 
             r = self._compile_code (code, mpos, '', lx, lang)
 
-            # get rid of punctuation for the input, prepend context
-            utt = u' '.join(d)
-            u = tokenize(utt, lang=lang, keep_punctuation=False)
+            logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
-            logging.debug( '%s -> %s' % (repr(u), repr(r)))
-
-            self.ds.append((lang, contexts, u, r))
+            self.ds.append((lang, contexts, d, r))
 
     def _parse_begin(self, lx):
 
@@ -623,8 +619,6 @@ class NLPParser(object):
 
             while lx.cur_sym == SYM_LINE:
 
-            # while self.cur_line and (self.cur_line[0] != '@'):
-
                 line_parts = lx.cur_s.split('@')
 
                 for el, empos in self._expand_macros (lang, line_parts[0], lx):
@@ -650,6 +644,10 @@ class NLPParser(object):
 
     def _parse_test(self, lx):
 
+        loc_fn   = lx.inputf.name
+        loc_line = lx.linecnt
+        loc_col  = 0
+
         lx.getsym()
         if lx.cur_sym != SYM_LPAREN:
             lx.report_error('( expected.')
@@ -673,14 +671,19 @@ class NLPParser(object):
             lx.report_error('@test: ) expected (sym %d found instead).' % lx.cur_sym)
         lx.getsym()
 
+        prep = []
+        if lx.cur_sym == SYM_BEGIN:
+            prep = self._parse_begin(lx)
+
         rounds = []
 
         while lx.cur_sym == SYM_LINE:
             inp, mpos = self._expand_macros(lang, lx.cur_s, lx)[0]
             lx.getsym()
+
             if lx.cur_sym != SYM_LINE:
                 lx.report_error('test response expected.')
-            r, mpos = self._expand_macros(lang, lx.cur_s, lx)[0]
+            r = tokenize(lx.cur_s, lang=lang, keep_punctuation=False)
             lx.getsym()
 
             # filter words vs actions
@@ -692,10 +695,9 @@ class NLPParser(object):
                 else:
                     actions.append(rs)
             
-
             rounds.append((inp, resp, actions))
 
-        self.tests.append((name, lang, rounds))
+        self.tests.append((name, lang, prep, rounds, loc_fn, loc_line, loc_col))
 
         logging.debug ('added test: %s' % repr(rounds))
   

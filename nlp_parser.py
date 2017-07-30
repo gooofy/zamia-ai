@@ -64,6 +64,9 @@ SYM_TSTART       = 25
 SYM_TEND         = 26
 SYM_SPJ          = 27
 SYM_ACTION       = 28
+SYM_IF           = 29
+SYM_ELSE         = 30
+SYM_ENDIF        = 31
 
 class NLPLexer(object):
 
@@ -155,6 +158,12 @@ class NLPLexer(object):
                 self.cur_sym = SYM_PREFIX
             elif self.cur_s == 'action':
                 self.cur_sym = SYM_ACTION
+            elif self.cur_s == 'if':
+                self.cur_sym = SYM_IF
+            elif self.cur_s == 'else':
+                self.cur_sym = SYM_ELSE
+            elif self.cur_s == 'endif':
+                self.cur_sym = SYM_ENDIF
             else:
                 self.report_error ('unknown keyword @%s found.' % self.cur_s)
 
@@ -400,6 +409,15 @@ class NLPParser(object):
                 res += u", langfilter='%s'" % expr[3]
             res += u")"
 
+        elif expr[0] == 'ref':
+
+            if expr[1] == 'user':
+
+                res = u"rdf_get_single(context['user'], 'ai:%s')" % (expr[2])
+
+            else :
+                raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(expr))
+
         else:
 
             raise Exception ('FIXME: expr node type %s not implemented yet.' % repr(expr[0]))
@@ -424,7 +442,7 @@ class NLPParser(object):
                         pcode.append(u"%srdf_assert     (context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
 
                     else :
-                        raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[2]))
+                        raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[1]))
 
                 elif c[1][0] == 'local':
 
@@ -460,6 +478,18 @@ class NLPParser(object):
                 s = u"%sr_action(%s)" % (indent, repr(list(c[1:])))
 
                 pcode.append(s)
+
+            elif c[0] == 'if':
+
+                t = self._compile_expr (c[1], mpos, lx)
+
+                pcode.append(u"%sif %s :" % (indent, t))
+
+                pcode.extend(self._compile_code (c[2], mpos, indent + '    ', lx, lang))
+
+                if c[3]:
+                    pcode.append(u"%selse:" % indent)
+                pcode.extend(self._compile_code (c[3], mpos, indent + '    ', lx, lang))
 
             else:
                 raise Exception ('FIXME: command %s not implemented yet.' % repr(c[0]))
@@ -884,6 +914,25 @@ class NLPParser(object):
 
             elif lx.cur_sym == SYM_ACTION:
                 code.append(self._parse_action(lx, args))
+
+            elif lx.cur_sym == SYM_IF:
+                lx.getsym()
+
+                cond = self._parse_expression(lx, args)
+
+                t = self._parse_code(lx, args, lang)
+
+                if lx.cur_sym == SYM_ELSE:
+                    lx.getsym()
+                    e = self._parse_code(lx, args, lang)
+                else:
+                    e = None
+
+                if lx.cur_sym != SYM_ENDIF:
+                    lx.report_error('@endif expected')
+                lx.getsym()
+
+                code.append(('if', cond, t, e))
 
             elif lx.cur_sym == SYM_INLINE:
                 lx.getsym()

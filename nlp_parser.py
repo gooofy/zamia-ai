@@ -438,8 +438,7 @@ class NLPParser(object):
 
                     if c[1][1] == 'user':
 
-                        pcode.append(u"%srdf_retractall (kernal, context['user_uri'], 'ai:%s')" % (indent, c[1][2]))
-                        pcode.append(u"%srdf_assert     (kernal, context['user_uri'], 'ai:%s', %s)" % (indent, c[1][2], t))
+                        pcode.append(u"%srdf_set (kernal, context['user'], 'ai:%s', %s)" % (indent, c[1][2], t))
 
                     else :
                         raise Exception ('FIXME: URI scheme %s not implemented yet.' % repr(c[1]))
@@ -507,7 +506,7 @@ class NLPParser(object):
 
             elif c[0] == 'action':
 
-                s = u"%sr_action(%s)" % (indent, repr(list(c[1:])))
+                s = u"%sr_action(kernal, %s)" % (indent, repr(list(c[1:])))
 
                 pcode.append(s)
 

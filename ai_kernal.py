@@ -49,7 +49,7 @@ from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize
 from nlp_parser           import NLPParser
-from support              import rdf_get_single, r_say, r_bor, r_action, r_score
+from support              import rdf_get_single, rdf_set, r_say, r_bor, r_action, r_score
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
@@ -57,9 +57,6 @@ ENABLE_HAL_PREFIX_HACK = True
 TEST_USER          = USER_PREFIX + u'test'
 TEST_TIME          = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
-
-GCODE_PREAMBLE = [u"from base.utils import *",
-                  u"resp=[]"]
 
 class AIKernal(object):
 
@@ -102,6 +99,12 @@ class AIKernal(object):
         #
 
         self.nlp_parser = NLPParser(self)
+
+        #
+        # context graph (for runtime values)
+        #
+
+        self.context_gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -271,12 +274,9 @@ class AIKernal(object):
         for m2 in getattr (m, 'DEPENDS'):
             self.init_module(m2)
 
-        gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
-        self.kb.remove((CURIN, None, None, gn))
-
-        quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, gn) ]
-
-        self.kb.addN_resolve(quads)
+        # self.kb.remove((CURIN, None, None, self.context_gn))
+        # quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, self.context_gn) ]
+        # self.kb.addN_resolve(quads)
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
@@ -601,6 +601,7 @@ class AIKernal(object):
                               'context'        : cur_context,
                               'kernal'         : self,
                               'rdf_get_single' : rdf_get_single,
+                              'rdf_set'        : rdf_set,
                               'r_say'          : r_say,
                               'r_bor'          : r_bor,
                               'r_action'       : r_action,

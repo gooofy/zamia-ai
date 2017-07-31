@@ -35,7 +35,7 @@ from rdflib.plugins.sparql.parserutils import CompValue
 from copy                              import deepcopy, copy
 from tzlocal                           import get_localzone
 
-DT_JSON     = u'http://ai.zamia.org/types/json'
+DT_JSON            = u'http://ai.zamia.org/types/json'
 
 #
 # helper functions to translate from python to rdflib and back
@@ -297,6 +297,16 @@ def rdf_get_single ( kernal, s, p, langfilter = None ) :
         return None
 
     return res[0]
+
+def rdf_set (kernal, s, p, o):
+
+    import pdb; pdb.set_trace()
+
+    s = kernal.kb.resolve_aliases_prefixes(s)
+    p = kernal.kb.resolve_aliases_prefixes(p)
+
+    kernal.kb.remove((s, p, None, None))
+    kernal.kb.addN([(s, p, o, kernal.context_gn)])
 
 def r_say (context, s):
 

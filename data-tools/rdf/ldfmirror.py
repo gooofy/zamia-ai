@@ -249,23 +249,12 @@ class LDFMirror(object):
             # quads = self.store.filter_quads(s=resource, context=self.context.identifier)
 
             triples = list(self.graph.triples((resource, None, None)))
-            for t in triples:
-                if len(t)<3:
-                    logging.error('triple of 2?! %s' % repr(t))
-                    import pdb; pdb.set_trace()
-                    continue
 
             do_add = False
             if len(triples) == 0:
 
                 triples = self._fetch_ldf (s=resource)
                 do_add = True
-
-            for t in triples:
-                if len(t)<3:
-                    logging.error('triple of 2?! %s' % repr(t))
-                    import pdb; pdb.set_trace()
-                    continue
 
             # transformations
 
@@ -284,7 +273,6 @@ class LDFMirror(object):
                         if unicode(p) != pred:
                             continue
 
-                        import pdb; pdb.set_trace()
                         np, no = f(o)
 
                         np = self.resolve_shortcuts(np)
@@ -293,12 +281,6 @@ class LDFMirror(object):
                             triples.append ((s, np, no))
 
                         res_filter = unicode(np)
-
-            for t in triples:
-                if len(t)<3:
-                    logging.error('triple of 2?! %s' % repr(t))
-                    import pdb; pdb.set_trace()
-                    continue
 
             if do_add:
                 for t in triples:
@@ -313,7 +295,6 @@ class LDFMirror(object):
                     if len(t)<3:
                         logging.error('triple of 2?! %s' % repr(t))
                         continue
-
 
                     s = t[0]
                     p = t[1]

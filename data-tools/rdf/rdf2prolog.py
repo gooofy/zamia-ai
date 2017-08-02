@@ -144,10 +144,8 @@ def property_label(p):
     return label
 
 #
-# init, config,  cmdline
+# init, cmdline
 #
-
-config = misc.load_config('.airc')
 
 misc.init_app('rdf2prolog')
 
@@ -308,18 +306,17 @@ if os.path.isfile(LPM_FN):
 
 cnt = 0
 
-for elu in sorted(lem):
+with codecs.open(outputfn, 'w', 'utf8') as f:
 
-    entity = lem[elu]
+    f.write('%prolog\n')
 
-    fn = u'pl/%s.pl' % elu
+    for elu in sorted(lem):
 
-    logging.info ('%5d/%5d dumping prolog code to %s ...' % (cnt, len(lem), fn))
-    cnt += 1
+        entity = lem[elu]
 
-    with codecs.open(fn, 'w', 'utf8') as f:
+        logging.info ('%5d/%5d dumping prolog code for %s ...' % (cnt, len(lem), elu))
+        cnt += 1
 
-        f.write('%prolog\n')
         f.write(u'\n%% URI: %s\n\n' % unicode(entity))
 
         triples = g.triples((entity, None, None))
@@ -386,6 +383,8 @@ for elu in sorted(lem):
                 f.write(u"%s(%s, %s).\n" % (pl, el, ol))
             else:
                 raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
+
+logging.info (' %s written' % outputfn)
 
 #
 # dump out all property and entity labels to keep them the same in future runs

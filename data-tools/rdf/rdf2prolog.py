@@ -300,6 +300,13 @@ if os.path.isfile(LPM_FN):
             lpm[label] = prop
             plm[prop]  = label
 
+def prolog_string_escape (o):
+
+    s = unicode(o)
+    s = s.replace ('"', '\\"')
+
+    return s
+
 #
 # generate prolog, generate and cache property labels as we encounter them
 #
@@ -368,10 +375,10 @@ with codecs.open(outputfn, 'w', 'utf8') as f:
                         continue
                     if o.language:
                         if o.language in LANGUAGES:
-                            f.write(u"%s(%s, \"%s\", %s).\n" % (pl, el, unicode(o), o.language))
+                            f.write(u"%s(%s, \"%s\", %s).\n" % (pl, el, prolog_string_escape(o), o.language))
                         continue
 
-                    f.write(u"%s(%s, \"%s\").\n" % (pl, el, unicode(o)))
+                    f.write(u"%s(%s, \"%s\").\n" % (pl, el, prolog_string_escape(o)))
                     continue
 
             elif isinstance (o, rdflib.term.URIRef):

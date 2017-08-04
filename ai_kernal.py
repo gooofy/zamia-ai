@@ -45,6 +45,8 @@ from sqlalchemy.orm       import sessionmaker
 import model
 
 from aiprolog.runtime     import CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
+from aiprolog.parser      import AIPParser
+from zamiaprolog.logicdb  import LogicDB
 from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize
@@ -99,6 +101,14 @@ class AIKernal(object):
         #
 
         self.nlp_parser = NLPParser(self)
+
+        #
+        # AIP parser
+        #
+
+        db_url          = self.config.get('db', 'url')
+        self.db         = LogicDB(db_url)
+        self.aip_parser = AIPParser(self)
 
         #
         # context graph (for runtime values)
@@ -340,8 +350,9 @@ class AIKernal(object):
 
         m = self.modules[module_name]
 
-        # delete old NLP training data
+        # clear module, delete old NLP training data
 
+        self.db.clear_module(module_name, commit=True)
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
         self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
 
@@ -373,6 +384,16 @@ class AIKernal(object):
 
             for inputfn in m.NLP_SOURCES:
                 ds, ts = self.nlp_parser.parse('modules/%s/%s' % (module_name, inputfn))
+
+                train_ds.extend(ds)
+                tests.extend(ts)
+
+        if hasattr(m, 'AIP_SOURCES'):
+
+            logging.info ('module %s AIP training data extraction...' % module_name)
+
+            for inputfn in m.AIP_SOURCES:
+                ds, ts = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name)
 
                 train_ds.extend(ds)
                 tests.extend(ts)

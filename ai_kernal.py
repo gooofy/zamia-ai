@@ -47,7 +47,8 @@ import model
 from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 from aiprolog.parser      import AIPrologParser
 from zamiaprolog.logicdb  import LogicDB
-from zamiaprolog.builtins import do_gensym
+from zamiaprolog.builtins import do_gensym, do_assertz
+from zamiaprolog.logic    import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation
 from nltools              import misc
 from nltools.tokenizer    import tokenize
 
@@ -96,6 +97,7 @@ class AIKernal(object):
         self.db         = LogicDB(db_url)
         self.aip_parser = AIPrologParser(self)
         self.rt         = AIPrologRuntime(self.db)
+        self.dummyloc   = SourceLocation ('<rt>')
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -462,24 +464,27 @@ class AIKernal(object):
 
         self.session.commit()
 
-    _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'currentTime', 'prevContext', 'resp' ])
+    _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
 
-    def _compute_net_input (self, cur_context):
+    def _compute_net_input (self, res, cur_context):
 
-        inp = []
-
+        solutions = self.rt.search_predicate ('context', [cur_context, 'K', 'V'], env=res)
         d = {}
+        for s in solutions:
 
-        for k in cur_context:
+            k = s['K']
+            if not isinstance(k, Predicate):
+                continue
+            k = k.name
 
-            v = cur_context[k]
+            v = s['V']
 
-            if k == 'prevContext':
+            if k == 'prev':
                 prev_context = v
                 continue
 
             if k == 'tokens':
-                tokens = v
+                tokens = v.l
                 continue
 
             if k in self._IGNORE_CONTEXT_KEYS:
@@ -487,20 +492,19 @@ class AIKernal(object):
 
             d[k] = v
 
+        inp = []
         for t in reversed(tokens):
-            inp.insert(0, t)
+            inp.insert(0, t.s)
 
         for k in sorted(d):
-            inp.insert(0, d[k])
+            inp.insert(0, unicode(d[k]))
             inp.insert(0, k)
 
         return inp
 
-    def _setup_context (self, user_uri, lang, inp, prev_context):
+    def _setup_context (self, user, lang, inp, prev_context, res):
 
-        import pdb; pdb.set_trace()
-
-        cur_context = do_gensym (self.rt, 'context')
+        cur_context = Predicate(do_gensym (self.rt, 'context'))
 
         if not prev_context:
             # find prev_context for this user, if any
@@ -519,26 +523,28 @@ class AIKernal(object):
             #         prev_context = context
             pass
 
-        cur_context['user']     = user_uri
-        cur_context['lang']     = lang
-        cur_context['tokens']   = inp
-        cur_context['resp']     = []
+        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('user'),   Predicate(user)])  , location=self.dummyloc), res=res)
+        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('lang'),   Predicate(lang)])  , location=self.dummyloc), res=res)
 
-        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC)
-        cur_context['currentTime'] = currentTime
+        token_literal = ListLiteral (map(lambda x: StringLiteral(x), inp))
+        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('tokens'), token_literal])    , location=self.dummyloc), res=res)
+
+        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat()
+        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('time'),   StringLiteral(currentTime)]) , location=self.dummyloc), res=res)
 
         if prev_context:
 
-            cur_context['prevContext'] = prev_context
+            res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('prev'), prev_context]) , location=self.dummyloc), res=res)
 
-            # copy over all previous statements to the new one
+            # FIXME: copy over all previous statements to the new one
+            raise Exception ('FIXME: copy over all previous statements to the new one')
 
             for k in prev_context:
                 if k in self._IGNORE_CONTEXT_KEYS:
                     continue
                 cur_context[k] = prev_context[k]
 
-        return cur_context
+        return res, cur_context
 
     def _extract_responses (self, cur_context):
 
@@ -569,6 +575,40 @@ class AIKernal(object):
 
         return resps
 
+    def _reconstruct_prolog_code (self, acode):
+
+        import pdb; pdb.set_trace()
+
+        todo = [('and', [])]
+
+        idx = 0
+        while idx < len(acode):
+
+            a = acode[idx]
+            if a == 'or(':
+                todo.append (('or', []))
+            elif a == 'and(':
+                todo.append (('and', []))
+            elif a == ')':
+                c = todo.pop()
+                todo[len(todo)-1][1].append(Predicate (c[0], c[1]))
+            else:
+
+                clause = self.aip_parser.parse_line_clause_body (a)
+
+                todo[len(todo)-1][1].append(clause.body)
+
+            idx += 1
+
+        if len(todo) != 1:
+            logging.warn ('unbalanced acode detected.')
+            return None
+
+        c = todo.pop()
+        return Predicate (c[0], c[1])
+
+
+
 
     def test_module (self, module_name, test_name=None):
 
@@ -584,9 +624,11 @@ class AIKernal(object):
                     continue
 
             rounds = json.loads(tc.rounds)
+            prep   = json.loads(tc.prep)
 
             round_num    = 0
             prev_context = None
+            res          = {}
 
             for t_in, t_out, test_actions in rounds:
                
@@ -597,29 +639,21 @@ class AIKernal(object):
                 logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
                 logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
 
-                cur_context = self._setup_context ( user_uri      = TEST_USER, 
-                                                    lang          = tc.lang, 
-                                                    inp           = t_in,
-                                                    prev_context  = prev_context)
-                env_locals = {
-                              'context'        : cur_context,
-                              'kernal'         : self,
-                              'rdf_get_single' : rdf_get_single,
-                              'rdf_set'        : rdf_set,
-                              'r_say'          : r_say,
-                              'r_bor'          : r_bor,
-                              'r_action'       : r_action,
-                              'r_score'        : r_score,
-                             }
-
+                res, cur_context = self._setup_context ( user          = TEST_USER, 
+                                                         lang          = tc.lang, 
+                                                         inp           = t_in,
+                                                         prev_context  = prev_context,
+                                                         res           = res)
                 # prep
 
-                if tc.prep:
-                    exec u'\n'.join(tc.prep) in env_locals
+                if prep:
+                    # FIXME exec u'\n'.join(tc.prep) in env_locals
+                    import pdb; pdb.set_trace()
+                    raise Exception ('FIXME: not implemented yet.')
 
                 # inp / resp
 
-                inp = self._compute_net_input (env_locals['context'])
+                inp = self._compute_net_input (res, cur_context)
 
                 # look up code in DB
 
@@ -630,9 +664,11 @@ class AIKernal(object):
                     if resp:
                         logging.warn (u'%s: more than one resp for test_in "%s" found in DB!' % (name, test_in))
 
-                    resp = json.loads (tdr.resp)
+                    acode = json.loads (tdr.resp)
 
-                    jresp = u'\n'.join(resp)
+                    pcode = self._reconstruct_prolog_code (acode)
+
+                    import pdb; pdb.set_trace()
 
                     # print jresp
 

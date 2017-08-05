@@ -19,12 +19,13 @@
 #
 
 import sys
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey, Index
-from sqlalchemy.orm import relationship
+
+from sqlalchemy                 import create_engine
+from sqlalchemy                 import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey, Index
+from sqlalchemy.orm             import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-from nltools import misc
+from nltools                    import misc
 
 config = misc.load_config('.airc')
 

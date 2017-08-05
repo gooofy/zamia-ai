@@ -119,7 +119,7 @@ CSTATE_IDLE    = 0
 CSTATE_HEADER  = 1
 CSTATE_BODY    = 2
 
-class AIPParser(object):
+class AIPrologParser(object):
 
     def __init__(self, kernal):
         self.kernal = kernal

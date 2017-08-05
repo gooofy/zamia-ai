@@ -20,7 +20,7 @@
 #
 # ai kernal, central hub for all the other components to hook into
 #
-# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> python -> [ AIS ] -> seq2seq -> actions/says
+# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> AIProlog -> [ Context ] -> actions/says
 #
 
 import os
@@ -44,20 +44,17 @@ from sqlalchemy.orm       import sessionmaker
 
 import model
 
-from aiprolog.runtime     import CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
-from aiprolog.parser      import AIPParser
+from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
+from aiprolog.parser      import AIPrologParser
 from zamiaprolog.logicdb  import LogicDB
 from zamiaprolog.builtins import do_gensym
-from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize
-from nlp_parser           import NLPParser
-from support              import rdf_get_single, rdf_set, r_say, r_bor, r_action, r_score
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
 ENABLE_HAL_PREFIX_HACK = True
 
-TEST_USER          = USER_PREFIX + u'test'
+TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
 
@@ -73,12 +70,6 @@ class AIKernal(object):
 
         Session = sessionmaker(bind=model.engine)
         self.session = Session()
-
-        #
-        # knowledge base
-        #
-
-        self.kb = AIKB()
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -98,24 +89,13 @@ class AIKernal(object):
         sys.path.append('modules')
 
         #
-        # NLP parser
-        #
-
-        self.nlp_parser = NLPParser(self)
-
-        #
-        # AIP parser
+        # AIProlog parser, runtime
         #
 
         db_url          = self.config.get('db', 'url')
         self.db         = LogicDB(db_url)
-        self.aip_parser = AIPParser(self)
-
-        #
-        # context graph (for runtime values)
-        #
-
-        self.context_gn = rdflib.Graph(identifier=CONTEXT_GRAPH_NAME)
+        self.aip_parser = AIPrologParser(self)
+        self.rt         = AIPrologRuntime(self.db)
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -518,7 +498,9 @@ class AIKernal(object):
 
     def _setup_context (self, user_uri, lang, inp, prev_context):
 
-        cur_context = {}
+        import pdb; pdb.set_trace()
+
+        cur_context = do_gensym (self.rt, 'context')
 
         if not prev_context:
             # find prev_context for this user, if any

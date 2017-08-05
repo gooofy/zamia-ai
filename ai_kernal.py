@@ -47,6 +47,7 @@ import model
 from aiprolog.runtime     import CONTEXT_GRAPH_NAME, USER_PREFIX, CURIN, KB_PREFIX, DEFAULT_USER
 from aiprolog.parser      import AIPParser
 from zamiaprolog.logicdb  import LogicDB
+from zamiaprolog.builtins import do_gensym
 from kb                   import AIKB
 from nltools              import misc
 from nltools.tokenizer    import tokenize

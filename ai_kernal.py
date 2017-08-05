@@ -577,8 +577,6 @@ class AIKernal(object):
 
     def _reconstruct_prolog_code (self, acode):
 
-        import pdb; pdb.set_trace()
-
         todo = [('and', [])]
 
         idx = 0
@@ -668,7 +666,12 @@ class AIKernal(object):
 
                     pcode = self._reconstruct_prolog_code (acode)
 
+                    clause = Clause (None, pcode, location=self.dummyloc)
+
+                    self.rt.set_trace(True)
                     import pdb; pdb.set_trace()
+
+                    solutions = self.rt.search (clause, env=res)
 
                     # print jresp
 

@@ -578,19 +578,17 @@ class AIPParser(object):
 
             t = self.subgoals()
 
-            res = Predicate ('and', [c, t, Predicate('!')]) 
-
             if self.cur_sym == SYM_ELSE:
                 self.next_sym()
                 e = self.subgoals()
-
-                res = Predicate ('or', [res, e])
+            else:
+                e = Predicate ('true')
 
             if self.cur_sym != SYM_ENDIF:
                 self.report_error ("subgoal: endif expected.")
             self.next_sym()
 
-            return res
+            return [ Predicate ('or', [Predicate ('and', [c, t, Predicate('!')]), e]) ]
 
         elif self.cur_sym == SYM_INLINE:
 
@@ -621,26 +619,24 @@ class AIPParser(object):
             if not isinstance(succeeded.body, Predicate) or succeeded.body.name != 'and':
                 self.report_error ("inline: %s: matching pred needs to be in 'and' form to be inlined." % unicode(pred))
                 
-            aargs = []
+            res = []
             for a in succeeded.body.args:
-                aargs.append(self._apply_bindings(a, bindings))
-
-            res = Predicate ('and', aargs) 
+                res.append(self._apply_bindings(a, bindings))
 
             return res
 
         else:
-            return self.term()
+            return [ self.term() ]
 
     def subgoals(self):
 
-        res = [ self.subgoal() ]
+        res = self.subgoal()
 
         while self.cur_sym == SYM_COMMA:
             self.next_sym()
 
             t2 = self.subgoal()
-            res.append(t2)
+            res.extend(t2)
 
         if len(res) == 1:
             return res[0]
@@ -748,6 +744,7 @@ class AIPParser(object):
         self.ds           = []
         self.ts           = []
         self.named_macros = {}
+        self.lang         = 'en'
 
         # actual parsing starts here
 
@@ -820,7 +817,7 @@ class AIPParser(object):
 
         return None
 
-    def _expand_macros (self, lang, txt):
+    def _expand_macros (self, txt):
 
         logging.debug(u"expand macros  : %s" % txt)
 
@@ -848,7 +845,7 @@ class AIPParser(object):
 
                 implicit_macros[macro_name] = []
                 for s in macro_s.split('|'):
-                    sub_parts = tokenize(s, lang=lang, keep_punctuation=False)
+                    sub_parts = tokenize(s, lang=self.lang, keep_punctuation=False)
                     implicit_macros[macro_name].append({'W': sub_parts})
 
                 txt2 += '{' + macro_name + ':W}'
@@ -893,11 +890,11 @@ class AIPParser(object):
 
                     vn    = sub_parts[1]
 
-                    macro = self.fetch_named_macro(lang, name)
+                    macro = self.fetch_named_macro(self.lang, name)
                     if not macro:
                         macro = implicit_macros.get(name, None)
                     if not macro:
-                        self.report_error ('unknown macro "%s"[%s] called' % (name, lang))
+                        self.report_error ('unknown macro "%s"[%s] called' % (name, self.lang))
 
                     for r3 in macro:
                         r1    = copy(r)
@@ -915,7 +912,7 @@ class AIPParser(object):
                         mpos1['%s_%d_start' % (name, mpnn)] = len(r1)
                         s3 = r3[vn]
                         if isinstance (s3, StringLiteral):
-                            s3 = tokenize (s3.s, lang=lang)
+                            s3 = tokenize (s3.s, lang=self.lang)
                             r3[vn] = s3
                         r1.extend(r3[vn])
                         mpos1['%s_%d_end' % (name, mpnn)]   = len(r1)
@@ -923,7 +920,7 @@ class AIPParser(object):
                         
             else:
 
-                sub_parts = tokenize(p1, lang=lang, keep_punctuation=False)
+                sub_parts = tokenize(p1, lang=self.lang, keep_punctuation=False)
 
                 r  = copy(r)
                 r.extend(sub_parts)
@@ -932,11 +929,137 @@ class AIPParser(object):
 
         return done
 
+    def _token_positions (self, a, mpos):
+
+        if isinstance (a, Predicate):
+
+            if a.name == 'tstart':
+
+                if len(a.args) == 1:
+                    occ = 0
+                    tname = a.args[0]
+                elif len(a.args) == 2:
+                    occ   = int(a.args[1].f)
+                    tname = a.args[0]
+                else:
+                    self.report_error ('tstart: one or two args expected, found "%s" instead' % unicode(a))
+
+                k = '%s_%d_start' % (tname, occ)
+                if not k in mpos:
+                    self.report_error ('tstart: could not determine "%s"' % unicode(a))
+
+                return NumberLiteral(mpos[k])
+
+            elif a.name == 'tend':
+
+                if len(a.args) == 1:
+                    occ = 0
+                    tname = a.args[0]
+                elif len(a.args) == 2:
+                    occ   = int(a.args[1].f)
+                    tname = a.args[0]
+                else:
+                    self.report_error ('tend: one or two args expected, found "%s" instead' % unicode(a))
+
+                k = '%s_%d_end' % (tname, occ)
+                if not k in mpos:
+                    self.report_error ('tend: could not determine "%s"' % unicode(a))
+
+                return NumberLiteral(mpos[k])
+
+            else:
+
+                margs = []
+                for a2 in a.args:
+                    margs.append(self._token_positions (a2, mpos))
+
+                return Predicate (a.name, margs)
+
+        return a
+
+    def _generate_training_code (self, and_args, mpos):
+
+        code = []
+
+        for a in and_args:
+
+            if isinstance (a, StringLiteral):
+
+                # code.append(Predicate('r_bor', [ Variable('C') ]))
+                code.append(u'r_bor(C)')
+
+                parts = []
+                for p1 in a.s.split('{'):
+                    for p2 in p1.split('}'):
+                        parts.append(p2)
+
+                cnt = 0
+                for part in parts:
+
+                    if cnt % 2 == 1:
+
+                        subparts = part.split(',')
+
+                        if len(subparts)!=2:
+                            self.report_error ('variable string "%s" not recognized .' % repr(part))
+
+                        var_s = subparts[0]
+                        fmt_s = subparts[1]
+
+                        code.append(unicode(Predicate('r_sayv', [ Variable('C'), Variable(var_s), Predicate(fmt_s) ])))
+
+                    else:
+
+                        for t in tokenize(part, lang=self.lang, keep_punctuation=True):
+                            code.append(unicode(Predicate('r_say', [ Variable('C'), StringLiteral(t)])))
+                    cnt += 1
+
+            elif isinstance (a, Predicate):
+
+                if a.name == 'or':
+
+                    code.append(u'or(')
+
+                    for a2 in a.args:
+
+                        if isinstance (a2, Predicate):
+
+                            if a2.name == 'and':
+
+                                code.append(u'and(')
+
+                                code.extend(self._generate_training_code (a2.args, mpos))
+
+                                code.append(u')')
+
+                        else:
+                            code.append (unicode(self._token_positions(a2, mpos)))
+
+
+                    code.append(u')')
+
+                elif a.name =='and':
+
+                    code.append(u'and(')
+
+                    code.extend(self._generate_training_code (a.args, mpos))
+
+                    code.append(u')')
+
+                else:
+
+                    code.append(unicode(self._token_positions(a, mpos)))
+
+            else:
+                code.append(unicode(self._token_positions(a, mpos)))
+
+        return code
+
     def extract_training_data (self, clause):
 
         if len(clause.head.args) != 1:
             self.report_error ('train: single language argument expected')
-        lang = clause.head.args[0].name
+        self.lang = clause.head.args[0].name
 
         if not clause.body or clause.body.name != 'and':
             self.report_error ('train: flat (and) body expected expected')
@@ -965,11 +1088,11 @@ class AIPParser(object):
             self.report_error ('train: no code.')
 
 
-        for d, mpos in self._expand_macros(lang, inp):
+        for d, mpos in self._expand_macros(inp):
 
             # FIXME:
             # r = self._compile_code (code, mpos, '', lx, lang)
-            r = code
+            r = self._generate_training_code (code, mpos)
 
             logging.debug( '%s -> %s' % (repr(d), repr(r)))
 

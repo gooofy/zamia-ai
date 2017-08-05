@@ -759,6 +759,8 @@ class AIPParser(object):
 
                     if clause.head.name == 'train':
                         self.extract_training_data (clause)
+                    elif clause.head.name == 'test':
+                        self.extract_test_data (clause)
                     else:
                         self.db.store (module_name, clause)
 
@@ -1062,7 +1064,7 @@ class AIPParser(object):
         self.lang = clause.head.args[0].name
 
         if not clause.body or clause.body.name != 'and':
-            self.report_error ('train: flat (and) body expected expected')
+            self.report_error ('train: flat (and) body expected')
 
         # filter out contexts, input line
 
@@ -1096,4 +1098,54 @@ class AIPParser(object):
             self.ds.append((self.lang, contexts, d, r))
 
         # import pdb; pdb.set_trace()
+
+    def extract_test_data (self, clause):
+
+        if len(clause.head.args) != 2:
+            self.report_error ('test: 2 arguments (lang, test_name) expected')
+
+        self.lang = clause.head.args[0].name
+        test_name = clause.head.args[1].name
+
+        if not clause.body or clause.body.name != 'and':
+            self.report_error ('test: flat (and) body expected')
+
+
+        prep    = []
+        rounds  = []
+
+        inp     = None
+        resp    = None
+        actions = []
+        cnt     = 0
+
+        for a in clause.body.args:
+
+            if isinstance (a, StringLiteral):
+
+                if cnt % 2 == 0:
+                    if inp:
+                        rounds.append ((inp, resp, actions))
+                    inp     = tokenize(a.s, lang=self.lang, keep_punctuation = False)
+                    resp    = None
+                    actions = []
+
+                else:
+                    resp    = tokenize(a.s, lang=self.lang, keep_punctuation = False)
+
+            else:
+
+                if not rounds:
+                    prep.append(a)
+                else:
+                    if not isinstance(a, Predicate) or a.name != 'action':
+                        self.report_error('only action predicates allowed here.')
+                    actions.append(a)
+
+            cnt += 1
+
+        if inp:
+            rounds.append ((inp, resp, actions))
+
+        self.ts.append((test_name, self.lang, prep, rounds, clause.location.fn, clause.location.line, clause.location.col))
 

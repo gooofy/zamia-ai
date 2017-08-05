@@ -1087,16 +1087,13 @@ class AIPParser(object):
         if len(code)==0:
             self.report_error ('train: no code.')
 
-
         for d, mpos in self._expand_macros(inp):
 
-            # FIXME:
-            # r = self._compile_code (code, mpos, '', lx, lang)
             r = self._generate_training_code (code, mpos)
 
             logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
-            # self.ds.append((lang, contexts, d, r))
+            self.ds.append((self.lang, contexts, d, r))
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
 

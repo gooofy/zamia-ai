@@ -669,9 +669,10 @@ class AIKernal(object):
                     clause = Clause (None, pcode, location=self.dummyloc)
 
                     self.rt.set_trace(True)
-                    import pdb; pdb.set_trace()
 
                     solutions = self.rt.search (clause, env=res)
+
+                    import pdb; pdb.set_trace()
 
                     # print jresp
 

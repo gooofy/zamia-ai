@@ -91,34 +91,25 @@ class AIPrologRuntime(PrologRuntime):
 
     def prolog_eval (self, term, env, location):
         
-        """ implement Pseudo-Variables, e.g. USER:NAME """
+        """ implement Pseudo-Variables and -Predicates, e.g. USER:NAME """
 
-        if ( not isinstance (term, Variable) ) or ( not (":" in term.name) ):
+        if not isinstance (term, Variable) and not isinstance (term, Predicate):
+            return super(AIPrologRuntime, self).prolog_eval(term, env, location)
+        
+        if not (":" in term.name):
             return super(AIPrologRuntime, self).prolog_eval(term, env, location)
 
         parts = term.name.split(':')
-        if len(parts) != 2:
-            raise PrologRuntimeError('variable: PREFIX:NAME expected, "%s" found instead' % unicode(term), g.location)
 
-        if parts[0] == 'USER':
+        # import pdb; pdb.set_trace()
 
-            # determine current user
-
-            solutions = self.search_predicate ('context', ['C', 'user', 'U'], env=env, err_on_missing=False)
+        v = parts[0]
+        for part in parts[1:]:
+            
+            solutions = self.search_predicate (part, [v, 'X'], env=env, err_on_missing=False)
             if len(solutions)<1:
                 return term
-            current_user = solutions[0]['U']
+            v = solutions[0]['X']
 
-            # get user attribute
-
-            solutions = self.search_predicate (parts[1].lower(), [current_user, 'X'], env=env, err_on_missing=False)
-            if len(solutions)<1:
-                return term
-
-            return solutions[0]['X']
-
-        else:
-            raise PrologRuntimeError('"%s": unknown prefix' % unicode(term), g.location)
-
-        return term    
+        return v
 

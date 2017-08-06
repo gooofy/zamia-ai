@@ -464,11 +464,14 @@ class AIKernal(object):
 
         self.session.commit()
 
-    _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
+    # _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
 
     def _compute_net_input (self, res, cur_context):
 
-        solutions = self.rt.search_predicate ('context', [cur_context, 'K', 'V'], env=res)
+        solutions = self.rt.search_predicate ('tokens', [cur_context, 'X'], env=res)
+        tokens = solutions[0]['X'].l
+
+        solutions = self.rt.search_predicate ('context', [cur_context, 'K', 'V'], env=res, err_on_missing=False)
         d = {}
         for s in solutions:
 
@@ -478,17 +481,6 @@ class AIKernal(object):
             k = k.name
 
             v = s['V']
-
-            if k == 'prev':
-                prev_context = v
-                continue
-
-            if k == 'tokens':
-                tokens = v.l
-                continue
-
-            if k in self._IGNORE_CONTEXT_KEYS:
-                continue
 
             d[k] = v
 
@@ -523,18 +515,18 @@ class AIKernal(object):
             #         prev_context = context
             pass
 
-        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('user'),   Predicate(user)])  , location=self.dummyloc), res=res)
-        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('lang'),   Predicate(lang)])  , location=self.dummyloc), res=res)
+        res = do_assertz ({}, Clause ( Predicate('user',   [cur_context, Predicate(user)])  , location=self.dummyloc), res=res)
+        res = do_assertz ({}, Clause ( Predicate('lang',   [cur_context, Predicate(lang)])  , location=self.dummyloc), res=res)
 
         token_literal = ListLiteral (map(lambda x: StringLiteral(x), inp))
-        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('tokens'), token_literal])    , location=self.dummyloc), res=res)
+        res = do_assertz ({}, Clause ( Predicate('tokens', [cur_context, token_literal])    , location=self.dummyloc), res=res)
 
         currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat()
-        res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('time'),   StringLiteral(currentTime)]) , location=self.dummyloc), res=res)
+        res = do_assertz ({}, Clause ( Predicate('time',   [cur_context, StringLiteral(currentTime)]) , location=self.dummyloc), res=res)
 
         if prev_context:
 
-            res = do_assertz ({}, Clause ( Predicate('context', [cur_context, Predicate('prev'), prev_context]) , location=self.dummyloc), res=res)
+            res = do_assertz ({}, Clause ( Predicate('prev', [cur_context, prev_context]) , location=self.dummyloc), res=res)
 
             # FIXME: copy over all previous statements to the new one
             raise Exception ('FIXME: copy over all previous statements to the new one')

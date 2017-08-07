@@ -536,6 +536,8 @@ class AIKernal(object):
                     continue
                 cur_context[k] = prev_context[k]
 
+        res['C'] = cur_context
+
         return res, cur_context
 
     def _extract_responses (self, cur_context):

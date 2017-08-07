@@ -528,13 +528,11 @@ class AIKernal(object):
 
             res = do_assertz ({}, Clause ( Predicate('prev', [cur_context, prev_context]) , location=self.dummyloc), res=res)
 
-            # FIXME: copy over all previous statements to the new one
-            raise Exception ('FIXME: copy over all previous statements to the new one')
-
-            for k in prev_context:
-                if k in self._IGNORE_CONTEXT_KEYS:
-                    continue
-                cur_context[k] = prev_context[k]
+            # copy over all previous context statements to the new one
+            s1s = self.rt.search_predicate ('context', [prev_context, 'X', 'Y'], env=res, err_on_missing=False)
+            for s1 in s1s:
+                res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['X'], s1['Y']]) , location=self.dummyloc), res=res)
+            # import pdb; pdb.set_trace()
 
         res['C'] = cur_context
 
@@ -651,27 +649,21 @@ class AIKernal(object):
 
                 # look up code in DB
 
-                resp          = None
+                acode         = None
                 matching_resp = False
                 for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == tc.lang,
                                                                          model.TrainingData.inp   == json.dumps(inp)):
-                    if resp:
-                        logging.warn (u'%s: more than one resp for test_in "%s" found in DB!' % (name, test_in))
+                    if acode:
+                        logging.warn (u'%s: more than one acode for test_in "%s" found in DB!' % (name, test_in))
 
-                    acode = json.loads (tdr.resp)
-
-                    pcode = self._reconstruct_prolog_code (acode)
-
-                    clause = Clause (None, pcode, location=self.dummyloc)
-
-                    self.rt.set_trace(True)
-
+                    # self.rt.set_trace(True)
+                    acode     = json.loads (tdr.resp)
+                    pcode     = self._reconstruct_prolog_code (acode)
+                    clause    = Clause (None, pcode, location=self.dummyloc)
                     solutions = self.rt.search (clause, env=res)
-
 
                     for actual_out, actions, score in self._extract_responses (cur_context, solutions):
 
-                        import pdb; pdb.set_trace()
                         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:
@@ -709,12 +701,12 @@ class AIKernal(object):
 
                         matching_resp = True
 
-                    prev_context = env_locals['context']
+                    prev_context = cur_context
 
                     if matching_resp:
                         break
 
-                if resp is None:
+                if acode is None:
                     logging.error('failed to find db entry for %s' % json.dumps(inp))
                     logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
                     break

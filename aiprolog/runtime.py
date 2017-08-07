@@ -242,7 +242,6 @@ def builtin_is(g, rt):
 
         parts = ques.name.split(':')
 
-        # import pdb; pdb.set_trace()
 
         v = parts[0]
         for part in parts[1:len(parts)-1]:
@@ -252,6 +251,7 @@ def builtin_is(g, rt):
                 raise PrologRuntimeError(u'is: failed to match part "%s" of "%s".' % (part, unicode(ques)), g.location)
             v = solutions[0]['X']
 
+        # import pdb; pdb.set_trace()
         res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location))
 
         return [ res ]

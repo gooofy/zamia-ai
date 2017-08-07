@@ -26,7 +26,7 @@ import logging
 
 from zamiaprolog.runtime  import PrologRuntime
 from zamiaprolog.errors   import PrologRuntimeError
-from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, DictLiteral, Variable, Predicate, Clause, SourceLocation
+from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Literal, Variable, Predicate, Clause, SourceLocation
 from zamiaprolog.builtins import do_gensym, do_assertz
 from nltools.tokenizer    import tokenize
 from nltools.misc         import edit_distance
@@ -127,6 +127,104 @@ def builtin_r_say(g, pe):
 
     return [ res ]
 
+def builtin_r_sayv(g, pe):
+
+    """" r_sayv (+Context, +Var, +Fmt) """
+
+    pe._trace ('CALLED BUILTIN r_sayv', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 3:
+        raise PrologRuntimeError('r_sayv: 3 args (+Context, +Var, +Fmt) expected.', g.location)
+
+    arg_context = pe.prolog_eval         (args[0], g.env, g.location)
+    arg_var     = pe.prolog_eval         (args[1], g.env, g.location)
+    arg_fmt     = pe.prolog_get_constant (args[2], g.env, g.location)
+
+    if not isinstance (arg_var, Literal):
+        raise PrologRuntimeError(u'r_sayv: failed to eval "%s"' % unicode(args[1]), g.location)
+
+    # import pdb; pdb.set_trace()
+
+    res = {}
+
+    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
+    if len(solutions)==0:
+        resp = Predicate(do_gensym (pe, 'resp'))
+        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
+    else:
+        resp = solutions[len(solutions)-1]['X']
+        
+    if arg_fmt == 'd':
+        v = unicode(int(unicode(arg_var)))
+    elif arg_fmt == 'f':
+        v = unicode(float(unicode(arg_var)))
+    else:
+        v = unicode(arg_var)
+
+    res = do_assertz (g.env, Clause ( Predicate('say', [resp, StringLiteral(v)]) , location=g.location), res=res)
+
+    return [ res ]
+
+def builtin_r_action(g, pe):
+
+    """" r_action (+Context, +Action) """
+
+    pe._trace ('CALLED BUILTIN r_action', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('r_action: 2 args (+Context, +Action) expected.', g.location)
+
+    arg_context = pe.prolog_eval (args[0], g.env, g.location)
+    arg_action  = pe.prolog_eval (args[1], g.env, g.location)
+
+    # import pdb; pdb.set_trace()
+
+    res = {}
+
+    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
+    if len(solutions)==0:
+        resp = Predicate(do_gensym (pe, 'resp'))
+        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
+    else:
+        resp = solutions[len(solutions)-1]['X']
+        
+    res = do_assertz (g.env, Clause ( Predicate('action', [resp, arg_action]) , location=g.location), res=res)
+
+    return [ res ]
+
+def builtin_r_score(g, pe):
+
+    """" r_score (+Context, +Action) """
+
+    pe._trace ('CALLED BUILTIN r_score', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('r_score: 2 args (+Context, +Action) expected.', g.location)
+
+    arg_context = pe.prolog_eval (args[0], g.env, g.location)
+    arg_score  = pe.prolog_eval (args[1], g.env, g.location)
+
+    # import pdb; pdb.set_trace()
+
+    res = {}
+
+    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
+    if len(solutions)==0:
+        resp = Predicate(do_gensym (pe, 'resp'))
+        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
+    else:
+        resp = solutions[len(solutions)-1]['X']
+        
+    res = do_assertz (g.env, Clause ( Predicate('score', [resp, arg_score]) , location=g.location), res=res)
+
+    return [ res ]
+
 def builtin_is(g, rt):
 
     rt._trace ('CALLED BUILTIN is (?Ques, +Ans)', g)
@@ -185,6 +283,9 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin ('r_bor',           builtin_r_bor)               # r_bor (+Context)
         self.register_builtin ('r_say',           builtin_r_say)               # r_say (+Context, +Token)
+        self.register_builtin ('r_sayv',          builtin_r_sayv)              # r_sayv (+Context, +Var, +Fmt)
+        self.register_builtin ('r_action',        builtin_r_action)            # r_action (+Context, +Action)
+        self.register_builtin ('r_score',         builtin_r_score)             # r_score (+Context, +Score)
 
         # pseudo-variable assignment: replace "is"
 

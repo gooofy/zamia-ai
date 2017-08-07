@@ -540,32 +540,34 @@ class AIKernal(object):
 
         return res, cur_context
 
-    def _extract_responses (self, cur_context):
-
-        # import pdb; pdb.set_trace()
+    def _extract_responses (self, cur_context, envs):
 
         resps = []
 
-        for resp in cur_context['resp']:
+        for env in envs:
 
-            res       = []
-            actions   = []
-            score     = 0.0
+            s1s = self.rt.search_predicate ('resp', [cur_context, 'X'], env=env)
 
-            for r in resp:
-                if r[0] == 'say':
-                    res.append(r[1])
+            for s1 in s1s:
 
-                elif r[0] == 'score':
-                    score += r[1]
+                resp = s1['X']
 
-                elif r[0] == 'action':
-                    actions.append(r[1])
+                res       = []
+                s2s = self.rt.search_predicate ('say', [resp, 'X'], env=env, err_on_missing=False)
+                for s2 in s2s:
+                    res.append(s2['X'].s)
 
-                else:
-                    raise Exception ("Error: invalid response token encountered: %s" % repr(r))
-                    
-            resps.append((res, actions, score))
+                actions   = []
+                s2s = self.rt.search_predicate ('action', [resp, 'X'], env=env, err_on_missing=False)
+                for s2 in s2s:
+                    actions.append(s2['X'])
+
+                score     = 0.0
+                s2s = self.rt.search_predicate ('score', [resp, 'X'], env=env, err_on_missing=False)
+                for s2 in s2s:
+                    score += s2['X'].f
+
+                resps.append((res, actions, score))
 
         return resps
 
@@ -666,14 +668,10 @@ class AIKernal(object):
 
                     solutions = self.rt.search (clause, env=res)
 
-                    import pdb; pdb.set_trace()
 
-                    # print jresp
+                    for actual_out, actions, score in self._extract_responses (cur_context, solutions):
 
-                    exec jresp in env_locals
-
-                    for actual_out, actions, score in self._extract_responses (env_locals['context']):
-
+                        import pdb; pdb.set_trace()
                         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:

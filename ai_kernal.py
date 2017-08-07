@@ -538,34 +538,32 @@ class AIKernal(object):
 
         return res, cur_context
 
-    def _extract_responses (self, cur_context, envs):
+    def _extract_responses (self, cur_context, env):
 
         resps = []
 
-        for env in envs:
+        s1s = self.rt.search_predicate ('resp', [cur_context, 'X'], env=env)
 
-            s1s = self.rt.search_predicate ('resp', [cur_context, 'X'], env=env)
+        for s1 in s1s:
 
-            for s1 in s1s:
+            resp = s1['X']
 
-                resp = s1['X']
+            res       = []
+            s2s = self.rt.search_predicate ('say', [resp, 'X'], env=env, err_on_missing=False)
+            for s2 in s2s:
+                res.append(s2['X'].s)
 
-                res       = []
-                s2s = self.rt.search_predicate ('say', [resp, 'X'], env=env, err_on_missing=False)
-                for s2 in s2s:
-                    res.append(s2['X'].s)
+            actions   = []
+            s2s = self.rt.search_predicate ('action', [resp, 'X'], env=env, err_on_missing=False)
+            for s2 in s2s:
+                actions.append(s2['X'])
 
-                actions   = []
-                s2s = self.rt.search_predicate ('action', [resp, 'X'], env=env, err_on_missing=False)
-                for s2 in s2s:
-                    actions.append(s2['X'])
+            score     = 0.0
+            s2s = self.rt.search_predicate ('score', [resp, 'X'], env=env, err_on_missing=False)
+            for s2 in s2s:
+                score += s2['X'].f
 
-                score     = 0.0
-                s2s = self.rt.search_predicate ('score', [resp, 'X'], env=env, err_on_missing=False)
-                for s2 in s2s:
-                    score += s2['X'].f
-
-                resps.append((res, actions, score))
+            resps.append((res, actions, score))
 
         return resps
 
@@ -599,9 +597,6 @@ class AIKernal(object):
         c = todo.pop()
         return Predicate (c[0], c[1])
 
-
-
-
     def test_module (self, module_name, test_name=None):
 
         m = self.modules[module_name]
@@ -631,6 +626,7 @@ class AIKernal(object):
                 logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
                 logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
 
+                # import pdb; pdb.set_trace()
                 res, cur_context = self._setup_context ( user          = TEST_USER, 
                                                          lang          = tc.lang, 
                                                          inp           = t_in,
@@ -662,48 +658,55 @@ class AIKernal(object):
                     clause    = Clause (None, pcode, location=self.dummyloc)
                     solutions = self.rt.search (clause, env=res)
 
-                    for actual_out, actions, score in self._extract_responses (cur_context, solutions):
+                    for solution in solutions:
 
-                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                        for actual_out, actual_actions, score in self._extract_responses (cur_context, solution):
 
-                        if len(test_out) > 0:
-                            if len(actual_out)>0:
-                                actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
-                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
-                            if actual_out != test_out:
-                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
-                                continue # no match
+                            # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
+                            if len(test_out) > 0:
+                                if len(actual_out)>0:
+                                    actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
+                                logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
+                                if actual_out != test_out:
+                                    logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
+                                    continue # no match
 
-                        # check actions
+                            logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
 
-                        if len(test_actions)>0:
+                            # check actions
 
-                            # print repr(test_actions)
+                            if len(test_actions)>0:
 
-                            #import pdb; pdb.set_trace()
-                            actions_matched = True
-                            for action in test_actions:
-                                for act in actual_actions:
-                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                    if action == act:
+                                # print repr(test_actions)
+
+                                #import pdb; pdb.set_trace()
+                                actions_matched = True
+                                act             = None
+                                for action in test_actions:
+                                    for act in actual_actions:
+                                        # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                        if action == act:
+                                            break
+                                    if action != act:
+                                        actions_matched = False
                                         break
-                                if action != act:
-                                    actions_matched = False
-                                    break
 
-                            if not actions_matched:
-                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
-                                continue
+                                if not actions_matched:
+                                    logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
+                                    continue
 
-                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
+                                logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
 
-                        matching_resp = True
+                            matching_resp = True
+
+                        if matching_resp:
+                            break
 
                     prev_context = cur_context
 
                     if matching_resp:
+                        res = solution
                         break
 
                 if acode is None:
@@ -717,7 +720,6 @@ class AIKernal(object):
 
                 round_num += 1
 
-                import pdb; pdb.set_trace()
 
 
             #     if len(data) % 3 != 0:

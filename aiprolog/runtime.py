@@ -24,11 +24,12 @@
 import sys
 import logging
 
-from zamiaprolog.runtime import PrologRuntime
-from zamiaprolog.errors  import PrologRuntimeError
-from zamiaprolog.logic   import NumberLiteral, StringLiteral, ListLiteral, DictLiteral, Variable, Predicate, Clause, SourceLocation
-from nltools.tokenizer   import tokenize
-from nltools.misc        import edit_distance
+from zamiaprolog.runtime  import PrologRuntime
+from zamiaprolog.errors   import PrologRuntimeError
+from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, DictLiteral, Variable, Predicate, Clause, SourceLocation
+from zamiaprolog.builtins import do_gensym, do_assertz
+from nltools.tokenizer    import tokenize
+from nltools.misc         import edit_distance
 
 import model
 
@@ -78,6 +79,54 @@ def builtin_edit_distance(g, pe):
 
     return True
 
+def builtin_r_bor(g, pe):
+
+    """" r_bor (+Context) """
+
+    pe._trace ('CALLED BUILTIN r_bor', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 1:
+        raise PrologRuntimeError('r_bor: 1 arg (+Context) expected.', g.location)
+
+    arg_context = pe.prolog_eval (args[0], g.env, g.location)
+
+    # import pdb; pdb.set_trace()
+
+    resp = Predicate(do_gensym (pe, 'resp'))
+    res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location))
+    return [ res ]
+
+def builtin_r_say(g, pe):
+
+    """" r_say (+Context, +Token) """
+
+    pe._trace ('CALLED BUILTIN r_say', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('r_say: 2 args (+Context, +Token) expected.', g.location)
+
+    arg_context = pe.prolog_eval (args[0], g.env, g.location)
+    arg_token   = pe.prolog_eval (args[1], g.env, g.location)
+
+    # import pdb; pdb.set_trace()
+
+    res = {}
+
+    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
+    if len(solutions)==0:
+        resp = Predicate(do_gensym (pe, 'resp'))
+        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
+    else:
+        resp = solutions[len(solutions)-1]['X']
+        
+    res = do_assertz (g.env, Clause ( Predicate('say', [resp, arg_token]) , location=g.location), res=res)
+
+    return [ res ]
+
 class AIPrologRuntime(PrologRuntime):
 
     def __init__(self, db):
@@ -88,6 +137,11 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin          ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
         self.register_builtin          ('edit_distance',   builtin_edit_distance)       # edit_distance (+Str1, +Str2, -Distance)
+
+        # response generation
+
+        self.register_builtin          ('r_bor',           builtin_r_bor)               # r_bor (+Context)
+        self.register_builtin          ('r_say',           builtin_r_say)               # r_say (+Context, +Token)
 
     def prolog_eval (self, term, env, location):
         
@@ -108,7 +162,7 @@ class AIPrologRuntime(PrologRuntime):
             
             solutions = self.search_predicate (part, [v, 'X'], env=env, err_on_missing=False)
             if len(solutions)<1:
-                return term
+                return Variable(term.name)
             v = solutions[0]['X']
 
         return v

@@ -127,6 +127,49 @@ def builtin_r_say(g, pe):
 
     return [ res ]
 
+def builtin_is(g, rt):
+
+    rt._trace ('CALLED BUILTIN is (?Ques, +Ans)', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('is: 2 args (?Ques, +Ans) expected.', g.location)
+
+    ques = rt.prolog_eval(pred.args[0], g.env, g.location)
+    ans  = rt.prolog_eval(pred.args[1], g.env, g.location)
+
+    # handle pseudo-variable assignment
+    if (isinstance (ques, Variable) or isinstance (ques, Predicate)) and (":" in ques.name):
+
+        parts = ques.name.split(':')
+
+        # import pdb; pdb.set_trace()
+
+        v = parts[0]
+        for part in parts[1:len(parts)-1]:
+            
+            solutions = rt.search_predicate (part, [v, 'X'], env=g.env, err_on_missing=False)
+            if len(solutions)<1:
+                raise PrologRuntimeError(u'is: failed to match part "%s" of "%s".' % (part, unicode(ques)), g.location)
+            v = solutions[0]['X']
+
+        res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location))
+
+        return [ res ]
+
+    # regular is/2 semantics
+
+    if isinstance(ques, Variable):
+        if ques.name != u'_':
+            g.env[ques.name] = ans  # Set variable
+        return True
+
+    if ques != ans:
+        return False
+
+    return True
+
 class AIPrologRuntime(PrologRuntime):
 
     def __init__(self, db):
@@ -135,13 +178,18 @@ class AIPrologRuntime(PrologRuntime):
 
         # natural language processing
 
-        self.register_builtin          ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
-        self.register_builtin          ('edit_distance',   builtin_edit_distance)       # edit_distance (+Str1, +Str2, -Distance)
+        self.register_builtin ('tokenize',        builtin_tokenize)            # tokenize (+Lang, +Str, -Tokens)
+        self.register_builtin ('edit_distance',   builtin_edit_distance)       # edit_distance (+Str1, +Str2, -Distance)
 
         # response generation
 
-        self.register_builtin          ('r_bor',           builtin_r_bor)               # r_bor (+Context)
-        self.register_builtin          ('r_say',           builtin_r_say)               # r_say (+Context, +Token)
+        self.register_builtin ('r_bor',           builtin_r_bor)               # r_bor (+Context)
+        self.register_builtin ('r_say',           builtin_r_say)               # r_say (+Context, +Token)
+
+        # pseudo-variable assignment: replace "is"
+
+        self.register_builtin ('is',              builtin_is)                  # is (?Ques, +Ans)
+
 
     def prolog_eval (self, term, env, location):
         

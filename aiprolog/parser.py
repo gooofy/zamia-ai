@@ -1110,7 +1110,6 @@ class AIPrologParser(object):
         if not clause.body or clause.body.name != 'and':
             self.report_error ('test: flat (and) body expected')
 
-
         prep    = []
         rounds  = []
 
@@ -1121,6 +1120,7 @@ class AIPrologParser(object):
 
         for a in clause.body.args:
 
+            # import pdb; pdb.set_trace()
             if isinstance (a, StringLiteral):
 
                 if cnt % 2 == 0:
@@ -1133,6 +1133,7 @@ class AIPrologParser(object):
                 else:
                     resp    = tokenize(a.s, lang=self.lang, keep_punctuation = False)
 
+                cnt += 1
             else:
 
                 if not rounds:
@@ -1140,9 +1141,8 @@ class AIPrologParser(object):
                 else:
                     if not isinstance(a, Predicate) or a.name != 'action':
                         self.report_error('only action predicates allowed here.')
-                    actions.append(a)
+                    actions.append(map (lambda x: unicode(x), a.args))
 
-            cnt += 1
 
         if inp:
             rounds.append ((inp, resp, actions))

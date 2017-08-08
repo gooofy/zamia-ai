@@ -745,6 +745,7 @@ class AIPrologParser(object):
         self.ts           = []
         self.named_macros = {}
         self.lang         = 'en'
+        self.train_prio   = 0
 
         # actual parsing starts here
 
@@ -759,8 +760,11 @@ class AIPrologParser(object):
 
                     if clause.head.name == 'train':
                         self.extract_training_data (clause)
+                    elif clause.head.name == 'train_priority':
+                        self.extract_training_priority (clause)
                     elif clause.head.name == 'test':
                         self.extract_test_data (clause)
+                        
                     else:
                         self.db.store (module_name, clause)
 
@@ -1089,9 +1093,17 @@ class AIPrologParser(object):
 
             logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
-            self.ds.append((self.lang, contexts, d, r))
+            self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
+
+
+    def extract_training_priority (self, clause):
 
         # import pdb; pdb.set_trace()
+
+        if len(clause.head.args) != 1:
+            self.report_error ('train_priority: single priority argument expected')
+
+        self.train_prio = self.rt.prolog_get_int(clause.head.args[0], {}, clause.location)
 
     def extract_test_data (self, clause):
 

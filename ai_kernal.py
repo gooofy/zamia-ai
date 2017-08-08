@@ -361,16 +361,6 @@ class AIKernal(object):
             nlp_tests = nlp_test(self)
             tests.extend(nlp_tests)
 
-        if hasattr(m, 'NLP_SOURCES'):
-
-            logging.info ('module %s NLP training data extraction...' % module_name)
-
-            for inputfn in m.NLP_SOURCES:
-                ds, ts = self.nlp_parser.parse('modules/%s/%s' % (module_name, inputfn))
-
-                train_ds.extend(ds)
-                tests.extend(ts)
-
         if hasattr(m, 'AIP_SOURCES'):
 
             logging.info ('module %s AIP training data extraction...' % module_name)
@@ -388,7 +378,7 @@ class AIKernal(object):
         td_set  = set()
         td_list = []
 
-        for utt_lang, contexts, i, resp in train_ds:
+        for utt_lang, contexts, i, resp, loc_fn, loc_line, loc_col, prio in train_ds:
 
             inp = copy(contexts)
             inp.extend(i)
@@ -408,7 +398,14 @@ class AIKernal(object):
                                                   module    = module_name,
                                                   utterance = utterance,
                                                   inp       = inp_json,
-                                                  resp      = resp_json))
+                                                  resp      = resp_json,
+
+                                                  prio      = prio,
+
+                                                  loc_fn    = loc_fn,
+                                                  loc_line  = loc_line,
+                                                  loc_col   = loc_col,
+                                                  ))
 
         logging.info ('module %s training data conversion done. %d unique training samples.' %(module_name, len(td_list)))
 

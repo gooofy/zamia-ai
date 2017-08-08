@@ -178,8 +178,8 @@ def builtin_r_action(g, pe):
     if len(args) != 2:
         raise PrologRuntimeError('r_action: 2 args (+Context, +Action) expected.', g.location)
 
-    arg_context = pe.prolog_eval (args[0], g.env, g.location)
-    arg_action  = pe.prolog_eval (args[1], g.env, g.location)
+    arg_context = pe.prolog_eval     (args[0], g.env, g.location)
+    arg_action  = pe.prolog_get_list (args[1], g.env, g.location)
 
     # import pdb; pdb.set_trace()
 
@@ -252,6 +252,7 @@ def builtin_is(g, rt):
             v = solutions[0]['X']
 
         # import pdb; pdb.set_trace()
+        # FIXME: retractall!
         res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location))
 
         return [ res ]

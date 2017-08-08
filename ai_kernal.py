@@ -556,7 +556,7 @@ class AIKernal(object):
             actions   = []
             s2s = self.rt.search_predicate ('action', [resp, 'X'], env=env, err_on_missing=False)
             for s2 in s2s:
-                actions.append(s2['X'])
+                actions.append(map (lambda x: unicode(x), s2['X'].l))
 
             score     = 0.0
             s2s = self.rt.search_predicate ('score', [resp, 'X'], env=env, err_on_missing=False)
@@ -678,9 +678,9 @@ class AIKernal(object):
 
                             if len(test_actions)>0:
 
+                                logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
                                 # print repr(test_actions)
 
-                                #import pdb; pdb.set_trace()
                                 actions_matched = True
                                 act             = None
                                 for action in test_actions:

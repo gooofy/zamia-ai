@@ -837,7 +837,7 @@ class AIPrologParser(object):
 
                 j = txt[i+1:].find(')')
                 if j<0:
-                    lx.report_error (') missing')
+                    self.report_error (') missing')
                 j += i
 
                 # extract macro

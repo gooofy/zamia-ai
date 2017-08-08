@@ -36,7 +36,7 @@ from optparse import OptionParser
 from nltools import misc, tokenizer
 
 PREFIXES     = [u'', u'Computer']
-FILTER_CHARS = [u'[', u']', u'{', u'}']
+FILTER_CHARS = [u'[', u']', u'{', u'}', u'(', u')', u'=', u'>', u'<']
 
 DEFAULT_LOGLEVEL   = logging.DEBUG
 DEFAULT_OUTPUT     = 'foo.aip'

@@ -196,21 +196,6 @@ class AIKernal(object):
             for m2 in getattr (m, 'DEPENDS'):
                 self.load_module(m2)
 
-            if hasattr(m, 'RDF_PREFIXES'):
-                prefixes = getattr(m, 'RDF_PREFIXES')
-                for prefix in prefixes:
-                    self.kb.register_prefix(prefix, prefixes[prefix])
-
-            if hasattr(m, 'LDF_ENDPOINTS'):
-                endpoints = getattr(m, 'LDF_ENDPOINTS')
-                for endpoint in endpoints:
-                    self.kb.register_endpoint(endpoint, endpoints[endpoint])
-
-            if hasattr(m, 'RDF_ALIASES'):
-                aliases = getattr(m, 'RDF_ALIASES')
-                for alias in aliases:
-                    self.kb.register_alias(alias, aliases[alias])
-
             if hasattr(m, 'CRONJOBS'):
 
                 # update cronjobs in db

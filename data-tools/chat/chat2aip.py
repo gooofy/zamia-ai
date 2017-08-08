@@ -35,6 +35,9 @@ from optparse import OptionParser
 
 from nltools import misc, tokenizer
 
+PREFIXES     = [u'', u'Computer']
+FILTER_CHARS = [u'[', u']', u'{', u'}']
+
 DEFAULT_LOGLEVEL   = logging.DEBUG
 DEFAULT_OUTPUT     = 'foo.aip'
 DEFAULT_LANG       = 'en'
@@ -109,8 +112,13 @@ for inputfn in args:
             question = MINUS_LINE_PATTERN.sub(replace_minus_line, question)
             answer   = MINUS_LINE_PATTERN.sub(replace_minus_line, answer)
 
-            # filter out specials
-            if '[' in question or ']' in question or '[' in answer or ']' in answer:
+            # filter out samples that contain FILTER_CHARS
+            fc_found = False
+            for fc in FILTER_CHARS:
+                if (fc in question) or (fc in answer):
+                    fc_found = True
+                    break
+            if fc_found:
                 skipped += 1
                 continue
 
@@ -146,7 +154,7 @@ with codecs.open(outputfn, 'w', 'utf8') as outputf:
     outputf.write ('%prolog\n\n')
     outputf.write ('train_priority(%d).\n\n' % options.prio)
 
-    for prefix in [u'', u'Computer, ']:
+    for prefix in PREFIXES:
 
         for utt in sorted(corpus):
             question, answer = corpus[utt]

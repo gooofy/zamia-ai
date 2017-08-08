@@ -12,10 +12,15 @@ TODO
 NOTES
 run_training.sh
 modules/exp
-modules/ms
+modules/chat
 mestats
 doc/.asciidoctor
 doc/*.png
 doc/*.html
 *.html
 data-tools/aiml/german-alice-alignment.txt
+data-tools/aiml/bots_en/
+data-tools/aiml/chatterbots2chat.sh
+data-tools/rdf/etc/
+data-tools/rdf/rdf/
+

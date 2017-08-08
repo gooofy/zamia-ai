@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS    = [ ]
+DEPENDS     = [ 'wd' ]
 
-KB_SOURCES = [
-              'config.n3'
-             ]
+AIP_SOURCES = [
+               'config.aip'
+              ]
 

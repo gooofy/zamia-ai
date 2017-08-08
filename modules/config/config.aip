@@ -1,0 +1,33 @@
+%prolog
+
+rdfsLabel        (self, "HAL 9000", en).
+rdfsLabel        (self, "HAL 9000", de).
+
+forename         (self, "HAL", en).
+forename         (self, "HAL", de).
+forename         (self, "Computer", en).
+forename         (self, "Computer", de).
+
+wdpdInstanceOf   (self, wdeComputer).
+wdpdSexOrGender  (self, wdeMale).
+wdpdLocatedIn    (self, wdeStuttgart).
+favMovie         (self, wde2001ASpaceOdyssey).
+favChannel       (self, wdeB5Aktuell).
+favAuthor        (self, wdeArthurCClarke).
+favBook          (self, wde2001ASpaceOdyssey1).
+idol             (self, wdeNiklausWirth).
+wdpdDateOfBirth  (self, "2017-01-07T17:42:32+00:00").
+wdpdPlaceOfBirth (self, wdeStuttgart).
+
+%
+% name / self address utils
+%
+
+macro(en, my_forename, W) :- forename (self, W, en).
+macro(de, my_forename, W) :- forename (self, W, de).
+
+macro(en, self_address, L) :- forename (self, W, en).
+macro(en, self_address, L) :- L is "".
+macro(de, self_address, L) :- forename (self, W, en).
+macro(de, self_address, L) :- L is "".
+    

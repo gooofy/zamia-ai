@@ -27,7 +27,7 @@ import logging
 from zamiaprolog.runtime  import PrologRuntime
 from zamiaprolog.errors   import PrologRuntimeError
 from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Literal, Variable, Predicate, Clause, SourceLocation
-from zamiaprolog.builtins import do_gensym, do_assertz
+from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
 from nltools.tokenizer    import tokenize
 from nltools.misc         import edit_distance
 
@@ -195,7 +195,6 @@ def builtin_is(g, rt):
 
         parts = ques.name.split(':')
 
-
         v = parts[0]
         for part in parts[1:len(parts)-1]:
             
@@ -205,8 +204,11 @@ def builtin_is(g, rt):
             v = solutions[0]['X']
 
         # import pdb; pdb.set_trace()
-        # FIXME: retractall!
-        res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location))
+
+        res = {}
+
+        res = do_retract (g.env, Predicate ( parts[len(parts)-1], [v, Variable('_')]), res=res)
+        res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location), res=res)
 
         return [ res ]
 

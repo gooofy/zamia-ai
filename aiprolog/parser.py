@@ -979,7 +979,9 @@ class AIPrologParser(object):
 
         return a
 
-    def _generate_training_code (self, and_args, mpos):
+    def _generate_training_code (self, and_args, mpos, and_mode=True):
+
+        # import pdb; pdb.set_trace()
 
         code = []
 
@@ -988,12 +990,15 @@ class AIPrologParser(object):
             if isinstance (a, StringLiteral):
 
                 # code.append(Predicate('r_bor', [ Variable('C') ]))
-                code.append(u'r_bor(C)')
+                # code.append(u'r_bor(C)')
 
                 parts = []
                 for p1 in a.s.split('{'):
                     for p2 in p1.split('}'):
                         parts.append(p2)
+
+                if not and_mode:
+                    code.append(u'and(')
 
                 cnt = 0
                 for part in parts:
@@ -1016,27 +1021,16 @@ class AIPrologParser(object):
                             code.append(unicode(Predicate('r_say', [ Variable('C'), StringLiteral(t)])))
                     cnt += 1
 
+                if not and_mode:
+                    code.append(u')')
+
             elif isinstance (a, Predicate):
 
                 if a.name == 'or':
 
                     code.append(u'or(')
 
-                    for a2 in a.args:
-
-                        if isinstance (a2, Predicate):
-
-                            if a2.name == 'and':
-
-                                code.append(u'and(')
-
-                                code.extend(self._generate_training_code (a2.args, mpos))
-
-                                code.append(u')')
-
-                        else:
-                            code.append (unicode(self._token_positions(a2, mpos)))
-
+                    code.extend(self._generate_training_code (a.args, mpos, and_mode=False))
 
                     code.append(u')')
 

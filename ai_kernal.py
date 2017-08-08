@@ -538,34 +538,24 @@ class AIKernal(object):
 
         return res, cur_context
 
-    def _extract_responses (self, cur_context, env):
+    def _extract_response (self, cur_context, env):
 
-        resps = []
+        res       = []
+        s2s = self.rt.search_predicate ('say', [cur_context, 'X'], env=env, err_on_missing=False)
+        for s2 in s2s:
+            res.append(s2['X'].s)
 
-        s1s = self.rt.search_predicate ('resp', [cur_context, 'X'], env=env)
+        actions   = []
+        s2s = self.rt.search_predicate ('action', [cur_context, 'X'], env=env, err_on_missing=False)
+        for s2 in s2s:
+            actions.append(map (lambda x: unicode(x), s2['X'].l))
 
-        for s1 in s1s:
+        score     = 0.0
+        s2s = self.rt.search_predicate ('score', [cur_context, 'X'], env=env, err_on_missing=False)
+        for s2 in s2s:
+            score += s2['X'].f
 
-            resp = s1['X']
-
-            res       = []
-            s2s = self.rt.search_predicate ('say', [resp, 'X'], env=env, err_on_missing=False)
-            for s2 in s2s:
-                res.append(s2['X'].s)
-
-            actions   = []
-            s2s = self.rt.search_predicate ('action', [resp, 'X'], env=env, err_on_missing=False)
-            for s2 in s2s:
-                actions.append(map (lambda x: unicode(x), s2['X'].l))
-
-            score     = 0.0
-            s2s = self.rt.search_predicate ('score', [resp, 'X'], env=env, err_on_missing=False)
-            for s2 in s2s:
-                score += s2['X'].f
-
-            resps.append((res, actions, score))
-
-        return resps
+        return res, actions, score
 
     def _reconstruct_prolog_code (self, acode):
 
@@ -660,53 +650,49 @@ class AIKernal(object):
 
                     for solution in solutions:
 
-                        for actual_out, actual_actions, score in self._extract_responses (cur_context, solution):
+                        actual_out, actual_actions, score = self._extract_response (cur_context, solution)
 
-                            # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                            if len(test_out) > 0:
-                                if len(actual_out)>0:
-                                    actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
-                                logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
-                                if actual_out != test_out:
-                                    logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
-                                    continue # no match
+                        if len(test_out) > 0:
+                            if len(actual_out)>0:
+                                actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
+                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
+                            if actual_out != test_out:
+                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
+                                continue # no match
 
-                            logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
+                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
 
-                            # check actions
+                        # check actions
 
-                            if len(test_actions)>0:
+                        if len(test_actions)>0:
 
-                                logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
-                                # print repr(test_actions)
+                            logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
+                            # print repr(test_actions)
 
-                                actions_matched = True
-                                act             = None
-                                for action in test_actions:
-                                    for act in actual_actions:
-                                        # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                        if action == act:
-                                            break
-                                    if action != act:
-                                        actions_matched = False
+                            actions_matched = True
+                            act             = None
+                            for action in test_actions:
+                                for act in actual_actions:
+                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                    if action == act:
                                         break
+                                if action != act:
+                                    actions_matched = False
+                                    break
 
-                                if not actions_matched:
-                                    logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
-                                    continue
+                            if not actions_matched:
+                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
+                                continue
 
-                                logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
+                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
 
-                            matching_resp = True
-
-                        if matching_resp:
-                            break
-
-                    prev_context = cur_context
+                        matching_resp = True
+                        res           = solution
+                        break
 
                     if matching_resp:
-                        res = solution
                         break
 
                 if acode is None:
@@ -718,138 +704,8 @@ class AIKernal(object):
                     logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
                     break
 
-                round_num += 1
-
-
-
-            #     if len(data) % 3 != 0:
-            #         raise Exception ('Error: test data length has to be multiple of 3!')
-
-            #     context   = []
-            #     prev_ias  = None
-            #     round_num = 0
-
-            #     while len(data)>round_num*3:
-
-            #         # if round_num>0:
-
-            #         test_in      = u' '.join(tokenize(data[round_num*3], lang=utt_lang))
-            #         test_out     = u' '.join(tokenize(data[round_num*3+1], lang=utt_lang))
-            #         test_actions = data[round_num*3+2]
-
-            #         logging.info("nlp_test: %s round %d test_in     : %s" % (name, round_num, test_in) )
-            #         logging.info("nlp_test: %s round %d test_out    : %s" % (name, round_num, test_out) )
-            #         logging.info("nlp_test: %s round %d test_actions: %s" % (name, round_num, test_actions) )
-
-            #         tokens  = tokenize(test_in, utt_lang)
-
-            #         cur_ias = self._setup_ias ( user_uri  = TEST_USER, 
-            #                                     utterance = test_in, 
-            #                                     utt_lang  = utt_lang, 
-            #                                     tokens    = tokens,
-            #                                     prev_ias  = prev_ias)
-
-            #         env_locals = {'ias': cur_ias}
-            #         if prep:
-            #             exec u'\n'.join(prep) in env_locals
-
-            #         # gcode input
-
-            #         inp = self._compute_net_input (env_locals['ias'])
-
-            #         # look up g-code in DB
-
-            #         gcode = None
-            #         matching_resp = False
-            #         for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-            #                                                                  model.TrainingData.layer == 0,
-            #                                                                  model.TrainingData.inp   == json.dumps(inp)):
-            #             if gcode:
-            #                 logging.warn (u'%s: layer 0 more than one gcode for test_in "%s" found in DB!' % (name, test_in))
-
-            #             gcode = json.loads (tdr.resp)
-
-            #             env_l = {'ias'   : deepcopy(cur_ias),
-            #                      'kernal': self}
-
-            #             exec u'\n'.join(gcode) in env_l
-        
-            #             # rcode input
-
-            #             inp = self._compute_net_input (env_l['ias'])
-
-            #             # look up response(s) in DB
-
-            #             response      = None
-
-            #             for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
-            #                                                                      model.TrainingData.layer == 1,
-            #                                                                      model.TrainingData.inp   == json.dumps(inp)):
-
-            #                 response = json.loads (tdr.resp)
-
-            #                 # import pdb; pdb.set_trace()
-
-            #                 actual_out, actual_lang, actual_actions, score = self._extract_response (response, env_l['ias'])
-
-            #                 # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
-
-            #                 if len(test_out) > 0:
-            #                     if len(actual_out)>0:
-            #                         actual_out = u' '.join(tokenize(actual_out, utt_lang))
-            #                     logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (name, round_num, actual_out, score) )
-            #                     if actual_out != test_out:
-            #                         logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (name, round_num))
-            #                         continue # no match
-
-            #                 logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (name, round_num))
-
-            #                 # check actions
-
-            #                 if len(test_actions)>0:
-
-            #                     # print repr(test_actions)
-
-            #                     #import pdb; pdb.set_trace()
-            #                     actions_matched = True
-            #                     for action in test_actions:
-            #                         for act in actual_actions:
-            #                             # print "    check action match: %s vs %s" % (repr(action), repr(act))
-            #                             if action == act:
-            #                                 break
-            #                         if action != act:
-            #                             actions_matched = False
-            #                             break
-
-            #                     if not actions_matched:
-            #                         logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (name, round_num))
-            #                         continue
-
-            #                     logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (name, round_num))
-
-            #                 matching_resp = True
-
-            #                 prev_ias = env_l['ias']
-
-            #                 break
-
-            #             if matching_resp:
-            #                 break
-
-            #         if gcode is None:
-            #             logging.error('failed to find layer 0 db entry for %s' % json.dumps(inp))
-            #             logging.error (u'Error: %s: layer 0 no training data for test_in "%s" found in DB!' % (name, test_in))
-            #             break
-
-            #         if not response:
-            #             logging.error (u'Error: %s: no layer1 training data for inp %s found in DB!' % (name, repr(inp)))
-            #             break
-            #         
-            #         if not matching_resp:
-            #             logging.error (u'nlp_test: %s round %d no matching response found.' % (name, round_num))
-            #             break
-            #                
-            #         round_num += 1
+                prev_context = cur_context
+                round_num   += 1
 
     def run_tests_multi (self, module_names, test_name=None):
 

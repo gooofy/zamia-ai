@@ -79,25 +79,6 @@ def builtin_edit_distance(g, pe):
 
     return True
 
-def builtin_r_bor(g, pe):
-
-    """" r_bor (+Context) """
-
-    pe._trace ('CALLED BUILTIN r_bor', g)
-
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 1:
-        raise PrologRuntimeError('r_bor: 1 arg (+Context) expected.', g.location)
-
-    arg_context = pe.prolog_eval (args[0], g.env, g.location)
-
-    # import pdb; pdb.set_trace()
-
-    resp = Predicate(do_gensym (pe, 'resp'))
-    res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location))
-    return [ res ]
-
 def builtin_r_say(g, pe):
 
     """" r_say (+Context, +Token) """
@@ -116,14 +97,7 @@ def builtin_r_say(g, pe):
 
     res = {}
 
-    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
-    if len(solutions)==0:
-        resp = Predicate(do_gensym (pe, 'resp'))
-        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
-    else:
-        resp = solutions[len(solutions)-1]['X']
-        
-    res = do_assertz (g.env, Clause ( Predicate('say', [resp, arg_token]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('say', [arg_context, arg_token]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -149,13 +123,6 @@ def builtin_r_sayv(g, pe):
 
     res = {}
 
-    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
-    if len(solutions)==0:
-        resp = Predicate(do_gensym (pe, 'resp'))
-        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
-    else:
-        resp = solutions[len(solutions)-1]['X']
-        
     if arg_fmt == 'd':
         v = unicode(int(unicode(arg_var)))
     elif arg_fmt == 'f':
@@ -163,7 +130,7 @@ def builtin_r_sayv(g, pe):
     else:
         v = unicode(arg_var)
 
-    res = do_assertz (g.env, Clause ( Predicate('say', [resp, StringLiteral(v)]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('say', [arg_context, StringLiteral(v)]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -185,14 +152,7 @@ def builtin_r_action(g, pe):
 
     res = {}
 
-    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
-    if len(solutions)==0:
-        resp = Predicate(do_gensym (pe, 'resp'))
-        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
-    else:
-        resp = solutions[len(solutions)-1]['X']
-        
-    res = do_assertz (g.env, Clause ( Predicate('action', [resp, arg_action]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('action', [arg_context, arg_action]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -213,15 +173,8 @@ def builtin_r_score(g, pe):
     # import pdb; pdb.set_trace()
 
     res = {}
-
-    solutions = pe.search_predicate ('resp', [arg_context, 'X'], env=g.env, err_on_missing=False)
-    if len(solutions)==0:
-        resp = Predicate(do_gensym (pe, 'resp'))
-        res = do_assertz (g.env, Clause ( Predicate('resp', [arg_context, resp]) , location=g.location), res=res)
-    else:
-        resp = solutions[len(solutions)-1]['X']
         
-    res = do_assertz (g.env, Clause ( Predicate('score', [resp, arg_score]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('score', [arg_context, arg_score]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -282,7 +235,6 @@ class AIPrologRuntime(PrologRuntime):
 
         # response generation
 
-        self.register_builtin ('r_bor',           builtin_r_bor)               # r_bor (+Context)
         self.register_builtin ('r_say',           builtin_r_say)               # r_say (+Context, +Token)
         self.register_builtin ('r_sayv',          builtin_r_sayv)              # r_sayv (+Context, +Var, +Fmt)
         self.register_builtin ('r_action',        builtin_r_action)            # r_action (+Context, +Action)

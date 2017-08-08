@@ -139,11 +139,11 @@ class AIPrologParser(object):
         if self.cur_c == u'\n':
             self.cur_line += 1
             self.cur_col   = 1
-            if self.linecnt > 0 and self.cur_line % 100 == 0:
-                print "%s: parsing line %6d / %6d (%3d%%)" % (self.prolog_fn, 
-                                                              self.cur_line, 
-                                                              self.linecnt, 
-                                                              self.cur_line * 100 / self.linecnt)
+            if (self.linecnt > 0) and (self.cur_line % 1000 == 0):
+                logging.info ("%s: parsing line %6d / %6d (%3d%%)" % (self.prolog_fn, 
+                                                                      self.cur_line, 
+                                                                      self.linecnt, 
+                                                                      self.cur_line * 100 / self.linecnt))
 
         # print '[', self.cur_c, ']',
 
@@ -691,7 +691,7 @@ class AIPrologParser(object):
     # high-level interface
     #
 
-    def start (self, prolog_f, prolog_fn, linecnt = 0, module_name = None):
+    def start (self, prolog_f, prolog_fn, module_name = None):
 
         self.cur_c        = u' '
         self.cur_sym      = SYM_NONE
@@ -700,7 +700,6 @@ class AIPrologParser(object):
         self.cur_col      = 1
         self.prolog_f     = prolog_f
         self.prolog_fn    = prolog_fn
-        self.linecnt      = linecnt
         self.module_name  = module_name
 
         self.cstate       = CSTATE_IDLE
@@ -729,11 +728,11 @@ class AIPrologParser(object):
 
         # quick source line count for progress output below
 
-        linecnt = 1
+        self.linecnt = 1
         with codecs.open(filename, encoding='utf-8', errors='ignore', mode='r') as f:
             while f.readline():
-                linecnt += 1
-        logging.info("%s: %d lines." % (filename, linecnt))
+                self.linecnt += 1
+        logging.info("%s: %d lines." % (filename, self.linecnt))
 
         # remove old predicates of this module from db
         if clear_module:
@@ -756,7 +755,7 @@ class AIPrologParser(object):
                 clauses = self.clause()
 
                 for clause in clauses:
-                    logging.debug(u"%7d / %7d (%3d%%) > %s" % (self.cur_line, linecnt, self.cur_line * 100 / linecnt, unicode(clause)))
+                    logging.debug(u"%7d / %7d (%3d%%) > %s" % (self.cur_line, self.linecnt, self.cur_line * 100 / self.linecnt, unicode(clause)))
 
                     if clause.head.name == 'train':
                         self.extract_training_data (clause)
@@ -887,6 +886,10 @@ class AIPrologParser(object):
             if cnt % 2 == 1:
                 
                 sub_parts = p1.split(':')
+
+                if len(sub_parts) != 2:
+                    self.report_error ('syntax error in macro call %s' % repr(p1))
+
                 name = sub_parts[0]
 
                 if name == 'empty':

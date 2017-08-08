@@ -2245,7 +2245,7 @@ RES_PATHS = [
                 ]
               ),
 
-              # home computers
+              # (home) computers
               (
                 [ 
                   u'wde:CommodoreVIC20',
@@ -2269,6 +2269,8 @@ RES_PATHS = [
                 ],
                 [
                   ['wdpd:Manufacturer'], 
+                  ['wdpd:CPU'], 
+                  ['wdpd:InstanceOf'], 
                 ]
               ),
 
@@ -2284,6 +2286,30 @@ RES_PATHS = [
                   u'wde:Writer',
                   u'wde:FilmDirector',
                   u'wde:OperatingSystem',
+                  u'wde:Computer',
+                  u'wde:Book',
+                  u'wde:Human',
+                  u'wde:ProgrammingLanguage',
+                  u'wde:Film',
+                  u'wde:PresidentOfTheUnitedStatesOfAmerica',
+                  u'wde:PresidentOfGermany',
+                  u'wde:Writer',
+                  u'wde:ComputerScientist',
+                  u'wde:HomeComputer',
+                  u'wde:FederalChancellorOfGermany',
+                  u'wde:Female',
+                  u'wde:Male',
+                  u'wde:FemaleGivenName',
+                  u'wde:MaleGivenName',
+                  u'wde:City',
+                  u'wde:Capital',
+                  u'wde:Municipality',
+                  u'wde:GeographicRegion',
+                  u'wde:MunicipalityOfGermany',
+                  u'wde:HumanSettlement',
+                  u'wde:BigCity',
+                  u'wde:GeographicLocation',
+                  u'wde:Location',
                   u'wde:MultitaskingOperatingSystem',
                 ],
                 [

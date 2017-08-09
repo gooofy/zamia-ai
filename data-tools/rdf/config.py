@@ -1736,7 +1736,7 @@ RDF_PREFIXES = {
                 'vcard'       : 'http://www.w3.org/2006/vcard/ns#',
                 'powder'      : 'http://www.w3.org/2007/05/powder#',
                 'wdrs'        : 'http://www.w3.org/2007/05/powder-s#',
-                'httph'       : 'http://www.w3.org/2007/ont/httph#',
+                # 'httph'       : 'http://www.w3.org/2007/ont/httph#',
                 'un'          : 'http://www.w3.org/2007/ont/unit#',
                 'rif'         : 'http://www.w3.org/2007/rif#',
                 'act'         : 'http://www.w3.org/2007/rif-builtin-action#',
@@ -1755,8 +1755,8 @@ RDF_PREFIXES = {
                 'ttl'         : 'http://www.w3.org/2008/turtle#',
                 'ptr'         : 'http://www.w3.org/2009/pointers#',
                 'cnt'         : 'http://www.w3.org/2011/content#',
-                'http'        : 'http://www.w3.org/2011/http#',
-                'httpm'       : 'http://www.w3.org/2011/http-methods#',
+                # 'http'        : 'http://www.w3.org/2011/http#',
+                # 'httpm'       : 'http://www.w3.org/2011/http-methods#',
                 'shex'        : 'http://www.w3.org/2013/ShEx/ns#',
                 'tblcard'     : 'http://www.w3.org/People/Berners-Lee/card#',
                 'fowl'        : 'http://www.w3.org/TR/2003/PR-owl-guide-20031209/food#',
@@ -2322,8 +2322,6 @@ RES_PATHS = [
 
               (
                 [
-                  # movie: tt0111161
-                  u'http://www.wikidata.org/entity/Q172241',
                   # movie: tt0111161
                   u'http://www.wikidata.org/entity/Q172241',
                   # movie: tt0068646

@@ -6,7 +6,7 @@ import logging
 DEPENDS    = [ ]
 
 AIP_SOURCES = [
-               'givennames.aip',
+               'givennames20.aip',
                'wd_sub.pl',
               ]
 

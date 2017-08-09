@@ -263,8 +263,22 @@ class AIPrologRuntime(PrologRuntime):
 
         v = parts[0]
         for part in parts[1:]:
-            
-            solutions = self.search_predicate (part, [v, 'X'], env=env, err_on_missing=False)
+
+            subparts = part.split('|')
+
+            pattern = [v]
+            wildcard_found = False
+            for sp in subparts[1:]:
+                if sp == '_':
+                    wildcard_found = True
+                    pattern.append('X')
+                else:
+                    pattern.append(sp)
+
+            if not wildcard_found:
+                pattern.append('X')
+
+            solutions = self.search_predicate (subparts[0], pattern, env=env, err_on_missing=False)
             if len(solutions)<1:
                 return Variable(term.name)
             v = solutions[0]['X']

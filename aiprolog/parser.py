@@ -86,7 +86,7 @@ NAME_CHARS = set([u'a',u'b',u'c',u'd',u'e',u'f',u'g',u'h',u'i',u'j',u'k',u'l',u'
                   u'_',u'0',u'1',u'2',u'3',u'4',u'5',u'6',u'7',u'8',u'9'])
                   # u'æ', u'é'])
 
-NAME_CHARS_EXTENDED = NAME_CHARS | set([':'])
+NAME_CHARS_EXTENDED = NAME_CHARS | set([':','|'])
 
 SIGN_CHARS = set([u'=',u'<',u'>',u'+',u'-',u'*',u'/',u'\\'])
 

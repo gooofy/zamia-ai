@@ -740,11 +740,12 @@ class AIPrologParser(object):
 
         # (re-) init
 
-        self.ds           = []
-        self.ts           = []
-        self.named_macros = {}
-        self.lang         = 'en'
-        self.train_prio   = 0
+        self.ds             = []
+        self.ts             = []
+        self.named_macros   = {}
+        self.lang           = 'en'
+        self.train_prio     = 0
+        self.train_prefixes = []
 
         # actual parsing starts here
 
@@ -761,6 +762,8 @@ class AIPrologParser(object):
                         self.extract_training_data (clause)
                     elif clause.head.name == 'train_priority':
                         self.extract_training_priority (clause)
+                    elif clause.head.name == 'train_prefix':
+                        self.extract_training_prefixes (clause)
                     elif clause.head.name == 'test':
                         self.extract_test_data (clause)
                         
@@ -1098,7 +1101,6 @@ class AIPrologParser(object):
 
             self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
 
-
     def extract_training_priority (self, clause):
 
         # import pdb; pdb.set_trace()
@@ -1107,6 +1109,25 @@ class AIPrologParser(object):
             self.report_error ('train_priority: single priority argument expected')
 
         self.train_prio = self.rt.prolog_get_int(clause.head.args[0], {}, clause.location)
+
+    def extract_training_prefixes (self, clause):
+
+        if len(clause.head.args) != 1:
+            self.report_error ('train_prefixes: single prefix argument expected')
+
+        if not clause.body:
+            prefix = self.rt.prolog_get_string(clause.head.args[0], {}, clause.location)
+            self.train_prefixes.append(prefix)
+            return
+
+        # import pdb; pdb.set_trace()
+
+        v = self.rt.prolog_get_variable(clause.head.args[0], {}, clause.location)
+
+        solutions = self.rt.search(clause, env={}, err_on_missing=True)
+        for s in solutions:
+            prefix = s[v].s
+            self.train_prefixes.append(prefix)
 
     def extract_test_data (self, clause):
 

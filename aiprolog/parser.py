@@ -1093,13 +1093,21 @@ class AIPrologParser(object):
         if len(code)==0:
             self.report_error ('train: no code.')
 
-        for d, mpos in self._expand_macros(inp):
+        prefixes = self.train_prefixes if self.train_prefixes else [u'']
 
-            r = self._generate_training_code (code, mpos)
+        for prefix in prefixes:
 
-            logging.debug( '%s -> %s' % (repr(d), repr(r)))
+            # import pdb; pdb.set_trace()
 
-            self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
+            pinp = prefix + inp
+
+            for d, mpos in self._expand_macros(pinp):
+
+                r = self._generate_training_code (code, mpos)
+
+                logging.debug( '%s -> %s' % (repr(d), repr(r)))
+
+                self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
 
     def extract_training_priority (self, clause):
 

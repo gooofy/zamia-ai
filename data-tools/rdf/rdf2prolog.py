@@ -375,7 +375,7 @@ with codecs.open(outputfn, 'w', 'utf8') as f:
                         continue
                     if o.language:
                         if o.language in LANGUAGES:
-                            f.write(u"%s(%s, \"%s\", %s).\n" % (pl, el, prolog_string_escape(o), o.language))
+                            f.write(u"%s(%s, %s, \"%s\").\n" % (pl, el, o.language, prolog_string_escape(o)))
                         continue
 
                     f.write(u"%s(%s, \"%s\").\n" % (pl, el, prolog_string_escape(o)))

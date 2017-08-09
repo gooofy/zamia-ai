@@ -596,22 +596,26 @@ class AIPrologParser(object):
 
             pred = self.relation()
 
+            # if self.cur_line == 38:
+            # import pdb; pdb.set_trace()
+
             # see if we can find a clause that unifies with the pred to inline
 
-            clauses = self.db.lookup(pred.name)
+            clauses   = self.db.lookup(pred.name)
             succeeded = None
+            succ_bind = None
             for clause in reversed(clauses):
 
                 if len(clause.head.args) != len(pred.args): 
                     continue
 
                 bindings = {}
-
                 if self.rt._unify (pred, {}, clause.head, bindings, clause.location, overwrite_vars = False):
                     if succeeded:
                         self.report_error ("inline: %s: more than one matching pred found." % unicode(pred))
 
                     succeeded = clause
+                    succ_bind = bindings
 
             if not succeeded:
                 self.report_error ("inline: %s: no matching pred found." % unicode(pred))
@@ -621,7 +625,7 @@ class AIPrologParser(object):
                 
             res = []
             for a in succeeded.body.args:
-                res.append(self._apply_bindings(a, bindings))
+                res.append(self._apply_bindings(a, succ_bind))
 
             return res
 
@@ -1100,7 +1104,8 @@ class AIPrologParser(object):
 
         for prefix in prefixes:
 
-            # import pdb; pdb.set_trace()
+            # if clause.location.line == 36:
+            #     import pdb; pdb.set_trace()
 
             pinp = prefix + inp
 

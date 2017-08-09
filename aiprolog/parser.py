@@ -620,12 +620,19 @@ class AIPrologParser(object):
             if not succeeded:
                 self.report_error ("inline: %s: no matching pred found." % unicode(pred))
 
-            if not isinstance(succeeded.body, Predicate) or succeeded.body.name != 'and':
-                self.report_error ("inline: %s: matching pred needs to be in 'and' form to be inlined." % unicode(pred))
-                
             res = []
-            for a in succeeded.body.args:
-                res.append(self._apply_bindings(a, succ_bind))
+            if not isinstance(succeeded.body, Predicate):
+                self.report_error ("inline: inlined predicate has wrong form.")
+            
+            if succeeded.body.name == 'and':
+                for a in succeeded.body.args:
+                    res.append(self._apply_bindings(a, succ_bind))
+            else:
+                res2 = []
+                for a in succeeded.body.args:
+                    res2.append(self._apply_bindings(a, succ_bind))
+
+                res.append(Predicate (succeeded.body.name, res2))
 
             return res
 

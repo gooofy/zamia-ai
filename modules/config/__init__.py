@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS     = [ 'wd' ]
+DEPENDS     = [ 'data' ]
 
 AIP_SOURCES = [
                'config.aip'

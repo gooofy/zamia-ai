@@ -125,9 +125,10 @@ class LDFMirror(object):
         if not endpoint:
             return triples
 
-        logging.info ("LDF: *** fetching from endpoint %s" % endpoint)
+        # logging.info ("LDF: *** fetching from endpoint %s" % endpoint)
 
         url = endpoint + '?' + urllib.urlencode(params)
+        label = '<unknown>'
         while True:
 
             response = requests.get(
@@ -160,7 +161,8 @@ class LDFMirror(object):
                 if isinstance(o2, rdflib.term.Literal) \
                     and unicode(p2) == u'http://www.w3.org/2000/01/rdf-schema#label' \
                     and o2.language == u'en':
-                    logging.info (u'LDF:   fetched LABEL(en)=%s' % o2)
+                    # logging.info (u'LDF:   fetched LABEL(en)=%s' % o2)
+                    label = o2
 
                 # logging.debug ('quad: %s %s %s' % (s2,p2,o2))
                 triples.append((s2,p2,o2))
@@ -178,6 +180,7 @@ class LDFMirror(object):
             if not url:
                 break
 
+        logging.info (u'LDF:                       FETCH %5d triples %s' % (len(triples), label[:40]))
         return triples
 
     def mirror (self, res_paths):
@@ -209,6 +212,7 @@ class LDFMirror(object):
 
 
         todo = []
+        done = set()
 
         for res_path in res_paths:
 
@@ -241,19 +245,21 @@ class LDFMirror(object):
 
             resource, path = todo.pop()
 
-            logging.info ('LDF: %8.1fs %5d %s %s' % (time.time() - start_time, len(todo), resource, repr(path)))
 
             todo_new = set()
 
-            # try to fetch from our graph
-            # quads = self.store.filter_quads(s=resource, context=self.context.identifier)
+            # fetch resources from LDF only once
 
-            triples = list(self.graph.triples((resource, None, None)))
+            if resource in done:
+                triples = list(self.graph.triples((resource, None, None)))
+                # logging.debug (u'LDF:                       DONE, %d triples' % len(triples))
+                do_add = False
 
-            do_add = False
-            if len(triples) == 0:
+            else:
 
+                logging.info ('LDF: %8.1fs %5d:%5d %s %s' % (time.time() - start_time, len(todo), len(done), resource, repr(path)))
                 triples = self._fetch_ldf (s=resource)
+                done.add(resource)
                 do_add = True
 
             # transformations

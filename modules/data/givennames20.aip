@@ -1,0 +1,200 @@
+rdfsLabel(nameBarbara, de, "Barbara").
+rdfsLabel(nameBarbara, en, "Barbara").
+wdpdSexOrGender(nameBarbara, wdeFemale).
+wdpdInstanceOf(nameBarbara, wdeFemaleGivenName).
+
+rdfsLabel(nameBrigitte, de, "Brigitte").
+rdfsLabel(nameBrigitte, en, "Brigitte").
+wdpdSexOrGender(nameBrigitte, wdeFemale).
+wdpdInstanceOf(nameBrigitte, wdeFemaleGivenName).
+
+rdfsLabel(nameDorothy, de, "Dorothy").
+rdfsLabel(nameDorothy, en, "Dorothy").
+wdpdSexOrGender(nameDorothy, wdeFemale).
+wdpdInstanceOf(nameDorothy, wdeFemaleGivenName).
+
+rdfsLabel(nameElizabeth, de, "Elizabeth").
+rdfsLabel(nameElizabeth, en, "Elizabeth").
+wdpdSexOrGender(nameElizabeth, wdeFemale).
+wdpdInstanceOf(nameElizabeth, wdeFemaleGivenName).
+
+rdfsLabel(nameHelga, de, "Helga").
+rdfsLabel(nameHelga, en, "Helga").
+wdpdSexOrGender(nameHelga, wdeFemale).
+wdpdInstanceOf(nameHelga, wdeFemaleGivenName).
+
+rdfsLabel(nameJennifer, de, "Jennifer").
+rdfsLabel(nameJennifer, en, "Jennifer").
+wdpdSexOrGender(nameJennifer, wdeFemale).
+wdpdInstanceOf(nameJennifer, wdeFemaleGivenName).
+
+rdfsLabel(nameKarin, de, "Karin").
+rdfsLabel(nameKarin, en, "Karin").
+wdpdSexOrGender(nameKarin, wdeFemale).
+wdpdInstanceOf(nameKarin, wdeFemaleGivenName).
+
+rdfsLabel(nameLinda, de, "Linda").
+rdfsLabel(nameLinda, en, "Linda").
+wdpdSexOrGender(nameLinda, wdeFemale).
+wdpdInstanceOf(nameLinda, wdeFemaleGivenName).
+
+rdfsLabel(nameLisa, de, "Lisa").
+rdfsLabel(nameLisa, en, "Lisa").
+wdpdSexOrGender(nameLisa, wdeFemale).
+wdpdInstanceOf(nameLisa, wdeFemaleGivenName).
+
+rdfsLabel(nameMargaret, de, "Margaret").
+rdfsLabel(nameMargaret, en, "Margaret").
+wdpdSexOrGender(nameMargaret, wdeFemale).
+wdpdInstanceOf(nameMargaret, wdeFemaleGivenName).
+
+rdfsLabel(nameMaria, de, "Maria").
+rdfsLabel(nameMaria, en, "Maria").
+wdpdSexOrGender(nameMaria, wdeFemale).
+wdpdInstanceOf(nameMaria, wdeFemaleGivenName).
+
+rdfsLabel(nameMary, de, "Mary").
+rdfsLabel(nameMary, en, "Mary").
+wdpdSexOrGender(nameMary, wdeFemale).
+wdpdInstanceOf(nameMary, wdeFemaleGivenName).
+
+rdfsLabel(nameMonika, de, "Monika").
+rdfsLabel(nameMonika, en, "Monika").
+wdpdSexOrGender(nameMonika, wdeFemale).
+wdpdInstanceOf(nameMonika, wdeFemaleGivenName).
+
+rdfsLabel(nameNancy, de, "Nancy").
+rdfsLabel(nameNancy, en, "Nancy").
+wdpdSexOrGender(nameNancy, wdeFemale).
+wdpdInstanceOf(nameNancy, wdeFemaleGivenName).
+
+rdfsLabel(namePatricia, de, "Patricia").
+rdfsLabel(namePatricia, en, "Patricia").
+wdpdSexOrGender(namePatricia, wdeFemale).
+wdpdInstanceOf(namePatricia, wdeFemaleGivenName).
+
+rdfsLabel(namePetra, de, "Petra").
+rdfsLabel(namePetra, en, "Petra").
+wdpdSexOrGender(namePetra, wdeFemale).
+wdpdInstanceOf(namePetra, wdeFemaleGivenName).
+
+rdfsLabel(nameRenate, de, "Renate").
+rdfsLabel(nameRenate, en, "Renate").
+wdpdSexOrGender(nameRenate, wdeFemale).
+wdpdInstanceOf(nameRenate, wdeFemaleGivenName).
+
+rdfsLabel(nameSabine, de, "Sabine").
+rdfsLabel(nameSabine, en, "Sabine").
+wdpdSexOrGender(nameSabine, wdeFemale).
+wdpdInstanceOf(nameSabine, wdeFemaleGivenName).
+
+rdfsLabel(nameSusan, de, "Susan").
+rdfsLabel(nameSusan, en, "Susan").
+wdpdSexOrGender(nameSusan, wdeFemale).
+wdpdInstanceOf(nameSusan, wdeFemaleGivenName).
+
+rdfsLabel(nameUrsula, de, "Ursula").
+rdfsLabel(nameUrsula, en, "Ursula").
+wdpdSexOrGender(nameUrsula, wdeFemale).
+wdpdInstanceOf(nameUrsula, wdeFemaleGivenName).
+
+rdfsLabel(nameCharles, de, "Charles").
+rdfsLabel(nameCharles, en, "Charles").
+wdpdSexOrGender(nameCharles, wdeMale).
+wdpdInstanceOf(nameCharles, wdeMaleGivenName).
+
+rdfsLabel(nameDavid, de, "David").
+rdfsLabel(nameDavid, en, "David").
+wdpdSexOrGender(nameDavid, wdeMale).
+wdpdInstanceOf(nameDavid, wdeMaleGivenName).
+
+rdfsLabel(nameGünter, de, "Günter").
+rdfsLabel(nameGünter, en, "Günter").
+wdpdSexOrGender(nameGünter, wdeMale).
+wdpdInstanceOf(nameGünter, wdeMaleGivenName).
+
+rdfsLabel(nameHeiko, de, "Heiko").
+rdfsLabel(nameHeiko, en, "Heiko").
+wdpdSexOrGender(nameHeiko, wdeMale).
+wdpdInstanceOf(nameHeiko, wdeMaleGivenName).
+
+rdfsLabel(nameHeinz, de, "Heinz").
+rdfsLabel(nameHeinz, en, "Heinz").
+wdpdSexOrGender(nameHeinz, wdeMale).
+wdpdInstanceOf(nameHeinz, wdeMaleGivenName).
+
+rdfsLabel(nameHelmut, de, "Helmut").
+rdfsLabel(nameHelmut, en, "Helmut").
+wdpdSexOrGender(nameHelmut, wdeMale).
+wdpdInstanceOf(nameHelmut, wdeMaleGivenName).
+
+rdfsLabel(nameJames, de, "James").
+rdfsLabel(nameJames, en, "James").
+wdpdSexOrGender(nameJames, wdeMale).
+wdpdInstanceOf(nameJames, wdeMaleGivenName).
+
+rdfsLabel(nameJohn, de, "John").
+rdfsLabel(nameJohn, en, "John").
+wdpdSexOrGender(nameJohn, wdeMale).
+wdpdInstanceOf(nameJohn, wdeMaleGivenName).
+
+rdfsLabel(nameJoseph, de, "Joseph").
+rdfsLabel(nameJoseph, en, "Joseph").
+wdpdSexOrGender(nameJoseph, wdeMale).
+wdpdInstanceOf(nameJoseph, wdeMaleGivenName).
+
+rdfsLabel(nameJürgen, de, "Jürgen").
+rdfsLabel(nameJürgen, en, "Jürgen").
+wdpdSexOrGender(nameJürgen, wdeMale).
+wdpdInstanceOf(nameJürgen, wdeMaleGivenName).
+
+rdfsLabel(nameKlaus, de, "Klaus").
+rdfsLabel(nameKlaus, en, "Klaus").
+wdpdSexOrGender(nameKlaus, wdeMale).
+wdpdInstanceOf(nameKlaus, wdeMaleGivenName).
+
+rdfsLabel(nameManfred, de, "Manfred").
+rdfsLabel(nameManfred, en, "Manfred").
+wdpdSexOrGender(nameManfred, wdeMale).
+wdpdInstanceOf(nameManfred, wdeMaleGivenName).
+
+rdfsLabel(nameMichael, de, "Michael").
+rdfsLabel(nameMichael, en, "Michael").
+wdpdSexOrGender(nameMichael, wdeMale).
+wdpdInstanceOf(nameMichael, wdeMaleGivenName).
+
+rdfsLabel(namePeter, de, "Peter").
+rdfsLabel(namePeter, en, "Peter").
+wdpdSexOrGender(namePeter, wdeMale).
+wdpdInstanceOf(namePeter, wdeMaleGivenName).
+
+rdfsLabel(nameRichard, de, "Richard").
+rdfsLabel(nameRichard, en, "Richard").
+wdpdSexOrGender(nameRichard, wdeMale).
+wdpdInstanceOf(nameRichard, wdeMaleGivenName).
+
+rdfsLabel(nameRobert, de, "Robert").
+rdfsLabel(nameRobert, en, "Robert").
+wdpdSexOrGender(nameRobert, wdeMale).
+wdpdInstanceOf(nameRobert, wdeMaleGivenName).
+
+rdfsLabel(nameThomas, de, "Thomas").
+rdfsLabel(nameThomas, en, "Thomas").
+wdpdSexOrGender(nameThomas, wdeMale).
+wdpdInstanceOf(nameThomas, wdeMaleGivenName).
+
+rdfsLabel(nameWerner, de, "Werner").
+rdfsLabel(nameWerner, en, "Werner").
+wdpdSexOrGender(nameWerner, wdeMale).
+wdpdInstanceOf(nameWerner, wdeMaleGivenName).
+
+rdfsLabel(nameWilliam, de, "William").
+rdfsLabel(nameWilliam, en, "William").
+wdpdSexOrGender(nameWilliam, wdeMale).
+wdpdInstanceOf(nameWilliam, wdeMaleGivenName).
+
+rdfsLabel(nameWolfgang, de, "Wolfgang").
+rdfsLabel(nameWolfgang, en, "Wolfgang").
+wdpdSexOrGender(nameWolfgang, wdeMale).
+wdpdInstanceOf(nameWolfgang, wdeMaleGivenName).
+

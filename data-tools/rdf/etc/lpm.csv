@@ -1,4 +1,5 @@
 owlComplementOf,http://www.w3.org/2002/07/owl#complementOf
+owlSameAs,http://www.w3.org/2002/07/owl#sameAs
 provWasDerivedFrom,http://www.w3.org/ns/prov#wasDerivedFrom
 rdfType,http://www.w3.org/1999/02/22-rdf-syntax-ns#type
 rdfsLabel,http://www.w3.org/2000/01/rdf-schema#label
@@ -1106,6 +1107,7 @@ wdpWaterAsPercentOfArea,http://www.wikidata.org/prop/P2927
 wdpWears,http://www.wikidata.org/prop/P3828
 wdpWebsiteAccountOn,http://www.wikidata.org/prop/P553
 wdpWhoSWhoInFranceBiographyID,http://www.wikidata.org/prop/P4124
+wdpWikiSkriptaID,http://www.wikidata.org/prop/P3471
 wdpWikiTreeID,http://www.wikidata.org/prop/P2949
 wdpWikiaWikiID,http://www.wikidata.org/prop/P4073
 wdpWikidataProperty,http://www.wikidata.org/prop/P1687
@@ -2060,6 +2062,7 @@ wdpdWaterAsPercentOfArea,http://www.wikidata.org/prop/direct/P2927
 wdpdWears,http://www.wikidata.org/prop/direct/P3828
 wdpdWebsiteAccountOn,http://www.wikidata.org/prop/direct/P553
 wdpdWhoSWhoInFranceBiographyID,http://www.wikidata.org/prop/direct/P4124
+wdpdWikiSkriptaID,http://www.wikidata.org/prop/direct/P3471
 wdpdWikiTreeID,http://www.wikidata.org/prop/direct/P2949
 wdpdWikiaWikiID,http://www.wikidata.org/prop/direct/P4073
 wdpdWikidataProperty,http://www.wikidata.org/prop/direct/P1687

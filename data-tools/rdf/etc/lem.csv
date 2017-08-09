@@ -2147,6 +2147,7 @@ wdeAssistantSecretaryOfTheNavy,http://www.wikidata.org/entity/Q4809034
 wdeAsymmetricProperty,http://www.wikidata.org/entity/Q18647519
 wdeAtari800,http://www.wikidata.org/entity/Q4889765
 wdeAtariST,http://www.wikidata.org/entity/Q627302
+wdeAtheneumPersonID,http://www.wikidata.org/entity/P4145
 wdeAttendance,http://www.wikidata.org/entity/P1110
 wdeAudio,http://www.wikidata.org/entity/P51
 wdeAudioRecordingOfTheSubjectSSpokenVoice,http://www.wikidata.org/entity/P990
@@ -2605,6 +2606,7 @@ wdeDiscogsMasterID,http://www.wikidata.org/entity/P1954
 wdeDiscovererOrInventor,http://www.wikidata.org/entity/P61
 wdeDiseaseOntologyID,http://www.wikidata.org/entity/P699
 wdeDiseasesDB,http://www.wikidata.org/entity/P557
+wdeDisjointUnionOf,http://www.wikidata.org/entity/P2738
 wdeDissolvedAbolishedOrDemolished,http://www.wikidata.org/entity/P576
 wdeDistribution,http://www.wikidata.org/entity/P437
 wdeDistributionMap,http://www.wikidata.org/entity/P1846
@@ -2729,6 +2731,7 @@ wdeEthanAllenBrown,http://www.wikidata.org/entity/Q880997
 wdeEthanCoen,http://www.wikidata.org/entity/Q13595531
 wdeEthnicGroup,http://www.wikidata.org/entity/P172
 wdeEuropeanBankForReconstructionAndDevelopment,http://www.wikidata.org/entity/Q488981
+wdeEuropeanaFashionVocabularyID,http://www.wikidata.org/entity/P3832
 wdeEvelynHaas,http://www.wikidata.org/entity/Q103616
 wdeExactMatch,http://www.wikidata.org/entity/P2888
 wdeExclaveOf,http://www.wikidata.org/entity/P500
@@ -3176,6 +3179,7 @@ wdeISO31661Alpha3Code,http://www.wikidata.org/entity/P298
 wdeISO31661NumericCode,http://www.wikidata.org/entity/P299
 wdeISO31662Code,http://www.wikidata.org/entity/P300
 wdeISO31663,http://www.wikidata.org/entity/P773
+wdeISOCATId,http://www.wikidata.org/entity/P2263
 wdeISOStandard,http://www.wikidata.org/entity/P503
 wdeISzDbFilmID,http://www.wikidata.org/entity/P3110
 wdeITISTSN,http://www.wikidata.org/entity/P815
@@ -3535,6 +3539,7 @@ wdeMascot,http://www.wikidata.org/entity/P822
 wdeMass,http://www.wikidata.org/entity/P2067
 wdeMassHysteria,http://www.wikidata.org/entity/Q847836
 wdeMassachusetts,http://www.wikidata.org/entity/Q771
+wdeMaterialUsed,http://www.wikidata.org/entity/P186
 wdeMathematicsGenealogyProjectID,http://www.wikidata.org/entity/P549
 wdeMathieuKassovitz,http://www.wikidata.org/entity/Q491766
 wdeMatt,http://www.wikidata.org/entity/Q1158973
@@ -3545,6 +3550,7 @@ wdeMayor,http://www.wikidata.org/entity/Q30185
 wdeMayorOfEssen,http://www.wikidata.org/entity/Q645769
 wdeMcCuneReischauerRomanization,http://www.wikidata.org/entity/P1942
 wdeMcKinley,http://www.wikidata.org/entity/Q16876706
+wdeMeSHCode,http://www.wikidata.org/entity/P672
 wdeMeSHID,http://www.wikidata.org/entity/P486
 wdeMeasuredBy,http://www.wikidata.org/entity/P1880
 wdeMediaCritic,http://www.wikidata.org/entity/Q19251029
@@ -5012,6 +5018,7 @@ wdeUnmarriedPartner,http://www.wikidata.org/entity/P451
 wdeUntilTheFinalHour,http://www.wikidata.org/entity/Q7897680
 wdeUp,http://www.wikidata.org/entity/Q174811
 wdeUse,http://www.wikidata.org/entity/P366
+wdeUsedBy,http://www.wikidata.org/entity/P1535
 wdeUses,http://www.wikidata.org/entity/P2283
 wdeVATRate,http://www.wikidata.org/entity/P2855
 wdeVForVendetta,http://www.wikidata.org/entity/Q103411
@@ -5058,6 +5065,7 @@ wdeWaxhaws,http://www.wikidata.org/entity/Q2552970
 wdeWayne,http://www.wikidata.org/entity/Q1423817
 wdeWaynePalmer,http://www.wikidata.org/entity/Q2719854
 wdeWears,http://www.wikidata.org/entity/P3828
+wdeWeatherHistory,http://www.wikidata.org/entity/P4150
 wdeWebsiteAccountOn,http://www.wikidata.org/entity/P553
 wdeWeimarRepublic,http://www.wikidata.org/entity/Q41304
 wdeWernerDollinger,http://www.wikidata.org/entity/Q488902
@@ -5074,12 +5082,14 @@ wdeWhiplash,http://www.wikidata.org/entity/Q15648198
 wdeWhiteHouseChiefOfStaff,http://www.wikidata.org/entity/Q786242
 wdeWhoGoesThere,http://www.wikidata.org/entity/Q7617836
 wdeWhoSWhoInFranceBiographyID,http://www.wikidata.org/entity/P4124
+wdeWikiSkriptaID,http://www.wikidata.org/entity/P3471
 wdeWikiTreeID,http://www.wikidata.org/entity/P2949
 wdeWikiaWikiID,http://www.wikidata.org/entity/P4073
 wdeWikidataProperty,http://www.wikidata.org/entity/P1687
 wdeWikidataProperty1,http://www.wikidata.org/entity/Q18616576
 wdeWikidataPropertyExample,http://www.wikidata.org/entity/P1855
 wdeWikidataPropertyForTheRelationshipBetweenClasses,http://www.wikidata.org/entity/Q28326461
+wdeWikidataSPARQLQueryEquivalent,http://www.wikidata.org/entity/P3921
 wdeWikidataUsageInstructions,http://www.wikidata.org/entity/P2559
 wdeWikivoyageBanner,http://www.wikidata.org/entity/P948
 wdeWildStrawberries,http://www.wikidata.org/entity/Q239756

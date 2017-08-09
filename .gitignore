@@ -5,7 +5,6 @@ syntax: glob
 *.pyc
 tmp
 old
-data
 models
 *.log
 TODO

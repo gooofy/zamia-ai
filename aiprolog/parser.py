@@ -791,6 +791,9 @@ class AIPrologParser(object):
 
     def fetch_named_macro (self, lang, name):
 
+        # if name == 'firstname':
+        #     import pdb; pdb.set_trace()
+
         if not lang in self.named_macros:
             self.named_macros[lang] = {}
 
@@ -1108,6 +1111,10 @@ class AIPrologParser(object):
                 logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
                 self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
+
+                if len(self.ds) % 100 == 0:
+                    logging.info ('%6d training samples extracted so far...' % len(self.ds))
+
 
     def extract_training_priority (self, clause):
 

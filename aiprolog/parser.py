@@ -1201,7 +1201,7 @@ class AIPrologParser(object):
                 cnt += 1
             else:
 
-                if not rounds:
+                if not inp:
                     prep.append(a)
                 else:
                     if not isinstance(a, Predicate) or a.name != 'action':

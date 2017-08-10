@@ -569,7 +569,9 @@ class AIKernal(object):
         c = todo.pop()
         return Predicate (c[0], c[1])
 
-    def test_module (self, module_name, test_name=None):
+    def test_module (self, module_name, run_trace=False, test_name=None):
+
+        self.rt.set_trace(run_trace)
 
         m = self.modules[module_name]
 
@@ -579,7 +581,7 @@ class AIKernal(object):
 
             if test_name:
                 if tc.name != test_name:
-                    logging.info ('skipping test %s' % name)
+                    logging.info ('skipping test %s' % test_name)
                     continue
 
             rounds = json.loads(tc.rounds)
@@ -624,7 +626,6 @@ class AIKernal(object):
                     if acode:
                         logging.warn (u'%s: more than one acode for test_in "%s" found in DB!' % (name, test_in))
 
-                    # self.rt.set_trace(True)
                     acode     = json.loads (tdr.resp)
                     pcode     = self._reconstruct_prolog_code (acode)
                     clause    = Clause (None, pcode, location=self.dummyloc)
@@ -641,6 +642,7 @@ class AIKernal(object):
                                 actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
                             logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
                             if actual_out != test_out:
+                                # import pdb; pdb.set_trace()
                                 logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
                                 continue # no match
 
@@ -689,7 +691,9 @@ class AIKernal(object):
                 prev_context = cur_context
                 round_num   += 1
 
-    def run_tests_multi (self, module_names, test_name=None):
+        self.rt.set_trace(False)
+
+    def run_tests_multi (self, module_names, run_trace=False, test_name=None):
 
         for module_name in module_names:
 
@@ -698,12 +702,12 @@ class AIKernal(object):
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
                     self.init_module (mn2)
-                    self.test_module (mn2, test_name=test_name)
+                    self.test_module (mn2, run_trace=run_trace, test_name=test_name)
 
             else:
                 self.load_module (module_name)
                 self.init_module (module_name, )
-                self.test_module (module_name, test_name=test_name)
+                self.test_module (module_name, run_trace=run_trace, test_name=test_name)
 
     # FIXME: old code, needs to be ported or removed
     # def process_input (self, utterance, utt_lang, user_uri, test_mode=False):

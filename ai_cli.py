@@ -238,6 +238,8 @@ class AICli(cmdln.Cmdln):
 
     #         qres = self.kb.sparql(query)
 
+    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+           help="enable tracing when running tests")
     @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
            help="run tests")
     @cmdln.option("-N", "--test-name", dest="test_name", type="str",
@@ -264,7 +266,7 @@ class AICli(cmdln.Cmdln):
             self.kernal.compile_module_multi (paths)
 
             if opts.run_tests:
-                self.kernal.run_tests_multi (paths)
+                self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
 
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)

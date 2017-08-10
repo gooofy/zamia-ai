@@ -128,3 +128,25 @@ def ner_best(ner_res, ias):
     # FIXME: provide hook(s) for scoring functions
     return ner_res[0]
 
+def builtin_ner_learn (g, pe):
+
+    """ ner_learn (+Lang, +Cat, +Entity, +Label) """
+
+    pe._trace ('CALLED BUILTIN ner_learn', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 4:
+        raise PrologRuntimeError('ner_learn: 4 args expected.', g.location)
+
+    arg_Lang  = pe.prolog_get_constant (args[0], g.env, g.location)
+    arg_Cat   = pe.prolog_get_constant (args[1], g.env, g.location)
+    arg_Ent   = pe.prolog_get_constant (args[2], g.env, g.location)
+    arg_Label = pe.prolog_get_string   (args[3], g.env, g.location)
+
+    # import pdb; pdb.set_trace()
+
+    ner_learn(arg_Lang, arg_Cat, [arg_Ent], [arg_Label])
+
+    return True
+

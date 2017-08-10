@@ -3,6 +3,7 @@
 
 from num2words         import num2words
 from zamiaprolog.logic import StringLiteral
+from base.ner          import builtin_ner_learn
 
 DEPENDS    = [ 'config' ]
 
@@ -110,9 +111,10 @@ def builtin_transcribe_number (g, pe):
 #     g.env[arg_TSCR] = StringLiteral(res)
 # 
 #     return True
-# 
+
 def init_module(kernal):
 
-    # kernal.rt.register_builtin ('transcribe_date', builtin_transcribe_date) # transcribe_date (+Lang, +Case, +TS, -TS_SCRIPT)
+    # kernal.rt.register_builtin ('transcribe_date', builtin_transcribe_date)   # transcribe_date (+Lang, +Case, +TS, -TS_SCRIPT)
     kernal.rt.register_builtin ('transcribe_number', builtin_transcribe_number) # transcribe_number (+Lang, +Case, +N, -N_SCRIPT)
+    kernal.rt.register_builtin ('ner_learn',         builtin_ner_learn)         # ner_learn (+Lang, +Cat, +Entity, +Label)
 

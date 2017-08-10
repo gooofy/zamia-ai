@@ -123,12 +123,15 @@ def builtin_r_sayv(g, pe):
 
     res = {}
 
-    if arg_fmt == 'd':
-        v = unicode(int(unicode(arg_var)))
-    elif arg_fmt == 'f':
-        v = unicode(float(unicode(arg_var)))
+    if isinstance(arg_var, StringLiteral):
+        v = arg_var.s
     else:
         v = unicode(arg_var)
+
+    if arg_fmt == 'd':
+        v = unicode(int(v))
+    elif arg_fmt == 'f':
+        v = unicode(float(v))
 
     res = do_assertz (g.env, Clause ( Predicate('say', [arg_context, StringLiteral(v)]) , location=g.location), res=res)
 

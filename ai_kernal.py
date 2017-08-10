@@ -624,7 +624,7 @@ class AIKernal(object):
                 for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == tc.lang,
                                                                          model.TrainingData.inp   == json.dumps(inp)):
                     if acode:
-                        logging.warn (u'%s: more than one acode for test_in "%s" found in DB!' % (name, test_in))
+                        logging.warn (u'%s: more than one acode for test_in "%s" found in DB!' % (tc.name, test_in))
 
                     acode     = json.loads (tdr.resp)
                     pcode     = self._reconstruct_prolog_code (acode)

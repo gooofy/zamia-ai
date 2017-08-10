@@ -76,7 +76,7 @@ transcribe_date(en, dativ, TS, SCRIPT) :-
 
 transcribe_date(de, dativ, TS, SCRIPT) :-
     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-    transcribe_number(de, ordinal, D, DS),
+    transcribe_number(de, ordgen, D, DS),
     transcribe_month(de, M, MS),
     SCRIPT is format_str('%s %s %s', DS, MS, Y).
 

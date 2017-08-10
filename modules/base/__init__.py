@@ -71,7 +71,16 @@ def builtin_transcribe_number (g, pe):
     arg_N     = pe.prolog_get_int      (args[2], g.env, g.location)
     arg_NSCR  = pe.prolog_get_variable (args[3], g.env, g.location)
 
-    res  = num2words(arg_N, ordinal=(arg_Case == 'ordinal'), lang=arg_Lang)
+    if arg_Case == 'nominative':
+        res  = num2words(arg_N, ordinal=False, lang=arg_Lang)
+    elif arg_Case == 'ordinal':
+        res  = num2words(arg_N, ordinal=True, lang=arg_Lang)
+    elif arg_Case == 'ordgen':
+        res  = num2words(arg_N, ordinal=True, lang=arg_Lang)
+        if arg_Lang == 'de':
+            res += u'n'
+    else:
+        raise PrologRuntimeError('transcribe_number: case "%s" not recognized.' % arg_Case, g.location)
 
     g.env[arg_NSCR] = StringLiteral(res)
 

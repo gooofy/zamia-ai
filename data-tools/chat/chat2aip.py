@@ -153,16 +153,12 @@ with codecs.open(outputfn, 'w', 'utf8') as outputf:
 
     outputf.write ('%prolog\n\n')
     outputf.write ('train_priority(%d).\n\n' % options.prio)
+    outputf.write ("train_prefix('{self_address:L} ').\n\n")
 
-    for prefix in PREFIXES:
+    for utt in sorted(corpus):
+        question, answer = corpus[utt]
 
-        for utt in sorted(corpus):
-            question, answer = corpus[utt]
-
-            if len(prefix)>0 and prefix in question:
-                continue
-
-            outputf.write (u"train(%s) :- \"%s%s\", \"%s\".\n" % (lang, prefix, question, answer))
+        outputf.write (u"train(%s) :- \"%s\", \"%s\".\n" % (lang, question, answer))
 
 logging.info ('%s written. %d rounds, %d skipped.' % (outputfn, cnt, skipped))
 

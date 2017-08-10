@@ -630,6 +630,7 @@ class AIKernal(object):
                     pcode     = self._reconstruct_prolog_code (acode)
                     clause    = Clause (None, pcode, location=self.dummyloc)
                     solutions = self.rt.search (clause, env=res)
+                    # import pdb; pdb.set_trace()
 
                     for solution in solutions:
 
@@ -638,7 +639,6 @@ class AIKernal(object):
                         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:
-                            # import pdb; pdb.set_trace()
                             if len(actual_out)>0:
                                 actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
                             logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )

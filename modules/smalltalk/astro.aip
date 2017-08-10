@@ -1,0 +1,21 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(like|) (on|) the moon",
+    "ah, the moon. fascinating.".
+
+train(de) :-
+    "(wie|als|) auf (den|dem) mond",
+    "ah, der mond. faszinierend.".
+
+train(en) :-
+    "(on|) (the|) earth",
+    "the blue planet.".
+
+train(de) :-
+    "auf der erde",
+    "der blaue planet.".
+

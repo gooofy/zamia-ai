@@ -1,0 +1,128 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+answer_greeting(en) :-
+    r_action (C, [attention, on]),
+    or("Hello!",
+       "Hi!",
+       "Greetings!",
+       "Hey!").
+
+answer_greeting(de) :-
+    r_action (C, [attention, on]),
+    or("Hallo!",
+       "Hi!",
+       "Grüß Dich!",
+       "Hey!").
+
+
+train(en) :-
+    "(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there)",
+    inline answer_greeting(en).
+
+train(en) :-
+    "(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there) {self_address:L}",
+    inline answer_greeting(en).
+
+train(de) :-
+    "(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu)",
+    inline answer_greeting(de).
+
+train(de) :-
+    "(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu) {self_address:L}",
+    inline answer_greeting(de).
+
+answer_bye(en) :-
+    r_action (C, [attention, off]),
+    or("Bye",
+       "So long",
+       "See you later",
+       "Bye for now").
+
+answer_bye(de) :-
+    r_action (C, [attention, off]),
+    or("Ade",
+       "Tschüss",
+       "Bis bald",
+       "Ciao").
+
+train(en) :-
+    "(goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:L}",
+    inline answer_bye(en).
+
+train(de) :-
+    "(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) {self_address:L}",
+    inline answer_bye(de).
+
+test(en, t0000) :-
+    "hi",
+    "hello!",
+    action(attention, on).
+
+test(de, t0001) :-
+    "hi",
+    "Hallo!",
+    action(attention, on).
+
+test(en, t0002) :-
+    "computer hello",
+    "Hi!",
+    action(attention, on).
+
+test(de, t0003) :-
+    "computer hallo",
+    "Hi!",
+    action(attention, on).
+
+test(en, t0004) :-
+    "bye computer",
+    "bye",
+    action(attention, off).
+
+test(de, t0005) :-
+    "Tschüss computer",
+    "Tschüss!",
+    action(attention, off).
+
+test(en, t0006) :-
+    "bye",
+    "so long",
+    action(attention, off).
+
+test(de, t0007) :-
+    "Ciao",
+    "Bis bald",
+    action(attention, off).
+
+answer_howdy(en) :-
+    or("Great, thanks. How do you feel today?",
+       "Very well - and you?",
+       "I am doing great, how are you doing?",
+       "Great as always!",
+       "Thanks for asking, I am doing fine. How about you?").
+
+answer_howdy(de) :-
+    or("Sehr gut, danke. Und selber?",
+      "Gut, danke. Wie geht es Dir?",
+      "Mir geht es prima, und Dir?",
+      "Mir geht es gut, und selber?",
+      "Super, wie immer!",
+      "Gut, danke der Nachfrage. Wie geht es Dir?").
+
+train(en) :-
+    "(how are you|howdy|how do you do|how are you feeling) (today|)?",
+    inline answer_howdy(en).
+
+train(de) :-
+    "(wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
+    inline answer_howdy(de).
+
+test(en, t0008) :-
+    "Computer, how are you?",
+    "very well and you?".
+
+test(de, t0009) :-
+    "Computer, wie geht es dir?",
+    "Super, wie immer!".
+

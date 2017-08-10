@@ -1,0 +1,24 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(I feel|I guess I will be|I think I will be|I am getting|I am) (ill|sick) (maybe|)",
+    or("how bad is it?",
+       "I am sure you will be better soon!").
+
+train(de) :-
+    "(ich bin|ich fühle mich|ich glaube ich werde) (vielleicht|) krank",
+    or("sehr schlimm?",
+       "ich wünsche Dir auf jeden Fall gute Besserung!").
+
+train(en) :-
+    "(I am in|I have to go to|I don't want to got to the) hospital",
+    or("that sounds unpleasant",
+       "oh dear that doesn't sound very pleasant, does it?").
+
+train(de) :-
+    "(ich bin im|ich muss ins|ich will nicht ins) Krankenhaus",
+    or("Das klingt unangenehm",
+       "ohje, das klingt nicht gut").

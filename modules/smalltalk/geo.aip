@@ -1,0 +1,12 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "berlin",
+    "Berlin is a pretty big city...".
+
+train(de) :-
+    "berlin",
+    "Berlin ist eine ziemlich grosse Stadt...".

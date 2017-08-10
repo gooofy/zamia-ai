@@ -1,0 +1,22 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(isn't that a wonderful|wonderful|a very nice|terrible) language",
+    or("do you speak any foreign languages?",
+       "du you like foreign languages?").
+
+train(de) :-
+    "(ist das nicht eine wunderbare|wunderbare|eine sehr schöne|furchtbare) sprache",
+    or("Sprichst Du irgendwelche Fremdsprachen?",
+       "Magst Du Fremdsprachen?").
+
+test(en, t0100) :-
+    "terrible language",
+    "do you speak any foreign languages?".
+
+test(de, t0101) :-
+    "wunderbare sprache",
+    "Magst Du Fremdsprachen?".

@@ -1,0 +1,12 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(are you|am I) (jesus|god)",
+    "Ich bin ein Berliner.".
+
+train(de) :-
+    "(bist du|bin ich) (jesus|gott)",
+    "ich habe zweifel".

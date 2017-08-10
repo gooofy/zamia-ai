@@ -161,14 +161,14 @@ def builtin_r_action(g, pe):
 
 def builtin_r_score(g, pe):
 
-    """" r_score (+Context, +Action) """
+    """" r_score (+Context, +Score) """
 
     pe._trace ('CALLED BUILTIN r_score', g)
 
     pred = g.terms[g.inx]
     args = pred.args
     if len(args) != 2:
-        raise PrologRuntimeError('r_score: 2 args (+Context, +Action) expected.', g.location)
+        raise PrologRuntimeError('r_score: 2 args (+Context, +Score) expected.', g.location)
 
     arg_context = pe.prolog_eval (args[0], g.env, g.location)
     arg_score  = pe.prolog_eval (args[1], g.env, g.location)

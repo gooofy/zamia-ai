@@ -577,10 +577,13 @@ class AIPrologParser(object):
             self.next_sym()
 
             t = self.subgoals()
+            t = Predicate ('and', [c, t])
 
             if self.cur_sym == SYM_ELSE:
                 self.next_sym()
-                e = self.subgoals()
+                e  = self.subgoals()
+                nc = Predicate ('not', [c])
+                e  = Predicate ('and', [nc, e])
             else:
                 e = Predicate ('true')
 
@@ -588,7 +591,7 @@ class AIPrologParser(object):
                 self.report_error ("subgoal: endif expected.")
             self.next_sym()
 
-            return [ Predicate ('or', [Predicate ('and', [c, t, Predicate('!')]), e]) ]
+            return [ Predicate ('or', [t, e]) ]
 
         elif self.cur_sym == SYM_INLINE:
 

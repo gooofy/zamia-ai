@@ -133,7 +133,7 @@ class AIKernal(object):
 
 
     def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
-                                   clean_cronjobs, clean_kb):
+                                   clean_cronjobs):
 
         for module_name in module_names:
 
@@ -157,14 +157,6 @@ class AIKernal(object):
                     self.session.query(model.Cronjob).delete()
                 else:
                     self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name).delete()
-
-            if clean_kb or clean_all:
-                logging.info('cleaning kb for %s...' % module_name)
-                if module_name == 'all':
-                    self.kb.clear_all_graphs()
-                else:
-                    graph = self._module_graph_name(module_name)
-                    self.kb.clear_graph(graph)
 
         self.session.commit()
 
@@ -238,7 +230,7 @@ class AIKernal(object):
 
         return m
 
-    def init_module (self, module_name):
+    def init_module (self, module_name, run_trace=False):
 
         if module_name in self.initialized_modules:
             return
@@ -252,67 +244,15 @@ class AIKernal(object):
         for m2 in getattr (m, 'DEPENDS'):
             self.init_module(m2)
 
-        # self.kb.remove((CURIN, None, None, self.context_gn))
-        # quads = [ ( CURIN, KB_PREFIX+u'user', DEFAULT_USER, self.context_gn) ]
-        # self.kb.addN_resolve(quads)
+        prolog_s = u'init(\'%s\')' % (module_name)
+        c = self.parser.parse_line_clause_body(prolog_s)
+
+        self.prolog_rt.set_trace(run_trace)
+
+        solutions = self.prolog_rt.search(c)
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name
-
-    def _p2e_mapper(self, p):
-        if p.startswith('http://www.wikidata.org/prop/direct/'):
-            return 'http://www.wikidata.org/entity/' + p[36:]
-        if p.startswith('http://www.wikidata.org/prop/'):
-            return 'http://www.wikidata.org/entity/' + p[29:]
-        return None
-
-    def import_kb (self, module_name):
-
-        graph = self._module_graph_name(module_name)
-
-        self.kb.register_graph(graph)
-
-        # disabled to enable incremental kb updates self.kb.clear_graph(graph)
-
-        m = self.modules[module_name]
-
-        # import LDF first as it is incremental
-
-        res_paths = []
-        for kb_entry in getattr (m, 'KB_SOURCES'):
-            if not isinstance(kb_entry, basestring):
-                res_paths.append(kb_entry)
-
-        if len(res_paths)>0:
-            logging.info('mirroring from LDF endpoints, target graph: %s ...' % graph)
-            quads = self.kb.ldf_mirror(res_paths, graph, self._p2e_mapper)
-
-        # now import files, if any
-
-        for kb_entry in getattr (m, 'KB_SOURCES'):
-            if isinstance(kb_entry, basestring):
-                kb_pathname = 'modules/%s/%s' % (module_name, kb_entry)
-                logging.info('importing %s ...' % kb_pathname)
-                self.kb.parse_file(graph, 'n3', kb_pathname)
-
-
-    def import_kb_multi (self, module_names):
-
-        for module_name in module_names:
-
-            if module_name == 'all':
-
-                for mn2 in self.all_modules:
-                    self.load_module (mn2)
-                    self.import_kb (mn2)
-
-            else:
-
-                self.load_module (module_name)
-
-                self.import_kb (module_name)
-
-        self.session.commit()
 
     def compile_module (self, module_name):
 
@@ -701,12 +641,12 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.init_module (mn2)
+                    self.init_module (mn2, run_trace=run_trace)
                     self.test_module (mn2, run_trace=run_trace, test_name=test_name)
 
             else:
                 self.load_module (module_name)
-                self.init_module (module_name, )
+                self.init_module (module_name, run_trace=run_trace)
                 self.test_module (module_name, run_trace=run_trace, test_name=test_name)
 
     # FIXME: old code, needs to be ported or removed

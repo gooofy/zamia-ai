@@ -57,8 +57,6 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
            help="clean predicates from logicdb")
-    @cmdln.option("-k", "--clean-kb", dest="clean_kb", action="store_true",
-           help="clean kb graph")
     @cmdln.option("-d", "--clean-discourses", dest="clean_discourses", action="store_true",
            help="clean discourses")
     @cmdln.option("-c", "--clean-cronjobs", dest="clean_cronjobs", action="store_true",
@@ -85,158 +83,10 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         self.kernal.clean(paths, opts.clean_all, opts.clean_logic, opts.clean_discourses, 
-                                 opts.clean_cronjobs, opts.clean_kb)
+                                 opts.clean_cronjobs)
 
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
-    def do_kb_import(self, subcmd, opts, *paths):
-        """${cmd_name}: import module kb
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if len(paths)==0:
-            logging.error ('specify at least one module name or "all" to load all modules')
-            return
-
-        if opts.verbose:
-            logging.getLogger().setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
-
-        self.kernal.import_kb_multi(paths)
-
-        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-
-    
-    @cmdln.option ("-o", "--output-file", dest="outfn", type = "str", default=RDF_LIB_DUMP_PATH,
-           help="export filename, default: %s" % RDF_LIB_DUMP_PATH)
-    @cmdln.option ("-m", "--module", dest="module", type = "str", default='all',
-           help="module to export, default: all")
-    @cmdln.option ("-f", "--format", dest="format", type = "str", default='n3',
-           help="export format, default: n3")
-
-    def do_kb_export(self, subcmd, opts, *paths):
-        """${cmd_name}: export KB graph(s) to file
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if opts.module == 'all':
-            self.kernal.kb.dump(opts.outfn, format=opts.format)
-        else:
-            graph = self.kernal._module_graph_name(opts.module)
-            self.kernal.kb.dump_graph(graph, opts.outfn, format=opts.format)
-
-        logging.info( "%s written." % opts.outfn)
-
-    def do_kb_search(self, subcmd, opts, *paths):
-        """${cmd_name}: search for triples 
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        for node in paths:
-            query = u"""
-                     SELECT ?r ?n
-                     WHERE {
-                            %s ?r ?n .
-                     }
-                     """ % node
-
-            qres = self.kb.query(query)
-
-            for row in qres:
-                logging.info("%s %s %s" % (node, row['r'], row['n']))
-
-            query = u"""
-                     SELECT ?r ?n
-                     WHERE {
-                            ?n ?r %s .
-                     }
-                     """ % node
-
-            qres = self.kb.query(query)
-
-            for row in qres:
-                logging.info("%s %s %s" % (row['n'], row['r'], node))
-
-    @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
-                   help="argument(s) represent(s) file name(s) to read sparql from")
-    @cmdln.option ("-s", "--sql", dest="sql", action="store_true",
-                   help="log SQL statements")
-    @cmdln.option ("-v", "--verbose", dest="verbose", action="store_true",
-                   help="verbose logging")
-    def do_kb_query(self, subcmd, opts, *paths):
-        """${cmd_name}: run sparql query
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if opts.verbose:
-            logging.getLogger().setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
-
-        if opts.sql:
-            logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
-        for a in paths:
-
-            if opts.from_file:
-                with codecs.open(a, 'r', 'utf8') as f:
-                    query = f.read()
-            else:
-                query = a
-
-            logging.debug ('running query...')
-            start_time = time.time()
-
-            qres = self.kernal.kb.query(query)
-
-            logging.debug ('query done. took %fs' % (time.time()-start_time))
-
-            logging.debug ('sparql query result: %s' % str(qres))
-            logging.debug ('sparql query bindings: %s' % repr(qres.bindings))
-            # print repr(qres.bindings)
-
-            for binding in qres.bindings:
-
-                # print repr(binding.labels)
-
-                s = ''
-
-                for var in binding:
-                     s += u'%s=%s ' % (unicode(var), repr(binding[var]))
-                logging.info(s)
-        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-        logging.getLogger('sqlalchemy.engine').setLevel(logging.WARN)
-
-    # @cmdln.option ("-f", "--file", action="store_true", dest="from_file",
-    #                help="argument(s) represent(s) file name(s) to read sparql from")
-    # def do_kb_update(self, subcmd, opts, *paths):
-    #     """${cmd_name}: run sparql update
-
-    #     ${cmd_usage}
-    #     ${cmd_option_list}
-    #     """
-
-    #     for a in paths:
-
-    #         if opts.from_file:
-    #             with codecs.open(a, 'r', 'utf8') as f:
-    #                 query = f.read()
-    #         else:
-    #             query = a
-
-    #         qres = self.kb.sparql(query)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing when running tests")

@@ -245,11 +245,11 @@ class AIKernal(object):
             self.init_module(m2)
 
         prolog_s = u'init(\'%s\')' % (module_name)
-        c = self.parser.parse_line_clause_body(prolog_s)
+        c = self.aip_parser.parse_line_clause_body(prolog_s)
 
-        self.prolog_rt.set_trace(run_trace)
+        self.rt.set_trace(run_trace)
 
-        solutions = self.prolog_rt.search(c)
+        solutions = self.rt.search(c)
 
     def _module_graph_name (self, module_name):
         return KB_PREFIX + module_name

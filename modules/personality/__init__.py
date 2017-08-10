@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS    = [ 'base', 'config', 'smalltalk', 'tech', 'movies', 'literature' ]
+DEPENDS    = [ 'config', 'data', 'base', 'tech' ]
 
-NLP_SOURCES = [
-               'personality.nlp',
-              ]
-
-KB_SOURCES  = [
-               'givennames.n3',
+AIP_SOURCES = [
+               'personality.aip',
               ]
 

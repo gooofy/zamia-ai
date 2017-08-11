@@ -1,0 +1,204 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+operating_system_category(wdeMultiTaskingOperatingSystem).
+operating_system_category(wdeOperatingSystem).
+
+operating_system(OS) :- 
+    operating_system_category(CAT), 
+    wdpdInstanceOf(OS, CAT).
+
+%
+% done in init_module (python) for performance reasons
+%
+% ner_learn_operating_systems(LANG) :- 
+%     operating_system_category(CAT), 
+%     wdpdInstanceOf(OS, CAT),
+%     rdfsLabel(OS, LANG, LABEL),
+%     ner_learn(LANG, operating_system, OS, LABEL).
+% ner_learn_home_computers(LANG) :- 
+%     wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer),
+%     rdfsLabel(HOME_COMPUTER, LANG, LABEL),
+%     ner_learn(LANG, home_computer, HOME_COMPUTER, LABEL).
+% ner_learn_programming_languages(LANG) :- 
+%     wdpdInstanceOf(L, wdeProgrammingLanguage1),
+%     rdfsLabel(L, LANG, LABEL),
+%     ner_learn(LANG, programming_language, L, LABEL).
+% 
+% init("tech") :- 
+%     log(info, "init"),
+%     ner_learn_operating_systems(en),
+%     ner_learn_operating_systems(de).
+%     ner_learn_home_computers(en), 
+%     ner_learn_home_computers(de), 
+%     ner_learn_programming_languages(en), 
+%     ner_learn_programming_languages(de).
+
+%
+% operating systems
+%
+
+macro(en, operating_system, LABEL) :- 
+    operating_system(OS), 
+    rdfsLabel(OS, en, LABEL).
+
+macro(de, operating_system, LABEL) :- 
+    operating_system(OS), 
+    rdfsLabel(OS, de, LABEL).
+
+train(en) :-
+    "(do you know|what do you think about|have you tried|do you run|do you like) {operating_system:LABEL}",
+
+    ner (en, operating_system, tstart(operating_system), tend(operating_system), C:tokens, ENTITY, SCORE),
+
+    r_score(C, SCORE),
+    if is(ENTITY, wdeLinux) then
+        "Hey, Linux is my operating system, it is very cool."
+    else
+        "Isn't that some sort of computer operating system?"
+    endif.
+
+train(de) :-
+    "(kennst du|was hältst du von|was denkst du über|läufst du unter|magst du) {operating_system:LABEL}",
+
+    ner (de, operating_system, tstart(operating_system), tend(operating_system), C:tokens, ENTITY, SCORE),
+
+    r_score(C, SCORE),
+    if is(ENTITY, wdeLinux) then
+        "Hey, Linux ist mein Betriebssystem, sehr cool!"
+    else
+        "Ist das nicht so eine Art Computer Betriebssystem?"
+    endif.
+
+test(en, t0000) :-
+    "do you know linux?",
+    "Hey, Linux is my operating system, it is very cool.".
+
+test(de, t0001) :-
+    "magst du linux?",
+    "Hey, Linux ist mein Betriebssystem, sehr cool!".
+
+% FIXME: needs humans module
+
+is_computer_scientist(PERSON) :- wdpdOccupation(PERSON, wdeComputerScientist).
+ 
+% % l3proc(I, F, fnQuestioning) :- and(frame(F, top, general_info), frame(F, ent, HUMAN), frame(F, entclass, human), is_computer_scientist(HUMAN), assertz(ias(I, uframe, F)), is(CAT, uriref(wde:ComputerScientist)), list_append(VMC, fe(cat, CAT)), list_append(VMC, fe(item, HUMAN)), list_append(VMC, frame(fnCategorization)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, category)), frame(F, spkr, USER), list_append(VMC, fe(add, USER)), list_append(VMC, fe(spkr, uriref(aiu:self))), list_append(VMC, frame(fnTelling)), fnvm_graph(VMC, RFRAME), scorez(I, 150.0), assertz(ias(I, rframe, RFRAME)), l4proc(I)).
+% 
+% test(en, t0002) :-
+%     "Who is Niklaus Wirth?",
+%     "niklaus wirth is categorized as computer scientist".
+% 
+% test(de, t0003) :-
+%     "wer ist Niklaus Wirth?",
+%     "niklaus wirth ist in der kategorie informatiker".
+
+%
+% computer languages
+%
+
+programming_language(L) :- wdpdInstanceOf(L, wdeProgrammingLanguage1).
+
+macro(en, programming_language, LABEL) :- 
+    programming_language(PG), 
+    rdfsLabel(PG, en, LABEL).
+
+macro(de, programming_language, LABEL) :- 
+    programming_language(PG), 
+    rdfsLabel(PG, de, LABEL).
+
+get_topic_label(C, en, "programming languages") :- mem(C, topic, wdeProgrammingLanguage1), r_score(C, 10).
+get_topic_label(C, de, "Programmiersprachen")   :- mem(C, topic, wdeProgrammingLanguage1), r_score(C, 10).
+
+train(en) :-
+    "(do you know|what is) {programming_language:LABEL}?",
+
+    ner (en, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    C:mem|topic is wdeProgrammingLanguage1,
+    r_score(C, SCORE),
+
+    "Isn't that a computer programming language?".
+
+train(de) :-
+    "(kennst Du|was ist) {programming_language:LABEL}?",
+
+    ner (de, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    C:mem|topic is wdeProgrammingLanguage1,
+    r_score(C, SCORE),
+
+    "Das ist doch eine Programmiersprache?".
+
+test(en, t0004) :-
+    "do you know prolog?",
+    "Isn't that a computer programming language?",
+    "what was our topic, again?",
+    "We have been talking about Prolog, I think.".
+
+test(de, t0005) :-
+    "kennst du prolog?",
+    "Das ist doch eine Programmiersprache?",
+    "Worüber hatten wir gesprochen?",
+    "Wir hatten über Prolog gesprochen, glaube ich.".
+
+%
+% home computers
+%
+
+home_computer(L) :- wdpdInstanceOf(L, wdeHomeComputer).
+
+macro(en, home_computer, LABEL) :- 
+    home_computer(PG), 
+    rdfsLabel(PG, en, LABEL).
+
+macro(de, home_computer, LABEL) :- 
+    home_computer(PG), 
+    rdfsLabel(PG, de, LABEL).
+
+get_topic_label(C, en, "home computers") :- mem(C, topic, wdeHomeComputer), r_score(C, 10).
+get_topic_label(C, de, "Heimcomputer")   :- mem(C, topic, wdeHomeComputer), r_score(C, 10).
+
+train(en) :-
+    "(do you know|what is) (the|) {home_computer:LABEL}?",
+
+    ner (en, home_computer, tstart(home_computer), tend(home_computer), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    C:mem|topic is wdeHomeComputer,
+    r_score(C, SCORE),
+
+    or("Isn't that a home computer?", "I love those vintage home computers!").
+
+train(de) :-
+    "(kennst Du|was ist) (den|die|) {home_computer:LABEL}?",
+
+    ner (de, home_computer, tstart(home_computer), tend(home_computer), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    C:mem|topic is wdeHomeComputer,
+    r_score(C, SCORE),
+
+    "Das ist doch ein Heimcomputer?".
+
+test(en, t0006) :-
+    "do you know commodore 64?",
+    "Isn't that a home computer?",
+    "what was our topic, again?",
+    "we have been talking about commodore 64 i think".
+
+test(de, t0007) :-
+    "kennst du sinclair zx spectrum?",
+    "Das ist doch ein Heimcomputer?",
+    "Worüber hatten wir gesprochen?",
+    "Wir hatten über Sinclair ZX Spectrum gesprochen, glaube ich.".
+
+train(en) :-
+    "bill gates",
+    "What do you think about Bill Gates?".
+
+train(de) :-
+    "bill gates",
+    "Wie denkst Du über Bill Gates?".

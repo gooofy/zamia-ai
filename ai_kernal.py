@@ -395,20 +395,20 @@ class AIKernal(object):
 
     def _compute_net_input (self, res, cur_context):
 
-        solutions = self.rt.search_predicate ('tokens', [cur_context, 'X'], env=res)
-        tokens = solutions[0]['X'].l
+        solutions = self.rt.search_predicate ('tokens', [cur_context, '_1'], env=res)
+        tokens = solutions[0]['_1'].l
 
-        solutions = self.rt.search_predicate ('context', [cur_context, 'K', 'V'], env=res, err_on_missing=False)
+        solutions = self.rt.search_predicate ('context', [cur_context, '_2', '_3'], env=res, err_on_missing=False)
         # import pdb; pdb.set_trace()
         d = {}
         for s in solutions:
 
-            k = s['K']
+            k = s['_2']
             if not isinstance(k, Predicate):
                 continue
             k = k.name
 
-            v = s['V']
+            v = s['_3']
             if isinstance(v, Predicate):
                 v = v.name
             elif isinstance(v, StringLiteral):
@@ -466,13 +466,13 @@ class AIKernal(object):
             res = do_assertz ({}, Clause ( Predicate('prev', [cur_context, prev_context]) , location=self.dummyloc), res=res)
 
             # copy over all previous context statements to the new one
-            s1s = self.rt.search_predicate ('context', [prev_context, 'X', 'Y'], env=res, err_on_missing=False)
+            s1s = self.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=res, err_on_missing=False)
             for s1 in s1s:
-                res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['X'], s1['Y']]) , location=self.dummyloc), res=res)
+                res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
             # copy over all previous mem statements to the new one
-            s1s = self.rt.search_predicate ('mem', [prev_context, 'X', 'Y'], env=res, err_on_missing=False)
+            s1s = self.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=res, err_on_missing=False)
             for s1 in s1s:
-                res = do_assertz ({}, Clause ( Predicate('mem', [cur_context, s1['X'], s1['Y']]) , location=self.dummyloc), res=res)
+                res = do_assertz ({}, Clause ( Predicate('mem', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
             # import pdb; pdb.set_trace()
 
         res['C'] = cur_context
@@ -484,19 +484,19 @@ class AIKernal(object):
         #import pdb; pdb.set_trace()
 
         res       = []
-        s2s = self.rt.search_predicate ('c_say', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_say', [cur_context, '_1'], env=env, err_on_missing=False)
         for s2 in s2s:
-            res.append(s2['X'].s)
+            res.append(s2['_1'].s)
 
         actions   = []
-        s2s = self.rt.search_predicate ('c_action', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env, err_on_missing=False)
         for s2 in s2s:
-            actions.append(map (lambda x: unicode(x), s2['X'].l))
+            actions.append(map (lambda x: unicode(x), s2['_1'].l))
 
         score     = 0.0
-        s2s = self.rt.search_predicate ('c_score', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env, err_on_missing=False)
         for s2 in s2s:
-            score += s2['X'].f
+            score += s2['_1'].f
 
         return res, actions, score
 
@@ -838,12 +838,12 @@ class AIKernal(object):
     #     #             continue
 
     #     #         actions = []
-    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', 'A'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-    #     #             actions.append(s['A'])
+    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'action', '_1'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+    #     #             actions.append(s['_1'])
 
     #     #         score = 0.0
-    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', 'S'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
-    #     #             score += s['S'].f
+    #     #         for s in self.prolog_rt.search_predicate('ias', [cur_ias, 'score', '_1'], env={ASSERT_OVERLAY_VAR_NAME: overlay}):
+    #     #             score += s['_1'].f
 
     #     #         # ias = overlay.get('ias')
 

@@ -44,13 +44,15 @@ def builtin_say (g, pe):
 
     # figure out language from context
 
-    solutions = pe.search_predicate('lang', [arg_C, 'L'], env=g.env)
+    solutions = pe.search_predicate('lang', [arg_C, '_1'], env=g.env)
 
     if len(solutions)<1:
         import pdb; pdb.set_trace()
+        pe.set_trace(True)
+        solutions = pe.search_predicate('lang', [arg_C, '_1'], env=g.env)
         raise PrologRuntimeError('say: internal error: failed to determine language.', g.location)
 
-    lang = solutions[0]['L'].name
+    lang = solutions[0]['_1'].name
 
     parts = []
     for p1 in arg_Str.split('{'):
@@ -78,7 +80,7 @@ def builtin_say (g, pe):
             else:
                 v = unicode(var_v)
 
-            if fmr_s == 'd':
+            if fmt_s == 'd':
                 v = unicode(int(v))
             elif fmt_s == 'f':
                 v = unicode(float(v))

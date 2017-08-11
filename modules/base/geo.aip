@@ -1,0 +1,75 @@
+%prolog
+
+%
+% very basic geo location predicates
+%
+
+geo_location_category (wdeCity).
+geo_location_category (wdeMunicipality).
+geo_location_category (wdeGeographicRegion).
+geo_location_category (wdeMunicipalityOfGermany).
+geo_location_category (wdeHumanSettlement).
+geo_location_category (wdeBigCity).
+geo_location_category (wdeGeographicLocation).
+geo_location_category (wdeLocation).
+geo_location_category (wdeCapital).
+
+geo_location (LOC) :-
+    geo_location_category(CAT),
+    wdpdInstanceOf(CAT, LOC).
+
+% geo_locations (S)  :- set_findall(LOC, geo_location_rdf(LOC), S).
+% 
+% geo_location (LOC) :- geo_locations(S), set_get(S, LOC).
+
+%
+% geo location macros
+%
+
+% nlp_geo_location_s(en, S, LOCATION, LABEL, TSTART, TEND) :-
+%     geo_location(LOCATION),
+%     rdf (limit(1),
+%          LOCATION, rdfs:label, LABEL,
+%          filter(lang(LABEL) = 'en')),
+%     length(S, TSTART),
+%     hears (en, S, LABEL),
+%     length(S, TEND).
+% 
+% nlp_geo_location_s(de, S, LOCATION, LABEL, TSTART, TEND) :-
+%     geo_location(LOCATION),
+%     rdf (limit(1),
+%          LOCATION, rdfs:label, LABEL,
+%          filter(lang(LABEL) = 'de')),
+%     length(S, TSTART),
+%     hears (de, S, LABEL),
+%     length(S, TEND).
+
+macro(en, geo_location, LABEL) :- 
+    geo_location(LOC), 
+    rdfsLabel(LOC, en, LABEL).
+macro(de, geo_location, LABEL) :- 
+    geo_location(LOC), 
+    rdfsLabel(LOC, de, LABEL).
+
+%
+% named entity recognition (NER) - done in python, for speed
+%
+
+% ner_learn_geo_locations(LANG) :-
+%     atom_chars(LANG, LSTR),
+% 
+%     geo_location_category(CAT),
+% 
+%     % log(info, format_str('learning geo location category %s', CAT)),
+% 
+%     rdf_lists (distinct,
+%                GEO_LOCATIONS, wdpd:InstanceOf,   CAT,
+%                GEO_LOCATIONS, rdfs:label,        GEO_LOCATION_LABELS,
+%                filter (lang(GEO_LOCATION_LABELS) = LSTR)),
+% 
+%     ner_learn(LANG, geo_location, GEO_LOCATIONS, GEO_LOCATION_LABELS).
+% 
+% init('base') :-
+%     ner_learn_geo_locations(en),
+%     ner_learn_geo_locations(de).
+

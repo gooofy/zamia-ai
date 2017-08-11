@@ -22,6 +22,7 @@ from copy                 import deepcopy, copy
 from nltools.tokenizer    import tokenize
 from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Literal, Variable, Predicate, Clause, SourceLocation
 from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
+from zamiaprolog.errors   import PrologRuntimeError
 
 #
 # very basic utilities
@@ -44,6 +45,11 @@ def builtin_say (g, pe):
     # figure out language from context
 
     solutions = pe.search_predicate('lang', [arg_C, 'L'], env=g.env)
+
+    if len(solutions)<1:
+        import pdb; pdb.set_trace()
+        raise PrologRuntimeError('say: internal error: failed to determine language.', g.location)
+
     lang = solutions[0]['L'].name
 
     parts = []
@@ -85,7 +91,6 @@ def builtin_say (g, pe):
                 res = do_assertz (g.env, Clause ( Predicate('c_say', [arg_C, StringLiteral(t)]) , location=g.location), res=res)
         cnt += 1
 
-    # import pdb; pdb.set_trace()
 
     return [res]
 

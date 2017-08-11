@@ -4,10 +4,11 @@
 from num2words         import num2words
 from zamiaprolog.logic import StringLiteral
 from base.ner          import builtin_ner_learn, builtin_ner
+from base.utils        import builtin_say
 
 DEPENDS    = [ 'config' ]
 
-AIP_SOURCES = ['time.aip']
+AIP_SOURCES = ['time.aip', 'conversation.aip']
 
 # NLP_DAY_OF_THE_WEEK_LABEL = {
 #     'en': { 0: 'Monday',
@@ -118,4 +119,5 @@ def init_module(kernal):
     kernal.rt.register_builtin ('transcribe_number', builtin_transcribe_number) # transcribe_number (+Lang, +Case, +N, -N_SCRIPT)
     kernal.rt.register_builtin ('ner_learn',         builtin_ner_learn)         # ner_learn (+Lang, +Cat, +Entity, +Label)
     kernal.rt.register_builtin ('ner',               builtin_ner)               # ner (+Lang, +Cat, +TS, +TE, +Tokens, -Entity, -Score)
+    kernal.rt.register_builtin ('say',               builtin_say)               # say (+C, +Str)
 

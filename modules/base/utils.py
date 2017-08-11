@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-
 #
 # Copyright 2016, 2017 Guenter Bartsch
 #
@@ -20,220 +19,189 @@
 #
 
 from copy                 import deepcopy, copy
-
 from nltools.tokenizer    import tokenize
-from rdf                  import rdf
+from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Literal, Variable, Predicate, Clause, SourceLocation
+from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
 
 #
 # very basic utilities
 #
 
-def hears(lang, s, txt, label=None):
+def builtin_say (g, pe):
 
-    if isinstance (txt, basestring):
-        s1 = copy(s)
-        s1.extend(tokenize(txt, lang=lang))
-        return s1
+    """ say (+C, +Str) """
 
-    # import pdb; pdb.set_trace()
+    pe._trace ('CALLED BUILTIN say', g)
 
-    todo = [(txt, 0, [], None, None)]
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('say: 2 args (+C, +Str) expected.', g.location)
 
-    done   = []
+    arg_C     = pe.prolog_eval         (args[0], g.env, g.location)
+    arg_Str   = pe.prolog_get_string   (args[1], g.env, g.location)
 
-    while todo:
+    # figure out language from context
 
-        # print repr(todo)
+    solutions = pe.search_predicate('lang', [arg_C, 'L'], env=g.env)
+    lang = solutions[0]['L'].name
 
-        l, pos, res, tstart, tend = todo.pop()
+    parts = []
+    for p1 in arg_Str.split('{'):
+        for p2 in p1.split('}'):
+            parts.append(p2)
 
-        if pos >= len(l):
-            if label:
-                done.append((res, tstart, tend))
+    res = {}
+    cnt = 0
+    for part in parts:
+
+        if cnt % 2 == 1:
+
+            subparts = part.split(',')
+
+            if len(subparts)!=2:
+                self.report_error ('variable string "%s" not recognized .' % repr(part))
+
+            var_s = subparts[0]
+            fmt_s = subparts[1]
+
+            var_v = pe.prolog_eval (Variable(var_s), g.env, g.location)
+            
+            if isinstance(var_v, StringLiteral):
+                v = var_v.s
             else:
-                done.append(res)
-            continue
+                v = unicode(var_v)
 
-        e = l[pos]
-        if isinstance(e, basestring):
+            if fmr_s == 'd':
+                v = unicode(int(v))
+            elif fmt_s == 'f':
+                v = unicode(float(v))
 
-            if label and e=='$':
-                tstart = len(res)
-                tokens = tokenize(label, lang=lang)
-                tend = tstart + len(tokens)
-            else:
-                tokens = tokenize(e, lang=lang)
-
-            res = copy(res)
-            res.extend(tokens)
-            todo.append((l, pos+1, res, tstart, tend))
+            res = do_assertz (g.env, Clause ( Predicate('c_say', [arg_C, StringLiteral(v)]) , location=g.location), res=res)
 
         else:
 
-            for e2 in e:
-                tokens = tokenize(e2, lang=lang)
-                res2 = copy(res)
-                res2.extend(tokens)
-                todo.append((l, pos+1, res2, tstart, tend))
-
-    start = s
-
-    res = []
-
-    if label:
-
-        for d, tstart, tend in done:
-
-            r = deepcopy(start)
-
-            for token in d:
-                r.append(token)
-
-            res.append ((r, tstart, tend))
-
-    else:
-        for d in done:
-
-            r = deepcopy(start)
-
-            for token in d:
-                r.append(token)
-
-            res.append (r)
-
-    return res
-
-def says (lang, r, txt, actions=None, bor=False):
-
-    r1 = copy(r)
-    # for t in tokenize(txt, lang=lang):
-    #     r1.append(u"say('%s', '%s')" % (lang, t))
-
-    if bor:
-        r1.append(u"r_bor(ias)")
-
-    parts1 = txt.split('%')
-    cnt = 0
-
-    l = []
-
-    for p1 in parts1:
-
-        o = 0
-
-        if cnt > 0:
-           
-            o += 2
-
-            while p1[o] != ')':
-                o += 1
-
-            var_name = p1[1:o]
-            o += 1
-
-            format_char = p1[o]
-            r1.append(u"r_sayv(ias, '%s', '%s')" % (var_name, format_char))
-
-            o += 1
-
-        parts2 = tokenize(p1[o:], lang=lang, keep_punctuation=True)
-
-        for p2 in parts2:
-            r1.append(u"r_say(ias, u'%s')" % p2.replace("'", "\\'"))
-
+            for t in tokenize(part, lang=lang, keep_punctuation=True):
+                res = do_assertz (g.env, Clause ( Predicate('c_say', [arg_C, StringLiteral(t)]) , location=g.location), res=res)
         cnt += 1
-   
-    if actions:
-        for a in actions:
-            r1.append(u"r_action(ias, %s)" % repr(a))
 
-    return r1
+    # import pdb; pdb.set_trace()
 
-def nlp_add_round(res, lang, question, answer):
-
-    s = hears(lang, [], question)
-    
-    r = says (lang, [], answer, bor=True)
-
-    res.append((lang, [[], s, r]))
-
-    return res
+    return [res]
 
 
-#
-# wikidata / rdf related utils
-#
+# FIXME: remove old code below
 
-def entity_label(kernal, lang, entity):
-
-
-    res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
-               distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), lang) ])
-
-    if len(res)!=1:
-        # try the english label instead
-        res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
-                   distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), 'en') ])
-        if len(res)!=1:
-            # import pdb; pdb.set_trace()
-            print 'warning: no label found for %s' % entity
-            return 'unknown'
-
-    # print "entity_label: %s -> %s" % (entity, repr(res))
-    return res[0]['LABEL']
-
-# is_entity(ENTITY) :-
-#     rdf (limit(1), ENTITY, rdfs:label, LABEL).
- 
-# humans / persons
- 
-# is_human(ENTITY) :- rdf (ENTITY, wdpd:InstanceOf, wde:Human).
- 
-def is_male(kernal, entity):
-    return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Male')]))>0
-def is_female(kernal, entity):
-    return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Female')]))>0
-
-# entity_gender(ENTITY, GENDER) :- is_male(ENTITY), GENDER is male.
-# entity_gender(ENTITY, GENDER) :- is_female(ENTITY), GENDER is female.
- 
-#
-# score/action utilities (hears/says are implemented in python now)
-#
- 
-# scorez(I, SCORE) :- assertz(ias(I, score, SCORE)).
+# def hears(lang, s, txt, label=None):
 # 
-# acts(R, ACTION) :- list_append(R, ACTION).
+#     if isinstance (txt, basestring):
+#         s1 = copy(s)
+#         s1.extend(tokenize(txt, lang=lang))
+#         return s1
+# 
+#     # import pdb; pdb.set_trace()
+# 
+#     todo = [(txt, 0, [], None, None)]
+# 
+#     done   = []
+# 
+#     while todo:
+# 
+#         # print repr(todo)
+# 
+#         l, pos, res, tstart, tend = todo.pop()
+# 
+#         if pos >= len(l):
+#             if label:
+#                 done.append((res, tstart, tend))
+#             else:
+#                 done.append(res)
+#             continue
+# 
+#         e = l[pos]
+#         if isinstance(e, basestring):
+# 
+#             if label and e=='$':
+#                 tstart = len(res)
+#                 tokens = tokenize(label, lang=lang)
+#                 tend = tstart + len(tokens)
+#             else:
+#                 tokens = tokenize(e, lang=lang)
+# 
+#             res = copy(res)
+#             res.extend(tokens)
+#             todo.append((l, pos+1, res, tstart, tend))
+# 
+#         else:
+# 
+#             for e2 in e:
+#                 tokens = tokenize(e2, lang=lang)
+#                 res2 = copy(res)
+#                 res2.extend(tokens)
+#                 todo.append((l, pos+1, res2, tstart, tend))
+# 
+#     start = s
+# 
+#     res = []
+# 
+#     if label:
+# 
+#         for d, tstart, tend in done:
+# 
+#             r = deepcopy(start)
+# 
+#             for token in d:
+#                 r.append(token)
+# 
+#             res.append ((r, tstart, tend))
+# 
+#     else:
+#         for d in done:
+# 
+#             r = deepcopy(start)
+# 
+#             for token in d:
+#                 r.append(token)
+# 
+#             res.append (r)
+# 
+#     return res
+
+
+# #
+# # wikidata related utils
+# #
+# 
+# def entity_label(kernal, lang, entity):
+# 
+# 
+#     res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
+#                distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), lang) ])
+# 
+#     if len(res)!=1:
+#         # try the english label instead
+#         res = rdf (kernal, [(entity, 'rdfs:label', 'LABEL')], 
+#                    distinct=True, limit=1, filters=[ ('=', ('lang', 'LABEL'), 'en') ])
+#         if len(res)!=1:
+#             # import pdb; pdb.set_trace()
+#             print 'warning: no label found for %s' % entity
+#             return 'unknown'
+# 
+#     # print "entity_label: %s -> %s" % (entity, repr(res))
+#     return res[0]['LABEL']
+# 
+# # is_entity(ENTITY) :-
+# #     rdf (limit(1), ENTITY, rdfs:label, LABEL).
+#  
+# # humans / persons
+#  
+# # is_human(ENTITY) :- rdf (ENTITY, wdpd:InstanceOf, wde:Human).
+#  
+# def is_male(kernal, entity):
+#     return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Male')]))>0
+# def is_female(kernal, entity):
+#     return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Female')]))>0
+# 
+# # entity_gender(ENTITY, GENDER) :- is_male(ENTITY), GENDER is male.
+# # entity_gender(ENTITY, GENDER) :- is_female(ENTITY), GENDER is female.
  
-#
-# some self address NLP macros
-#
- 
-def nlp_base_self_address_s(kernal, lang, s):
-
-    res = [s]
-    for d in rdf (kernal, [('aiu:self', 'ai:forename', 'LABEL')], distinct=True, filters=[ ('=', ('lang', 'LABEL'), lang) ]):
-        res.append(hears (lang, s, d['LABEL']))
-
-    return res
-
-# ne: not empty
- 
-def nlp_base_self_address_ne_s(kernal, lang, s):
-
-    res = []
-    for d in rdf (kernal, [('aiu:self', 'ai:forename', 'LABEL')], distinct=True, filters=[ ('=', ('lang', 'LABEL'), lang) ]):
-        res.append(hears (lang, s, d['LABEL']))
-
-    return res
-
-#
-# nlp helper for simple input->response training samples
-#
- 
-# nlp_train(MODULE, LANG, [[], S1, [], R1]) :-
-#     nlp_gens(MODULE, LANG, INP, RESP),
-#     hears (LANG, S1, INP),
-#     says (LANG, R1, RESP).
-
-

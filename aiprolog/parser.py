@@ -1104,7 +1104,25 @@ class AIPrologParser(object):
                 continue
 
             if isinstance(a, Predicate) and a.name == 'context':
-                contexts.append(a)
+                if len(a.args) != 2:
+                    self.report_error('context: 2 args expected.')
+
+                a0 = a.args[0]
+                if isinstance(a0, StringLiteral):
+                    a0 = a0.s
+                elif isinstance(a0, Predicate):
+                    a0 = a0.name
+                else:
+                    self.report_error('context: string or constant expected, %s found instead.' % repr(a0))
+                a1 = a.args[1]
+                if isinstance(a1, StringLiteral):
+                    a1 = a1.s
+                elif isinstance(a1, Predicate):
+                    a1 = a1.name
+                else:
+                    self.report_error('context: string or constant expected, %s found instead.' % repr(a1))
+
+                contexts.append([a0, a1])
                 continue
 
             code.append(a)

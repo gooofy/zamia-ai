@@ -460,6 +460,10 @@ class AIKernal(object):
             s1s = self.rt.search_predicate ('context', [prev_context, 'X', 'Y'], env=res, err_on_missing=False)
             for s1 in s1s:
                 res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['X'], s1['Y']]) , location=self.dummyloc), res=res)
+            # copy over all previous mem statements to the new one
+            s1s = self.rt.search_predicate ('mem', [prev_context, 'X', 'Y'], env=res, err_on_missing=False)
+            for s1 in s1s:
+                res = do_assertz ({}, Clause ( Predicate('mem', [cur_context, s1['X'], s1['Y']]) , location=self.dummyloc), res=res)
             # import pdb; pdb.set_trace()
 
         res['C'] = cur_context

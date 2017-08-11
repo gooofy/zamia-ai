@@ -321,12 +321,16 @@ with codecs.open(outputfn, 'w', 'utf8') as f:
 
         entity = lem[elu]
 
-        logging.info ('%5d/%5d dumping prolog code for %s ...' % (cnt, len(lem), elu))
         cnt += 1
 
-        f.write(u'\n%% URI: %s\n\n' % unicode(entity))
+        triples = list(g.triples((entity, None, None)))
 
-        triples = g.triples((entity, None, None))
+        if len(triples)==0:
+            continue
+
+        logging.info ('%5d/%5d dumping prolog code for %s ...' % (cnt, len(lem), elu))
+
+        f.write(u'\n%% URI: %s\n\n' % unicode(entity))
 
         for s, p, o in triples:
 

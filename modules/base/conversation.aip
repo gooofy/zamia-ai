@@ -120,3 +120,7 @@ test(en, t0000) :-
     'what did we talk about',
     'We have had many topics.'.
 
+test(de, t0001) :-
+    'worüber haben wir gesprochen?',
+    'Wir hatten schon viele Themen.'.
+

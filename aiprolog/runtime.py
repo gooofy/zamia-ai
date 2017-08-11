@@ -199,19 +199,59 @@ def builtin_is(g, rt):
         parts = ques.name.split(':')
 
         v = parts[0]
+
+        if v[0].isupper():
+            if not v in g.env:
+                raise PrologRuntimeError('is: unbound variable %s.' % v, g.location)
+            v = g.env[v]
+
         for part in parts[1:len(parts)-1]:
             
-            solutions = rt.search_predicate (part, [v, 'X'], env=g.env, err_on_missing=False)
+            subparts = part.split('|')
+
+            pattern = [v]
+            wildcard_found = False
+            for sp in subparts[1:]:
+                if sp == '_':
+                    wildcard_found = True
+                    pattern.append('X')
+                else:
+                    pattern.append(Predicate(sp))
+
+            if not wildcard_found:
+                pattern.append('X')
+
+            solutions = rt.search_predicate (subparts[0], pattern, env=g.env, err_on_missing=False)
             if len(solutions)<1:
                 raise PrologRuntimeError(u'is: failed to match part "%s" of "%s".' % (part, unicode(ques)), g.location)
             v = solutions[0]['X']
 
-        # import pdb; pdb.set_trace()
-
         res = {}
 
-        res = do_retract (g.env, Predicate ( parts[len(parts)-1], [v, Variable('_')]), res=res)
-        res = do_assertz (g.env, Clause ( Predicate(parts[len(parts)-1], [v, ans]), location=g.location), res=res)
+        lastpart = parts[len(parts)-1]
+
+        subparts = lastpart.split('|')
+
+        r_pattern = [v]
+        a_pattern = [v]
+        wildcard_found = False
+        for sp in subparts[1:]:
+            if sp == '_':
+                wildcard_found = True
+                r_pattern.append('_')
+                a_pattern.append(ans)
+            else:
+                r_pattern.append(Predicate(sp))
+                a_pattern.append(Predicate(sp))
+
+        if not wildcard_found:
+            r_pattern.append('_')
+            a_pattern.append(ans)
+
+        # import pdb; pdb.set_trace()
+
+        res = do_retract (g.env, Predicate ( subparts[0], r_pattern), res=res)
+        res = do_assertz (g.env, Clause ( Predicate(subparts[0], a_pattern), location=g.location), res=res)
 
         return [ res ]
 
@@ -265,6 +305,12 @@ class AIPrologRuntime(PrologRuntime):
         # import pdb; pdb.set_trace()
 
         v = parts[0]
+
+        if v[0].isupper():
+            if not v in env:
+                raise PrologRuntimeError('is: unbound variable %s.' % v, location)
+            v = env[v]
+
         for part in parts[1:]:
 
             subparts = part.split('|')

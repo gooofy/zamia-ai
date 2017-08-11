@@ -472,18 +472,20 @@ class AIKernal(object):
 
     def _extract_response (self, cur_context, env):
 
+        #import pdb; pdb.set_trace()
+
         res       = []
-        s2s = self.rt.search_predicate ('say', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_say', [cur_context, 'X'], env=env, err_on_missing=False)
         for s2 in s2s:
             res.append(s2['X'].s)
 
         actions   = []
-        s2s = self.rt.search_predicate ('action', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_action', [cur_context, 'X'], env=env, err_on_missing=False)
         for s2 in s2s:
             actions.append(map (lambda x: unicode(x), s2['X'].l))
 
         score     = 0.0
-        s2s = self.rt.search_predicate ('score', [cur_context, 'X'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_score', [cur_context, 'X'], env=env, err_on_missing=False)
         for s2 in s2s:
             score += s2['X'].f
 

@@ -97,7 +97,7 @@ def builtin_r_say(g, pe):
 
     res = {}
 
-    res = do_assertz (g.env, Clause ( Predicate('say', [arg_context, arg_token]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('c_say', [arg_context, arg_token]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -133,7 +133,7 @@ def builtin_r_sayv(g, pe):
     elif arg_fmt == 'f':
         v = unicode(float(v))
 
-    res = do_assertz (g.env, Clause ( Predicate('say', [arg_context, StringLiteral(v)]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('c_say', [arg_context, StringLiteral(v)]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -155,7 +155,7 @@ def builtin_r_action(g, pe):
 
     res = {}
 
-    res = do_assertz (g.env, Clause ( Predicate('action', [arg_context, arg_action]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('c_action', [arg_context, arg_action]) , location=g.location), res=res)
 
     return [ res ]
 
@@ -177,7 +177,7 @@ def builtin_r_score(g, pe):
 
     res = {}
         
-    res = do_assertz (g.env, Clause ( Predicate('score', [arg_context, arg_score]) , location=g.location), res=res)
+    res = do_assertz (g.env, Clause ( Predicate('c_score', [arg_context, arg_score]) , location=g.location), res=res)
 
     return [ res ]
 

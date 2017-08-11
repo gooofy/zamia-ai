@@ -221,7 +221,9 @@ class AIKernal(object):
                 initializer(self)
 
         except:
+            logging.error('failed to load module "%s"' % module_name)
             logging.error(traceback.format_exc())
+            sys.exit(1)
 
         finally:
             # Since we may exit via an exception, close fp explicitly.
@@ -240,6 +242,9 @@ class AIKernal(object):
         self.initialized_modules.add(module_name)
 
         m = self.load_module(module_name)
+
+        if not m:
+            raise Exception ('init_module: module "%s" not found.' % module_name)
 
         for m2 in getattr (m, 'DEPENDS'):
             self.init_module(m2)

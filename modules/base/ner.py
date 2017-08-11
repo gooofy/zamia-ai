@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*- 
 
 import logging
-import rdflib
-from rdflib.plugins.sparql.parserutils import CompValue
 
 from nltools.tokenizer    import tokenize
 from nltools.misc         import limit_str
+from zamiaprolog.errors   import PrologRuntimeError
+from zamiaprolog.logic    import Variable, NumberLiteral, StringLiteral, ListLiteral, Predicate
 
 MAX_NER_RESULTS = 5
 
@@ -55,13 +55,11 @@ def ner_learn(lang, cls, entities, labels):
 
     return True
 
-def ner(lang, ias, cls, tstart, tend):
+def ner(lang, cls, tstart, tend, tokens):
 
     global ner_dict
 
     nd = ner_dict[lang][cls]
-
-    tokens = ias['tokens']
 
     #
     # start scoring
@@ -149,4 +147,62 @@ def builtin_ner_learn (g, pe):
     ner_learn(arg_Lang, arg_Cat, [arg_Ent], [arg_Label])
 
     return True
+
+def builtin_ner(g, pe):
+
+    global ner_dict
+
+    """ ner (+Lang, +Cat, +TS, +TE, +Tokens, -Entity, -Score) """
+
+    pe._trace ('CALLED BUILTIN ner', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+
+    if len(args) != 7:
+        raise PrologRuntimeError('ner: 7 args ( +Lang, +Cat, +TS, +TE, +Tokens, -Entity, -Score ) expected.', g.location)
+
+    #
+    # extract args, tokens
+    #
+
+    arg_Lang    = pe.prolog_get_constant(args[0], g.env, g.location)
+    arg_Class   = pe.prolog_eval        (args[1], g.env, g.location)
+    arg_TStart  = pe.prolog_get_int     (args[2], g.env, g.location)
+    arg_TEnd    = pe.prolog_get_int     (args[3], g.env, g.location)
+    arg_Tokens  = pe.prolog_get_list    (args[4], g.env, g.location)
+    arg_Entity  = pe.prolog_get_variable(args[5], g.env, g.location)
+    arg_Score   = pe.prolog_get_variable(args[6], g.env, g.location)
+
+    if not arg_Lang in ner_dict:
+        raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
+
+    tokens = map(lambda x: x.s, arg_Tokens.l)
+
+    # import pdb; pdb.set_trace()
+    res = []
+    if isinstance(arg_Class, Variable):
+
+        for c in ner_dict[arg_Lang]:
+
+            for entity, score in ner(arg_Lang, c, arg_TStart, arg_TEnd, tokens):
+
+                r = { arg_Class.name : Predicate(c),
+                      arg_Entity     : Predicate(entity),
+                      arg_Score      : NumberLiteral(score) }
+                res.append(r)
+
+    else:
+
+        if not arg_Class.name in ner_dict[arg_Lang]:
+            raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
+
+        for entity, score in ner(arg_Lang, arg_Class.name, arg_TStart, arg_TEnd, tokens):
+            r = { arg_Entity     : Predicate(entity),
+                  arg_Score      : NumberLiteral(score) }
+            res.append(r)
+
+
+    return res
+
 

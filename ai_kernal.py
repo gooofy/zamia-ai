@@ -47,7 +47,7 @@ import model
 from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 from aiprolog.parser      import AIPrologParser
 from zamiaprolog.logicdb  import LogicDB
-from zamiaprolog.builtins import do_gensym, do_assertz
+from zamiaprolog.builtins import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic    import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation
 from nltools              import misc
 from nltools.tokenizer    import tokenize
@@ -427,9 +427,13 @@ class AIKernal(object):
 
         return inp
 
-    def _setup_context (self, user, lang, inp, prev_context, res):
+    def _setup_context (self, user, lang, inp, prev_context, prev_res):
 
         cur_context = Predicate(do_gensym (self.rt, 'context'))
+        res = { }
+        if ASSERT_OVERLAY_VAR_NAME in prev_res:
+            res[ASSERT_OVERLAY_VAR_NAME] = prev_res[ASSERT_OVERLAY_VAR_NAME].clone()
+
 
         if not prev_context:
             # find prev_context for this user, if any
@@ -557,12 +561,13 @@ class AIKernal(object):
                 logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
                 logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
 
-                # import pdb; pdb.set_trace()
+                #if round_num>0:
+                #    import pdb; pdb.set_trace()
                 res, cur_context = self._setup_context ( user          = TEST_USER, 
                                                          lang          = tc.lang, 
                                                          inp           = t_in,
                                                          prev_context  = prev_context,
-                                                         res           = res)
+                                                         prev_res      = res)
                 # prep
 
                 if prep:

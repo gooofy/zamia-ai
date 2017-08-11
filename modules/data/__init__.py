@@ -8,5 +8,6 @@ DEPENDS    = [ ]
 AIP_SOURCES = [
                'givennames20.aip',
                'wd_sub.pl',
+               'tz.aip',
               ]
 

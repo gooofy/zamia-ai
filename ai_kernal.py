@@ -394,6 +394,7 @@ class AIKernal(object):
         tokens = solutions[0]['X'].l
 
         solutions = self.rt.search_predicate ('context', [cur_context, 'K', 'V'], env=res, err_on_missing=False)
+        # import pdb; pdb.set_trace()
         d = {}
         for s in solutions:
 
@@ -403,6 +404,12 @@ class AIKernal(object):
             k = k.name
 
             v = s['V']
+            if isinstance(v, Predicate):
+                v = v.name
+            elif isinstance(v, StringLiteral):
+                v = v.s
+            else:
+                v = unicode(v)
 
             d[k] = v
 
@@ -411,8 +418,7 @@ class AIKernal(object):
             inp.insert(0, t.s)
 
         for k in sorted(d):
-            inp.insert(0, unicode(d[k]))
-            inp.insert(0, k)
+            inp.insert(0, [k, d[k]])
 
         return inp
 

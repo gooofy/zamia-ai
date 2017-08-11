@@ -269,25 +269,25 @@ train(de) :-
     "bist du halb mensch halb maschine",
     "Nein, ich bin vollsynthetisch.".
 
-% train(en) :-
-%     "are you (running on|) a @HOME_COMPUTER:LABEL?",
-%     "No, I am running on current hardware, but I love home computers.".
-% 
-% train(de) :-
-%     "(bist du ein|läufst du auf einem) @HOME_COMPUTER:LABEL?",
-%     "Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!".
-% 
-% test(en, t0008) :-
-%     "computer are you a commodore 64?",
-%     "No, I am running on current hardware, but I love home computers.",
-%     "are you able to learn?",
-%     "Yes I can learn things".
-% 
-% test(de, t0009) :-
-%     "computer, bist du ein commodore 64?",
-%     "Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!",
-%     "kannst du lernen?",
-%     "Ja, ich kann lernen.".
+train(en) :-
+    "are you (running on|) a {home_computer:LABEL}?",
+    "No, I am running on current hardware, but I love home computers.".
+
+train(de) :-
+    "(bist du ein|läufst du auf einem) {home_computer:LABEL}?",
+    "Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!".
+
+test(en, t0008) :-
+    "computer are you a commodore 64?",
+    "No, I am running on current hardware, but I love home computers.",
+    "are you able to learn?",
+    "Yes I can learn things".
+
+test(de, t0009) :-
+    "computer, bist du ein commodore 64?",
+    "Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!",
+    "kannst du lernen?",
+    "Ja, ich kann lernen.".
 
 train(en) :-
     "on what (kind of|) (computer|platform) do you run?",

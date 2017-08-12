@@ -1,0 +1,95 @@
+%prolog
+
+% URI: http://ai.zamia.org/kb/MediaStationDance
+
+rdfsLabel(aiDance, en, "Dance").
+rdfsLabel(aiDance, de, "Dance").
+aiMediaSlot(aiDance, 6).
+aiMediaTitle(aiDance, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationMusic
+
+rdfsLabel(aiMusic, en, "Music").
+rdfsLabel(aiMusic, de, "Musik").
+aiMediaSlot(aiMusic, 3).
+aiMediaTitle(aiMusic, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationNewRock
+
+rdfsLabel(aiNewRock, en, "New Rock").
+rdfsLabel(aiNewRock, de, "New Rock").
+aiMediaSlot(aiNewRock, 3).
+aiMediaTitle(aiNewRock, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationAktuelles
+
+rdfsLabel(aiNews, en, "News").
+rdfsLabel(aiNews, de, "Aktuelles").
+aiMediaSlot(aiNews, 9).
+aiMediaTitle(aiNews, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationNewsTalk
+
+rdfsLabel(aiNewstalk, en, "Newstalk").
+rdfsLabel(aiNewstalk, de, "Newstalk").
+aiMediaSlot(aiNewstalk, 13).
+aiMediaTitle(aiNewstalk, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationPop
+
+rdfsLabel(aiPop, en, "Pop").
+rdfsLabel(aiPop, de, "Pop").
+aiMediaSlot(aiPop, 5).
+aiMediaTitle(aiPop, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationRock
+
+rdfsLabel(aiRock, en, "Rock").
+rdfsLabel(aiRock, de, "Rock").
+aiMediaSlot(aiRock, 4).
+aiMediaTitle(aiRock, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationTechNews
+
+rdfsLabel(aiTechNews, en, "Tech News").
+rdfsLabel(aiTechNews, de, "Tech News").
+aiMediaSlot(aiTechNews, 1).
+aiMediaTitle(aiTechNews, []).
+
+% URI: http://ai.zamia.org/kb/MediaStationWorkout
+
+rdfsLabel(aiWorkout, en, "Workout").
+rdfsLabel(aiWorkout, de, "Workout").
+aiMediaSlot(aiWorkout, 15).
+aiMediaTitle(aiWorkout, []).
+
+% URI: http://www.wikidata.org/entity/Q166266
+
+rdfsLabel(wde1046RTL, de, "RTL").
+aiMediaSlot(wde1046RTL, 8).
+aiMediaTitle(wde1046RTL, []).
+
+% URI: http://www.wikidata.org/entity/Q795291
+
+aiMediaTitle(wdeB5Aktuell, 1).
+aiMediaSlot(wdeB5Aktuell, 9).
+
+% URI: http://www.wikidata.org/entity/Q695328
+
+aiMediaSlot(wdeDeutschlandfunk, 9).
+aiMediaTitle(wdeDeutschlandfunk, 2).
+
+% URI: http://www.wikidata.org/entity/Q12372710
+
+aiMediaSlot(wdePowerHitRadio, 7).
+aiMediaTitle(wdePowerHitRadio, []).
+
+% URI: http://www.wikidata.org/entity/Q2208789
+
+aiMediaSlot(wdeSWR3, 5).
+aiMediaTitle(wdeSWR3, 6).
+
+% URI: http://www.wikidata.org/entity/Q2208796
+
+aiMediaSlot(wdeSWRAktuell, 9).
+aiMediaTitle(wdeSWRAktuell, 9).

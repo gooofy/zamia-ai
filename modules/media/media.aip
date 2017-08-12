@@ -1,0 +1,132 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train_ner (en, media_station, STATION, LABEL) :- aiMediaSlot(STATION, SLOT), rdfsLabel(STATION, en, LABEL).
+train_ner (de, media_station, STATION, LABEL) :- aiMediaSlot(STATION, SLOT), rdfsLabel(STATION, de, LABEL).
+
+macro(en, media_stations, LABEL) :- aiMediaSlot(STATION, SLOT), rdfsLabel(STATION, en, LABEL).
+macro(de, media_stations, LABEL) :- aiMediaSlot(STATION, SLOT), rdfsLabel(STATION, de, LABEL).
+
+change_media_station_tokens(en, TS, TE) :-
+
+    ner (en, media_station, TS, TE, C:tokens, STATION, SCORE),
+
+    aiMediaSlot(STATION, SLOT),
+    aiMediaTitle(STATION, TITLE),
+
+    C:mem|f1ent is STATION,
+    C:user:station is STATION,
+
+    r_score(C, SCORE),
+
+    r_action(C, [media, tune, SLOT, TITLE]).
+
+change_media_station_tokens(de, TS, TE) :-
+
+    ner (de, media_station, TS, TE, C:tokens, STATION, SCORE),
+
+    aiMediaSlot(STATION, SLOT),
+    aiMediaTitle(STATION, TITLE),
+
+    C:mem|f1ent is STATION,
+    C:user:station is STATION,
+
+    r_score(C, SCORE),
+
+    r_action(C, [media, tune, SLOT, TITLE]).
+
+
+train(en) :-
+    "(please|) (switch|turn|tune) (to|on|into) {media_stations:LABEL}",
+    inline change_media_station_tokens(en, tstart(media_stations), tend(media_stations)).
+
+train(de) :-
+    "(schalte|mach|stell) (bitte|) (mal|) {media_stations:LABEL} (an|ein)",
+    inline change_media_station_tokens(de, tstart(media_stations), tend(media_stations)).
+
+change_media_station_context :-
+
+    if nonvar(C:user:station) then
+        STATION is C:user:station
+    else
+        STATION is self:favStation
+    endif,
+
+    aiMediaSlot(STATION, SLOT),
+    aiMediaTitle(STATION, TITLE),
+
+    C:mem|f1ent is STATION,
+    C:user:station is STATION,
+
+    r_action(C, [media, tune, SLOT, TITLE]).
+
+% % l2proc_changeMediaStationContext :- and(list_append(VMC, fe(degree, on)), list_append(VMC, fe(age, uriref(aiu:self))), list_append(VMC, frame(zfChangeMediaStation)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnRequest)), fnvm_exec(I, VMC)).
+% 
+train(en) :-
+    "(please|) (switch|turn|tune) (to|on|into) (the radio|the music|media|the media player)",
+    inline change_media_station_context.
+
+train(de) :-
+    "(schalte|mach|stell) (bitte|) (mal|) (das radio|musik|die musik|ein bischen musik|die unterhaltung|den media player) (an|ein)",
+    inline change_media_station_context.
+% % l2proc_switchOffMedia :- and(list_append(VMC, fe(degree, off)), list_append(VMC, fe(age, uriref(aiu:self))), list_append(VMC, frame(zfChangeMediaStation)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnRequest)), fnvm_exec(I, VMC)).
+% 
+train(en) :-
+    "(please|) (switch|turn|tune) off (the radio|the music|media|the media player)",
+    r_action(C, [media, off]).
+
+train(de) :-
+    "(schalte|mach|stell) (bitte|) (mal|) (das radio|musik|die musik|ein bischen musik|die unterhaltung|den media player) (aus|still)",
+    r_action(C, [media, off]).
+
+test(en, t0002) :-
+     'computer, please switch on the radio',
+     '',
+     action(media, tune, 9, 1).
+     
+test(de, t0003) :-
+     'computer, schalte bitte das Radio ein',
+     '',
+     action(media, tune, 9, 1).
+ 
+test(en, t0004) :-
+     'computer please tune into new rock',
+     '',
+     action(media, tune, 3, []).
+test(de, t0005) :-
+     'computer schalte bitte new rock ein',
+     '',
+     action(media, tune, 3, []).
+
+
+test(en, t0006) :-
+     'turn off the radio',
+     '',
+     action(media, off).
+test(de, t0007) :-
+     'mach das radio aus',
+     '',
+     action(media, off).
+
+test(en, t0008) :-
+     'computer please switch on new rock',
+     '',
+     action(media, tune, 3, []),
+     'switch off the radio',
+     '',
+     action(media, off),
+     'please turn on the radio',
+     '',
+     action(media, tune, 3, []).
+test(de, t0009) :-
+     'computer schalte bitte new rock ein',
+     '',
+     action(media, tune, 3, []),
+     'mach das radio aus',
+     '',
+     action(media, off),
+     'schalte bitte das radio ein',
+     '',
+     action(media, tune, 3, []).
+ 

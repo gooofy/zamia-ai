@@ -368,6 +368,7 @@ aiDamaris,http://ai.zamia.org/kb/FemaleGivenNameDamaris
 aiDamian,http://ai.zamia.org/kb/MaleGivenNameDamian
 aiDan,http://ai.zamia.org/kb/MaleGivenNameDan
 aiDana,http://ai.zamia.org/kb/FemaleGivenNameDana
+aiDance,http://ai.zamia.org/kb/MediaStationDance
 aiDanica,http://ai.zamia.org/kb/FemaleGivenNameDanica
 aiDaniel,http://ai.zamia.org/kb/MaleGivenNameDaniel
 aiDaniela,http://ai.zamia.org/kb/FemaleGivenNameDaniela
@@ -1440,6 +1441,7 @@ aiMonja,http://ai.zamia.org/kb/FemaleGivenNameMonja
 aiMoritz,http://ai.zamia.org/kb/MaleGivenNameMoritz
 aiMuharrem,http://ai.zamia.org/kb/MaleGivenNameMuharrem
 aiMurat,http://ai.zamia.org/kb/MaleGivenNameMurat
+aiMusic,http://ai.zamia.org/kb/MediaStationMusic
 aiMustafa,http://ai.zamia.org/kb/MaleGivenNameMustafa
 aiMuzaffer,http://ai.zamia.org/kb/MaleGivenNameMuzaffer
 aiMyriam,http://ai.zamia.org/kb/FemaleGivenNameMyriam
@@ -1463,6 +1465,9 @@ aiNelli,http://ai.zamia.org/kb/FemaleGivenNameNelli
 aiNelly,http://ai.zamia.org/kb/FemaleGivenNameNelly
 aiNermin,http://ai.zamia.org/kb/FemaleGivenNameNermin
 aiNevenka,http://ai.zamia.org/kb/FemaleGivenNameNevenka
+aiNewRock,http://ai.zamia.org/kb/MediaStationNewRock
+aiNews,http://ai.zamia.org/kb/MediaStationAktuelles
+aiNewstalk,http://ai.zamia.org/kb/MediaStationNewsTalk
 aiNick,http://ai.zamia.org/kb/MaleGivenNameNick
 aiNico,http://ai.zamia.org/kb/MaleGivenNameNico
 aiNicolai,http://ai.zamia.org/kb/MaleGivenNameNicolai
@@ -1557,6 +1562,7 @@ aiPiotr,http://ai.zamia.org/kb/MaleGivenNamePiotr
 aiPirmin,http://ai.zamia.org/kb/MaleGivenNamePirmin
 aiPius,http://ai.zamia.org/kb/MaleGivenNamePius
 aiPolina,http://ai.zamia.org/kb/FemaleGivenNamePolina
+aiPop,http://ai.zamia.org/kb/MediaStationPop
 aiPriska,http://ai.zamia.org/kb/FemaleGivenNamePriska
 aiRabea,http://ai.zamia.org/kb/FemaleGivenNameRabea
 aiRadmila,http://ai.zamia.org/kb/FemaleGivenNameRadmila
@@ -1621,6 +1627,7 @@ aiRoberto,http://ai.zamia.org/kb/MaleGivenNameRoberto
 aiRobin,http://ai.zamia.org/kb/MaleGivenNameRobin
 aiRocco,http://ai.zamia.org/kb/MaleGivenNameRocco
 aiRochus,http://ai.zamia.org/kb/MaleGivenNameRochus
+aiRock,http://ai.zamia.org/kb/MediaStationRock
 aiRoderich,http://ai.zamia.org/kb/MaleGivenNameRoderich
 aiRoger,http://ai.zamia.org/kb/MaleGivenNameRoger
 aiRoland,http://ai.zamia.org/kb/MaleGivenNameRoland
@@ -1802,6 +1809,7 @@ aiTanja,http://ai.zamia.org/kb/FemaleGivenNameTanja
 aiTassilo,http://ai.zamia.org/kb/MaleGivenNameTassilo
 aiTatiana,http://ai.zamia.org/kb/FemaleGivenNameTatiana
 aiTatjana,http://ai.zamia.org/kb/FemaleGivenNameTatjana
+aiTechNews,http://ai.zamia.org/kb/MediaStationTechNews
 aiTelse,http://ai.zamia.org/kb/FemaleGivenNameTelse
 aiTeresa,http://ai.zamia.org/kb/FemaleGivenNameTeresa
 aiThaddäus,http://ai.zamia.org/kb/MaleGivenNameThaddäus
@@ -1961,6 +1969,7 @@ aiWolfRüdiger,http://ai.zamia.org/kb/MaleGivenNameWolfRüdiger
 aiWolfgang,http://ai.zamia.org/kb/MaleGivenNameWolfgang
 aiWolfhard,http://ai.zamia.org/kb/MaleGivenNameWolfhard
 aiWolfram,http://ai.zamia.org/kb/MaleGivenNameWolfram
+aiWorkout,http://ai.zamia.org/kb/MediaStationWorkout
 aiWulf,http://ai.zamia.org/kb/MaleGivenNameWulf
 aiXaver,http://ai.zamia.org/kb/MaleGivenNameXaver
 aiXenia,http://ai.zamia.org/kb/FemaleGivenNameXenia

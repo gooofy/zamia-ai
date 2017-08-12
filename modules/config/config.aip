@@ -12,7 +12,7 @@ wdpdInstanceOf   (self, wdeComputer).
 wdpdSexOrGender  (self, wdeMale).
 wdpdLocatedIn    (self, wdeStuttgart).
 favMovie         (self, wde2001ASpaceOdyssey).
-favChannel       (self, wdeB5Aktuell).
+favStation       (self, wdeB5Aktuell).
 favAuthor        (self, wdeArthurCClarke).
 favBook          (self, wde2001ASpaceOdyssey1).
 idol             (self, wdeNiklausWirth).

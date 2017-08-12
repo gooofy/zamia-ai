@@ -1,3 +1,5 @@
+aiMediaSlot,http://ai.zamia.org/kb/MediaSlot
+aiMediaTitle,http://ai.zamia.org/kb/MediaTitle
 aiTimezone,http://ai.zamia.org/kb/timezone
 owlComplementOf,http://www.w3.org/2002/07/owl#complementOf
 owlSameAs,http://www.w3.org/2002/07/owl#sameAs

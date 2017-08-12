@@ -197,18 +197,3 @@ def builtin_say (g, pe):
 #     # print "entity_label: %s -> %s" % (entity, repr(res))
 #     return res[0]['LABEL']
 # 
-# # is_entity(ENTITY) :-
-# #     rdf (limit(1), ENTITY, rdfs:label, LABEL).
-#  
-# # humans / persons
-#  
-# # is_human(ENTITY) :- rdf (ENTITY, wdpd:InstanceOf, wde:Human).
-#  
-# def is_male(kernal, entity):
-#     return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Male')]))>0
-# def is_female(kernal, entity):
-#     return len( rdf (kernal, [('ENTITY', 'wdpd:SexOrGender', 'wde:Female')]))>0
-# 
-# # entity_gender(ENTITY, GENDER) :- is_male(ENTITY), GENDER is male.
-# # entity_gender(ENTITY, GENDER) :- is_female(ENTITY), GENDER is female.
- 

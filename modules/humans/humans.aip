@@ -1,0 +1,172 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train_ner (en, human, HUMAN, LABEL) :- wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, en, LABEL).
+train_ner (de, human, HUMAN, LABEL) :- wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, de, LABEL).
+
+macro(en, known_humans, LABEL) :- 
+    wdpdInstanceOf(HUMAN, wdeHuman),
+    rdfsLabel(HUMAN, en, LABEL).
+ 
+macro(de, known_humans, LABEL) :- 
+    wdpdInstanceOf(HUMAN, wdeHuman),
+    rdfsLabel(HUMAN, de, LABEL).
+ 
+% this is meant to be overloaded by other modules (i.e. politics) to 
+% produce better, higher-scoring answer (e.g. "isn't he a US president?")
+answer_known_human(C, en, HUMAN) :-
+    if is_male(HUMAN) then
+        say(C, "Yes, I know him.")
+    else
+        say(C, "Yes, I know her.")
+    endif.
+answer_known_human(C, de, HUMAN) :-
+    if is_male(HUMAN) then
+        say(C, "Ja, ich kenne ihn.")
+    else
+        say(C, "Ja, ich kenne sie.")
+    endif.
+
+train(en) :-
+    "(do you know | do you happen to know) {known_humans:LABEL}",
+
+    ner (en, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    r_score(C, SCORE),
+
+    answer_known_human (C, en, ENTITY).
+
+train(de) :-
+    "(kennst du|kennst du eigentlich) {known_humans:LABEL}",
+
+    ner (de, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
+
+    C:mem|f1ent is ENTITY,
+    r_score(C, SCORE),
+
+    answer_known_human (C, de, ENTITY).
+ 
+test(de, t0000) :-
+    "Kennst Du Angela Merkel?",
+    "Ja ich kenne sie.".
+
+test(en, t0001) :-
+    "Do you know Angela Merkel?",
+    "Yes I know her".
+
+% % l3proc(I, F, fnQuestioning) :- and(frame(F, top, general_info), frame(F, ent, HUMAN), frame(F, entclass, human), list_append(VMC, fe(child, HUMAN)), list_append(VMC, fe(childclass, human)), list_append(VMC, frame(fnBeingBorn)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, place)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% % l2proc_infoHumanTokens(LANG) :- and(ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY), list_append(VMC, fe(ent, NER1ENTITY)), list_append(VMC, fe(entclass, NER1CLASS)), list_append(VMC, fe(top, general_info)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% 
+% train(en) :-
+%     "(what about | who is | what is) @KNOWN_HUMANS:LABEL",
+%     inline(l2proc_infoHumanTokens, en).
+% 
+% train(de) :-
+%     "(wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) @KNOWN_HUMANS:LABEL",
+%     inline(l2proc_infoHumanTokens, de).
+% 
+% test(de, t0002) :-
+%     "Wer ist Angela Merkel?",
+%     "Angela Merkel wurde in Barmbek-Nord geboren".
+% 
+% test(en, t0003) :-
+%     "What about Angela Merkel?",
+%     "Angela Merkel was born in Barmbek-Nord".
+% % l2proc_humanBornWhereTokens(LANG) :- and(ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY), list_append(VMC, fe(child, NER1ENTITY)), list_append(VMC, fe(childclass, NER1CLASS)), list_append(VMC, frame(fnBeingBorn)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, place)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% 
+% train(en) :-
+%     "(where|in which town|in which city) (was|is) @KNOWN_HUMANS:LABEL born?",
+%     inline(l2proc_humanBornWhereTokens, en).
+% 
+% train(de) :-
+%     "(wo|in welcher stadt) (wurde|ist) (eigentlich|) @KNOWN_HUMANS:LABEL geboren?",
+%     inline(l2proc_humanBornWhereTokens, de).
+% 
+% train(en) :-
+%     "which is (the birthplace|place of birth) of @KNOWN_HUMANS:LABEL?",
+%     inline(l2proc_humanBornWhereTokens, en).
+% 
+% train(de) :-
+%     "welches ist (eigentlich|) (der Geburtsort|die Geburtsstadt) von @KNOWN_HUMANS:LABEL?",
+%     inline(l2proc_humanBornWhereTokens, de).
+% % l2proc_humanBornWhereContext :- and(list_append(VMC, frame(fnBeingBorn)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, place)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% 
+% train(en) :-
+%     "(and|) (where|in which town|in which city) (was|is) (she|he) born (again|)?",
+%     inline(l2proc_humanBornWhereContext).
+% 
+% train(de) :-
+%     "(und|) (wo|in welcher stadt) (wurde|ist) (eigentlich|) (er|sie) (nochmal|) geboren?",
+%     inline(l2proc_humanBornWhereContext).
+% 
+% train(en) :-
+%     "(and|) which is (the birthplace|place of birth) of (him|her) (again|)?",
+%     inline(l2proc_humanBornWhereContext).
+% 
+% train(de) :-
+%     "(und|) welches ist (eigentlich|nochmal|) (der Geburtsort|die Geburtsstadt) von (ihm|ihr)?",
+%     inline(l2proc_humanBornWhereContext).
+% 
+% test(en, t0004) :-
+%     "Where was Angela Merkel born?",
+%     "angela merkel was born in barmbek-nord",
+%     "What were we talking about?",
+%     "angela merkels birthday",
+%     "and where was she born again?",
+%     "angela merkel was born in barmbek-nord".
+% 
+% test(de, t0005) :-
+%     "Wo wurde Angela Merkel geboren?",
+%     "angela merkel wurde in barmbek-nord geboren",
+%     "Welches Thema hatten wir?",
+%     "angela merkels geburtstag.",
+%     "und wo wurde sie nochmal geboren?",
+%     "angela merkel wurde in barmbek-nord geboren".
+% % l2proc_humanBornWhenTokens(LANG) :- and(ner(LANG, I, NER1CLASS, @KNOWN_HUMANS:TSTART_LABEL_0, @KNOWN_HUMANS:TEND_LABEL_0, NER1ENTITY), list_append(VMC, fe(child, NER1ENTITY)), list_append(VMC, fe(childclass, NER1CLASS)), list_append(VMC, frame(fnBeingBorn)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, time)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% 
+% train(en) :-
+%     "(when|in which year) (was|is) @KNOWN_HUMANS:LABEL born?",
+%     inline(l2proc_humanBornWhenTokens, en).
+% 
+% train(de) :-
+%     "(wann|in welchem Jahr) (wurde|ist) (eigentlich|) @KNOWN_HUMANS:LABEL geboren?",
+%     inline(l2proc_humanBornWhenTokens, de).
+% 
+% train(en) :-
+%     "(when is|on what day is) @KNOWN_HUMANS:LABELS birthday?",
+%     inline(l2proc_humanBornWhenTokens, en).
+% 
+% train(de) :-
+%     "(wann hat|an welchem Tag hat) (eigentlich|) @KNOWN_HUMANS:LABEL Geburtstag?",
+%     inline(l2proc_humanBornWhenTokens, de).
+% % l2proc_humanBornWhenContext :- and(list_append(VMC, frame(fnBeingBorn)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, time)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnQuestioning)), fnvm_exec(I, VMC)).
+% 
+% train(en) :-
+%     "(and|) (when|in which year) (was|is) (he|she) born (again|)?",
+%     inline(l2proc_humanBornWhenContext).
+% 
+% train(de) :-
+%     "(und|) (wann|in welchem Jahr) (wurde|ist) (eigentlich|) (sie|er) (nochmal|) geboren?",
+%     inline(l2proc_humanBornWhenContext).
+% 
+% test(en, t0006) :-
+%     "When was Angela Merkel born?",
+%     "Angela Merkel was born on july seventeen, 1954.",
+%     "What were we talking about?",
+%     "angela merkels birthday",
+%     "and when was she born?",
+%     "Angela Merkel was born on july seventeen, 1954.",
+%     "and where?",
+%     "she was born in barmbek nord".
+% 
+% test(de, t0007) :-
+%     "Wann wurde Angela Merkel geboren?",
+%     "Angela Merkel wurde am siebzehnten juli 1954 geboren.",
+%     "Welches Thema hatten wir?",
+%     "angela merkels geburtstag",
+%     "und wann wurde sie nochmal geboren?",
+%     "Angela Merkel wurde am siebzehnten juli 1954 geboren.",
+%     "und wo?",
+%     "Angela Merkel wurde in barmbek nord geboren.".

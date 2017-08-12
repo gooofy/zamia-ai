@@ -18,15 +18,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# from base.utils        import hears, says, nlp_base_self_address_s, rdf, entity_label, is_male, is_female
-# from base.conversation import nlp_base_sayagain_s, nlp_base_isaid_r, nlp_base_whatwasourtopic_s
-# from base.ner          import ner_learn
-
 DEPENDS    = [ 'base' ]
+
+AIP_SOURCES = [ 'humans.aip' ]
 
 #
 # FIXME: port code to AI-Prolog
 #
+
+# from base.utils        import hears, says, nlp_base_self_address_s, rdf, entity_label, is_male, is_female
+# from base.conversation import nlp_base_sayagain_s, nlp_base_isaid_r, nlp_base_whatwasourtopic_s
+# from base.ner          import ner_learn
 
 # #
 # # named entity recognition (NER)

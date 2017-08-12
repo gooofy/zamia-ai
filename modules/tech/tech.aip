@@ -10,30 +10,17 @@ operating_system(OS) :-
     wdpdInstanceOf(OS, CAT).
 
 %
-% done in init_module (python) for performance reasons
+% NER
 %
-% ner_learn_operating_systems(LANG) :- 
-%     operating_system_category(CAT), 
-%     wdpdInstanceOf(OS, CAT),
-%     rdfsLabel(OS, LANG, LABEL),
-%     ner_learn(LANG, operating_system, OS, LABEL).
-% ner_learn_home_computers(LANG) :- 
-%     wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer),
-%     rdfsLabel(HOME_COMPUTER, LANG, LABEL),
-%     ner_learn(LANG, home_computer, HOME_COMPUTER, LABEL).
-% ner_learn_programming_languages(LANG) :- 
-%     wdpdInstanceOf(L, wdeProgrammingLanguage1),
-%     rdfsLabel(L, LANG, LABEL),
-%     ner_learn(LANG, programming_language, L, LABEL).
-% 
-% init("tech") :- 
-%     log(info, "init"),
-%     ner_learn_operating_systems(en),
-%     ner_learn_operating_systems(de).
-%     ner_learn_home_computers(en), 
-%     ner_learn_home_computers(de), 
-%     ner_learn_programming_languages(en), 
-%     ner_learn_programming_languages(de).
+
+train_ner (en, operating_system, OS, LABEL) :- operating_system_category(CAT), wdpdInstanceOf(OS, CAT), rdfsLabel(OS, en, LABEL).
+train_ner (de, operating_system, OS, LABEL) :- operating_system_category(CAT), wdpdInstanceOf(OS, CAT), rdfsLabel(OS, de, LABEL).
+
+train_ner (en, home_computer, HOME_COMPUTER, LABEL) :- wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, en, LABEL).
+train_ner (de, home_computer, HOME_COMPUTER, LABEL) :- wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, de, LABEL).
+
+train_ner (en, programming_language, L, LABEL) :- wdpdInstanceOf(L, wdeProgrammingLanguage1), rdfsLabel(L, en, LABEL).
+train_ner (de, programming_language, L, LABEL) :- wdpdInstanceOf(L, wdeProgrammingLanguage1), rdfsLabel(L, de, LABEL).
 
 %
 % operating systems
@@ -79,19 +66,32 @@ test(de, t0001) :-
     "magst du linux?",
     "Hey, Linux ist mein Betriebssystem, sehr cool!".
 
-% FIXME: needs humans module
-
-is_computer_scientist(PERSON) :- wdpdOccupation(PERSON, wdeComputerScientist).
+is_computer_scientist(HUMAN) :- wdpdOccupation(HUMAN, wdeComputerScientist).
  
-% % l3proc(I, F, fnQuestioning) :- and(frame(F, top, general_info), frame(F, ent, HUMAN), frame(F, entclass, human), is_computer_scientist(HUMAN), assertz(ias(I, uframe, F)), is(CAT, uriref(wde:ComputerScientist)), list_append(VMC, fe(cat, CAT)), list_append(VMC, fe(item, HUMAN)), list_append(VMC, frame(fnCategorization)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(top, category)), frame(F, spkr, USER), list_append(VMC, fe(add, USER)), list_append(VMC, fe(spkr, uriref(aiu:self))), list_append(VMC, frame(fnTelling)), fnvm_graph(VMC, RFRAME), scorez(I, 150.0), assertz(ias(I, rframe, RFRAME)), l4proc(I)).
-% 
-% test(en, t0002) :-
-%     "Who is Niklaus Wirth?",
-%     "niklaus wirth is categorized as computer scientist".
-% 
-% test(de, t0003) :-
-%     "wer ist Niklaus Wirth?",
-%     "niklaus wirth ist in der kategorie informatiker".
+answer_known_human(C, en, HUMAN) :-
+    is_computer_scientist(HUMAN),
+    r_score(C, 100.0),
+    if is_male(HUMAN) then
+        say(C, "Isn't he a computer scientist?")
+    else
+        say(C, "Isn't she a computer scientist?")
+    endif.
+answer_known_human(C, de, HUMAN) :-
+    is_computer_scientist(HUMAN),
+    r_score(C, 100.0),
+    if is_male(HUMAN) then
+        say(C, "Ist der nicht Informatiker?")
+    else
+        say(C, "Ist sie nicht Informatikerin?.")
+    endif.
+
+test(en, t0002) :-
+    "Do you know Niklaus Wirth?",
+    "Isn't he a computer scientist?".
+
+test(de, t0003) :-
+    "Kennst Du Niklaus Wirth?",
+    "Ist der nicht Informatiker?".
 
 %
 % computer languages

@@ -92,6 +92,19 @@ class TestCase(Base):
 
     # __table_args__    = (Index('idx_tc_inp_lang', "inp", "lang"), )
 
+class NERData(Base):
+
+    __tablename__ = 'ner_data'
+
+    id                = Column(Integer, primary_key=True)
+
+    lang              = Column(String(2), index=True)
+    module            = Column(String(255), index=True)
+
+    cls               = Column(Unicode(255))
+    entity            = Column(Unicode(255))
+    label             = Column(Unicode(255))
+
 class Cronjob(Base):
 
     __tablename__ = 'cronjobs'

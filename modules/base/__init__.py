@@ -5,12 +5,11 @@ import logging
 
 from num2words         import num2words
 from zamiaprolog.logic import StringLiteral
-from base.ner          import builtin_ner_learn, builtin_ner, ner_learn
 from base.utils        import builtin_say
 
 DEPENDS    = [ 'config' ]
 
-AIP_SOURCES = ['time.aip', 'conversation.aip', 'geo.aip']
+AIP_SOURCES = ['time.aip', 'conversation.aip', 'geo.aip', 'utils.aip']
 
 # NLP_DAY_OF_THE_WEEK_LABEL = {
 #     'en': { 0: 'Monday',
@@ -115,56 +114,10 @@ def builtin_transcribe_number (g, pe):
 # 
 #     return True
 
-GEO_LOCATION_CATEGORY = [ 'wdeCity',
-                          'wdeMunicipality',
-                          'wdeGeographicRegion',
-                          'wdeMunicipalityOfGermany',
-                          'wdeHumanSettlement',
-                          'wdeBigCity',
-                          'wdeGeographicLocation',
-                          'wdeLocation',
-                          'wdeCapital']
-
-
 def init_module(kernal):
 
     # kernal.rt.register_builtin ('transcribe_date', builtin_transcribe_date)   # transcribe_date (+Lang, +Case, +TS, -TS_SCRIPT)
     kernal.rt.register_builtin ('transcribe_number', builtin_transcribe_number) # transcribe_number (+Lang, +Case, +N, -N_SCRIPT)
-    kernal.rt.register_builtin ('ner_learn',         builtin_ner_learn)         # ner_learn (+Lang, +Cat, +Entity, +Label)
-    kernal.rt.register_builtin ('ner',               builtin_ner)               # ner (+Lang, +Cat, +TS, +TE, +Tokens, -Entity, -Score)
+    # kernal.rt.register_builtin ('ner_learn',         builtin_ner_learn)         # ner_learn (+Lang, +Cat, +Entity, +Label)
     kernal.rt.register_builtin ('say',               builtin_say)               # say (+C, +Str)
-
-    #
-    # geo locations NER
-    #
-
-    logging.info('geo locations NER training...')
-
-    locs = set()
-    for cat in GEO_LOCATION_CATEGORY:
-        s1s = kernal.rt.search_predicate('wdpdInstanceOf', ['LOC', cat])
-        for s1 in s1s:
-            loc   = s1['LOC'].name
-            locs.add(loc)
-
-    # import pdb; pdb.set_trace()
-    locs = list(locs)
-
-    for lang in ['en', 'de']:
-
-        labels = []
-
-        for loc in locs:
-            s2s = kernal.rt.search_predicate('rdfsLabel', [loc, lang, 'L'])
-            if len(s2s)==0:
-                labels.append(loc)
-            else:
-                label = s2s[0]['L'].s
-                labels.append(label)
-                logging.debug('ner_learn: %s -> %s' % (loc, label))
-
-        ner_learn (lang, 'geo_location', locs, labels)
-
-    logging.info('geo locations NER training... done.')
-
 

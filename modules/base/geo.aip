@@ -16,7 +16,7 @@ geo_location_category (wdeCapital).
 
 geo_location (LOC) :-
     geo_location_category(CAT),
-    wdpdInstanceOf(CAT, LOC).
+    wdpdInstanceOf(LOC, CAT).
 
 % geo_locations (S)  :- set_findall(LOC, geo_location_rdf(LOC), S).
 % 
@@ -52,24 +52,9 @@ macro(de, geo_location, LABEL) :-
     rdfsLabel(LOC, de, LABEL).
 
 %
-% named entity recognition (NER) - done in python, for speed
+% named entity recognition (NER)
 %
 
-% ner_learn_geo_locations(LANG) :-
-%     atom_chars(LANG, LSTR),
-% 
-%     geo_location_category(CAT),
-% 
-%     % log(info, format_str('learning geo location category %s', CAT)),
-% 
-%     rdf_lists (distinct,
-%                GEO_LOCATIONS, wdpd:InstanceOf,   CAT,
-%                GEO_LOCATIONS, rdfs:label,        GEO_LOCATION_LABELS,
-%                filter (lang(GEO_LOCATION_LABELS) = LSTR)),
-% 
-%     ner_learn(LANG, geo_location, GEO_LOCATIONS, GEO_LOCATION_LABELS).
-% 
-% init('base') :-
-%     ner_learn_geo_locations(en),
-%     ner_learn_geo_locations(de).
+train_ner (en, geo_location, LOC, LABEL) :- geo_location(LOC), rdfsLabel(LOC, en, LABEL).
+train_ner (de, geo_location, LOC, LABEL) :- geo_location(LOC), rdfsLabel(LOC, de, LABEL).
 

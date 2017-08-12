@@ -30,6 +30,7 @@ from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Lite
 from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
 from nltools.tokenizer    import tokenize
 from nltools.misc         import edit_distance
+from ner                  import builtin_ner
 
 import model
 
@@ -221,7 +222,7 @@ def builtin_is(g, rt):
             if not wildcard_found:
                 pattern.append('X')
 
-            solutions = rt.search_predicate (subparts[0], pattern, env=g.env, err_on_missing=False)
+            solutions = rt.search_predicate (subparts[0], pattern, env=g.env)
             if len(solutions)<1:
                 raise PrologRuntimeError(u'is: failed to match part "%s" of "%s".' % (part, unicode(ques)), g.location)
             v = solutions[0]['X']
@@ -289,6 +290,9 @@ class AIPrologRuntime(PrologRuntime):
 
         self.register_builtin ('is',              builtin_is)                  # is (?Ques, +Ans)
 
+        # named entity recognition (NER)
+
+        self.register_builtin ('ner',             builtin_ner)                 # ner (+Lang, +Cat, +TS, +TE, +Tokens, -Entity, -Score)
 
     def prolog_eval (self, term, env, location):
         
@@ -327,7 +331,7 @@ class AIPrologRuntime(PrologRuntime):
             if not wildcard_found:
                 pattern.append('X')
 
-            solutions = self.search_predicate (subparts[0], pattern, env=env, err_on_missing=False)
+            solutions = self.search_predicate (subparts[0], pattern, env=env)
             if len(solutions)<1:
                 return Variable(term.name)
             v = solutions[0]['X']

@@ -604,7 +604,7 @@ class AIPrologParser(object):
 
             # see if we can find a clause that unifies with the pred to inline
 
-            clauses   = self.db.lookup(pred.name)
+            clauses   = self.db.lookup(pred.name, arity=-1)
             succeeded = None
             succ_bind = None
             for clause in reversed(clauses):
@@ -761,6 +761,7 @@ class AIPrologParser(object):
 
         self.ds             = []
         self.ts             = []
+        self.ner            = {}
         self.named_macros   = {}
         self.lang           = 'en'
         self.train_prio     = 0
@@ -785,6 +786,8 @@ class AIPrologParser(object):
                         self.extract_training_prefixes (clause)
                     elif clause.head.name == 'test':
                         self.extract_test_data (clause)
+                    elif clause.head.name == 'train_ner':
+                        self.extract_ner_training (clause)
                         
                     else:
                         self.db.store (module_name, clause)
@@ -800,7 +803,7 @@ class AIPrologParser(object):
 
         logging.info("Compilation succeeded.")
 
-        return self.ds, self.ts
+        return self.ds, self.ts, self.ner
 
     ###############################################
     #
@@ -821,7 +824,7 @@ class AIPrologParser(object):
 
         # extract variable binding from prolog macro, if any
 
-        macros = self.db.lookup ('macro')
+        macros = self.db.lookup ('macro', arity=-1)
 
         for macro in macros:
             if len(macro.head.args)<2:
@@ -1177,7 +1180,7 @@ class AIPrologParser(object):
 
         v = self.rt.prolog_get_variable(clause.head.args[0], {}, clause.location)
 
-        solutions = self.rt.search(clause, env={}, err_on_missing=True)
+        solutions = self.rt.search(clause, env={})
         for s in solutions:
             prefix = s[v].s
             self.train_prefixes.append(prefix)
@@ -1231,4 +1234,38 @@ class AIPrologParser(object):
             rounds.append ((inp, resp, actions))
 
         self.ts.append((test_name, self.lang, prep, rounds, clause.location.fn, clause.location.line, clause.location.col))
+
+    def extract_ner_training (self, clause):
+
+        if len(clause.head.args) != 4:
+            self.report_error ('train_ner: 4 arguments (+Lang, +Class, -Entity, -Label) expected')
+
+        arg_Lang   = clause.head.args[0].name
+        arg_Cls    = clause.head.args[1].name
+        arg_Entity = clause.head.args[2].name
+        arg_Label  = clause.head.args[3].name
+
+        logging.info ('computing NER training data for %s [%s] ...' % (arg_Cls, arg_Lang))
+
+        # cProfile.run('self.rt.search(clause)', 'mestats')
+        # self.rt.set_trace(True)
+        solutions = self.rt.search(clause)
+
+        if not arg_Lang in self.ner:
+            self.ner[arg_Lang] = {}
+
+        if not arg_Cls in self.ner[arg_Lang]:
+            self.ner[arg_Lang][arg_Cls] = {}
+            
+        ner = self.ner[arg_Lang][arg_Cls]
+
+        cnt = 0
+        for s in solutions:
+            entity = s[arg_Entity].name
+            label  = s[arg_Label].s
+
+            ner[entity] = label
+            cnt += 1
+
+        logging.info ('computing NER training data for %s [%s] ... done. %d entries processed.' % (arg_Cls, arg_Lang, cnt))
 

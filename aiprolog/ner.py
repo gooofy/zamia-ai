@@ -8,11 +8,13 @@ from nltools.misc         import limit_str
 from zamiaprolog.errors   import PrologRuntimeError
 from zamiaprolog.logic    import Variable, NumberLiteral, StringLiteral, ListLiteral, Predicate
 
+import model
+
 MAX_NER_RESULTS = 5
-
+ 
 ner_dict   = {} # lang -> class -> token -> entity -> [idx1, idx2, ...]
-
-def ner_learn(lang, cls, entities, labels):
+ 
+def _ner_learn(lang, cls, entities, labels):
 
     global ner_dict
 
@@ -55,7 +57,7 @@ def ner_learn(lang, cls, entities, labels):
 
     return True
 
-def ner(lang, cls, tstart, tend, tokens):
+def _ner(lang, cls, tstart, tend, tokens):
 
     global ner_dict
 
@@ -121,32 +123,51 @@ def ner(lang, cls, tstart, tend, tokens):
             break
 
     return res
+# 
+# def ner_best(ner_res, ias):
+#     # FIXME: provide hook(s) for scoring functions
+#     return ner_res[0]
+# 
+# def builtin_ner_learn (g, pe):
+# 
+#     """ ner_learn (+Lang, +Cat, +Entity, +Label) """
+# 
+#     pe._trace ('CALLED BUILTIN ner_learn', g)
+# 
+#     pred = g.terms[g.inx]
+#     args = pred.args
+#     if len(args) != 4:
+#         raise PrologRuntimeError('ner_learn: 4 args expected.', g.location)
+# 
+#     arg_Lang  = pe.prolog_get_constant (args[0], g.env, g.location)
+#     arg_Cat   = pe.prolog_get_constant (args[1], g.env, g.location)
+#     arg_Ent   = pe.prolog_get_constant (args[2], g.env, g.location)
+#     arg_Label = pe.prolog_get_string   (args[3], g.env, g.location)
+# 
+#     # import pdb; pdb.set_trace()
+# 
+#     ner_learn(arg_Lang, arg_Cat, [arg_Ent], [arg_Label])
+# 
+#     return True
 
-def ner_best(ner_res, ias):
-    # FIXME: provide hook(s) for scoring functions
-    return ner_res[0]
+def _build_ner_dict(pe):
 
-def builtin_ner_learn (g, pe):
+    data = {}
 
-    """ ner_learn (+Lang, +Cat, +Entity, +Label) """
+    for nerd in pe.db.session.query(model.NERData).all():
 
-    pe._trace ('CALLED BUILTIN ner_learn', g)
+        if not nerd.lang in data:
+            data[nerd.lang] = {}
 
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 4:
-        raise PrologRuntimeError('ner_learn: 4 args expected.', g.location)
+        if not nerd.cls in data[nerd.lang]:
+            data[nerd.lang][nerd.cls] = ([],[])
+           
+        data[nerd.lang][nerd.cls][0].append(nerd.entity)
+        data[nerd.lang][nerd.cls][1].append(nerd.label)
 
-    arg_Lang  = pe.prolog_get_constant (args[0], g.env, g.location)
-    arg_Cat   = pe.prolog_get_constant (args[1], g.env, g.location)
-    arg_Ent   = pe.prolog_get_constant (args[2], g.env, g.location)
-    arg_Label = pe.prolog_get_string   (args[3], g.env, g.location)
-
-    # import pdb; pdb.set_trace()
-
-    ner_learn(arg_Lang, arg_Cat, [arg_Ent], [arg_Label])
-
-    return True
+    for lang in data:
+        for cls in data[lang]:
+            _ner_learn (lang, cls, data[lang][cls][0], data[lang][cls][1])
 
 def builtin_ner(g, pe):
 
@@ -174,12 +195,15 @@ def builtin_ner(g, pe):
     arg_Entity  = pe.prolog_get_variable(args[5], g.env, g.location)
     arg_Score   = pe.prolog_get_variable(args[6], g.env, g.location)
 
+    # import pdb; pdb.set_trace()
+    if not ner_dict:
+        _build_ner_dict(pe)
+
     if not arg_Lang in ner_dict:
         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
 
     tokens = map(lambda x: x.s, arg_Tokens.l)
 
-    # import pdb; pdb.set_trace()
     res = []
     if isinstance(arg_Class, Variable):
 
@@ -197,7 +221,7 @@ def builtin_ner(g, pe):
         if not arg_Class.name in ner_dict[arg_Lang]:
             raise PrologRuntimeError('ner: class %s unknown.' % arg_Class.name, g.location)
 
-        for entity, score in ner(arg_Lang, arg_Class.name, arg_TStart, arg_TEnd, tokens):
+        for entity, score in _ner(arg_Lang, arg_Class.name, arg_TStart, arg_TEnd, tokens):
             r = { arg_Entity     : Predicate(entity),
                   arg_Score      : NumberLiteral(score) }
             res.append(r)

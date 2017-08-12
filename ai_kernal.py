@@ -268,11 +268,13 @@ class AIKernal(object):
         self.db.clear_module(module_name, commit=True)
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
         self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
+        self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
 
         # extract new training data for this module
 
         train_ds = []
         tests    = []
+        ner      = {}
 
         if hasattr(m, 'nlp_train'):
 
@@ -296,10 +298,19 @@ class AIKernal(object):
             logging.info ('module %s AIP training data extraction...' % module_name)
 
             for inputfn in m.AIP_SOURCES:
-                ds, ts = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name)
+                ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name)
 
                 train_ds.extend(ds)
                 tests.extend(ts)
+
+                for lang in ne:
+                    if not lang in ner:
+                        ner[lang] = {}
+                    for cls in ne[lang]:
+                        if not cls in ner[lang]:
+                            ner[lang][cls] = {}
+                        for entity in ne[lang][cls]:
+                            ner[lang][cls][entity] = ne[lang][cls][entity]
 
         logging.info ('module %s training data extraction done. %d training samples, %d tests' % (module_name, len(train_ds), len(tests)))
 
@@ -345,8 +356,6 @@ class AIKernal(object):
         self.session.commit()
         logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-        # import pdb; pdb.set_trace()
-
         # put test data into our DB
 
         td_list = []
@@ -370,6 +379,29 @@ class AIKernal(object):
         start_time = time.time()
         logging.info (u'bulk saving to db...')
         self.session.bulk_save_objects(td_list)
+        self.session.commit()
+        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
+
+        # put NER data into our DB
+
+        # import pdb; pdb.set_trace()
+
+        ner_list = []
+
+        for lang in ner:
+            for cls in ner[lang]:
+                for entity in ner[lang][cls]:
+                    ner_list.append(model.NERData(lang      = lang,
+                                                  module    = module_name,
+                                                  cls       = cls,
+                                                  entity    = entity,
+                                                  label     = ner[lang][cls][entity]))
+
+        logging.info ('module %s NER data conversion done. %d rows.' %(module_name, len(ner_list)))
+
+        start_time = time.time()
+        logging.info (u'bulk saving to db...')
+        self.session.bulk_save_objects(ner_list)
         self.session.commit()
         logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
@@ -398,7 +430,7 @@ class AIKernal(object):
         solutions = self.rt.search_predicate ('tokens', [cur_context, '_1'], env=res)
         tokens = solutions[0]['_1'].l
 
-        solutions = self.rt.search_predicate ('context', [cur_context, '_2', '_3'], env=res, err_on_missing=False)
+        solutions = self.rt.search_predicate ('context', [cur_context, '_2', '_3'], env=res)
         # import pdb; pdb.set_trace()
         d = {}
         for s in solutions:
@@ -440,7 +472,7 @@ class AIKernal(object):
             # FIXME: port, make efficient
 
             # prev_context = None
-            # for s in self.prolog_rt.search_predicate('context', ['I', 'user', StringLiteral(user_uri)], env=env, err_on_missing=False):
+            # for s in self.prolog_rt.search_predicate('context', ['I', 'user', StringLiteral(user_uri)], env=env):
 
             #     context = s['I']
 
@@ -466,11 +498,11 @@ class AIKernal(object):
             res = do_assertz ({}, Clause ( Predicate('prev', [cur_context, prev_context]) , location=self.dummyloc), res=res)
 
             # copy over all previous context statements to the new one
-            s1s = self.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=res, err_on_missing=False)
+            s1s = self.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=res)
             for s1 in s1s:
                 res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
             # copy over all previous mem statements to the new one
-            s1s = self.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=res, err_on_missing=False)
+            s1s = self.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=res)
             for s1 in s1s:
                 res = do_assertz ({}, Clause ( Predicate('mem', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
             # import pdb; pdb.set_trace()
@@ -484,17 +516,17 @@ class AIKernal(object):
         #import pdb; pdb.set_trace()
 
         res       = []
-        s2s = self.rt.search_predicate ('c_say', [cur_context, '_1'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_say', [cur_context, '_1'], env=env)
         for s2 in s2s:
             res.append(s2['_1'].s)
 
         actions   = []
-        s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env)
         for s2 in s2s:
             actions.append(map (lambda x: unicode(x), s2['_1'].l))
 
         score     = 0.0
-        s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env, err_on_missing=False)
+        s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env)
         for s2 in s2s:
             score += s2['_1'].f
 

@@ -1,0 +1,13 @@
+%prolog
+
+is_entity(ENTITY) :- rdfsLabel(ENTITY, en, LABEL). % anything we have a label for
+
+% humans / persons
+  
+is_human(ENTITY) :- wdpdInstanceOf(ENTITY, wdeHuman).
+is_male(HUMAN)   :- wdpdSexOrGender(HUMAN, wdeMale).
+is_female(HUMAN) :- wdpdSexOrGender(HUMAN, wdeFemale).
+
+human_gender(HUMAN, GENDER) :- is_male(HUMAN), GENDER is wdeMale.
+human_gender(HUMAN, GENDER) :- is_female(HUMAN), GENDER is wdeFemale.
+

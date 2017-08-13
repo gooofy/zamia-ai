@@ -48,7 +48,9 @@ from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 from aiprolog.parser      import AIPrologParser
 from zamiaprolog.logicdb  import LogicDB
 from zamiaprolog.builtins import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logic    import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation
+from zamiaprolog.logic    import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
+                                 json_to_prolog, prolog_to_json
+from zamiaprolog.errors   import PrologRuntimeError
 from nltools              import misc
 from nltools.tokenizer    import tokenize
 
@@ -362,7 +364,7 @@ class AIKernal(object):
 
         for name, lang, prep, rounds, loc_fn, loc_line, loc_col in tests:
 
-            prep_json   = json.dumps(prep)
+            prep_json   = prolog_to_json(prep)
             rounds_json = json.dumps(rounds)
 
             td_list.append(model.TestCase(lang      = lang,
@@ -578,7 +580,7 @@ class AIKernal(object):
                     continue
 
             rounds = json.loads(tc.rounds)
-            prep   = json.loads(tc.prep)
+            prep   = json_to_prolog(tc.prep)
 
             round_num    = 0
             prev_context = None
@@ -603,9 +605,13 @@ class AIKernal(object):
                 # prep
 
                 if prep:
-                    # FIXME exec u'\n'.join(tc.prep) in env_locals
-                    import pdb; pdb.set_trace()
-                    raise Exception ('FIXME: not implemented yet.')
+                    # import pdb; pdb.set_trace()
+                    # self.rt.set_trace(True)
+                    for p in prep:
+                        solutions = self.rt.search (Clause(None, p, location=self.dummyloc), env=res)
+                        if len(solutions) != 1:
+                            raise(PrologRuntimeError('Expected exactly one solution from preparation code for test "%s", got %d.' % (tc.name, len(solutions))))
+                        res = solutions[0]
 
                 # inp / resp
 

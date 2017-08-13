@@ -15,17 +15,21 @@ macro(de, known_humans, LABEL) :-
  
 % this is meant to be overloaded by other modules (i.e. politics) to 
 % produce better, higher-scoring answer (e.g. "isn't he a US president?")
-answer_known_human(C, en, HUMAN) :-
+answer_info_human(C, en, HUMAN) :-
     if is_male(HUMAN) then
-        say(C, "Yes, I know him.")
+        or (say(C, "His name sounds familiar."),
+            say(C, "Would you like to know more about him?"))
     else
-        say(C, "Yes, I know her.")
+        or (say(C, "Her name sounds familiar."),
+            say(C, "Would you like to know more about her?"))
     endif.
-answer_known_human(C, de, HUMAN) :-
+answer_info_human(C, de, HUMAN) :-
     if is_male(HUMAN) then
-        say(C, "Ja, ich kenne ihn.")
+        or (say(C, "Der Name kommt mir bekannt vor."),
+            say(C, "Möchtest Du mehr über ihn wissen?"))
     else
-        say(C, "Ja, ich kenne sie.")
+        or (say(C, "Der Name kommt mir bekannt vor."),
+            say(C, "Möchtest Du mehr über sie wissen?"))
     endif.
 
 train(en) :-
@@ -36,7 +40,7 @@ train(en) :-
     C:mem|f1ent is ENTITY,
     r_score(C, SCORE),
 
-    answer_known_human (C, en, ENTITY).
+    answer_info_human (C, en, ENTITY).
 
 train(de) :-
     "(kennst du|kennst du eigentlich) {known_humans:LABEL}",
@@ -46,39 +50,15 @@ train(de) :-
     C:mem|f1ent is ENTITY,
     r_score(C, SCORE),
 
-    answer_known_human (C, de, ENTITY).
+    answer_info_human (C, de, ENTITY).
  
 test(de, t0000) :-
     "Kennst Du Angela Merkel?",
-    "Ja ich kenne sie.".
+    "Der Name kommt mir bekannt vor.".
 
 test(en, t0001) :-
     "Do you know Angela Merkel?",
-    "Yes I know her".
-
-% if we don't know anything else to say, talk about the birthplace
-answer_info_human(C, en, HUMAN) :-
-
-    wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
-    rdfsLabel(BP, en, BPLABEL),
-
-    if is_male(HUMAN) then
-        say(C, "Wasn't he born in {BPLABEL,s}?")
-    else
-        say(C, "Wasn't she born in {BPLABEL, s}?")
-    endif.
-answer_info_human(C, de, HUMAN) :-
-
-    wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
-    rdfsLabel(BP, en, BPLABEL),
-
-    if is_male(HUMAN) then
-        say(C, "Ist er nicht in {BPLABEL,s} geboren?")
-    else
-        say(C, "Ist sie nicht in {BPLABEL, s} geboren?")
-    endif.
+    "Would you like to know more about her?".
 
 train(en) :-
     "(what about | who is | what is) {known_humans:LABEL}",
@@ -102,11 +82,11 @@ train(de) :-
 
 test(de, t0002) :-
     "Wer ist Angela Merkel?",
-    "Ist sie nicht in Barmbek-Nord geboren?".
+    "Möchtest Du mehr über sie wissen?".
 
 test(en, t0003) :-
     "What about Angela Merkel?",
-    "Wasn't she born in Barmbek-Nord?".
+    "Her name sounds familiar.".
 
 %
 % birthplace

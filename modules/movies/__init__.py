@@ -3,7 +3,7 @@
 
 DEPENDS    = [ 'base', 'humans' ]
 
-PL_SOURCES = [
-              'movies.pl'
-             ]
+AIP_SOURCES = [
+               'movies.aip'
+              ]
 

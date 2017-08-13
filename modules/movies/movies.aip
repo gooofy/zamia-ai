@@ -1,0 +1,346 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% named entity recognition (NER)
+%
+
+
+train_ner (en, film, FILM, LABEL) :- wdpdInstanceOf(FILM, wdeFilm), rdfsLabel(FILM, en, LABEL).
+train_ner (de, film, FILM, LABEL) :- wdpdInstanceOf(FILM, wdeFilm), rdfsLabel(FILM, de, LABEL).
+
+is_movie_director(HUMAN) :-  wdpdDirector(MOVIE, HUMAN), !.
+
+macro(en, movies, LABEL) :- 
+    wdpdInstanceOf(FILM, wdeFilm), 
+    rdfsLabel(FILM, en, LABEL).
+
+macro(de, movies, LABEL) :- 
+    wdpdInstanceOf(FILM, wdeFilm), 
+    rdfsLabel(FILM, de, LABEL).
+
+%
+% movie director
+%
+
+answer_movie_director_tokens(en, TS, TE) :-
+
+    ner (en, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    rdfsLabel(FILM, en, FLABEL),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    "{HLABEL,s} directed {FLABEL,s}, I believe.".
+
+answer_movie_director_tokens(de, TS, TE) :-
+
+    ner (de, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    rdfsLabel(FILM, de, FLABEL),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    "{FLABEL,s} wurde von {HLABEL,s} gedreht, glaube ich.".
+
+train(en) :-
+    "who (made|did) {movies:LABEL} (by the way|)?",
+    inline answer_movie_director_tokens (en, tstart(movies), tend(movies)).
+ 
+train(de) :-
+    "wer hat (eigentlich|) {movies:LABEL} gedreht?",
+    inline answer_movie_director_tokens (de, tstart(movies), tend(movies)).
+ 
+train(en) :-
+    "(who is the director of|who directed) {movies:LABEL}?",
+    inline answer_movie_director_tokens (en, tstart(movies), tend(movies)).
+
+train(de) :-
+    "wer ist (eigentlich|) der Regisseur von {movies:LABEL}?",
+    inline answer_movie_director_tokens (de, tstart(movies), tend(movies)).
+ 
+test(en, t0000) :-
+    "who is the director of the third man?",
+    "Carol Reed directed The Third Man, I believe.".
+
+test(de, t0001) :-
+    "wer ist der regisseur von der dritte mann?",
+    "Der Dritte Mann wurde von Carol Reed gedreht, glaube ich.".
+
+% follow-up style
+
+answer_movie_director_context(en) :-
+
+    mem(C, f1ent, FILM),
+
+    rdfsLabel(FILM, en, FLABEL),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    "{HLABEL,s} directed {FLABEL,s}, I believe.".
+
+answer_movie_director_context(de) :-
+
+    mem(C, f1ent, FILM),
+
+    rdfsLabel(FILM, de, FLABEL),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    "{FLABEL,s} wurde von {HLABEL,s} gedreht, glaube ich.".
+
+train(en) :-
+    context(topic, wdeFilm),
+    "(and|) (do you know|) who (made|did) (that one|this one|it) (by the way|)?",
+    inline answer_movie_director_context (en).
+ 
+train(de) :-
+    context(topic, wdeFilm),
+    "(und|) (weißt Du|) (eigentlich|) wer (den|ihn) (gedreht|gemacht) hat?",
+    inline answer_movie_director_context (de).
+ 
+answer_info_human(C, en, HUMAN) :-
+    is_movie_director(HUMAN),
+    r_score(C, 100.0),
+    C:context|topic is wdeFilm,
+
+    if is_male(HUMAN) then
+        say(C, "Isn't he a movie director?")
+    else
+        say(C, "Isn't she a movie director?")
+    endif.
+answer_info_human(C, de, HUMAN) :-
+    is_movie_director(HUMAN),
+    r_score(C, 100.0),
+    C:context|topic is wdeFilm,
+
+    if is_male(HUMAN) then
+        say(C, "Ist der nicht Regisseur?")
+    else
+        say(C, "Ist sie nicht Regisseurin?.")
+    endif.
+
+test(en, t0002) :-
+    "Do you know Alfred Hitchcock?",
+    "Isn't he a movie director?".
+
+test(en, t0003) :-
+    "Who is Alfred Hitchcock?",
+    "Isn't he a movie director?".
+
+test(de, t0004) :-
+    "Kennst Du Alfred Hitchcock?",
+    "Ist der nicht Regisseur?".
+
+test(de, t0005) :-
+    "wer ist Alfred Hitchcock?",
+    "Ist der nicht Regisseur?".
+
+%
+% movie creation date
+%
+
+answer_movie_creation_date_tokens(en, TS, TE) :-
+
+    % trace(on),
+
+    ner (en, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    rdfsLabel(FILM, en, FLABEL),
+
+    wdpdPublicationDate(FILM, PD),
+    C:mem|f1time is PD,
+
+    C:context|topic is wdeFilm,
+
+    stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
+
+    "I think {FLABEL,s} was created in {Y,d}".
+
+answer_movie_creation_date_tokens(de, TS, TE) :-
+
+    % trace(on),
+
+    ner (de, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    rdfsLabel(FILM, de, FLABEL),
+
+    wdpdPublicationDate(FILM, PD),
+    C:mem|f1time is PD,
+
+    C:context|topic is wdeFilm,
+
+    stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
+
+    "Ich denke {FLABEL,s} ist aus {Y,d}".
+
+train(en) :-
+    "when was {movies:LABEL} (produced|made|published)?",
+    inline answer_movie_creation_date_tokens(en, tstart(movies), tend(movies)).
+ 
+train(de) :-
+    "wann (ist|wurde) (eigentlich|) {movies:LABEL} (gedreht|gemacht|rausgekommen)?",
+    inline answer_movie_creation_date_tokens(de, tstart(movies), tend(movies)).
+ 
+test(en, t0006) :-
+    "when was the third man made?",
+    "I think The Third Man was created in 1949.".
+ 
+test(de, t0007) :-
+    "wann wurde der dritte mann gedreht?",
+    "Ich denke der Dritte Mann ist aus 1949.".
+
+% follow-up style
+
+answer_movie_creation_date_context(en) :-
+
+    mem(C, f1ent, FILM),
+
+    rdfsLabel(FILM, en, FLABEL),
+
+    wdpdPublicationDate(FILM, PD),
+    C:mem|f1time is PD,
+
+    stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
+
+    "I think {FLABEL,s} was created in {Y,d}".
+
+answer_movie_creation_date_context(de) :-
+
+    mem(C, f1ent, FILM),
+
+    rdfsLabel(FILM, de, FLABEL),
+
+    wdpdPublicationDate(FILM, PD),
+    C:mem|f1time is PD,
+
+    C:context|topic is wdeFilm,
+
+    stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
+
+    "Ich denke {FLABEL,s} ist aus {Y,d}".
+
+train(en) :-
+    context(topic, wdeFilm),
+    "(and|) (do you know|) when (that one|this one|it) was (produced|made|published) (by the way|)?",
+    inline answer_movie_creation_date_context (en).
+ 
+train(de) :-
+    context(topic, wdeFilm),
+    "(und|) (weißt Du|) (eigentlich|) wann (der|er) (gedreht wurde|gemacht wurde|rauskam) ?",
+    inline answer_movie_creation_date_context (de).
+%
+% known movies
+%
+
+answer_know_movie_tokens(en, TS, TE) :-
+
+    ner (en, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    "Sure - that one is by {HLABEL,s}, right?".
+
+answer_know_movie_tokens(de, TS, TE) :-
+
+    ner (de, film, TS, TE, C:tokens, FILM, SCORE),
+
+    C:mem|f1ent is FILM,
+    C:mem|f1pat is FILM,
+    r_score(C, SCORE),
+
+    wdpdDirector(FILM, HUMAN),
+    C:mem|f1age is HUMAN,
+
+    C:context|topic is wdeFilm,
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    "Klar - der ist von {HLABEL,s}, stimmts?".
+
+train(en) :-
+    "do you (happen to|) know (the movie|) {movies:LABEL}?",
+    inline answer_know_movie_tokens(en, tstart(movies), tend(movies)).
+
+train(de) :-
+    "kennst du (eigentlich|) (den film|) {movies:LABEL}?",
+    inline answer_know_movie_tokens(de, tstart(movies), tend(movies)).
+
+train(en) :-
+    "(have you seen|did you happen to see) (the movie|) {movies:LABEL}?",
+    inline answer_know_movie_tokens(en, tstart(movies), tend(movies)).
+
+train(de) :-
+    "hast du (eigentlich|) (den film|) {movies:LABEL} gesehen?",
+    inline answer_know_movie_tokens(de, tstart(movies), tend(movies)).
+
+test(en, t0008) :-
+    "do you happen to know the movie the third man?",
+    "Sure - that one is by Carol Reed, right?".
+
+test(de, t0009) :-
+    "kennst du den film der dritte mann?",
+    "Klar - der ist von Carol Reed, stimmts?".
+
+test(en, t0010) :-
+    "do you happen to know the movie the third man?",
+    "Sure - that one is by Carol Reed, right?",
+    "and do you know who made it?",
+    "Carol Reed directed The Third Man, I believe.",
+    "do you know when it was produced?",
+    "I think The Third Man was created in 1949.".
+
+test(de, t0011) :-
+    "kennst du den film der dritte mann?",
+    "Klar - der ist von Carol Reed, stimmts?",
+    "weißt du, wer ihn gedreht hat?",
+    "Der Dritte Mann wurde von Carol Reed gedreht, glaube ich.",
+    "und weißt du, wann er gedreht wurde?",
+    "Ich denke Der dritte Mann ist aus 1949.".
+

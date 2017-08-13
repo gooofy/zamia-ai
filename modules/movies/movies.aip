@@ -28,16 +28,16 @@ answer_movie_director_tokens(en, TS, TE) :-
 
     ner (en, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     rdfsLabel(FILM, en, FLABEL),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, en, HLABEL),
 
@@ -47,16 +47,16 @@ answer_movie_director_tokens(de, TS, TE) :-
 
     ner (de, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     rdfsLabel(FILM, de, FLABEL),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, de, HLABEL),
 
@@ -95,9 +95,9 @@ answer_movie_director_context(en) :-
     rdfsLabel(FILM, en, FLABEL),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, en, HLABEL),
 
@@ -110,9 +110,9 @@ answer_movie_director_context(de) :-
     rdfsLabel(FILM, de, FLABEL),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, de, HLABEL),
 
@@ -131,7 +131,7 @@ train(de) :-
 answer_info_human(C, en, HUMAN) :-
     is_movie_director(HUMAN),
     r_score(C, 100.0),
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     if is_male(HUMAN) then
         say(C, "Isn't he a movie director?")
@@ -141,7 +141,7 @@ answer_info_human(C, en, HUMAN) :-
 answer_info_human(C, de, HUMAN) :-
     is_movie_director(HUMAN),
     r_score(C, 100.0),
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     if is_male(HUMAN) then
         say(C, "Ist der nicht Regisseur?")
@@ -175,16 +175,16 @@ answer_movie_creation_date_tokens(en, TS, TE) :-
 
     ner (en, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     rdfsLabel(FILM, en, FLABEL),
 
     wdpdPublicationDate(FILM, PD),
-    C:mem|f1time is PD,
+    set(C:mem|f1time, PD),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
 
@@ -196,16 +196,16 @@ answer_movie_creation_date_tokens(de, TS, TE) :-
 
     ner (de, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     rdfsLabel(FILM, de, FLABEL),
 
     wdpdPublicationDate(FILM, PD),
-    C:mem|f1time is PD,
+    set(C:mem|f1time, PD),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
 
@@ -236,7 +236,7 @@ answer_movie_creation_date_context(en) :-
     rdfsLabel(FILM, en, FLABEL),
 
     wdpdPublicationDate(FILM, PD),
-    C:mem|f1time is PD,
+    set(C:mem|f1time, PD),
 
     stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
 
@@ -249,9 +249,9 @@ answer_movie_creation_date_context(de) :-
     rdfsLabel(FILM, de, FLABEL),
 
     wdpdPublicationDate(FILM, PD),
-    C:mem|f1time is PD,
+    set(C:mem|f1time, PD),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     stamp_date_time(PD,date(Y,M,D,H,MIN,S,'local')),
 
@@ -274,14 +274,14 @@ answer_know_movie_tokens(en, TS, TE) :-
 
     ner (en, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, en, HLABEL),
 
@@ -291,14 +291,14 @@ answer_know_movie_tokens(de, TS, TE) :-
 
     ner (de, film, TS, TE, C:tokens, FILM, SCORE),
 
-    C:mem|f1ent is FILM,
-    C:mem|f1pat is FILM,
+    set(C:mem|f1ent, FILM),
+    set(C:mem|f1pat, FILM),
     r_score(C, SCORE),
 
     wdpdDirector(FILM, HUMAN),
-    C:mem|f1age is HUMAN,
+    set(C:mem|f1age, HUMAN),
 
-    C:context|topic is wdeFilm,
+    set(C:context|topic, wdeFilm),
 
     rdfsLabel(HUMAN, de, HLABEL),
 

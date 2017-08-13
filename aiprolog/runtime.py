@@ -239,17 +239,15 @@ def builtin_is(g, rt):
         for sp in subparts[1:]:
             if sp == '_':
                 wildcard_found = True
-                r_pattern.append('_')
+                r_pattern.append(Variable('_'))
                 a_pattern.append(ans)
             else:
                 r_pattern.append(Predicate(sp))
                 a_pattern.append(Predicate(sp))
 
         if not wildcard_found:
-            r_pattern.append('_')
+            r_pattern.append(Variable('_'))
             a_pattern.append(ans)
-
-        # import pdb; pdb.set_trace()
 
         res = do_retract (g.env, Predicate ( subparts[0], r_pattern), res=res)
         res = do_assertz (g.env, Clause ( Predicate(subparts[0], a_pattern), location=g.location), res=res)
@@ -267,6 +265,87 @@ def builtin_is(g, rt):
         return False
 
     return True
+
+def builtin_set(g, rt):
+
+    rt._trace ('CALLED BUILTIN set (-Var, +Val)', g)
+
+    pred = g.terms[g.inx]
+    args = pred.args
+    if len(args) != 2:
+        raise PrologRuntimeError('set: 2 args (-Var, +Val) expected.', g.location)
+
+    arg_Var = pred.args[0]
+    arg_Val = rt.prolog_eval(pred.args[1], g.env, g.location)
+
+    # handle pseudo-variable assignment
+    if (isinstance (arg_Var, Variable) or isinstance (arg_Var, Predicate)) and (":" in arg_Var.name):
+
+        parts = arg_Var.name.split(':')
+
+        v = parts[0]
+
+        if v[0].isupper():
+            if not v in g.env:
+                raise PrologRuntimeError('set: unbound variable %s.' % v, g.location)
+            v = g.env[v]
+
+        for part in parts[1:len(parts)-1]:
+            
+            subparts = part.split('|')
+
+            pattern = [v]
+            wildcard_found = False
+            for sp in subparts[1:]:
+                if sp == '_':
+                    wildcard_found = True
+                    pattern.append('X')
+                else:
+                    pattern.append(Predicate(sp))
+
+            if not wildcard_found:
+                pattern.append('X')
+
+            solutions = rt.search_predicate (subparts[0], pattern, env=g.env)
+            if len(solutions)<1:
+                raise PrologRuntimeError(u'set: failed to match part "%s" of "%s".' % (part, unicode(arg_Var)), g.location)
+            v = solutions[0]['X']
+
+        res = {}
+
+        lastpart = parts[len(parts)-1]
+
+        subparts = lastpart.split('|')
+
+        r_pattern = [v]
+        a_pattern = [v]
+        wildcard_found = False
+        for sp in subparts[1:]:
+            if sp == '_':
+                wildcard_found = True
+                r_pattern.append(Variable('_'))
+                a_pattern.append(arg_Val)
+            else:
+                r_pattern.append(Predicate(sp))
+                a_pattern.append(Predicate(sp))
+
+        if not wildcard_found:
+            r_pattern.append(Variable('_'))
+            a_pattern.append(arg_Val)
+
+        # import pdb; pdb.set_trace()
+
+        res = do_retract (g.env, Predicate ( subparts[0], r_pattern), res=res)
+        res = do_assertz (g.env, Clause ( Predicate(subparts[0], a_pattern), location=g.location), res=res)
+
+        return [ res ]
+
+    # regular set/2 semantics
+
+    if not isinstance(arg_Var, Variable):
+        raise PrologRuntimeError('set: arg 0 Variable expected, %s (%s) found instead.' % (unicode(arg_Var), arg_Var.__class__), g.location)
+
+    return [ {arg_Var.name: arg_Val} ]
 
 class AIPrologRuntime(PrologRuntime):
 
@@ -286,9 +365,10 @@ class AIPrologRuntime(PrologRuntime):
         self.register_builtin ('r_action',        builtin_r_action)            # r_action (+Context, +Action)
         self.register_builtin ('r_score',         builtin_r_score)             # r_score (+Context, +Score)
 
-        # pseudo-variable assignment: replace "is"
+        # pseudo-variable assignment: replace is/2, set/2
 
         self.register_builtin ('is',              builtin_is)                  # is (?Ques, +Ans)
+        self.register_builtin ('set',             builtin_set)                 # set (-Var, +Val)
 
         # named entity recognition (NER)
 
@@ -324,17 +404,17 @@ class AIPrologRuntime(PrologRuntime):
             for sp in subparts[1:]:
                 if sp == '_':
                     wildcard_found = True
-                    pattern.append('X')
+                    pattern.append('_1')
                 else:
                     pattern.append(sp)
 
             if not wildcard_found:
-                pattern.append('X')
+                pattern.append('_1')
 
             solutions = self.search_predicate (subparts[0], pattern, env=env)
             if len(solutions)<1:
                 return Variable(term.name)
-            v = solutions[0]['X']
+            v = solutions[0]['_1']
 
         return v
 

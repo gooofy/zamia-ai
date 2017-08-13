@@ -68,7 +68,7 @@ test(de, t0001) :-
 
 is_computer_scientist(HUMAN) :- wdpdOccupation(HUMAN, wdeComputerScientist).
  
-answer_known_human(C, en, HUMAN) :-
+answer_info_human(C, en, HUMAN) :-
     is_computer_scientist(HUMAN),
     r_score(C, 100.0),
     if is_male(HUMAN) then
@@ -76,7 +76,7 @@ answer_known_human(C, en, HUMAN) :-
     else
         say(C, "Isn't she a computer scientist?")
     endif.
-answer_known_human(C, de, HUMAN) :-
+answer_info_human(C, de, HUMAN) :-
     is_computer_scientist(HUMAN),
     r_score(C, 100.0),
     if is_male(HUMAN) then

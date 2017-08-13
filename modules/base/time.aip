@@ -133,3 +133,20 @@ after_evening(TS)   :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H >= 18.
 % 
 % nlp_say_date(en, R) :- says (en, R, "%(f1_wday_label)s %(f1_month_label)s %(f1_day)d, %(f1_year)d").
 
+hour12(H, H12) :- H < 13, H12 is H, !.
+hour12(H, H12) :- H > 12, H12 is H - 12, !.
+
+transcribe_time (en, H,   1, TS) :- hour12(H, H12), TS is format_str ("one minute past %d", H12), !.
+transcribe_time (en, H,  15, TS) :- hour12(H, H12), TS is format_str ("a quarter past %d", H12), !.
+transcribe_time (en, H,  30, TS) :- hour12(H, H12), TS is format_str ("half past %d", H12), !.
+transcribe_time (en, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d minutes past %d", MIN, H12).
+
+transcribe_time (de, H,   1, TS) :- hour12(H, H12), TS is format_str ("eine Minute nach %d", H12), !.
+transcribe_time (de, H,  15, TS) :- hour12(H, H12), TS is format_str ("Viertel nach %d", H12), !.
+transcribe_time (de, H,  30, TS) :- hour12(H, H12), TS is format_str ("eine halbe Stunde nach %d", H12), !.
+transcribe_time (de, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d Minuten nach %d", MIN, H12).
+
+transcribe_time (LANG, T, TS) :-
+    stamp_date_time(T, date(Y,M,D,H,MIN,S,'local')),
+    transcribe_time (LANG, H, MIN, TS).
+

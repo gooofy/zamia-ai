@@ -127,14 +127,12 @@ unlabeled75,http://www.wikidata.org/prop/direct/P2271
 unlabeled76,http://www.wikidata.org/prop/direct/P642
 unlabeled77,http://www.wikidata.org/prop/P642
 unlabeled78,http://www.wikidata.org/prop/qualifier/P1366
-unlabeled79,http://www.wikidata.org/prop/qualifier/value/P582
 unlabeled8,http://www.wikidata.org/prop/direct/P2264
 unlabeled80,http://www.wikidata.org/prop/qualifier/P1365
 unlabeled81,http://www.wikidata.org/prop/qualifier/P1545
 unlabeled82,http://www.wikidata.org/prop/qualifier/P580
 unlabeled83,http://www.wikidata.org/prop/qualifier/P582
 unlabeled84,http://www.wikidata.org/prop/qualifier/value/P580
-unlabeled85,http://www.wikidata.org/prop/statement/P39
 unlabeled86,http://www.wikidata.org/prop/qualifier/P2937
 unlabeled87,http://www.wikidata.org/prop/qualifier/P642
 unlabeled88,http://www.wikidata.org/prop/qualifier/P488
@@ -2087,5 +2085,7 @@ wdpdYouTubeVideoID,http://www.wikidata.org/prop/direct/P1651
 wdpdZbMATHAuthorID,http://www.wikidata.org/prop/direct/P1556
 wdpdČSFDFilmID,http://www.wikidata.org/prop/direct/P2529
 wdpdČSFDPersonID,http://www.wikidata.org/prop/direct/P2605
+wdpqEndTime,http://www.wikidata.org/prop/qualifier/value/P582
+wdpsPositionHeld,http://www.wikidata.org/prop/statement/P39
 wdpČSFDFilmID,http://www.wikidata.org/prop/P2529
 wdpČSFDPersonID,http://www.wikidata.org/prop/P2605

@@ -96,6 +96,10 @@ def property2entity_mapper(p):
 
     if up.startswith('http://www.wikidata.org/prop/direct/'):
         return 'wdpd', rdflib.URIRef('http://www.wikidata.org/entity/' + p[36:])
+    if up.startswith('http://www.wikidata.org/qualifier/'):
+        return 'wdpq', rdflib.URIRef('http://www.wikidata.org/entity/' + p[34:])
+    if up.startswith('http://www.wikidata.org/prop/statement/'):
+        return 'wdps', rdflib.URIRef('http://www.wikidata.org/entity/' + p[39:])
     if up.startswith('http://www.wikidata.org/prop/'):
         return 'wdp', rdflib.URIRef('http://www.wikidata.org/entity/' + p[29:])
     return None, None
@@ -207,6 +211,14 @@ if os.path.isfile(LEM_FN):
 
             line = line.strip()
             if len(line)==0:
+                continue
+
+            if 'Unlabeled' in line:
+                logging.info ('ignoring line: %s' % line)
+                continue
+
+            if 'unlabeled' in line:
+                logging.info ('ignoring line: %s' % line)
                 continue
 
             parts = line.split(',')
@@ -403,6 +415,10 @@ logging.info (' %s written' % outputfn)
 
 with codecs.open(LPM_FN, 'w', 'utf8') as f:
     for plu in sorted(lpm):
+        if 'Unlabeled' in plu:
+            continue
+        if 'unlabeled' in plu:
+            continue
         prop = lpm[plu]
         f.write(u'%s,%s\n' % (plu, prop))
 
@@ -410,6 +426,10 @@ logging.info (' %s written' % LPM_FN)
 
 with codecs.open(LEM_FN, 'w', 'utf8') as f:
     for elu in sorted(lem):
+        if 'Unlabeled' in elu:
+            continue
+        if 'unlabeled' in elu:
+            continue
         entity = lem[elu]
         f.write(u'%s,%s\n' % (elu, unicode(entity)))
 

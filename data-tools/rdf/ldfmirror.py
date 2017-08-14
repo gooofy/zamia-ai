@@ -394,6 +394,10 @@ class LDFMirrorP2E(LDFMirror):
 def p2e_mapper(p):
     if p.startswith('http://www.wikidata.org/prop/direct/'):
         return 'http://www.wikidata.org/entity/' + p[36:]
+    if p.startswith('http://www.wikidata.org/qualifier/'):
+        return 'http://www.wikidata.org/entity/' + p[34:]
+    if p.startswith('http://www.wikidata.org/prop/statement/'):
+        return 'http://www.wikidata.org/entity/' + p[39:]
     if p.startswith('http://www.wikidata.org/prop/'):
         return 'http://www.wikidata.org/entity/' + p[29:]
     return None

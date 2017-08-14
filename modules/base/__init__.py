@@ -11,51 +11,6 @@ DEPENDS    = [ 'config' ]
 
 AIP_SOURCES = ['time.aip', 'conversation.aip', 'geo.aip', 'utils.aip']
 
-# NLP_DAY_OF_THE_WEEK_LABEL = {
-#     'en': { 0: 'Monday',
-#             1: 'Tuesday',
-#             2: 'Wednesday',
-#             3: 'Thursday',
-#             4: 'Friday',
-#             5: 'Saturday',
-#             6: 'Sunday'},
-# 
-#     'de': { 0: 'Montag',
-#             1: 'Dienstag',
-#             2: 'Mittwoch',
-#             3: 'Donnerstag',
-#             4: 'Freitag',
-#             5: 'Samstag',
-#             6: 'Sonntag'} }
-# 
-# 
-# NLP_MONTH_LABEL = {
-#     'en': { 1: 'January',
-#             2: 'February',
-#             3: 'March',
-#             4: 'April',
-#             5: 'May',
-#             6: 'June',
-#             7: 'July',
-#             8: 'August',
-#             9: 'September',
-#            10: 'October',
-#            11: 'November',
-#            12: 'December'},
-# 
-#     'de': { 1: 'Januar',
-#             2: 'Februar',
-#             3: 'März',
-#             4: 'April',
-#             5: 'Mai',
-#             6: 'Juni',
-#             7: 'Juli',
-#             8: 'August',
-#             9: 'September',
-#            10: 'Oktober',
-#            11: 'November',
-#            12: 'Dezember'}}
-
 def builtin_transcribe_number (g, pe):
 
     """ transcribe_number (+Lang, +Case, +N, -N_SCRIPT) """
@@ -117,7 +72,7 @@ def builtin_transcribe_number (g, pe):
 def init_module(kernal):
 
     # kernal.rt.register_builtin ('transcribe_date', builtin_transcribe_date)   # transcribe_date (+Lang, +Case, +TS, -TS_SCRIPT)
-    kernal.rt.register_builtin ('transcribe_number', builtin_transcribe_number) # transcribe_number (+Lang, +Case, +N, -N_SCRIPT)
+    kernal.rt.register_builtin ('transcribe_number',  builtin_transcribe_number) # transcribe_number (+Lang, +Case, +N, -N_SCRIPT)
     # kernal.rt.register_builtin ('ner_learn',         builtin_ner_learn)         # ner_learn (+Lang, +Cat, +Entity, +Label)
     kernal.rt.register_builtin ('say',               builtin_say)               # say (+C, +Str)
 

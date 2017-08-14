@@ -43,7 +43,7 @@ time_label(CT, de, dayAfterTomorrow, "übermorgen").
 time_label(CT, de, nextThreeDays,    "in den nächsten drei Tagen").
 
 transcribe_month(en,  1, 'january').
-transcribe_month(en,  2, 'feburary').
+transcribe_month(en,  2, 'february').
 transcribe_month(en,  3, 'march').
 transcribe_month(en,  4, 'april').
 transcribe_month(en,  5, 'may').
@@ -56,7 +56,7 @@ transcribe_month(en, 11, 'november').
 transcribe_month(en, 12, 'december').
 
 transcribe_month(de,  1, 'januar').
-transcribe_month(de,  2, 'feburar').
+transcribe_month(de,  2, 'februar').
 transcribe_month(de,  3, 'märz').
 transcribe_month(de,  4, 'april').
 transcribe_month(de,  5, 'mai').
@@ -149,4 +149,25 @@ transcribe_time (de, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d Minute
 transcribe_time (LANG, T, TS) :-
     stamp_date_time(T, date(Y,M,D,H,MIN,S,'local')),
     transcribe_time (LANG, H, MIN, TS).
+
+
+transcribe_wday_ts (LANG, T, TD) :-
+    day_of_the_week(T, DOW),
+    transcribe_wday (LANG, DOW, TD).
+
+transcribe_wday (en, 1, 'Monday').
+transcribe_wday (en, 2, 'Tuesday').
+transcribe_wday (en, 3, 'Wednesday').
+transcribe_wday (en, 4, 'Thursday').
+transcribe_wday (en, 5, 'Friday').
+transcribe_wday (en, 6, 'Saturday').
+transcribe_wday (en, 7, 'Sunday').
+
+transcribe_wday (de, 1, 'Montag').
+transcribe_wday (de, 2, 'Dienstag').
+transcribe_wday (de, 3, 'Mittwoch').
+transcribe_wday (de, 4, 'Donnerstag').
+transcribe_wday (de, 5, 'Freitag').
+transcribe_wday (de, 6, 'Samstag').
+transcribe_wday (de, 7, 'Sonntag').
 

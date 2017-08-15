@@ -205,6 +205,50 @@ def convert_nlp_test(pred):
 
     # import pdb; pdb.set_trace()
 
+def convert_nlp_test2(pred):
+
+    global test_cnt, outf
+
+    # print "% ", unicode(pred)
+
+    lang      = pred.args[1].name
+    test_name = pred.args[2].s
+
+    # test_name = 't%04d' % test_cnt
+    test_cnt += 1
+
+    outf.write(u'\n')
+    outf.write(u"test(%s, %s) :-\n" % (lang, test_name))
+
+    test_prep = pred.args[3].l
+
+    for p in test_prep:
+        outf.write(u'    %% prep: %s,\n' % unicode(p))
+
+    ivrs = pred.args[4].l
+
+    offset = 0
+    while offset < len(ivrs):
+        
+        ivr_in      = ivrs[offset].s
+        ivr_out     = ivrs[offset+1].s
+        ivr_actions = ivrs[offset+2].l
+
+        offset += 3
+
+        outf.write(u'    "%s",\n' % ivr_in)
+        outf.write(u'    "%s"'    % ivr_out)
+        if ivr_actions:
+            outf.write(u'\n    %% actions %s'    % repr(ivr_actions))
+
+        if offset == len(ivrs):
+            outf.write ('.\n')
+        else:
+            outf.write (',\n')
+
+    # import pdb; pdb.set_trace()
+
+
 
 #
 # init, cmdline
@@ -265,7 +309,8 @@ with codecs.open(outputfn, 'w', 'utf8') as outf:
                 # elif clause.head.name == 'answerz':
                 #     convert_answerz(clause)
                 elif clause.head.name == 'nlp_test':
-                    convert_nlp_test(clause.head)
+                    # convert_nlp_test(clause.head)
+                    convert_nlp_test2(clause.head)
                     
                 else:
                     outf.write(u"%% %s\n" % unicode(clause))

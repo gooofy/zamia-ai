@@ -19,7 +19,7 @@
 #
 
 #
-# simple conversion helper tool for Zami Prolog -> AI Prolog
+# simple conversion helper tool for Zamia Prolog -> AI Prolog
 #
 
 import os

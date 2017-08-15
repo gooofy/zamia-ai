@@ -261,8 +261,17 @@ for t in triples:
             label_base = unicode(o)
             break
 
+    # 3: take last segment of url
+
     if not label_base:
-        label_base = 'unlabeled'
+
+        url_parts = unicode(s).split('/')
+        last_part = url_parts[len(url_parts)-1]
+
+        if not last_part[0].isalpha():
+            last_part = 'u' + last_part
+
+        label_base = 'unlabeled_'+last_part
 
     el = entity_label (s, label_base)
 

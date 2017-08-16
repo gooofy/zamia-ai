@@ -54,21 +54,6 @@ mem     (context41, key, value).
 made on the previous context will be made again (i.e.: persist) on the current context,
 context assertions will also serve as additional inputs to subsequent neural net runs
 
-=== Pseudo-Variables/-Predicates
-
-This is an extension to standard prolog syntax found in AI-Prolog to make "variable" setting and access
-easier:
-
-```
-C:user        -> user (C, X)
-
-C:user:name   -> user (C, X), name (X, Y)
-
-self:name     -> name (self, X)
-
-self:label|de -> label (self, de, X)
-
-```
 
 === Response
 

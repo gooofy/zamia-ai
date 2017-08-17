@@ -262,8 +262,15 @@ class AIPrologParser(PrologParser):
                             r3[vn] = s3
                         r1.extend(r3[vn])
                         mpos1['%s_%d_end' % (name, mpnn)]   = len(r1)
+
+                        for vn3 in r3:
+                            mpos1['%s_%d_%s' % (name, mpnn, vn3.lower())] = r3[vn3]
+
                         todo.append((parts, cnt+1, r1, mpos1))
                         
+                        # if name == 'timespec':
+                        #     import pdb; pdb.set_trace()
+
             else:
 
                 sub_parts = tokenize(p1, lang=self.lang, keep_punctuation=False)
@@ -312,6 +319,25 @@ class AIPrologParser(PrologParser):
                     self.report_error ('tend: could not determine "%s"' % unicode(a))
 
                 return NumberLiteral(mpos[k])
+
+            elif a.name == 'mvar':
+
+                if len(a.args) == 2:
+                    tname = a.args[0]
+                    vname = a.args[1]
+                    occ = 0
+                elif len(a.args) == 3:
+                    tname = a.args[0]
+                    vname = a.args[1]
+                    occ   = int(a.args[2].f)
+                else:
+                    self.report_error ('mvar: one or two args expected, found "%s" instead' % unicode(a))
+
+                k = '%s_%d_%s' % (tname, occ, vname)
+                if not k in mpos:
+                    self.report_error ('mvar: could not determine "%s"' % unicode(a))
+
+                return mpos[k]
 
             else:
 

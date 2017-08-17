@@ -224,159 +224,162 @@ test(de, t0022) :-
     "Computer, was sagt der Wetterbericht?",
     "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
 
-% % nlp_weather_g(LANG, default, TIME1, TOPIC, n, n, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :- and(not(is(TIME1, default)), is(G, [assertz(ias(I, f1_topic, TOPIC)),rdf(aiu:self, wdpd:P131, P),assertz(ias(I, f1_place, P)),assertz(ias(I, f1_time, TIME1))]), rdf(aiu:self, wdpd:P131, R_PLACE), nlp_weather_g_ext(LANG, G, R_CT, TIME1, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS)).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, ["will it rain"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, "wird es"), nlp_timespec(de, S, TIME1), hears(de, S, [["regnen","Regen geben"]])).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, [["what is the likelihood of","how likely is"],"rain"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, [["was ist die Wahrscheinlichkeit für","wie groß ist die Wahrscheinlichkeit für","wie wahrscheinlich ist"],"Regen"]), nlp_timespec(de, S, TIME1)).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, ["how likely is it that it will rain"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, "wie wahrscheinlich ist es, dass es"), nlp_timespec(de, S, TIME1), hears(de, S, "regnen wird?")).
-% % nlp_weather_s(en, start, default, TIME1, full, n, n, S) :- and(hears(en, S, ["what",["will the weather","is the weather gonna","is the weather going to"],"be like"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, full, n, n, S) :- and(hears(de, S, "wie wird"), nlp_timespec(de, S, TIME1), hears(de, S, "das Wetter?")).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, [["will the sun shine","will there be sunshine"]]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, "scheint"), nlp_timespec(de, S, TIME1), hears(de, S, "die Sonne?")).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, [["will it","does it"],"rain"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, ["regnet es"]), nlp_timespec(de, S, TIME1)).
-% % nlp_weather_s(en, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(en, S, [["will rain come","is rain coming"]]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, prec_cloud, n, n, S) :- and(hears(de, S, "kommt"), nlp_timespec(de, S, TIME1), hears(de, S, "noch Regen ?")).
-% % nlp_weather_s(en, start, default, TIME1, full, n, n, S) :- and(hears(en, S, ["how",["cold","warm"],["is it going to","will it"],["be","become"]]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, full, n, n, S) :- and(hears(de, S, ["wie",["kalt","warm"],"wird es"]), nlp_timespec(de, S, TIME1), hears(de, S, [["werden",""]])).
-% % nlp_weather_s(en, start, default, TIME1, full, n, n, S) :- and(hears(en, S, [["what will the weather be","what is the weather gonna be","what is the weather going to be"],["like",""]]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, full, n, n, S) :- and(hears(de, S, ["wie wird das Wetter"]), nlp_timespec(de, S, TIME1)).
-% % nlp_weather_s(en, start, default, TIME1, full, n, n, S) :- and(hears(en, S, ["what",["is the weather outlook","does the weather forecast look like","is the weather forecast","does the weather forecast say"],"for"]), nlp_timespec(en, S, TIME1)).
-% % nlp_weather_s(de, start, default, TIME1, full, n, n, S) :- and(hears(de, S, [["wie sind die Wetteraussichten","was sagt die Wettervorhersage","was sagt der Wetterbericht"],"für"]), nlp_timespec(de, S, TIME1)).
-% 
-% test(en, t0100) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, will it rain tomorrow?",
-%     "tomorrow it will be mostly sunny in stuttgart with little precipitation".
-% 
-% test(de, t0101) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, wird es morgen regnen?",
-%     "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0102) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "how likely is rain the day after tomorrow?",
-%     "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
-% 
-% test(de, t0103) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "wie groß ist die Wahrscheinlichkeit für Regen übermorgen?",
-%     "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0104) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, how likely is it that it will rain today?",
-%     "today it will be mostly sunny in stuttgart with little precipitation".
-% 
-% test(de, t0105) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, wie wahrscheinlich ist es, dass es heute regnen wird?",
-%     "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0106) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, what will the weather be like tomorrow?",
-%     "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
-% 
-% test(de, t0107) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, wie wird morgen das Wetter?",
-%     "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
-% 
-% test(en, t0108) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "computer, will there be sunshine the day after tomorrow?",
-%     "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
-% 
-% test(de, t0109) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "computer, scheint übermorgen die Sonne?",
-%     "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0110) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Will it rain today?",
-%     "today it will be mostly sunny in stuttgart with little precipitation".
-% 
-% test(de, t0111) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Regnet es heute?",
-%     "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0112) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, is rain coming tomorrow?",
-%     "tomorrow it will be mostly sunny in stuttgart with little precipitation".
-% 
-% test(de, t0113) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, kommt morgen noch Regen?",
-%     "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-% 
-% test(en, t0114) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, how warm will it be the day after tomorrow?",
-%     "day after tomorrow the sun will show up occasionally in Stuttgart with temperatures between -9 and 1 degrees.".
-% 
-% test(de, t0115) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, wie warm wird es übermorgen?",
-%     "übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen minus neun und eins grad warm".
-% 
-% test(en, t0116) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "computer, what will the weather be like today?",
-%     "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
-% 
-% test(de, t0117) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "computer, wie wird das Wetter heute?",
-%     "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
-% 
-% test(en, t0118) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "what is the weather gonna be like tomorrow?",
-%     "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
-% 
-% test(de, t0119) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "wie wird das Wetter morgen?",
-%     "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
-% 
-% test(en, t0120) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, what does the weather forecast say for today?",
-%     "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
-% 
-% test(de, t0121) :-
-%     % prep: date_time_stamp(date(2016.0, 12.0, 6.0, 11.0, 0.0, 0.0, "local"), TS),
-%     % prep: setz(ias(I, currentTime, _), TS),
-%     "Computer, was sagt der Wetterbericht für heute?",
-%     "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+%
+% explicit time
+%
+
+answer_weather_expl_time (en, REPORT, TIME) :-
+
+    % trace(on),
+
+    if var (C:mem|f1place) then
+        C:mem|f1place := self:wdpdLocatedIn
+    endif,
+
+    C:mem|f1timespan := TIME,
+
+    answer_weather_r (C, en, REPORT).
+
+answer_weather_expl_time (de, REPORT, TIME) :-
+
+    % trace(on),
+
+    if var (C:mem|f1place) then
+        C:mem|f1place := self:wdpdLocatedIn
+    endif,
+
+    C:mem|f1timespan := TIME,
+
+    answer_weather_r (C, de, REPORT).
+
+train(en) :- "will it rain {timespec:LABEL}", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0100) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, will it rain tomorrow?",
+    "tomorrow it will be mostly sunny in stuttgart with little precipitation".
+
+train(de) :- "wird es {timespec:LABEL} (regnen|Regen geben)?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0101) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wird es morgen regnen?",
+    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "(what is the likelihood of | how likely is) rain? {timespec:LABEL} ?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0102) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "how likely is rain the day after tomorrow?",
+    "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
+
+train(de) :- "(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen {timespec:LABEL} ?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0103) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "wie groß ist die Wahrscheinlichkeit für Regen übermorgen?",
+    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "How likely is it that it will rain {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0104) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, how likely is it that it will rain today?",
+    "today it will be mostly sunny in stuttgart with little precipitation".
+
+train(de) :- "Wie wahrscheinlich ist es, dass es {timespec:LABEL} regnen wird?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0105) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wahrscheinlich ist es, dass es heute regnen wird?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
+test(en, t0106) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what will the weather be like tomorrow?",
+    "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
+
+train(de) :- "wie wird {timespec:LABEL} das Wetter?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+test(de, t0107) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wird morgen das Wetter?",
+    "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
+
+train(en) :- "(will the sun shine|will there be sunshine) {timespec:LABEL} ?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0108) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, will there be sunshine the day after tomorrow?",
+    "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
+
+train(de) :- "scheint {timespec:LABEL} die Sonne?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0109) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, scheint übermorgen die Sonne?",
+    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "(will it|does it) rain {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0110) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Will it rain today?",
+    "today it will be mostly sunny in stuttgart with little precipitation".
+
+train(de) :- "regnet es {timespec:LABEL}?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0111) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Regnet es heute?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "(will rain come|is rain coming) {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+test(en, t0112) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, is rain coming tomorrow?",
+    "tomorrow it will be mostly sunny in stuttgart with little precipitation".
+
+train(de) :- "kommt {timespec:LABEL} noch Regen ?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+test(de, t0113) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, kommt morgen noch Regen?",
+    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(en) :- "how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
+test(en, t0114) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, how warm will it be the day after tomorrow?",
+    "day after tomorrow the sun will show up occasionally in Stuttgart with temperatures between -10 and 1 degrees.".
+
+train(de) :- "wie (kalt|warm) wird es {timespec:LABEL} (werden|)?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+test(de, t0115) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie warm wird es übermorgen?",
+    "übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen minus 10 und eins grad warm".
+
+train(en) :- "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
+test(en, t0116) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, what will the weather be like today?",
+    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
+test(en, t0118) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "what is the weather gonna be like tomorrow?",
+    "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
+
+train(de) :- "wie wird das Wetter {timespec:LABEL}?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+test(de, t0117) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, wie wird das Wetter heute?",
+    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+test(de, t0119) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "wie wird das Wetter morgen?",
+    "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
+
+train(en) :- "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
+test(en, t0120) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what does the weather forecast say for today?",
+    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
+
+train(de) :- "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} ?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+test(de, t0121) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, was sagt der Wetterbericht für heute?",
+    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+
 % % nlp_weather_g(LANG, PLACE1, default, TOPIC, TS, TE, G, R_CT, R_TIME, R_PLACE, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS) :- and(not(is(PLACE1, default)), is(G, [assertz(ias(I, f1_topic, TOPIC)),ner(LANG, I, geo_location, TS, TE, P),assertz(ias(I, f1_place, P)),assertz(ias(I, f1_time, weatherNearFuture))]), nlp_weather_g_ext(LANG, G, R_CT, weatherNearFuture, PLACE1, R_CODE, R_PREC, R_TEMP_MIN, R_TEMP_MAX, R_CLOUDS)).
 % % nlp_weather_s(en, start, PLACE1, default, prec_cloud, TS, TE, S) :- and(hears(en, S, ["will it rain in"]), nlp_weather_location_s(en, S, PLACE1, LABEL, TS, TE)).
 % % nlp_weather_s(de, start, PLACE1, default, prec_cloud, TS, TE, S) :- and(hears(de, S, ["wird es in"]), nlp_weather_location_s(de, S, PLACE1, LABEL, TS, TE), hears(de, S, [["regnen","Regen geben"]])).

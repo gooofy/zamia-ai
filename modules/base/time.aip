@@ -115,32 +115,26 @@ after_evening(TS)   :- stamp_date_time(TS,date(Y,M,D,H,MIN,S,'local')), H >= 18.
 %                                   D2 is D+1,
 %                                   date_time_stamp(date(Y,M,D2,12,0,0,'local'), X).
 % 
-% nlp_timespec(en, S, today)            :- hears(en, S, 'today').
-% nlp_timespec(en, S, tomorrow)         :- hears(en, S, 'tomorrow').
-% nlp_timespec(en, S, dayAfterTomorrow) :- hears(en, S, 'the day after tomorrow').
-% nlp_timespec(en, S, nextThreeDays)    :- hears(en, S, 'the next three days').
-% 
-% nlp_timespec(de, S, today)            :- hears(de, S, 'heute').
-% nlp_timespec(de, S, tomorrow)         :- hears(de, S, 'morgen').
-% nlp_timespec(de, S, dayAfterTomorrow) :- hears(de, S, 'übermorgen').
-% nlp_timespec(de, S, nextThreeDays)    :- hears(de, S, 'die nächsten drei Tage').
-% 
-% nlp_say_time(en, R, T_H,     1) :- says (en, R, "one minute past %(f1_hour)d"),!.
-% nlp_say_time(en, R, T_H,     0) :- says (en, R, "exactly %(f1_hour)d o'clock"),!.
-% nlp_say_time(en, R, T_H,    15) :- says (en, R, "a quarter past %(f1_hour)d"),!.
-% nlp_say_time(en, R, T_H,    30) :- says (en, R, "half past %(f1_hour)d"),!.
-% nlp_say_time(en, R, T_H, T_MIN) :- says (en, R, "%(f1_minute)d minutes past %(f1_hour)d").
-% 
-% nlp_say_date(en, R) :- says (en, R, "%(f1_wday_label)s %(f1_month_label)s %(f1_day)d, %(f1_year)d").
+macro (en, timespec, TIME, LABEL) :- TIME is today           , LABEL is 'today'.
+macro (en, timespec, TIME, LABEL) :- TIME is tomorrow        , LABEL is 'tomorrow'.
+macro (en, timespec, TIME, LABEL) :- TIME is dayAfterTomorrow, LABEL is 'the day after tomorrow'.
+macro (en, timespec, TIME, LABEL) :- TIME is nextThreeDays   , LABEL is 'the next three days'.
 
+macro (de, timespec, TIME, LABEL) :- TIME is today           , LABEL is 'heute'.
+macro (de, timespec, TIME, LABEL) :- TIME is tomorrow        , LABEL is 'morgen'.
+macro (de, timespec, TIME, LABEL) :- TIME is dayAfterTomorrow, LABEL is 'übermorgen'.
+macro (de, timespec, TIME, LABEL) :- TIME is nextThreeDays   , LABEL is 'die nächsten drei Tage'.
+ 
 hour12(H, H12) :- H < 13, H12 is H, !.
 hour12(H, H12) :- H > 12, H12 is H - 12, !.
 
+transcribe_time (en, H,   0, TS) :- hour12(H, H12), TS is format_str ("exactly %d o'clock", H12), !.
 transcribe_time (en, H,   1, TS) :- hour12(H, H12), TS is format_str ("one minute past %d", H12), !.
 transcribe_time (en, H,  15, TS) :- hour12(H, H12), TS is format_str ("a quarter past %d", H12), !.
 transcribe_time (en, H,  30, TS) :- hour12(H, H12), TS is format_str ("half past %d", H12), !.
 transcribe_time (en, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d minutes past %d", MIN, H12).
 
+transcribe_time (de, H,   0, TS) :- hour12(H, H12), TS is format_str ("genau %d Uhr", H12), !.
 transcribe_time (de, H,   1, TS) :- hour12(H, H12), TS is format_str ("eine Minute nach %d", H12), !.
 transcribe_time (de, H,  15, TS) :- hour12(H, H12), TS is format_str ("Viertel nach %d", H12), !.
 transcribe_time (de, H,  30, TS) :- hour12(H, H12), TS is format_str ("eine halbe Stunde nach %d", H12), !.

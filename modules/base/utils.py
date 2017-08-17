@@ -81,7 +81,7 @@ def builtin_say (g, pe):
                 v = unicode(var_v)
 
             if fmt_s == 'd':
-                v = unicode(int(v))
+                v = unicode(int(round(float(v))))
             elif fmt_s == 'f':
                 v = unicode(float(v))
 

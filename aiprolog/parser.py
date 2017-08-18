@@ -79,7 +79,7 @@ class AIPrologParser(PrologParser):
         # actual parsing starts here
 
         with codecs.open(filename, encoding='utf-8', errors='ignore', mode='r') as f:
-            self.start(f, filename, module_name=module_name)
+            self.start(f, filename, module_name=module_name, linecnt=self.linecnt)
 
             while self.cur_sym != SYM_EOF:
                 clauses = self.clause()

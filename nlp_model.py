@@ -53,7 +53,8 @@ MAX_NUM_RESP = 3
 
 STEPS_PER_STAT             = 100
 
-DEBUG_LIMIT                = 0
+#DEBUG_LIMIT                = 0
+DEBUG_LIMIT                = 1000
 
 NUM_EVAL_STEPS             = 20
 
@@ -80,7 +81,6 @@ class NLPModel(object):
         self.config.read(ini_fn)
 
         self.lang       = self.config.get("training", "lang")
-        self.network    = 1 if self.config.get("training", "network") == 'output' else 0
 
     def compute_2d_diagram(self):
 
@@ -388,7 +388,7 @@ class NLPModel(object):
 
         drs = {} 
 
-        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang, model.TrainingData.layer==self.network):
+        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang):
 
             if not dr.inp in drs:
                 drs[dr.inp] = set()

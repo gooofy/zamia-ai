@@ -38,7 +38,6 @@ from nltools.tokenizer import tokenize
 DEFAULT_LOGLEVEL   = logging.DEBUG
 DEFAULT_OUTPUT     = 'foo.chat'
 DEFAULT_LANG       = 'en'
-PREFIXES           = [u'', u'Computer, ']
 
 #
 # init, cmdline
@@ -118,7 +117,7 @@ for aimlfn in args:
         parser = ET.XMLParser(recover=True)
         tree = ET.parse(aimlfn, parser)
 
-        logging.info('parsing done. converting...')
+        # logging.info('parsing done. converting...')
 
         root = tree.getroot()
 
@@ -185,13 +184,13 @@ for aimlfn in args:
                     if len(tokenize(pt, lang=options.lang))==0:
                         continue
 
-                    for prefix in PREFIXES:
-        
-                        res[prefix+pt] = t
+                    res[pt] = t
 
-                        cnt += 1
-                        if cnt % 1000 == 0:
-                            logging.info('   %6d samples extracted.' % cnt)
+                    cnt += 1
+                    if cnt % 1000 == 0:
+                        logging.info('   %6d samples extracted.' % cnt)
+
+        logging.info('   %6d samples extracted from this AIML. Unique: %6d' % (cnt, len(res)))
 
     except:
         logging.error(traceback.format_exc())

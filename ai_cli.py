@@ -43,7 +43,6 @@ from ai_kernal           import AIKernal
 from nltools             import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
-RDF_LIB_DUMP_PATH  = 'data/AIKB.n3'
 
 class AICli(cmdln.Cmdln):
 

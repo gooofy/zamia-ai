@@ -544,3 +544,62 @@ test(de, t0221) :-
     "Computer, was sagt der Wetterbericht für Stuttgart?",
     "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
 
+%
+% explicit time and place
+%
+
+answer_weather_expl_place_time (en, REPORT, TS, TE, TIME) :-
+
+    % trace(on),
+
+    ner (en, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    r_score(C, SCORE),
+    C:mem|f1place := LOCATION,
+    C:mem|f1timespan := TIME,
+
+    answer_weather_r (C, en, REPORT).
+
+answer_weather_expl_place_time (de, REPORT, TS, TE, TIME) :-
+
+    % trace(on),
+
+    ner (de, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    r_score(C, SCORE),
+    C:mem|f1place := LOCATION,
+    C:mem|f1timespan := TIME,
+
+    answer_weather_r (C, de, REPORT).
+
+train(en) :- "will it rain in {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wird es {timespec:LABEL} in {geo_location:LABEL} (regnen | Regen geben) ?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(what is the likelihood of | how likely is | rain in ) {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist )  Regen {timespec:LABEL} in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "how likely is it that it will rain {timespec:LABEL} in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wie wahrscheinlich ist es, dass es {timespec:LABEL} in {geo_location:LABEL} regnen wird?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "what ( will the weather | is the weather gonna | is the weather going to ) be like {timespec:LABEL} in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (en, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wie wird {timespec:LABEL} in {geo_location:LABEL} das Wetter?", inline answer_weather_expl_place_time (de, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(will the sun shine | will there be sunshine ) {timespec:LABEL}  in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "scheint in {geo_location:LABEL} {timespec:LABEL} die Sonne?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(will it | does it) rain in {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "regnet es {timespec:LABEL} in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(will rain come|is rain coming) in {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "kommt {timespec:LABEL} noch Regen in {geo_location:LABEL} ?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "how (cold|warm) (is it going to|will it) (be|become) in {geo_location:LABEL} {timespec:LABEL}?", inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wie (kalt|warm) wird es {timespec:LABEL} in {geo_location:LABEL} werden?", inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wie wird das Wetter {timespec:LABEL} in {geo_location:LABEL}?", inline answer_weather_expl_place_time (de, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "wie wird {timespec:LABEL} das Wetter in {geo_location:LABEL}?", inline answer_weather_expl_place_time (de, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(en) :- "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {geo_location:LABEL} {timespec:LABEL} ?", inline answer_weather_expl_place_time (en, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+train(de) :- "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} für {geo_location:LABEL}?", inline answer_weather_expl_place_time (de, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+
+test(en, t0300) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what does the weather forecast say for stuttgart tomorrow?",
+    "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
+
+test(de, t0301) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, was sagt der Wetterbericht für heute für Tallinn?",
+    "heute wird es lockere wolken geben in tallinn und es wird zwischen minus acht und minus drei grad warm".
+

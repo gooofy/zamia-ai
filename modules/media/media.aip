@@ -12,29 +12,31 @@ change_media_station_tokens(en, TS, TE) :-
 
     ner (en, media_station, TS, TE, C:tokens, STATION, SCORE),
 
-    aiMediaSlot(STATION, SLOT),
-    aiMediaTitle(STATION, TITLE),
+    % aiMediaSlot(STATION, SLOT),
+    % aiMediaTitle(STATION, TITLE),
 
     C:mem|f1ent is STATION,
     C:user:station is STATION,
 
     r_score(C, SCORE),
 
-    r_action(C, [media, tune, SLOT, TITLE]).
+    % r_action(C, [media, tune, SLOT, TITLE]).
+    r_action(C, [media, tune, STATION]).
 
 change_media_station_tokens(de, TS, TE) :-
 
     ner (de, media_station, TS, TE, C:tokens, STATION, SCORE),
 
-    aiMediaSlot(STATION, SLOT),
-    aiMediaTitle(STATION, TITLE),
+    % aiMediaSlot(STATION, SLOT),
+    % aiMediaTitle(STATION, TITLE),
 
     C:mem|f1ent is STATION,
     C:user:station is STATION,
 
     r_score(C, SCORE),
 
-    r_action(C, [media, tune, SLOT, TITLE]).
+    % r_action(C, [media, tune, SLOT, TITLE]).
+    r_action(C, [media, tune, STATION]).
 
 
 train(en) :-
@@ -53,13 +55,14 @@ change_media_station_context :-
         STATION is self:favStation
     endif,
 
-    aiMediaSlot(STATION, SLOT),
-    aiMediaTitle(STATION, TITLE),
+    % aiMediaSlot(STATION, SLOT),
+    % aiMediaTitle(STATION, TITLE),
 
     C:mem|f1ent is STATION,
     C:user:station is STATION,
 
-    r_action(C, [media, tune, SLOT, TITLE]).
+    % r_action(C, [media, tune, SLOT, TITLE]).
+    r_action(C, [media, tune, STATION]).
 
 % % l2proc_changeMediaStationContext :- and(list_append(VMC, fe(degree, on)), list_append(VMC, fe(age, uriref(aiu:self))), list_append(VMC, frame(zfChangeMediaStation)), list_append(VMC, fe(msg, vm_frame_pop)), list_append(VMC, fe(add, uriref(aiu:self))), ias(I, user, USER), list_append(VMC, fe(spkr, USER)), list_append(VMC, frame(fnRequest)), fnvm_exec(I, VMC)).
 % 
@@ -83,21 +86,21 @@ train(de) :-
 test(en, t0002) :-
      'computer, please switch on the radio',
      '',
-     action(media, tune, 9, 1).
+     action(media, tune, wdeB5Aktuell).
      
 test(de, t0003) :-
      'computer, schalte bitte das Radio ein',
      '',
-     action(media, tune, 9, 1).
+     action(media, tune, wdeB5Aktuell).
  
 test(en, t0004) :-
      'computer please tune into new rock',
      '',
-     action(media, tune, 3, []).
+     action(media, tune, aiNewRock).
 test(de, t0005) :-
      'computer schalte bitte new rock ein',
      '',
-     action(media, tune, 3, []).
+     action(media, tune, aiNewRock).
 
 
 test(en, t0006) :-
@@ -112,21 +115,21 @@ test(de, t0007) :-
 test(en, t0008) :-
      'computer please switch on new rock',
      '',
-     action(media, tune, 3, []),
+     action(media, tune, aiNewRock),
      'switch off the radio',
      '',
      action(media, off),
      'please turn on the radio',
      '',
-     action(media, tune, 3, []).
+     action(media, tune, aiNewRock).
 test(de, t0009) :-
      'computer schalte bitte new rock ein',
      '',
-     action(media, tune, 3, []),
+     action(media, tune, aiNewRock),
      'mach das radio aus',
      '',
      action(media, off),
      'schalte bitte das radio ein',
      '',
-     action(media, tune, 3, []).
+     action(media, tune, aiNewRock).
  

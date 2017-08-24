@@ -846,10 +846,10 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def train (self, ini_fn):
+    def train (self, ini_fn, num_steps, incremental):
 
         self.setup_tf_model ('train', False, ini_fn)
-        self.nlp_model.train()
+        self.nlp_model.train(num_steps, incremental)
 
 
     def dump_utterances (self, num_utterances, dictfn, lang, module):

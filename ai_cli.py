@@ -180,6 +180,10 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
+           help="incremental training (load previously saved variables)")
+    @cmdln.option("-n", "--num-steps", dest="num_steps", type = "int", default=100000,
+           help="number of steps to train for, default: 100000")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_train(self, subcmd, opts, *paths):
@@ -197,7 +201,7 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.train (paths[0])
+        self.kernal.train (paths[0], opts.num_steps, opts.incremental)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

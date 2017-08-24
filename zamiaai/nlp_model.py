@@ -321,20 +321,6 @@ class NLPModel(object):
 
         return self.model
 
-    # FIXME: remove old code
-    # def save_model (self, tf_session, fn=None):
-    #     if not fn:
-    #         fn = self.model_fn
-    #     # self.model.saver.save(tf_session, fn, global_step=self.model.global_step)
-    #     self.model.saver.save(tf_session, fn)
-    #     logging.info("model saved to %s ." % fn)
-
-    # def load_model(self, tf_session, fn=None):
-    #     if not fn:
-    #         fn = self.model_fn
-    #     self.model.saver.restore(tf_session, fn)
-    #     logging.info("model restored from %s ." % fn)
-
     def _ascii_art(self, n):
 
         if n == 0:
@@ -388,7 +374,7 @@ class NLPModel(object):
         return x, x_lengths, y, y_lengths
 
 
-    def train(self):
+    def train(self, num_steps, incremental):
 
         # load discourses from db, resolve non-unique inputs (implicit or of responses)
         
@@ -453,12 +439,6 @@ class NLPModel(object):
             pass
 
         mkdirs(self.model_dir)
-
-        #
-        # get config
-        #
-
-        num_steps = int(self.config.get("training", "num_steps"))
 
         #
         # 2D diagram of available data
@@ -549,7 +529,7 @@ class NLPModel(object):
                 current_step    = 0
                 best_step       = 0
                 # previous_losses = []
-                while tf_model.global_step.eval() <= num_steps:
+                while current_step <= num_steps:
 
                     # get a random training batch and perform a training step on it
 
@@ -562,7 +542,7 @@ class NLPModel(object):
 
                     step_time += (time() - start_time) / STEPS_PER_STAT
                     loss += step_loss / STEPS_PER_STAT
-                    current_step += 1
+                    current_step = tf_model.global_step.eval()
               
                     if current_step % STEPS_PER_STAT == 0:
 

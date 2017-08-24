@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import math
 
 import numpy as np
@@ -76,7 +77,7 @@ class Seq2SeqModel(object):
 
        
     def build_model(self):
-        print("building model..")
+        logging.info("building model..")
 
         # Building encoder and decoder networks
         self.init_placeholders()
@@ -127,7 +128,7 @@ class Seq2SeqModel(object):
 
 
     def build_encoder(self):
-        print("building encoder..")
+        logging.info("building encoder..")
         with tf.variable_scope('encoder'):
             # Building encoder_cell
             self.encoder_cell = self.build_encoder_cell()
@@ -161,7 +162,7 @@ class Seq2SeqModel(object):
 
 
     def build_decoder(self):
-        print("building decoder and attention..")
+        logging.info("building decoder and attention..")
         with tf.variable_scope('decoder'):
             # Building decoder_cell and decoder_initial_state
             self.decoder_cell, self.decoder_initial_state = self.build_decoder_cell()
@@ -255,14 +256,14 @@ class Seq2SeqModel(object):
                                                                     end_token=EOS_ID,
                                                                     embedding=embed_and_input_proj)
                     # Basic decoder performs greedy decoding at each time step
-                    print("building greedy decoder..")
+                    logging.info("building greedy decoder..")
                     inference_decoder = seq2seq.BasicDecoder(cell=self.decoder_cell,
                                                              helper=decoding_helper,
                                                              initial_state=self.decoder_initial_state,
                                                              output_layer=output_layer)
                 else:
                     # Beamsearch is used to approximately find the most likely translation
-                    print("building beamsearch decoder..")
+                    logging.ingo("building beamsearch decoder..")
                     inference_decoder = beam_search_decoder.BeamSearchDecoder(cell=self.decoder_cell,
                                                                               embedding=embed_and_input_proj,
                                                                               start_tokens=start_tokens,
@@ -340,7 +341,7 @@ class Seq2SeqModel(object):
         # To use BeamSearchDecoder, encoder_outputs, encoder_last_state, encoder_inputs_length 
         # needs to be tiled so that: [batch_size, .., ..] -> [batch_size x beam_width, .., ..]
         if self.use_beamsearch_decode:
-            print ("use beamsearch decoding..")
+            logging.info ("use beamsearch decoding..")
             encoder_outputs = seq2seq.tile_batch(
                 self.encoder_outputs, multiplier=self.beam_width)
             encoder_last_state = nest.map_structure(
@@ -402,7 +403,7 @@ class Seq2SeqModel(object):
 
 
     def init_optimizer(self):
-        print("setting optimizer..")
+        logging.info("setting optimizer..")
         # Gradients and SGD update operation for training the model
         trainable_params = tf.trainable_variables()
         if self.optimizer.lower() == 'adadelta':
@@ -431,14 +432,14 @@ class Seq2SeqModel(object):
         # temporary code
         #del tf.get_collection_ref('LAYER_NAME_UIDS')[0]
         save_path = saver.save(sess, save_path=path, global_step=global_step)
-        print('model saved at %s' % save_path)
+        logging.info('model saved at %s' % save_path)
         
 
     def restore(self, sess, path, var_list=None):
         # var_list = None returns the list of all saveable variables
         saver = tf.train.Saver(var_list)
         saver.restore(sess, save_path=path)
-        print('model restored from %s' % path)
+        logging.info('model restored from %s' % path)
 
 
     def train(self, sess, encoder_inputs, encoder_inputs_length, 

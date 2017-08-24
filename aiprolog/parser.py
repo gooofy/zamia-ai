@@ -37,7 +37,7 @@ import codecs
 import re
 
 from copy                import copy
-from StringIO            import StringIO
+from io                  import StringIO
 
 from zamiaprolog.parser  import PrologParser, SYM_EOF
 from zamiaprolog.logic   import *
@@ -562,7 +562,7 @@ class AIPrologParser(PrologParser):
                 else:
                     if not isinstance(a, Predicate) or a.name != 'action':
                         self.report_error('only action predicates allowed here.')
-                    actions.append(map (lambda x: unicode(x), a.args))
+                    actions.append(list(map (lambda x: unicode(x), a.args)))
 
 
         if inp:

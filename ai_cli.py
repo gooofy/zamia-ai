@@ -31,18 +31,19 @@ import cmdln
 import random
 import time
 
-import psycopg2
-
 import model
 
-from zamiaprolog.logic   import Predicate
-from zamiaprolog.runtime import PROLOG_LOGGER_NAME
-from aiprolog.runtime    import USER_PREFIX
-from zamiaprolog.errors  import PrologError, PrologRuntimeError
-from ai_kernal           import AIKernal
-from nltools             import misc
+from builtins             import input
+from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
+from zamiaprolog.logic    import Predicate
+from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
+from aiprolog.runtime     import USER_PREFIX
+from zamiaprolog.errors   import PrologError, PrologRuntimeError
+from ai_kernal            import AIKernal
+from nltools              import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO
+CLI_MODULE        = '__cli__'
 
 class AICli(cmdln.Cmdln):
 
@@ -231,49 +232,54 @@ class AICli(cmdln.Cmdln):
 
         while True:
 
-            line = raw_input ('ai> ')
+            line = input ('ai> ')
 
             if line == 'quit' or line == 'exit':
                 break
 
             try:
-                abufs = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, test_mode=False)
+                score, resps, actions, solutions = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri)
 
-                for abuf in abufs:
-                    logging.debug ("abuf: %s" % repr(abuf))
+                for idx in range (len(resps)):
+                    logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
 
-                # if we have multiple abufs, pick one at random
+                # if we have multiple responses, pick one at random
 
-                if len(abufs)>0:
+                if len(resps)>0:
 
-                    abuf = random.choice(abufs)
+                    idx = random.randint(0, len(resps)-1)
 
-                    self.kernal.prolog_rt.execute_builtin_actions(abuf)
+                    # apply DB overlay, if any
+                    ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
+                    if ovl:
+                        # logging.info(str(ovl))
+                        # import pdb; pdb.set_trace()
+                        ovl.do_apply(CLI_MODULE, self.kernal.db, commit=True)
 
-                    self.kernal.db.commit()
+                    acts = actions[idx]
+                    for action in acts:
+                        logging.debug("ACTION %s" % repr(action))
 
-                    for action in abuf['actions']:
-                        p = action[0]
-                        if not isinstance(p, Predicate):
-                            continue
-                        if p.name == 'say': 
-                            print "SAY", action[2]
-                        else:
-                            print "ACTION", action
+                    resp = resps[idx]
+                    logging.info('RESP: [%05d] %s ' % (score, u' '.join(resp)))
+
+                    # import pdb; pdb.set_trace()
                             
             except Exception as e:
                 logging.error(traceback.format_exc())
 
-                abufs = self.kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
+                # FIXME: port
 
-                abuf = random.choice(abufs)
+                # abufs = self.kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
 
-                for action in abuf['actions']:
-                    p = action[0]
-                    if not isinstance(p, Predicate):
-                        continue
-                    if p.name == 'say': 
-                        print "SAY", action[2]
+                # abuf = random.choice(abufs)
+
+                # for action in abuf['actions']:
+                #     p = action[0]
+                #     if not isinstance(p, Predicate):
+                #         continue
+                #     if p.name == 'say': 
+                #         print "SAY", action[2]
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

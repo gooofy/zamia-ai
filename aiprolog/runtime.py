@@ -30,7 +30,7 @@ from zamiaprolog.logic    import NumberLiteral, StringLiteral, ListLiteral, Lite
 from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
 from nltools.tokenizer    import tokenize
 from nltools.misc         import edit_distance
-from ner                  import builtin_ner
+from aiprolog.ner         import builtin_ner
 
 import model
 
@@ -55,7 +55,7 @@ def builtin_tokenize(g, pe):
     arg_str     = pe.prolog_get_string   (args[1], g.env, g.location)
     arg_tokens  = pe.prolog_get_variable (args[2], g.env, g.location)
 
-    tokens = map(lambda s: StringLiteral(s), tokenize(arg_str, lang=arg_lang.name))
+    tokens = list(map(lambda s: StringLiteral(s), tokenize(arg_str, lang=arg_lang.name)))
 
     g.env[arg_tokens] = ListLiteral(tokens)
 

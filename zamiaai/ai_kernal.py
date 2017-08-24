@@ -579,7 +579,7 @@ class AIKernal(object):
 
             if test_name:
                 if tc.name != test_name:
-                    logging.info ('skipping test %s' % test_name)
+                    logging.info ('skipping test %s' % tc.name)
                     continue
 
             rounds = json.loads(tc.rounds)

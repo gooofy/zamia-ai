@@ -23,6 +23,9 @@
 # natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> AIProlog -> [ Context ] -> actions/says
 #
 
+from __future__ import print_function
+from future.utils import viewitems
+
 import os
 import sys
 import logging
@@ -31,7 +34,6 @@ import imp
 import time
 import random
 import codecs
-import rdflib
 import datetime
 import pytz
 import json
@@ -41,6 +43,7 @@ import numpy as np
 from tzlocal              import get_localzone # $ pip install tzlocal
 from copy                 import deepcopy, copy
 from sqlalchemy.orm       import sessionmaker
+from six                  import text_type
 
 import model
 
@@ -58,7 +61,7 @@ from nltools.tokenizer    import tokenize
 ENABLE_HAL_PREFIX_HACK = True
 
 TEST_USER          = USER_PREFIX + u'Test'
-TEST_TIME          = datetime.datetime(2016,12,06,13,28,6,tzinfo=get_localzone()).isoformat()
+TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
 
 class AIKernal(object):
@@ -88,7 +91,7 @@ class AIKernal(object):
         self.modules             = {}
         self.initialized_modules = set()
         s = self.config.get('semantics', 'modules')
-        self.all_modules         = map (lambda s: s.strip(), s.split(','))
+        self.all_modules         = list(map (lambda s: s.strip(), s.split(',')))
         sys.path.append('modules')
 
         #
@@ -126,7 +129,7 @@ class AIKernal(object):
 
                 # we need the inverse dict to reconstruct the output from tensor
 
-                self.inv_output_dict = {v: k for k, v in self.nlp_model.output_dict.iteritems()}
+                self.inv_output_dict = {v: k for k, v in viewitems(self.nlp_model.output_dict)}
 
                 self.tf_model = self.nlp_model.create_tf_model(self.tf_session, mode = mode) 
                 self.tf_model.batch_size = 1
@@ -329,7 +332,7 @@ class AIKernal(object):
             inp_json  = json.dumps(inp)
             resp_json = json.dumps(resp)
 
-            utterance = u' '.join(map(lambda c: unicode(c), contexts))
+            utterance = u' '.join(map(lambda c: text_type(c), contexts))
             if utterance:
                 utterance += u' '
             utterance += u' '.join(i)
@@ -433,7 +436,6 @@ class AIKernal(object):
         tokens = solutions[0]['_1'].l
 
         solutions = self.rt.search_predicate ('context', [cur_context, '_2', '_3'], env=res)
-        # import pdb; pdb.set_trace()
         d = {}
         for s in solutions:
 
@@ -448,15 +450,16 @@ class AIKernal(object):
             elif isinstance(v, StringLiteral):
                 v = v.s
             else:
-                v = unicode(v)
+                v = text_type(v)
 
             d[k] = v
 
+        # import pdb; pdb.set_trace()
         inp = []
         for t in reversed(tokens):
             inp.insert(0, t.s)
 
-        for k in sorted(d):
+        for k in sorted(list(d)):
             inp.insert(0, [k, d[k]])
 
         return inp
@@ -489,7 +492,7 @@ class AIKernal(object):
         res = do_assertz ({}, Clause ( Predicate('user',   [cur_context, Predicate(user)])  , location=self.dummyloc), res=res)
         res = do_assertz ({}, Clause ( Predicate('lang',   [cur_context, Predicate(lang)])  , location=self.dummyloc), res=res)
 
-        token_literal = ListLiteral (map(lambda x: StringLiteral(x), inp))
+        token_literal = ListLiteral (list(map(lambda x: StringLiteral(x), inp)))
         res = do_assertz ({}, Clause ( Predicate('tokens', [cur_context, token_literal])    , location=self.dummyloc), res=res)
 
         currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat()
@@ -525,7 +528,7 @@ class AIKernal(object):
         actions   = []
         s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env)
         for s2 in s2s:
-            actions.append(map (lambda x: unicode(x), s2['_1'].l))
+            actions.append(list(map (lambda x: text_type(x), s2['_1'].l)))
 
         score     = 0.0
         s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env)
@@ -902,7 +905,7 @@ class AIKernal(object):
                 utts.add(utt)
                 
         for utt in utts:
-            print utt
+            print (utt)
 
 
 

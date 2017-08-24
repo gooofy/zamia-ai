@@ -26,12 +26,18 @@
 # nlp dictionaries, numpy model transformation, seq2seq wrapper/helper
 #
 
+from __future__ import print_function
+
 import os
 import sys
 import logging
 import codecs
 import math
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+
 import json
 import shutil
 
@@ -77,7 +83,7 @@ class NLPModel(object):
 
         # parse config
 
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read(ini_fn)
 
         self.lang       = self.config.get("training", "lang")
@@ -237,7 +243,7 @@ class NLPModel(object):
 
     def compute_x(self, inp):
 
-        return map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, inp)
+        return list(map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, inp))
 
         # x = np.zeros(self.input_max_len, np.int32)
         #l = len(tokens)
@@ -250,7 +256,7 @@ class NLPModel(object):
 
     def compute_y(self, response):
 
-        preds = map(lambda pred: self.output_dict[pred] if pred in self.output_dict else UNK_ID, response)
+        preds = list(map(lambda pred: self.output_dict[pred] if pred in self.output_dict else UNK_ID, response))
 
         preds.append(EOS_ID)
 
@@ -362,8 +368,8 @@ class NLPModel(object):
                 seqs_y.append(data[1])
 
         # seqs_x, seqs_y: a list of sentences
-        lengths_x = [len(s) for s in seqs_x]
-        lengths_y = [len(s) for s in seqs_y]
+        lengths_x = [len(list(s)) for s in seqs_x]
+        lengths_y = [len(list(s)) for s in seqs_y]
         
         x_lengths = np.array(lengths_x)
         y_lengths = np.array(lengths_y)
@@ -374,6 +380,8 @@ class NLPModel(object):
         x = np.ones((self.batch_size, maxlen_x)).astype('int32') * EOS_ID 
         y = np.ones((self.batch_size, maxlen_y)).astype('int32') * EOS_ID 
         
+        # import pdb; pdb.set_trace()
+
         for idx, [s_x, s_y] in enumerate(zip(seqs_x, seqs_y)):
             x[idx, :lengths_x[idx]] = s_x
             y[idx, :lengths_y[idx]] = s_y
@@ -404,12 +412,12 @@ class NLPModel(object):
 
         for inp in drs:
 
-            td_inp = map (lambda a: unicode(a), json.loads(inp))
+            td_inp = list(map (lambda a: unicode(a), json.loads(inp)))
 
             td_resp  = []
             num_resp = 0
             for r in drs[inp]:
-                td_r = map (lambda a: unicode(a), json.loads(r))
+                td_r = list(map (lambda a: unicode(a), json.loads(r)))
                 if len(td_resp)>0:
                     td_resp.append(OR_SYMBOL)
                 td_resp.extend(td_r)
@@ -443,7 +451,7 @@ class NLPModel(object):
 
         dia = self.compute_2d_diagram()
 
-        print "     n  i  o 01020304050607080910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455"
+        print ("     n  i  o 01020304050607080910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455")
 
         mol = 0
 
@@ -463,7 +471,7 @@ class NLPModel(object):
             if output_len > mol:
                 mol = output_len
 
-            print '%6d %2d %2d %s' % (s, inp_len+1, mol, l)
+            print ('%6d %2d %2d %s' % (s, inp_len+1, mol, l))
 
 
         #

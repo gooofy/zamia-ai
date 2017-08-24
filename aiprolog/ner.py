@@ -202,7 +202,7 @@ def builtin_ner(g, pe):
     if not arg_Lang in ner_dict:
         raise PrologRuntimeError('ner: lang %s unknown.' % arg_Lang, g.location)
 
-    tokens = map(lambda x: x.s, arg_Tokens.l)
+    tokens = list(map(lambda x: x.s, arg_Tokens.l))
 
     res = []
     if isinstance(arg_Class, Variable):

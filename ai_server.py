@@ -57,10 +57,12 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 import model
 
-from ai_kernal         import AIKernal
-from aiprolog.runtime  import USER_PREFIX
+from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
+from ai_kernal            import AIKernal
+from aiprolog.runtime     import USER_PREFIX
 
 PROC_TITLE        = 'ai_server'
+AI_SERVER_MODULE  = '__server__'
 
 class AIHandler(BaseHTTPRequestHandler):
 	
@@ -85,54 +87,62 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 line        = data['line']
 
-                abufs = kernal.process_input(line, kernal.nlp_model.lang, user_uri, test_mode=False, trace=False)
+                score, resps, actions, solutions = kernal.process_input(line, kernal.nlp_model.lang, user_uri)
 
-                for abuf in abufs:
-                    logging.debug ("abuf: %s" % repr(abuf))
+                for idx in range (len(resps)):
+                    logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
 
                 # if we have multiple abufs, pick one at random
 
-                if len(abufs)>0:
+                if len(resps)>0:
 
-                    abuf = random.choice(abufs)
+                    idx = random.randint(0, len(resps)-1)
 
-                    kernal.prolog_rt.execute_builtin_actions(abuf)
+                    # apply DB overlay, if any
+                    ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
+                    if ovl:
+                        ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
 
-                    kernal.db.commit()
+                    acts = actions[idx]
+                    for action in acts:
+                        logging.debug("ACTION %s" % repr(action))
 
-                    logging.debug("abuf: %s" % repr(abuf)) 
+                    resp = resps[idx]
+                    logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
 
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
 
-                    reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
+                    # reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
 
-                    logging.debug("reply_actions: %s" % repr(reply_actions)) 
-                    reply = {'actions': reply_actions }
+                    logging.debug("reply_actions: %s, resp: %s" % (repr(acts), repr(resp)))
+                    reply = {'actions': acts, 'resp': resp }
 
                     self.wfile.write(json.dumps(reply))
 
                 else:
-                    raise Exception('no abuf received for input %s' % line)
+                    raise Exception('no solution found for input %s' % line)
 
             except:
 
                 logging.error(traceback.format_exc())
 
-                abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
-                abuf = random.choice(abufs)
+                # FIXME
+                # abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
+                # abuf = random.choice(abufs)
 
-                logging.debug("abuf: %s" % repr(abuf)) 
+                # logging.debug("abuf: %s" % repr(abuf)) 
 
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
 
-                reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
+                # reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
 
-                logging.debug("reply_actions: %s" % repr(reply_actions)) 
-                reply = {'actions': reply_actions }
+                logging.debug("ELIZA")
+                # logging.debug("reply_actions: %s" % repr(reply_actions)) 
+                reply = {'actions': 'FIXME' }
 
                 self.wfile.write(json.dumps(reply))
 
@@ -165,6 +175,9 @@ if __name__ == '__main__':
     parser.add_option ("-p", "--port", dest="port", type = "int", default=server_port,
                        help="port, default: %d" % server_port)
 
+    parser.add_option ("-s", "--global-step", dest="global_step", type = "int", default=0,
+                       help="global step to load, default: 0 (latest)")
+
     parser.add_option ("-u", "--user", dest="username", type = "string", default='server',
                        help="user, default: server")
 
@@ -191,7 +204,7 @@ if __name__ == '__main__':
     for mn2 in kernal.all_modules:
         kernal.load_module (mn2)
         kernal.init_module (mn2)
-    kernal.setup_tf_model (True, True, args[0])
+    kernal.setup_tf_model ('decode', True, args[0], global_step=options.global_step)
 
     #
     # run HTTP server

@@ -31,10 +31,9 @@ import cmdln
 import random
 import time
 
-import psycopg2
-
 import model
 
+from builtins             import input
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic    import Predicate
 from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
@@ -233,7 +232,7 @@ class AICli(cmdln.Cmdln):
 
         while True:
 
-            line = raw_input ('ai> ')
+            line = input ('ai> ')
 
             if line == 'quit' or line == 'exit':
                 break
@@ -242,9 +241,7 @@ class AICli(cmdln.Cmdln):
                 score, resps, actions, solutions = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri)
 
                 for idx in range (len(resps)):
-                    print '[%05d] %s ' % (score, u' '.join(resps[idx]))
-
-                print
+                    logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
 
                 # if we have multiple responses, pick one at random
 
@@ -255,17 +252,18 @@ class AICli(cmdln.Cmdln):
                     # apply DB overlay, if any
                     ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
                     if ovl:
+                        # logging.info(str(ovl))
+                        # import pdb; pdb.set_trace()
                         ovl.do_apply(CLI_MODULE, self.kernal.db, commit=True)
 
                     acts = actions[idx]
                     for action in acts:
-                        print "ACTION", action
+                        logging.debug("ACTION %s" % repr(action))
 
                     resp = resps[idx]
-                    print '[%05d] ' % score,
-                    for r in resp:
-                        print r,
-                    print
+                    logging.info('RESP: [%05d] %s ' % (score, u' '.join(resp)))
+
+                    # import pdb; pdb.set_trace()
                             
             except Exception as e:
                 logging.error(traceback.format_exc())

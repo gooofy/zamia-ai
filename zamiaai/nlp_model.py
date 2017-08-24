@@ -433,12 +433,13 @@ class NLPModel(object):
         # set up model dir
         #
 
-        try:
-            shutil.rmtree(self.model_dir)
-        except:
-            pass
+        if not incremental:
+            try:
+                shutil.rmtree(self.model_dir)
+            except:
+                pass
 
-        mkdirs(self.model_dir)
+            mkdirs(self.model_dir)
 
         #
         # 2D diagram of available data
@@ -470,13 +471,18 @@ class NLPModel(object):
 
 
         #
-        # create input/output dicts
+        # load or create input/output dicts
         #
 
-        logging.info("computing input and output dicts...")
+        if incremental:
+            logging.info("loading input and output dicts...")
+            self.load_dicts()
 
-        self.compute_dicts()
-        self.save_dicts()
+        else:
+            logging.info("computing input and output dicts...")
+
+            self.compute_dicts()
+            self.save_dicts()
 
         #
         # compute datasets
@@ -522,6 +528,11 @@ class NLPModel(object):
             with open('%s/train.log' % self.model_dir, 'w') as logf:
 
                 tf_model = self.create_tf_model(tf_session, 'train')
+
+                # load latest state in incremental mode
+
+                if incremental:
+                    tf_model.restore(tf_session, self.model_fn)
 
                 # this is the training loop
 

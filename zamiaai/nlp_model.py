@@ -605,15 +605,8 @@ class NLPModel(object):
                             logging.info(log_str)
                             logf.write(log_str + '\n')
 
-                            # if best_step >= num_steps/5:
-                            # logging.info("   saving model to %s ..." % self.model_fn)
-                            # self.save_model(tf_session, self.model_fn)
-                            tf_model.save(tf_session, self.model_fn, global_step=tf_model.global_step)
-                            # logging.info("   saving model to %s ... done." % self.model_fn)
-                        # else:
-                        #     log_str = "            eval result        (loss: %f, best loss: %f from step %d)" % (dev_loss, best_perplexity, best_step)
-                        #     logging.info(log_str)
-                        #     logf.write(log_str + '\n')
+                            # tf_model.save(tf_session, self.model_fn, global_step=tf_model.global_step)
+                            tf_model.save(tf_session, self.model_fn, global_step=None)
 
                         step_time, loss = 0.0, 0.0
                

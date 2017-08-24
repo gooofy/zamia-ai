@@ -53,8 +53,8 @@ MAX_NUM_RESP = 3
 
 STEPS_PER_STAT             = 100
 
-#DEBUG_LIMIT                = 0
-DEBUG_LIMIT                = 1000
+DEBUG_LIMIT                = 0
+# DEBUG_LIMIT                = 10000
 
 NUM_EVAL_STEPS             = 20
 

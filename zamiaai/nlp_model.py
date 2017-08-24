@@ -60,7 +60,7 @@ MAX_NUM_RESP = 3
 STEPS_PER_STAT             = 100
 
 DEBUG_LIMIT                = 0
-# DEBUG_LIMIT                = 10000
+# DEBUG_LIMIT                = 100000
 
 NUM_EVAL_STEPS             = 20
 
@@ -394,12 +394,27 @@ class NLPModel(object):
         
         logging.info('load discourses from db...')
 
-        drs = {} 
+        drs      = {} 
+        drs_prio = {}
 
         for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang):
 
             if not dr.inp in drs:
                 drs[dr.inp] = set()
+
+            if not dr.inp in drs_prio:
+                drs_prio[dr.inp] = dr.prio
+            
+            if dr.prio > drs_prio[dr.inp]:
+                # discard lower-prio responses
+                logging.info ('DRS discarding: %s -> %s' % (dr.inp, repr(drs[dr.inp])))
+
+                drs[dr.inp]      = set()
+                drs_prio[dr.inp] = dr.prio
+            else:
+                if dr.prio < drs_prio[dr.inp]:
+                    logging.info ('DRS skipping: %s -> %s' % (dr.inp, repr(dr.resp)))
+                    continue
 
             drs[dr.inp].add(dr.resp)
             if DEBUG_LIMIT>0 and len(drs)>=DEBUG_LIMIT:

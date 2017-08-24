@@ -31,8 +31,7 @@ from zamiaprolog.builtins import do_gensym, do_assertz, do_retract
 from nltools.tokenizer    import tokenize
 from nltools.misc         import edit_distance
 from aiprolog.ner         import builtin_ner
-
-import model
+from zamiaai              import model
 
 USER_PREFIX        = u'user'
 DEFAULT_USER       = USER_PREFIX + u'Default'

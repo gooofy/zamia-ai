@@ -24,7 +24,6 @@
 #
 
 from __future__ import print_function
-from future.utils import viewitems
 
 import os
 import sys
@@ -40,6 +39,7 @@ import json
 
 import numpy as np
 
+from six                  import viewitems
 from tzlocal              import get_localzone # $ pip install tzlocal
 from copy                 import deepcopy, copy
 from sqlalchemy.orm       import sessionmaker

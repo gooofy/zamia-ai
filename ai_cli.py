@@ -31,15 +31,15 @@ import cmdln
 import random
 import time
 
-import model
+from six.moves            import input
 
-from builtins             import input
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic    import Predicate
 from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
-from aiprolog.runtime     import USER_PREFIX
 from zamiaprolog.errors   import PrologError, PrologRuntimeError
-from ai_kernal            import AIKernal
+from aiprolog.runtime     import USER_PREFIX
+from zamiaai.ai_kernal    import AIKernal
+from zamiaai              import model
 from nltools              import misc
 
 DEFAULT_LOGLEVEL   = logging.INFO

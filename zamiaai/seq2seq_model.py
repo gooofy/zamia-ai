@@ -263,7 +263,7 @@ class Seq2SeqModel(object):
                                                              output_layer=output_layer)
                 else:
                     # Beamsearch is used to approximately find the most likely translation
-                    logging.ingo("building beamsearch decoder..")
+                    logging.info("building beamsearch decoder..")
                     inference_decoder = beam_search_decoder.BeamSearchDecoder(cell=self.decoder_cell,
                                                                               embedding=embed_and_input_proj,
                                                                               start_tokens=start_tokens,

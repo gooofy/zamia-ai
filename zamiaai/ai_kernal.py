@@ -45,7 +45,7 @@ from copy                 import deepcopy, copy
 from sqlalchemy.orm       import sessionmaker
 from six                  import text_type
 
-import model
+from zamiaai              import model
 
 from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 from aiprolog.parser      import AIPrologParser

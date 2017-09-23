@@ -322,6 +322,7 @@ class AIPrologParser(PrologParser):
 
             elif a.name == 'mvar':
 
+                # import pdb; pdb.set_trace()
                 if len(a.args) == 2:
                     tname = a.args[0]
                     vname = a.args[1]
@@ -346,6 +347,14 @@ class AIPrologParser(PrologParser):
                     margs.append(self._token_positions (a2, mpos))
 
                 return Predicate (a.name, margs)
+
+        elif isinstance (a, ListLiteral):
+
+            l2 = []
+            for a2 in a.l:
+                l2.append(self._token_positions (a2, mpos))
+
+            return ListLiteral (l2)
 
         return a
 

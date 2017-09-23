@@ -1,36 +1,65 @@
 % prolog
 
-train_prefix('{self_address:L} ').
+% train_prefix('{self_address:L} ').
 
-answer_greeting(en) :-
+%
+% attention trigger ok, <forename>
+%
+
+answer_greeting_att(en) :-
     r_action (C, [attention, on]),
     or("Hello!",
        "Hi!",
        "Greetings!",
        "Hey!").
 
-answer_greeting(de) :-
+answer_greeting_att(de) :-
     r_action (C, [attention, on]),
     or("Hallo!",
        "Hi!",
        "Grüß Dich!",
        "Hey!").
 
+train(en) :-
+    "ok, {my_forename:W}",
+    inline answer_greeting_att(en).
+
+train(de) :-
+    "ok, {my_forename:W}",
+    inline answer_greeting_att(de).
+
+test(en, t0010) :-
+    "ok, computer",
+    "hello!",
+    action(attention, on).
+
+test(de, t0011) :-
+    "OK, HAL!",
+    "Hallo!",
+    action(attention, on).
+
+%
+% standard greetings that do not trigger attention (i.e. will only work if attention is on)
+%
+
+answer_greeting(en) :-
+    or("Hello!",
+       "Hi!",
+       "Greetings!",
+       "Hey!").
+
+answer_greeting(de) :-
+    or("Hallo!",
+       "Hi!",
+       "Grüß Dich!",
+       "Hey!").
 
 train(en) :-
-    "(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there)",
-    inline answer_greeting(en).
-
-train(en) :-
-    "(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there) {self_address:L}",
+    "{self_address:L} (greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there) {self_address:L}",
     inline answer_greeting(en).
 
 train(de) :-
-    "(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu)",
-    inline answer_greeting(de).
-
-train(de) :-
-    "(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu) {self_address:L}",
+    "{self_address:L} (grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu) {self_address:L}",
     inline answer_greeting(de).
 
 answer_bye(en) :-
@@ -48,32 +77,28 @@ answer_bye(de) :-
        "Ciao").
 
 train(en) :-
-    "(goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:L}",
+    "{self_address:L} (goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:L}",
     inline answer_bye(en).
 
 train(de) :-
-    "(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) {self_address:L}",
+    "{self_address:L} (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) {self_address:L}",
     inline answer_bye(de).
 
 test(en, t0000) :-
     "hi",
-    "hello!",
-    action(attention, on).
+    "hello!".
 
 test(de, t0001) :-
     "hi",
-    "Hallo!",
-    action(attention, on).
+    "Hallo!".
 
 test(en, t0002) :-
     "computer hello",
-    "Hi!",
-    action(attention, on).
+    "Hi!".
 
 test(de, t0003) :-
     "computer hallo",
-    "Hi!",
-    action(attention, on).
+    "Hi!".
 
 test(en, t0004) :-
     "bye computer",
@@ -111,11 +136,11 @@ answer_howdy(de) :-
       "Gut, danke der Nachfrage. Wie geht es Dir?").
 
 train(en) :-
-    "(how are you|howdy|how do you do|how are you feeling) (today|)?",
+    "{self_address:L} (how are you|howdy|how do you do|how are you feeling) (today|)?",
     inline answer_howdy(en).
 
 train(de) :-
-    "(wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
+    "{self_address:L} (wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
     inline answer_howdy(de).
 
 test(en, t0008) :-

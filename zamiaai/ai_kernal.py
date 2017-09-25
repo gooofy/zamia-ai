@@ -866,30 +866,30 @@ class AIKernal(object):
 
         all_utterances = []
 
-        req = self.session.query(model.DiscourseRound).filter(model.DiscourseRound.lang==lang)
+        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
 
         if module and module != 'all':
-            req = req.filter(model.DiscourseRound.module==module)
+            req = req.filter(model.TrainingData.module==module)
 
         for dr in req:
 
             if not dic:
-                all_utterances.append(dr.inp)
+                all_utterances.append(dr.utterance)
             else:
 
                 # is at least one word not covered by our dictionary?
 
                 unk = False
-                for t in tokenize(dr.inp):
+                for t in tokenize(dr.utterance):
                     if not t in dic:
-                        # print u"unknown word: %s in %s" % (t, dr.inp)
+                        # print u"unknown word: %s in %s" % (t, dr.utterance)
                         unk = True
                         dic.add(t)
                         break
                 if not unk:
                     continue
 
-                all_utterances.append(dr.inp)
+                all_utterances.append(dr.utterance)
 
         utts = set()
 
@@ -906,6 +906,4 @@ class AIKernal(object):
                 
         for utt in utts:
             print (utt)
-
-
 

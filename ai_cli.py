@@ -311,10 +311,6 @@ class AICli(cmdln.Cmdln):
 
 misc.init_app('ai_cli')
 
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
-# sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-
 #
 # logging
 #

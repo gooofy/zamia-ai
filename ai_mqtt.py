@@ -165,10 +165,10 @@ if __name__ == '__main__':
 
     config = misc.load_config('.airc', defaults = DEFAULTS)
 
-    broker_host   = model.config.get   ("semantics", "broker_host")
-    broker_port   = model.config.getint("semantics", "broker_port")
-    broker_user   = model.config.get   ("semantics", "broker_user")
-    broker_pw     = model.config.get   ("semantics", "broker_pw")
+    broker_host   = model.config.get   ("mqtt", "broker_host")
+    broker_port   = model.config.getint("mqtt", "broker_port")
+    broker_user   = model.config.get   ("mqtt", "broker_user")
+    broker_pw     = model.config.get   ("mqtt", "broker_pw")
 
     setproctitle (PROC_TITLE)
 

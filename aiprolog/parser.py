@@ -208,11 +208,11 @@ class AIPrologParser(PrologParser):
 
         done = []
 
-        todo = [ (parts, 0, [], {}) ]
+        todo = [ (parts, 0, [], {}, {}) ]
 
         while len(todo)>0:
 
-            parts1, cnt, r, mpos = todo.pop()
+            parts1, cnt, r, mpos, macro_rs = todo.pop()
 
             if cnt >= len(parts1):
                 done.append((r, mpos))
@@ -230,21 +230,26 @@ class AIPrologParser(PrologParser):
                 name = sub_parts[0]
 
                 if name == 'empty':
-                    r  = copy(r)
-                    todo.append((parts, cnt+1, r, mpos))
+                    todo.append((parts, cnt+1, copy(r), mpos, copy(macro_rs)))
                 else:
 
                     vn    = sub_parts[1]
 
-                    macro = self.fetch_named_macro(self.lang, name)
-                    if not macro:
-                        macro = implicit_macros.get(name, None)
-                    if not macro:
-                        self.report_error ('unknown macro "%s"[%s] called' % (name, self.lang))
+                    if name in macro_rs:
+                        macro = [ macro_rs[name] ]
+                    else:
+                        macro = self.fetch_named_macro(self.lang, name)
+                        if not macro:
+                            macro = implicit_macros.get(name, None)
+                        if not macro:
+                            self.report_error ('unknown macro "%s"[%s] called' % (name, self.lang))
 
                     for r3 in macro:
-                        r1    = copy(r)
-                        mpos1 = copy(mpos)
+                        r1        = copy(r)
+                        mpos1     = copy(mpos)
+                        macro_rs1 = copy(macro_rs)
+
+                        macro_rs1[name] = r3
 
                         # take care of multiple invocactions of the same macro
         
@@ -266,9 +271,9 @@ class AIPrologParser(PrologParser):
                         for vn3 in r3:
                             mpos1['%s_%d_%s' % (name, mpnn, vn3.lower())] = r3[vn3]
 
-                        todo.append((parts, cnt+1, r1, mpos1))
+                        todo.append((parts, cnt+1, r1, mpos1, macro_rs1))
                         
-                        # if name == 'timespec':
+                        # if name == 'home_locations':
                         #     import pdb; pdb.set_trace()
 
             else:
@@ -278,7 +283,7 @@ class AIPrologParser(PrologParser):
                 r  = copy(r)
                 r.extend(sub_parts)
 
-                todo.append((parts, cnt+1, r, mpos))
+                todo.append((parts, cnt+1, r, mpos, macro_rs))
 
         return done
 

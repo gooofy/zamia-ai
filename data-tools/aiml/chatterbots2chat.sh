@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHATTERBOTS=~/projects/ai/data/chatterbots
+CHATTERBOTS=/home/bofh/projects/ai/data/chatterbots
 
 rm -rf bots_en
 mkdir bots_en

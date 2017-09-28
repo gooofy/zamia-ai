@@ -732,7 +732,7 @@ class AIKernal(object):
 
         x = self.nlp_model.compute_x(inp)
 
-        logging.debug("x: %s -> %s" % (utterance, x))
+        # logging.debug("x: %s -> %s" % (utterance, x))
 
         source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
 
@@ -741,15 +741,15 @@ class AIKernal(object):
         predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
                                               encoder_inputs_length=source_len)
 
-        for seq_batch in predicted_ids:
-            for k in range(5):
-                logging.debug('--------- k: %d ----------' % k)
-                seq = seq_batch[:,k]
-                for p in seq:
-                    if p == -1:
-                        break
-                    decoded = self.inv_output_dict[p]
-                    logging.debug (u'%s: %s' %(p, decoded))
+        # for seq_batch in predicted_ids:
+        #     for k in range(5):
+        #         logging.debug('--------- k: %d ----------' % k)
+        #         seq = seq_batch[:,k]
+        #         for p in seq:
+        #             if p == -1:
+        #                 break
+        #             decoded = self.inv_output_dict[p]
+        #             logging.debug (u'%s: %s' %(p, decoded))
 
         # extract best code only
 

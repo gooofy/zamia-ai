@@ -59,6 +59,7 @@ import paho.mqtt.client as mqtt
 import numpy            as np
 
 from optparse             import OptionParser
+from threading            import RLock, Lock
 
 from zamiaai              import model
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
@@ -121,21 +122,25 @@ def on_connect(client, userdata, flag, rc):
 
 def publish_state(client):
 
-    global attention, hstr, astr
+    global attention, hstr, astr, state_lock
 
-    data = {}
+    state_lock.acquire()
+    try:
+        data = {}
 
-    data['attention'] = attention
-    data['hstr']      = hstr
-    data['astr']      = astr
+        data['attention'] = attention
+        data['hstr']      = hstr
+        data['astr']      = astr
 
-    logging.debug ('publish_state: %s' % repr(data))
- 
-    client.publish(TOPIC_STATE, json.dumps(data))
+        logging.debug ('publish_state: %s' % repr(data))
+     
+        client.publish(TOPIC_STATE, json.dumps(data))
+    finally:
+        state_lock.release()
 
 def on_message(client, userdata, message):
 
-    global kernal, lang
+    global kernal, lang, state_lock
     global do_listen, do_asr, attention, do_rec
     global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc
 
@@ -286,20 +291,32 @@ def on_message(client, userdata, message):
                 # DEBUG:root:RESP: [00000] grüß dich !
                 # INFO:root:publishing message on topic ai/response : {"score": 0, "utt": "gr\u00fc\u00df dich !"} ...
 
-                acts = actions[idx]
-                for action in acts:
-                    logging.debug("ACTION %s" % repr(action))
+                state_lock.acquire()
+                try:
 
-                    if len(action) == 2 and action[0] == u'attention':
-                        if action[1] == u'on':
-                            attention = ATTENTION_SPAN
-                        else:
-                            attention = 0
+                    # refresh attention span on each new interaction step
+                    if attention>0:
+                        attention = ATTENTION_SPAN
 
-                # FIXME: bug in audio/language model prevents "ok, computer"
-                if utt.strip() == u'hallo computer':
-                    attention = ATTENTION_SPAN
-                    logging.debug ('hello workaround worked: %s vs %s' % (repr(utt), repr(u'hallo computer')))
+                    acts = actions[idx]
+                    for action in acts:
+                        logging.debug("ACTION %s" % repr(action))
+
+                        if len(action) == 2 and action[0] == u'attention':
+                            if action[1] == u'on':
+                                attention = ATTENTION_SPAN
+                            else:
+                                attention = 0
+
+                    # FIXME: bug in audio/language model prevents "ok, computer"
+                    if utt.strip() == u'hallo computer':
+                        attention = ATTENTION_SPAN
+                        logging.debug ('hello workaround worked: %s vs %s' % (repr(utt), repr(u'hallo computer')))
+
+
+
+                finally:
+                    state_lock.release()
 
                 resp = resps[idx]
                 logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
@@ -307,7 +324,7 @@ def on_message(client, userdata, message):
                 msg = {'utt': u' '.join(resp), 'score': score, 'intents': acts}
 
             else:
-                logging.error('no solution found for input %s' % line)
+                logging.error(u'no solution found for input %s' % utt)
 
                 # FIXME
                 # logging.debug("ELIZA")
@@ -412,6 +429,12 @@ decoder = KaldiNNet3OnlineDecoder ( kaldi_model_dir, kaldi_model )
 logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
 
 #
+# state lock
+#
+
+state_lock = Lock()
+
+#
 # mqtt connect
 #
 
@@ -436,5 +459,23 @@ while not connected:
 
 logging.debug ('connecting to MQTT broker %s:%d ... connected.' % (broker_host, broker_port))
 
-client.loop_forever()
+#
+# main loop - count down attention, publish state while >0
+#
+
+client.loop_start()
+while True:
+
+    state_lock.acquire()
+    if attention>0:
+        attention -= 1
+        state_lock.release()
+        try:
+            publish_state(client)
+        except:
+            logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+    else:
+        state_lock.release()
+
+    time.sleep(1)
 

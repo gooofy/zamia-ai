@@ -18,12 +18,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# simple ai mqtt server
+# Zamia AI MQTT server
 #
-# Process NLP input line
-# ----------------------
+# can be used for chatbot-like applications (text-only)
+# as well as full-blown speech i/o based home assistant type
+# setups
+#
+
+# Text NLP Processing
+# -------------------
 # 
-# * topic `ai/utt_in`
+# * topic `ai/input/text`
 # * payload (JSON encoded dict): 
 #   * "utt"  : utterance to be processed 
 #   * "lang" : language of utterance
@@ -38,7 +43,7 @@
 # 
 # Example:
 #
-# hbmqtt_pub --url mqtt://dagobert -t ai/utt_in -m '{"utt":"hello computer","lang":"en","user":"bimbo"}'
+# hbmqtt_pub --url mqtt://dagobert -t ai/input/text -m '{"utt":"hello computer","lang":"en","user":"tux"}'
 
 import os
 import sys
@@ -47,110 +52,34 @@ import traceback
 import json
 import random
 import time
+import datetime
+import dateutil
+
+import paho.mqtt.client as mqtt
+import numpy            as np
 
 from optparse             import OptionParser
-from setproctitle         import setproctitle
-import paho.mqtt.client as paho
 
 from zamiaai              import model
-
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
+from kaldisimple.nnet3    import KaldiNNet3OnlineDecoder
 
 PROC_TITLE        = 'ai_mqtt'
 AI_SERVER_MODULE  = '__server__'
 
-TOPIC_IN  = 'ai/utt_in'
-TOPIC_OUT = 'ai/response'
+AI_USER           = 'server' # FIXME: some sort of presence information maybe?
+SAMPLE_RATE       = 16000
+MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
+ATTENTION_SPAN    = 30       # seconds
 
-def on_connect(client, userdata, flags, rc):
-    print("CONNACK received with code %d." % (rc))
-
-    client.subscribe(TOPIC_IN)
-    
-def on_message(client, userdata, msg):
-
-    global kernal
-
-    print(msg.topic+" "+str(msg.payload))
-
-    try:
-        data = json.loads(msg.payload)
-
-        # print data
-
-        utt      = data['utt']
-        lang     = data['lang']
-        user_uri = USER_PREFIX + data['user']
-
-        if kernal.nlp_model.lang != lang:
-            logging.warn('incorrect language for model: %s' % lang)
-            return
-
-        score, resps, actions, solutions = kernal.process_input(utt, kernal.nlp_model.lang, user_uri)
-
-        for idx in range (len(resps)):
-            logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
-
-        # if we have multiple responses, pick one at random
-
-        if len(resps)>0:
-
-            idx = random.randint(0, len(resps)-1)
-
-            # apply DB overlay, if any
-            ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-            if ovl:
-                ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
-
-            acts = actions[idx]
-            for action in acts:
-                logging.debug("ACTION %s" % repr(action))
-
-            resp = resps[idx]
-            logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
-
-            # FIXME: score, intents/actions, ...
-
-            msg = json.dumps({"utt": u' '.join(resp)})
-
-            logging.info("publishing message on topic %s : %s ..." % (TOPIC_OUT, msg))
-
-            (rc, mid) = client.publish(TOPIC_OUT, msg)
-
-            # # reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
-
-            # logging.debug("reply_actions: %s, resp: %s" % (repr(acts), repr(resp)))
-            # reply = {'actions': acts, 'resp': resp }
-
-            # self.wfile.write(json.dumps(reply))
-
-        else:
-            logging.error('no solution found for input %s' % line)
-
-    except:
-
-        logging.error(traceback.format_exc())
-
-        # FIXME
-        # # abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
-        # # abuf = random.choice(abufs)
-
-        # # logging.debug("abuf: %s" % repr(abuf)) 
-
-        # self.send_response(200)
-        # self.send_header('Content-Type', 'application/json')
-        # self.end_headers()
-
-        # # reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
-
-        # logging.debug("ELIZA")
-        # # logging.debug("reply_actions: %s" % repr(reply_actions)) 
-        # reply = {'actions': 'FIXME' }
-
-        # self.wfile.write(json.dumps(reply))
+TOPIC_INPUT_TEXT  = 'ai/input/text'
+TOPIC_INPUT_AUDIO = 'ai/input/audio'
+TOPIC_CONFIG      = 'ai/config'
+TOPIC_RESPONSE    = 'ai/response'
+TOPIC_STATE       = 'ai/state'
 
 DEFAULTS = {
             'broker_host'   : 'localhost',
@@ -161,68 +90,346 @@ DEFAULTS = {
 
 CLIENT_NAME = 'Zamia AI MQTT Server'
 
-if __name__ == '__main__':
+# state
 
-    config = misc.load_config('.airc', defaults = DEFAULTS)
+do_listen       = True
+do_asr          = True
+attention       = 0
+do_rec          = False
+astr            = ''
+hstr            = ''
+audio_cnt       = 0
+audio_loc       = None
 
-    broker_host   = model.config.get   ("mqtt", "broker_host")
-    broker_port   = model.config.getint("mqtt", "broker_port")
-    broker_user   = model.config.get   ("mqtt", "broker_user")
-    broker_pw     = model.config.get   ("mqtt", "broker_pw")
+# audio recording state
 
-    setproctitle (PROC_TITLE)
+audiofn = ''   # path to current wav file being written
+wf      = None # current wav file being written
 
-    #
-    # commandline
-    #
+#
+# MQTT
+#
 
-    parser = OptionParser("usage: %prog [options] model")
-
-    parser.add_option ("-v", "--verbose", action="store_true", dest="verbose",
-                       help="verbose output")
-
-    parser.add_option ("-H", "--host", dest="host", type = "string", default=broker_host,
-                       help="MQTT broker host, default: %s" % broker_host)
-
-    parser.add_option ("-p", "--port", dest="port", type = "int", default=broker_port,
-                       help="MQTT broker port, default: %d" % broker_port)
-
-    parser.add_option ("-s", "--global-step", dest="global_step", type = "int", default=0,
-                       help="global step to load, default: 0 (latest)")
-
-    (options, args) = parser.parse_args()
-
-    if options.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-        debug=True
+def on_connect(client, userdata, flag, rc):
+    if rc==0:
+        logging.info("connected OK Returned code=%s" % repr(rc))
+        client.subscribe(TOPIC_INPUT_TEXT)
+        client.subscribe(TOPIC_INPUT_AUDIO)
+        client.subscribe(TOPIC_CONFIG)
     else:
-        logging.basicConfig(level=logging.INFO)
-        debug=False
+        logging.error("Bad connection Returned code=%s" % repr(rc))
 
-    if len(args) != 1:
-        parser.print_help()
-        sys.exit(42)
+def publish_state(client):
 
-    #
-    # setup nlp kernal
-    #
+    global attention, hstr, astr
 
-    kernal = AIKernal()
-    for mn2 in kernal.all_modules:
-        kernal.load_module (mn2)
-        kernal.init_module (mn2)
-    kernal.setup_tf_model ('decode', True, args[0], global_step=options.global_step)
+    data = {}
 
-    print "connecting..."
+    data['attention'] = attention
+    data['hstr']      = hstr
+    data['astr']      = astr
 
-    client = paho.Client(CLIENT_NAME)
-    if broker_user:
-        client.username_pw_set(broker_user, broker_pw)
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(broker_host, broker_port)
+    logging.debug ('publish_state: %s' % repr(data))
+ 
+    client.publish(TOPIC_STATE, json.dumps(data))
 
-    print "connected."
+def on_message(client, userdata, message):
 
-    client.loop_forever()
+    global kernal, lang
+    global do_listen, do_asr, attention, do_rec
+    global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc
+
+    # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
+    logging.debug( "message topic=%s" % message.topic)
+    logging.debug( "message qos=%s" % message.qos)
+    logging.debug( "message retain flag=%s" % message.retain)
+
+    try:
+
+        if message.topic == TOPIC_INPUT_AUDIO:
+
+            data = json.loads(message.payload)
+
+            audio       = data['pcm']
+            do_finalize = data['final']
+            loc         = data['loc']
+            ts          = dateutil.parser.parse(data['ts'])
+            
+            # ignore old audio recordings that may have lingered in the message queue
+
+            age = (datetime.datetime.now() - ts).total_seconds()
+            if age > MAX_AUDIO_AGE:
+                logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
+                return
+
+            # we listen to one location at a time only (FIXME: implement some sort of session handling)
+
+            if audio_loc and audio_loc != loc:
+                logging.debug ("   ignoring audio from wrong location: %s" % loc)
+                return
+
+            if do_finalize:
+                audio_loc = None
+            else:
+                audio_loc = loc
+
+            confidence  = 0.0
+
+            audio_cnt += 1
+            hstr = '.' * (audio_cnt/4)
+
+            if do_rec:
+
+                # store recording in WAV format
+
+                if not wf:
+
+                    ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
+                    audiodirfn = '%s/%s-%s-rec/wav' % (rec_dir, vf_login, ds)
+                    logging.debug('audiodirfn: %s' % audiodirfn)
+                    misc.mkdirs(audiodirfn)
+
+                    cnt = 0
+                    while True:
+                        cnt += 1
+                        audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
+                        if not os.path.isfile(audiofn):
+                            break
+
+                    logging.debug('audiofn: %s' % audiofn)
+
+                    # create wav file 
+
+                    wf = wave.open(audiofn, 'wb')
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)
+                    wf.setframerate(SAMPLE_RATE)
+
+                packed_audio = struct.pack('%sh' % len(audio), *audio)
+                wf.writeframes(packed_audio)
+
+                if do_finalize:
+
+                    hstr = audiofn
+                    logging.debug('audiofn %s written.' % audiofn)
+
+                    wf.close()  
+                    wf = None
+
+            else:
+                audiofn = ''
+                if do_finalize:
+                        hstr = '***'
+
+            if do_finalize:
+                audio_cnt = 0
+
+
+            if do_asr:
+                decoder.decode(SAMPLE_RATE, np.array(audio, dtype=np.float32), do_finalize)
+
+                if do_finalize:
+
+                    hstr       = decoder.get_decoded_string()
+                    confidence = decoder.get_likelihood()
+
+                    logging.debug ( "*****************************************************************************")
+                    logging.debug ( "**")
+                    logging.debug ( "** %9.5f %s" % (confidence, hstr))
+                    logging.debug ( "**")
+                    logging.debug ( "*****************************************************************************")
+
+                    if hstr:
+                        
+                        data = {}
+
+                        data['lang'] = lang
+                        data['utt']  = hstr
+                        data['user'] = AI_USER
+                     
+                        client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
+
+
+            publish_state(client)
+                
+        elif message.topic == TOPIC_INPUT_TEXT:
+
+            data = json.loads(message.payload)
+
+            # print data
+
+            utt      = data['utt']
+            lang     = data['lang']
+            user_uri = USER_PREFIX + data['user']
+
+            if kernal.nlp_model.lang != lang:
+                logging.warn('incorrect language for model: %s' % lang)
+                return
+
+            score, resps, actions, solutions = kernal.process_input(utt, kernal.nlp_model.lang, user_uri)
+
+            # for idx in range (len(resps)):
+            #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
+
+            # if we have multiple responses, pick one at random
+
+            if len(resps)>0:
+
+                idx = random.randint(0, len(resps)-1)
+
+                # apply DB overlay, if any
+                ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
+                if ovl:
+                    ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
+
+                # DEBUG:root:ACTION [u'attention', u'on']
+                # DEBUG:root:RESP: [00000] grüß dich !
+                # INFO:root:publishing message on topic ai/response : {"score": 0, "utt": "gr\u00fc\u00df dich !"} ...
+
+                acts = actions[idx]
+                for action in acts:
+                    logging.debug("ACTION %s" % repr(action))
+
+                    if len(action) == 2 and action[0] == u'attention':
+                        if action[1] == u'on':
+                            attention = ATTENTION_SPAN
+                        else:
+                            attention = 0
+
+                resp = resps[idx]
+                logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
+
+                msg = {'utt': u' '.join(resp), 'score': score, 'intents': acts}
+
+            else:
+                logging.error('no solution found for input %s' % line)
+
+                # FIXME
+                # logging.debug("ELIZA")
+                # # abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
+                # # abuf = random.choice(abufs)
+                # # logging.debug("abuf: %s" % repr(abuf)) 
+
+                msg = {'utt': u'', 'score': 0.0, 'intents': []}
+
+            (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
+            logging.info("%s : %s" % (TOPIC_RESPONSE, repr(msg)))
+
+            # generate astr
+
+            astr = msg['utt']
+            if msg['intents']:
+                astr += '<br/>-<br/>'
+            for action in msg['intents']:
+                astr += repr(action)
+
+            publish_state(client)
+
+        elif message.topic == TOPIC_CONFIG:
+
+            data = json.loads(message.payload)
+
+            do_listen = data['listen']
+            do_rec    = data['record']
+            do_asr    = data['asr']
+
+
+    except:
+        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+
+#
+# init
+#
+
+misc.init_app(PROC_TITLE)
+
+#
+# config, cmdline
+#
+
+config = misc.load_config('.airc', defaults = DEFAULTS)
+
+broker_host         = config.get   ('mqtt', 'broker_host')
+broker_port         = config.getint('mqtt', 'broker_port')
+broker_user         = config.get   ('mqtt', 'broker_user')
+broker_pw           = config.get   ('mqtt', 'broker_pw')
+
+ai_model            = config.get   ('server', 'model')
+lang                = config.get   ('server', 'lang')
+vf_login            = config.get   ('server', 'vf_login')
+rec_dir             = config.get   ('server', 'rec_dir')
+kaldi_model_dir     = config.get   ('server', 'kaldi_model_dir')
+kaldi_model         = config.get   ('server', 'kaldi_model')
+
+
+#
+# commandline
+#
+
+parser = OptionParser("usage: %prog [options]")
+
+parser.add_option ("-v", "--verbose", action="store_true", dest="verbose",
+                   help="verbose output")
+
+parser.add_option ("-H", "--host", dest="host", type = "string", default=broker_host,
+                   help="MQTT broker host, default: %s" % broker_host)
+
+parser.add_option ("-p", "--port", dest="port", type = "int", default=broker_port,
+                   help="MQTT broker port, default: %d" % broker_port)
+
+(options, args) = parser.parse_args()
+
+if options.verbose:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
+#
+# setup nlp kernal
+#
+
+kernal = AIKernal()
+for mn2 in kernal.all_modules:
+    kernal.load_module (mn2)
+    kernal.init_module (mn2)
+kernal.setup_tf_model ('decode', True, ai_model)
+
+#
+# ASR
+#
+
+logging.debug ('loading ASR model %s from %s...' % (kaldi_model, kaldi_model_dir))
+
+start_time = time.time()
+
+decoder = KaldiNNet3OnlineDecoder ( kaldi_model_dir, kaldi_model )
+
+logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
+
+#
+# mqtt connect
+#
+
+logging.debug ('connecting to MQTT broker %s:%d ...' % (broker_host, broker_port))
+
+client = mqtt.Client()
+client.username_pw_set(broker_user, broker_pw)
+client.on_message=on_message
+client.on_connect=on_connect
+
+connected = False
+while not connected:
+    try:
+
+        client.connect(broker_host, port=broker_port, keepalive=10)
+
+        connected = True
+
+    except:
+        logging.error('connection to %s:%d failed. retry in %d seconds...' % (broker_host, broker_port, RETRY_DELAY))
+        time.sleep(RETRY_DELAY)
+
+logging.debug ('connecting to MQTT broker %s:%d ... connected.' % (broker_host, broker_port))
+
+client.loop_forever()
 

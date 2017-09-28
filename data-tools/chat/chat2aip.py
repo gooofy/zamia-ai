@@ -61,6 +61,8 @@ parser.add_option ("-o", "--output", dest="outputfn", type = "string", default=D
                    help="output file, default: %s" % DEFAULT_OUTPUT)
 parser.add_option ("-p", "--prio", dest="prio", type = "int", default=DEFAULT_PRIO,
                    help="priority, default: %d" % DEFAULT_PRIO)
+parser.add_option ("-t", "--tokenize", action="store_true", dest="tokenize",
+                   help="run tokenizer on question and answer for spelling laundering")
 
 (options, args) = parser.parse_args()
 
@@ -111,6 +113,7 @@ for inputfn in args:
             question = MINUS_LINE_PATTERN.sub(replace_minus_line, question)
             answer   = MINUS_LINE_PATTERN.sub(replace_minus_line, answer)
 
+
             # filter out samples that contain FILTER_CHARS
             fc_found = False
             for fc in FILTER_CHARS:
@@ -140,6 +143,12 @@ for inputfn in args:
             if lq>options.limit or la>options.limit:
                 skipped += 1
                 continue
+
+            if options.tokenize:
+                tq2 = tokenizer.tokenize(question, keep_punctuation=True, lang=lang)
+                ta2 = tokenizer.tokenize(answer,   keep_punctuation=True, lang=lang)
+                question = u' '.join(tq2)
+                answer   = u' '.join(ta2)
 
             corpus[utt] = (question, answer)
 

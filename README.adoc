@@ -92,7 +92,7 @@ pushd data-tools/aiml
 ./chatterbots2chat.sh
 popd
 data-tools/chat/chat2aip.py -l en -o modules/chat/en.aip data-tools/aiml/bots_en/alice_new.chat data-tools/aiml/bots_en/square_bear.chat data-tools/aiml/bots_en/dobby.chat data-tools/aiml/bots_en/emmie.chat data-tools/aiml/bots_en/proalias.chat data-tools/aiml/bots_en/rosie.chat data-tools/aiml/bots_en/runabot.chat tmp/chat_corpus/movie_subtitles_en.txt 
-data-tools/chat/chat2aip.py -l de -o modules/chat/de.aip data-tools/aiml/bots_de/alice.chat
+data-tools/chat/chat2aip.py -t -l de -o modules/chat/de.aip data-tools/aiml/bots_de/alice.chat
 ```
 
 module initialization / test setup

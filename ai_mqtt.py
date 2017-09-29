@@ -54,6 +54,8 @@ import random
 import time
 import datetime
 import dateutil
+import wave
+import struct
 
 import paho.mqtt.client as mqtt
 import numpy            as np

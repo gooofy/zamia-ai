@@ -68,6 +68,7 @@ from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
+from nltools.tts          import TTS
 from kaldisimple.nnet3    import KaldiNNet3OnlineDecoder
 
 PROC_TITLE        = 'ai_mqtt'
@@ -89,9 +90,16 @@ DEFAULTS = {
             'broker_port'   : '1883',
             'broker_user'   : '',
             'broker_pw'     : '',
+            'tts_host'      : 'local',
+            'tts_port'      : 8300,
+            'tts_locale'    : 'de',
+            'tts_voice'     : 'de',
+            'tts_engine'    : 'espeak',
            }
 
 CLIENT_NAME = 'Zamia AI MQTT Server'
+
+AUDIO_EXTRA_DELAY = 0.35 # seconds
 
 # state
 
@@ -142,14 +150,15 @@ def publish_state(client):
 
 def on_message(client, userdata, message):
 
-    global kernal, lang, state_lock
+    global kernal, lang, state_lock    
     global do_listen, do_asr, attention, do_rec
     global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc
+    global ignore_audio_before, tts, tts_lock
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     logging.debug( "message topic=%s" % message.topic)
-    logging.debug( "message qos=%s" % message.qos)
-    logging.debug( "message retain flag=%s" % message.retain)
+    # logging.debug( "message qos=%s" % message.qos)
+    # logging.debug( "message retain flag=%s" % message.retain)
 
     try:
 
@@ -167,6 +176,10 @@ def on_message(client, userdata, message):
             age = (datetime.datetime.now() - ts).total_seconds()
             if age > MAX_AUDIO_AGE:
                 logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
+                return
+
+            if ts < ignore_audio_before:
+                logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
                 return
 
             # we listen to one location at a time only (FIXME: implement some sort of session handling)
@@ -239,6 +252,11 @@ def on_message(client, userdata, message):
 
                     hstr       = decoder.get_decoded_string()
                     confidence = decoder.get_likelihood()
+
+                    # FIXME: remove debug code
+                    # hstr = u'hallo computer'
+                    # confidence = 1.0
+
 
                     logging.debug ( "*****************************************************************************")
                     logging.debug ( "**")
@@ -315,8 +333,6 @@ def on_message(client, userdata, message):
                         attention = ATTENTION_SPAN
                         logging.debug ('hello workaround worked: %s vs %s' % (repr(utt), repr(u'hallo computer')))
 
-
-
                 finally:
                     state_lock.release()
 
@@ -346,6 +362,21 @@ def on_message(client, userdata, message):
                 astr += '<br/>-<br/>'
             for action in msg['intents']:
                 astr += repr(action)
+
+            if msg['utt']:
+
+                tts_lock.acquire()
+                try:
+                    logging.debug('tts.say...')
+                    tts.say(msg['utt'])
+                    logging.debug('tts.say finished.')
+
+                except:
+                    logging.error('TTS EXCEPTION CAUGHT %s' % traceback.format_exc())
+                finally:
+                    tts_lock.release()
+
+                ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
 
             publish_state(client)
 
@@ -385,6 +416,11 @@ rec_dir             = config.get   ('server', 'rec_dir')
 kaldi_model_dir     = config.get   ('server', 'kaldi_model_dir')
 kaldi_model         = config.get   ('server', 'kaldi_model')
 
+tts_host            = config.get   ('tts',    'tts_host')
+tts_port            = config.getint('tts',    'tts_port')
+tts_locale          = config.get   ('tts',    'tts_locale')
+tts_voice           = config.get   ('tts',    'tts_voice')
+tts_engine          = config.get   ('tts',    'tts_engine')
 
 #
 # commandline
@@ -407,6 +443,16 @@ if options.verbose:
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
+
+#
+# TTS
+#
+
+tts_lock = Lock()
+tts = TTS (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine)
+# this is used to ignore any voice input that is just us hearing ourselves 
+# when answer is synthesized
+ignore_audio_before = datetime.datetime.now()
 
 #
 # setup nlp kernal

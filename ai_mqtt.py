@@ -77,7 +77,9 @@ AI_SERVER_MODULE  = '__server__'
 AI_USER           = 'server' # FIXME: some sort of presence information maybe?
 SAMPLE_RATE       = 16000
 MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
-ATTENTION_SPAN    = 10       # seconds
+ATTENTION_SPAN    = 30       # seconds
+AUDIO_EXTRA_DELAY = 0.5      # seconds
+AUDIO_LOC_CNT     = 5        # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
@@ -99,8 +101,6 @@ DEFAULTS = {
 
 CLIENT_NAME = 'Zamia AI MQTT Server'
 
-AUDIO_EXTRA_DELAY = 0.35 # seconds
-AUDIO_LOC_CNT     = 5    # seconds
 
 # state
 
@@ -302,6 +302,8 @@ def on_message(client, userdata, message):
 
             # if we have multiple responses, pick one at random
 
+            do_publish = attention>0
+
             if len(resps)>0:
 
                 idx = random.randint(0, len(resps)-1)
@@ -326,11 +328,13 @@ def on_message(client, userdata, message):
                             if action[1] == u'on':
                                 attention = ATTENTION_SPAN
                             else:
-                                attention = 0
+                                attention = 1
+                            do_publish = True
 
                     # FIXME: bug in audio/language model prevents "ok, computer"
                     if utt.strip() == u'hallo computer':
-                        attention = ATTENTION_SPAN
+                        attention  = ATTENTION_SPAN
+                        do_publish = True
                         logging.debug ('hello workaround worked: %s vs %s' % (repr(utt), repr(u'hallo computer')))
 
                 finally:
@@ -352,7 +356,7 @@ def on_message(client, userdata, message):
 
                 msg = {'utt': u'', 'score': 0.0, 'intents': []}
 
-            if attention > 0:
+            if do_publish:
                 (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
                 logging.info("%s : %s" % (TOPIC_RESPONSE, repr(msg)))
 

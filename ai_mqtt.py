@@ -77,7 +77,7 @@ AI_SERVER_MODULE  = '__server__'
 AI_USER           = 'server' # FIXME: some sort of presence information maybe?
 SAMPLE_RATE       = 16000
 MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
-ATTENTION_SPAN    = 30       # seconds
+ATTENTION_SPAN    = 10       # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
@@ -100,6 +100,7 @@ DEFAULTS = {
 CLIENT_NAME = 'Zamia AI MQTT Server'
 
 AUDIO_EXTRA_DELAY = 0.35 # seconds
+AUDIO_LOC_CNT     = 5    # seconds
 
 # state
 
@@ -111,6 +112,7 @@ astr            = ''
 hstr            = ''
 audio_cnt       = 0
 audio_loc       = None
+audio_loc_cnt   = 0       # countdown audio location in case terminal dies and therefore fails to send finalize msg
 
 # audio recording state
 
@@ -127,6 +129,7 @@ def on_connect(client, userdata, flag, rc):
         client.subscribe(TOPIC_INPUT_TEXT)
         client.subscribe(TOPIC_INPUT_AUDIO)
         client.subscribe(TOPIC_CONFIG)
+        client.subscribe(TOPIC_RESPONSE)
     else:
         logging.error("Bad connection Returned code=%s" % repr(rc))
 
@@ -152,7 +155,7 @@ def on_message(client, userdata, message):
 
     global kernal, lang, state_lock    
     global do_listen, do_asr, attention, do_rec
-    global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc
+    global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc, audio_loc_cnt
     global ignore_audio_before, tts, tts_lock
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
@@ -189,14 +192,16 @@ def on_message(client, userdata, message):
                 return
 
             if do_finalize:
-                audio_loc = None
+                audio_loc     = None
             else:
-                audio_loc = loc
+                audio_loc     = loc
+                audio_loc_cnt = AUDIO_LOC_CNT
 
             confidence  = 0.0
 
             audio_cnt += 1
             hstr = '.' * (audio_cnt/4)
+            astr = ''
 
             if do_rec:
 
@@ -257,7 +262,6 @@ def on_message(client, userdata, message):
                     # hstr = u'hallo computer'
                     # confidence = 1.0
 
-
                     logging.debug ( "*****************************************************************************")
                     logging.debug ( "**")
                     logging.debug ( "** %9.5f %s" % (confidence, hstr))
@@ -307,10 +311,6 @@ def on_message(client, userdata, message):
                 if ovl:
                     ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
 
-                # DEBUG:root:ACTION [u'attention', u'on']
-                # DEBUG:root:RESP: [00000] grüß dich !
-                # INFO:root:publishing message on topic ai/response : {"score": 0, "utt": "gr\u00fc\u00df dich !"} ...
-
                 state_lock.acquire()
                 try:
 
@@ -352,16 +352,25 @@ def on_message(client, userdata, message):
 
                 msg = {'utt': u'', 'score': 0.0, 'intents': []}
 
-            (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
-            logging.info("%s : %s" % (TOPIC_RESPONSE, repr(msg)))
+            if attention > 0:
+                (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
+                logging.info("%s : %s" % (TOPIC_RESPONSE, repr(msg)))
 
             # generate astr
 
             astr = msg['utt']
             if msg['intents']:
-                astr += '<br/>-<br/>'
+                if astr:
+                    astr += ' - '
             for action in msg['intents']:
                 astr += repr(action)
+
+            publish_state(client)
+
+
+        elif message.topic == TOPIC_RESPONSE:
+
+            msg = json.loads(message.payload)
 
             if msg['utt']:
 
@@ -377,8 +386,6 @@ def on_message(client, userdata, message):
                     tts_lock.release()
 
                 ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
-
-            publish_state(client)
 
         elif message.topic == TOPIC_CONFIG:
 
@@ -524,6 +531,11 @@ while True:
             logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
     else:
         state_lock.release()
+
+    if audio_loc_cnt>0:
+        audio_loc_cnt -= 1
+        if audio_loc_cnt == 0:
+            audio_loc = None
 
     time.sleep(1)
 

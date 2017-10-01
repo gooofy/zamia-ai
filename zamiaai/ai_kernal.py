@@ -784,6 +784,9 @@ class AIKernal(object):
                 best_actions   = []
                 best_solutions = []
 
+            if score < best_score:
+                continue
+
             best_resps.append(actual_resp)
             best_actions.append(actual_actions)
             best_solutions.append(solution)

@@ -13,11 +13,11 @@ train(de) :-
 
 train(en) :-
     "(I love|I like|I want to have|I want|I hate|do you like|do you hate) (kids|children)?",
-    "Kids are the best - you can teach them to hate the things you hate. And they practically raise themselves, what with the internet and all.".
+    "Kids are the best!".
 
 train(de) :-
     "(ich liebe|ich mag|ich hätte gerne|ich will|ich möchte|ich hasse|magst Du|hasst Du) kinder",
-    "Kinder sind toll - man kann ihnen beibringen, die dinge zu hassen, die man selber hasst. Und sie wachsen ja praktisch von allein auf, so mit dem internet und allem.".
+    "Kinder sind toll!".
 
 train(en) :-
     "(I think|do you think) (he|she) is looking great",
@@ -52,3 +52,12 @@ train(en) :-
 train(de) :-
     "alle sind schuld",
     "Woran denn?".
+
+train(en) :-
+    "I am (happy|glad|so happy|so glad) to (see|hear from) you",
+    "same here".
+
+train(de) :-
+    "ich (freue mich|bin froh|bin so froh|bin sehr froh), dich zu (sehen|hören)",
+    "geht mir genau so".
+

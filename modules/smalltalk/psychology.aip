@@ -666,3 +666,12 @@ train(en) :-
 train(de) :-
     "dachte ich mir",
     "Bist du immer so fix?".
+
+train(en) :-
+    "I could (certainly|) (envision|imagine|suspect) (that|)",
+    "What is it that you are thinking about?".
+
+train(de) :-
+    "(das|) könnte ich mir (gut|) (ausmalen|vorstellen)",
+    "Woran denkst Du genau?".
+

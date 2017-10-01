@@ -329,6 +329,9 @@ def on_message(client, userdata, message):
                             else:
                                 attention = 1
                             do_publish = True
+                        if len(action) == 3 and action[0] == u'media':
+                            attention = 1
+                            do_publish = True
 
                     # FIXME: bug in audio/language model prevents "ok, computer"
                     if utt.strip() == u'hallo computer':

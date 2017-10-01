@@ -85,6 +85,7 @@ TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
 TOPIC_CONFIG      = 'ai/config'
 TOPIC_RESPONSE    = 'ai/response'
+TOPIC_INTENT      = 'ai/intent'
 TOPIC_STATE       = 'ai/state'
 
 DEFAULTS = {
@@ -100,7 +101,6 @@ DEFAULTS = {
            }
 
 CLIENT_NAME = 'Zamia AI MQTT Server'
-
 
 # state
 
@@ -323,7 +323,6 @@ def on_message(client, userdata, message):
                     acts = actions[idx]
                     for action in acts:
                         logging.debug("ACTION %s" % repr(action))
-
                         if len(action) == 2 and action[0] == u'attention':
                             if action[1] == u'on':
                                 attention = ATTENTION_SPAN
@@ -343,7 +342,7 @@ def on_message(client, userdata, message):
                 resp = resps[idx]
                 logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
 
-                msg = {'utt': u' '.join(resp), 'score': score, 'intents': acts}
+                msg = {'utt': u' '.join(resp), 'score': score, 'lang': lang}
 
             else:
                 logging.error(u'no solution found for input %s' % utt)
@@ -354,19 +353,23 @@ def on_message(client, userdata, message):
                 # # abuf = random.choice(abufs)
                 # # logging.debug("abuf: %s" % repr(abuf)) 
 
-                msg = {'utt': u'', 'score': 0.0, 'intents': []}
+                msg = {'utt': u'', 'score': 0.0, 'lang': lang}
+                acts = []
 
             if do_publish:
                 (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
-                logging.info("%s : %s" % (TOPIC_RESPONSE, repr(msg)))
+                logging.debug("%s : %s" % (TOPIC_RESPONSE, json.dumps(msg)))
+                for act in acts:
+                    (rc, mid) = client.publish(TOPIC_INTENT, json.dumps(act))
+                    logging.debug("%s : %s" % (TOPIC_INTENT, json.dumps(act)))
 
             # generate astr
 
             astr = msg['utt']
-            if msg['intents']:
+            if acts:
                 if astr:
                     astr += ' - '
-            for action in msg['intents']:
+            for action in acts:
                 astr += repr(action)
 
             publish_state(client)

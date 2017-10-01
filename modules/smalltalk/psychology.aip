@@ -675,3 +675,11 @@ train(de) :-
     "(das|) könnte ich mir (gut|) (ausmalen|vorstellen)",
     "Woran denkst Du genau?".
 
+train(de) :-
+    "that was not a question (really|at all|)",
+    "I see.".
+
+train(de) :-
+    "das war (eigentlich|gar|) keine frage",
+    "verstehe.".
+

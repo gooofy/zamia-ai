@@ -15,8 +15,8 @@ change_media_station_tokens(en, TS, TE) :-
     % aiMediaSlot(STATION, SLOT),
     % aiMediaTitle(STATION, TITLE),
 
-    C:mem|f1ent is STATION,
-    C:user:station is STATION,
+    C:mem|f1ent := STATION,
+    C:user:station := STATION,
 
     r_score(C, SCORE),
 
@@ -30,8 +30,8 @@ change_media_station_tokens(de, TS, TE) :-
     % aiMediaSlot(STATION, SLOT),
     % aiMediaTitle(STATION, TITLE),
 
-    C:mem|f1ent is STATION,
-    C:user:station is STATION,
+    C:mem|f1ent := STATION,
+    C:user:station := STATION,
 
     r_score(C, SCORE),
 
@@ -58,8 +58,8 @@ change_media_station_context :-
     % aiMediaSlot(STATION, SLOT),
     % aiMediaTitle(STATION, TITLE),
 
-    C:mem|f1ent is STATION,
-    C:user:station is STATION,
+    C:mem|f1ent := STATION,
+    C:user:station := STATION,
 
     % r_action(C, [media, tune, SLOT, TITLE]).
     r_action(C, [media, tune, STATION]).

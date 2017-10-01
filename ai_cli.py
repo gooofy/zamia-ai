@@ -307,6 +307,30 @@ class AICli(cmdln.Cmdln):
         self.kernal.dump_utterances(opts.num_utterances, opts.dictfn, opts.lang, opts.module)
 
 
+    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
+           help="language, default: en")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_align(self, subcmd, opts, *paths):
+        """${cmd_name}: align utterance(s) to db modules
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if len(paths) != 1:
+            raise Exception ("one argument (utterance or file name) expected")
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        self.kernal.align_utterances(opts.lang, paths)
+
+
+
+
 #
 # init terminal
 #

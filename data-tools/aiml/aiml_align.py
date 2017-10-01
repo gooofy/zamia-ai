@@ -56,7 +56,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
                 nwords = nwords+1
                 featureVec = np.add(featureVec, model[word])
 
-        if(nwords>0):
+        if nwords>0:
             featureVec = np.divide(featureVec, nwords)
         return featureVec
 

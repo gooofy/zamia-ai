@@ -39,30 +39,45 @@ import json
 
 import numpy as np
 
-from six                  import viewitems
-from tzlocal              import get_localzone # $ pip install tzlocal
-from copy                 import deepcopy, copy
-from sqlalchemy.orm       import sessionmaker
-from six                  import text_type
+from six                    import viewitems
+from tzlocal                import get_localzone # $ pip install tzlocal
+from copy                   import deepcopy, copy
+from sqlalchemy.orm         import sessionmaker
+from six                    import text_type
+from scipy.spatial.distance import cosine
 
-from zamiaai              import model
+from zamiaai                import model
 
-from aiprolog.runtime     import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
-from aiprolog.parser      import AIPrologParser
-from zamiaprolog.logicdb  import LogicDB
-from zamiaprolog.builtins import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logic    import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
-                                 json_to_prolog, prolog_to_json
-from zamiaprolog.errors   import PrologRuntimeError
-from nltools              import misc
-from nltools.tokenizer    import tokenize
+from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
+from aiprolog.parser        import AIPrologParser
+from zamiaprolog.logicdb    import LogicDB
+from zamiaprolog.builtins   import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
+from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
+                                   json_to_prolog, prolog_to_json
+from zamiaprolog.errors     import PrologRuntimeError
+from nltools                import misc
+from nltools.tokenizer      import tokenize
 
 # FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
-ENABLE_HAL_PREFIX_HACK = True
+# ENABLE_HAL_PREFIX_HACK = True
 
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
+
+def avg_feature_vector(words, model, num_features, index2word_set):
+    #function to average all words vectors in a given paragraph
+    featureVec = np.zeros((num_features,), dtype="float32")
+    nwords = 0
+
+    for word in words:
+        if word in index2word_set:
+            nwords = nwords+1
+            featureVec = np.add(featureVec, model[word])
+
+    if nwords > 0:
+        featureVec = np.divide(featureVec, nwords)
+    return featureVec
 
 class AIKernal(object):
 
@@ -103,6 +118,13 @@ class AIKernal(object):
         self.aip_parser = AIPrologParser(self)
         self.rt         = AIPrologRuntime(self.db)
         self.dummyloc   = SourceLocation ('<rt>')
+
+        #
+        # word2vec (on-demand model loading)
+        #
+        self.w2v_model = None
+        self.w2v_lang  = None
+
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -912,4 +934,62 @@ class AIKernal(object):
                 
         for utt in utts:
             print (utt)
+
+    def align_utterances (self, lang, utterances):
+
+        all_utterances = []
+
+        logging.debug('loading all utterances from db...')
+        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
+        for dr in req:
+            all_utterances.append((dr.utterance, dr.module, dr.loc_fn, dr.loc_line))
+
+        if not self.w2v_model:
+            from gensim.models import word2vec
+
+        if not self.w2v_model or self.w2v_lang != lang:
+            model_fn  = self.config.get('semantics', 'word2vec_model_%s' % lang)
+            logging.debug ('loading word2vec model %s ...' % model_fn)
+            logging.getLogger('gensim.models.word2vec').setLevel(logging.WARNING)
+            self.w2v_model = word2vec.Word2Vec.load_word2vec_format(model_fn, binary=True)
+            self.w2v_lang = lang
+            #list containing names of words in the vocabulary
+            self.w2v_index2word_set = set(self.w2v_model.index2word)
+            logging.debug ('loading word2vec model %s ... done' % model_fn)
+            
+        for utt1 in utterances:
+            try:
+                utt1t = tokenize(utt1, lang=lang)
+                av1 = avg_feature_vector(utt1t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
+
+                sims = {} # location -> score
+                utts = {} # location -> utterance
+
+                for utt2, module, loc_fn, loc_line in all_utterances:
+                    try:
+                        utt2t = tokenize(utt2, lang=lang)
+
+                        av2 = avg_feature_vector(utt2t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
+
+                        sim = 1 - cosine(av1, av2)
+
+                        location = '%s:%s:%d' % (module, loc_fn, loc_line)
+                        sims[location] = sim
+                        utts[location] = utt2
+                        # logging.debug('%10.8f %s' % (sim, location))
+                    except:
+                        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+                logging.info('sims for %s' % repr(utt1))
+                cnt = 0
+                for sim, location in sorted( ((v,k) for k,v in sims.iteritems()), reverse=True):
+                    logging.info('%10.8f %s' % (sim, location))
+                    logging.info('    %s' % (utts[location]))
+                    cnt += 1
+                    if cnt>5:
+                        break
+            except:
+                logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+
+
+
 

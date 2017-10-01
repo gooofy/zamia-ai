@@ -205,6 +205,8 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+           help="enable prolog tracing")
     @cmdln.option ("-u", "--user", dest="username", type = "str", default="chat",
            help="username, default: chat")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -242,7 +244,7 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                score, resps, actions, solutions = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri)
+                score, resps, actions, solutions = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, run_trace=opts.run_trace)
 
                 for idx in range (len(resps)):
                     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))

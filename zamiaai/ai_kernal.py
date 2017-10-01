@@ -495,7 +495,7 @@ class AIKernal(object):
         token_literal = ListLiteral (list(map(lambda x: StringLiteral(x), inp)))
         res = do_assertz ({}, Clause ( Predicate('tokens', [cur_context, token_literal])    , location=self.dummyloc), res=res)
 
-        currentTime = datetime.datetime.now().replace(tzinfo=pytz.UTC).isoformat()
+        currentTime = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).isoformat()
         res = do_assertz ({}, Clause ( Predicate('time',   [cur_context, StringLiteral(currentTime)]) , location=self.dummyloc), res=res)
 
         if prev_context:
@@ -712,7 +712,7 @@ class AIKernal(object):
                 self.init_module (module_name, run_trace=run_trace)
                 self.test_module (module_name, run_trace=run_trace, test_name=test_name)
 
-    def process_input (self, utterance, utt_lang, user_uri):
+    def process_input (self, utterance, utt_lang, user_uri, run_trace=False):
 
         """ process user input, return action(s) """
 
@@ -763,8 +763,11 @@ class AIKernal(object):
             acode.append(decoded)
 
         pcode     = self._reconstruct_prolog_code (acode)
+        logging.debug(pcode)
         clause    = Clause (None, pcode, location=self.dummyloc)
+        self.rt.set_trace(run_trace)
         solutions = self.rt.search (clause, env=res)
+        self.rt.set_trace(False)
 
         best_score     = 0
         best_resps     = []

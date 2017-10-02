@@ -333,12 +333,6 @@ def on_message(client, userdata, message):
                             attention = 1
                             do_publish = True
 
-                    # FIXME: bug in audio/language model prevents "ok, computer"
-                    if utt.strip() == u'hallo computer':
-                        attention  = ATTENTION_SPAN
-                        do_publish = True
-                        logging.debug ('hello workaround worked: %s vs %s' % (repr(utt), repr(u'hallo computer')))
-
                 finally:
                     state_lock.release()
 

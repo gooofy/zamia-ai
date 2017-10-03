@@ -327,7 +327,7 @@ def on_message(client, userdata, message):
                             else:
                                 attention = 1
                             do_publish = True
-                        if len(action) == 3 and action[0] == u'media':
+                        if attention>0 and len(action) == 3 and action[0] == u'media':
                             attention = 1
                             do_publish = True
 
@@ -525,6 +525,7 @@ while True:
     state_lock.acquire()
     if attention>0:
         attention -= 1
+        logging.debug ('decreased attention: %d' % attention)
         state_lock.release()
         try:
             publish_state(client)

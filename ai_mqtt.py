@@ -147,7 +147,7 @@ def publish_state(client):
         data['hstr']      = hstr
         data['astr']      = astr
 
-        logging.debug ('publish_state: %s' % repr(data))
+        # logging.debug ('publish_state: %s' % repr(data))
      
         client.publish(TOPIC_STATE, json.dumps(data))
     finally:
@@ -161,7 +161,7 @@ def on_message(client, userdata, message):
     global ignore_audio_before, tts, tts_lock
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
-    logging.debug( "message topic=%s" % message.topic)
+    # logging.debug( "message topic=%s" % message.topic)
     # logging.debug( "message qos=%s" % message.qos)
     # logging.debug( "message retain flag=%s" % message.retain)
 
@@ -180,11 +180,11 @@ def on_message(client, userdata, message):
 
             age = (datetime.datetime.now() - ts).total_seconds()
             if age > MAX_AUDIO_AGE:
-                logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
+                # logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
                 return
 
             if ts < ignore_audio_before:
-                logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
+                # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
                 return
 
             # we listen to one location at a time only (FIXME: implement some sort of session handling)
@@ -238,7 +238,7 @@ def on_message(client, userdata, message):
                 if do_finalize:
 
                     hstr = audiofn
-                    logging.debug('audiofn %s written.' % audiofn)
+                    logging.info('audiofn %s written.' % audiofn)
 
                     wf.close()  
                     wf = None
@@ -264,11 +264,7 @@ def on_message(client, userdata, message):
                     # hstr = u'hallo computer'
                     # confidence = 1.0
 
-                    logging.debug ( "*****************************************************************************")
-                    logging.debug ( "**")
-                    logging.debug ( "** %9.5f %s" % (confidence, hstr))
-                    logging.debug ( "**")
-                    logging.debug ( "*****************************************************************************")
+                    logging.info ( "asr: %9.5f %s" % (confidence, hstr))
 
                     if hstr:
                         
@@ -351,10 +347,10 @@ def on_message(client, userdata, message):
 
             if do_publish:
                 (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
-                logging.debug("%s : %s" % (TOPIC_RESPONSE, json.dumps(msg)))
+                logging.info("%s (att: %2d) : %s" % (TOPIC_RESPONSE, attention, json.dumps(msg)))
                 for act in acts:
                     (rc, mid) = client.publish(TOPIC_INTENT, json.dumps(act))
-                    logging.debug("%s : %s" % (TOPIC_INTENT, json.dumps(act)))
+                    logging.info("%s (att: %2d): %s" % (TOPIC_INTENT, attention, json.dumps(act)))
 
             # generate astr
 
@@ -519,6 +515,9 @@ logging.debug ('connecting to MQTT broker %s:%d ... connected.' % (broker_host, 
 #
 # main loop - count down attention, publish state while >0
 #
+
+logging.info ('READY.')
+logging.info ('main loop starts')
 
 client.loop_start()
 while True:

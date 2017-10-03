@@ -98,6 +98,8 @@ DEFAULTS = {
             'tts_locale'    : 'de',
             'tts_voice'     : 'de',
             'tts_engine'    : 'espeak',
+            'tts_speed'     : 150,
+            'tts_pitch'     : 38,
            }
 
 CLIENT_NAME = 'Zamia AI MQTT Server'
@@ -426,6 +428,8 @@ tts_port            = config.getint('tts',    'tts_port')
 tts_locale          = config.get   ('tts',    'tts_locale')
 tts_voice           = config.get   ('tts',    'tts_voice')
 tts_engine          = config.get   ('tts',    'tts_engine')
+tts_speed           = config.getint('tts',    'tts_speed')
+tts_pitch           = config.getint('tts',    'tts_pitch')
 
 #
 # commandline
@@ -454,7 +458,7 @@ else:
 #
 
 tts_lock = Lock()
-tts = TTS (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine)
+tts = TTS (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
 # this is used to ignore any voice input that is just us hearing ourselves 
 # when answer is synthesized
 ignore_audio_before = datetime.datetime.now()

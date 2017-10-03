@@ -128,21 +128,11 @@ class AIHandler(BaseHTTPRequestHandler):
 
                 logging.error(traceback.format_exc())
 
-                # FIXME
-                # abufs = kernal.do_eliza(line, kernal.nlp_model.lang, trace=False)
-                # abuf = random.choice(abufs)
-
-                # logging.debug("abuf: %s" % repr(abuf)) 
-
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
 
-                # reply_actions = map (lambda action: map (lambda p: unicode(p), action), abuf['actions'])
-
-                logging.debug("ELIZA")
-                # logging.debug("reply_actions: %s" % repr(reply_actions)) 
-                reply = {'actions': 'FIXME' }
+                reply = {'actions': []}
 
                 self.wfile.write(json.dumps(reply))
 

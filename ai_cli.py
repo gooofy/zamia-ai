@@ -274,19 +274,6 @@ class AICli(cmdln.Cmdln):
             except Exception as e:
                 logging.error(traceback.format_exc())
 
-                # FIXME: port
-
-                # abufs = self.kernal.do_eliza(line, self.kernal.nlp_model.lang, trace=opts.run_trace)
-
-                # abuf = random.choice(abufs)
-
-                # for action in abuf['actions']:
-                #     p = action[0]
-                #     if not isinstance(p, Predicate):
-                #         continue
-                #     if p.name == 'say': 
-                #         print "SAY", action[2]
-
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option ("-d", "--dict", dest="dictfn", type = "str", default=None,

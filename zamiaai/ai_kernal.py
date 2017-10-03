@@ -822,22 +822,6 @@ class AIKernal(object):
 
         return best_score, best_resps, best_actions, best_solutions
 
-    def do_eliza (self, utterance, utt_lang, trace=False):
-
-        """ produce eliza-style response """
-
-        logging.info ('producing ELIZA-style response for input %s' % utterance)
-
-        self.prolog_rt.reset_actions()
-        self.prolog_rt.set_trace(trace)
-
-        c = self.parser.parse_line_clause_body('answer(dodge_question, %s)' % utt_lang)
-        solutions = self.prolog_rt.search(c)
-        abufs = self.prolog_rt.get_actions()
-
-        return abufs
-
-
     def run_cronjobs (self, module_name, force=False):
 
         m = self.modules[module_name]

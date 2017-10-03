@@ -2,6 +2,29 @@
 
 train_prefix('{self_address:L} ').
 
+do_eliza(C, en) :-
+    or(r_say(C, "What do you think?"),
+       r_say(C, "which answer would you like to hear?"),
+       r_say(C, "what do you think?"),
+       r_say(C, "not sure if I understand you completely"),
+       r_say(C, "what would you really like to know?"),
+       r_say(C, "have you spoken to anybody else about this before?"),
+       r_say(C, "I find that pretty interesting!"),
+       r_say(C, "Could you explain that a bit more, please?"),
+       r_say(C, "Please tell me how I can help you."),
+       r_say(C, "What else comes to mind?")).
+
+do_eliza(C, de) :-
+    or(r_say(C, "Was glaubst Du?"),
+       r_say(C, "Ich weiss nicht, ob ich Dich ganz verstanden habe."),
+       r_say(C, "Was möchtest Du denn wirklich wissen?"),
+       r_say(C, "Woran denkst Du?"),
+       r_say(C, "Was sagt Dir das?"),
+       r_say(C, "Das finde ich ziemlich interessant."),
+       r_say(C, "Kannst Du das noch etwas näher ausführen?"),
+       r_say(C, "Sag mir bitte, wie ich Dir helfen kann"),
+       r_say(C, "Was fällt Dir dabei noch ein?")).
+
 
 train(en) :-
     "(all|) (men|women) are (all|) (alike|the same)",

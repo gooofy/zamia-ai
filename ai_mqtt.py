@@ -275,7 +275,9 @@ def on_message(client, userdata, message):
                         data['user'] = AI_USER
                      
                         client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
-
+            else:
+                if do_rec:
+                    attention = 30
 
             publish_state(client)
                 

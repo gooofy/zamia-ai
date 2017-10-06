@@ -354,10 +354,11 @@ class AIKernal(object):
             inp_json  = json.dumps(inp)
             resp_json = json.dumps(resp)
 
-            utterance = u' '.join(map(lambda c: text_type(c), contexts))
-            if utterance:
-                utterance += u' '
-            utterance += u' '.join(i)
+            # utterance = u' '.join(map(lambda c: text_type(c), contexts))
+            # if utterance:
+            #     utterance += u' '
+            # utterance += u' '.join(i)
+            utterance = u' '.join(i)
 
             k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
             if not k in td_set:

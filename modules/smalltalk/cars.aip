@@ -4,7 +4,7 @@ train_prefix('{self_address:L} ').
 
 
 train(en) :-
-    "(oh dear| i was driving my | ich am worried about my | i need a new | cool, a) (new|) (vehicle|car|truck|sportscar) ",
+    "(oh dear| i was driving my | i am worried about my | i need a new | cool, a) (new|) (vehicle|car|truck|sportscar) ",
     "What brand?".
 
 train(de) :-

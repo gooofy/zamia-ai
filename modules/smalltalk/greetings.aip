@@ -83,10 +83,10 @@ answer_bye(de) :-
        "Ciao").
 
 train(en) :-
-    "(goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:L}",
+    "(goodbye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:L}",
     inline answer_bye(en).
 train(en) :-
-    "{self_address:L} (goobye | bye | ciao | so long | bye for now | see ya | see you later | till next time)",
+    "{self_address:L} (goodbye | bye | ciao | so long | bye for now | see ya | see you later | till next time)",
     inline answer_bye(en).
 
 train(de) :-

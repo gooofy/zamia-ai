@@ -69,7 +69,7 @@ from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
 from nltools.tts          import TTS
-from kaldisimple.nnet3    import KaldiNNet3OnlineDecoder
+from kaldisimple.nnet3    import KaldiNNet3OnlineModel, KaldiNNet3OnlineDecoder
 
 PROC_TITLE        = 'ai_mqtt'
 AI_SERVER_MODULE  = '__server__'
@@ -113,13 +113,11 @@ do_rec          = False
 astr            = ''
 hstr            = ''
 audio_cnt       = 0
-audio_loc       = None
-audio_loc_cnt   = 0       # countdown audio location in case terminal dies and therefore fails to send finalize msg
 
 # audio recording state
 
-audiofn = ''   # path to current wav file being written
-wf      = None # current wav file being written
+audiofns = {}   # location -> str,  path to current wav file being written
+wfs      = {}   # location -> wave, current wav file being written
 
 #
 # MQTT
@@ -157,8 +155,9 @@ def on_message(client, userdata, message):
 
     global kernal, lang, state_lock    
     global do_listen, do_asr, attention, do_rec
-    global wf, vf_login, rec_dir, audiofn, hstr, astr, audio_cnt, audio_loc, audio_loc_cnt
+    global wfs, vf_login, rec_dir, audiofns, hstr, astr, audio_cnt
     global ignore_audio_before, tts, tts_lock
+    global nnet3_model, asr_decoders
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -187,18 +186,6 @@ def on_message(client, userdata, message):
                 # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
                 return
 
-            # we listen to one location at a time only (FIXME: implement some sort of session handling)
-
-            if audio_loc and audio_loc != loc:
-                logging.debug ("   ignoring audio from wrong location: %s" % loc)
-                return
-
-            if do_finalize:
-                audio_loc     = None
-            else:
-                audio_loc     = loc
-                audio_loc_cnt = AUDIO_LOC_CNT
-
             confidence  = 0.0
 
             audio_cnt += 1
@@ -209,7 +196,10 @@ def on_message(client, userdata, message):
 
                 # store recording in WAV format
 
-                if not wf:
+                if not loc in wfs:
+                    wfs[loc] = None
+
+                if not wfs[loc]:
 
                     ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
                     audiodirfn = '%s/%s-%s-rec/wav' % (rec_dir, vf_login, ds)
@@ -219,32 +209,32 @@ def on_message(client, userdata, message):
                     cnt = 0
                     while True:
                         cnt += 1
-                        audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
-                        if not os.path.isfile(audiofn):
+                        audiofns[loc] = '%s/de5-%03d.wav' % (audiodirfn, cnt)
+                        if not os.path.isfile(audiofns[loc]):
                             break
 
-                    logging.debug('audiofn: %s' % audiofn)
+                    logging.debug('audiofn: %s' % audiofns[loc])
 
                     # create wav file 
 
-                    wf = wave.open(audiofn, 'wb')
-                    wf.setnchannels(1)
-                    wf.setsampwidth(2)
-                    wf.setframerate(SAMPLE_RATE)
+                    wfs[loc] = wave.open(audiofns[loc], 'wb')
+                    wfs[loc].setnchannels(1)
+                    wfs[loc].setsampwidth(2)
+                    wfs[loc].setframerate(SAMPLE_RATE)
 
                 packed_audio = struct.pack('%sh' % len(audio), *audio)
-                wf.writeframes(packed_audio)
+                wfs[loc].writeframes(packed_audio)
 
                 if do_finalize:
 
-                    hstr = audiofn
-                    logging.info('audiofn %s written.' % audiofn)
+                    hstr = audiofns[loc]
+                    logging.info('audiofn %s written.' % audiofns[loc])
 
-                    wf.close()  
-                    wf = None
+                    wfs[loc].close()  
+                    wfs[loc] = None
 
             else:
-                audiofn = ''
+                audiofns[loc] = ''
                 if do_finalize:
                         hstr = '***'
 
@@ -253,16 +243,15 @@ def on_message(client, userdata, message):
 
 
             if do_asr:
+
+                if not loc in asr_decoders:
+                    asr_decoders[loc] = KaldiNNet3OnlineDecoder (nnet3_model)
+                decoder = asr_decoders[loc]
                 decoder.decode(SAMPLE_RATE, np.array(audio, dtype=np.float32), do_finalize)
 
                 if do_finalize:
 
-                    hstr       = decoder.get_decoded_string()
-                    confidence = decoder.get_likelihood()
-
-                    # FIXME: remove debug code
-                    # hstr = u'hallo computer'
-                    # confidence = 1.0
+                    hstr, confidence = decoder.get_decoded_string()
 
                     logging.info ( "asr: %9.5f %s" % (confidence, hstr))
 
@@ -476,12 +465,10 @@ kernal.setup_tf_model ('decode', True, ai_model)
 #
 
 logging.debug ('loading ASR model %s from %s...' % (kaldi_model, kaldi_model_dir))
-
 start_time = time.time()
-
-decoder = KaldiNNet3OnlineDecoder ( kaldi_model_dir, kaldi_model )
-
+nnet3_model = KaldiNNet3OnlineModel ( kaldi_model_dir, kaldi_model )
 logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
+asr_decoders = {} # location -> decoder
 
 #
 # state lock
@@ -535,11 +522,6 @@ while True:
             logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
     else:
         state_lock.release()
-
-    if audio_loc_cnt>0:
-        audio_loc_cnt -= 1
-        if audio_loc_cnt == 0:
-            audio_loc = None
 
     time.sleep(1)
 

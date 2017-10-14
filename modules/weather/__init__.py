@@ -99,6 +99,17 @@ def builtin_weather_data (g, pe):
 
     for wev in wevs:
 
+        logging.debug(repr(wev))
+
+        unbound_values = False
+        for k in ['_1', '_2', '_3', '_4', '_5', '_6', '_7']:
+            if not k in wev:
+                unbound_values = True
+                break
+        if unbound_values:
+            logging.debug ("skipping: unbound values found.")
+            continue
+
         wev_tstart     = dateutil.parser.parse(wev['_1'].s)
         wev_tend       = dateutil.parser.parse(wev['_2'].s)
 

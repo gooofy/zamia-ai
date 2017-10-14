@@ -23,7 +23,7 @@ import dateutil.parser
 
 from zamiaprolog.errors import PrologRuntimeError
 from zamiaprolog.logic  import StringLiteral, NumberLiteral
-# from kb_weather import fetch_weather_forecast
+from kb_weather         import fetch_weather_forecast
 
 DEPENDS = [ 'base', 'config' ]
 
@@ -31,10 +31,9 @@ AIP_SOURCES = [
                'weather_test.aip', 'weather.aip',
               ]
 
-# FIXME
-# CRONJOBS   = [
-#               ( 'fetch_forecast', 4 * 60 * 60, fetch_weather_forecast),
-#              ]
+CRONJOBS   = [
+              ( 'fetch_forecast', 4 * 60 * 60, fetch_weather_forecast),
+             ]
 
 # % all weather events that affect a given timespan
 # wev_timespan (C, TIMESPAN, WEV) :-

@@ -58,9 +58,6 @@ from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
 
-# FIXME: current audio model tends to insert 'hal' at the beginning of utterances:
-# ENABLE_HAL_PREFIX_HACK = True
-
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
@@ -282,9 +279,6 @@ class AIKernal(object):
         self.rt.set_trace(run_trace)
 
         solutions = self.rt.search(c)
-
-    def _module_graph_name (self, module_name):
-        return KB_PREFIX + module_name
 
     def compile_module (self, module_name):
 
@@ -823,15 +817,13 @@ class AIKernal(object):
 
         return best_score, best_resps, best_actions, best_solutions
 
-    def run_cronjobs (self, module_name, force=False):
+    def run_cronjobs (self, module_name, force=False, run_trace=False):
 
         m = self.modules[module_name]
         if not hasattr(m, 'CRONJOBS'):
             return
 
-        graph = self._module_graph_name(module_name)
-
-        self.kb.register_graph(graph)
+        self.rt.set_trace(run_trace)
 
         for name, interval, f in getattr (m, 'CRONJOBS'):
 
@@ -843,12 +835,12 @@ class AIKernal(object):
 
             if force or t > next_run:
 
-                logging.debug ('running cronjob %s' %name)
-                f (self.config, self.kb, graph)
+                logging.debug ('running cronjob %s' % name)
+                f (self)
 
                 cronjob.last_run = t
 
-    def run_cronjobs_multi (self, module_names, force):
+    def run_cronjobs_multi (self, module_names, force, run_trace=False):
 
         for module_name in module_names:
 
@@ -857,12 +849,12 @@ class AIKernal(object):
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
                     self.init_module (mn2)
-                    self.run_cronjobs (mn2, force=force)
+                    self.run_cronjobs (mn2, force=force, run_trace=run_trace)
 
             else:
                 self.load_module (module_name)
                 self.init_module (module_name)
-                self.run_cronjobs (module_name, force=force)
+                self.run_cronjobs (module_name, force=force, run_trace=run_trace)
 
         self.session.commit()
 

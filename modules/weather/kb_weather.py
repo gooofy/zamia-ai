@@ -39,7 +39,7 @@ from datetime             import datetime, timedelta
 from tzlocal              import get_localzone
 from nltools              import misc
 from zamiaprolog.builtins import do_assertz, do_retract
-from zamiaprolog.logic    import build_predicate, Clause, SourceLocation
+from zamiaprolog.logic    import build_predicate, Clause, SourceLocation, StringLiteral
 
 WEATHER_DATA_MODULE = 'weather_data'
 KELVIN              = 273.15
@@ -103,9 +103,9 @@ def fetch_weather_forecast(kernal):
     # generate triples of weather and astronomical data
     #
 
-    for location in locations:
+    env = {}
 
-        env = {}
+    for location in locations:
 
         city_id   = locations[location]['city_id']
         timezone  = locations[location]['timezone']
@@ -150,12 +150,12 @@ def fetch_weather_forecast(kernal):
             env = do_retract(env, build_predicate('aiDusk',     [sun_const, '_']))
 
             env = do_assertz(env, Clause(location=sl, head=build_predicate('aiLocation', [sun_const, location])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDate',     [sun_const, cur_date.isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDawn',     [sun_const, sun['dawn'].isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiSunrise',  [sun_const, sun['sunrise'].isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiNoon',     [sun_const, sun['noon'].isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiSunset',   [sun_const, sun['sunset'].isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDusk',     [sun_const, sun['dusk'].isoformat()])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDate',     [sun_const, StringLiteral(cur_date.isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDawn',     [sun_const, StringLiteral(sun['dawn'].isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiSunrise',  [sun_const, StringLiteral(sun['sunrise'].isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiNoon',     [sun_const, StringLiteral(sun['noon'].isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiSunset',   [sun_const, StringLiteral(sun['sunset'].isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDusk',     [sun_const, StringLiteral(sun['dusk'].isoformat())])))
 
             logging.debug ("%s %s %s -> %s" % (sun_const, cur_date, sun['sunrise'], sun['sunset']) )
 
@@ -221,12 +221,12 @@ def fetch_weather_forecast(kernal):
             env = do_assertz(env, Clause(location=sl, head=build_predicate('aiTempMax',       [fc_const, temp_max])))
             env = do_assertz(env, Clause(location=sl, head=build_predicate('aiPrecipitation', [fc_const, precipitation])))
             env = do_assertz(env, Clause(location=sl, head=build_predicate('aiClouds',        [fc_const, clouds])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiIcon',          [fc_const, icon])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDescription',   [fc_const, description])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDtStart',       [fc_const, dt_from.isoformat()])))
-            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDtEnd',         [fc_const, dt_to.isoformat()])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiIcon',          [fc_const, StringLiteral(icon)])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDescription',   [fc_const, StringLiteral(description)])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDtStart',       [fc_const, StringLiteral(dt_from.isoformat())])))
+            env = do_assertz(env, Clause(location=sl, head=build_predicate('aiDtEnd',         [fc_const, StringLiteral(dt_to.isoformat())])))
 
-            kernal.rt.apply_overlay (WEATHER_DATA_MODULE, env)
+    kernal.rt.apply_overlay (WEATHER_DATA_MODULE, env)
 
 # if __name__ == "__main__":
 # 

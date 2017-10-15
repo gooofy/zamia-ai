@@ -768,16 +768,21 @@ class AIKernal(object):
         #             decoded = self.inv_output_dict[p]
         #             logging.debug (u'%s: %s' %(p, decoded))
 
-        # extract best code only
+        # extract best codes only
 
-        acode = []
+        acodes = [[]]
         for p in predicted_ids[0][:,0]:
             if p == -1:
                 break
             decoded = self.inv_output_dict[p]
             if decoded == u'_EOS':
                 break
-            acode.append(decoded)
+            if decoded == u'__OR__':
+                acodes.append([])
+            acodes[len(acodes)-1].append(decoded)
+
+        # FIXME: for now, we try the first solution only
+        acode = acodes[0]
 
         pcode     = self._reconstruct_prolog_code (acode)
         logging.debug(pcode)
@@ -813,7 +818,6 @@ class AIKernal(object):
             best_resps.append(actual_resp)
             best_actions.append(actual_actions)
             best_solutions.append(solution)
-
 
         return best_score, best_resps, best_actions, best_solutions
 

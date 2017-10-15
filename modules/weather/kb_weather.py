@@ -49,7 +49,7 @@ def fetch_weather_forecast(kernal):
 
     api_key    = kernal.config.get("weather", "api_key")
 
-    logging.info ('fetch_weather_forecast cronj ob, api key: %s' % api_key)
+    logging.debug ('fetch_weather_forecast cronj ob, api key: %s' % api_key)
 
     sl = SourceLocation(fn='__internet__', col=0, line=0)
 
@@ -120,7 +120,7 @@ def fetch_weather_forecast(kernal):
                                            second      = 0,
                                            microsecond = 0)
 
-        logging.info("%s %s" % ( location, ref_dt ) )
+        logging.debug("%s %s" % ( location, ref_dt ) )
 
         #
         # sunrise / sunset

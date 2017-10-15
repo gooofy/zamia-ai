@@ -540,16 +540,22 @@ class AIKernal(object):
         res       = []
         s2s = self.rt.search_predicate ('c_say', [cur_context, '_1'], env=env)
         for s2 in s2s:
+            if not '_1' in s2:
+                continue
             res.append(s2['_1'].s)
 
         actions   = []
         s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env)
         for s2 in s2s:
+            if not '_1' in s2:
+                continue
             actions.append(list(map (lambda x: text_type(x), s2['_1'].l)))
 
         score     = 0.0
         s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env)
         for s2 in s2s:
+            if not '_1' in s2:
+                continue
             score += s2['_1'].f
 
         return res, actions, score

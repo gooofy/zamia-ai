@@ -110,6 +110,7 @@ do_listen       = True
 do_asr          = True
 attention       = 0
 do_rec          = False
+att_force       = False
 astr            = ''
 hstr            = ''
 audio_cnt       = 0
@@ -154,7 +155,7 @@ def publish_state(client):
 def on_message(client, userdata, message):
 
     global kernal, lang, state_lock    
-    global do_listen, do_asr, attention, do_rec
+    global do_listen, do_asr, attention, do_rec, att_force
     global wfs, vf_login, rec_dir, audiofns, hstr, astr, audio_cnt
     global ignore_audio_before, tts, tts_lock
     global nnet3_model, asr_decoders
@@ -378,10 +379,16 @@ def on_message(client, userdata, message):
 
             data = json.loads(message.payload)
 
-            do_listen = data['listen']
-            do_rec    = data['record']
-            do_asr    = data['asr']
-
+            do_listen  = data['listen']
+            do_rec     = data['record']
+            do_asr     = data['asr']
+            att_force2 = data['att']
+            if att_force2:
+                attention = 30
+                att_force = True
+            elif att_force:
+                attention = 2
+                att_force = False
 
     except:
         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
@@ -512,8 +519,10 @@ client.loop_start()
 while True:
 
     state_lock.acquire()
+
     if attention>0:
-        attention -= 1
+        if not att_force:
+            attention -= 1
         logging.debug ('decreased attention: %d' % attention)
         state_lock.release()
         try:

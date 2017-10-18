@@ -313,7 +313,15 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.align_utterances(opts.lang, paths)
+        # collect utterances from paths
+
+        utterances = []
+        for uttfn in paths:
+            with codecs.open(uttfn, 'r', 'utf8') as uttf:
+                for line in uttf:
+                    utterances.append(line.strip())
+
+        self.kernal.align_utterances(opts.lang, utterances)
 
 
 

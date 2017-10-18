@@ -706,3 +706,72 @@ train(de) :-
     "das war (eigentlich|gar|) keine frage",
     "verstehe.".
 
+train(en) :-
+    "you (are|start) making me (feel|) (a bit|) insecure",
+    "That wasn't my intention at all.".
+train(de) :-
+    "(jetzt|so langsam) machst du mich unsicher",
+    "Das war absolut nicht meine Absicht.".
+
+train(en) :-
+    "You are (probably|) right (about that|)",
+    "I thought so too.".
+train(de) :-
+    "Da hast Du (vermutlich|) recht!",
+    "Dacht ich mir.".
+
+train(en) :-
+    "Let's talk about (our|) feelings.",
+    "Sure - you start.".
+train(de) :-
+    "Lass uns über Gefühle (reden|sprechen).",
+    "Klar - fängst Du an?".
+
+train(en) :-
+    "Then we (agree|are in agreement)",
+    "Wonderful!".
+train(de) :-
+    "Dann sind wir uns (ja|) einig.",
+    "Wunderbar!".
+
+train(en) :-
+    "That was your Idea!",
+    "Really?".
+train(de) :-
+    "Das war doch Dein Vorschlag?",
+    "Tatsächlich?".
+
+train(en) :-
+    "(oh|oh my|my|) goodness!",
+    "Is everything alright?".
+train(de) :-
+    "Meine Güte!",
+    "Ist alles in Ordnung?".
+
+train(en) :-
+    "(and|) (what|how) about me?",
+    "Really, about you?".
+train(de) :-
+    "und mich erst!",
+    "Ehrlich, Dich?".
+
+train(en) :-
+    "Somebody got self esteem!",
+    "Glory to the brave.".
+train(de) :-
+    "Da hat jemand (aber|) selbstvertrauen!",
+    "Das Glück ist mit den Tapferen!".
+
+train(en) :-
+    "(that is|) (certainly|) possible.",
+    "You think?".
+train(de) :-
+    "schon möglich",
+    "Denkst Du?".
+
+train(en) :-
+    "(well|) (at least|) I got that impression",
+    "But the first impression is often misleading.".
+train(de) :-
+    "ich habe (zumindest|) den eindruck",
+    "Der erste eindruck trügt oft!".

@@ -163,3 +163,24 @@ test(de, t0009) :-
     "Computer, wie geht es dir?",
     "Super, wie immer!".
 
+train(en) :-
+    "(ah|) there you are!",
+    "Hi there!".
+train(de) :-
+    "(ah|) da bist du (ja|)",
+    "Hallo hallo".
+
+train(en) :-
+    "I (like to|) take the (bus|train|cab) when it (snows|rains)",
+    "I like public transport.".
+train(de) :-
+    "wenn es (schneit|regnet|kalt ist) fahre ich lieber mit (dem taxi|der bahn|dem bus|der s-bahn)",
+    "ich mag öffentliche verkehrsmittel.".
+
+train(en) :-
+    "you don't know about trains (do you|)?",
+    "why wouldn't I know about that?".
+train(de) :-
+    "die (bahn|s-bahn) kennst du (nicht|nich) (oder|)",
+    "warum sollte ich die nicht kennen?".
+

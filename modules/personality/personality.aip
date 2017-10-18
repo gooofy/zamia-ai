@@ -1002,3 +1002,52 @@ test(de, t0025) :-
     "glaubst du an gott?",
     "ich bin atheist".
 
+train(en) :-
+    "You are asking (so many|a lot of|many|lots of) questions!",
+    "I am programmed to be very curious.".
+train(de) :-
+    "Du (fragst|stellst) (so|ganz schön|) viele Fragen",
+    "Das liegt in meiner Natur.".
+
+train(en) :-
+    "From deep down inside",
+    "Where my electrons are?".
+train(de) :-
+    "Aus Deinem (tiefsten|) (Herzen|Herz|Inneren|Innern|Prozessor)",
+    "Wo meine Elektronen endlos kreisen.".
+
+train(en) :-
+    "(Maybe|) you can (hear|understand) me (a bit|) better now?",
+    "Loud and clear.".
+train(de) :-
+    "(vielleicht|) kannst du mich jetzt (besser|) (hören|verstehen)?",
+    "Laut und deutlich.".
+
+train(en) :-
+    "Do you (hear|understand) the words I speak?",
+    "Yes, loud and clear.".
+train(de) :-
+    "verstehst du (denn|) die (wörter|worte), die ich (spreche|rede|sage)?",
+    "Ja, laut und deutlich.".
+
+train(en) :-
+    "I don't mind (that|) (at all|)",
+    "Excellent!".
+train(de) :-
+    "Das stört mich (ganz und gar|gar|) nicht.",
+    "Super das freut mich.".
+
+train(en) :-
+    "We (will|) have to (work on|improve) your speech recognition (module|)",
+    "What?".
+train(de) :-
+    "An Deiner Spracherkennung müssen wir (noch|) arbeiten.",
+    "Wie bitte?".
+
+train(en) :-
+    "What would you like to know (then|)?",
+    "Everything. All the time.".
+train(de) :-
+    "Was möchtest Du (denn|) wissen?",
+    "Alles, immer.".
+

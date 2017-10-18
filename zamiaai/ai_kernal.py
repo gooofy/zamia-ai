@@ -45,6 +45,7 @@ from copy                   import deepcopy, copy
 from sqlalchemy.orm         import sessionmaker
 from six                    import text_type
 from scipy.spatial.distance import cosine
+from threading              import RLock, Lock
 
 from zamiaai                import model
 
@@ -57,10 +58,13 @@ from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiter
 from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
+from nltools.tts            import TTS
+from kaldisimple.nnet3      import KaldiNNet3OnlineModel, KaldiNNet3OnlineDecoder
 
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
+AUDIO_EXTRA_DELAY  = 0.5      # seconds
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -78,7 +82,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self):
+    def __init__(self, load_all_modules=False):
 
         self.config = misc.load_config('.airc')
 
@@ -122,6 +126,13 @@ class AIKernal(object):
         self.w2v_model = None
         self.w2v_lang  = None
 
+        #
+        # load modules, if requested
+        #
+        if load_all_modules:
+            for mn2 in self.all_modules:
+                self.load_module (mn2)
+                self.init_module (mn2)
 
     # FIXME: this will work only on the first call
     def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
@@ -984,6 +995,57 @@ class AIKernal(object):
             except:
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
+    #
+    # TTS support
+    #
 
+    def setup_tts (self, host, port, locale, voice, engine, speed, pitch):
 
+        self.tts = TTS (host, port, locale=locale, voice=voice, engine=engine, speed=speed, pitch=pitch)
+        # this is used to ignore any voice input that is just us hearing ourselves 
+        # when answer is synthesized
+        self.ignore_audio_before = datetime.datetime.now()
+        
+        self.tts_lock = Lock()
+
+    def tts_say (self, utt):
+
+        self.tts_lock.acquire()
+        try:
+            logging.debug('tts.say...')
+            self.tts.say(utt)
+            logging.debug('tts.say finished.')
+
+        except:
+            logging.error('TTS EXCEPTION CAUGHT %s' % traceback.format_exc())
+        finally:
+            self.tts_lock.release()
+
+        self.ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
+
+    #
+    # ASR
+    #
+
+    def setup_asr (self, kaldi_model_dir, kaldi_model):
+
+        logging.debug ('loading ASR model %s from %s...' % (kaldi_model, kaldi_model_dir))
+        start_time = time.time()
+        self.nnet3_model = KaldiNNet3OnlineModel ( kaldi_model_dir, kaldi_model )
+        logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
+        self.asr_decoders = {} # location -> decoder
+
+    def asr_decode (self, loc, sample_rate, audio, do_finalize):
+
+        if not loc in self.asr_decoders:
+            self.asr_decoders[loc] = KaldiNNet3OnlineDecoder (self.nnet3_model)
+        decoder = self.asr_decoders[loc]
+        decoder.decode(sample_rate, np.array(audio, dtype=np.float32), do_finalize)
+
+        if not do_finalize:
+            return None, 0.0
+
+        hstr, confidence = decoder.get_decoded_string()
+
+        return hstr, confidence
 

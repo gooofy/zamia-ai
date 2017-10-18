@@ -68,8 +68,6 @@ from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
-from nltools.tts          import TTS
-from kaldisimple.nnet3    import KaldiNNet3OnlineModel, KaldiNNet3OnlineDecoder
 
 PROC_TITLE        = 'ai_mqtt'
 AI_SERVER_MODULE  = '__server__'
@@ -78,7 +76,6 @@ AI_USER           = 'server' # FIXME: some sort of presence information maybe?
 SAMPLE_RATE       = 16000
 MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
 ATTENTION_SPAN    = 30       # seconds
-AUDIO_EXTRA_DELAY = 0.5      # seconds
 AUDIO_LOC_CNT     = 5        # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
@@ -157,8 +154,6 @@ def on_message(client, userdata, message):
     global kernal, lang, state_lock    
     global do_listen, do_asr, attention, do_rec, att_force
     global wfs, vf_login, rec_dir, audiofns, hstr, astr, audio_cnt
-    global ignore_audio_before, tts, tts_lock
-    global nnet3_model, asr_decoders
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -183,8 +178,8 @@ def on_message(client, userdata, message):
                 # logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
                 return
 
-            if ts < ignore_audio_before:
-                # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
+            if ts < kernal.ignore_audio_before:
+                # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(kernal.ignore_audio_before)))
                 return
 
             confidence  = 0.0
@@ -242,22 +237,17 @@ def on_message(client, userdata, message):
             if do_finalize:
                 audio_cnt = 0
 
-
             if do_asr:
 
-                if not loc in asr_decoders:
-                    asr_decoders[loc] = KaldiNNet3OnlineDecoder (nnet3_model)
-                decoder = asr_decoders[loc]
-                decoder.decode(SAMPLE_RATE, np.array(audio, dtype=np.float32), do_finalize)
+                hstr2, confidence = kernal.asr_decode(loc, SAMPLE_RATE, audio, do_finalize)
 
                 if do_finalize:
 
-                    hstr, confidence = decoder.get_decoded_string()
-
                     logging.info ( "asr: %9.5f %s" % (confidence, hstr))
 
-                    if hstr:
+                    if hstr2:
                         
+                        hstr = hstr2
                         data = {}
 
                         data['lang'] = lang
@@ -362,18 +352,8 @@ def on_message(client, userdata, message):
 
             if msg['utt']:
 
-                tts_lock.acquire()
-                try:
-                    logging.debug('tts.say...')
-                    tts.say(msg['utt'])
-                    logging.debug('tts.say finished.')
+                kernal.tts_say(msg['utt'])
 
-                except:
-                    logging.error('TTS EXCEPTION CAUGHT %s' % traceback.format_exc())
-                finally:
-                    tts_lock.release()
-
-                ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
 
         elif message.topic == TOPIC_CONFIG:
 
@@ -448,34 +428,23 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 #
+# setup AI Kernal
+#
+
+kernal = AIKernal(load_all_modules=True)
+kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
+
+#
 # TTS
 #
 
-tts_lock = Lock()
-tts = TTS (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
-# this is used to ignore any voice input that is just us hearing ourselves 
-# when answer is synthesized
-ignore_audio_before = datetime.datetime.now()
-
-#
-# setup nlp kernal
-#
-
-kernal = AIKernal()
-for mn2 in kernal.all_modules:
-    kernal.load_module (mn2)
-    kernal.init_module (mn2)
-kernal.setup_tf_model ('decode', True, ai_model)
+kernal.setup_tts (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
 
 #
 # ASR
 #
 
-logging.debug ('loading ASR model %s from %s...' % (kaldi_model, kaldi_model_dir))
-start_time = time.time()
-nnet3_model = KaldiNNet3OnlineModel ( kaldi_model_dir, kaldi_model )
-logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
-asr_decoders = {} # location -> decoder
+kernal.setup_asr (kaldi_model_dir, kaldi_model)
 
 #
 # state lock

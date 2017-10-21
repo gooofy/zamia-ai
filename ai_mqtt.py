@@ -108,8 +108,9 @@ do_asr          = True
 attention       = 0
 do_rec          = False
 att_force       = False
-astr            = ''
+pstr            = '***'
 hstr            = ''
+astr            = ''
 audio_cnt       = 0
 
 # audio recording state
@@ -133,13 +134,14 @@ def on_connect(client, userdata, flag, rc):
 
 def publish_state(client):
 
-    global attention, hstr, astr, state_lock
+    global attention, pstr, hstr, astr, state_lock
 
     state_lock.acquire()
     try:
         data = {}
 
         data['attention'] = attention
+        data['pstr']      = pstr
         data['hstr']      = hstr
         data['astr']      = astr
 
@@ -153,7 +155,7 @@ def on_message(client, userdata, message):
 
     global kernal, lang, state_lock    
     global do_listen, do_asr, attention, do_rec, att_force
-    global wfs, vf_login, rec_dir, audiofns, hstr, astr, audio_cnt
+    global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -185,8 +187,9 @@ def on_message(client, userdata, message):
             confidence  = 0.0
 
             audio_cnt += 1
-            hstr = '.' * (audio_cnt/4)
-            astr = ''
+            pstr = '.' * (audio_cnt/10 + 1)
+            # hstr = ''
+            # astr = ''
 
             if do_rec:
 
@@ -223,7 +226,9 @@ def on_message(client, userdata, message):
 
                 if do_finalize:
 
-                    hstr = audiofns[loc]
+                    afn_parts = audiofns[loc].split('/')
+
+                    pstr = afn_parts[len(afn_parts)-1]
                     logging.info('audiofn %s written.' % audiofns[loc])
 
                     wfs[loc].close()  
@@ -232,7 +237,7 @@ def on_message(client, userdata, message):
             else:
                 audiofns[loc] = ''
                 if do_finalize:
-                        hstr = '***'
+                        pstr = '***'
 
             if do_finalize:
                 audio_cnt = 0
@@ -248,6 +253,7 @@ def on_message(client, userdata, message):
                     if hstr2:
                         
                         hstr = hstr2
+                        astr = '...'
                         data = {}
 
                         data['lang'] = lang

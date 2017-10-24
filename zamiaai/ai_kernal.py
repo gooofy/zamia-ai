@@ -999,7 +999,7 @@ class AIKernal(object):
                     logging.info('%10.8f %s' % (sim, location))
                     logging.info('    %s' % (utts[location]))
 
-                    res[utt1].append((sim, location))
+                    res[utt1].append((sim, location, utts[location]))
 
                     cnt += 1
                     if cnt>5:

@@ -121,10 +121,11 @@ class AIKernal(object):
         self.dummyloc   = SourceLocation ('<rt>')
 
         #
-        # word2vec (on-demand model loading)
+        # alignment / word2vec (on-demand model loading)
         #
-        self.w2v_model = None
-        self.w2v_lang  = None
+        self.w2v_model          = None
+        self.w2v_lang           = None
+        self.w2v_all_utterances = []
 
         #
         # load modules, if requested
@@ -940,28 +941,35 @@ class AIKernal(object):
         for utt in utts:
             print (utt)
 
-    def align_utterances (self, lang, utterances):
-
-        all_utterances = []
+    def setup_align_utterances (self, lang):
+        if self.w2v_model and self.w2v_lang == lang:
+            return
 
         logging.debug('loading all utterances from db...')
+
+        self.w2v_all_utterances = []
         req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
         for dr in req:
-            all_utterances.append((dr.utterance, dr.module, dr.loc_fn, dr.loc_line))
+            self.w2v_all_utterances.append((dr.utterance, dr.module, dr.loc_fn, dr.loc_line))
 
         if not self.w2v_model:
             from gensim.models import word2vec
 
-        if not self.w2v_model or self.w2v_lang != lang:
-            model_fn  = self.config.get('semantics', 'word2vec_model_%s' % lang)
-            logging.debug ('loading word2vec model %s ...' % model_fn)
-            logging.getLogger('gensim.models.word2vec').setLevel(logging.WARNING)
-            self.w2v_model = word2vec.Word2Vec.load_word2vec_format(model_fn, binary=True)
-            self.w2v_lang = lang
-            #list containing names of words in the vocabulary
-            self.w2v_index2word_set = set(self.w2v_model.index2word)
-            logging.debug ('loading word2vec model %s ... done' % model_fn)
-            
+        model_fn  = self.config.get('semantics', 'word2vec_model_%s' % lang)
+        logging.debug ('loading word2vec model %s ...' % model_fn)
+        logging.getLogger('gensim.models.word2vec').setLevel(logging.WARNING)
+        self.w2v_model = word2vec.Word2Vec.load_word2vec_format(model_fn, binary=True)
+        self.w2v_lang = lang
+        #list containing names of words in the vocabulary
+        self.w2v_index2word_set = set(self.w2v_model.index2word)
+        logging.debug ('loading word2vec model %s ... done' % model_fn)
+
+    def align_utterances (self, lang, utterances):
+
+        self.setup_align_utterances(lang)
+
+        res = {}
+
         for utt1 in utterances:
             try:
                 utt1t = tokenize(utt1, lang=lang)
@@ -970,7 +978,7 @@ class AIKernal(object):
                 sims = {} # location -> score
                 utts = {} # location -> utterance
 
-                for utt2, module, loc_fn, loc_line in all_utterances:
+                for utt2, module, loc_fn, loc_line in self.w2v_all_utterances:
                     try:
                         utt2t = tokenize(utt2, lang=lang)
 
@@ -986,14 +994,20 @@ class AIKernal(object):
                         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
                 logging.info('sims for %s' % repr(utt1))
                 cnt = 0
+                res[utt1] = []
                 for sim, location in sorted( ((v,k) for k,v in sims.iteritems()), reverse=True):
                     logging.info('%10.8f %s' % (sim, location))
                     logging.info('    %s' % (utts[location]))
+
+                    res[utt1].append((sim, location))
+
                     cnt += 1
                     if cnt>5:
                         break
             except:
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+
+        return res
 
     #
     # TTS support

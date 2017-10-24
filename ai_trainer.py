@@ -37,11 +37,12 @@ import curses.textpad
 import locale
 import wave
 import struct
+import json
 
 from optparse               import OptionParser
 from StringIO               import StringIO
 from zamiaprolog.builtins   import ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logic      import Predicate
+from zamiaprolog.logic      import Predicate, Clause
 from zamiaprolog.runtime    import PROLOG_LOGGER_NAME
 from zamiaprolog.errors     import PrologError, PrologRuntimeError
 from aiprolog.runtime       import USER_PREFIX
@@ -63,12 +64,11 @@ FRAMES_PER_BUFFER = SAMPLE_RATE * BUFFER_DURATION / 1000
 
 hstr       = u''
 prompt     = u''
-astr       = u''
-score      = 0.0
 inp        = None
+responses  = []
 recording  = []
 
-match_module   = None
+match_module   = 'personality'
 match_loc_fn   = None
 match_loc_line = None
 
@@ -110,69 +110,46 @@ def do_rec():
 
 def do_process_input():
 
-    global stdscr, prompt, astr, score, res, prev_context, lang, inp
+    global stdscr, prompt, res, prev_context, lang, inp, responses, kernal
+    global match_module, match_loc_fn, match_loc_line
 
     res, cur_context = kernal._setup_context ( user          = AI_USER, 
                                                lang          = lang, 
                                                inp           = tokenize(prompt, lang=lang),
                                                prev_context  = prev_context,
                                                prev_res      = res)
+
     inp = kernal._compute_net_input (res, cur_context)
 
-    # FIXME: remove old code
+    #
+    # see if this input sequence is already covered by our training data
+    #
 
-    score, resps, actions, solutions = kernal.process_input(prompt, kernal.nlp_model.lang, USER_URI)
-
-    # if we have multiple responses, pick one at random
-
-    if len(resps)>0:
-
-        idx = random.randint(0, len(resps)-1)
-
-        # apply DB overlay, if any
-        ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-        if ovl:
-            ovl.do_apply(AI_MODULE, kernal.db, commit=True)
-
-        acts = actions[idx]
-
-        resp = resps[idx]
-        logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
-
-        astr = u' '.join(resp)
-        for act in acts:
-            astr.append(repr(act))
-
-    else:
-
-        astr = '*** NO SOLUTION FOUND ***'
-        score = 0.0
-
-    do_lookup_prompt()
-
-def do_lookup_prompt():
-
-    global prompt, kernal
-    global match_module, match_loc_fn, match_loc_line
-
-    utterance = u' '.join(tokenize(prompt, lang=lang))
-
-    # look for exact utterance matches in our training data
-    
-    match_module   = None
+    responses      = []
     match_loc_fn   = None
     match_loc_line = None
 
     for tdr in kernal.session.query(model.TrainingData).filter(model.TrainingData.lang  == lang,
-                                                               model.TrainingData.utterance == utterance,
-                                                               model.TrainingData.prio >= 0):
+                                                               model.TrainingData.inp   == json.dumps(inp)):
+
+        acode     = json.loads (tdr.resp)
+        pcode     = kernal._reconstruct_prolog_code (acode)
+        clause    = Clause (None, pcode, location=kernal.dummyloc)
+        solutions = kernal.rt.search (clause, env=res)
 
         match_module   = tdr.module
         match_loc_fn   = tdr.loc_fn
         match_loc_line = tdr.loc_line
-    
-        break
 
+        # import pdb; pdb.set_trace()
+
+        for solution in solutions:
+
+            actual_out, actual_actions, score = kernal._extract_response (cur_context, solution)
+
+            responses.append ((pcode, actual_out, actual_actions, score))
+
+    prev_context = cur_context
 
 def do_playback():
 
@@ -200,8 +177,51 @@ def do_edit_prompt():
 
     do_process_input()
 
+def do_change_module():
 
+    global stdcr, match_module
 
+    match_module = misc.edit_popup(stdscr, ' Module ', match_module)
+
+def do_align_module():
+
+    global stdscr, match_module, kernal, prompt, lang
+
+    misc.message_popup(stdscr, 'Align...', 'Matching prompt against existing utterances...')
+    matches = kernal.align_utterances(lang=lang, utterances=[prompt])
+
+    msg = u''
+
+    for i, res in enumerate(matches[prompt]):
+        sim, loc, utt = res
+        msg += u'%d %s\n   %s\n\n' % (i, loc, utt)
+        if i==4:
+            break
+
+    msg += 'Please select 0-%d >' % i
+
+    stdscr.refresh()
+    misc.message_popup(stdscr, 'Alignment Results', msg)
+
+    while True:
+        c = stdscr.getch()
+        if c == ord('0'):
+            match_location = matches[prompt][0][1]
+            break    
+        if c == ord('1'):
+            match_location = matches[prompt][1][1]
+            break    
+        if c == ord('2'):
+            match_location = matches[prompt][2][1]
+            break    
+        if c == ord('3'):
+            match_location = matches[prompt][3][1]
+            break    
+        if c == ord('4'):
+            match_location = matches[prompt][4][1]
+            break    
+
+    match_module = match_location.split(':')[0]
 
 #
 # main curses interface
@@ -209,7 +229,7 @@ def do_edit_prompt():
 
 def paint_main():
 
-    global stdscr, hstr, astr, score, prompt, inp
+    global stdscr, hstr, responses, prompt, inp
     global match_module, match_loc_fn, match_loc_line
 
     stdscr.clear()
@@ -231,29 +251,34 @@ def paint_main():
     # body
 
     stdscr.insstr(2, 2, 'ASR Result: (R:Record, P:Playback)', curses.A_DIM)
-    stdscr.insstr(3, 2, hstr.encode('utf8'), curses.A_BOLD)
+    stdscr.insstr(3, 4, hstr.encode('utf8'), curses.A_BOLD)
 
     stdscr.insstr(5, 2, 'Prompt: (E:Edit)', curses.A_DIM)
-    stdscr.insstr(6, 2, prompt.encode('utf8'), curses.A_BOLD)
+    stdscr.insstr(6, 4, prompt.encode('utf8'), curses.A_BOLD)
 
     stdscr.insstr(8, 2, 'Net Input:', curses.A_DIM)
-    stdscr.insstr(9, 2, repr(inp), curses.A_BOLD)
+    stdscr.insstr(9, 4, repr(inp), curses.A_BOLD)
 
-    stdscr.insstr(11, 2, 'Response (score: %f):' % score, curses.A_DIM)
-    stdscr.insstr(12, 2, astr.encode('utf8'), curses.A_BOLD)
-
+    y = 11
     if match_loc_fn:
-        stdscr.insstr(14, 2, 'Covered in: %s %s:%d' % (match_module, match_loc_fn, match_loc_line), curses.A_BOLD)
+        stdscr.insstr(y, 2, 'Covered in: %s %s:%d' % (match_module, match_loc_fn, match_loc_line), curses.A_DIM)
+        y += 1
+        for pcode, actual_out, actual_actions, score in responses:
+            # stdscr.insstr(y, 2, '%s' % (repr(pcode)), curses.A_DIM)
+            stdscr.insstr(y, 4, '%5.1f %s %s' % (score, u' '.join(actual_out), repr(actual_actions)), curses.A_BOLD)
+            y += 1
     else:
-        stdscr.insstr(15, 2, 'Not covered by DB, alignment suggests module ...', curses.A_BOLD)
-
+        stdscr.insstr(y, 2, 'Not covered by DB. Current module (M:Change Module):', curses.A_DIM)
+        y += 1
+        stdscr.insstr(y, 4, '%s' % match_module, curses.A_BOLD)
+        y += 1
 
     # footer
 
     stdscr.insstr(my-2, 0,     " R:Record   E:Prompt   P:Playback                       ", curses.A_REVERSE )
-    stdscr.insstr(my-1, 0,     "                                                        ", curses.A_REVERSE )
+    stdscr.insstr(my-1, 0,     " Module: M:Change  A:Align                              ", curses.A_REVERSE )
     stdscr.insstr(my-2, mx-40, "                                        ", curses.A_REVERSE )
-    stdscr.insstr(my-1, mx-40, "                                 Q:Quit ", curses.A_REVERSE )
+    stdscr.insstr(my-1, mx-40, "                         H:Help  Q:Quit ", curses.A_REVERSE )
     stdscr.refresh()
 
 #
@@ -319,60 +344,61 @@ curses.noecho()
 curses.cbreak()
 stdscr.keypad(1)
 
-paint_main()
-
-#
-# pulseaudio recorder / player
-#
-
-misc.message_popup(stdscr, 'Initializing...', 'Init Pulseaudio...')
-rec = PulseRecorder (source, SAMPLE_RATE, volume)
-player = PulsePlayer('Zamia AI Trainer')
-paint_main()
-logging.debug ('PulseRecorder initialized.')
-
-#
-# VAD
-#
-
-misc.message_popup(stdscr, 'Initializing...', 'Init VAD...')
-vad = VAD(aggressiveness=aggressiveness, sample_rate=SAMPLE_RATE)
-paint_main()
-logging.debug ('VAD initialized.')
-
-#
-# setup AI Kernal
-#
-
-misc.message_popup(stdscr, 'Initializing...', 'Init AI Kernal...')
-kernal = AIKernal(load_all_modules=True)
-kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
-paint_main()
-logging.debug ('AI kernal initialized.')
-
-#
-# TTS
-#
-
-misc.message_popup(stdscr, 'Initializing...', 'Init TTS...')
-kernal.setup_tts (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
-paint_main()
-logging.debug ('TTS initialized.')
-
-#
-# ASR
-#
-
-misc.message_popup(stdscr, 'Initializing...', 'Init ASR...')
-kernal.setup_asr (kaldi_model_dir, kaldi_model)
-paint_main()
-logging.debug ('ASR initialized.')
-
-#
-# main loop
-#
-
 try:
+
+    paint_main()
+
+    #
+    # pulseaudio recorder / player
+    #
+
+    misc.message_popup(stdscr, 'Initializing...', 'Init Pulseaudio...')
+    rec = PulseRecorder (source, SAMPLE_RATE, volume)
+    player = PulsePlayer('Zamia AI Trainer')
+    paint_main()
+    logging.debug ('PulseRecorder initialized.')
+
+    #
+    # VAD
+    #
+
+    misc.message_popup(stdscr, 'Initializing...', 'Init VAD...')
+    vad = VAD(aggressiveness=aggressiveness, sample_rate=SAMPLE_RATE)
+    paint_main()
+    logging.debug ('VAD initialized.')
+
+    #
+    # setup AI Kernal
+    #
+
+    misc.message_popup(stdscr, 'Initializing...', 'Init AI Kernal...')
+    kernal = AIKernal(load_all_modules=True)
+    # kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
+    # kernal.setup_align_utterances(lang=lang)
+    paint_main()
+    logging.debug ('AI kernal initialized.')
+
+    #
+    # TTS
+    #
+
+    misc.message_popup(stdscr, 'Initializing...', 'Init TTS...')
+    kernal.setup_tts (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
+    paint_main()
+    logging.debug ('TTS initialized.')
+
+    #
+    # ASR
+    #
+
+    misc.message_popup(stdscr, 'Initializing...', 'Init ASR...')
+    kernal.setup_asr (kaldi_model_dir, kaldi_model)
+    paint_main()
+    logging.debug ('ASR initialized.')
+
+    #
+    # main loop
+    #
 
     while True:
     
@@ -387,11 +413,17 @@ try:
             do_playback()
         elif c == ord('e'):
             do_edit_prompt()
+        elif c == ord('m'):
+            do_change_module()
+        elif c == ord('a'):
+            do_align_module()
 
 except:
     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
 finally:
+
+    logging.info('resetting curses...')
 
     curses.nocbreak(); stdscr.keypad(0); curses.echo()
     curses.endwin()

@@ -246,7 +246,7 @@ answer_politician_predecessor_tokens(en, TS, TE) :-
 
     ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, en, HLABEL),
@@ -255,7 +255,7 @@ answer_politician_predecessor_tokens(en, TS, TE) :-
 
     r_score(C, 100.0),
 
-    C:mem|f1pat is PREDECESSOR,
+    C:mem|f1pat := PREDECESSOR,
     rdfsLabel(PREDECESSOR, en, PREDLABEL),
 
     or ("{PREDLABEL,s} was the predecessor of {HLABEL,s}, I think.",
@@ -265,7 +265,7 @@ answer_politician_predecessor_tokens(de, TS, TE) :-
 
     ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, de, HLABEL),
@@ -274,7 +274,7 @@ answer_politician_predecessor_tokens(de, TS, TE) :-
 
     r_score(C, 100.0),
 
-    C:mem|f1pat is PREDECESSOR,
+    C:mem|f1pat := PREDECESSOR,
     rdfsLabel(PREDECESSOR, de, PREDLABEL),
 
     if is_male(PREDECESSOR) then
@@ -336,7 +336,7 @@ answer_politician_successor_tokens(en, TS, TE) :-
 
     ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, en, HLABEL),
@@ -345,7 +345,7 @@ answer_politician_successor_tokens(en, TS, TE) :-
 
     r_score(C, 100.0),
 
-    C:mem|f1pat is SUCCESSOR,
+    C:mem|f1pat := SUCCESSOR,
     rdfsLabel(SUCCESSOR, en, SUCCLABEL),
 
     or ("{SUCCLABEL,s} was the successor of {HLABEL,s}, I think.",
@@ -355,7 +355,7 @@ answer_politician_successor_tokens(de, TS, TE) :-
 
     ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, de, HLABEL),
@@ -364,7 +364,7 @@ answer_politician_successor_tokens(de, TS, TE) :-
 
     r_score(C, 100.0),
 
-    C:mem|f1pat is SUCCESSOR,
+    C:mem|f1pat := SUCCESSOR,
     rdfsLabel(SUCCESSOR, de, SUCCLABEL),
 
     if is_male(SUCCESSOR) then

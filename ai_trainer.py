@@ -229,7 +229,7 @@ def do_align_module():
 
 def paint_main():
 
-    global stdscr, hstr, responses, prompt, inp
+    global stdscr, hstr, responses, prompt, inp, prev_context, kernal
     global match_module, match_loc_fn, match_loc_line
 
     stdscr.clear()
@@ -272,6 +272,30 @@ def paint_main():
         y += 1
         stdscr.insstr(y, 4, '%s' % match_module, curses.A_BOLD)
         y += 1
+
+
+    # context
+
+    if prev_context:
+
+        y = 2
+        stdscr.insstr(y, 80, 'Context: (%s)' % prev_context.name, curses.A_DIM)
+        y += 1
+
+        s1s = kernal.rt.search_predicate ('context', [prev_context, '_1', '_2'], env={})
+        for s1 in s1s:
+            stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
+            y += 1
+        y += 1
+
+        stdscr.insstr(y, 80, 'Mem:', curses.A_DIM)
+        y += 1
+
+        s1s = kernal.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env={})
+        for s1 in s1s:
+            stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
+            y += 1
+
 
     # footer
 
@@ -377,6 +401,12 @@ try:
     # kernal.setup_align_utterances(lang=lang)
     paint_main()
     logging.debug ('AI kernal initialized.')
+
+    #
+    # prev context
+    #
+
+    prev_context = kernal.find_prev_context(USER_URI)
 
     #
     # TTS

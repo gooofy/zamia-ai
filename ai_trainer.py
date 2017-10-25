@@ -72,8 +72,7 @@ match_module   = 'personality'
 match_loc_fn   = None
 match_loc_line = None
 
-prev_context   = None
-prev_res       = {}
+cur_context    = None
 
 def do_rec():
 
@@ -113,16 +112,16 @@ def do_rec():
 
 def do_process_input():
 
-    global stdscr, prompt, prev_res, prev_context, lang, inp, responses, kernal
+    global stdscr, prompt, cur_context, next_context, lang, inp, responses, kernal
     global match_module, match_loc_fn, match_loc_line
 
-    res, cur_context = kernal._setup_context ( user          = AI_USER, 
-                                               lang          = lang, 
-                                               inp           = tokenize(prompt, lang=lang),
-                                               prev_context  = prev_context,
-                                               prev_res      = prev_res)
+    next_res, next_context = kernal._setup_context ( user          = USER_URI, 
+                                                     lang          = lang, 
+                                                     inp           = tokenize(prompt, lang=lang),
+                                                     prev_context  = cur_context,
+                                                     prev_res      = {})
 
-    inp = kernal._compute_net_input (res, cur_context)
+    inp = kernal._compute_net_input (next_res, next_context)
 
     #
     # see if this input sequence is already covered by our training data
@@ -139,11 +138,11 @@ def do_process_input():
         acode     = json.loads (tdr.resp)
         pcode     = kernal._reconstruct_prolog_code (acode)
         clause    = Clause (None, pcode, location=kernal.dummyloc)
-        solutions = kernal.rt.search (clause, env=res)
+        solutions = kernal.rt.search (clause, env=next_res)
 
         for solution in solutions:
 
-            actual_out, actual_actions, score = kernal._extract_response (cur_context, solution)
+            actual_out, actual_actions, score = kernal._extract_response (next_context, solution)
 
             if score > highscore:
                 responses = []
@@ -158,12 +157,9 @@ def do_process_input():
             match_loc_fn   = tdr.loc_fn
             match_loc_line = tdr.loc_line
 
-    prev_context = cur_context
-    prev_res     = res
-
 def do_apply_solution (sidx):
 
-    global stdscr, responses, kernal
+    global stdscr, responses, kernal, cur_context, next_context
 
     if sidx >= len(responses):
         misc.message_popup(stdscr, 'Error', 'Solution #%d does not exist.' % sidx)
@@ -174,6 +170,9 @@ def do_apply_solution (sidx):
     ovl = responses[sidx][4].get(ASSERT_OVERLAY_VAR_NAME)
     if ovl:
         ovl.do_apply(AI_MODULE, kernal.db, commit=True)
+
+    responses = []
+    cur_context = next_context
 
 
 def do_playback():
@@ -276,7 +275,7 @@ FILTER_HEADS=set([ 'c_say', 'c_score', 'lang', 'prev', 'time', 'tokens', 'user' 
 
 def paint_main():
 
-    global stdscr, hstr, responses, prompt, inp, prev_context, prev_res, kernal
+    global stdscr, hstr, responses, prompt, inp, cur_context, kernal
     global match_module, match_loc_fn, match_loc_line
 
     stdscr.clear()
@@ -339,13 +338,13 @@ def paint_main():
 
     # context
 
-    if prev_context:
+    if cur_context:
 
         y = 2
-        stdscr.insstr(y, 80, 'Context: (%s)' % prev_context.name, curses.A_DIM)
+        stdscr.insstr(y, 80, 'Context: (%s)' % cur_context.name, curses.A_DIM)
         y += 1
 
-        s1s = kernal.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=prev_res)
+        s1s = kernal.rt.search_predicate ('context', [cur_context, '_1', '_2'], env={})
         for s1 in s1s:
             stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
             y += 1
@@ -354,7 +353,7 @@ def paint_main():
         stdscr.insstr(y, 80, 'Mem:', curses.A_DIM)
         y += 1
 
-        s1s = kernal.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=prev_res)
+        s1s = kernal.rt.search_predicate ('mem', [cur_context, '_1', '_2'], env={})
         for s1 in s1s:
             stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
             y += 1
@@ -466,10 +465,10 @@ try:
     logging.debug ('AI kernal initialized.')
 
     #
-    # prev context
+    # context
     #
 
-    prev_context = kernal.find_prev_context(USER_URI)
+    cur_context = kernal.find_prev_context(USER_URI)
 
     #
     # TTS

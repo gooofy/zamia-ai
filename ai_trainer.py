@@ -38,6 +38,7 @@ import locale
 import wave
 import struct
 import json
+import datetime
 
 from optparse               import OptionParser
 from StringIO               import StringIO
@@ -276,6 +277,39 @@ def do_help():
 
     c = stdscr.getch()
 
+def do_save_audio ():
+
+    global prompt, vf_login, rec_dir, recording, stdscr
+
+    ds = datetime.date.strftime(datetime.date.today(), '%Y%m%d')
+    audiodirfn = '%s/%s-%s-rec/wav' % (rec_dir, vf_login, ds)
+    logging.debug('audiodirfn: %s' % audiodirfn)
+    misc.mkdirs(audiodirfn)
+
+    cnt = 0
+    while True:
+        cnt += 1
+        audiofn = '%s/de5-%03d.wav' % (audiodirfn, cnt)
+        if not os.path.isfile(audiofn):
+            break
+
+    logging.debug('audiofn: %s' % audiofn)
+
+    # create wav file 
+
+    wf = wave.open(audiofn, 'wb')
+    wf.setnchannels(1)
+    wf.setsampwidth(2)
+    wf.setframerate(SAMPLE_RATE)
+
+    packed_audio = struct.pack('%sh' % len(recording), *recording)
+    wf.writeframes(packed_audio)
+    wf.close()  
+
+    misc.message_popup(stdscr, 'WAVE file written', audiofn)
+
+    stdscr.getch()
+
 #
 # main curses interface
 #
@@ -370,9 +404,9 @@ def paint_main():
 
     # footer
 
-    stdscr.insstr(my-2, 0,     " R:Record   E:Prompt   P:Playback                       ", curses.A_REVERSE )
-    stdscr.insstr(my-1, 0,     " Module: M:Change  A:Align                              ", curses.A_REVERSE )
-    stdscr.insstr(my-2, mx-40, " 0-9:Apply Solution  C:Clear Context    ", curses.A_REVERSE )
+    stdscr.insstr(my-2, 0,     " R:Record   E:Prompt   P:Playback   S:Save Audio        ", curses.A_REVERSE )
+    stdscr.insstr(my-1, 0,     " Module: M:Change   A:Align                             ", curses.A_REVERSE )
+    stdscr.insstr(my-2, mx-40, " 0-9:Apply Solution   C:Clear Context   ", curses.A_REVERSE )
     stdscr.insstr(my-1, mx-40, "                         H:Help  Q:Quit ", curses.A_REVERSE )
     stdscr.refresh()
 
@@ -524,6 +558,8 @@ try:
             do_apply_solution(c - ord('0'))
         elif c == ord('c'):
             do_clear_context()
+        elif c == ord('s'):
+            do_save_audio()
 
 except:
     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

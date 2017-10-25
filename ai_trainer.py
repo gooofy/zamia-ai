@@ -174,6 +174,15 @@ def do_apply_solution (sidx):
     responses = []
     cur_context = next_context
 
+def do_clear_context ():
+
+    global cur_context, prompt
+
+    cur_context = None
+
+    if prompt:
+        do_process_input()
+
 
 def do_playback():
 
@@ -341,7 +350,7 @@ def paint_main():
     if cur_context:
 
         y = 2
-        stdscr.insstr(y, 80, 'Context: (%s)' % cur_context.name, curses.A_DIM)
+        stdscr.insstr(y, 80, '%s: (C:Clear Context)' % cur_context.name, curses.A_DIM)
         y += 1
 
         s1s = kernal.rt.search_predicate ('context', [cur_context, '_1', '_2'], env={})
@@ -363,7 +372,7 @@ def paint_main():
 
     stdscr.insstr(my-2, 0,     " R:Record   E:Prompt   P:Playback                       ", curses.A_REVERSE )
     stdscr.insstr(my-1, 0,     " Module: M:Change  A:Align                              ", curses.A_REVERSE )
-    stdscr.insstr(my-2, mx-40, " 0-9:Apply Solution                     ", curses.A_REVERSE )
+    stdscr.insstr(my-2, mx-40, " 0-9:Apply Solution  C:Clear Context    ", curses.A_REVERSE )
     stdscr.insstr(my-1, mx-40, "                         H:Help  Q:Quit ", curses.A_REVERSE )
     stdscr.refresh()
 
@@ -513,6 +522,8 @@ try:
             do_help()
         elif c >= ord('0') and c <= ord('9'):
             do_apply_solution(c - ord('0'))
+        elif c == ord('c'):
+            do_clear_context()
 
 except:
     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

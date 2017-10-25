@@ -223,6 +223,26 @@ def do_align_module():
 
     match_module = match_location.split(':')[0]
 
+def do_help():
+
+    global stdscr
+
+    misc.message_popup(stdscr, 'Help', """
+    simple question - response:
+
+    "what are you called?",
+    "I am called HAL 9000".
+
+    context, patterns, variables::
+
+    context(topic, wdeProgrammingLanguage),
+    "what are you called (by the way|again|)?",
+    or ( "I am called {self:rdfsLabel|en, s}",
+         "My name is {self:rdfsLabel|en, s}").
+    """)
+
+    c = stdscr.getch()
+
 #
 # main curses interface
 #
@@ -447,6 +467,8 @@ try:
             do_change_module()
         elif c == ord('a'):
             do_align_module()
+        elif c == ord('h'):
+            do_help()
 
 except:
     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

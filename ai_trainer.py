@@ -106,6 +106,9 @@ def do_rec():
 
     prompt = hstr
 
+    stdscr.refresh()
+    swin = misc.message_popup(stdscr, 'Processing input...', prompt)
+
     do_process_input()
 
 def do_process_input():
@@ -128,6 +131,7 @@ def do_process_input():
     responses      = []
     match_loc_fn   = None
     match_loc_line = None
+    highscore      = 0.0
 
     for tdr in kernal.session.query(model.TrainingData).filter(model.TrainingData.lang  == lang,
                                                                model.TrainingData.inp   == json.dumps(inp)):
@@ -137,19 +141,39 @@ def do_process_input():
         clause    = Clause (None, pcode, location=kernal.dummyloc)
         solutions = kernal.rt.search (clause, env=res)
 
-        match_module   = tdr.module
-        match_loc_fn   = tdr.loc_fn
-        match_loc_line = tdr.loc_line
-
-        # import pdb; pdb.set_trace()
-
         for solution in solutions:
 
             actual_out, actual_actions, score = kernal._extract_response (cur_context, solution)
 
-            responses.append ((pcode, actual_out, actual_actions, score))
+            if score > highscore:
+                responses = []
+                highscore = score
+
+            if score < highscore:
+                continue
+
+            responses.append ((pcode, actual_out, actual_actions, score, solution))
+
+            match_module   = tdr.module
+            match_loc_fn   = tdr.loc_fn
+            match_loc_line = tdr.loc_line
 
     prev_context = cur_context
+
+def do_apply_solution (sidx):
+
+    global stdscr, responses, kernal
+
+    if sidx >= len(responses):
+        misc.message_popup(stdscr, 'Error', 'Solution #%d does not exist.' % sidx)
+        stdscr.getch()
+        return
+
+    # apply DB overlay, if any
+    ovl = responses[sidx][4].get(ASSERT_OVERLAY_VAR_NAME)
+    if ovl:
+        ovl.do_apply(AI_MODULE, kernal.db, commit=True)
+
 
 def do_playback():
 
@@ -247,6 +271,8 @@ def do_help():
 # main curses interface
 #
 
+FILTER_HEADS=set([ 'c_say', 'c_score', 'lang', 'prev', 'time', 'tokens', 'user' ])
+
 def paint_main():
 
     global stdscr, hstr, responses, prompt, inp, prev_context, kernal
@@ -283,10 +309,26 @@ def paint_main():
     if match_loc_fn:
         stdscr.insstr(y, 2, 'Covered in: %s %s:%d' % (match_module, match_loc_fn, match_loc_line), curses.A_DIM)
         y += 1
-        for pcode, actual_out, actual_actions, score in responses:
+        i = 0
+        for pcode, actual_out, actual_actions, score, solution in responses:
             # stdscr.insstr(y, 2, '%s' % (repr(pcode)), curses.A_DIM)
-            stdscr.insstr(y, 4, '%5.1f %s %s' % (score, u' '.join(actual_out), repr(actual_actions)), curses.A_BOLD)
+            stdscr.insstr(y, 4, '%2d %5.1f %s %s' % (i, score, u' '.join(actual_out), repr(actual_actions)), curses.A_BOLD)
             y += 1
+
+            ovl = solution.get(ASSERT_OVERLAY_VAR_NAME)
+            if ovl:
+                for k in sorted(ovl.d_retracted):
+                    for p in ovl.d_retracted[k]:
+                        stdscr.insstr(y, 7, '-%s' % unicode(p))
+                        y+=1
+                for k in sorted(ovl.d_assertz):
+                    for clause in ovl.d_assertz[k]:
+                        if clause.head.name in FILTER_HEADS:
+                            continue
+                        stdscr.insstr(y, 7, '+%s' % unicode(clause))
+                        y+=1
+
+            i += 1
     else:
         stdscr.insstr(y, 2, 'Not covered by DB. Current module (M:Change Module):', curses.A_DIM)
         y += 1
@@ -321,7 +363,7 @@ def paint_main():
 
     stdscr.insstr(my-2, 0,     " R:Record   E:Prompt   P:Playback                       ", curses.A_REVERSE )
     stdscr.insstr(my-1, 0,     " Module: M:Change  A:Align                              ", curses.A_REVERSE )
-    stdscr.insstr(my-2, mx-40, "                                        ", curses.A_REVERSE )
+    stdscr.insstr(my-2, mx-40, " 0-9:Apply Solution                     ", curses.A_REVERSE )
     stdscr.insstr(my-1, mx-40, "                         H:Help  Q:Quit ", curses.A_REVERSE )
     stdscr.refresh()
 
@@ -469,6 +511,8 @@ try:
             do_align_module()
         elif c == ord('h'):
             do_help()
+        elif c >= ord('0') and c <= ord('9'):
+            do_apply_solution(c - ord('0'))
 
 except:
     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

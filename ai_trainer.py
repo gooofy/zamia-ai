@@ -73,7 +73,7 @@ match_loc_fn   = None
 match_loc_line = None
 
 prev_context   = None
-res            = {}
+prev_res       = {}
 
 def do_rec():
 
@@ -113,14 +113,14 @@ def do_rec():
 
 def do_process_input():
 
-    global stdscr, prompt, res, prev_context, lang, inp, responses, kernal
+    global stdscr, prompt, prev_res, prev_context, lang, inp, responses, kernal
     global match_module, match_loc_fn, match_loc_line
 
     res, cur_context = kernal._setup_context ( user          = AI_USER, 
                                                lang          = lang, 
                                                inp           = tokenize(prompt, lang=lang),
                                                prev_context  = prev_context,
-                                               prev_res      = res)
+                                               prev_res      = prev_res)
 
     inp = kernal._compute_net_input (res, cur_context)
 
@@ -159,6 +159,7 @@ def do_process_input():
             match_loc_line = tdr.loc_line
 
     prev_context = cur_context
+    prev_res     = res
 
 def do_apply_solution (sidx):
 
@@ -275,7 +276,7 @@ FILTER_HEADS=set([ 'c_say', 'c_score', 'lang', 'prev', 'time', 'tokens', 'user' 
 
 def paint_main():
 
-    global stdscr, hstr, responses, prompt, inp, prev_context, kernal
+    global stdscr, hstr, responses, prompt, inp, prev_context, prev_res, kernal
     global match_module, match_loc_fn, match_loc_line
 
     stdscr.clear()
@@ -344,7 +345,7 @@ def paint_main():
         stdscr.insstr(y, 80, 'Context: (%s)' % prev_context.name, curses.A_DIM)
         y += 1
 
-        s1s = kernal.rt.search_predicate ('context', [prev_context, '_1', '_2'], env={})
+        s1s = kernal.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=prev_res)
         for s1 in s1s:
             stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
             y += 1
@@ -353,7 +354,7 @@ def paint_main():
         stdscr.insstr(y, 80, 'Mem:', curses.A_DIM)
         y += 1
 
-        s1s = kernal.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env={})
+        s1s = kernal.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=prev_res)
         for s1 in s1s:
             stdscr.insstr(y, 80, '%s is %s' % (s1['_1'], s1['_2']), curses.A_BOLD)
             y += 1

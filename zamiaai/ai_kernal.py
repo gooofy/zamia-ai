@@ -493,6 +493,16 @@ class AIKernal(object):
 
         return inp
 
+    def find_prev_context (self, user, env={}):
+
+        pc = None
+
+        for s in self.rt.search_predicate('user', ['_1', Predicate(user)], env=env):
+            if not pc or pc.name < s['_1'].name:
+                pc = s['_1']
+
+        return pc
+
     def _setup_context (self, user, lang, inp, prev_context, prev_res):
 
         cur_context = Predicate(do_gensym (self.rt, 'context'))

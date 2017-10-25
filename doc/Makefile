@@ -1,7 +1,7 @@
-all: semantics.html frames.html
+all: aiprolog.html frames.html
 
-semantics.html:	semantics.adoc
-	asciidoctor -r asciidoctor-diagram -a toc semantics.adoc
+aiprolog.html:	aiprolog.adoc
+	asciidoctor -r asciidoctor-diagram -a toc aiprolog.adoc
 
 frames.html:	frames.adoc
 	asciidoctor -r asciidoctor-diagram -a toc frames.adoc

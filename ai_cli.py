@@ -234,7 +234,8 @@ class AICli(cmdln.Cmdln):
 
         self.kernal.setup_tf_model('decode', True, paths[0], global_step=opts.global_step)
 
-        user_uri = USER_PREFIX + opts.username
+        user_uri    = USER_PREFIX + opts.username
+        cur_context = None
 
         while True:
 
@@ -244,7 +245,7 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                score, resps, actions, solutions = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, run_trace=opts.run_trace)
+                score, resps, actions, solutions, cur_context = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, run_trace=opts.run_trace, prev_ctx = cur_context)
 
                 for idx in range (len(resps)):
                     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))

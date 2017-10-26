@@ -153,7 +153,7 @@ def publish_state(client):
 
 def on_message(client, userdata, message):
 
-    global kernal, lang, state_lock    
+    global kernal, lang, state_lock, current_ctx
     global do_listen, do_asr, attention, do_rec, att_force
     global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt
 
@@ -281,7 +281,7 @@ def on_message(client, userdata, message):
                 logging.warn('incorrect language for model: %s' % lang)
                 return
 
-            score, resps, actions, solutions = kernal.process_input(utt, kernal.nlp_model.lang, user_uri)
+            score, resps, actions, solutions, current_ctx = kernal.process_input(utt, kernal.nlp_model.lang, user_uri, prev_ctx=current_ctx)
 
             # for idx in range (len(resps)):
             #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
@@ -434,11 +434,13 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 #
-# setup AI Kernal
+# setup AI Kernal, context
 #
 
 kernal = AIKernal(load_all_modules=True)
 kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
+
+current_ctx = kernal.find_prev_context (USER_PREFIX + AI_USER)
 
 #
 # TTS

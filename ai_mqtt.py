@@ -282,6 +282,7 @@ def on_message(client, userdata, message):
                 return
 
             score, resps, actions, solutions, current_ctx = kernal.process_input(utt, kernal.nlp_model.lang, user_uri, prev_ctx=current_ctx)
+            logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
 
             # for idx in range (len(resps)):
             #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
@@ -440,7 +441,14 @@ else:
 kernal = AIKernal(load_all_modules=True)
 kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
 
-current_ctx = kernal.find_prev_context (USER_PREFIX + AI_USER)
+user_uri = USER_PREFIX + AI_USER
+current_ctx = kernal.find_prev_context (user_uri)
+
+if current_ctx:
+    logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
+else:
+    logging.warn ('no current_ctx found for user %s ' % user_uri)
+
 
 #
 # TTS

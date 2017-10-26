@@ -513,24 +513,6 @@ class AIKernal(object):
         if ASSERT_OVERLAY_VAR_NAME in prev_res:
             res[ASSERT_OVERLAY_VAR_NAME] = prev_res[ASSERT_OVERLAY_VAR_NAME].clone()
 
-
-        if not prev_context:
-            # find prev_context for this user, if any
-            # FIXME: port, make efficient
-
-            # prev_context = None
-            # for s in self.prolog_rt.search_predicate('context', ['I', 'user', StringLiteral(user_uri)], env=env):
-
-            #     context = s['I']
-
-            #     if not prev_context:
-            #         prev_context = context
-            #         continue
-
-            #     if context.name > prev_context.name:
-            #         prev_context = context
-            pass
-
         res = do_assertz ({}, Clause ( Predicate('user',   [cur_context, Predicate(user)])  , location=self.dummyloc), res=res)
         res = do_assertz ({}, Clause ( Predicate('lang',   [cur_context, Predicate(lang)])  , location=self.dummyloc), res=res)
 
@@ -760,12 +742,11 @@ class AIKernal(object):
                 self.init_module (module_name, run_trace=run_trace)
                 self.test_module (module_name, run_trace=run_trace, test_name=test_name)
 
-    def process_input (self, utterance, utt_lang, user_uri, run_trace=False, do_eliza=True):
+    def process_input (self, utterance, utt_lang, user_uri, run_trace=False, do_eliza=True, prev_ctx=None):
 
-        """ process user input, return action(s) """
+        """ process user input, return score, responses, actions, solutions, context """
 
-        # FIXME
-        prev_context = None
+        prev_context = prev_ctx
         res          = {}
 
         tokens  = tokenize(utterance, utt_lang)
@@ -778,55 +759,83 @@ class AIKernal(object):
 
         inp = self._compute_net_input (res, cur_context)
 
-        x = self.nlp_model.compute_x(inp)
+        logging.debug('process_input: %s' % repr(inp))
 
-        # logging.debug("x: %s -> %s" % (utterance, x))
+        #
+        # do we have an exact match in our training data for this input?
+        #
 
-        source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+        solutions      = []
 
-        # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
-        # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
-        predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
-                                              encoder_inputs_length=source_len)
-
-        # for seq_batch in predicted_ids:
-        #     for k in range(5):
-        #         logging.debug('--------- k: %d ----------' % k)
-        #         seq = seq_batch[:,k]
-        #         for p in seq:
-        #             if p == -1:
-        #                 break
-        #             decoded = self.inv_output_dict[p]
-        #             logging.debug (u'%s: %s' %(p, decoded))
-
-        # extract best codes only
-
-        acodes = [[]]
-        for p in predicted_ids[0][:,0]:
-            if p == -1:
-                break
-            decoded = self.inv_output_dict[p]
-            if decoded == u'_EOS':
-                break
-            if decoded == u'__OR__':
-                acodes.append([])
-            acodes[len(acodes)-1].append(decoded)
-
-        # FIXME: for now, we try the first solution only
-        acode = acodes[0]
-
-        pcode     = self._reconstruct_prolog_code (acode)
-        logging.debug(pcode)
-        clause    = Clause (None, pcode, location=self.dummyloc)
         self.rt.set_trace(run_trace)
-        solutions = self.rt.search (clause, env=res)
+        for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
+                                                                 model.TrainingData.inp   == json.dumps(inp)):
 
-        if not solutions and do_eliza:
-            logging.info ('producing ELIZA-style response for input %s' % utterance)
-            clause = self.aip_parser.parse_line_clause_body('do_eliza(C, %s)' % utt_lang)
+            acode     = json.loads (tdr.resp)
+            pcode     = self._reconstruct_prolog_code (acode)
+            clause    = Clause (None, pcode, location=self.dummyloc)
+            sols      = self.rt.search (clause, env=res)
+
+            if sols:
+                solutions.extend(sols)
+
+        if not solutions:
+            
+            # ok, exact matching has not yielded any results -> use neural network to
+            # generate response(s)
+
+            x = self.nlp_model.compute_x(inp)
+
+            # logging.debug("x: %s -> %s" % (utterance, x))
+
+            source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+
+            # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
+            # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
+            predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
+                                                  encoder_inputs_length=source_len)
+
+            # for seq_batch in predicted_ids:
+            #     for k in range(5):
+            #         logging.debug('--------- k: %d ----------' % k)
+            #         seq = seq_batch[:,k]
+            #         for p in seq:
+            #             if p == -1:
+            #                 break
+            #             decoded = self.inv_output_dict[p]
+            #             logging.debug (u'%s: %s' %(p, decoded))
+
+            # extract best codes only
+
+            acodes = [[]]
+            for p in predicted_ids[0][:,0]:
+                if p == -1:
+                    break
+                decoded = self.inv_output_dict[p]
+                if decoded == u'_EOS':
+                    break
+                if decoded == u'__OR__':
+                    acodes.append([])
+                acodes[len(acodes)-1].append(decoded)
+
+            # FIXME: for now, we try the first solution only
+            acode = acodes[0]
+
+            pcode     = self._reconstruct_prolog_code (acode)
+            logging.debug(pcode)
+            clause    = Clause (None, pcode, location=self.dummyloc)
             solutions = self.rt.search (clause, env=res)
 
+            if not solutions and do_eliza:
+                logging.info ('producing ELIZA-style response for input %s' % utterance)
+                clause = self.aip_parser.parse_line_clause_body('do_eliza(C, %s)' % utt_lang)
+                solutions = self.rt.search (clause, env=res)
+
         self.rt.set_trace(False)
+
+        #
+        # extract highest-scoring responses only:
+        #
 
         best_score     = 0
         best_resps     = []
@@ -850,7 +859,7 @@ class AIKernal(object):
             best_actions.append(actual_actions)
             best_solutions.append(solution)
 
-        return best_score, best_resps, best_actions, best_solutions
+        return best_score, best_resps, best_actions, best_solutions, cur_context
 
     def run_cronjobs (self, module_name, force=False, run_trace=False):
 

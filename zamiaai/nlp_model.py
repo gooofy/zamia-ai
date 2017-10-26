@@ -243,7 +243,7 @@ class NLPModel(object):
 
     def compute_x(self, inp):
 
-        return list(map(lambda token: self.input_dict[token] if token in self.input_dict else UNK_ID, inp))
+        return list(map(lambda token: self.input_dict[unicode(token)] if unicode(token) in self.input_dict else UNK_ID, inp))
 
         # x = np.zeros(self.input_max_len, np.int32)
         #l = len(tokens)

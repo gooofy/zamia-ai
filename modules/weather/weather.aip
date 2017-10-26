@@ -621,3 +621,77 @@ train(de) :- context(topic, wdeWeatherForecast), "(und|) {timespec:LABEL}", inli
 train(en) :- context(topic, wdeWeatherForecast), "(and|) in {geo_location:LABEL} ?", inline answer_weather_expl_place (en, full, tstart(geo_location), tend(geo_location)).
 train(de) :- context(topic, wdeWeatherForecast), "(und|) in {geo_location:LABEL} ?", inline answer_weather_expl_place (de, full, tstart(geo_location), tend(geo_location)).
 
+%
+% weather forecast topic label
+%
+
+get_topic_label(C, en, "the weather report") :- context(C, topic, wdewdeWeatherForecast), r_score(C, 10).
+get_topic_label(C, de, "der Wetterbericht")   :- context(C, topic, wdeWeatherForecast), r_score(C, 10).
+
+
+answer_weather_report_topic(C, en) :-
+    r_score(C, 100.0),
+    or(say(C, "We have been talking about the weather report, I think."),
+       say(C, "Our topic was the weather, I believe."),
+       say(C, "Didn't we talk about the weather report?")).
+
+answer_weather_report_topic(C, de) :-
+    r_score(C, 100.0),
+    or(say(C, "Wir hatten über das Wetter gesprochen, glaube ich."),
+       say(C, "Ich denke unser Thema war der Wetterbericht."),
+       say(C, "Sprachen wir nicht über den Wetterbericht ?")).
+
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "What (were we talking|did we talk) about (again|) ?",
+    inline answer_weather_report_topic(C, en).
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "(Which|What) was our topic (again|)?",
+    inline answer_weather_report_topic(C, en).
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "Give me a hint",
+    inline answer_weather_report_topic(C, en).
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "Which topic did we have (again|)?",
+    inline answer_weather_report_topic(C, en).
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "I (think|believe) I lost my train of thought (just now|again|).",
+    inline answer_weather_report_topic(C, en).
+train(en) :-
+    context(topic, wdeWeatherForecast),
+    "(lets get|) back to our topic.",
+    inline answer_weather_report_topic(C, en).
+
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "(Wovon|Worüber|Was) (hatten|haben) wir (eben|) gesprochen?",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "(Wie|Was) war (doch gleich|gleich|) unser Thema?",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "(Hilfst Du|Hilf) mir (bitte|) auf die Sprünge?",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "Welches Thema hatten wir (doch gleich|)?",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren?",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "Jetzt habe ich (glaube ich|) den Faden verloren.",
+    inline answer_weather_report_topic(C, de).
+train(de) :-
+    context(topic, wdeWeatherForecast),
+    "Also zurück zum Thema!",
+    inline answer_weather_report_topic(C, de).
+

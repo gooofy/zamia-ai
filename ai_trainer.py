@@ -306,6 +306,16 @@ def do_save_audio ():
     wf.writeframes(packed_audio)
     wf.close()  
 
+    # append etc/prompts-original file
+
+    etcdirfn = '%s/%s-%s-rec/etc' % (rec_dir, vf_login, ds)
+    logging.debug('etcdirfn: %s' % etcdirfn)
+    misc.mkdirs(etcdirfn)
+
+    promptsfn = '%s/prompts-original' % etcdirfn
+    with codecs.open(promptsfn, 'a') as promptsf:
+        promptsf.write('de5-%03d %s\n' % (cnt, prompt))
+
     misc.message_popup(stdscr, 'WAVE file written', audiofn)
 
     stdscr.getch()

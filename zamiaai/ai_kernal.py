@@ -495,12 +495,15 @@ class AIKernal(object):
 
     def find_prev_context (self, user, env={}):
 
-        pc = None
+        pc    = None
+        ctxid = 0
 
         # logging.debug ('find_prev_context: user=%s' % user)
 
         for s in self.rt.search_predicate('user', ['_1', Predicate(user)], env=env):
-            if not pc or pc.name < s['_1'].name:
+
+            cid = int (s['_1'].name[7:])
+            if not pc or cid>ctxid:
                 pc = s['_1']
             # logging.debug ('find_prev_context: s=%s, pc=%s' % (unicode(s), unicode(pc)))
 

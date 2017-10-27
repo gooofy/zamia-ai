@@ -80,6 +80,7 @@ AUDIO_LOC_CNT     = 5        # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
+TOPIC_ASR_AUDIO   = 'ai/asr/audio'
 TOPIC_CONFIG      = 'ai/config'
 TOPIC_RESPONSE    = 'ai/response'
 TOPIC_INTENT      = 'ai/intent'
@@ -129,6 +130,7 @@ def on_connect(client, userdata, flag, rc):
         logging.info("connected OK Returned code=%s" % repr(rc))
         client.subscribe(TOPIC_INPUT_TEXT)
         client.subscribe(TOPIC_INPUT_AUDIO)
+        client.subscribe(TOPIC_ASR_AUDIO)
         client.subscribe(TOPIC_CONFIG)
         client.subscribe(TOPIC_RESPONSE)
     else:
@@ -149,7 +151,7 @@ def publish_state(client):
         data['listening'] = listening
 
         if data != old_state:
-            # logging.debug ('publish_state: %s' % repr(data))
+            logging.debug ('publish_state: %s' % repr(data))
             client.publish(TOPIC_STATE, json.dumps(data))
             old_state = data
 
@@ -163,7 +165,7 @@ def on_message(client, userdata, message):
     global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
-    # logging.debug( "message topic=%s" % message.topic)
+    logging.debug( "message topic=%s" % message.topic)
     # logging.debug( "message qos=%s" % message.qos)
     # logging.debug( "message retain flag=%s" % message.retain)
 
@@ -193,8 +195,6 @@ def on_message(client, userdata, message):
 
             audio_cnt += 1
             pstr = '.' * (audio_cnt/10 + 1)
-            # hstr = ''
-            # astr = ''
 
             if do_rec:
 
@@ -249,30 +249,45 @@ def on_message(client, userdata, message):
 
             if do_asr:
 
-                hstr2, confidence = kernal.asr_decode(loc, SAMPLE_RATE, audio, do_finalize)
+                client.publish(TOPIC_ASR_AUDIO, message.payload)
+                
 
-                if do_finalize:
-
-                    logging.info ( "asr: %9.5f %s" % (confidence, hstr))
-
-                    if hstr2:
-                        
-                        hstr = hstr2
-                        astr = '...'
-                        data = {}
-
-                        data['lang'] = lang
-                        data['utt']  = hstr
-                        data['user'] = AI_USER
-                     
-                        client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
-                        listening = False
             else:
                 if do_rec:
                     attention = 30
 
             publish_state(client)
                 
+        elif message.topic == TOPIC_ASR_AUDIO:
+
+            data = json.loads(message.payload)
+
+            audio       = data['pcm']
+            do_finalize = data['final']
+            loc         = data['loc']
+            ts          = dateutil.parser.parse(data['ts'])
+
+            hstr2, confidence = kernal.asr_decode(loc, SAMPLE_RATE, audio, do_finalize)
+
+            if do_finalize:
+
+                logging.info ( "asr: %9.5f %s" % (confidence, hstr))
+
+                if hstr2:
+                    
+                    hstr = hstr2
+                    astr = '...'
+                    data = {}
+
+                    data['lang'] = lang
+                    data['utt']  = hstr
+                    data['user'] = AI_USER
+                 
+                    client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
+                    listening = False
+
+            publish_state(client)
+
         elif message.topic == TOPIC_INPUT_TEXT:
 
             data = json.loads(message.payload)
@@ -482,7 +497,7 @@ state_lock = Lock()
 # mqtt connect
 #
 
-logging.debug ('connecting to MQTT broker %s:%d ...' % (broker_host, broker_port))
+logging.debug ('connection to MQTT broker %s:%d ...' % (broker_host, broker_port))
 
 client = mqtt.Client()
 client.username_pw_set(broker_user, broker_pw)
@@ -501,7 +516,7 @@ while not connected:
         logging.error('connection to %s:%d failed. retry in %d seconds...' % (broker_host, broker_port, RETRY_DELAY))
         time.sleep(RETRY_DELAY)
 
-logging.debug ('connecting to MQTT broker %s:%d ... connected.' % (broker_host, broker_port))
+logging.debug ('connection to MQTT broker %s:%d ... connected.' % (broker_host, broker_port))
 
 #
 # main loop - count down attention, publish state while >0

@@ -279,103 +279,60 @@ answer_weather_expl_time (de, REPORT, TIME) :-
 
     answer_weather_r (C, de, REPORT).
 
-train(en) :- "will it rain {timespec:LABEL}", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+train(en) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "(what is the likelihood of | how likely is) rain {timespec:LABEL} ?",
+        "How likely is it that it will rain {timespec:LABEL}?",
+        "(will the sun shine|will there be sunshine) {timespec:LABEL} ?",
+        "(will it|does it) rain {timespec:LABEL}?",
+        "(will rain come|is rain coming) {timespec:LABEL}?"
+       ),
+    inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
+
 test(en, t0100) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, will it rain tomorrow?",
     "tomorrow it will be mostly sunny in stuttgart with little precipitation".
-
-train(de) :- "wird es {timespec:LABEL} (regnen|Regen geben)?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0101) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wird es morgen regnen?",
-    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(what is the likelihood of | how likely is) rain? {timespec:LABEL} ?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
 test(en, t0102) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "how likely is rain the day after tomorrow?",
     "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
-
-train(de) :- "(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen {timespec:LABEL} ?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0103) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "wie groß ist die Wahrscheinlichkeit für Regen übermorgen?",
-    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "How likely is it that it will rain {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
 test(en, t0104) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, how likely is it that it will rain today?",
     "today it will be mostly sunny in stuttgart with little precipitation".
-
-train(de) :- "Wie wahrscheinlich ist es, dass es {timespec:LABEL} regnen wird?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0105) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie wahrscheinlich ist es, dass es heute regnen wird?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
-test(en, t0106) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, what will the weather be like tomorrow?",
-    "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
-
-train(de) :- "wie wird {timespec:LABEL} das Wetter?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
-test(de, t0107) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie wird morgen das Wetter?",
-    "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
-
-train(en) :- "(will the sun shine|will there be sunshine) {timespec:LABEL} ?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
 test(en, t0108) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "computer, will there be sunshine the day after tomorrow?",
     "day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.".
-
-train(de) :- "scheint {timespec:LABEL} die Sonne?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0109) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "computer, scheint übermorgen die Sonne?",
-    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(will it|does it) rain {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
 test(en, t0110) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Will it rain today?",
     "today it will be mostly sunny in stuttgart with little precipitation".
-
-train(de) :- "regnet es {timespec:LABEL}?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0111) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Regnet es heute?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(will rain come|is rain coming) {timespec:LABEL}?", inline answer_weather_expl_time (en, prec_cloud, mvar(timespec, time)).
 test(en, t0112) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, is rain coming tomorrow?",
     "tomorrow it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "kommt {timespec:LABEL} noch Regen ?", inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
-test(de, t0113) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, kommt morgen noch Regen?",
-    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+train(en) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?",
+        "how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?",
+        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) {timespec:LABEL} ?",
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?"
+       ),
+    inline answer_weather_expl_time (en, full, mvar(timespec, time)).
 
-train(en) :- "how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
+test(en, t0106) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what will the weather be like tomorrow?",
+    "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
 test(en, t0114) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, how warm will it be the day after tomorrow?",
     "day after tomorrow the sun will show up occasionally in Stuttgart with temperatures between -10 and 1 degrees.".
-
-train(de) :- "wie (kalt|warm) wird es {timespec:LABEL} (werden|)?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
-test(de, t0115) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie warm wird es übermorgen?",
-    "übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen minus 10 und eins grad warm".
-
-train(en) :- "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
 test(en, t0116) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "computer, what will the weather be like today?",
@@ -384,8 +341,65 @@ test(en, t0118) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "what is the weather gonna be like tomorrow?",
     "tomorrow will be mostly clear skies in stuttgart with temperatures between minus nine and one degrees".
+test(en, t0120) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what does the weather forecast say for today?",
+    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
 
-train(de) :- "wie wird das Wetter {timespec:LABEL}?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+train(de) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "wird es {timespec:LABEL} (regnen|Regen geben)?", 
+        "(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen {timespec:LABEL} ?",
+        "Wie wahrscheinlich ist es, dass es {timespec:LABEL} regnen wird?",
+        "scheint {timespec:LABEL} die Sonne?",
+        "regnet es {timespec:LABEL}?",
+        "kommt {timespec:LABEL} noch Regen ?"
+       ),
+    inline answer_weather_expl_time (de, prec_cloud, mvar(timespec, time)).
+
+train(de) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "wie wird {timespec:LABEL} das Wetter?", 
+        "wie (kalt|warm) wird es {timespec:LABEL} (werden|)?",
+        "wie wird das Wetter {timespec:LABEL}?",
+        "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} ?"
+       ),
+     inline answer_weather_expl_time (de, full, mvar(timespec, time)).
+
+test(de, t0101) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wird es morgen regnen?",
+    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0103) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "wie groß ist die Wahrscheinlichkeit für Regen übermorgen?",
+    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0105) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wahrscheinlich ist es, dass es heute regnen wird?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0107) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wird morgen das Wetter?",
+    "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
+test(de, t0109) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, scheint übermorgen die Sonne?",
+    "übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0111) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Regnet es heute?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0113) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, kommt morgen noch Regen?",
+    "morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+test(de, t0115) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie warm wird es übermorgen?",
+    "übermorgen zeigt sich ab und an die sonne in stuttgart und es wird zwischen minus 10 und eins grad warm".
 test(de, t0117) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "computer, wie wird das Wetter heute?",
@@ -394,14 +408,6 @@ test(de, t0119) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "wie wird das Wetter morgen?",
     "morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus neun und eins grad warm".
-
-train(en) :- "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
-test(en, t0120) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, what does the weather forecast say for today?",
-    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
-
-train(de) :- "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} ?", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
 test(de, t0121) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, was sagt der Wetterbericht für heute?",

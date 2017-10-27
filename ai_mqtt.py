@@ -106,6 +106,7 @@ CLIENT_NAME = 'Zamia AI MQTT Server'
 do_listen       = True
 do_asr          = True
 attention       = 0
+listening       = True
 do_rec          = False
 att_force       = False
 pstr            = '***'
@@ -134,7 +135,7 @@ def on_connect(client, userdata, flag, rc):
 
 def publish_state(client):
 
-    global attention, pstr, hstr, astr, state_lock
+    global attention, pstr, hstr, astr, listening, state_lock
 
     state_lock.acquire()
     try:
@@ -144,6 +145,7 @@ def publish_state(client):
         data['pstr']      = pstr
         data['hstr']      = hstr
         data['astr']      = astr
+        data['listening'] = listening
 
         # logging.debug ('publish_state: %s' % repr(data))
      
@@ -155,7 +157,7 @@ def on_message(client, userdata, message):
 
     global kernal, lang, state_lock, current_ctx
     global do_listen, do_asr, attention, do_rec, att_force
-    global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt
+    global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -261,6 +263,7 @@ def on_message(client, userdata, message):
                         data['user'] = AI_USER
                      
                         client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
+                        listening = False
             else:
                 if do_rec:
                     attention = 30
@@ -340,6 +343,8 @@ def on_message(client, userdata, message):
                 for act in acts:
                     (rc, mid) = client.publish(TOPIC_INTENT, json.dumps(act))
                     logging.info("%s (att: %2d): %s" % (TOPIC_INTENT, attention, json.dumps(act)))
+            else:
+                listening = True
 
             # generate astr
 
@@ -361,6 +366,8 @@ def on_message(client, userdata, message):
 
                 kernal.tts_say(msg['utt'])
 
+            listening = True
+            publish_state(client)
 
         elif message.topic == TOPIC_CONFIG:
 

@@ -113,6 +113,7 @@ pstr            = '***'
 hstr            = ''
 astr            = ''
 audio_cnt       = 0
+old_state       = None
 
 # audio recording state
 
@@ -135,7 +136,7 @@ def on_connect(client, userdata, flag, rc):
 
 def publish_state(client):
 
-    global attention, pstr, hstr, astr, listening, state_lock
+    global attention, pstr, hstr, astr, listening, state_lock, old_state
 
     state_lock.acquire()
     try:
@@ -147,9 +148,11 @@ def publish_state(client):
         data['astr']      = astr
         data['listening'] = listening
 
-        # logging.debug ('publish_state: %s' % repr(data))
-     
-        client.publish(TOPIC_STATE, json.dumps(data))
+        if data != old_state:
+            # logging.debug ('publish_state: %s' % repr(data))
+            client.publish(TOPIC_STATE, json.dumps(data))
+            old_state = data
+
     finally:
         state_lock.release()
 

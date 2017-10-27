@@ -608,12 +608,16 @@ class AIKernal(object):
 
         logging.info('running tests of module %s ...' % (module_name))
 
+        num_tests = 0
+        num_fails = 0
         for tc in self.session.query(model.TestCase).filter(model.TestCase.module==module_name):
 
             if test_name:
                 if tc.name != test_name:
                     logging.info ('skipping test %s' % tc.name)
                     continue
+
+            num_tests += 1
 
             rounds = json.loads(tc.rounds)
             prep   = json_to_prolog(tc.prep)
@@ -718,10 +722,12 @@ class AIKernal(object):
                 if acode is None:
                     logging.error('failed to find db entry for %s' % json.dumps(inp))
                     logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
+                    num_fails += 1
                     break
 
                 if not matching_resp:
                     logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
+                    num_fails += 1
                     break
 
                 prev_context = cur_context
@@ -729,7 +735,12 @@ class AIKernal(object):
 
         self.rt.set_trace(False)
 
+        return num_tests, num_fails
+
     def run_tests_multi (self, module_names, run_trace=False, test_name=None):
+
+        num_tests = 0
+        num_fails = 0
 
         for module_name in module_names:
 
@@ -738,12 +749,18 @@ class AIKernal(object):
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
                     self.init_module (mn2, run_trace=run_trace)
-                    self.test_module (mn2, run_trace=run_trace, test_name=test_name)
+                    n, f = self.test_module (mn2, run_trace=run_trace, test_name=test_name)
+                    num_tests += n
+                    num_fails += f
 
             else:
                 self.load_module (module_name)
                 self.init_module (module_name, run_trace=run_trace)
-                self.test_module (module_name, run_trace=run_trace, test_name=test_name)
+                n, f = self.test_module (module_name, run_trace=run_trace, test_name=test_name)
+                num_tests += n
+                num_fails += f
+
+        return num_tests, num_fails
 
     def process_input (self, utterance, utt_lang, user_uri, run_trace=False, do_eliza=True, prev_ctx=None):
 

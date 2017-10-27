@@ -116,7 +116,12 @@ class AICli(cmdln.Cmdln):
             self.kernal.compile_module_multi (paths)
 
             if opts.run_tests:
-                self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+                num_tests, num_fails = self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+
+                if num_fails:
+                    logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
+                else:
+                    logging.info('all %d test(s) worked!' % num_tests)
 
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)
@@ -148,7 +153,12 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+            num_tests, num_fails = self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+            if num_fails:
+                logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
+            else:
+                logging.info('all %d test(s) worked!' % num_tests)
+
         except PrologError as e:
             logging.error("*** ERROR: %s" % e)
 

@@ -165,7 +165,7 @@ def on_message(client, userdata, message):
     global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
-    logging.debug( "message topic=%s" % message.topic)
+    # logging.debug( "message topic=%s" % message.topic)
     # logging.debug( "message qos=%s" % message.qos)
     # logging.debug( "message retain flag=%s" % message.retain)
 

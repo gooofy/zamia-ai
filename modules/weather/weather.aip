@@ -106,121 +106,144 @@ answer_weather_context (de, REPORT) :-
 
     answer_weather_r (C, de, REPORT).
 
-train(en) :- "will it rain?", inline answer_weather_context (en, prec_cloud).
+train(en) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "how likely is it that it will rain ?",
+        "(will the sun shine | will there be sunshine ) ?",
+        "(will it | does it) rain ?",
+        "(will rain come | is rain coming) ?",
+        "(what is the likelihood of|how likely is) rain ?"
+       ),
+    inline answer_weather_context (en, prec_cloud).
+
 test(en, t0000) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, will it rain?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "wird es (regnen|Regen geben) ?", inline answer_weather_context (de, prec_cloud).
-test(de, t0002) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wird es regnen?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(what is the likelihood of|how likely is) rain ?", inline answer_weather_context (en, prec_cloud).
 test(en, t0003) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "how likely is rain?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen ?", inline answer_weather_context (de, prec_cloud).
-test(de, t0004) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "wie groß ist die Wahrscheinlichkeit für Regen?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "how likely is it that it will rain ?", inline answer_weather_context (en, prec_cloud).
 test(en, t0005) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, how likely is it that it will rain ?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "wie wahrscheinlich ist es, dass es regnen wird?", inline answer_weather_context (de, prec_cloud).
-test(de, t0006) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie wahrscheinlich ist es, dass es regnen wird?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "what (will the weather|is the weather gonna|is the weather going to) be like ?", inline answer_weather_context (en, full).
-test(en, t0007) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, what will the weather be like?",
-    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
-
-train(de) :- "wie wird das Wetter (werden|)?", inline answer_weather_context (de, full).
-test(de, t0008) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie wird das Wetter?",
-    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
-
-train(en) :- "(will the sun shine | will there be sunshine ) ?", inline answer_weather_context (en, prec_cloud).
 test(en, t0009) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "computer, will there be sunshine?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "scheint die Sonne?", inline answer_weather_context (de, prec_cloud).
-test(de, t0010) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "computer, scheint die Sonne?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(will it | does it) rain ?", inline answer_weather_context (en, prec_cloud).
 test(en, t0011) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Will it rain?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "regnet es ?", inline answer_weather_context (de, prec_cloud).
-test(de, t0012) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Regnet es?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
-
-train(en) :- "(will rain come | is rain coming) ?", inline answer_weather_context (en, prec_cloud).
 test(en, t0013) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, is rain coming?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "kommt noch Regen ?", inline answer_weather_context (de, prec_cloud).
-test(de, t0014) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, kommt noch Regen?",
-    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+train(en) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "what (will the weather|is the weather gonna|is the weather going to) be like ?", 
+        "how (cold|warm) (is it going to|will it) (be|become) ?",
+        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) ?",
+        "what (is the weather outlook | does the weather forecast look like | is the weather forecast | does the weather forecast say) ?"
+       ),
+    inline answer_weather_context (en, full).
 
-train(en) :- "how (cold|warm) (is it going to|will it) (be|become) ?", inline answer_weather_context (en, full).
+test(en, t0007) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, what will the weather be like?",
+    "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
+
 test(en, t0015) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, how warm will it be ?",
     "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
 
-train(de) :- "wie (kalt|warm) wird es (werden|) ?", inline answer_weather_context (de, full).
-test(de, t0016) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "Computer, wie warm wird es?",
-    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
-
-train(en) :- "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) ?", inline answer_weather_context (en, full).
 test(en, t0017) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "computer, what will the weather be like?",
     "today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees".
 
-train(de) :- "wie wird das Wetter ?", inline answer_weather_context (de, full).
-test(de, t0018) :-
-    C:time := '2016-12-06T11:00:00+01:00', 
-    "computer, wie wird das Wetter?",
-    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
-
-train(en) :- "what (is the weather outlook | does the weather forecast look like | is the weather forecast | does the weather forecast say) ?", inline answer_weather_context (en, full).
 test(en, t0021) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, what does the weather forecast say?",
     "today will be mostly clear skies in Stuttgart with temperatures between -8 and 4 degrees.".
 
-train(de) :- "(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?", inline answer_weather_context (de, full).
+
+train(de) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "wird es (regnen|Regen geben) ?", 
+        "(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen ?",
+        "wie wahrscheinlich ist es, dass es regnen wird?",
+        "scheint die Sonne?",
+        "regnet es ?",
+        "kommt noch Regen ?"
+       ),
+    inline answer_weather_context (de, prec_cloud).
+
+test(de, t0002) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wird es regnen?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+test(de, t0004) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "wie groß ist die Wahrscheinlichkeit für Regen?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+test(de, t0006) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wahrscheinlich ist es, dass es regnen wird?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+test(de, t0010) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, scheint die Sonne?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+test(de, t0012) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Regnet es?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+test(de, t0014) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, kommt noch Regen?",
+    "heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben".
+
+train(de) :- 
+    or (true, context(topic, wdeWeatherForecast)), 
+    or (
+        "wie wird das Wetter (werden|)?", 
+        "wie (kalt|warm) wird es (werden|) ?",
+        "(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?"
+       ),
+    inline answer_weather_context (de, full).
+
+test(de, t0008) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie wird das Wetter werden?",
+    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+
+test(de, t0016) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "Computer, wie warm wird es?",
+    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+
+test(de, t0018) :-
+    C:time := '2016-12-06T11:00:00+01:00', 
+    "computer, wie wird das Wetter?",
+    "heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm".
+
 test(de, t0022) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, was sagt der Wetterbericht?",

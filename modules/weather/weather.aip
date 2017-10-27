@@ -430,7 +430,7 @@ test(de, t0201) :-
     "Computer, wird es in Freudental regnen?",
     "heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben".
 
-train(en) :- "(what is the likelihood of | how likely is | rain in ) {geo_location:LABEL} ?", inline answer_weather_expl_place (en, prec_cloud, tstart(geo_location), tend(geo_location)).
+train(en) :- "(what is the likelihood of | how likely is) rain in {geo_location:LABEL} ?", inline answer_weather_expl_place (en, prec_cloud, tstart(geo_location), tend(geo_location)).
 test(en, t0202) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "how likely is rain in Stuttgart?",
@@ -508,7 +508,8 @@ test(en, t0214) :-
     "Computer, how warm will it be in Stuttgart?",
     "today it will be mostly sunny in stuttgart with little precipitation".
 
-train(de) :- "wie (kalt|warm) wird es in {geo_location:LABEL} werden?", inline answer_weather_expl_place (de, prec_cloud, tstart(geo_location), tend(geo_location)).
+train(de) :- "wie (kalt|warm) wird es in {geo_location:LABEL} (werden|)?", inline answer_weather_expl_place (de, prec_cloud, tstart(geo_location), tend(geo_location)).
+
 test(de, t0215) :-
     C:time := '2016-12-06T11:00:00+01:00', 
     "Computer, wie warm wird es in Stuttgart?",

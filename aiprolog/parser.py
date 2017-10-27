@@ -435,6 +435,27 @@ class AIPrologParser(PrologParser):
 
         return code
 
+    def _extract_context(self, a):
+        if len(a.args) != 2:
+            self.report_error('context: 2 args expected.')
+
+        a0 = a.args[0]
+        if isinstance(a0, StringLiteral):
+            a0 = a0.s
+        elif isinstance(a0, Predicate):
+            a0 = a0.name
+        else:
+            self.report_error('context: string or constant expected, %s found instead.' % repr(a0))
+        a1 = a.args[1]
+        if isinstance(a1, StringLiteral):
+            a1 = a1.s
+        elif isinstance(a1, Predicate):
+            a1 = a1.name
+        else:
+            self.report_error('context: string or constant expected, %s found instead.' % repr(a1))
+
+        return [a0, a1]
+
     def extract_training_data (self, clause):
 
         if len(clause.head.args) != 1:
@@ -446,64 +467,92 @@ class AIPrologParser(PrologParser):
 
         # filter out contexts, input line
 
-        contexts = []
-        inp      = None
-        code     = []
+        context_sets = []
+        inps         = []
+        code         = []
         for a in clause.body.args:
 
-            if not inp and isinstance(a, StringLiteral):
-                inp = a.s
-                continue
+            if not inps:
+                if isinstance(a, StringLiteral):
+                    inps.append(a.s)
+                    continue
 
-            if isinstance(a, Predicate) and a.name == 'context':
-                if len(a.args) != 2:
-                    self.report_error('context: 2 args expected.')
+                if not isinstance (a, Predicate):
+                    self.report_error('input string(s) or context specifier expected.')
+                    continue
+                    
+                if a.name == 'context':
+                    if len(context_sets)>1:
+                        self.report_error('more than one context specifier found.')
+                    elif not context_sets:
+                        context_sets.append([])
 
-                a0 = a.args[0]
-                if isinstance(a0, StringLiteral):
-                    a0 = a0.s
-                elif isinstance(a0, Predicate):
-                    a0 = a0.name
+                    context_sets[0].append(self._extract_context(a))
+
+                elif a.name == 'or':
+                    if isinstance (a.args[0], StringLiteral):
+                        for a1 in a.args:
+                            if not isinstance (a1, StringLiteral):
+                                self.report_error('input string(s) expected.')
+                            inps.append(a1.s) 
+  
+                    elif isinstance (a.args[0], Predicate):
+                        for a1 in a.args:
+                            if not isinstance (a1, Predicate):
+                                self.report_error('context specifier expected.')
+
+                            if a1.name == 'context':
+                                context_sets.append([self._extract_context(a1)])
+                            elif a1.name == 'and':
+                                context_sets.append([])
+                                for a2 in a1.args:
+                                    if not isinstance (a2, Predicate) or a2.name != 'context':
+                                        self.report_error('context specifier expected.')
+                                    context_sets[len(context_sets)-1].append(self._extract_context(a2))
+                            elif a1.name == 'true':
+                                context_sets.append([])
+                            else:
+                                self.report_error('context specifier expected.')
+                    else:
+                        self.report_error('input string(s) or context specifier expected.')
+
                 else:
-                    self.report_error('context: string or constant expected, %s found instead.' % repr(a0))
-                a1 = a.args[1]
-                if isinstance(a1, StringLiteral):
-                    a1 = a1.s
-                elif isinstance(a1, Predicate):
-                    a1 = a1.name
-                else:
-                    self.report_error('context: string or constant expected, %s found instead.' % repr(a1))
+                    self.report_error('input string(s) or context specifier expected.')
 
-                contexts.append([a0, a1])
                 continue
 
             code.append(a)
 
-        if not inp:
-            self.report_error ('train: no input string.')
+        if not inps:
+            self.report_error ('train: no input string(s).')
+
+        if not context_sets:
+            context_sets.append([])
 
         if len(code)==0:
             self.report_error ('train: no code.')
 
         prefixes = self.train_prefixes if self.train_prefixes else [u'']
 
+        # import pdb; pdb.set_trace()
         for prefix in prefixes:
 
-            # if clause.location.line == 36:
-            #     import pdb; pdb.set_trace()
+            for inp in inps:
 
-            pinp = prefix + inp
+                pinp = prefix + inp
 
-            for d, mpos in self._expand_macros(pinp):
+                for d, mpos in self._expand_macros(pinp):
 
-                r = self._generate_training_code (code, mpos)
+                    r = self._generate_training_code (code, mpos)
 
-                logging.debug( '%s -> %s' % (repr(d), repr(r)))
+                    logging.debug( '%s -> %s' % (repr(d), repr(r)))
 
-                self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
+                    for contexts in context_sets:
 
-                if len(self.ds) % 100 == 0:
-                    logging.info ('%6d training samples extracted so far...' % len(self.ds))
+                        self.ds.append((self.lang, contexts, d, r, clause.location.fn, clause.location.line, clause.location.col, self.train_prio))
+
+                        if len(self.ds) % 100 == 0:
+                            logging.info ('%6d training samples extracted so far...' % len(self.ds))
 
 
     def extract_training_priority (self, clause):

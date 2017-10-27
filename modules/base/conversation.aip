@@ -75,45 +75,33 @@ answer_what_was_our_topic(de) :-
         answer_what_was_our_topic_real(C, de),
         answer_what_was_our_topic_dodge(C, de)).
 
+question_what_was_our_topic(en) :-
+    or(
+       "What (were we talking|did we talk) about (again|) ?",
+       "(Which|What) was our topic (again|)?",
+       "Give me a hint",
+       "Which topic did we have (again|)?",
+       "I (think|believe) I lost my train of thought (just now|again|).",
+       "(lets get|) back to our topic."
+      ).
+
 train(en) :-
-    "What (were we talking|did we talk) about (again|) ?",
-    inline answer_what_was_our_topic(en).
-train(en) :-
-    "(Which|What) was our topic (again|)?",
-    inline answer_what_was_our_topic(en).
-train(en) :-
-    "Give me a hint",
-    inline answer_what_was_our_topic(en).
-train(en) :-
-    "Which topic did we have (again|)?",
-    inline answer_what_was_our_topic(en).
-train(en) :-
-    "I (think|believe) I lost my train of thought (just now|again|).",
-    inline answer_what_was_our_topic(en).
-train(en) :-
-    "(lets get|) back to our topic.",
+    inline question_what_was_our_topic(en),
     inline answer_what_was_our_topic(en).
 
+question_what_was_our_topic(de) :-
+    or(
+       "(Wovon|Worüber|Was) (hatten|haben) wir (eben|) gesprochen?",
+       "(Wie|Was) war (doch gleich|gleich|) unser Thema?",
+       "(Hilfst Du|Hilf) mir (bitte|) auf die Sprünge?",
+       "Welches Thema hatten wir (doch gleich|)?",
+       "Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren?",
+       "Jetzt habe ich (glaube ich|) den Faden verloren.",
+       "Also zurück zum Thema!"
+      ).
+
 train(de) :-
-    "(Wovon|Worüber|Was) (hatten|haben) wir (eben|) gesprochen?",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "(Wie|Was) war (doch gleich|gleich|) unser Thema?",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "(Hilfst Du|Hilf) mir (bitte|) auf die Sprünge?",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "Welches Thema hatten wir (doch gleich|)?",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren?",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "Jetzt habe ich (glaube ich|) den Faden verloren.",
-    inline answer_what_was_our_topic(de).
-train(de) :-
-    "Also zurück zum Thema!",
+    inline question_what_was_our_topic(de),
     inline answer_what_was_our_topic(de).
 
 test(en, t0000) :-

@@ -53,12 +53,30 @@ train(en) :-
          "My name is {self:rdfsLabel|en, s}").
 ------------------------------------------------------------
 
-add context to training input:
+you can also have multiple input patterns:
+[source,prolog]
+------------------------------------------------------------
+train(en) :-
+   or ( "what are you called (by the way|again|)?",
+        "what is your name (by the way|again|)?" ),
+   or ( "I am called {self:rdfsLabel|en, s}",
+         "My name is {self:rdfsLabel|en, s}").
+------------------------------------------------------------
 
+limit training data to a specific contexts:
 [source,prolog]
 ------------------------------------------------------------
 train(en) :-
     context(topic, wdeProgrammingLanguage),
+    'I like prolog',
+    'That is a nice programming language'.
+------------------------------------------------------------
+
+or multiple different contexts:
+[source,prolog]
+------------------------------------------------------------
+train(en) :-
+    or (context(topic, wdeComputer), context(topic, wdeProgrammingLanguage), true),
     'I like prolog',
     'That is a nice programming language'.
 ------------------------------------------------------------

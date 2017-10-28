@@ -1,10 +1,28 @@
 Zamia AI
 ========
 
-Various scripts that one day could form a complete A.I. system. 
+The Zamia AI project provides all the components needed to build a free, open
+source end-to-end natural language processing A.I. system. All components and
+models used are free (as in speech), all the sources are open and freely
+available not just for the software components but also all training data as
+well as the tools needed to create the neural network models for the system.
 
-NOTE: If you're looking for the scripts that I am using to build my VoxForge models, those
-are over at https://github.com/gooofy/speech.
+This means you can build entirely self-contained A.I. systems with no dependencies
+on proprietary components, data sources or cloud services that you do not control. 
+Of course, you can always add or replace individual components by proprietary or cloud 
+based ones if you wish but you can also take it to the other extreme and build 
+completely self-contained systems that are capable of running in offline mode
+with no network connectivity required at all. We like to call this concept
+cloudless computing.
+
+Typical systems that can be built based on Zamia AI include text based ones (i.e.
+some sort of chat bot) and speech based ones (i.e. speech based assistants). 
+Possible applications range from rather simple fun or educational toys up to
+serious systems for command and control in industrial or automotive contexts
+or assistive technology and healthcare solutions.
+
+Architecture
+------------
 
 Right now the rough idea is to use a custom prolog system (AI-Prolog) at the core for knowledge storage, processing and
 reasoning plus a seq2seq model to map natural language to prolog.

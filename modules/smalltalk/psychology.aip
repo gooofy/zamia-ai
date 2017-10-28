@@ -775,3 +775,12 @@ train(en) :-
 train(de) :-
     "ich habe (zumindest|) den eindruck",
     "Der erste eindruck trügt oft!".
+
+train(en) :-
+    "why (should I do|am I supposed to do) (that|such a thing)?",
+    or("Maybe the reason rests deep inside yourself?", "Time to think again?").
+train(de) :-
+    "warum (soll|sollte) ich (das|so etwas) tun?",
+    or("Vielleicht kennst Du den Grund?", 
+       "Das sollte wohl überlegt sein.").
+

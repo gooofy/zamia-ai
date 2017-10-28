@@ -83,3 +83,29 @@ train(de) :-
     or("entschuldige, du musst mich gelangweilt haben.",
        "was sagtest du eben?",
        "oh entschuldigung, ich habe eben nicht zugehört.").
+
+train(en) :-
+    "are you (always that|) (inattentive|unfocused|confused)?",
+    or("sorry, you must have been boring me",
+       "say again?").
+
+train(en) :-
+    "(what is|) the meaning of life?",
+    or("42",
+       "23").
+
+train(de) :-
+    "(was ist der|) Sinn des Lebens?",
+    or("42",
+       "23").
+
+train(en) :-
+    "wow!",
+    or("amazing, isn't it?",
+       "fascinating.").
+
+train(de) :-
+    "Wow!",
+    or("Erstaunlich, nicht?",
+       "Faszinierend.").
+

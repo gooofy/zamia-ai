@@ -153,7 +153,9 @@ train(en) :-
         "what (will the weather|is the weather gonna|is the weather going to) be like ?", 
         "how (cold|warm) (is it going to|will it) (be|become) ?",
         "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) ?",
-        "what (is the weather outlook | does the weather forecast look like | is the weather forecast | does the weather forecast say) ?"
+        "what (is the weather outlook | does the weather forecast look like | is the weather forecast | does the weather forecast say) ?",
+        "(and|) how is the weather (there|then|)?",
+        "(and|) what is the weather like (there|then|)?"
        ),
     inline answer_weather_context (en, full).
 
@@ -225,7 +227,8 @@ train(de) :-
     or (
         "wie wird das Wetter (werden|)?", 
         "wie (kalt|warm) wird es (werden|) ?",
-        "(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?"
+        "(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?",
+        "(und|) wie (ist das Wetter|sieht das Wetter aus) (dort|dann|)?"
        ),
     inline answer_weather_context (de, full).
 

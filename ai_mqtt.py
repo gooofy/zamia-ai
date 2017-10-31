@@ -68,6 +68,8 @@ from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
+from nltools.tts          import TTS
+from nltools.asr          import ASR
 
 PROC_TITLE        = 'ai_mqtt'
 AI_SERVER_MODULE  = '__server__'
@@ -77,6 +79,7 @@ SAMPLE_RATE       = 16000
 MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
 ATTENTION_SPAN    = 30       # seconds
 AUDIO_LOC_CNT     = 5        # seconds
+AUDIO_EXTRA_DELAY = 0.5      # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
@@ -163,6 +166,7 @@ def on_message(client, userdata, message):
     global kernal, lang, state_lock, current_ctx
     global do_listen, do_asr, attention, do_rec, att_force
     global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
+    global tts_lock, tts, ignore_audio_before
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -382,7 +386,18 @@ def on_message(client, userdata, message):
 
             if msg['utt']:
 
-                kernal.tts_say(msg['utt'])
+                tts_lock.acquire()
+                try:
+                    logging.debug('tts.say...')
+                    tts.say(utt)
+                    logging.debug('tts.say finished.')
+
+                except:
+                    logging.error('TTS EXCEPTION CAUGHT %s' % traceback.format_exc())
+                finally:
+                    tts_lock.release()
+
+                ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
 
             listening = True
             publish_state(client)
@@ -479,7 +494,9 @@ else:
 # TTS
 #
 
-kernal.setup_tts (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
+tts = TTS (host_tts = tts_host, port_tts = tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
+ignore_audio_before = datetime.datetime.now()
+tts_lock = Lock()
 
 #
 # ASR

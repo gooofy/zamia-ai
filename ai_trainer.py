@@ -459,14 +459,6 @@ rec_dir             = config.get   ('server', 'rec_dir')
 kaldi_model_dir     = config.get   ('server', 'kaldi_model_dir')
 kaldi_model         = config.get   ('server', 'kaldi_model')
 
-tts_host            = config.get   ('tts',    'tts_host')
-tts_port            = config.getint('tts',    'tts_port')
-tts_locale          = config.get   ('tts',    'tts_locale')
-tts_voice           = config.get   ('tts',    'tts_voice')
-tts_engine          = config.get   ('tts',    'tts_engine')
-tts_speed           = config.getint('tts',    'tts_speed')
-tts_pitch           = config.getint('tts',    'tts_pitch')
-
 loc                 = config.get   ('vad',    'loc')
 source              = config.get   ('vad',    'source')
 volume              = config.getint('vad',    'volume')
@@ -522,15 +514,6 @@ try:
     #
 
     cur_context = kernal.find_prev_context(USER_URI)
-
-    #
-    # TTS
-    #
-
-    misc.message_popup(stdscr, 'Initializing...', 'Init TTS...')
-    kernal.setup_tts (tts_host, tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
-    paint_main()
-    logging.debug ('TTS initialized.')
 
     #
     # ASR

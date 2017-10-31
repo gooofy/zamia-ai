@@ -64,7 +64,6 @@ from kaldisimple.nnet3      import KaldiNNet3OnlineModel, KaldiNNet3OnlineDecode
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
-AUDIO_EXTRA_DELAY  = 0.5      # seconds
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -1079,34 +1078,6 @@ class AIKernal(object):
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
         return res
-
-    #
-    # TTS support
-    #
-
-    def setup_tts (self, host, port, locale, voice, engine, speed, pitch):
-
-        self.tts = TTS (host, port, locale=locale, voice=voice, engine=engine, speed=speed, pitch=pitch)
-        # this is used to ignore any voice input that is just us hearing ourselves 
-        # when answer is synthesized
-        self.ignore_audio_before = datetime.datetime.now()
-        
-        self.tts_lock = Lock()
-
-    def tts_say (self, utt):
-
-        self.tts_lock.acquire()
-        try:
-            logging.debug('tts.say...')
-            self.tts.say(utt)
-            logging.debug('tts.say finished.')
-
-        except:
-            logging.error('TTS EXCEPTION CAUGHT %s' % traceback.format_exc())
-        finally:
-            self.tts_lock.release()
-
-        self.ignore_audio_before = datetime.datetime.now() + datetime.timedelta(seconds=AUDIO_EXTRA_DELAY)
 
     #
     # ASR

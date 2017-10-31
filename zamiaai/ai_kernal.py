@@ -1079,29 +1079,3 @@ class AIKernal(object):
 
         return res
 
-    #
-    # ASR
-    #
-
-    def setup_asr (self, kaldi_model_dir, kaldi_model):
-
-        logging.debug ('loading ASR model %s from %s...' % (kaldi_model, kaldi_model_dir))
-        start_time = time.time()
-        self.nnet3_model = KaldiNNet3OnlineModel ( kaldi_model_dir, kaldi_model )
-        logging.debug ('ASR model loaded. took %fs' % (time.time() - start_time))
-        self.asr_decoders = {} # location -> decoder
-
-    def asr_decode (self, loc, sample_rate, audio, do_finalize):
-
-        if not loc in self.asr_decoders:
-            self.asr_decoders[loc] = KaldiNNet3OnlineDecoder (self.nnet3_model)
-        decoder = self.asr_decoders[loc]
-        decoder.decode(sample_rate, np.array(audio, dtype=np.float32), do_finalize)
-
-        if not do_finalize:
-            return None, 0.0
-
-        hstr, confidence = decoder.get_decoded_string()
-
-        return hstr, confidence
-

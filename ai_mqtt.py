@@ -69,7 +69,7 @@ from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
 from nltools              import misc
 from nltools.tts          import TTS
-from nltools.asr          import ASR
+from nltools.asr          import ASR, ASR_ENGINE_NNET3
 
 PROC_TITLE        = 'ai_mqtt'
 AI_SERVER_MODULE  = '__server__'
@@ -166,7 +166,7 @@ def on_message(client, userdata, message):
     global kernal, lang, state_lock, current_ctx
     global do_listen, do_asr, attention, do_rec, att_force
     global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
-    global tts_lock, tts, ignore_audio_before
+    global tts_lock, tts, ignore_audio_before, asr
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
@@ -191,8 +191,8 @@ def on_message(client, userdata, message):
                 # logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
                 return
 
-            if ts < kernal.ignore_audio_before:
-                # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(kernal.ignore_audio_before)))
+            if ts < ignore_audio_before:
+                # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
                 return
 
             confidence  = 0.0
@@ -271,7 +271,7 @@ def on_message(client, userdata, message):
             loc         = data['loc']
             ts          = dateutil.parser.parse(data['ts'])
 
-            hstr2, confidence = kernal.asr_decode(loc, SAMPLE_RATE, audio, do_finalize)
+            hstr2, confidence = asr.decode(SAMPLE_RATE, audio, do_finalize, stream_id=loc)
 
             if do_finalize:
 
@@ -389,7 +389,7 @@ def on_message(client, userdata, message):
                 tts_lock.acquire()
                 try:
                     logging.debug('tts.say...')
-                    tts.say(utt)
+                    tts.say(msg['utt'])
                     logging.debug('tts.say finished.')
 
                 except:
@@ -502,7 +502,7 @@ tts_lock = Lock()
 # ASR
 #
 
-kernal.setup_asr (kaldi_model_dir, kaldi_model)
+asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model)
 
 #
 # state lock

@@ -54,6 +54,7 @@ from nltools.vad            import VAD, BUFFER_DURATION
 from nltools.pulserecorder  import PulseRecorder
 from nltools.pulseplayer    import PulsePlayer
 from nltools.tokenizer      import tokenize
+from nltools.asr            import ASR, ASR_ENGINE_NNET3
 
 
 PROC_TITLE        = 'ai_trainer'
@@ -77,7 +78,7 @@ cur_context    = None
 
 def do_rec():
 
-    global rec, stdscr, loc, hstr, prompt, recording
+    global rec, stdscr, loc, hstr, prompt, recording, asr
 
     logging.debug ('do_rec...')
 
@@ -100,7 +101,7 @@ def do_rec():
 
         recording.extend(audio)
 
-        hstr, confidence = kernal.asr_decode(loc, SAMPLE_RATE, audio, finalize)
+        hstr, confidence = asr.decode(SAMPLE_RATE, audio, do_finalize, stream_id=loc)
 
     rec.stop_recording()
 
@@ -520,7 +521,7 @@ try:
     #
 
     misc.message_popup(stdscr, 'Initializing...', 'Init ASR...')
-    kernal.setup_asr (kaldi_model_dir, kaldi_model)
+    asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model)
     paint_main()
     logging.debug ('ASR initialized.')
 

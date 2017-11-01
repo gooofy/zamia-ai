@@ -59,7 +59,6 @@ from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
 from nltools.tts            import TTS
-from kaldisimple.nnet3      import KaldiNNet3OnlineModel, KaldiNNet3OnlineDecoder
 
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()

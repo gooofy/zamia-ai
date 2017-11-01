@@ -1,3 +1,4 @@
+ifndef::imagesdir[:imagesdir: doc]
 Zamia AI
 ========
 
@@ -27,9 +28,111 @@ Architecture
 Right now the rough idea is to use a custom prolog system (AI-Prolog) at the core for knowledge storage, processing and
 reasoning plus a seq2seq model to map natural language to prolog.
 
-```
-natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> prolog -> [ AI-Prolog engine ] -> say/action preds
-```
+ifndef::env-github[]
+[ditaa,"flow"]
+....
+  +-------------------+
+  |  matural language |
+  |                {d}|
+  +-------------------+
+            |
+            v
+  +-------------------+
+  |     tokenizer     |
+  +-------------------+
+            |
+            v
+         tokens 
+            |
+            v
+  +-------------------+
+  |   seq2seq model   | 
+  +-------------------+
+            |
+            v
+       prolog code 
+            |
+            v
+  +-------------------+
+  | AI-Prolog engine  | 
+  +-------------------+
+            |
+            |
+            v
+  +-------------------+
+  |     response      |
+  |                {d}|
+  +-------------------+
+
+....
+endif::env-github[]
+ifdef::env-github[]
+image::flow.png[Dataflow]
+endif::env-github[]
+
+From a code organization perspective Zamia AI's architecture looks like this:
+
+ifndef::env-github[]
+[ditaa,"highlevel"]
+....
++------------------------------------------------------------------------------------------------+
+|                                         Applications                                           |
+|                                                                                                |
++------------------------------------------------------------------------------------------------+
+         ^                                      ^                                       |
+         |                                      |                                       v
+         |                            utterances/intents                           utterances
+         |                                      ^                                       |
+         |                                      |                                       v
+         |            +--------------------------------------------------------------------------+
+         |            |                         |  Zamia AI                             |        |
+         |            |  +---------------+    +------------------+                      |        |
+         |            |  |  Data-Tools   |    |     AI Prolog    |                      v        |
+         |            |  |               |    |                  |                 +---------+   |
+         |            |  | - LDF mirror  |    |      runtime     |<- prolog code --| seq2seq |   |
+         |            |  | - AIML import |    |                  |<- inference -+  |  model  |   |
+         |            |  | - chat import |    |                  |              |  +---------+   |
+         |            |  +---------------+    |                  |              |       ^        |
+         |            |         |             |                  |              |       |        |
+         |            |         v             |                  |              |     train      |
+         |            |  +---------------+    |                  |              |       ^        |
+         |            |  |   Modules     |    |                  |              |       |        |
+         |            |  |               |    |                  |              |  /----------\  |
+         |            |  | - wikidata    |    |                  |              +->|          |  |
+         |            |  | - base        |--->|     compiler     |--- clauses    ->| database |  |
+         |            |  | - smalltalk   |    |    macro engine  |--- utterances ->|          |  |
+         |            |  | - personality |    |                  |                 \----------/  |
+         |            |  | - weather     |    +------------------+                               |
+         |            |  |   ...         |                                                       |
+         |            |  +---------------+                                                       |
+         |            |                                                                          |
+         |            +--------------------------------------------------------------------------+
+         |                                               ^
+         |                                               |
+         v                                               v
+ +-----------------------------------------------------------------------------------------------+
+ |                                           nltools                                             |
+ | +-----------+  +-----------+  +------------+                                                  |
+ | | tokenizer |  | phonetics |  | threadpool |                                                  |
+ | +-----------+  +-----------+  +------------+                                                  |
+ |                                                                                               |
+ |      +-----------+               +-----------+     +-----------+ +-----------+ +-----------+  |
+ |      |    tts    |               |    asr    |     |    vad    | |    g2p    | |   audio   |  |
+ |      +-----------+               +-----------+     +-----------+ +-----------+ +-----------+  |
+ |            |                           |                 |             |             |        |
+ +-----------------------------------------------------------------------------------------------+
+              |                           |                 |             |             |          
+     +--------+---------+          +------+----+            |             |             |
+     |        |         |          |           |            |             |             |
+     v        v         v          v           v            v             v             v
+ +------+ +--------+ +------+  +-------+ +-----------+ +--------+    +----------+ +------------+ 
+ | mary | | eSpeak | | pico |  | kaldi | | cmusphinx | | webrtc |    | sequitur | | pulseaudio |
+ +------+ +--------+ +------+  +-------+ +-----------+ +--------+    +----------+ +------------+
+....
+endif::env-github[]
+ifdef::env-github[]
+image::highlevel.png[Highlevel Diagram]
+endif::env-github[]
 
 One of the key features of the current setup is the way training data is stored/generated.
 I am using a modularized approach here (see the modules/ directory for humble beginnings of this)

@@ -13,8 +13,8 @@ run_training.sh
 modules/exp
 modules/chat
 mestats
+.asciidoctor
 doc/.asciidoctor
-doc/*.png
 doc/*.html
 *.html
 data-tools/aiml/german-alice-alignment.txt

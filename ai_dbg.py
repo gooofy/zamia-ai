@@ -21,7 +21,7 @@
 #
 # ncurses based debugging application for Zamia AI
 #
-# allowes for interactive testing of AI-Prolog (modules) as well as Speech
+# allows for interactive testing of AI-Prolog (modules) as well as Speech
 # recognition
 #
 
@@ -39,9 +39,12 @@ import wave
 import struct
 import json
 import datetime
+import dateutil
+import paho.mqtt.client as mqtt
 
 from optparse               import OptionParser
 from StringIO               import StringIO
+from threading              import Lock, Condition
 from zamiaprolog.builtins   import ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic      import Predicate, Clause
 from zamiaprolog.runtime    import PROLOG_LOGGER_NAME
@@ -63,6 +66,9 @@ AI_MODULE         = '__dbg__'
 USER_URI          = USER_PREFIX + AI_USER
 SAMPLE_RATE       = 16000
 FRAMES_PER_BUFFER = SAMPLE_RATE * BUFFER_DURATION / 1000
+TOPIC_INPUT_AUDIO = 'ai/input/audio'
+MQTT_LOCATION     = 'livingroom'
+MAX_AUDIO_AGE     = 2        # seconds, ignore any audio input older than this
 
 hstr       = u''
 prompt     = u''
@@ -76,34 +82,109 @@ match_loc_line = None
 
 cur_context    = None
 
+def on_connect(client, userdata, flag, rc):
+    if rc==0:
+        logging.info("connected OK Returned code=%s" % repr(rc))
+        client.subscribe(TOPIC_INPUT_AUDIO)
+    else:
+        logging.error("Bad connection Returned code=%s" % repr(rc))
+
+def on_message(client, userdata, message):
+
+    global mqtt_listen, mqtt_finalize, mqtt_audio, mqtt_cond
+
+    # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
+    logging.debug( "message topic=%s" % message.topic)
+    # logging.debug( "message qos=%s" % message.qos)
+    # logging.debug( "message retain flag=%s" % message.retain)
+
+    mqtt_cond.acquire()
+
+    try:
+
+        if message.topic == TOPIC_INPUT_AUDIO:
+
+            if not mqtt_listen:
+                logging.debug ('ignoring audio: not listening.')
+                return
+
+            data = json.loads(message.payload)
+
+            mqtt_audio    = data['pcm']
+            mqtt_finalize = data['final']
+            loc           = data['loc']
+            ts            = dateutil.parser.parse(data['ts'])
+            
+            # ignore old audio recordings that may have lingered in the message queue
+
+            age = (datetime.datetime.now() - ts).total_seconds()
+            if age > MAX_AUDIO_AGE:
+                # logging.debug ("   ignoring audio that is too old: %fs > %fs" % (age, MAX_AUDIO_AGE))
+                logging.debug ('ignoring audio: too old.')
+                return
+
+            # ignore audio from wrong location
+            if loc != MQTT_LOCATION:
+                logging.debug ('ignoring audio: wrong location %s vs %s.' % (repr(loc), repr(MQTT_LOCATION)))
+                return
+
+            logging.debug ('mqtt_cond.notify_all()')
+            mqtt_cond.notify_all()
+
+    except:
+        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+    finally:
+        mqtt_cond.release()
+
 def do_rec():
 
-    global rec, stdscr, loc, hstr, prompt, recording, asr
+    global rec, stdscr, loc, hstr, prompt, recording, asr, options, mqtt_finalize, mqtt_cond, mqtt_audio, mqtt_listen
 
     logging.debug ('do_rec...')
 
     time.sleep(0.1)
 
-    rec.start_recording(FRAMES_PER_BUFFER)
-
-    finalize  = False
     recording = []
-
     swin = misc.message_popup(stdscr, 'Recording...', 'Please speak now.')
 
-    while not finalize:
+    if options.mqtt:
 
-        samples = rec.get_samples()
+        mqtt_cond.acquire()
+        try:
+            mqtt_finalize = False
+            mqtt_listen   = True
+            while not mqtt_finalize:
+                mqtt_cond.wait()
 
-        audio, finalize = vad.process_audio(samples)
-        if not audio:
-            continue
+                logging.debug ('do_rec... got audio from mqtt')
+                recording.extend(mqtt_audio)
 
-        recording.extend(audio)
+                hstr, confidence = asr.decode(SAMPLE_RATE, mqtt_audio, mqtt_finalize, stream_id=MQTT_LOCATION)
 
-        hstr, confidence = asr.decode(SAMPLE_RATE, audio, finalize, stream_id=loc)
+            logging.debug ('do_rec... mqtt listen loop done')
+            mqtt_listen   = False
+        finally:
+            mqtt_cond.release()
 
-    rec.stop_recording()
+    else:
+
+        rec.start_recording(FRAMES_PER_BUFFER)
+
+        finalize  = False
+
+        while not finalize:
+
+            samples = rec.get_samples()
+
+            audio, finalize = vad.process_audio(samples)
+            if not audio:
+                continue
+
+            recording.extend(audio)
+
+            hstr, confidence = asr.decode(SAMPLE_RATE, audio, finalize, stream_id=loc)
+
+        rec.stop_recording()
 
     prompt = hstr
 
@@ -436,6 +517,9 @@ parser = OptionParser("usage: %prog [options])")
 parser.add_option("-l", "--lang", dest="lang", type = "str", default='de',
                   help="language (default: de)")
 
+parser.add_option("-m", "--mqtt", action="store_true", dest="mqtt", 
+                  help="listen for audio from mqtt bus instead of local pulseaudio")
+
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", 
                   help="enable debug output")
 
@@ -465,6 +549,11 @@ source              = config.get   ('vad',    'source')
 volume              = config.getint('vad',    'volume')
 aggressiveness      = config.getint('vad',    'aggressiveness')
 
+broker_host         = config.get   ('mqtt', 'broker_host')
+broker_port         = config.getint('mqtt', 'broker_port')
+broker_user         = config.get   ('mqtt', 'broker_user')
+broker_pw           = config.get   ('mqtt', 'broker_pw')
+
 #
 # curses
 #
@@ -480,15 +569,56 @@ try:
 
     paint_main()
 
+    if options.mqtt:
+        #
+        # mqtt connect
+        #
+
+        logging.debug ('connection to MQTT broker %s:%d ...' % (broker_host, broker_port))
+
+        client = mqtt.Client()
+        client.username_pw_set(broker_user, broker_pw)
+        client.on_message=on_message
+        client.on_connect=on_connect
+
+        connected = False
+        while not connected:
+            try:
+
+                client.connect(broker_host, port=broker_port, keepalive=10)
+
+                connected = True
+
+            except:
+                logging.error('connection to %s:%d failed. retry in %d seconds...' % (broker_host, broker_port, RETRY_DELAY))
+                time.sleep(RETRY_DELAY)
+
+        logging.debug ('connection to MQTT broker %s:%d ... connected.' % (broker_host, broker_port))
+
+        mqtt_listen = False
+        mqtt_cond   = Condition()
+
+        client.loop_start()
+
+    else:
+
+        #
+        # pulseaudio recorder
+        #
+
+        misc.message_popup(stdscr, 'Initializing...', 'Init Pulseaudio Recorder...')
+        rec = PulseRecorder (source, SAMPLE_RATE, volume)
+        paint_main()
+        logging.debug ('PulseRecorder initialized.')
+
     #
-    # pulseaudio recorder / player
+    # pulseaudio player
     #
 
-    misc.message_popup(stdscr, 'Initializing...', 'Init Pulseaudio...')
-    rec = PulseRecorder (source, SAMPLE_RATE, volume)
-    player = PulsePlayer('Zamia AI Trainer')
+    misc.message_popup(stdscr, 'Initializing...', 'Init Pulseaudio Player...')
+    player = PulsePlayer('Zamia AI Debugger')
     paint_main()
-    logging.debug ('PulseRecorder initialized.')
+    logging.debug ('PulsePlayer initialized.')
 
     #
     # VAD

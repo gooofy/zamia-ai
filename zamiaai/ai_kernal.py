@@ -51,7 +51,6 @@ from zamiaai                import model
 
 from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 from aiprolog.parser        import AIPrologParser
-from zamiaprolog.logicdb    import LogicDB
 from zamiaprolog.builtins   import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
                                    json_to_prolog, prolog_to_json
@@ -80,16 +79,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, load_all_modules=False):
-
-        self.config = misc.load_config('.airc')
-
-        #
-        # database
-        #
-
-        Session = sessionmaker(bind=model.engine)
-        self.session = Session()
+    def __init__(self, db, all_modules=[], load_all_modules=False):
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -104,16 +94,15 @@ class AIKernal(object):
 
         self.modules             = {}
         self.initialized_modules = set()
-        s = self.config.get('semantics', 'modules')
-        self.all_modules         = list(map (lambda s: s.strip(), s.split(',')))
+        self.all_modules         = all_modules
         sys.path.append('modules')
 
         #
         # AIProlog parser, runtime
         #
 
-        db_url          = self.config.get('db', 'url')
-        self.db         = LogicDB(db_url)
+        self.db         = db
+        self.session    = db.session
         self.aip_parser = AIPrologParser(self)
         self.rt         = AIPrologRuntime(self.db)
         self.dummyloc   = SourceLocation ('<rt>')

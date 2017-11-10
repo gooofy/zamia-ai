@@ -37,6 +37,7 @@ from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic    import Predicate
 from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
 from zamiaprolog.errors   import PrologError, PrologRuntimeError
+from zamiaprolog.logicdb  import LogicDB
 from aiprolog.runtime     import USER_PREFIX
 from zamiaai.ai_kernal    import AIKernal
 from zamiaai              import model
@@ -53,7 +54,14 @@ class AICli(cmdln.Cmdln):
        
         cmdln.Cmdln.__init__(self)
 
-        self.kernal = AIKernal()
+        self.config = misc.load_config('.airc')
+
+        all_modules = list(map (lambda m: m.strip(), self.config.get('semantics', 'modules').split(',')))
+
+        db_url      = self.config.get('db', 'url')
+        db          = LogicDB(db_url)
+
+        self.kernal = AIKernal(db=db, all_modules=all_modules)
 
     @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
            help="clean predicates from logicdb")

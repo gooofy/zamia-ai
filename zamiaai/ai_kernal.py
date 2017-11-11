@@ -815,7 +815,12 @@ class AIKernal(object):
         prev_context = prev_ctx
         res          = {}
 
-        tokens  = tokenize(utterance, utt_lang)
+        tokens_raw  = tokenize(utterance, utt_lang)
+        tokens = []
+        for t in tokens_raw:
+            if t == u'nspc':
+                continue
+            tokens.append(t)
 
         res, cur_context = self._setup_context ( user          = user_uri, 
                                                  lang          = utt_lang, 
@@ -837,13 +842,17 @@ class AIKernal(object):
         for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == utt_lang,
                                                                  model.TrainingData.inp   == json.dumps(inp)):
 
-            acode     = json.loads (tdr.resp)
-            pcode     = self._reconstruct_prolog_code (acode)
-            clause    = Clause (None, pcode, location=self.dummyloc)
-            sols      = self.rt.search (clause, env=res)
+            try:
+                acode     = json.loads (tdr.resp)
+                pcode     = self._reconstruct_prolog_code (acode)
+                clause    = Clause (None, pcode, location=self.dummyloc)
+                sols      = self.rt.search (clause, env=res)
 
-            if sols:
-                solutions.extend(sols)
+                if sols:
+                    solutions.extend(sols)
+            except:
+                # we will probably fall through to eliza answers here
+                logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
         if not solutions:
             

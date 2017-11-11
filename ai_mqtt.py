@@ -332,28 +332,31 @@ misc.init_app(PROC_TITLE)
 
 config = misc.load_config('.airc', defaults = DEFAULTS)
 
-broker_host         = config.get   ('mqtt', 'broker_host')
-broker_port         = config.getint('mqtt', 'broker_port')
-broker_user         = config.get   ('mqtt', 'broker_user')
-broker_pw           = config.get   ('mqtt', 'broker_pw')
+broker_host                    = config.get   ('mqtt', 'broker_host')
+broker_port                    = config.getint('mqtt', 'broker_port')
+broker_user                    = config.get   ('mqtt', 'broker_user')
+broker_pw                      = config.get   ('mqtt', 'broker_pw')
 
-ai_model            = config.get   ('server', 'model')
-lang                = config.get   ('server', 'lang')
-vf_login            = config.get   ('server', 'vf_login')
-rec_dir             = config.get   ('server', 'rec_dir')
-kaldi_model_dir     = config.get   ('server', 'kaldi_model_dir')
-kaldi_model         = config.get   ('server', 'kaldi_model')
+ai_model                       = config.get      ('server', 'model')
+lang                           = config.get      ('server', 'lang')
+vf_login                       = config.get      ('server', 'vf_login')
+rec_dir                        = config.get      ('server', 'rec_dir')
+kaldi_model_dir                = config.get      ('server', 'kaldi_model_dir')
+kaldi_model                    = config.get      ('server', 'kaldi_model')
+kaldi_acoustic_scale           = config.getfloat ('server', 'kaldi_acoustic_scale') 
+kaldi_beam                     = config.getfloat ('server', 'kaldi_beam') 
+kaldi_frame_subsampling_factor = config.getint   ('server', 'kaldi_frame_subsampling_factor') 
 
-tts_host            = config.get   ('tts',    'tts_host')
-tts_port            = config.getint('tts',    'tts_port')
-tts_locale          = config.get   ('tts',    'tts_locale')
-tts_voice           = config.get   ('tts',    'tts_voice')
-tts_engine          = config.get   ('tts',    'tts_engine')
-tts_speed           = config.getint('tts',    'tts_speed')
-tts_pitch           = config.getint('tts',    'tts_pitch')
+tts_host                       = config.get   ('tts',    'tts_host')
+tts_port                       = config.getint('tts',    'tts_port')
+tts_locale                     = config.get   ('tts',    'tts_locale')
+tts_voice                      = config.get   ('tts',    'tts_voice')
+tts_engine                     = config.get   ('tts',    'tts_engine')
+tts_speed                      = config.getint('tts',    'tts_speed')
+tts_pitch                      = config.getint('tts',    'tts_pitch')
 
-all_modules         = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
-db_url              = config.get('db', 'url')
+all_modules                    = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
+db_url                         = config.get('db', 'url')
 
 #
 # commandline
@@ -406,7 +409,9 @@ tts_lock = Lock()
 # ASR
 #
 
-asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model)
+asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model,
+          kaldi_beam = kaldi_beam, kaldi_acoustic_scale = kaldi_acoustic_scale,
+          kaldi_frame_subsampling_factor = kaldi_frame_subsampling_factor)
 
 #
 # multithreading: queue, state lock

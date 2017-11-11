@@ -61,12 +61,13 @@ import paho.mqtt.client as mqtt
 import numpy            as np
 
 from optparse             import OptionParser
-from threading            import RLock, Lock
+from threading            import RLock, Lock, Condition
 
 from zamiaai              import model
 from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
 from zamiaai.ai_kernal    import AIKernal
 from aiprolog.runtime     import USER_PREFIX
+from zamiaprolog.logicdb  import LogicDB
 from nltools              import misc
 from nltools.tts          import TTS
 from nltools.asr          import ASR, ASR_ENGINE_NNET3
@@ -83,7 +84,6 @@ AUDIO_EXTRA_DELAY = 0.5      # seconds
 
 TOPIC_INPUT_TEXT  = 'ai/input/text'
 TOPIC_INPUT_AUDIO = 'ai/input/audio'
-TOPIC_ASR_AUDIO   = 'ai/asr/audio'
 TOPIC_CONFIG      = 'ai/config'
 TOPIC_RESPONSE    = 'ai/response'
 TOPIC_INTENT      = 'ai/intent'
@@ -133,7 +133,6 @@ def on_connect(client, userdata, flag, rc):
         logging.info("connected OK Returned code=%s" % repr(rc))
         client.subscribe(TOPIC_INPUT_TEXT)
         client.subscribe(TOPIC_INPUT_AUDIO)
-        client.subscribe(TOPIC_ASR_AUDIO)
         client.subscribe(TOPIC_CONFIG)
         client.subscribe(TOPIC_RESPONSE)
     else:
@@ -141,9 +140,9 @@ def on_connect(client, userdata, flag, rc):
 
 def publish_state(client):
 
-    global attention, pstr, hstr, astr, listening, state_lock, old_state
+    global attention, pstr, hstr, astr, listening, msg_cond, old_state
 
-    state_lock.acquire()
+    msg_cond.acquire()
     try:
         data = {}
 
@@ -159,30 +158,32 @@ def publish_state(client):
             old_state = data
 
     finally:
-        state_lock.release()
+        msg_cond.release()
 
 def on_message(client, userdata, message):
 
-    global kernal, lang, state_lock, current_ctx
-    global do_listen, do_asr, attention, do_rec, att_force
-    global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt, listening
-    global tts_lock, tts, ignore_audio_before, asr
+    # global kernal, lang
+    global msg_queue, msg_cond, ignore_audio_before
+    global wfs, vf_login, rec_dir, audiofns, pstr, hstr, astr, audio_cnt
+    global do_listen, do_rec, do_asr, att_force, listening, attention
+    global tts_lock, tts
 
     # logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
     # logging.debug( "message topic=%s" % message.topic)
     # logging.debug( "message qos=%s" % message.qos)
     # logging.debug( "message retain flag=%s" % message.retain)
 
+    msg_cond.acquire()
     try:
 
         if message.topic == TOPIC_INPUT_AUDIO:
 
-            data = json.loads(message.payload)
-
-            audio       = data['pcm']
-            do_finalize = data['final']
-            loc         = data['loc']
-            ts          = dateutil.parser.parse(data['ts'])
+            data          = json.loads(message.payload)
+            data['topic'] = message.topic
+            audio         = data['pcm']
+            loc           = data['loc']
+            do_finalize   = data['final']
+            ts            = dateutil.parser.parse(data['ts'])
             
             # ignore old audio recordings that may have lingered in the message queue
 
@@ -194,8 +195,6 @@ def on_message(client, userdata, message):
             if ts < ignore_audio_before:
                 # logging.debug ("   ignoring audio that is ourselves talking: %s < %s" % (unicode(ts), unicode(ignore_audio_before)))
                 return
-
-            confidence  = 0.0
 
             audio_cnt += 1
             pstr = '.' * (audio_cnt/10 + 1)
@@ -253,8 +252,8 @@ def on_message(client, userdata, message):
 
             if do_asr:
 
-                client.publish(TOPIC_ASR_AUDIO, message.payload)
-                
+                msg_queue.append(data)
+                msg_cond.notify_all()
 
             else:
                 if do_rec:
@@ -262,123 +261,14 @@ def on_message(client, userdata, message):
 
             publish_state(client)
                 
-        elif message.topic == TOPIC_ASR_AUDIO:
-
-            data = json.loads(message.payload)
-
-            audio       = data['pcm']
-            do_finalize = data['final']
-            loc         = data['loc']
-            ts          = dateutil.parser.parse(data['ts'])
-
-            hstr2, confidence = asr.decode(SAMPLE_RATE, audio, do_finalize, stream_id=loc)
-
-            if do_finalize:
-
-                logging.info ( "asr: %9.5f %s" % (confidence, hstr))
-
-                if hstr2:
-                    
-                    hstr = hstr2
-                    astr = '...'
-                    data = {}
-
-                    data['lang'] = lang
-                    data['utt']  = hstr
-                    data['user'] = AI_USER
-                 
-                    client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
-                    listening = False
-
-            publish_state(client)
-
         elif message.topic == TOPIC_INPUT_TEXT:
 
-            data = json.loads(message.payload)
+            data          = json.loads(message.payload)
+            data['topic'] = message.topic
 
+            msg_queue.append(data)
+            msg_cond.notify_all()
             # print data
-
-            utt      = data['utt']
-            lang     = data['lang']
-            user_uri = USER_PREFIX + data['user']
-
-            if kernal.nlp_model.lang != lang:
-                logging.warn('incorrect language for model: %s' % lang)
-                return
-
-            score, resps, actions, solutions, current_ctx = kernal.process_input(utt, kernal.nlp_model.lang, user_uri, prev_ctx=current_ctx)
-            logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
-
-            # for idx in range (len(resps)):
-            #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
-
-            # if we have multiple responses, pick one at random
-
-            do_publish = attention>0
-
-            if len(resps)>0:
-
-                idx = random.randint(0, len(resps)-1)
-
-                # apply DB overlay, if any
-                ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-                if ovl:
-                    ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
-
-                state_lock.acquire()
-                try:
-
-                    # refresh attention span on each new interaction step
-                    if attention>0:
-                        attention = ATTENTION_SPAN
-
-                    acts = actions[idx]
-                    for action in acts:
-                        logging.debug("ACTION %s" % repr(action))
-                        if len(action) == 2 and action[0] == u'attention':
-                            if action[1] == u'on':
-                                attention = ATTENTION_SPAN
-                            else:
-                                attention = 1
-                            do_publish = True
-                        if attention>0 and len(action) == 3 and action[0] == u'media':
-                            attention = 1
-                            do_publish = True
-
-                finally:
-                    state_lock.release()
-
-                resp = resps[idx]
-                logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
-
-                msg = {'utt': u' '.join(resp), 'score': score, 'lang': lang}
-
-            else:
-                logging.error(u'no solution found for input %s' % utt)
-
-                msg = {'utt': u'', 'score': 0.0, 'lang': lang}
-                acts = []
-
-            if do_publish:
-                (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
-                logging.info("%s (att: %2d) : %s" % (TOPIC_RESPONSE, attention, json.dumps(msg)))
-                for act in acts:
-                    (rc, mid) = client.publish(TOPIC_INTENT, json.dumps(act))
-                    logging.info("%s (att: %2d): %s" % (TOPIC_INTENT, attention, json.dumps(act)))
-            else:
-                listening = True
-
-            # generate astr
-
-            astr = msg['utt']
-            if acts:
-                if astr:
-                    astr += ' - '
-            for action in acts:
-                astr += repr(action)
-
-            publish_state(client)
-
 
         elif message.topic == TOPIC_RESPONSE:
 
@@ -404,6 +294,11 @@ def on_message(client, userdata, message):
 
         elif message.topic == TOPIC_CONFIG:
 
+            logging.debug( "message received %s" % str(message.payload.decode("utf-8")))
+            logging.debug( "message topic=%s" % message.topic)
+            logging.debug( "message qos=%s" % message.qos)
+            logging.debug( "message retain flag=%s" % message.retain)
+
             data = json.loads(message.payload)
 
             do_listen  = data['listen']
@@ -417,8 +312,13 @@ def on_message(client, userdata, message):
                 attention = 2
                 att_force = False
 
+            publish_state(client)
+
     except:
         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+
+    finally:
+        msg_cond.release()
 
 #
 # init
@@ -452,6 +352,9 @@ tts_engine          = config.get   ('tts',    'tts_engine')
 tts_speed           = config.getint('tts',    'tts_speed')
 tts_pitch           = config.getint('tts',    'tts_pitch')
 
+all_modules         = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
+db_url              = config.get('db', 'url')
+
 #
 # commandline
 #
@@ -475,10 +378,11 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 #
-# setup AI Kernal, context
+# setup DB, AI Kernal, context
 #
 
-kernal = AIKernal(load_all_modules=True)
+db     = LogicDB(db_url)
+kernal = AIKernal(db=db, all_modules=all_modules, load_all_modules=True)
 kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
 
 user_uri = USER_PREFIX + AI_USER
@@ -505,10 +409,11 @@ tts_lock = Lock()
 asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model)
 
 #
-# state lock
+# multithreading: queue, state lock
 #
 
-state_lock = Lock()
+msg_queue = []
+msg_cond  = Condition()
 
 #
 # mqtt connect
@@ -543,21 +448,154 @@ logging.info ('READY.')
 logging.info ('main loop starts')
 
 client.loop_start()
+
+att_ts = time.time()
+
 while True:
 
-    state_lock.acquire()
-
-    if attention>0:
-        if not att_force:
-            attention -= 1
-        logging.debug ('decreased attention: %d' % attention)
-        state_lock.release()
+    try:
+        data = None
+        msg_cond.acquire()
         try:
-            publish_state(client)
-        except:
-            logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
-    else:
-        state_lock.release()
+            if not msg_queue:
+                msg_cond.wait(1.0)
+            if msg_queue:
+                data = msg_queue.pop(0)
+        finally:
+            msg_cond.release()
 
-    time.sleep(1)
+        if data:
 
+            if data['topic'] == TOPIC_INPUT_AUDIO:
+
+                audio       = data['pcm']
+                do_finalize = data['final']
+                loc         = data['loc']
+
+                logging.debug ('asr.decode...')
+                hstr2, confidence = asr.decode(SAMPLE_RATE, audio, do_finalize, stream_id=loc)
+                logging.debug ('asr.decode...done')
+
+                if do_finalize:
+
+                    logging.info ( "asr: %9.5f %s" % (confidence, hstr))
+
+                    if hstr2:
+                        
+                        hstr = hstr2
+                        astr = '...'
+                        data = {}
+
+                        data['lang'] = lang
+                        data['utt']  = hstr
+                        data['user'] = AI_USER
+                     
+                        client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
+                        listening = False
+
+                        publish_state(client)
+
+            elif data['topic'] == TOPIC_INPUT_TEXT:
+
+                # print data
+
+                utt      = data['utt']
+                lang     = data['lang']
+                user_uri = USER_PREFIX + data['user']
+
+                if kernal.nlp_model.lang != lang:
+                    logging.warn('incorrect language for model: %s' % lang)
+                else:
+
+                    score, resps, actions, solutions, current_ctx = kernal.process_input(utt, kernal.nlp_model.lang, user_uri, prev_ctx=current_ctx)
+                    logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
+
+                    # for idx in range (len(resps)):
+                    #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
+
+                    # if we have multiple responses, pick one at random
+
+                    do_publish = attention>0
+
+                    if len(resps)>0:
+
+                        idx = random.randint(0, len(resps)-1)
+
+                        # apply DB overlay, if any
+                        ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
+                        if ovl:
+                            ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
+
+                        msg_cond.acquire()
+                        try:
+
+                            # refresh attention span on each new interaction step
+                            if attention>0:
+                                attention = ATTENTION_SPAN
+
+                            acts = actions[idx]
+                            for action in acts:
+                                logging.debug("ACTION %s" % repr(action))
+                                if len(action) == 2 and action[0] == u'attention':
+                                    if action[1] == u'on':
+                                        attention = ATTENTION_SPAN
+                                    else:
+                                        attention = 1
+                                    do_publish = True
+                                if attention>0 and len(action) == 3 and action[0] == u'media':
+                                    attention = 1
+                                    do_publish = True
+
+                        finally:
+                            msg_cond.release()
+
+                        resp = resps[idx]
+                        logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
+
+                        msg = {'utt': u' '.join(resp), 'score': score, 'lang': lang}
+
+                    else:
+                        logging.error(u'no solution found for input %s' % utt)
+
+                        msg = {'utt': u'', 'score': 0.0, 'lang': lang}
+                        acts = []
+
+                    if do_publish:
+                        (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
+                        logging.info("%s (att: %2d) : %s" % (TOPIC_RESPONSE, attention, json.dumps(msg)))
+                        for act in acts:
+                            (rc, mid) = client.publish(TOPIC_INTENT, json.dumps(act))
+                            logging.info("%s (att: %2d): %s" % (TOPIC_INTENT, attention, json.dumps(act)))
+                    else:
+                        listening = True
+
+                    # generate astr
+
+                    astr = msg['utt']
+                    if acts:
+                        if astr:
+                            astr += ' - '
+                    for action in acts:
+                        astr += repr(action)
+
+                    publish_state(client)
+
+        #
+        # attention span
+        #
+
+        att_delay = time.time()-att_ts
+        if att_delay >= 1.0:
+            msg_cond.acquire()
+            try:
+                if attention>0:
+                    if not att_force:
+                        attention -= 1
+                        logging.debug ('decreased attention: %d' % attention)
+                        publish_state(client)
+            finally:
+                msg_cond.release()
+            att_ts = time.time()
+
+    except:
+        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

@@ -47,6 +47,7 @@ from StringIO               import StringIO
 from threading              import Lock, Condition
 from zamiaprolog.builtins   import ASSERT_OVERLAY_VAR_NAME
 from zamiaprolog.logic      import Predicate, Clause
+from zamiaprolog.logicdb    import LogicDB
 from zamiaprolog.runtime    import PROLOG_LOGGER_NAME
 from zamiaprolog.errors     import PrologError, PrologRuntimeError
 from aiprolog.runtime       import USER_PREFIX
@@ -537,22 +538,27 @@ else:
 
 config = misc.load_config('.airc')
 
-ai_model            = config.get   ('server', 'model')
-lang                = config.get   ('server', 'lang')
-vf_login            = config.get   ('server', 'vf_login')
-rec_dir             = config.get   ('server', 'rec_dir')
-kaldi_model_dir     = config.get   ('server', 'kaldi_model_dir')
-kaldi_model         = config.get   ('server', 'kaldi_model')
+ai_model                       = config.get      ('server', 'model')
+lang                           = config.get      ('server', 'lang')
+vf_login                       = config.get      ('server', 'vf_login')
+rec_dir                        = config.get      ('server', 'rec_dir')
+kaldi_model_dir                = config.get      ('server', 'kaldi_model_dir')
+kaldi_model                    = config.get      ('server', 'kaldi_model')
+kaldi_acoustic_scale           = config.getfloat ('server', 'kaldi_acoustic_scale') 
+kaldi_beam                     = config.getfloat ('server', 'kaldi_beam') 
+kaldi_frame_subsampling_factor = config.getint   ('server', 'kaldi_frame_subsampling_factor') 
+all_modules                    = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
+db_url                         = config.get      ('db', 'url')
 
-loc                 = config.get   ('vad',    'loc')
-source              = config.get   ('vad',    'source')
-volume              = config.getint('vad',    'volume')
-aggressiveness      = config.getint('vad',    'aggressiveness')
+loc                            = config.get      ('vad',    'loc')
+source                         = config.get      ('vad',    'source')
+volume                         = config.getint   ('vad',    'volume')
+aggressiveness                 = config.getint   ('vad',    'aggressiveness')
 
-broker_host         = config.get   ('mqtt', 'broker_host')
-broker_port         = config.getint('mqtt', 'broker_port')
-broker_user         = config.get   ('mqtt', 'broker_user')
-broker_pw           = config.get   ('mqtt', 'broker_pw')
+broker_host                    = config.get      ('mqtt', 'broker_host')
+broker_port                    = config.getint   ('mqtt', 'broker_port')
+broker_user                    = config.get      ('mqtt', 'broker_user')
+broker_pw                      = config.get      ('mqtt', 'broker_pw')
 
 #
 # curses
@@ -634,7 +640,8 @@ try:
     #
 
     misc.message_popup(stdscr, 'Initializing...', 'Init AI Kernal...')
-    kernal = AIKernal(load_all_modules=True)
+    db     = LogicDB(db_url)
+    kernal = AIKernal(db=db, all_modules=all_modules, load_all_modules=True)
     # kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
     # kernal.setup_align_utterances(lang=lang)
     paint_main()
@@ -651,7 +658,9 @@ try:
     #
 
     misc.message_popup(stdscr, 'Initializing...', 'Init ASR...')
-    asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model)
+    asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model,
+              kaldi_beam = kaldi_beam, kaldi_acoustic_scale = kaldi_acoustic_scale,
+              kaldi_frame_subsampling_factor = kaldi_frame_subsampling_factor)
     paint_main()
     logging.debug ('ASR initialized.')
 

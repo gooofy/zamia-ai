@@ -47,10 +47,9 @@ from nltools.tokenizer   import tokenize
 
 class AIPrologParser(PrologParser):
 
-    def __init__(self, kernal):
-        self.kernal     = kernal
-        self.rt         = PrologRuntime(kernal.db)
-        super(AIPrologParser, self).__init__(kernal.db)
+    def __init__(self, db):
+        self.rt         = PrologRuntime(db)
+        super(AIPrologParser, self).__init__(db)
     
     def compile_file (self, filename, module_name, clear_module=False):
 

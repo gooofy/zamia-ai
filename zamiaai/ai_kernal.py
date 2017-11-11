@@ -103,7 +103,7 @@ class AIKernal(object):
 
         self.db         = db
         self.session    = db.session
-        self.aip_parser = AIPrologParser(self)
+        self.aip_parser = AIPrologParser(self.db)
         self.rt         = AIPrologRuntime(self.db)
         self.dummyloc   = SourceLocation ('<rt>')
 

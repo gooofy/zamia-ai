@@ -47,7 +47,8 @@ coord_matcher       = re.compile(r"Point\(([0-9.]+)\s([0-9.]+)\)")
 
 def fetch_weather_forecast(kernal):
 
-    api_key    = kernal.config.get("weather", "api_key")
+    config  = misc.load_config('.airc')
+    api_key = config.get("weather", "api_key")
 
     logging.debug ('fetch_weather_forecast cronj ob, api key: %s' % api_key)
 

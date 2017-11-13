@@ -4,6 +4,6 @@
 DEPENDS    = [ 'config', 'data', 'base', 'tech' ]
 
 AIP_SOURCES = [
-               'personality.aip',
+               'personality.aip', 'religion.aip', 'sex.aip'
               ]
 

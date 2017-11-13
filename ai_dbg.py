@@ -199,9 +199,15 @@ def do_process_input():
     global stdscr, prompt, cur_context, next_context, lang, inp, responses, kernal
     global match_module, match_loc_fn, match_loc_line
 
+    inp_t = []
+    for t in tokenize(prompt, lang=lang):
+        if t == u'nspc':
+            continue
+        inp_t.append(t)
+
     next_res, next_context = kernal._setup_context ( user          = USER_URI, 
                                                      lang          = lang, 
-                                                     inp           = tokenize(prompt, lang=lang),
+                                                     inp           = inp_t,
                                                      prev_context  = cur_context,
                                                      prev_res      = {})
 

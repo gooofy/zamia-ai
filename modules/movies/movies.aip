@@ -416,6 +416,10 @@ train(en) :- "Rocky",
              inline answer_known_movie(en).
 train(de) :- "Rocky",
              inline answer_known_movie(de).
+train(en) :- "Pulp Fiction",
+             inline answer_known_movie(en).
+train(de) :- "Pulp Fiction",
+             inline answer_known_movie(de).
 
 train(en) :- "I am an (actor|actress)",
              "A famous one?".

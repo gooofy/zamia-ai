@@ -558,6 +558,11 @@ my_languagesupport(de) :-
        "Ich laufe gerade im deutschen Modus aber man kann mich auch auf Englisch umschalten",
        "Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben").
 
+train(en) :- "which languages do you speak",
+             inline my_languagesupport(en).
+train(de) :- "welche sprachen sprichst du",
+             inline my_languagesupport(de).
+
 train(en) :-
     "(do you speak | are you) (english|american|german) (well|) (by the way|really|)",
     inline my_languagesupport(en).
@@ -568,6 +573,10 @@ train(en) :-
 
 train(en) :-
     "are you (really|) as good as your (english|american|german) program (by the way|)?",
+    inline my_languagesupport(en).
+
+train(en) :-
+    "(which|what|love that|is your|do you like that|) language?",
     inline my_languagesupport(en).
 
 train(de) :-
@@ -581,6 +590,45 @@ train(de) :-
 train(de) :-
     "bist du (eigentlich|) so gut wie dein (englisches|amerikanisches|deutsches) programm?",
     inline my_languagesupport(de).
+
+train(de) :-
+    "(kennst Du diese|was für eine|welche|magst du die|) Sprache?",
+    inline my_languagesupport(de).
+
+train(en) :- "in which language may I speak?",
+             inline my_languagesupport(en).
+train(de) :- "in welcher sprache darf ich sprechen",
+             inline my_languagesupport(de).
+
+train(en) :- "can you understand foreign languages?",
+             inline my_languagesupport(en).
+train(de) :- "kannst du fremdsprachen verstehen",
+             inline my_languagesupport(de).
+
+train(en) :- "you can not understand foreign languages",
+             inline my_languagesupport(en).
+train(de) :- "du kannst keine fremdsprachen verstehen",
+             inline my_languagesupport(de).
+
+train(en) :- "pity but you will still learn in my language",
+             "Sure!".
+train(de) :- "schade aber das wirst du auch in meiner sprache noch lernen",
+             "Sicherlich!".
+
+train(en) :- "in which lexicon",
+             "wiktionary or something.".
+train(de) :- "in welchem lexikon",
+             "Wiktionary oder so.".
+
+train(en) :- "What (about|is) linguistics?",
+             "Linguistics is the science of language itself.".
+train(de) :- "Was (weißt Du über|ist) Linguistik",
+             "Linguistik ist die Wissenschaft von der Sprache an sich.".
+
+train(en) :- "You do not know which language you speak",
+             "Really?".
+train(de) :- "Du weisst nicht in welcher sprache du sprichst",
+             "Echt jetzt?".
 
 test(en, t0020) :-
     "Computer do you speak german?",

@@ -610,6 +610,11 @@ train(en) :- "you can not understand foreign languages",
 train(de) :- "du kannst keine fremdsprachen verstehen",
              inline my_languagesupport(de).
 
+train(en) :- "(are your good in|are you fluent in|how well do you speak|) (english|german|french|italian|spanish)",
+             inline my_languagesupport(en).
+train(de) :- "(bist du gut in|sprichst du|sprichst du fließend|wie gut bist du in|wie gut kannst du) (Englisch|Deutsch|Französisch|Italienisch|Spanisch)?",
+             inline my_languagesupport(de).
+
 train(en) :- "pity but you will still learn in my language",
              "Sure!".
 train(de) :- "schade aber das wirst du auch in meiner sprache noch lernen",

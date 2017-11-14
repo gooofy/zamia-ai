@@ -424,6 +424,9 @@ if options.verbose:
 else:
     logging.basicConfig(level=logging.INFO)
 
+logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
+
+
 outputfn = options.outputfn
 
 #

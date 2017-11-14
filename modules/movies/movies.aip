@@ -344,3 +344,91 @@ test(de, t0011) :-
     "und weißt du, wann er gedreht wurde?",
     "Ich denke Der dritte Mann ist aus 1949.".
 
+%
+% misc movie smalltalk
+%
+
+answer_known_movie(en) :-
+    or('Interesting movie!',
+       'I heard good things about that movie!',
+       'Have you seen that movie?').
+
+answer_known_movie(de) :-
+    or('Interessanter Film!',
+       'Hab Gutes über diesen Film gehört.',
+       'Hast Du den Film gesehen?').
+
+train(en) :- "Gone with the wind",
+             inline answer_known_movie(en).
+train(de) :- "Vom Winde verweht",
+             inline answer_known_movie(de).
+
+train(en) :- "Titanic",
+             inline answer_known_movie(en).
+train(de) :- "(Titanic|Titanik)",
+             inline answer_known_movie(de).
+
+train(en) :- "What is (the|) matrix",
+             inline answer_known_movie(en).
+train(de) :- "Was ist (die|) Matrix",
+             inline answer_known_movie(de).
+
+train(en) :- "American Beauty",
+             inline answer_known_movie(en).
+train(de) :- "American Beauty",
+             inline answer_known_movie(de).
+
+train(en) :- "2001",
+             inline answer_known_movie(en).
+train(de) :- "2001",
+             inline answer_known_movie(de).
+
+train(en) :- "2010",
+             inline answer_known_movie(en).
+train(de) :- "2010",
+             inline answer_known_movie(de).
+
+train(en) :- "2012",
+             inline answer_known_movie(en).
+train(de) :- "2012",
+             inline answer_known_movie(de).
+
+train(en) :- "Saving Private Ryan",
+             inline answer_known_movie(en).
+train(de) :- "Der Soldat James Ryan",
+             inline answer_known_movie(de).
+
+train(en) :- "Lost in Space",
+             inline answer_known_movie(en).
+train(de) :- "Lost in Space",
+             inline answer_known_movie(de).
+
+train(en) :- "Planet of the Apes",
+             inline answer_known_movie(en).
+train(de) :- "Planet der Affen",
+             inline answer_known_movie(de).
+
+train(en) :- "Short Circuit",
+             inline answer_known_movie(en).
+train(de) :- "Nummer 5 lebt",
+             inline answer_known_movie(de).
+train(en) :- "Rocky",
+             inline answer_known_movie(en).
+train(de) :- "Rocky",
+             inline answer_known_movie(de).
+
+train(en) :- "I am an (actor|actress)",
+             "A famous one?".
+train(de) :- "Ich bin (Schauspieler|Schauspielerin)",
+             "Bist Du berühmt?".
+
+train(en) :- "What's going on in the cinema right now",
+             "Have you heard of the Internet Movie Database?".
+train(de) :- "Was läuft gerade im Kino",
+             "Hast Du von der IMDB gehört?".
+
+train(en) :- "My favorite movie is {movies:LABEL}",
+             "What did you like most?".
+train(de) :- "Mein Lieblingsfilm ist {movies:LABEL}",
+             "Was hat Dir an dem besonders gefallen?".
+

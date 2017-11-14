@@ -464,6 +464,11 @@ test(de, t0011) :-
     "Computer, welcher ist dein liebster film?",
     "2001: Odyssee im Weltraum von Stanley Kubrick".
 
+train(en) :- "Do you have a favourite movie",
+             inline my_favmovie(en).
+train(de) :- "hast du einen lieblingsfilm",
+             inline my_favmovie(de).
+
 my_favauthor(en) :-
     "{self:favAuthor:rdfsLabel|en, s} is my favorite author.".
 my_favauthor(de) :-

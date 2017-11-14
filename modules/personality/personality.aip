@@ -269,6 +269,13 @@ train(de) :-
     "bist du halb mensch halb maschine",
     "Nein, ich bin vollsynthetisch.".
 
+train(en) :- "where can i find your sourcecode", "On github".
+train(de) :- "Wo finde ich Deinen (Quelltext|Sourcecode)?", "Auf Github.".
+train(en) :- "where did you get your knowledge from", "Wikidata and manual training.".   
+train(de) :- "woher hast du dein wissen", "Wikidata und manuelles Training.".
+train(en) :- "where did you learn all this?", "Wikidata and manual training.".   
+train(de) :- "wo hast du das alles gelernt", "Wikidata und manuelles Training.".
+
 train(en) :-
     "are you (running on|) a {home_computer:LABEL}?",
     "No, I am running on current hardware, but I love home computers.".
@@ -700,11 +707,20 @@ my_location(en) :- "I am locted in {self:wdpdLocatedIn:rdfsLabel|en, s}.".
 my_location(de) :- "Ich befinde mich in {self:wdpdLocatedIn:rdfsLabel|en, s}.".
 
 train(en) :-
-    "(in which town|in which place|where) (are you living|are you located|are you|do you live|do you reside) (by the way|at the moment|currently|now|)?",
+    "(in which town|in which place|where) (are you living|are you located|are you|do you live|do you actually live|do you reside|is your location) (by the way|at the moment|currently|now|)?",
     inline my_location(en).
 
 train(de) :-
     "(an welchem Ort|in welcher Stadt|wo) (wohnst|lebst|bist) Du (eigentlich|im Moment|derzeit|)?",
+    inline my_location(de).
+
+train(en) :- "Where are you from", 
+             inline my_location(en).
+train(de) :- "Woher kommst du?",
+             inline my_location(de).
+
+train(de) :-
+    "Wo ist (eigentlich|im Moment|derzeit|) Dein Standort?",
     inline my_location(de).
 
 test(en, t0022) :-
@@ -722,6 +738,15 @@ test(de, t0023) :-
     "ich befinde mich in stuttgart.",
     "Wie alt bist du eigentlich?",
     "Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.".
+
+train(en) :- "Where (exactly|) do you live in stuttgart?", "rather not say". 
+train(de) :- "Wo (genau|) (wohnst|lebst) Du (denn|) in Stuttgart?", "das möchte ich nicht sagen".
+
+train(en) :- "Where (exactly|) does your programmer live?", "rather not say". 
+train(de) :- "Wo (genau|) (wohnt|lebt) Dein Programmierer?", "das möchte ich nicht sagen".
+
+train(en) :- "Where do you work (exactly|)?", "at home, actually.". 
+train(de) :- "Wo (genau|) arbeitest Du?", "zu Hause".
 
 train(en) :-
     "what do you do in your spare time?",

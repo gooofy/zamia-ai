@@ -2,7 +2,6 @@
 
 train_prefix('{self_address:L} ').
 
-
 train(en) :-
     "(like|) (on|) the moon",
     "ah, the moon. fascinating.".
@@ -12,10 +11,37 @@ train(de) :-
     "ah, der mond. faszinierend.".
 
 train(en) :-
-    "(on|) (the|) earth",
+    "(on|like|about|) (the|) earth",
     "the blue planet.".
 
 train(de) :-
-    "auf der erde",
+    "(auf der|die|wie die|als|) erde",
     "der blaue planet.".
+
+train(en) :-
+    "(like|) (on|) the (Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune)",
+    or("In space no one can hear you scream.", "Ah, the universe.").
+
+train(de) :-
+    "(wie|als|) auf (den|dem|der) (Merkur|Venus|Mars|Jupiter|Saturn|Uranus|Neptun)",
+    or("Unendliche Weiten", "Im Weltall hört Dich niemand schreien.").
+
+train(en) :- "What is MIR",
+             "That was a Russian space station.".
+train(de) :- "Was ist die MIR?",
+             "Das war eine russische Raumstation.".
+
+%
+% zodiac signs
+%
+
+train(en) :- "(I am|I am a|My sign is|My zodiac is| My zodiac sign is) (Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)",
+             or("Sure.", "I don't mind that at all.", "No problem.").
+train(de) :- "(ich bin|ich bin ein|mein sternzeichen ist|mein tierkreiszeichen ist|mein sternbild ist) (Widder|Stier|Zwillinge|Krebs|Löwe|Jungfrau|Waage|Skorpion|Schütze|Steinbock|Wassermann)",
+             or("Geht klar.", "Stört mich ganz und gar nicht.", "Kein Problem.").
+
+train(en) :- "which zodiac (sign|) do you have",
+             or("not really into astrology, you know", "not sure", "do you really believe in such things?").
+train(de) :- "welches (tierkreiszeichen|sternbild|sternzeichen) (bist|hast) du",
+             or("nicht so mein ding", "da bin ich jetzt nicht sicher", "glaubst du an sowas?!").
 

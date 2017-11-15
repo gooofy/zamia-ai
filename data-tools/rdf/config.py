@@ -2159,6 +2159,7 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'CastMember'                                 , u'P161'),
                               (u'SubclassOf'                                 , u'P279'),
                               (u'PartOf'                                     , u'P361'),
+                              (u'Residence'                                  , u'P551'),
                               (u'DateOfBirth'                                , u'P569'),
                               (u'Inception'                                  , u'P571'),
                               (u'PublicationDate'                            , u'P577'),
@@ -2391,6 +2392,7 @@ RES_PATHS = [
                   ['wdpd:GivenName'],
                   ['wdpd:InstanceOf'],
                   ['wdpd:SubclassOf'],
+                  ['wdpd:Residence'],
                 ]
               ),
 

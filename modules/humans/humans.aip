@@ -37,7 +37,7 @@ train(en) :-
 
     ner (en, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
+    C:mem|f1ent := ENTITY,
     r_score(C, SCORE),
 
     answer_info_human (C, en, ENTITY).
@@ -47,7 +47,7 @@ train(de) :-
 
     ner (de, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
+    C:mem|f1ent := ENTITY,
     r_score(C, SCORE),
 
     answer_info_human (C, de, ENTITY).
@@ -65,7 +65,7 @@ train(en) :-
 
     ner (en, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
+    C:mem|f1ent := ENTITY,
     r_score(C, SCORE),
 
     answer_info_human (C, en, ENTITY).
@@ -75,7 +75,7 @@ train(de) :-
 
     ner (de, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
+    C:mem|f1ent := ENTITY,
     r_score(C, SCORE),
 
     answer_info_human (C, de, ENTITY).
@@ -96,13 +96,13 @@ answer_human_born_where_tokens(en, TS, TE) :-
 
     ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, en, HLABEL),
 
     wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
+    C:mem|f1loc := BP,
     rdfsLabel(BP, en, BPLABEL),
 
     or ("{HLABEL,s} was born in {BPLABEL,s}, I think.",
@@ -112,13 +112,13 @@ answer_human_born_where_tokens(de, TS, TE) :-
 
     ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, de, HLABEL),
 
     wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
+    C:mem|f1loc := BP,
     rdfsLabel(BP, de, BPLABEL),
 
     or ("{HLABEL,s} ist in {BPLABEL,s} geboren, denke ich.",
@@ -148,7 +148,7 @@ answer_human_born_where_context(en) :-
     rdfsLabel(HUMAN, en, HLABEL),
 
     wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
+    C:mem|f1loc := BP,
     rdfsLabel(BP, en, BPLABEL),
 
     or ("{HLABEL,s} was born in {BPLABEL,s}, I think.",
@@ -161,7 +161,7 @@ answer_human_born_where_context(de) :-
     rdfsLabel(HUMAN, de, HLABEL),
 
     wdpdPlaceOfBirth(HUMAN, BP),
-    C:mem|f1place is BP,
+    C:mem|f1loc := BP,
     rdfsLabel(BP, de, BPLABEL),
 
     or ("{HLABEL,s} ist in {BPLABEL,s} geboren, denke ich.",
@@ -208,13 +208,13 @@ answer_human_born_when_tokens(en, TS, TE) :-
 
     ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, en, HLABEL),
 
     wdpdDateOfBirth(HUMAN, BD),
-    C:mem|f1time is BD,
+    C:mem|f1time := BD,
     transcribe_date(en, dativ, BD, BDLABEL),
 
     or ("{HLABEL,s} was born on {BDLABEL,s}, I think.",
@@ -224,13 +224,13 @@ answer_human_born_when_tokens(de, TS, TE) :-
 
     ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
 
-    C:mem|f1ent is HUMAN,
+    C:mem|f1ent := HUMAN,
     r_score(C, SCORE),
 
     rdfsLabel(HUMAN, de, HLABEL),
 
     wdpdDateOfBirth(HUMAN, BD),
-    C:mem|f1time is BD,
+    C:mem|f1time := BD,
     transcribe_date(de, dativ, BD, BDLABEL),
 
     or ("{HLABEL,s} ist am {BDLABEL,s} geboren, denke ich.",
@@ -259,7 +259,7 @@ answer_human_born_when_context(en) :-
     rdfsLabel(HUMAN, en, HLABEL),
 
     wdpdDateOfBirth(HUMAN, BD),
-    C:mem|f1time is BD,
+    C:mem|f1time := BD,
     transcribe_date(en, dativ, BD, BDLABEL),
 
     or ("{HLABEL,s} was born on {BDLABEL,s}, I think.",
@@ -272,7 +272,7 @@ answer_human_born_when_context(de) :-
     rdfsLabel(HUMAN, de, HLABEL),
 
     wdpdDateOfBirth(HUMAN, BD),
-    C:mem|f1time is BD,
+    C:mem|f1time := BD,
     transcribe_date(de, dativ, BD, BDLABEL),
 
     or ("{HLABEL,s} ist am {BDLABEL,s} geboren, denke ich.",
@@ -305,4 +305,97 @@ test(de, t0007) :-
     "Ich glaube Angela Merkel ist am siebzehnten Juli 1954 geboren.",
     "Und wo wurde sie nochmal geboren?",
     "Angela Merkel ist in Barmbek-Nord geboren, denke ich".
+
+%
+% residence
+%
+
+answer_human_residence_tokens(en, TS, TE) :-
+
+    ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
+
+    C:mem|f1ent := HUMAN,
+    r_score(C, SCORE),
+
+    rdfsLabel(HUMAN, en, HLABEL),
+    wdpdResidence(HUMAN, RESIDENCE),
+    C:mem|f1loc := RESIDENCE,
+    rdfsLabel(RESIDENCE, en, RLABEL),
+
+    or ("{HLABEL,s} lives in {RLABEL,s}, I think.",
+        "I believe {HLABEL,s} lives in {RLABEL,s}.").
+
+answer_human_residence_tokens(de, TS, TE) :-
+
+    ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
+
+    C:mem|f1ent := HUMAN,
+    r_score(C, SCORE),
+
+    rdfsLabel(HUMAN, de, HLABEL),
+    wdpdResidence(HUMAN, RESIDENCE),
+    C:mem|f1loc := RESIDENCE,
+    rdfsLabel(RESIDENCE, de, RLABEL),
+
+    or ("{HLABEL,s} lebt in {RLABEL,s}, glaube ich.",
+        "Ich denke {HLABEL,s} lebt in {RLABEL,s}.").
+
+train(en) :-
+    "(and|) (where|in which town|in which city|in which place) (does|did) {known_humans:LABEL} (reside|live) (again|)?",
+    inline answer_human_residence_tokens(en, tstart(known_humans), tend(known_humans)).
+
+train(de) :-
+    "(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) {known_humans:LABEL} (eigentlich|) (nochmal|)?",
+    inline answer_human_residence_tokens(de, tstart(known_humans), tend(known_humans)).
+
+answer_human_residence_context(en) :-
+
+    mem(C, f1ent, HUMAN),
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    wdpdResidence(HUMAN, RESIDENCE),
+    C:mem|f1loc := RESIDENCE,
+    rdfsLabel(RESIDENCE, en, RLABEL),
+
+    or ("{HLABEL,s} lives in {RLABEL,s}, I think.",
+        "I believe {HLABEL,s} lives in {RLABEL,s}.").
+
+answer_human_residence_context(de) :-
+
+    mem(C, f1ent, HUMAN),
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    wdpdResidence(HUMAN, RESIDENCE),
+    C:mem|f1loc := RESIDENCE,
+    rdfsLabel(RESIDENCE, de, RLABEL),
+
+    or ("{HLABEL,s} lebt in {RLABEL,s}, glaube ich.",
+        "Ich denke {HLABEL,s} lebt in {RLABEL,s}.").
+
+train(en) :-
+    "(and|) (where|in which town|in which city|in which place) (does|did) (he|she) (reside|live) (again|)?",
+    inline answer_human_residence_context(en).
+
+train(de) :-
+    "(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) (sie|er) (eigentlich|) (nochmal|)?",
+    inline answer_human_residence_context(de).
+
+% train(en) :- "where lives christian drossmann", "". % wo lebt christian drossmann
+% train(en) :- "Where does dr wallace live?", "". % wo wohnt dr wallace
+% train(en) :- "where does drossmann live?", "".  % wo wohnt drossmann
+% train(en) :- "Where does he live", "".  % wo wohnt er
+ 
+test(en, t0008) :-
+    "Where does Stephen King live?",
+    "I believe Stephen King lives in Maine.",
+    "And where does he live again?",
+    "I believe Stephen King lives in Maine.".
+
+test(de, t0009) :-
+    "Wo wohnt Stephen King?",
+    "Ich denke Stephen King lebt in Maine.",
+    "Und wo wohnt er nochmal?",
+    "Ich denke Stephen King lebt in Maine.".
 

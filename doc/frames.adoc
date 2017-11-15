@@ -4,10 +4,11 @@ ZamiaAI Frame Slot Standard
 Zamia-AI frames are very loosely based on FrameNet but follow are more generic, simplistic aproach in general.
 
 |=== 
-| `f1loc`    | Main frame location FE
 | `f1ent`    | Main frame entity   FE
 | `f1pat`    | Main frame patient  FE
 | `f1age`    | Main frame agent    FE
+| `f1loc`    | Main frame location FE
+| `f1time`   | Main frame time     FE
 |=== 
 
-
+see https://en.wikipedia.org/wiki/Thematic_relation for more information thematic relations.

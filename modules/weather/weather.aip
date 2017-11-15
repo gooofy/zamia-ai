@@ -63,9 +63,9 @@ answer_weather_r (C, LANG, REPORT) :-
 
     time_span(C:time, C:mem|f1timespan, TSTART, TEND),
 
-    weather_data (C:mem|f1place, TSTART, TEND, CODE, PREC, TEMP_MIN, TEMP_MAX, CLOUDS),
+    weather_data (C:mem|f1loc, TSTART, TEND, CODE, PREC, TEMP_MIN, TEMP_MAX, CLOUDS),
 
-    rdfsLabel (C:mem|f1place, LANG, LPLACE),
+    rdfsLabel (C:mem|f1loc, LANG, LPLACE),
     time_label (C:time, LANG, C:mem|f1timespan, LTIMESPAN),
 
     r_score (C, 100.0),
@@ -80,8 +80,8 @@ answer_weather_context (en, REPORT) :-
 
     % trace(on),
 
-    if var (C:mem|f1place) then
-        C:mem|f1place := self:wdpdLocatedIn
+    if var (C:mem|f1loc) then
+        C:mem|f1loc := self:wdpdLocatedIn
     endif,
 
     if var (C:mem|f1timespan) then
@@ -95,8 +95,8 @@ answer_weather_context (de, REPORT) :-
 
     % trace(on),
 
-    if var (C:mem|f1place) then
-        C:mem|f1place := self:wdpdLocatedIn
+    if var (C:mem|f1loc) then
+        C:mem|f1loc := self:wdpdLocatedIn
     endif,
 
     if var (C:mem|f1timespan) then
@@ -260,8 +260,8 @@ answer_weather_expl_time (en, REPORT, TIME) :-
 
     % trace(on),
 
-    if var (C:mem|f1place) then
-        C:mem|f1place := self:wdpdLocatedIn
+    if var (C:mem|f1loc) then
+        C:mem|f1loc := self:wdpdLocatedIn
     endif,
 
     C:mem|f1timespan := TIME,
@@ -273,8 +273,8 @@ answer_weather_expl_time (de, REPORT, TIME) :-
 
     % trace(on),
 
-    if var (C:mem|f1place) then
-        C:mem|f1place := self:wdpdLocatedIn
+    if var (C:mem|f1loc) then
+        C:mem|f1loc := self:wdpdLocatedIn
     endif,
 
     C:mem|f1timespan := TIME,
@@ -425,7 +425,7 @@ answer_weather_expl_place (en, REPORT, TS, TE) :-
 
     ner (en, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
-    C:mem|f1place := LOCATION,
+    C:mem|f1loc := LOCATION,
 
     if var (C:mem|f1timespan) then
         C:mem|f1timespan := weatherNearFuture
@@ -440,7 +440,7 @@ answer_weather_expl_place (de, REPORT, TS, TE) :-
 
     ner (de, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
-    C:mem|f1place := LOCATION,
+    C:mem|f1loc := LOCATION,
 
     if var (C:mem|f1timespan) then
         C:mem|f1timespan := weatherNearFuture
@@ -594,7 +594,7 @@ answer_weather_expl_place_time (en, REPORT, TS, TE, TIME) :-
 
     ner (en, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
-    C:mem|f1place := LOCATION,
+    C:mem|f1loc := LOCATION,
     C:mem|f1timespan := TIME,
     C:context|topic := wdeWeatherForecast,
 
@@ -606,7 +606,7 @@ answer_weather_expl_place_time (de, REPORT, TS, TE, TIME) :-
 
     ner (de, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
-    C:mem|f1place := LOCATION,
+    C:mem|f1loc := LOCATION,
     C:mem|f1timespan := TIME,
     C:context|topic := wdeWeatherForecast,
 

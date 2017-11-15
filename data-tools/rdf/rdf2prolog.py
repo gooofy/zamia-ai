@@ -324,7 +324,7 @@ if os.path.isfile(LPM_FN):
 def prolog_string_escape (o):
 
     s = unicode(o)
-    s = s.replace ('"', '\\"')
+    s = s.replace('\\',' ').replace ('"', '\\"')
 
     return s
 

@@ -18,6 +18,15 @@ Memory
 C:mem|f1ent := HUMAN
 ------------------------------------------------------------
 
+set memory entry to entity and later retrieve entities label:
+
+[source,prolog]
+------------------------------------------------------------
+C:mem|f1ent := wdeStuttgart
+[...]
+"{C:mem|f1ent:rdfsLabel|en, s}"
+------------------------------------------------------------
+
 User
 ----
 [source,prolog]

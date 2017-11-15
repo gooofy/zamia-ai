@@ -1,69 +1,13 @@
-ZamiaAI Frame Catalog
-=====================
+ZamiaAI Frame Slot Standard
+===========================
 
-NOTE: Frames originating from FrameNet are prefix with 'fn', those originating from PropBank carry the 'pb' prefix
-      while ZamiaAI's custom frames are prefixed with 'zf'
-
-zfWeatherForecast
------------------
-
-Adds specific FEs for weather forecasts (temperature, precipitation, etc)
-
-Inherits: 'fnPredicting'
+Zamia-AI frames are very loosely based on FrameNet but follow are more generic, simplistic aproach in general.
 
 |=== 
-| `eventuality` | fixed value: `weather`  
-| `time`        | atom representing the time span the prediction is valid for
-| `place`       | uriref representing the place the prediction is valid for
-| `temp_min`    | minimum temperature
-| `temp_max`    | maximum temperature
-| `prec`        | precipitation
-| `code`        | condition code
-| `clouds`      | cloudiness
+| `f1loc`    | Main frame location FE
+| `f1ent`    | Main frame entity   FE
+| `f1pat`    | Main frame patient  FE
+| `f1age`    | Main frame agent    FE
 |=== 
 
-zfQuestionAspect
-----------------
-
-[Questioning/...] subframe referring to a context frame while changing certain aspects in it
-
-|=== 
-| `time`        | changed time FE
-| `place`       | changed place FE
-|=== 
-
-zfChangeMediaStation
---------------------
-
-inherits from fnChangeOperationalState
-
-|=== 
-| `station`    | station FE
-| `slot`       | slot    FE
-| `title`      | title   FE
-|=== 
-
-pbGreet01
-----------
-
-|=== 
-| `arg0`       | agent     FE
-| `arg1`       | addressee FE
-|=== 
-
-zfBye
-----------
-
-|=== 
-| `arg0`       | agent     FE
-| `arg1`       | addressee FE
-|=== 
-
-zfHowdy
-----------
-
-|=== 
-| `arg0`       | agent     FE
-| `arg1`       | addressee FE
-|=== 
 

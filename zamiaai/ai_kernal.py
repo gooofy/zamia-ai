@@ -279,7 +279,7 @@ class AIKernal(object):
 
         solutions = self.rt.search(c)
 
-    def compile_module (self, module_name):
+    def compile_module (self, module_name, run_trace=False):
 
         m = self.modules[module_name]
 
@@ -318,7 +318,7 @@ class AIKernal(object):
             logging.info ('module %s AIP training data extraction...' % module_name)
 
             for inputfn in m.AIP_SOURCES:
-                ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name)
+                ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
 
                 train_ds.extend(ds)
                 tests.extend(ts)
@@ -428,7 +428,7 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def compile_module_multi (self, module_names):
+    def compile_module_multi (self, module_names, run_trace=False):
 
         for module_name in module_names:
 
@@ -436,11 +436,11 @@ class AIKernal(object):
 
                 for mn2 in self.all_modules:
                     self.load_module (mn2)
-                    self.compile_module (mn2)
+                    self.compile_module (mn2, run_trace=run_trace)
 
             else:
                 self.load_module (module_name)
-                self.compile_module (module_name)
+                self.compile_module (module_name, run_trace=run_trace)
 
         self.session.commit()
 

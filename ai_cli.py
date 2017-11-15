@@ -96,6 +96,8 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option("-G", "--compile_trace", dest="run_compile_trace", action="store_true",
+           help="enable tracing when compiling")
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing when running tests")
     @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
@@ -121,7 +123,7 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (paths)
+            self.kernal.compile_module_multi (paths, run_trace=opts.run_compile_trace)
 
             if opts.run_tests:
                 num_tests, num_fails = self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)

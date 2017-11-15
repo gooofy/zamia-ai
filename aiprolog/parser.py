@@ -51,7 +51,9 @@ class AIPrologParser(PrologParser):
         self.rt         = PrologRuntime(db)
         super(AIPrologParser, self).__init__(db)
     
-    def compile_file (self, filename, module_name, clear_module=False):
+    def compile_file (self, filename, module_name, clear_module=False, run_trace=False):
+
+        self.rt.set_trace(run_trace)
 
         # quick source line count for progress output below
 
@@ -121,9 +123,6 @@ class AIPrologParser(PrologParser):
 
     def fetch_named_macro (self, lang, name):
 
-        # if name == 'firstname':
-        #     import pdb; pdb.set_trace()
-
         if not lang in self.named_macros:
             self.named_macros[lang] = {}
 
@@ -147,6 +146,10 @@ class AIPrologParser(PrologParser):
                 if not isinstance(a, Variable):
                     self.report_error (u'invalid macro %s encountered.' % unicode(macro))
                 args.append(a.name)
+
+            # FIXME: debug only
+            # if name == 'cities':
+            #     import pdb; pdb.set_trace()
 
             solutions = self.rt.search_predicate('macro', args)
 
@@ -209,6 +212,7 @@ class AIPrologParser(PrologParser):
 
         todo = [ (parts, 0, [], {}, {}) ]
 
+        # import pdb; pdb.set_trace()
         while len(todo)>0:
 
             parts1, cnt, r, mpos, macro_rs = todo.pop()
@@ -533,7 +537,6 @@ class AIPrologParser(PrologParser):
 
         prefixes = self.train_prefixes if self.train_prefixes else [u'']
 
-        # import pdb; pdb.set_trace()
         for prefix in prefixes:
 
             for inp in inps:

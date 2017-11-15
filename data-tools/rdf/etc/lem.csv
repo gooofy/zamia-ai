@@ -2150,6 +2150,7 @@ wdeArchitecturalStyle,http://www.wikidata.org/entity/P149
 wdeArchivesAt,http://www.wikidata.org/entity/P485
 wdeArea,http://www.wikidata.org/entity/P2046
 wdeArizona,http://www.wikidata.org/entity/Q816
+wdeArkansas,http://www.wikidata.org/entity/Q1612
 wdeArkansasAttorneyGeneral,http://www.wikidata.org/entity/Q4112147
 wdeArnstorf,http://www.wikidata.org/entity/Q582608
 wdeArtDirector,http://www.wikidata.org/entity/P3174
@@ -2239,6 +2240,7 @@ wdeBallotsCast,http://www.wikidata.org/entity/P1868
 wdeBaltimore,http://www.wikidata.org/entity/Q5092
 wdeBanKiMoon,http://www.wikidata.org/entity/Q1253
 wdeBandcampArtistID,http://www.wikidata.org/entity/P3283
+wdeBangor,http://www.wikidata.org/entity/Q327012
 wdeBarack,http://www.wikidata.org/entity/Q18643532
 wdeBarackObama,http://www.wikidata.org/entity/Q76
 wdeBarboursville,http://www.wikidata.org/entity/Q258095
@@ -2250,6 +2252,7 @@ wdeBarryLyndon,http://www.wikidata.org/entity/Q471716
 wdeBartlet,http://www.wikidata.org/entity/Q24230280
 wdeBaseballPlayer,http://www.wikidata.org/entity/Q10871364
 wdeBasedOn,http://www.wikidata.org/entity/P144
+wdeBasel,http://www.wikidata.org/entity/Q78
 wdeBashkir,http://www.wikidata.org/entity/Q13389
 wdeBashkirEncyclopediaBashkirVersionID,http://www.wikidata.org/entity/P4210
 wdeBashkirEncyclopediaRussianVersionID,http://www.wikidata.org/entity/P4211
@@ -2296,6 +2299,7 @@ wdeBiographicalDirectoryOfFederalJudgesID,http://www.wikidata.org/entity/P2736
 wdeBiographicalFilm,http://www.wikidata.org/entity/Q645928
 wdeBiographyAtTheBundestagOfGermany,http://www.wikidata.org/entity/P1713
 wdeBirenbach,http://www.wikidata.org/entity/Q80455
+wdeBirmingham,http://www.wikidata.org/entity/Q2256
 wdeBirthName,http://www.wikidata.org/entity/P1477
 wdeBjörnEngholm,http://www.wikidata.org/entity/Q62279
 wdeBlackComedy,http://www.wikidata.org/entity/Q53094
@@ -2312,6 +2316,7 @@ wdeBnFID,http://www.wikidata.org/entity/P268
 wdeBoardGameGeekID,http://www.wikidata.org/entity/P2339
 wdeBobPeterson,http://www.wikidata.org/entity/Q740682
 wdeBochum,http://www.wikidata.org/entity/Q2103
+wdeBodiesOfWaterBasinCategory,http://www.wikidata.org/entity/P1200
 wdeBodoHombach,http://www.wikidata.org/entity/Q77791
 wdeBohemia,http://www.wikidata.org/entity/Q39193
 wdeBoijmansArtistID,http://www.wikidata.org/entity/P3888
@@ -2340,10 +2345,12 @@ wdeBrandt,http://www.wikidata.org/entity/Q11941314
 wdeBraveheart,http://www.wikidata.org/entity/Q162729
 wdeBremen,http://www.wikidata.org/entity/Q24879
 wdeBremenState,http://www.wikidata.org/entity/Q1209
+wdeBrentwood,http://www.wikidata.org/entity/Q909993
 wdeBrianDePalma,http://www.wikidata.org/entity/Q189526
 wdeBridgemanArtistID,http://www.wikidata.org/entity/P3965
 wdeBritishAmerica,http://www.wikidata.org/entity/Q258532
 wdeBritishCouncilArtistID,http://www.wikidata.org/entity/P2399
+wdeBritishHistoryOnlineVCHID,http://www.wikidata.org/entity/P3628
 wdeBritishMuseumPersonInstitution,http://www.wikidata.org/entity/P1711
 wdeBritishNorthAmerica,http://www.wikidata.org/entity/Q248452
 wdeBrookinsCampbell,http://www.wikidata.org/entity/Q929115
@@ -2466,6 +2473,8 @@ wdeChairperson,http://www.wikidata.org/entity/P488
 wdeChairperson1,http://www.wikidata.org/entity/Q140686
 wdeChancellorOfGermany,http://www.wikidata.org/entity/Q56022
 wdeChanningHCox,http://www.wikidata.org/entity/Q440590
+wdeChapelHill,http://www.wikidata.org/entity/Q671812
+wdeChappaqua,http://www.wikidata.org/entity/Q2957569
 wdeCharacterActor,http://www.wikidata.org/entity/Q948329
 wdeCharacters,http://www.wikidata.org/entity/P674
 wdeCharles,http://www.wikidata.org/entity/Q2958359
@@ -2479,6 +2488,7 @@ wdeCharlesHerbertAllen,http://www.wikidata.org/entity/Q139364
 wdeCharlesLogan,http://www.wikidata.org/entity/Q860234
 wdeCharlesWoodruffYost,http://www.wikidata.org/entity/Q1066494
 wdeCharlieChaplin,http://www.wikidata.org/entity/Q882
+wdeCharlottesville,http://www.wikidata.org/entity/Q123766
 wdeCharterCity,http://www.wikidata.org/entity/Q13218391
 wdeCheboygan,http://www.wikidata.org/entity/Q2738845
 wdeChechen,http://www.wikidata.org/entity/Q33350
@@ -2589,6 +2599,7 @@ wdeCommonName,http://www.wikidata.org/entity/Q502895
 wdeCommonsCategory,http://www.wikidata.org/entity/P373
 wdeCommonsCreatorPage,http://www.wikidata.org/entity/P1472
 wdeCommonsGallery,http://www.wikidata.org/entity/P935
+wdeCommonsInstitutionPage,http://www.wikidata.org/entity/P1612
 wdeCommonsMapsCategory,http://www.wikidata.org/entity/P3722
 wdeCommonwealthOfEngland,http://www.wikidata.org/entity/Q330362
 wdeCommonwealthOfNations,http://www.wikidata.org/entity/Q7785
@@ -3083,6 +3094,7 @@ wdeFormalSystem,http://www.wikidata.org/entity/Q649732
 wdeForrestGump,http://www.wikidata.org/entity/Q134773
 wdeForrestGump1,http://www.wikidata.org/entity/Q552213
 wdeFortGeorgeGMeade,http://www.wikidata.org/entity/Q509549
+wdeFortWayne,http://www.wikidata.org/entity/Q49268
 wdeFortran,http://www.wikidata.org/entity/Q83303
 wdeFossilworksID,http://www.wikidata.org/entity/P842
 wdeFoundationalText,http://www.wikidata.org/entity/P457
@@ -3228,6 +3240,7 @@ wdeGlobalAnabaptistMennoniteEncyclopediaOnlineID,http://www.wikidata.org/entity/
 wdeGlobalBiodiversityInformationFacilityID,http://www.wikidata.org/entity/P846
 wdeGlobalCity,http://www.wikidata.org/entity/Q208511
 wdeGlottologCode,http://www.wikidata.org/entity/P1394
+wdeGmundAmTegernsee,http://www.wikidata.org/entity/Q31662
 wdeGodparent,http://www.wikidata.org/entity/P1290
 wdeGoldenAmbrosianRepublic,http://www.wikidata.org/entity/Q746443
 wdeGolfer,http://www.wikidata.org/entity/Q11303721
@@ -3244,6 +3257,7 @@ wdeGoogleBooksID,http://www.wikidata.org/entity/P675
 wdeGoogleDoodle,http://www.wikidata.org/entity/P4431
 wdeGoogleID,http://www.wikidata.org/entity/P2847
 wdeGoogleKnowledgeGraphIdentifier,http://www.wikidata.org/entity/P2671
+wdeGoogleMapsCID,http://www.wikidata.org/entity/P3749
 wdeGoogleScholarAuthorID,http://www.wikidata.org/entity/P1960
 wdeGordonWoodbury,http://www.wikidata.org/entity/Q5586011
 wdeGoreVerbinski,http://www.wikidata.org/entity/Q295463
@@ -3435,6 +3449,7 @@ wdeHumanSettlement,http://www.wikidata.org/entity/Q486972
 wdeHumanWhoMayBeFictional,http://www.wikidata.org/entity/Q21070568
 wdeHungary,http://www.wikidata.org/entity/Q28
 wdeHydePark,http://www.wikidata.org/entity/Q988554
+wdeHôtelDeLangeac,http://www.wikidata.org/entity/Q3145874
 wdeIATAAirportCode,http://www.wikidata.org/entity/P238
 wdeICAARating,http://www.wikidata.org/entity/P3306
 wdeICD10,http://www.wikidata.org/entity/P494
@@ -3698,6 +3713,7 @@ wdeKNApSAcKID,http://www.wikidata.org/entity/P2064
 wdeKSHCode,http://www.wikidata.org/entity/P939
 wdeKabardian,http://www.wikidata.org/entity/Q33522
 wdeKalmykOirat,http://www.wikidata.org/entity/Q33634
+wdeKalorama,http://www.wikidata.org/entity/Q12060942
 wdeKansasCity,http://www.wikidata.org/entity/Q41819
 wdeKapiolaniMedicalCenterForWomenAndChildren,http://www.wikidata.org/entity/Q6366688
 wdeKarachayBalkar,http://www.wikidata.org/entity/Q33714
@@ -3708,6 +3724,8 @@ wdeKarlSchiller,http://www.wikidata.org/entity/Q65513
 wdeKen,http://www.wikidata.org/entity/Q2645657
 wdeKenFollett,http://www.wikidata.org/entity/Q210669
 wdeKennedy,http://www.wikidata.org/entity/Q120401
+wdeKensington,http://www.wikidata.org/entity/Q288781
+wdeKentucky,http://www.wikidata.org/entity/Q1603
 wdeKhakas,http://www.wikidata.org/entity/Q33575
 wdeKiel,http://www.wikidata.org/entity/Q1707
 wdeKijkwijzerRating,http://www.wikidata.org/entity/P2684
@@ -3779,6 +3797,7 @@ wdeLandlockedCountry,http://www.wikidata.org/entity/Q123480
 wdeLandsOfTheCrownOfSaintStephen,http://www.wikidata.org/entity/Q696970
 wdeLandschaftsverbandRheinland,http://www.wikidata.org/entity/Q153468
 wdeLandshut,http://www.wikidata.org/entity/Q3974
+wdeLangenhorn,http://www.wikidata.org/entity/Q1175
 wdeLanguageOfWorkOrName,http://www.wikidata.org/entity/P407
 wdeLanguageRegulatoryBody,http://www.wikidata.org/entity/P1018
 wdeLanguageUsed,http://www.wikidata.org/entity/P2936
@@ -3808,6 +3827,7 @@ wdeLeuna,http://www.wikidata.org/entity/Q505191
 wdeLex,http://www.wikidata.org/entity/Q16257676
 wdeLexLuthor,http://www.wikidata.org/entity/Q694790
 wdeLexLuthor1,http://www.wikidata.org/entity/Q735712
+wdeLexington,http://www.wikidata.org/entity/Q929667
 wdeLeytonstone,http://www.wikidata.org/entity/Q1368969
 wdeLezgian,http://www.wikidata.org/entity/Q31746
 wdeLibReviewsID,http://www.wikidata.org/entity/P3308
@@ -3846,6 +3866,7 @@ wdeLocatedInTheAdministrativeTerritorialEntity,http://www.wikidata.org/entity/P1
 wdeLocatedInTimeZone,http://www.wikidata.org/entity/P421
 wdeLocatedNextToBodyOfWater,http://www.wikidata.org/entity/P206
 wdeLocatedOnAstronomicalBody,http://www.wikidata.org/entity/P376
+wdeLocatedOnStreet,http://www.wikidata.org/entity/P669
 wdeLocatedOnTerrainFeature,http://www.wikidata.org/entity/P706
 wdeLocation,http://www.wikidata.org/entity/Q17334923
 wdeLocation1,http://www.wikidata.org/entity/P276
@@ -3901,6 +3922,7 @@ wdeMagdeburgerBiographischesLexikon,http://www.wikidata.org/entity/P2277
 wdeMahatmaGandhi,http://www.wikidata.org/entity/Q1001
 wdeMainRegulatoryText,http://www.wikidata.org/entity/P92
 wdeMainSubject,http://www.wikidata.org/entity/P921
+wdeMaine,http://www.wikidata.org/entity/Q724
 wdeMainsVoltage,http://www.wikidata.org/entity/P2884
 wdeMainz,http://www.wikidata.org/entity/Q1720
 wdeMajidMajidi,http://www.wikidata.org/entity/Q81770
@@ -3926,6 +3948,7 @@ wdeMartin,http://www.wikidata.org/entity/Q18002399
 wdeMartinScorsese,http://www.wikidata.org/entity/Q41148
 wdeMartinVanBuren,http://www.wikidata.org/entity/Q11820
 wdeMaryAndMax,http://www.wikidata.org/entity/Q1128756
+wdeMaryland,http://www.wikidata.org/entity/Q1391
 wdeMascot,http://www.wikidata.org/entity/P822
 wdeMass,http://www.wikidata.org/entity/P2067
 wdeMassHysteria,http://www.wikidata.org/entity/Q847836
@@ -3989,6 +4012,7 @@ wdeMemberStateOfTheUnitedNations,http://www.wikidata.org/entity/Q160016
 wdeMemento,http://www.wikidata.org/entity/Q190525
 wdeMementoMori,http://www.wikidata.org/entity/Q6815203
 wdeMemoriesOfMurder,http://www.wikidata.org/entity/Q488169
+wdeMerchiston,http://www.wikidata.org/entity/Q1921454
 wdeMerkel,http://www.wikidata.org/entity/Q1921787
 wdeMervynLeRoy,http://www.wikidata.org/entity/Q103788
 wdeMessianism,http://www.wikidata.org/entity/Q630281
@@ -4035,6 +4059,7 @@ wdeMinistryForEconomicCooperationAndDevelopmentOfGermany,http://www.wikidata.org
 wdeMinkulturyFilmID,http://www.wikidata.org/entity/P2636
 wdeMinnesota,http://www.wikidata.org/entity/Q1527
 wdeMisery,http://www.wikidata.org/entity/Q596874
+wdeMississippi,http://www.wikidata.org/entity/Q1494
 wdeMoMAArtistId,http://www.wikidata.org/entity/P2174
 wdeMoMAArtworkId,http://www.wikidata.org/entity/P2014
 wdeMobileCountryCode,http://www.wikidata.org/entity/P2258
@@ -4046,6 +4071,7 @@ wdeMonroe,http://www.wikidata.org/entity/Q2780460
 wdeMonsterFilm,http://www.wikidata.org/entity/Q1342372
 wdeMonstersInc,http://www.wikidata.org/entity/Q187726
 wdeMonthOfTheYear,http://www.wikidata.org/entity/P2922
+wdeMonticello,http://www.wikidata.org/entity/Q199618
 wdeMontyPythonAndTheHolyGrail,http://www.wikidata.org/entity/Q25043
 wdeMontyPythonSLifeOfBrian,http://www.wikidata.org/entity/Q24953
 wdeMorelandHills,http://www.wikidata.org/entity/Q2668987
@@ -4059,6 +4085,7 @@ wdeMottoText,http://www.wikidata.org/entity/P1451
 wdeMount,http://www.wikidata.org/entity/P3091
 wdeMountVernon,http://www.wikidata.org/entity/Q731635
 wdeMoustaphaAkkad,http://www.wikidata.org/entity/Q380471
+wdeMouthOfTheWatercourse,http://www.wikidata.org/entity/P403
 wdeMovement,http://www.wikidata.org/entity/P135
 wdeMovieMeterDirectorID,http://www.wikidata.org/entity/P1969
 wdeMovieMeterMovieID,http://www.wikidata.org/entity/P1970
@@ -4080,6 +4107,7 @@ wdeMunzingerIBA,http://www.wikidata.org/entity/P1284
 wdeMunzingerSportNumber,http://www.wikidata.org/entity/P1285
 wdeMusicBrainzAreaID,http://www.wikidata.org/entity/P982
 wdeMusicBrainzArtistID,http://www.wikidata.org/entity/P434
+wdeMusicBrainzPlaceID,http://www.wikidata.org/entity/P1004
 wdeMusicBrainzReleaseGroupID,http://www.wikidata.org/entity/P436
 wdeMusicBrainzWorkID,http://www.wikidata.org/entity/P435
 wdeMusical,http://www.wikidata.org/entity/Q2743
@@ -4112,6 +4140,7 @@ wdeNMHHFilmRating,http://www.wikidata.org/entity/P2363
 wdeNNDBPeopleID,http://www.wikidata.org/entity/P1263
 wdeNNLWorkID,http://www.wikidata.org/entity/P3959
 wdeNOCOccupationCode,http://www.wikidata.org/entity/P918
+wdeNPSUnitID,http://www.wikidata.org/entity/P4083
 wdeNRHPReferenceNumber,http://www.wikidata.org/entity/P649
 wdeNSDAPMembershipNumber19251945,http://www.wikidata.org/entity/P2298
 wdeNSKID,http://www.wikidata.org/entity/P1375
@@ -4305,6 +4334,7 @@ wdeOttawa,http://www.wikidata.org/entity/Q1930
 wdeOttoSuhr,http://www.wikidata.org/entity/Q650878
 wdeOwnedBy,http://www.wikidata.org/entity/P127
 wdeOwnerOf,http://www.wikidata.org/entity/P1830
+wdeOxford,http://www.wikidata.org/entity/Q983822
 wdeOxfordBiographyIndexNumber,http://www.wikidata.org/entity/P1415
 wdePACEMemberID,http://www.wikidata.org/entity/P1331
 wdePACTOLSThesaurusID,http://www.wikidata.org/entity/P4212
@@ -4399,6 +4429,7 @@ wdePlaceOfDetention,http://www.wikidata.org/entity/P2632
 wdePlaceOfInterment,http://www.wikidata.org/entity/P119
 wdePlaceOfPublication,http://www.wikidata.org/entity/P291
 wdePlaceWithTownRightsAndPrivileges,http://www.wikidata.org/entity/Q13539802
+wdePlains,http://www.wikidata.org/entity/Q608527
 wdePlatform,http://www.wikidata.org/entity/P400
 wdePlatoon,http://www.wikidata.org/entity/Q190643
 wdePlaywright,http://www.wikidata.org/entity/Q214917
@@ -4428,6 +4459,7 @@ wdePopularScience,http://www.wikidata.org/entity/Q995600
 wdePopulation,http://www.wikidata.org/entity/P1082
 wdePortCity,http://www.wikidata.org/entity/Q2264924
 wdePortland,http://www.wikidata.org/entity/Q49201
+wdePorto,http://www.wikidata.org/entity/Q36433
 wdePosition,http://www.wikidata.org/entity/Q23008351
 wdePosition1,http://www.wikidata.org/entity/Q4164871
 wdePositionHeld,http://www.wikidata.org/entity/P39
@@ -4535,6 +4567,7 @@ wdeRamMadhvani,http://www.wikidata.org/entity/Q7288520
 wdeRameshSippy,http://www.wikidata.org/entity/Q1386330
 wdeRan,http://www.wikidata.org/entity/Q565231
 wdeRancher,http://www.wikidata.org/entity/Q1524582
+wdeRanchoDelCielo,http://www.wikidata.org/entity/Q2153479
 wdeRangDeBasanti,http://www.wikidata.org/entity/Q924135
 wdeRashomon,http://www.wikidata.org/entity/Q135465
 wdeRau,http://www.wikidata.org/entity/Q21498382
@@ -4674,6 +4707,7 @@ wdeSWR3,http://www.wikidata.org/entity/Q2208789
 wdeSWRAktuell,http://www.wikidata.org/entity/Q2208796
 wdeSaarProtectorate,http://www.wikidata.org/entity/Q310293
 wdeSaarbrücken,http://www.wikidata.org/entity/Q1724
+wdeSaaringen,http://www.wikidata.org/entity/Q2209185
 wdeSaarland,http://www.wikidata.org/entity/Q1201
 wdeSacramento,http://www.wikidata.org/entity/Q18013
 wdeSaidToBeTheSameAs,http://www.wikidata.org/entity/P460
@@ -4687,6 +4721,7 @@ wdeSamuelWalkerMcCall,http://www.wikidata.org/entity/Q440654
 wdeSamuraiCinema,http://www.wikidata.org/entity/Q169672
 wdeSanFrancisco,http://www.wikidata.org/entity/Q62
 wdeSanctuaryCity,http://www.wikidata.org/entity/Q3559093
+wdeSantaBarbara,http://www.wikidata.org/entity/Q159288
 wdeSantos,http://www.wikidata.org/entity/Q4407937
 wdeSatire,http://www.wikidata.org/entity/Q128758
 wdeSavingPrivateRyan,http://www.wikidata.org/entity/Q165817
@@ -4742,6 +4777,7 @@ wdeSergioLeone,http://www.wikidata.org/entity/Q164562
 wdeSerialKiller,http://www.wikidata.org/entity/Q484188
 wdeSeries,http://www.wikidata.org/entity/P179
 wdeSeries1,http://www.wikidata.org/entity/Q20937557
+wdeSeriesOrdinal,http://www.wikidata.org/entity/P1545
 wdeServiceRetirement,http://www.wikidata.org/entity/P730
 wdeSetInPeriod,http://www.wikidata.org/entity/P2408
 wdeSeven,http://www.wikidata.org/entity/Q190908
@@ -4804,6 +4840,7 @@ wdeSouthAsia,http://www.wikidata.org/entity/Q771405
 wdeSouthAsianAssociationForRegionalCooperation,http://www.wikidata.org/entity/Q145700
 wdeSouthBrabant,http://www.wikidata.org/entity/Q912843
 wdeSouthKorea,http://www.wikidata.org/entity/Q884
+wdeSouthaven,http://www.wikidata.org/entity/Q768007
 wdeSouthernAltai,http://www.wikidata.org/entity/Q1991779
 wdeSouthernEurope,http://www.wikidata.org/entity/Q27449
 wdeSovereignState,http://www.wikidata.org/entity/Q3624078
@@ -4877,6 +4914,7 @@ wdeStoryboardArtist,http://www.wikidata.org/entity/P3275
 wdeStrangersOnATrain,http://www.wikidata.org/entity/Q499639
 wdeStrangersOnATrain1,http://www.wikidata.org/entity/Q3204109
 wdeStrasbourg,http://www.wikidata.org/entity/Q6602
+wdeStratford,http://www.wikidata.org/entity/Q755140
 wdeStrelitzBuildings,http://www.wikidata.org/entity/Q14935914
 wdeStuartRosenberg,http://www.wikidata.org/entity/Q966078
 wdeStudentOf,http://www.wikidata.org/entity/P1066
@@ -4949,6 +4987,7 @@ wdeTaxonCommonName,http://www.wikidata.org/entity/P1843
 wdeTaxonName,http://www.wikidata.org/entity/P225
 wdeTaxonRangeMapImage,http://www.wikidata.org/entity/P181
 wdeTaxonRank,http://www.wikidata.org/entity/P105
+wdeTay,http://www.wikidata.org/entity/Q19719
 wdeTaylor,http://www.wikidata.org/entity/Q15080511
 wdeTePapaArtistID,http://www.wikidata.org/entity/P3544
 wdeTeacher,http://www.wikidata.org/entity/Q37226
@@ -5182,6 +5221,7 @@ wdeTumblrID,http://www.wikidata.org/entity/P3943
 wdeTurboPascal,http://www.wikidata.org/entity/Q473201
 wdeTurnerClassicMoviesFilmID,http://www.wikidata.org/entity/P2631
 wdeTurnerClassicMoviesPersonID,http://www.wikidata.org/entity/P3056
+wdeTutshill,http://www.wikidata.org/entity/Q7856991
 wdeTuvan,http://www.wikidata.org/entity/Q34119
 wdeTwelveAngryMen,http://www.wikidata.org/entity/Q2313956
 wdeTwelveYearsASlave,http://www.wikidata.org/entity/Q7857661
@@ -5285,13 +5325,16 @@ wdeVideo,http://www.wikidata.org/entity/P10
 wdeVienna,http://www.wikidata.org/entity/Q1741
 wdeVietnamWar,http://www.wikidata.org/entity/Q8740
 wdeVigilanteFilm,http://www.wikidata.org/entity/Q2642760
+wdeVimeoUsername,http://www.wikidata.org/entity/P4015
 wdeVincente,http://www.wikidata.org/entity/Q7932140
+wdeVineUserID,http://www.wikidata.org/entity/P3207
 wdeViolence,http://www.wikidata.org/entity/Q124490
 wdeVirginia,http://www.wikidata.org/entity/Q1370
 wdeVirginiaS23rdCongressionalDistrict,http://www.wikidata.org/entity/Q16156559
 wdeVirginity,http://www.wikidata.org/entity/Q170538
 wdeVisionOfBritainPlaceID,http://www.wikidata.org/entity/P3616
 wdeVisionOfBritainUnitID,http://www.wikidata.org/entity/P3615
+wdeVisitorsPerYear,http://www.wikidata.org/entity/P1174
 wdeVittorioDeSica,http://www.wikidata.org/entity/Q53004
 wdeVoiceActor,http://www.wikidata.org/entity/P725
 wdeVoltage,http://www.wikidata.org/entity/P2436
@@ -5315,6 +5358,7 @@ wdeWarrior,http://www.wikidata.org/entity/Q1415964
 wdeWashington,http://www.wikidata.org/entity/Q2550388
 wdeWashingtonDC,http://www.wikidata.org/entity/Q61
 wdeWaterAsPercentOfArea,http://www.wikidata.org/entity/P2927
+wdeWatershedArea,http://www.wikidata.org/entity/P2053
 wdeWaxhaws,http://www.wikidata.org/entity/Q2552970
 wdeWayne,http://www.wikidata.org/entity/Q1423817
 wdeWaynePalmer,http://www.wikidata.org/entity/Q2719854
@@ -5336,6 +5380,7 @@ wdeWhatEverHappenedToBabyJane,http://www.wikidata.org/entity/Q26644
 wdeWhatEverHappenedToBabyJane1,http://www.wikidata.org/entity/Q7991093
 wdeWhip,http://www.wikidata.org/entity/Q1433693
 wdeWhiplash,http://www.wikidata.org/entity/Q15648198
+wdeWhiteHouse,http://www.wikidata.org/entity/Q35525
 wdeWhiteHouseChiefOfStaff,http://www.wikidata.org/entity/Q786242
 wdeWhoGoesThere,http://www.wikidata.org/entity/Q7617836
 wdeWhoSWhoInFranceBiographyID,http://www.wikidata.org/entity/P4124
@@ -5389,6 +5434,7 @@ wdeWilson,http://www.wikidata.org/entity/Q18552466
 wdeWilson1,http://www.wikidata.org/entity/Q1645480
 wdeWinner,http://www.wikidata.org/entity/P1346
 wdeWinterOfTheWorld,http://www.wikidata.org/entity/Q559330
+wdeWinterbourne,http://www.wikidata.org/entity/Q1215896
 wdeWinterthur,http://www.wikidata.org/entity/Q9125
 wdeWiseguy,http://www.wikidata.org/entity/Q2543777
 wdeWitnessForTheProsecution,http://www.wikidata.org/entity/Q196977
@@ -5438,6 +5484,7 @@ wdeZachary,http://www.wikidata.org/entity/Q8063927
 wdeZacharyTaylor,http://www.wikidata.org/entity/Q11896
 wdeZartan,http://www.wikidata.org/entity/Q8066924
 wdeZbMATHAuthorID,http://www.wikidata.org/entity/P1556
+wdeZehlendorf,http://www.wikidata.org/entity/Q324402
 wdeZhihuTopicID,http://www.wikidata.org/entity/P3553
 wdeZootopia,http://www.wikidata.org/entity/Q15270647
 wdeÇağanIrmak,http://www.wikidata.org/entity/Q272718

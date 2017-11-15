@@ -151,6 +151,7 @@ wdpBirthName,http://www.wikidata.org/prop/P1477
 wdpBloodType,http://www.wikidata.org/prop/P1853
 wdpBnFID,http://www.wikidata.org/prop/P268
 wdpBoardGameGeekID,http://www.wikidata.org/prop/P2339
+wdpBodiesOfWaterBasinCategory,http://www.wikidata.org/prop/P1200
 wdpBoijmansArtistID,http://www.wikidata.org/prop/P3888
 wdpBoilingPoint,http://www.wikidata.org/prop/P2102
 wdpBookBrainzCreatorID,http://www.wikidata.org/prop/P2607
@@ -159,6 +160,7 @@ wdpBoxOfficeMojoFilmID,http://www.wikidata.org/prop/P1237
 wdpBoxOfficeMojoPersonID,http://www.wikidata.org/prop/P2688
 wdpBridgemanArtistID,http://www.wikidata.org/prop/P3965
 wdpBritishCouncilArtistID,http://www.wikidata.org/prop/P2399
+wdpBritishHistoryOnlineVCHID,http://www.wikidata.org/prop/P3628
 wdpBritishMuseumPersonInstitution,http://www.wikidata.org/prop/P1711
 wdpBudget,http://www.wikidata.org/prop/P2769
 wdpBugTrackingSystem,http://www.wikidata.org/prop/P1401
@@ -238,6 +240,7 @@ wdpCommissionedBy,http://www.wikidata.org/prop/P88
 wdpCommonsCategory,http://www.wikidata.org/prop/P373
 wdpCommonsCreatorPage,http://www.wikidata.org/prop/P1472
 wdpCommonsGallery,http://www.wikidata.org/prop/P935
+wdpCommonsInstitutionPage,http://www.wikidata.org/prop/P1612
 wdpCommonsMapsCategory,http://www.wikidata.org/prop/P3722
 wdpComposer,http://www.wikidata.org/prop/P86
 wdpCompulsoryEducationMaximumAge,http://www.wikidata.org/prop/P3271
@@ -494,6 +497,7 @@ wdpGoogleBooksID,http://www.wikidata.org/prop/P675
 wdpGoogleDoodle,http://www.wikidata.org/prop/P4431
 wdpGoogleID,http://www.wikidata.org/prop/P2847
 wdpGoogleKnowledgeGraphIdentifier,http://www.wikidata.org/prop/P2671
+wdpGoogleMapsCID,http://www.wikidata.org/prop/P3749
 wdpGoogleScholarAuthorID,http://www.wikidata.org/prop/P1960
 wdpGranEnciclopèdiaCatalanaID,http://www.wikidata.org/prop/P1296
 wdpGravstedDkID,http://www.wikidata.org/prop/P4359
@@ -694,6 +698,7 @@ wdpLocatedInTheAdministrativeTerritorialEntity,http://www.wikidata.org/prop/P131
 wdpLocatedInTimeZone,http://www.wikidata.org/prop/P421
 wdpLocatedNextToBodyOfWater,http://www.wikidata.org/prop/P206
 wdpLocatedOnAstronomicalBody,http://www.wikidata.org/prop/P376
+wdpLocatedOnStreet,http://www.wikidata.org/prop/P669
 wdpLocatedOnTerrainFeature,http://www.wikidata.org/prop/P706
 wdpLocation,http://www.wikidata.org/prop/P276
 wdpLocationMap,http://www.wikidata.org/prop/P1943
@@ -755,6 +760,7 @@ wdpMother,http://www.wikidata.org/prop/P25
 wdpMotto,http://www.wikidata.org/prop/P1546
 wdpMottoText,http://www.wikidata.org/prop/P1451
 wdpMount,http://www.wikidata.org/prop/P3091
+wdpMouthOfTheWatercourse,http://www.wikidata.org/prop/P403
 wdpMovement,http://www.wikidata.org/prop/P135
 wdpMovieMeterDirectorID,http://www.wikidata.org/prop/P1969
 wdpMovieMeterMovieID,http://www.wikidata.org/prop/P1970
@@ -763,6 +769,7 @@ wdpMunzingerIBA,http://www.wikidata.org/prop/P1284
 wdpMunzingerSportNumber,http://www.wikidata.org/prop/P1285
 wdpMusicBrainzAreaID,http://www.wikidata.org/prop/P982
 wdpMusicBrainzArtistID,http://www.wikidata.org/prop/P434
+wdpMusicBrainzPlaceID,http://www.wikidata.org/prop/P1004
 wdpMusicBrainzReleaseGroupID,http://www.wikidata.org/prop/P436
 wdpMusicBrainzWorkID,http://www.wikidata.org/prop/P435
 wdpMyAnimeListMangaID,http://www.wikidata.org/prop/P4087
@@ -788,6 +795,7 @@ wdpNMHHFilmRating,http://www.wikidata.org/prop/P2363
 wdpNNDBPeopleID,http://www.wikidata.org/prop/P1263
 wdpNNLWorkID,http://www.wikidata.org/prop/P3959
 wdpNOCOccupationCode,http://www.wikidata.org/prop/P918
+wdpNPSUnitID,http://www.wikidata.org/prop/P4083
 wdpNRHPReferenceNumber,http://www.wikidata.org/prop/P649
 wdpNSDAPMembershipNumber19251945,http://www.wikidata.org/prop/P2298
 wdpNSKID,http://www.wikidata.org/prop/P1375
@@ -1016,6 +1024,7 @@ wdpSecretaryGeneral,http://www.wikidata.org/prop/P3975
 wdpSeeAlso,http://www.wikidata.org/prop/P1659
 wdpSeparatedFrom,http://www.wikidata.org/prop/P807
 wdpSeries,http://www.wikidata.org/prop/P179
+wdpSeriesOrdinal,http://www.wikidata.org/prop/P1545
 wdpServiceRetirement,http://www.wikidata.org/prop/P730
 wdpSetInPeriod,http://www.wikidata.org/prop/P2408
 wdpSexOrGender,http://www.wikidata.org/prop/P21
@@ -1155,8 +1164,11 @@ wdpVGMdbArtistID,http://www.wikidata.org/prop/P3435
 wdpVIAFID,http://www.wikidata.org/prop/P214
 wdpVehicleNormallyUsed,http://www.wikidata.org/prop/P3438
 wdpVideo,http://www.wikidata.org/prop/P10
+wdpVimeoUsername,http://www.wikidata.org/prop/P4015
+wdpVineUserID,http://www.wikidata.org/prop/P3207
 wdpVisionOfBritainPlaceID,http://www.wikidata.org/prop/P3616
 wdpVisionOfBritainUnitID,http://www.wikidata.org/prop/P3615
+wdpVisitorsPerYear,http://www.wikidata.org/prop/P1174
 wdpVoiceActor,http://www.wikidata.org/prop/P725
 wdpVoltage,http://www.wikidata.org/prop/P2436
 wdpVoteSmartID,http://www.wikidata.org/prop/P3344
@@ -1166,6 +1178,7 @@ wdpWOEID,http://www.wikidata.org/prop/P1281
 wdpWSJTopicID,http://www.wikidata.org/prop/P3183
 wdpWWEComSuperstarID,http://www.wikidata.org/prop/P2857
 wdpWaterAsPercentOfArea,http://www.wikidata.org/prop/P2927
+wdpWatershedArea,http://www.wikidata.org/prop/P2053
 wdpWeRelatePersonID,http://www.wikidata.org/prop/P4159
 wdpWears,http://www.wikidata.org/prop/P3828
 wdpWeatherHistory,http://www.wikidata.org/prop/P4150
@@ -1299,6 +1312,7 @@ wdpdBirthName,http://www.wikidata.org/prop/direct/P1477
 wdpdBloodType,http://www.wikidata.org/prop/direct/P1853
 wdpdBnFID,http://www.wikidata.org/prop/direct/P268
 wdpdBoardGameGeekID,http://www.wikidata.org/prop/direct/P2339
+wdpdBodiesOfWaterBasinCategory,http://www.wikidata.org/prop/direct/P1200
 wdpdBoijmansArtistID,http://www.wikidata.org/prop/direct/P3888
 wdpdBoilingPoint,http://www.wikidata.org/prop/direct/P2102
 wdpdBookBrainzCreatorID,http://www.wikidata.org/prop/direct/P2607
@@ -1307,6 +1321,7 @@ wdpdBoxOfficeMojoFilmID,http://www.wikidata.org/prop/direct/P1237
 wdpdBoxOfficeMojoPersonID,http://www.wikidata.org/prop/direct/P2688
 wdpdBridgemanArtistID,http://www.wikidata.org/prop/direct/P3965
 wdpdBritishCouncilArtistID,http://www.wikidata.org/prop/direct/P2399
+wdpdBritishHistoryOnlineVCHID,http://www.wikidata.org/prop/direct/P3628
 wdpdBritishMuseumPersonInstitution,http://www.wikidata.org/prop/direct/P1711
 wdpdBudget,http://www.wikidata.org/prop/direct/P2769
 wdpdBugTrackingSystem,http://www.wikidata.org/prop/direct/P1401
@@ -1386,6 +1401,7 @@ wdpdCommissionedBy,http://www.wikidata.org/prop/direct/P88
 wdpdCommonsCategory,http://www.wikidata.org/prop/direct/P373
 wdpdCommonsCreatorPage,http://www.wikidata.org/prop/direct/P1472
 wdpdCommonsGallery,http://www.wikidata.org/prop/direct/P935
+wdpdCommonsInstitutionPage,http://www.wikidata.org/prop/direct/P1612
 wdpdCommonsMapsCategory,http://www.wikidata.org/prop/direct/P3722
 wdpdComposer,http://www.wikidata.org/prop/direct/P86
 wdpdCompulsoryEducationMaximumAge,http://www.wikidata.org/prop/direct/P3271
@@ -1640,6 +1656,7 @@ wdpdGoogleBooksID,http://www.wikidata.org/prop/direct/P675
 wdpdGoogleDoodle,http://www.wikidata.org/prop/direct/P4431
 wdpdGoogleID,http://www.wikidata.org/prop/direct/P2847
 wdpdGoogleKnowledgeGraphIdentifier,http://www.wikidata.org/prop/direct/P2671
+wdpdGoogleMapsCID,http://www.wikidata.org/prop/direct/P3749
 wdpdGoogleScholarAuthorID,http://www.wikidata.org/prop/direct/P1960
 wdpdGranEnciclopèdiaCatalanaID,http://www.wikidata.org/prop/direct/P1296
 wdpdGravstedDkID,http://www.wikidata.org/prop/direct/P4359
@@ -1840,6 +1857,7 @@ wdpdLocatedInTheAdministrativeTerritorialEntity,http://www.wikidata.org/prop/dir
 wdpdLocatedInTimeZone,http://www.wikidata.org/prop/direct/P421
 wdpdLocatedNextToBodyOfWater,http://www.wikidata.org/prop/direct/P206
 wdpdLocatedOnAstronomicalBody,http://www.wikidata.org/prop/direct/P376
+wdpdLocatedOnStreet,http://www.wikidata.org/prop/direct/P669
 wdpdLocatedOnTerrainFeature,http://www.wikidata.org/prop/direct/P706
 wdpdLocation,http://www.wikidata.org/prop/direct/P276
 wdpdLocationMap,http://www.wikidata.org/prop/direct/P1943
@@ -1901,6 +1919,7 @@ wdpdMother,http://www.wikidata.org/prop/direct/P25
 wdpdMotto,http://www.wikidata.org/prop/direct/P1546
 wdpdMottoText,http://www.wikidata.org/prop/direct/P1451
 wdpdMount,http://www.wikidata.org/prop/direct/P3091
+wdpdMouthOfTheWatercourse,http://www.wikidata.org/prop/direct/P403
 wdpdMovement,http://www.wikidata.org/prop/direct/P135
 wdpdMovieMeterDirectorID,http://www.wikidata.org/prop/direct/P1969
 wdpdMovieMeterMovieID,http://www.wikidata.org/prop/direct/P1970
@@ -1909,6 +1928,7 @@ wdpdMunzingerIBA,http://www.wikidata.org/prop/direct/P1284
 wdpdMunzingerSportNumber,http://www.wikidata.org/prop/direct/P1285
 wdpdMusicBrainzAreaID,http://www.wikidata.org/prop/direct/P982
 wdpdMusicBrainzArtistID,http://www.wikidata.org/prop/direct/P434
+wdpdMusicBrainzPlaceID,http://www.wikidata.org/prop/direct/P1004
 wdpdMusicBrainzReleaseGroupID,http://www.wikidata.org/prop/direct/P436
 wdpdMusicBrainzWorkID,http://www.wikidata.org/prop/direct/P435
 wdpdMyAnimeListMangaID,http://www.wikidata.org/prop/direct/P4087
@@ -1934,6 +1954,7 @@ wdpdNMHHFilmRating,http://www.wikidata.org/prop/direct/P2363
 wdpdNNDBPeopleID,http://www.wikidata.org/prop/direct/P1263
 wdpdNNLWorkID,http://www.wikidata.org/prop/direct/P3959
 wdpdNOCOccupationCode,http://www.wikidata.org/prop/direct/P918
+wdpdNPSUnitID,http://www.wikidata.org/prop/direct/P4083
 wdpdNRHPReferenceNumber,http://www.wikidata.org/prop/direct/P649
 wdpdNSDAPMembershipNumber19251945,http://www.wikidata.org/prop/direct/P2298
 wdpdNSKID,http://www.wikidata.org/prop/direct/P1375
@@ -2162,6 +2183,7 @@ wdpdSecretaryGeneral,http://www.wikidata.org/prop/direct/P3975
 wdpdSeeAlso,http://www.wikidata.org/prop/direct/P1659
 wdpdSeparatedFrom,http://www.wikidata.org/prop/direct/P807
 wdpdSeries,http://www.wikidata.org/prop/direct/P179
+wdpdSeriesOrdinal,http://www.wikidata.org/prop/direct/P1545
 wdpdServiceRetirement,http://www.wikidata.org/prop/direct/P730
 wdpdSetInPeriod,http://www.wikidata.org/prop/direct/P2408
 wdpdSexOrGender,http://www.wikidata.org/prop/direct/P21
@@ -2301,8 +2323,11 @@ wdpdVGMdbArtistID,http://www.wikidata.org/prop/direct/P3435
 wdpdVIAFID,http://www.wikidata.org/prop/direct/P214
 wdpdVehicleNormallyUsed,http://www.wikidata.org/prop/direct/P3438
 wdpdVideo,http://www.wikidata.org/prop/direct/P10
+wdpdVimeoUsername,http://www.wikidata.org/prop/direct/P4015
+wdpdVineUserID,http://www.wikidata.org/prop/direct/P3207
 wdpdVisionOfBritainPlaceID,http://www.wikidata.org/prop/direct/P3616
 wdpdVisionOfBritainUnitID,http://www.wikidata.org/prop/direct/P3615
+wdpdVisitorsPerYear,http://www.wikidata.org/prop/direct/P1174
 wdpdVoiceActor,http://www.wikidata.org/prop/direct/P725
 wdpdVoltage,http://www.wikidata.org/prop/direct/P2436
 wdpdVoteSmartID,http://www.wikidata.org/prop/direct/P3344
@@ -2312,6 +2337,7 @@ wdpdWOEID,http://www.wikidata.org/prop/direct/P1281
 wdpdWSJTopicID,http://www.wikidata.org/prop/direct/P3183
 wdpdWWEComSuperstarID,http://www.wikidata.org/prop/direct/P2857
 wdpdWaterAsPercentOfArea,http://www.wikidata.org/prop/direct/P2927
+wdpdWatershedArea,http://www.wikidata.org/prop/direct/P2053
 wdpdWeRelatePersonID,http://www.wikidata.org/prop/direct/P4159
 wdpdWears,http://www.wikidata.org/prop/direct/P3828
 wdpdWeatherHistory,http://www.wikidata.org/prop/direct/P4150

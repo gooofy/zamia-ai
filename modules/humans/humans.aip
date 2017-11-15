@@ -382,11 +382,6 @@ train(de) :-
     "(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) (sie|er) (eigentlich|) (nochmal|)?",
     inline answer_human_residence_context(de).
 
-% train(en) :- "where lives christian drossmann", "". % wo lebt christian drossmann
-% train(en) :- "Where does dr wallace live?", "". % wo wohnt dr wallace
-% train(en) :- "where does drossmann live?", "".  % wo wohnt drossmann
-% train(en) :- "Where does he live", "".  % wo wohnt er
- 
 test(en, t0008) :-
     "Where does Stephen King live?",
     "I believe Stephen King lives in Maine.",

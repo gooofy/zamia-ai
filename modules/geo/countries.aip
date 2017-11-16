@@ -1,0 +1,512 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% countries
+%
+
+%
+% named entity recognition (NER)
+%
+
+train_ner (en, country, COUNTRY, LABEL) :- instances_of (wdeCountry, COUNTRY), rdfsLabel(COUNTRY, en, LABEL).
+train_ner (de, country, COUNTRY, LABEL) :- instances_of (wdeCountry, COUNTRY), rdfsLabel(COUNTRY, de, LABEL).
+
+macro(en, countries, LABEL) :- 
+    instances_of (wdeCountry, COUNTRY),
+    rdfsLabel(COUNTRY, en, LABEL).
+macro(de, countries, LABEL) :- 
+    instances_of (wdeCountry, COUNTRY),
+    rdfsLabel(COUNTRY, de, LABEL).
+
+answer_country_location_tokens(en, TS, TE) :-
+
+    ner (en, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    C:context|topic := wdeCountry,
+
+    rdfsLabel(COUNTRY, en, CYLABEL),
+
+    "{CLABEL,s} is a country on planet earth.".
+
+answer_country_location_tokens(de, TS, TE) :-
+
+    ner (de, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    C:context|topic := wdeCountry,
+
+    rdfsLabel(COUNTRY, de, CYLABEL),
+
+    "{CLABEL,s} ist ein Staat auf dem Planeten Erde.".
+
+train(en) :-
+    "(what is|what about|what do you know about|where is|in what continent is|in|) {countries:LABEL} (and you|) (do you know it|do you know that|)?",
+    inline answer_country_location_tokens (en, tstart(countries), tend(countries)).
+
+train(de) :-
+    "(was ist|was ist mit|was weißt Du über|wo ist|in|auf welchem Kontinent ist|) {countries:LABEL} (und du|weißt Du das|)?",
+    inline answer_country_location_tokens (de, tstart(countries), tend(countries)).
+
+test(en, d0000) :-
+    "What is Finland?",
+    "Finland is a country on planet earth".
+
+test(de, d0001) :-
+    "Wo ist Finnland?",
+    "Finnland ist ein Staat auf dem Planeten Erde.".
+
+train(en) :-
+    "(and|) (in|) (a|which) country?",
+    or("Which continent comes to mind?", "Which continent do you like best?").
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) (in|) (a|which) country?",
+    or ("The country is {C:mem|f1ent:rdfsLabel|en, s}.",
+        "You mean {C:mem|f1ent:rdfsLabel|en, s}?").
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) What (is|was) (it|that) (again|)?",
+    or ("The country is {C:mem|f1ent:rdfsLabel|en, s}.",
+        "You mean {C:mem|f1ent:rdfsLabel|en, s}?").
+
+train(de) :-
+    "(und|) (in|) (einem|welchen) Staat?",
+    or("An welchen Staat denkst Du?", "Aus welchem Staat kommst Du?").
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) (in einerm|in welchem|welcher|ein|) Staat?",
+    or ("Der Staat ist {C:mem|f1ent:rdfsLabel|de, s}.",
+        "Du meinst {C:mem|f1ent:rdfsLabel|de, s}?").
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) Was (ist|war) (das|es) (nochmal|)?",
+    or ("Der Staat ist {C:mem|f1ent:rdfsLabel|de, s}.",
+        "Du meinst {C:mem|f1ent:rdfsLabel|de, s}?").
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) where (is|was) (it|that) (again|)?",
+    "On planet earth, I suppose.".
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) Wo (ist|war) (das|es) (nochmal|)?",
+    "Ich vermute auf dem Planeten Erde?".
+
+%
+% population
+%
+
+answer_country_population_tokens(en, TS, TE) :-
+
+    ner (en, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdPopulation(COUNTRY, POPULATION),
+
+    C:context|topic := wdeCountry,
+
+    "The population of {CLABEL,s} is {POPULATION,d}.".
+
+answer_country_population_tokens(de, TS, TE) :-
+
+    ner (de, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdPopulation(COUNTRY, POPULATION),
+
+    C:context|topic := wdeCountry,
+
+    "{CLABEL,s} hat {POPULATION,d} Einwohner.".
+
+train(en) :-
+    "(what is the population of |how many people live in | how many humans reside in) {countries:LABEL} (do you know it|do you know that|)?",
+    inline answer_country_population_tokens (en, tstart(countries), tend(countries)).
+
+train(de) :-
+    "(wie hoch ist die bevölkerung von|wie ist die bevölkerung von|wie viele menschen leben in|wie viele leute leben in|wie viele Einwohner hat) {countries:LABEL} (weißt Du das|)?",
+    inline answer_country_population_tokens (de, tstart(countries), tend(countries)).
+
+test(en, d0002) :-
+    "How many people live in Estonia?",
+    "The population of Estonia is 1315635".
+
+test(de, d0003) :-
+    "Wie viele Menschen leben in Estland?",
+    "Estland hat 1315635 Einwohner.".
+
+answer_country_population_context(en) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdPopulation(COUNTRY, POPULATION),
+
+    C:context|topic := wdeCountry,
+
+    "The population of {CLABEL,s} is {POPULATION,d}.".
+
+answer_country_population_context(de) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdPopulation(COUNTRY, POPULATION),
+
+    C:context|topic := wdeCountry,
+
+    "{CLABEL,s} hat {POPULATION,d} Einwohner.".
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) (what is the population of |how many people live in | how many humans reside in) it (do you know it|do you know that|)?",
+    inline answer_country_population_context (en).
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) how many residents does it have (do you know it|do you know that|)?",
+    inline answer_country_population_context (en).
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) how many people live there (do you know it|do you know that|)?",
+    inline answer_country_population_context (en).
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) (wie hoch ist die bevölkerung von|wie ist die bevölkerung von|wie viele menschen leben |wie viele leute leben |wie viele Einwohner hat es) dort (weißt Du das|)?",
+    inline answer_country_population_context (de).
+
+%
+% area
+%
+
+answer_country_area_tokens(en, TS, TE) :-
+
+    ner (en, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdArea(COUNTRY, AREA),
+
+    C:context|topic := wdeCountry,
+
+    "The area of {CLABEL,s} is {AREA,d}.".
+
+answer_country_area_tokens(de, TS, TE) :-
+
+    ner (de, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdArea(COUNTRY, AREA),
+
+    C:context|topic := wdeCountry,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d}.".
+
+train(en) :-
+    "(what is the area of |how big is|what is the size of) {countries:LABEL} (do you know it|do you know that|)?",
+    inline answer_country_area_tokens (en, tstart(countries), tend(countries)).
+
+train(de) :-
+    "(wie groß ist|wie ist die fläche von|wie groß ist die fläche von|wie viele quadratmeter hat) {countries:LABEL} (weißt Du das|)?",
+    inline answer_country_area_tokens (de, tstart(countries), tend(countries)).
+
+test(en, d0002) :-
+    "How big is Estonia?",
+    "The area of Estonia is 45228".
+
+test(de, d0003) :-
+    "Wie groß ist Estland?",
+    "Die Fläche von Estland ist 45228.".
+
+answer_country_area_context(en) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdArea(COUNTRY, AREA),
+
+    C:context|topic := wdeCountry,
+
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
+
+answer_country_area_context(de) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdArea(COUNTRY, AREA),
+
+    C:context|topic := wdeCountry,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) (what is the area of |how big is | what is the size of) it (do you know it|do you know that|)?",
+    inline answer_country_area_context (en).
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) (wie groß ist es|wie ist die fläche|wie viele quadratmeter hat es|wie groß ist die fläche) (weißt Du das|)?",
+    inline answer_country_area_context (de).
+
+%
+% capital
+%
+
+answer_country_capital_tokens(en, TS, TE) :-
+
+    ner (en, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdCapital(COUNTRY, CAPITAL),
+    rdfsLabel(CAPITAL, en, CALABEL),
+
+    C:context|topic := wdeCountry,
+
+    "The capital of {CLABEL,s} is {CALABEL,s}.".
+
+answer_country_capital_tokens(de, TS, TE) :-
+
+    ner (de, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdCapital(COUNTRY, CAPITAL),
+    rdfsLabel(CAPITAL, de, CALABEL),
+
+    C:context|topic := wdeCountry,
+
+    "Die Hauptstadt von {CLABEL,s} ist {CALABEL,s}.".
+
+train(en) :-
+    "(what is the|what is the name of the|) capital of {countries:LABEL} (do you know it|do you know that|)?",
+    inline answer_country_capital_tokens (en, tstart(countries), tend(countries)).
+
+train(en) :-
+    "what is the name of {countries:LABEL}'s capital (do you know it|do you know that|)?",
+    inline answer_country_capital_tokens (en, tstart(countries), tend(countries)).
+
+train(de) :-
+    "(Was|Welches) ist (der Name der|die) Hauptstadt von {countries:LABEL} (weißt Du das|)?",
+    inline answer_country_capital_tokens (de, tstart(countries), tend(countries)).
+
+train(de) :-
+    "Wie heißt die Hauptstadt (von|der) {countries:LABEL} (weißt Du das|)?",
+    inline answer_country_capital_tokens (de, tstart(countries), tend(countries)).
+
+test(en, d0002) :-
+    "What is the Capital of Finland?",
+    "The capital of Finland is Helsinki".
+
+test(de, d0003) :-
+    "Welches ist die Hauptstadt von Finnland?",
+    "Die Hauptstadt von Finnland ist Helsinki.".
+
+answer_country_capital_context(en) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    wdpdCapital(COUNTRY, CAPITAL),
+    rdfsLabel(CAPITAL, en, CALABEL),
+
+    C:context|topic := wdeCountry,
+
+    "The capital of {CLABEL,s} is {CALABEL,s}.".
+
+answer_country_capital_context(de) :-
+
+    mem(C, f1ent, COUNTRY),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    wdpdCapital(COUNTRY, CAPITAL),
+    rdfsLabel(CAPITAL, de, CALABEL),
+
+    C:context|topic := wdeCountry,
+
+    "Die Hauptstadt von {CLABEL,s} ist {CALABEL,s}.".
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) (what is the|) capital of it (do you know it|do you know that|)?",
+    inline answer_country_capital_context (en).
+
+train(en) :-
+    context(topic, wdeCountry),
+    "(and|) what is its capital (do you know it|do you know that|)?",
+    inline answer_country_capital_context (en).
+
+train(de) :-
+    context(topic, wdeCountry),
+    "(und|) (was|welches) ist die Hauptstadt (davon|) (weißt Du das|)?",
+    inline answer_country_capital_context (de).
+
+%
+% country topic label
+%
+
+get_topic_label(C, en, "Countries") :- context(C, topic, wdeCountry), r_score(C, 10).
+get_topic_label(C, de, "Staaten") :- context(C, topic, wdeCountry), r_score(C, 10).
+
+train(en) :-
+    context(topic, wdeCountry),
+    inline question_what_was_our_topic(en),
+    r_score(C, 100.0),
+    or(say(C, "We have been talking about {C:mem|f1ent:rdfsLabel|en,s}, I think."),
+       say(C, "Our topic was {C:mem|f1ent:rdfsLabel|en,s}, I believe."),
+       say(C, "Didn't we talk about {C:mem|f1ent:rdfsLabel|en,s}?")).
+
+train(de) :-
+    context(topic, wdeCountry),
+    inline question_what_was_our_topic(de),
+    r_score(C, 100.0),
+    or(say(C, "Wir hatten über {C:mem|f1ent:rdfsLabel|de,s} gesprochen, glaube ich."),
+       say(C, "Ich denke unser Thema war {C:mem|f1ent:rdfsLabel|de,s}."),
+       say(C, "Sprachen wir nicht über {C:mem|f1ent:rdfsLabel|de,s} ?")).
+
+% context test
+
+test(en, d0004) :-
+    "What about Spain?",
+    "Spain is a country on planet Earth",
+    "Which country?",
+    "The country is Spain.",
+    "What was our topic?",
+    "We have been talking about Spain, I think.",
+    "How many people live there?",
+    "The population of Spain is 46449565",
+    "And where is it again?",
+    "On planet earth, I suppose.",
+    "And what is its capital?",
+    "The capital of Spain is Madrid.",
+    "And what is the size of it?",
+    "The area of Spain is 505990 square kilometers.".
+
+test(de, d0005) :-
+    "Was ist mit Spanien?",
+    "Spanien ist ein Staat auf dem Planeten Erde",
+    "Welcher Staat?",
+    "Der Staat ist Spanien.",
+    "Was war unser Thema?",
+    "Wir hatten über Spanien gesprochen, glaube ich.",
+    "Wie viele Menschen leben dort?",
+    "Spanien hat 46449565 Einwohner.",
+    "Und wo ist es nochmal?",
+    "Ich vermute auf dem Planeten Erde",
+    "Und welches ist die Hauptstadt?",
+    "Die Hauptstadt von Spanien ist Madrid.",
+    "Und wie groß ist die Fläche?",
+    "Die Fläche von Spanien ist 505990 quadratkilometer.".
+
+%
+% misc
+%
+
+train(en) :- "how is {countries:LABEL}", "Not sure if countries have feelings?".  
+train(de) :- "wie ist {countries:LABEL}", "Ich glaube Staaten haben keine Gefühle.".
+
+answer_country_sure(en, TS, TE) :-
+
+    ner (en, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    C:context|topic := wdeCountry,
+
+    "Sure, {CLABEL,s}.".
+
+answer_country_sure(de, TS, TE) :-
+
+    ner (de, country, TS, TE, C:tokens, COUNTRY, SCORE),
+
+    C:mem|f1ent := COUNTRY,
+    r_score(C, SCORE),
+
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    C:context|topic := wdeCountry,
+
+    "Klar, {CLABEL,s}.".
+
+train(en) :- 
+    "in {countries:LABEL} (maybe|)",
+    inline answer_country_sure (en, tstart(countries), tend(countries)).
+
+train(de) :- 
+    "in {countries:LABEL} (vielleicht|)",
+    inline answer_country_sure (de, tstart(countries), tend(countries)).
+
+% 
+% %
+% % states
+% %
+% 
+% train(en) :- "in Bavaria", "".  % in bayern
+% train(en) :- "in Hessen", "".   % in hessen
+% 
+% %
+% % landscapes / sights
+% %
+% 
+% train(en) :- "in the Baltic Sea", "".   % in der ostsee
+% 
+% %
+% % misc
+% %
+% 
+% train(en) :- "in my house", "". % in meinem haus
+% train(en) :- "in everything", "".   % in alles
+% train(en) :- "where can i find one", "".    % wo kann ich einen finden
+% train(en) :- "where exactly", "".   % wo genau
+% train(en) :- "where is the car", "".    % wo ist das auto
+% train(en) :- "where, then", "". % wo denn
+

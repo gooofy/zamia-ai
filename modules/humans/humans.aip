@@ -394,3 +394,7 @@ test(de, t0009) :-
     "Und wo wohnt er nochmal?",
     "Ich denke Stephen King lebt in Maine.".
 
+% TODO
+
+% train(en) :- "in which country he was born", "".    % in welchem land wurde er geboren
+

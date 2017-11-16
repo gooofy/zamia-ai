@@ -2273,6 +2273,7 @@ wdeBelgium,http://www.wikidata.org/entity/Q31
 wdeBelleGrove,http://www.wikidata.org/entity/Q4883635
 wdeBenHur,http://www.wikidata.org/entity/Q180098
 wdeBenHurATaleOfTheChrist,http://www.wikidata.org/entity/Q816528
+wdeBenedict,http://www.wikidata.org/entity/Q16275020
 wdeBenezitID,http://www.wikidata.org/entity/P2843
 wdeBenjamin,http://www.wikidata.org/entity/Q4926472
 wdeBenjaminASmithII,http://www.wikidata.org/entity/Q817374
@@ -2596,6 +2597,7 @@ wdeCommodorePET,http://www.wikidata.org/entity/Q946661
 wdeCommodorePlus4,http://www.wikidata.org/entity/Q868568
 wdeCommodoreVIC20,http://www.wikidata.org/entity/Q918232
 wdeCommonName,http://www.wikidata.org/entity/Q502895
+wdeCommonVulnerabilitiesAndExposuresID,http://www.wikidata.org/entity/P3587
 wdeCommonsCategory,http://www.wikidata.org/entity/P373
 wdeCommonsCreatorPage,http://www.wikidata.org/entity/P1472
 wdeCommonsGallery,http://www.wikidata.org/entity/P935
@@ -2853,6 +2855,7 @@ wdeDrugbankID,http://www.wikidata.org/entity/P715
 wdeDuchyOfBerg,http://www.wikidata.org/entity/Q151095
 wdeDuchyOfBohemia,http://www.wikidata.org/entity/Q2162698
 wdeDuchyOfMagdeburg,http://www.wikidata.org/entity/Q702012
+wdeDunthorpe,http://www.wikidata.org/entity/Q3459651
 wdeDuration,http://www.wikidata.org/entity/P2047
 wdeDutch,http://www.wikidata.org/entity/Q7411
 wdeDwight,http://www.wikidata.org/entity/Q13582327
@@ -3229,6 +3232,8 @@ wdeGilloPontecorvo,http://www.wikidata.org/entity/Q53031
 wdeGiniCoefficient,http://www.wikidata.org/entity/P1125
 wdeGiphyUsername,http://www.wikidata.org/entity/P4013
 wdeGirlsWithGuns,http://www.wikidata.org/entity/Q1776156
+wdeGit,http://www.wikidata.org/entity/Q186055
+wdeGitHubUsername,http://www.wikidata.org/entity/P2037
 wdeGiuseppeTornatore,http://www.wikidata.org/entity/Q53045
 wdeGivenName,http://www.wikidata.org/entity/P735
 wdeGivenName1,http://www.wikidata.org/entity/Q202444
@@ -3714,6 +3719,7 @@ wdeKSHCode,http://www.wikidata.org/entity/P939
 wdeKabardian,http://www.wikidata.org/entity/Q33522
 wdeKalmykOirat,http://www.wikidata.org/entity/Q33634
 wdeKalorama,http://www.wikidata.org/entity/Q12060942
+wdeKansallisbiografiaID,http://www.wikidata.org/entity/P2180
 wdeKansasCity,http://www.wikidata.org/entity/Q41819
 wdeKapiolaniMedicalCenterForWomenAndChildren,http://www.wikidata.org/entity/Q6366688
 wdeKarachayBalkar,http://www.wikidata.org/entity/Q33714
@@ -3852,7 +3858,10 @@ wdeLinguist,http://www.wikidata.org/entity/Q14467526
 wdeLinguistListCode,http://www.wikidata.org/entity/P1232
 wdeLinguisticTypology,http://www.wikidata.org/entity/P4132
 wdeLinkedInPersonalProfileURL,http://www.wikidata.org/entity/P2035
+wdeLinus,http://www.wikidata.org/entity/Q15196019
+wdeLinusTorvalds,http://www.wikidata.org/entity/Q34253
 wdeLinux,http://www.wikidata.org/entity/Q388
+wdeLinuxKernel,http://www.wikidata.org/entity/Q14579
 wdeListOfCharacters,http://www.wikidata.org/entity/P1881
 wdeListOfMonuments,http://www.wikidata.org/entity/P1456
 wdeListOfWorks,http://www.wikidata.org/entity/P1455
@@ -3924,6 +3933,7 @@ wdeMainRegulatoryText,http://www.wikidata.org/entity/P92
 wdeMainSubject,http://www.wikidata.org/entity/P921
 wdeMaine,http://www.wikidata.org/entity/Q724
 wdeMainsVoltage,http://www.wikidata.org/entity/P2884
+wdeMaintainedBy,http://www.wikidata.org/entity/P126
 wdeMainz,http://www.wikidata.org/entity/Q1720
 wdeMajidMajidi,http://www.wikidata.org/entity/Q81770
 wdeMajorRegionalCenter,http://www.wikidata.org/entity/Q253030
@@ -4304,6 +4314,7 @@ wdeOneFlewOverTheCuckooSNest,http://www.wikidata.org/entity/Q171669
 wdeOneFlewOverTheCuckooSNest1,http://www.wikidata.org/entity/Q857313
 wdeOntario,http://www.wikidata.org/entity/Q1904
 wdeOpenDomesdaySettlementID,http://www.wikidata.org/entity/P3118
+wdeOpenHubID,http://www.wikidata.org/entity/P1972
 wdeOpenLibraryID,http://www.wikidata.org/entity/P648
 wdeOpenLibrarySubjectID,http://www.wikidata.org/entity/P3847
 wdeOpenMLOLAuthorID,http://www.wikidata.org/entity/P3762
@@ -4520,6 +4531,7 @@ wdePropertyDeveloper,http://www.wikidata.org/entity/Q695829
 wdeProse,http://www.wikidata.org/entity/Q676
 wdeProsecutor,http://www.wikidata.org/entity/Q600751
 wdeProstitution,http://www.wikidata.org/entity/Q36633
+wdeProtocol,http://www.wikidata.org/entity/P2700
 wdeProvinceOfBrabant,http://www.wikidata.org/entity/Q848831
 wdeProvinceOfHanover,http://www.wikidata.org/entity/Q819125
 wdeProvinceOfMilan,http://www.wikidata.org/entity/Q15121
@@ -4535,6 +4547,7 @@ wdePsychologicalThriller,http://www.wikidata.org/entity/Q590103
 wdePubChemCID,http://www.wikidata.org/entity/P662
 wdePublicDomainDate,http://www.wikidata.org/entity/P3893
 wdePublicHoliday,http://www.wikidata.org/entity/P832
+wdePublicKeyFingerprint,http://www.wikidata.org/entity/P3721
 wdePublicOffice,http://www.wikidata.org/entity/Q294414
 wdePublication,http://www.wikidata.org/entity/Q732577
 wdePublicationDate,http://www.wikidata.org/entity/P577
@@ -4822,6 +4835,8 @@ wdeSocialClassification,http://www.wikidata.org/entity/P3716
 wdeSocialNetworksAndArchivalContextID,http://www.wikidata.org/entity/P3430
 wdeSocialState,http://www.wikidata.org/entity/Q619610
 wdeSocialite,http://www.wikidata.org/entity/Q512314
+wdeSoftwareDeveloper,http://www.wikidata.org/entity/Q183888
+wdeSoftwareQualityAssurance,http://www.wikidata.org/entity/P2992
 wdeSoftwareVersion,http://www.wikidata.org/entity/P348
 wdeSolaris,http://www.wikidata.org/entity/Q14646
 wdeSoldier,http://www.wikidata.org/entity/Q4991371
@@ -4932,6 +4947,7 @@ wdeSubsidiary,http://www.wikidata.org/entity/P355
 wdeSubstanceDependence,http://www.wikidata.org/entity/Q182413
 wdeSubstanceInducedPsychosis,http://www.wikidata.org/entity/Q3334995
 wdeSubstituteDeputyReplacementOfOfficeOfficeholder,http://www.wikidata.org/entity/P2098
+wdeSubsurface,http://www.wikidata.org/entity/Q15917235
 wdeSubtitle,http://www.wikidata.org/entity/P1680
 wdeSuccessfulCandidate,http://www.wikidata.org/entity/P991
 wdeSuffolkCounty,http://www.wikidata.org/entity/Q54072
@@ -5188,6 +5204,7 @@ wdeTopicSMainCategory,http://www.wikidata.org/entity/P910
 wdeTopicSMainTemplate,http://www.wikidata.org/entity/P1424
 wdeTopicSMainWikimediaPortal,http://www.wikidata.org/entity/P1151
 wdeToronto,http://www.wikidata.org/entity/Q172
+wdeTorvalds,http://www.wikidata.org/entity/Q21493225
 wdeTotalExports,http://www.wikidata.org/entity/P2135
 wdeTotalReserves,http://www.wikidata.org/entity/P2134
 wdeTotalValidVotes,http://www.wikidata.org/entity/P1697

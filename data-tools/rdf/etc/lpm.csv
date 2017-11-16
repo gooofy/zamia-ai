@@ -237,6 +237,7 @@ wdpComicBookDBID,http://www.wikidata.org/prop/P1392
 wdpCommanderOf,http://www.wikidata.org/prop/P598
 wdpCommemorativePlaqueImage,http://www.wikidata.org/prop/P1801
 wdpCommissionedBy,http://www.wikidata.org/prop/P88
+wdpCommonVulnerabilitiesAndExposuresID,http://www.wikidata.org/prop/P3587
 wdpCommonsCategory,http://www.wikidata.org/prop/P373
 wdpCommonsCreatorPage,http://www.wikidata.org/prop/P1472
 wdpCommonsGallery,http://www.wikidata.org/prop/P935
@@ -485,6 +486,7 @@ wdpGermanMunicipalityKey,http://www.wikidata.org/prop/P439
 wdpGermanRegionalKey,http://www.wikidata.org/prop/P1388
 wdpGiniCoefficient,http://www.wikidata.org/prop/P1125
 wdpGiphyUsername,http://www.wikidata.org/prop/P4013
+wdpGitHubUsername,http://www.wikidata.org/prop/P2037
 wdpGivenName,http://www.wikidata.org/prop/P735
 wdpGivenNameVersionForOtherGender,http://www.wikidata.org/prop/P1560
 wdpGlobalAnabaptistMennoniteEncyclopediaOnlineID,http://www.wikidata.org/prop/P1842
@@ -643,6 +645,7 @@ wdpKMRBFilmRating,http://www.wikidata.org/prop/P3818
 wdpKNAWPastMemberID,http://www.wikidata.org/prop/P2454
 wdpKNApSAcKID,http://www.wikidata.org/prop/P2064
 wdpKSHCode,http://www.wikidata.org/prop/P939
+wdpKansallisbiografiaID,http://www.wikidata.org/prop/P2180
 wdpKijkwijzerRating,http://www.wikidata.org/prop/P2684
 wdpKilledBy,http://www.wikidata.org/prop/P157
 wdpKindredBritainID,http://www.wikidata.org/prop/P3051
@@ -715,6 +718,7 @@ wdpMagdeburgerBiographischesLexikon,http://www.wikidata.org/prop/P2277
 wdpMainRegulatoryText,http://www.wikidata.org/prop/P92
 wdpMainSubject,http://www.wikidata.org/prop/P921
 wdpMainsVoltage,http://www.wikidata.org/prop/P2884
+wdpMaintainedBy,http://www.wikidata.org/prop/P126
 wdpMaleFormOfLabel,http://www.wikidata.org/prop/P3321
 wdpManagerDirector,http://www.wikidata.org/prop/P1037
 wdpManifestationOf,http://www.wikidata.org/prop/P1557
@@ -872,6 +876,7 @@ wdpOfficialWebsite,http://www.wikidata.org/prop/P856
 wdpOmegaWikiDefinedMeaning,http://www.wikidata.org/prop/P1245
 wdpOmniTopicID,http://www.wikidata.org/prop/P3479
 wdpOpenDomesdaySettlementID,http://www.wikidata.org/prop/P3118
+wdpOpenHubID,http://www.wikidata.org/prop/P1972
 wdpOpenLibraryID,http://www.wikidata.org/prop/P648
 wdpOpenLibrarySubjectID,http://www.wikidata.org/prop/P3847
 wdpOpenMLOLAuthorID,http://www.wikidata.org/prop/P3762
@@ -958,10 +963,12 @@ wdpProjectGutenbergAuthorID,http://www.wikidata.org/prop/P1938
 wdpProjectGutenbergEbookID,http://www.wikidata.org/prop/P2034
 wdpPronunciationAudio,http://www.wikidata.org/prop/P443
 wdpPropertiesForThisType,http://www.wikidata.org/prop/P1963
+wdpProtocol,http://www.wikidata.org/prop/P2700
 wdpPseudonym,http://www.wikidata.org/prop/P742
 wdpPubChemCID,http://www.wikidata.org/prop/P662
 wdpPublicDomainDate,http://www.wikidata.org/prop/P3893
 wdpPublicHoliday,http://www.wikidata.org/prop/P832
+wdpPublicKeyFingerprint,http://www.wikidata.org/prop/P3721
 wdpPublicationDate,http://www.wikidata.org/prop/P577
 wdpPublishedIn,http://www.wikidata.org/prop/P1433
 wdpPublisher,http://www.wikidata.org/prop/P123
@@ -1044,6 +1051,7 @@ wdpSoccerbasePlayerID,http://www.wikidata.org/prop/P2193
 wdpSoccerwayPlayerID,http://www.wikidata.org/prop/P2369
 wdpSocialClassification,http://www.wikidata.org/prop/P3716
 wdpSocialNetworksAndArchivalContextID,http://www.wikidata.org/prop/P3430
+wdpSoftwareQualityAssurance,http://www.wikidata.org/prop/P2992
 wdpSoftwareVersion,http://www.wikidata.org/prop/P348
 wdpSongkickArtistID,http://www.wikidata.org/prop/P3478
 wdpSoundCloudID,http://www.wikidata.org/prop/P3040
@@ -1398,6 +1406,7 @@ wdpdComicBookDBID,http://www.wikidata.org/prop/direct/P1392
 wdpdCommanderOf,http://www.wikidata.org/prop/direct/P598
 wdpdCommemorativePlaqueImage,http://www.wikidata.org/prop/direct/P1801
 wdpdCommissionedBy,http://www.wikidata.org/prop/direct/P88
+wdpdCommonVulnerabilitiesAndExposuresID,http://www.wikidata.org/prop/direct/P3587
 wdpdCommonsCategory,http://www.wikidata.org/prop/direct/P373
 wdpdCommonsCreatorPage,http://www.wikidata.org/prop/direct/P1472
 wdpdCommonsGallery,http://www.wikidata.org/prop/direct/P935
@@ -1644,6 +1653,7 @@ wdpdGermanMunicipalityKey,http://www.wikidata.org/prop/direct/P439
 wdpdGermanRegionalKey,http://www.wikidata.org/prop/direct/P1388
 wdpdGiniCoefficient,http://www.wikidata.org/prop/direct/P1125
 wdpdGiphyUsername,http://www.wikidata.org/prop/direct/P4013
+wdpdGitHubUsername,http://www.wikidata.org/prop/direct/P2037
 wdpdGivenName,http://www.wikidata.org/prop/direct/P735
 wdpdGivenNameVersionForOtherGender,http://www.wikidata.org/prop/direct/P1560
 wdpdGlobalAnabaptistMennoniteEncyclopediaOnlineID,http://www.wikidata.org/prop/direct/P1842
@@ -1802,6 +1812,7 @@ wdpdKMRBFilmRating,http://www.wikidata.org/prop/direct/P3818
 wdpdKNAWPastMemberID,http://www.wikidata.org/prop/direct/P2454
 wdpdKNApSAcKID,http://www.wikidata.org/prop/direct/P2064
 wdpdKSHCode,http://www.wikidata.org/prop/direct/P939
+wdpdKansallisbiografiaID,http://www.wikidata.org/prop/direct/P2180
 wdpdKijkwijzerRating,http://www.wikidata.org/prop/direct/P2684
 wdpdKilledBy,http://www.wikidata.org/prop/direct/P157
 wdpdKindredBritainID,http://www.wikidata.org/prop/direct/P3051
@@ -1874,6 +1885,7 @@ wdpdMagdeburgerBiographischesLexikon,http://www.wikidata.org/prop/direct/P2277
 wdpdMainRegulatoryText,http://www.wikidata.org/prop/direct/P92
 wdpdMainSubject,http://www.wikidata.org/prop/direct/P921
 wdpdMainsVoltage,http://www.wikidata.org/prop/direct/P2884
+wdpdMaintainedBy,http://www.wikidata.org/prop/direct/P126
 wdpdMaleFormOfLabel,http://www.wikidata.org/prop/direct/P3321
 wdpdManagerDirector,http://www.wikidata.org/prop/direct/P1037
 wdpdManifestationOf,http://www.wikidata.org/prop/direct/P1557
@@ -2031,6 +2043,7 @@ wdpdOfficialWebsite,http://www.wikidata.org/prop/direct/P856
 wdpdOmegaWikiDefinedMeaning,http://www.wikidata.org/prop/direct/P1245
 wdpdOmniTopicID,http://www.wikidata.org/prop/direct/P3479
 wdpdOpenDomesdaySettlementID,http://www.wikidata.org/prop/direct/P3118
+wdpdOpenHubID,http://www.wikidata.org/prop/direct/P1972
 wdpdOpenLibraryID,http://www.wikidata.org/prop/direct/P648
 wdpdOpenLibrarySubjectID,http://www.wikidata.org/prop/direct/P3847
 wdpdOpenMLOLAuthorID,http://www.wikidata.org/prop/direct/P3762
@@ -2117,10 +2130,12 @@ wdpdProjectGutenbergAuthorID,http://www.wikidata.org/prop/direct/P1938
 wdpdProjectGutenbergEbookID,http://www.wikidata.org/prop/direct/P2034
 wdpdPronunciationAudio,http://www.wikidata.org/prop/direct/P443
 wdpdPropertiesForThisType,http://www.wikidata.org/prop/direct/P1963
+wdpdProtocol,http://www.wikidata.org/prop/direct/P2700
 wdpdPseudonym,http://www.wikidata.org/prop/direct/P742
 wdpdPubChemCID,http://www.wikidata.org/prop/direct/P662
 wdpdPublicDomainDate,http://www.wikidata.org/prop/direct/P3893
 wdpdPublicHoliday,http://www.wikidata.org/prop/direct/P832
+wdpdPublicKeyFingerprint,http://www.wikidata.org/prop/direct/P3721
 wdpdPublicationDate,http://www.wikidata.org/prop/direct/P577
 wdpdPublishedIn,http://www.wikidata.org/prop/direct/P1433
 wdpdPublisher,http://www.wikidata.org/prop/direct/P123
@@ -2203,6 +2218,7 @@ wdpdSoccerbasePlayerID,http://www.wikidata.org/prop/direct/P2193
 wdpdSoccerwayPlayerID,http://www.wikidata.org/prop/direct/P2369
 wdpdSocialClassification,http://www.wikidata.org/prop/direct/P3716
 wdpdSocialNetworksAndArchivalContextID,http://www.wikidata.org/prop/direct/P3430
+wdpdSoftwareQualityAssurance,http://www.wikidata.org/prop/direct/P2992
 wdpdSoftwareVersion,http://www.wikidata.org/prop/direct/P348
 wdpdSongkickArtistID,http://www.wikidata.org/prop/direct/P3478
 wdpdSoundCloudID,http://www.wikidata.org/prop/direct/P3040

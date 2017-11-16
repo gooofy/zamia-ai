@@ -237,6 +237,90 @@ train(de) :-
     inline answer_city_population_context (de).
 
 %
+% area
+%
+
+answer_city_area_tokens(en, TS, TE) :-
+
+    ner (en, city, TS, TE, C:tokens, CITY, SCORE),
+
+    C:mem|f1ent := CITY,
+    r_score(C, SCORE),
+
+    rdfsLabel(CITY, en, CLABEL),
+
+    wdpdArea(CITY, AREA),
+
+    C:context|topic := wdeCity,
+
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
+
+answer_city_area_tokens(de, TS, TE) :-
+
+    ner (de, city, TS, TE, C:tokens, CITY, SCORE),
+
+    C:mem|f1ent := CITY,
+    r_score(C, SCORE),
+
+    rdfsLabel(CITY, de, CLABEL),
+
+    wdpdArea(CITY, AREA),
+
+    C:context|topic := wdeCity,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
+
+train(en) :-
+    "(what is the area of |how big is|what is the size of) {cities:LABEL} (do you know it|do you know that|)?",
+    inline answer_city_area_tokens (en, tstart(cities), tend(cities)).
+
+train(de) :-
+    "(wie groß ist|wie ist die fläche von|wie groß ist die fläche von|wie viele quadratmeter hat) {cities:LABEL} (weißt Du das|)?",
+    inline answer_city_area_tokens (de, tstart(cities), tend(cities)).
+
+test(en, d0002) :-
+    "How big is London?",
+    "The area of London is 1572 square kilometers".
+
+test(de, d0003) :-
+    "Wie groß ist London?",
+    "Die Fläche von London ist 1572 Quadratkilometer.".
+
+answer_city_area_context(en) :-
+
+    mem(C, f1ent, CITY),
+
+    rdfsLabel(CITY, en, CLABEL),
+
+    wdpdArea(CITY, AREA),
+
+    C:context|topic := wdeCity,
+
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
+
+answer_city_area_context(de) :-
+
+    mem(C, f1ent, CITY),
+
+    rdfsLabel(CITY, de, CLABEL),
+
+    wdpdArea(CITY, AREA),
+
+    C:context|topic := wdeCity,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
+
+train(en) :-
+    context(topic, wdeCity),
+    "(and|) (what is the area of |how big is | what is the size of) it (do you know it|do you know that|)?",
+    inline answer_city_area_context (en).
+
+train(de) :-
+    context(topic, wdeCity),
+    "(und|) (wie groß ist es|wie ist die fläche|wie viele quadratmeter hat es|wie groß ist die fläche) (weißt Du das|)?",
+    inline answer_city_area_context (de).
+
+%
 % city topic label
 %
 
@@ -271,7 +355,9 @@ test(en, c0004) :-
     "How many people live there?",
     "The population of Berlin is 3469849",
     "And where is it again?",
-    "Berlin is a city in Germany".
+    "Berlin is a city in Germany",
+    "And what is the size of it?",
+    "The area of Berlin is 891 square kilometers.".
 
 test(de, c0005) :-
     "Was ist mit Berlin?",
@@ -283,7 +369,9 @@ test(de, c0005) :-
     "Wie viele Menschen leben dort?",
     "Berlin hat 3469849 Einwohner.",
     "Und wo ist es nochmal?",
-    "Berlin ist eine Stadt in Deutschland".
+    "Berlin ist eine Stadt in Deutschland",
+    "Und wie groß ist die Fläche?",
+    "Die Fläche von Berlin ist 891 Quadratkilometer.".
 
 % %
 % % states

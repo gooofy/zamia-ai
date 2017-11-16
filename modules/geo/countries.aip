@@ -219,7 +219,7 @@ answer_country_area_tokens(en, TS, TE) :-
 
     C:context|topic := wdeCountry,
 
-    "The area of {CLABEL,s} is {AREA,d}.".
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
 
 answer_country_area_tokens(de, TS, TE) :-
 
@@ -234,7 +234,7 @@ answer_country_area_tokens(de, TS, TE) :-
 
     C:context|topic := wdeCountry,
 
-    "Die Fläche von {CLABEL,s} ist {AREA,d}.".
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
 
 train(en) :-
     "(what is the area of |how big is|what is the size of) {countries:LABEL} (do you know it|do you know that|)?",
@@ -246,11 +246,11 @@ train(de) :-
 
 test(en, d0002) :-
     "How big is Estonia?",
-    "The area of Estonia is 45228".
+    "The area of Estonia is 45228 square kilometers".
 
 test(de, d0003) :-
     "Wie groß ist Estland?",
-    "Die Fläche von Estland ist 45228.".
+    "Die Fläche von Estland ist 45228 Quadratkilometer.".
 
 answer_country_area_context(en) :-
 

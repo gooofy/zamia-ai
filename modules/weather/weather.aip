@@ -682,8 +682,8 @@ train(de) :- context(topic, wdeWeatherForecast), "(und|) in {geo_location:LABEL}
 % weather forecast topic label
 %
 
-get_topic_label(C, en, "the weather report") :- context(C, topic, wdewdeWeatherForecast), r_score(C, 10).
-get_topic_label(C, de, "der Wetterbericht")   :- context(C, topic, wdeWeatherForecast), r_score(C, 10).
+get_topic_label(C, en, "the weather report") :- context(C, topic, wdeWeatherForecast), r_score(C, 10).
+get_topic_label(C, de, "der Wetterbericht")  :- context(C, topic, wdeWeatherForecast), r_score(C, 10).
 
 train(en) :-
     context(topic, wdeWeatherForecast),

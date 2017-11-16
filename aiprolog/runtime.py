@@ -129,7 +129,7 @@ def builtin_r_sayv(g, pe):
         v = unicode(arg_var)
 
     if arg_fmt == 'd':
-        v = unicode(int(v))
+        v = unicode(int(float(v)))
     elif arg_fmt == 'f':
         v = unicode(float(v))
 

@@ -1901,6 +1901,7 @@ RDF_ALIASES = {
                 u'wde:Human'                               : u'http://www.wikidata.org/entity/Q5',
                 u'wde:Computer'                            : u'http://www.wikidata.org/entity/Q68',
                 u'wde:Book'                                : u'http://www.wikidata.org/entity/Q571',
+                u'wde:Country'                             : u'http://www.wikidata.org/entity/Q6256',
                 u'wde:OperatingSystem'                     : u'http://www.wikidata.org/entity/Q9135',
                 u'wde:ProgrammingLanguage'                 : u'http://www.wikidata.org/entity/Q9143',
                 u'wde:Film'                                : u'http://www.wikidata.org/entity/Q11424',

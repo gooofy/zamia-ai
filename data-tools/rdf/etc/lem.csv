@@ -2648,8 +2648,8 @@ wdeCorporateOfficer,http://www.wikidata.org/entity/P2828
 wdeCost,http://www.wikidata.org/entity/P2130
 wdeCostumeDesigner,http://www.wikidata.org/entity/P2515
 wdeCostumeDrama,http://www.wikidata.org/entity/Q542475
-wdeCountry,http://www.wikidata.org/entity/P17
-wdeCountry1,http://www.wikidata.org/entity/Q6256
+wdeCountry,http://www.wikidata.org/entity/Q6256
+wdeCountry1,http://www.wikidata.org/entity/P17
 wdeCountryCallingCode,http://www.wikidata.org/entity/P474
 wdeCountryOfCitizenship,http://www.wikidata.org/entity/P27
 wdeCountryOfOrigin,http://www.wikidata.org/entity/P495

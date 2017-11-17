@@ -57,7 +57,7 @@ train(en) :-
     inline answer_federated_state_location_tokens (en, tstart(federated_states), tend(federated_states)).
 
 train(de) :-
-    "(was ist|was ist mit|was weißt Du über|wo ist|in|in welchem Staat ist|in welchem Land ist|) {federated_states:LABEL} (und du|weißt Du das|)?",
+    "(was ist|was ist mit|was weißt Du über|wo ist|wo liegt|in|in welchem Staat ist|in welchem Land ist|) {federated_states:LABEL} (und du|weißt Du das|)?",
     inline answer_federated_state_location_tokens (de, tstart(federated_states), tend(federated_states)).
 
 test(en, d0000) :-
@@ -137,7 +137,7 @@ train(en) :-
 
 train(de) :-
     context(topic, wdeFederatedState),
-    "(und|) Wo (ist|war) (das|es) (nochmal|)?",
+    "(und|) Wo (ist|war|liegt) (das|es) (nochmal|)?",
     inline answer_federated_state_location_context (de).
 
 %

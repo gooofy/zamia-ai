@@ -51,7 +51,7 @@ train(en) :-
     inline answer_country_location_tokens (en, tstart(countries), tend(countries)).
 
 train(de) :-
-    "(was ist|was ist mit|was weißt Du über|wo ist|in|auf welchem Kontinent ist|) {countries:LABEL} (und du|weißt Du das|)?",
+    "(was ist|was ist mit|was weißt Du über|wo ist|wo liegt|in|auf welchem Kontinent ist|) {countries:LABEL} (und du|weißt Du das|)?",
     inline answer_country_location_tokens (de, tstart(countries), tend(countries)).
 
 test(en, d0000) :-
@@ -101,7 +101,7 @@ train(en) :-
 
 train(de) :-
     context(topic, wdeCountry),
-    "(und|) Wo (ist|war) (das|es) (nochmal|)?",
+    "(und|) Wo (ist|war|liegt) (das|es) (nochmal|)?",
     "Ich vermute auf dem Planeten Erde?".
 
 %

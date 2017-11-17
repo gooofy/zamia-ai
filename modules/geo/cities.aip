@@ -61,7 +61,7 @@ train(en) :-
     inline answer_city_location_tokens (en, tstart(cities), tend(cities)).
 
 train(de) :-
-    "(was ist|was ist mit|was weißt Du über|wo ist|in|in welchem land ist|) {cities:LABEL} (und du|kennst Du das|)?",
+    "(was ist|was ist mit|was weißt Du über|wo ist|wo liegt|in|in welchem land ist|) {cities:LABEL} (und du|kennst Du das|)?",
     inline answer_city_location_tokens (de, tstart(cities), tend(cities)).
 
 test(en, c0000) :-
@@ -141,7 +141,7 @@ train(en) :-
 
 train(de) :-
     context(topic, wdeCity),
-    "(und|) Wo (ist|war) (das|es) (nochmal|)?",
+    "(und|) Wo (ist|war|liegt) (das|es) (nochmal|)?",
     inline answer_city_location_context (de).
 
 % population

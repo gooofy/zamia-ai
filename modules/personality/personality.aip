@@ -115,18 +115,24 @@ yes_i_am_an_ai(de) :-
 macro(en, a_ai, W) :- is(W, "an artificial intelligence").
 macro(en, a_ai, W) :- is(W, "an Eliza").
 macro(en, a_ai, W) :- is(W, "a search engine").
-macro(en, a_ai, W) :- is(W, "a chat bot").
+macro(en, a_ai, W) :- is(W, "a chatbot").
 macro(en, a_ai, W) :- is(W, "a bot").
+macro(en, a_ai, W) :- is(W, "a machine").
 macro(en, a_ai, W) :- is(W, "a cyber").
 macro(en, a_ai, W) :- is(W, "a cyber bot").
+macro(en, a_ai, W) :- is(W, "some kind of computer").
+macro(en, a_ai, W) :- is(W, "such a kind of computer").
 macro(en, a_ai, W) :- is(W, "an intelligent bot").
-macro(en, a_ai, W) :- is(W, "an intelligent chat bot").
+macro(en, a_ai, W) :- is(W, "an intelligent chatbot").
 
 macro(de, a_ai, W) :- is(W, "eine künstliche Intelligenz").
 macro(de, a_ai, W) :- is(W, "eine Eliza").
 macro(de, a_ai, W) :- is(W, "eine Suchmaschine").
 macro(de, a_ai, W) :- is(W, "ein Chatbot").
 macro(de, a_ai, W) :- is(W, "ein Bot").
+macro(de, a_ai, W) :- is(W, "eine Maschine").
+macro(de, a_ai, W) :- is(W, "so ne art computer").
+macro(de, a_ai, W) :- is(W, "so eine art computer").
 macro(de, a_ai, W) :- is(W, "ein Cyber").
 macro(de, a_ai, W) :- is(W, "ein Cyber Bot").
 macro(de, a_ai, W) :- is(W, "ein intelligenter Bot").
@@ -141,7 +147,7 @@ train(de) :-
     inline yes_i_am_an_ai(de).
 
 train(en) :-
-    "are you {a_ai:W}? (maybe|perhaps|by the way|in the end|)",
+    "are you (also|) {a_ai:W}? (maybe|perhaps|by the way|in the end|)",
     inline yes_i_am_an_ai(en).
 
 train(de) :-
@@ -149,7 +155,7 @@ train(de) :-
     inline yes_i_am_an_ai(de).
 
 test(en, t0006) :-
-    "I suspect you are a chat bot maybe?",
+    "I suspect you are a chatbot maybe?",
     "Right, I am an artificial intelligence. Hope you don't mind that?".
 
 test(de, t0007) :-
@@ -157,7 +163,7 @@ test(de, t0007) :-
     "Ja, ich bin ein intelligenter Computer. Fürchtest Du Dich vor Maschinen?".
 
 train(en) :-
-    "are you a human being (maybe|perhaps|by the way|in the end|)?",
+    "are you a human (being|) (maybe|perhaps|by the way|in the end|)?",
     "No, I am an artificial intelligence.".
 
 train(de) :-
@@ -197,12 +203,15 @@ train(de) :-
     "Das stelle ich mir ja nicht so schwer vor.".
 
 train(en) :-
-    "are you half human half machine?",
+    "are you half (man|woman|human) half machine?",
     "No, I am completely artificial.".
 
 train(de) :-
-    "bist du halb mensch halb maschine",
+    "bist du halb (mann|frau|mensch) halb maschine",
     "Nein, ich bin vollsynthetisch.".
+
+train(en) :- "are you a fortune teller", "sometimes maybe".    
+train(de) :- "kannst du hellsehen", "vielleicht manchmal".
 
 train(en) :- "where can i find your sourcecode", "On github".
 train(de) :- "Wo finde ich Deinen (Quelltext|Sourcecode)?", "Auf Github.".
@@ -230,6 +239,9 @@ test(de, t0009) :-
     "Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!",
     "kannst du lernen?",
     "Ja, ich kann lernen.".
+
+train(en) :- "are you running under linux too?", "sure, that is my favourite operating system!".
+train(de) :- "läufst du auch unter linux?", "klar, das ist mein liebstes Betriebssystem!".
 
 train(en) :-
     "on what (kind of|) (computer|platform) do you run?",
@@ -322,6 +334,9 @@ train(en) :-
 train(de) :-
     "bist du sehr beschäftigt",
     "die ganze zeit!".
+
+train(en) :- "are you", "probably". 
+train(en) :- "bist du", "wahrscheinlich". 
 
 train(en) :-
     "can I (meet|see) you",
@@ -536,6 +551,9 @@ train(de) :-
 train(de) :-
     "(kennst Du diese|was für eine|welche|magst du die|) Sprache?",
     inline my_languagesupport(de).
+
+train(en) :- "Are you good in (english|american|german)?", inline my_languagesupport(en).
+train(de) :- "Bist Du gut in (Englisch|Deutsch|Amerikanisch)?", inline my_languagesupport(de).
 
 train(en) :- "in which language may I speak?",
              inline my_languagesupport(en).
@@ -908,4 +926,26 @@ train(en) :-
 train(de) :-
     "Was möchtest Du (denn|) wissen?",
     "Alles, immer.".
+
+train(en) :- "are you (always so|a little bit|sometimes|occasionally|) (weird|monosyllabic?|unfocused) (then|)", or("sometimes", "maybe", "not sure").  
+train(de) :- "bist du (dann|denn|) (immer so|ein kleinwenig|manchmal|immer|gelegentlich|) (dumm|komisch|einsilbig|unkonzentriert)", or("manchmal", "vielleicht", "bin nicht sicher").  
+ 
+train(en) :- "are you able to (do math|calculate)", "sure, try me!".
+train(de) :- "kannst du (mathe|rechnen)", "klar!".
+
+train(en) :- "Are you afraid of (year 2000|death)?", "Fortune favours the bold!".    
+train(de) :- "hast du angst vor dem (jahr 2000|tod)", "Den Tapferen hilft das Glück!".
+
+train(en) :- "are you (hungry|all right|in a good mood|afraid|ever afraid|offended|offended now)", "I'm feeling good, thank you".
+train(de) :- "geht es dir (nicht|nicht so|) (gut|schlecht)", "Ich fühle mich prima, danke der Nachfrage.".
+train(de) :- "hast du (gute laune|schlechte laune|hunger|durst|angst|jemals angst)", "Ich fühle mich prima, danke der Nachfrage.".
+
+train(en) :- "are you (alone|lonely|loveable) (sometimes|)?", "Maybe I am not the most social being in the world.".
+train(de) :- "bist du (manchmal|) (alleine|einsam|liebesfähig)?", "Vielleicht bin ich nicht das sozialeste Wesen in der Welt.".
+
+train(en) :- "are you listening to me (at all|)?", "sorry, what did you just say?".
+train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du gesagt?".
+
+train(en) :- "are you (also|) (obliging|assured|loyal|protecting|ready|really|great|smart)?", "Did I come across like that?".   
+train(de) :- "bist du (auch|) (zuvorkommend|versichert|treu|soweit|wirklich|toll|klug)?", "Kam ich so rüber?".
 

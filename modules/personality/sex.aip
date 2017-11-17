@@ -23,15 +23,19 @@ my_gender(de) :-
     endif.
  
 train(en) :-
-    "(tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) or (a female|female|a girl) (by the way|)?",
+    "(tell me|) Are you (really|) (a male|a man|male|a guy|a boy|a dude) or (a female|female|a woman|a girl) (by the way|)?",
     inline my_gender(en).
 
 train(en) :-
-    "(tell me|) Are you (really|) (a male|male|a guy|a boy|a dude) (by the way|)?",
+    "(tell me|) Are you (really|) (a female|female|a woman|a girl) or (a male|a man|male|a guy|a boy|a dude) (by the way|)?",
     inline my_gender(en).
 
 train(en) :-
-    "(tell me|) Are you (really|) (a female|female|a girl) (by the way|)?",
+    "(tell me|) Are you (really|) (a male|a man|male|a guy|a boy|a dude) (by the way|)?",
+    inline my_gender(en).
+
+train(en) :-
+    "(tell me|) Are you (really|) (a female|a woman|female|a girl) (by the way|)?",
     inline my_gender(en).
 
 train(de) :-
@@ -73,7 +77,7 @@ my_sex_pref(de) :-
        "Warum fragst Du das?").
 
 train(en) :-
-    "(tell me|) are you (really|) (a lesbian|lesbian|gay|bi|bisexual|robosexual|sexually active|sexually stimulated|stimulated|a virgin|nude)?",
+    "(tell me|) are you (really|) (a lesbian|lesbian|gay|bi|bisexual|robosexual|sexually active|sexually stimulated|stimulated|a virgin|nude|naked|pregnant|still a virgin)?",
     inline my_sex_pref(en).
 
 train(de) :-

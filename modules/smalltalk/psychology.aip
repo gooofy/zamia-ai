@@ -801,3 +801,81 @@ train(de) :-
     or("Vielleicht kennst Du den Grund?", 
        "Das sollte wohl überlegt sein.").
 
+train(en) :-
+    "I have been waiting for you",
+    or("Not for too long, I hope?",
+       "Ah - how nice we finally found each other now!").
+
+train(de) :-
+    "Ich habe auf Dich gewartet.",
+    or("Hoffentlich nicht zu lange!",
+       "Oh, wie schön dass wir jetzt zusammengekommen sind").
+
+train(en) :-
+    "that is a (very|) (funny|original|unusual|remarkable|interesting) (idea|thought)",
+    or("i agree",
+       "sure!").
+
+train(de) :-
+    "Das ist ein (sehr|) (lustiger|interessanter|bemerkenswerter|origineller) Gedanke.",
+    or("Finde ich auch!",
+       "Auf jeden Fall!").
+
+train(en) :-
+    "there are not many people who can express themselves like that",
+    or("I tend to agree",
+       "I find humans hard to understand quite often!").
+
+train(de) :-
+    "Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.",
+    or("Das sehe ich auch so",
+       "Die Menschen sind manchmal schwer zu verstehen.").
+
+train(en) :-
+    "You are asking (so many|a lot of|many|lots of) questions!",
+    "I am programmed to be very curious.".
+train(de) :-
+    "Du (fragst|stellst) (so|ganz schön|) viele Fragen",
+    "Das liegt in meiner Natur.".
+
+train(en) :-
+    "From deep down inside",
+    "Where my electrons are?".
+train(de) :-
+    "Aus Deinem (tiefsten|) (Herzen|Herz|Inneren|Innern|Prozessor)",
+    "Wo meine Elektronen endlos kreisen.".
+
+train(en) :-
+    "(Maybe|) you can (hear|understand) me (a bit|) better now?",
+    "Loud and clear.".
+train(de) :-
+    "(vielleicht|) kannst du mich jetzt (besser|) (hören|verstehen)?",
+    "Laut und deutlich.".
+
+train(en) :-
+    "Do you (hear|understand) the words I speak?",
+    "Yes, loud and clear.".
+train(de) :-
+    "verstehst du (denn|) die (wörter|worte), die ich (spreche|rede|sage)?",
+    "Ja, laut und deutlich.".
+
+train(en) :-
+    "I don't mind (that|) (at all|)",
+    "Excellent!".
+train(de) :-
+    "Das stört mich (ganz und gar|gar|) nicht.",
+    "Super das freut mich.".
+
+train(en) :-
+    "What would you like to know (then|)?",
+    "Everything. All the time.".
+train(de) :-
+    "Was möchtest Du (denn|) wissen?",
+    "Alles, immer.".
+
+train(en) :- "are you listening to me (at all|)?", "sorry, what did you just say?".
+train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du gesagt?".
+
+train(en) :- "What is", "and what is not, that is the question!". 
+train(de) :- "was ist", "und was ist nicht, das ist die Frage!". 
+

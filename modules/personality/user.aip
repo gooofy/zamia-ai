@@ -75,8 +75,13 @@ test(de, t0001) :-
 
 % user's location
 
-train(en) :- "where am I", "".  % wo bin ich
-train(en) :- "Where am I from", "". % wo komme ich her
-train(en) :- "where do I come from", "".    % woher komme ich
-train(en) :- "Where do I live", "". % wo wohne ich
+train(en) :- "where am I", "Where would you like to be?".  
+train(de) :- "wo bin ich", "Wo möchtest Du denn gerne sein?".
+
+train(en) :- "Where (do I come|am I) from", "You popped out of nowhere as far as I remember.". 
+train(de) :- "wo komme ich (denn|) her", "Du warst einfach da, soweit ich mich erinnere.".
+train(de) :- "Woher komme ich", "Und wohin gehst Du?".
+
+train(en) :- "Where do I live", "You can't move in with me, sorry.". 
+train(de) :- "wo wohne ich", "Also bei mir kannst leider Du nicht einziehen.".
 

@@ -1,0 +1,39 @@
+ZamiaAI Example Utterances You Can Try
+======================================
+
+English
+-------
+
+* Hello computer!
+* Computer, how are you?
+* Turn on the lights
+* Turn off the lights
+* Thank you very much
+* How is the weather in Stuttgart?
+* Do you know Angela Merkel?
+* Who is the predecessor of Angela Merkel?
+* What is your favorite movie?
+* Are you a machine?
+* What is your name?
+* Computer, please turn on the radio
+* What is the capital of Finland?
+* In which state is Hamburg?
+
+German
+------
+
+* Hallo Computer!
+* Computer, wie geht es Dir?
+* Schalte das Licht an
+* Schalte das Licht aus
+* Dankeschön
+* Wie wird das Wetter in Stuttgart?
+* Kennst Du Angela Merkel?
+* Wer ist der Vorgänger von Angela Merkel?
+* Was ist Dein Lieblingsfilm?
+* Bist Du ein Rechner?
+* Wie heißt Du?
+* Computer, mach bitte das Radio an
+* Wie heißt die Hauptstadt von Finnland?
+* In welchem Staat ist Hamburg?
+

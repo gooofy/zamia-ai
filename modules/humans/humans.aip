@@ -133,13 +133,12 @@ train(de) :-
     inline answer_human_born_where_tokens(de, tstart(known_humans), tend(known_humans)).
 
 train(en) :-
-    "which is (the birthplace|place of birth) of {known_humans:LABEL}?",
+    "which (was|is) (the birthplace|place of birth) of {known_humans:LABEL}?",
     inline answer_human_born_where_tokens(en, tstart(known_humans), tend(known_humans)).
 
 train(de) :-
-    "welches ist (eigentlich|) (der Geburtsort|die Geburtsstadt) von {known_humans:LABEL}?",
+    "(was|welches) (war|ist) (eigentlich|) (der Geburtsort|die Geburtsstadt) von {known_humans:LABEL}?",
     inline answer_human_born_where_tokens(de, tstart(known_humans), tend(known_humans)).
-
 
 answer_human_born_where_context(en) :-
 
@@ -199,6 +198,117 @@ test(de, t0005) :-
     "Sprachen wir nicht über Angela Merkel?",
     "Und wo wurde sie nochmal geboren?",
     "Angela Merkel ist in Barmbek-Nord geboren, denke ich".
+
+answer_human_born_country_tokens(en, TS, TE) :-
+
+    ner (en, human, TS, TE, C:tokens, HUMAN, SCORE),
+
+    C:mem|f1ent := HUMAN,
+    r_score(C, SCORE),
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    wdpdPlaceOfBirth(HUMAN, BP),
+    wdpdCountry(BP, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+    rdfsLabel(COUNTRY, en, CLABEL),
+
+    or ("{HLABEL,s} was born in {CLABEL,s}, I think.",
+        "I believe {HLABEL,s} was born in {CLABEL,s}.").
+
+answer_human_born_country_tokens(de, TS, TE) :-
+
+    ner (de, human, TS, TE, C:tokens, HUMAN, SCORE),
+
+    C:mem|f1ent := HUMAN,
+    r_score(C, SCORE),
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    wdpdPlaceOfBirth(HUMAN, BP),
+    wdpdCountry(BP, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    or ("{HLABEL,s} ist in {CLABEL,s} geboren, denke ich.",
+        "Ich glaube {HLABEL,s} ist in {CLABEL,s} geboren.").
+
+train(en) :-
+    "in which country (was|is) {known_humans:LABEL} born?",
+    inline answer_human_born_country_tokens(en, tstart(known_humans), tend(known_humans)).
+
+train(de) :-
+    "in welchem land (wurde|ist) (eigentlich|) {known_humans:LABEL} geboren?",
+    inline answer_human_born_country_tokens(de, tstart(known_humans), tend(known_humans)).
+
+train(en) :-
+    "which (was|is) the land of birth of {known_humans:LABEL}?",
+    inline answer_human_born_country_tokens(en, tstart(known_humans), tend(known_humans)).
+
+train(de) :-
+    "(was|welches) (war|ist) (eigentlich|) das Geburtsland von {known_humans:LABEL}?",
+    inline answer_human_born_country_tokens(de, tstart(known_humans), tend(known_humans)).
+
+answer_human_born_country_context(en) :-
+
+    mem(C, f1ent, HUMAN),
+
+    rdfsLabel(HUMAN, en, HLABEL),
+
+    wdpdPlaceOfBirth(HUMAN, BP),
+    wdpdCountry(BP, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+    rdfsLabel(COUNMTRY, en, CLABEL),
+
+    or ("{HLABEL,s} was born in {CLABEL,s}, I think.",
+        "I believe {HLABEL,s} was born in {CLABEL,s}.").
+
+answer_human_born_country_context(de) :-
+
+    mem(C, f1ent, HUMAN),
+
+    rdfsLabel(HUMAN, de, HLABEL),
+
+    wdpdPlaceOfBirth(HUMAN, BP),
+    wdpdCountry(BP, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+    rdfsLabel(COUNTRY, de, CLABEL),
+
+    or ("{HLABEL,s} ist in {CLABEL,s} geboren, denke ich.",
+        "Ich glaube {HLABEL,s} ist in {CLABEL,s} geboren.").
+
+
+train(en) :-
+    "(and|) in which country (was|is) (she|he) born (again|)?",
+    inline answer_human_born_country_context(en).
+
+train(de) :-
+    "(und|) in welchem land (wurde|ist) (eigentlich|) (er|sie) (nochmal|) geboren?",
+    inline answer_human_born_country_context(de).
+
+train(en) :-
+    "(and|) which (was|is) the country of birth of (him|her) (again|)?",
+    inline answer_human_born_country_context(en).
+
+train(de) :-
+    "(und|) welches (war|ist) (eigentlich|nochmal|) das Geburtsland von (ihm|ihr)?",
+    inline answer_human_born_country_context(de).
+ 
+test(en, t0104) :-
+    "In which country was Angela Merkel born?",
+    "Angela Merkel was born in Germany, I think.",
+    "What were we talking about?",
+    "Didn't we talk about angela merkel?",
+    "And in which country was she born again?",
+    "I believe Angela Merkel was born in Germany".
+
+test(de, t0105) :-
+    "In welchem Land ist Angela Merkel geboren?",
+    "Angela Merkel ist in Deutschland geboren, denke ich",
+    "Welches Thema hatten wir?",
+    "Sprachen wir nicht über Angela Merkel?",
+    "Und in welchem Land wurde sie nochmal geboren?",
+    "Angela Merkel ist in Deutschland geboren, denke ich".
 
 %
 % birthdate

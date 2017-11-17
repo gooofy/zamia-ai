@@ -2,6 +2,10 @@
 
 train_prefix('{self_address:L} ').
 
+%
+% weather time spans
+%
+
 time_span(CT, weatherNearFuture, TS, TE) :- and(before_evening(CT), time_span(CT, today, TS, TE)).
 time_span(CT, weatherNearFuture, TS, TE) :- and(after_evening(CT), time_span(CT, tomorrow, TS, TE)).
 
@@ -10,11 +14,27 @@ time_label(CT, de, weatherNearFuture, "heute")    :- before_evening(CT).
 time_label(CT, en, weatherNearFuture, "tomorrow") :- after_evening(CT).
 time_label(CT, de, weatherNearFuture, "morgen")   :- after_evening(CT).
 
-%weather_location("http://www.wikidata.org/entity/Q1022",  "Stuttgart").
-%weather_location("http://www.wikidata.org/entity/Q1770",  "Tallinn").
-%weather_location("http://www.wikidata.org/entity/Q61",    "Washington, D.C.").
-%weather_location("http://www.wikidata.org/entity/Q61656", "Freudental").
-% nlp_weather_location_s(LANG, S, PLACE1, LABEL, TS, TE) :- and(weather_location(PLACE1, LABEL), length(S, TS), hears(en, S, LABEL), length(S, TE)).
+%
+% weather locations (only those we have weather map ids for)
+%
+
+weather_location (LOC) :- owmCityId(LOC, CITYID).
+
+macro(en, weather_location, LABEL) :- 
+    weather_location(LOC), 
+    rdfsLabel(LOC, en, LABEL).
+macro(de, weather_location, LABEL) :- 
+    weather_location(LOC), 
+    rdfsLabel(LOC, de, LABEL).
+
+% named entity recognition (NER)
+
+train_ner (en, weather_location, LOC, LABEL) :- weather_location(LOC), rdfsLabel(LOC, en, LABEL).
+train_ner (de, weather_location, LOC, LABEL) :- weather_location(LOC), rdfsLabel(LOC, de, LABEL).
+
+%
+% natural language processing training data
+%
 
 answer_weather_r(C, en, full, LPLACE, LTIMESPAN, "01", PREC, TEMP_MIN, TEMP_MAX, CLOUDS) :- say(C, "{LTIMESPAN,s} will be clear skies in {LPLACE,s} with temperatures between {TEMP_MIN,d} and {TEMP_MAX,d} degrees.").
 answer_weather_r(C, en, full, LPLACE, LTIMESPAN, "02", PREC, TEMP_MIN, TEMP_MAX, CLOUDS) :- say(C, "{LTIMESPAN,s} will be mostly clear skies in {LPLACE,s} with temperatures between {TEMP_MIN,d} and {TEMP_MAX,d} degrees.").
@@ -423,7 +443,7 @@ answer_weather_expl_place (en, REPORT, TS, TE) :-
 
     % trace(on),
 
-    ner (en, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    ner (en, weather_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
     C:mem|f1loc := LOCATION,
 
@@ -438,7 +458,7 @@ answer_weather_expl_place (de, REPORT, TS, TE) :-
 
     % trace(on),
 
-    ner (de, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    ner (de, weather_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
     C:mem|f1loc := LOCATION,
 
@@ -452,14 +472,14 @@ answer_weather_expl_place (de, REPORT, TS, TE) :-
 train(en) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or(
-        "(what is the likelihood of | how likely is) rain in {geo_location:LABEL} ?",
-        "how likely is it that it will rain in {geo_location:LABEL} ?",
-        "(will the sun shine | will there be sunshine )  in {geo_location:LABEL} ?",
-        "(will it | does it) rain in {geo_location:LABEL} ?",
-        "(will rain come|is rain coming) in {geo_location:LABEL} ?",
-        "how (cold|warm) (is it going to|will it) (be|become) in {geo_location:LABEL}?"
+        "(what is the likelihood of | how likely is) rain in {weather_location:LABEL} ?",
+        "how likely is it that it will rain in {weather_location:LABEL} ?",
+        "(will the sun shine | will there be sunshine )  in {weather_location:LABEL} ?",
+        "(will it | does it) rain in {weather_location:LABEL} ?",
+        "(will rain come|is rain coming) in {weather_location:LABEL} ?",
+        "how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL}?"
     ),
-    inline answer_weather_expl_place (en, prec_cloud, tstart(geo_location), tend(geo_location)).
+    inline answer_weather_expl_place (en, prec_cloud, tstart(weather_location), tend(weather_location)).
 
 test(en, t0200) :-
     C:time := '2016-12-06T11:00:00+01:00', 
@@ -493,11 +513,11 @@ test(en, t0214) :-
 train(en) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "what ( will the weather | is the weather gonna | is the weather going to ) be (like|) in {geo_location:LABEL} ?", 
-        "how (cold|warm) (is it going to|will it) (be|become) in {geo_location:LABEL} ?",
-        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {geo_location:LABEL} ?"
+        "what ( will the weather | is the weather gonna | is the weather going to ) be (like|) in {weather_location:LABEL} ?", 
+        "how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL} ?",
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} ?"
        ),
-    inline answer_weather_expl_place (en, full, tstart(geo_location), tend(geo_location)).
+    inline answer_weather_expl_place (en, full, tstart(weather_location), tend(weather_location)).
 
 test(en, t0206) :-
     C:time := '2016-12-06T11:00:00+01:00', 
@@ -520,14 +540,14 @@ test(en, t0220) :-
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or(
-        "wird es in {geo_location:LABEL} (regnen | Regen geben) ?", 
-        "( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist )  Regen in {geo_location:LABEL} ?", 
-        "wie wahrscheinlich ist es, dass es in {geo_location:LABEL} regnen wird?",
-        "scheint in {geo_location:LABEL} die Sonne?",
-        "regnet es in {geo_location:LABEL} ?",
-        "kommt noch Regen in {geo_location:LABEL} ?",
-        "wie (kalt|warm) wird es in {geo_location:LABEL} (werden|)?"),
-    inline answer_weather_expl_place (de, prec_cloud, tstart(geo_location), tend(geo_location)).
+        "wird es in {weather_location:LABEL} (regnen | Regen geben) ?", 
+        "( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist )  Regen in {weather_location:LABEL} ?", 
+        "wie wahrscheinlich ist es, dass es in {weather_location:LABEL} regnen wird?",
+        "scheint in {weather_location:LABEL} die Sonne?",
+        "regnet es in {weather_location:LABEL} ?",
+        "kommt noch Regen in {weather_location:LABEL} ?",
+        "wie (kalt|warm) wird es in {weather_location:LABEL} (werden|)?"),
+    inline answer_weather_expl_place (de, prec_cloud, tstart(weather_location), tend(weather_location)).
 
 test(de, t0201) :-
     C:time := '2016-12-06T11:00:00+01:00', 
@@ -561,11 +581,11 @@ test(de, t0215) :-
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie wird in {geo_location:LABEL} das Wetter?", 
-        "wie wird das Wetter in {geo_location:LABEL}?",
-        "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {geo_location:LABEL}?"
+        "wie wird in {weather_location:LABEL} das Wetter?", 
+        "wie wird das Wetter in {weather_location:LABEL}?",
+        "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {weather_location:LABEL}?"
        ),
-    inline answer_weather_expl_place (de, full, tstart(geo_location), tend(geo_location)).
+    inline answer_weather_expl_place (de, full, tstart(weather_location), tend(weather_location)).
 
 test(de, t0207) :-
     C:time := '2016-12-06T11:00:00+01:00', 
@@ -592,7 +612,7 @@ answer_weather_expl_place_time (en, REPORT, TS, TE, TIME) :-
 
     % trace(on),
 
-    ner (en, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    ner (en, weather_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
     C:mem|f1loc := LOCATION,
     C:mem|f1timespan := TIME,
@@ -604,7 +624,7 @@ answer_weather_expl_place_time (de, REPORT, TS, TE, TIME) :-
 
     % trace(on),
 
-    ner (de, geo_location, TS, TE, C:tokens, LOCATION, SCORE),
+    ner (de, weather_location, TS, TE, C:tokens, LOCATION, SCORE),
     r_score(C, SCORE),
     C:mem|f1loc := LOCATION,
     C:mem|f1timespan := TIME,
@@ -615,48 +635,48 @@ answer_weather_expl_place_time (de, REPORT, TS, TE, TIME) :-
 train(en) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "will it rain in {geo_location:LABEL} {timespec:LABEL} ?",
-        "(what is the likelihood of | how likely is | rain in ) {geo_location:LABEL} {timespec:LABEL} ?",
-        "how likely is it that it will rain {timespec:LABEL} in {geo_location:LABEL} ?",
-        "(will the sun shine | will there be sunshine ) {timespec:LABEL}  in {geo_location:LABEL} ?",
-        "(will it | does it) rain in {geo_location:LABEL} {timespec:LABEL} ?",
-        "(will rain come|is rain coming) in {geo_location:LABEL} {timespec:LABEL} ?"
+        "will it rain in {weather_location:LABEL} {timespec:LABEL} ?",
+        "(what is the likelihood of | how likely is | rain in ) {weather_location:LABEL} {timespec:LABEL} ?",
+        "how likely is it that it will rain {timespec:LABEL} in {weather_location:LABEL} ?",
+        "(will the sun shine | will there be sunshine ) {timespec:LABEL}  in {weather_location:LABEL} ?",
+        "(will it | does it) rain in {weather_location:LABEL} {timespec:LABEL} ?",
+        "(will rain come|is rain coming) in {weather_location:LABEL} {timespec:LABEL} ?"
        ),
-    inline answer_weather_expl_place_time (en, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+    inline answer_weather_expl_place_time (en, prec_cloud, tstart(weather_location), tend(weather_location), mvar(timespec, time)).
 
 train(en) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "what ( will the weather | is the weather gonna | is the weather going to ) be like {timespec:LABEL} in {geo_location:LABEL} ?",
-        "how (cold|warm) (is it going to|will it) (be|become) in {geo_location:LABEL} {timespec:LABEL}?",
-        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {geo_location:LABEL} {timespec:LABEL} ?",
-        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {geo_location:LABEL} {timespec:LABEL} ?",
-        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {geo_location:LABEL} {timespec:LABEL} ?"
+        "what ( will the weather | is the weather gonna | is the weather going to ) be like {timespec:LABEL} in {weather_location:LABEL} ?",
+        "how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL} {timespec:LABEL}?",
+        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {weather_location:LABEL} {timespec:LABEL} ?",
+        "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {weather_location:LABEL} {timespec:LABEL} ?",
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} {timespec:LABEL} ?"
        ),
-    inline answer_weather_expl_place_time (en, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+    inline answer_weather_expl_place_time (en, full, tstart(weather_location), tend(weather_location), mvar(timespec, time)).
 
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie (kalt|warm) wird es {timespec:LABEL} in {geo_location:LABEL} werden?",
-        "kommt {timespec:LABEL} noch Regen in {geo_location:LABEL} ?",
-        "regnet es {timespec:LABEL} in {geo_location:LABEL} ?",
-        "scheint in {geo_location:LABEL} {timespec:LABEL} die Sonne?",
-        "wie wahrscheinlich ist es, dass es {timespec:LABEL} in {geo_location:LABEL} regnen wird?",
-        "wird es {timespec:LABEL} in {geo_location:LABEL} (regnen | Regen geben) ?",
-        "( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist )  Regen {timespec:LABEL} in {geo_location:LABEL} ?"
+        "wie (kalt|warm) wird es {timespec:LABEL} in {weather_location:LABEL} werden?",
+        "kommt {timespec:LABEL} noch Regen in {weather_location:LABEL} ?",
+        "regnet es {timespec:LABEL} in {weather_location:LABEL} ?",
+        "scheint in {weather_location:LABEL} {timespec:LABEL} die Sonne?",
+        "wie wahrscheinlich ist es, dass es {timespec:LABEL} in {weather_location:LABEL} regnen wird?",
+        "wird es {timespec:LABEL} in {weather_location:LABEL} (regnen | Regen geben) ?",
+        "( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist )  Regen {timespec:LABEL} in {weather_location:LABEL} ?"
        ),
-    inline answer_weather_expl_place_time (de, prec_cloud, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+    inline answer_weather_expl_place_time (de, prec_cloud, tstart(weather_location), tend(weather_location), mvar(timespec, time)).
 
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie wird {timespec:LABEL} in {geo_location:LABEL} das Wetter?",
-        "wie wird {timespec:LABEL} das Wetter in {geo_location:LABEL}?",
-        "wie wird das Wetter {timespec:LABEL} in {geo_location:LABEL}?",
-        "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} für {geo_location:LABEL}?"
+        "wie wird {timespec:LABEL} in {weather_location:LABEL} das Wetter?",
+        "wie wird {timespec:LABEL} das Wetter in {weather_location:LABEL}?",
+        "wie wird das Wetter {timespec:LABEL} in {weather_location:LABEL}?",
+        "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} für {weather_location:LABEL}?"
        ),
-    inline answer_weather_expl_place_time (de, full, tstart(geo_location), tend(geo_location), mvar(timespec, time)).
+    inline answer_weather_expl_place_time (de, full, tstart(weather_location), tend(weather_location), mvar(timespec, time)).
 
 test(en, t0300) :-
     C:time := '2016-12-06T11:00:00+01:00', 
@@ -675,8 +695,8 @@ test(de, t0301) :-
 train(en) :- context(topic, wdeWeatherForecast), "(and|) {timespec:LABEL}", inline answer_weather_expl_time (en, full, mvar(timespec, time)).
 train(de) :- context(topic, wdeWeatherForecast), "(und|) {timespec:LABEL}", inline answer_weather_expl_time (de, full, mvar(timespec, time)).
 
-train(en) :- context(topic, wdeWeatherForecast), "(and|) in {geo_location:LABEL} ?", inline answer_weather_expl_place (en, full, tstart(geo_location), tend(geo_location)).
-train(de) :- context(topic, wdeWeatherForecast), "(und|) in {geo_location:LABEL} ?", inline answer_weather_expl_place (de, full, tstart(geo_location), tend(geo_location)).
+train(en) :- context(topic, wdeWeatherForecast), "(and|) in {weather_location:LABEL} ?", inline answer_weather_expl_place (en, full, tstart(weather_location), tend(weather_location)).
+train(de) :- context(topic, wdeWeatherForecast), "(und|) in {weather_location:LABEL} ?", inline answer_weather_expl_place (de, full, tstart(weather_location), tend(weather_location)).
 
 %
 % weather forecast topic label

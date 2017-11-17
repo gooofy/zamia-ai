@@ -9,7 +9,7 @@ from base.utils        import builtin_say
 
 DEPENDS    = [ 'config' ]
 
-AIP_SOURCES = ['time.aip', 'conversation.aip', 'geo.aip', 'utils.aip']
+AIP_SOURCES = ['time.aip', 'conversation.aip', 'utils.aip']
 
 def builtin_transcribe_number (g, pe):
 

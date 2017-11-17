@@ -21,7 +21,7 @@
 DEPENDS    = [ 'base', 'data' ]
 
 AIP_SOURCES = [
-               'cities.aip', 'countries.aip',
-               # 'countries.aip',
+               'cities.aip', 'countries.aip', 'states.aip', 'misc.aip',
+               # 'states.aip',
               ]
 

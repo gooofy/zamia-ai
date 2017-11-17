@@ -31,8 +31,6 @@ answer_country_location_tokens(en, TS, TE) :-
 
     C:context|topic := wdeCountry,
 
-    rdfsLabel(COUNTRY, en, CYLABEL),
-
     "{CLABEL,s} is a country on planet earth.".
 
 answer_country_location_tokens(de, TS, TE) :-
@@ -45,8 +43,6 @@ answer_country_location_tokens(de, TS, TE) :-
     rdfsLabel(COUNTRY, de, CLABEL),
 
     C:context|topic := wdeCountry,
-
-    rdfsLabel(COUNTRY, de, CYLABEL),
 
     "{CLABEL,s} ist ein Staat auf dem Planeten Erde.".
 
@@ -88,7 +84,7 @@ train(de) :-
 
 train(de) :-
     context(topic, wdeCountry),
-    "(und|) (in einerm|in welchem|welcher|ein|) Staat?",
+    "(und|) (in einem|in welchem|welcher|ein|) Staat?",
     or ("Der Staat ist {C:mem|f1ent:rdfsLabel|de, s}.",
         "Du meinst {C:mem|f1ent:rdfsLabel|de, s}?").
 
@@ -484,29 +480,4 @@ train(en) :-
 train(de) :- 
     "in {countries:LABEL} (vielleicht|)",
     inline answer_country_sure (de, tstart(countries), tend(countries)).
-
-% 
-% %
-% % states
-% %
-% 
-% train(en) :- "in Bavaria", "".  % in bayern
-% train(en) :- "in Hessen", "".   % in hessen
-% 
-% %
-% % landscapes / sights
-% %
-% 
-% train(en) :- "in the Baltic Sea", "".   % in der ostsee
-% 
-% %
-% % misc
-% %
-% 
-% train(en) :- "in my house", "". % in meinem haus
-% train(en) :- "in everything", "".   % in alles
-% train(en) :- "where can i find one", "".    % wo kann ich einen finden
-% train(en) :- "where exactly", "".   % wo genau
-% train(en) :- "where is the car", "".    % wo ist das auto
-% train(en) :- "where, then", "". % wo denn
 

@@ -373,27 +373,3 @@ test(de, c0005) :-
     "Und wie groß ist die Fläche?",
     "Die Fläche von Berlin ist 891 Quadratkilometer.".
 
-% %
-% % states
-% %
-% 
-% train(en) :- "in Bavaria", "".  % in bayern
-% train(en) :- "in Hessen", "".   % in hessen
-% 
-% %
-% % areas
-% %
-% 
-% train(en) :- "in the Baltic Sea", "".   % in der ostsee
-% 
-% %
-% % misc
-% %
-% 
-% train(en) :- "in my house", "". % in meinem haus
-% train(en) :- "in everything", "".   % in alles
-% train(en) :- "where can i find one", "".    % wo kann ich einen finden
-% train(en) :- "where exactly", "".   % wo genau
-% train(en) :- "where is the car", "".    % wo ist das auto
-% train(en) :- "where, then", "". % wo denn
-

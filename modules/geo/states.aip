@@ -1,0 +1,519 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% federated_states
+%
+
+%
+% named entity recognition (NER)
+%
+
+train_ner (en, federated_state, FEDERATED_STATE, LABEL) :- instances_of (wdeFederatedState, FEDERATED_STATE), rdfsLabel(FEDERATED_STATE, en, LABEL).
+train_ner (de, federated_state, FEDERATED_STATE, LABEL) :- instances_of (wdeFederatedState, FEDERATED_STATE), rdfsLabel(FEDERATED_STATE, de, LABEL).
+
+macro(en, federated_states, LABEL) :- 
+    instances_of (wdeFederatedState, FEDERATED_STATE),
+    rdfsLabel(FEDERATED_STATE, en, LABEL).
+macro(de, federated_states, LABEL) :- 
+    instances_of (wdeFederatedState, FEDERATED_STATE),
+    rdfsLabel(FEDERATED_STATE, de, LABEL).
+
+answer_federated_state_location_tokens(en, TS, TE) :-
+
+    ner (en, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    wdpdCountry(FEDERATED_STATE, COUNTRY),
+    rdfsLabel(COUNTRY, en, CYLABEL),
+
+    "{CLABEL,s} is a state in {CYLABEL,s}.".
+
+answer_federated_state_location_tokens(de, TS, TE) :-
+
+    ner (de, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    wdpdCountry(FEDERATED_STATE, COUNTRY),
+    rdfsLabel(COUNTRY, de, CYLABEL),
+
+    "{CLABEL,s} ist ein Land in {CYLABEL,s}.".
+
+train(en) :-
+    "(what is|what about|what do you know about|where is|in what country is|in|) {federated_states:LABEL} (and you|) (do you know it|do you know that|)?",
+    inline answer_federated_state_location_tokens (en, tstart(federated_states), tend(federated_states)).
+
+train(de) :-
+    "(was ist|was ist mit|was weißt Du über|wo ist|in|in welchem Staat ist|in welchem Land ist|) {federated_states:LABEL} (und du|weißt Du das|)?",
+    inline answer_federated_state_location_tokens (de, tstart(federated_states), tend(federated_states)).
+
+test(en, d0000) :-
+    "What is Bavaria?",
+    "Bavaria is a state in Germany".
+
+test(de, d0001) :-
+    "Wo ist Bayern?",
+    "Bayern ist ein Land in Deutschland.".
+
+train(en) :-
+    "(and|) (in|) (a|which) state?",
+    or("Which state comes to mind?", "Which state do you like best?").
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) (in|) (a|which) state?",
+    or ("The state is {C:mem|f1ent:rdfsLabel|en, s}.",
+        "You mean {C:mem|f1ent:rdfsLabel|en, s}?").
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) What (is|was) (it|that) (again|)?",
+    or ("The state is {C:mem|f1ent:rdfsLabel|en, s}.",
+        "You mean {C:mem|f1ent:rdfsLabel|en, s}?").
+
+train(de) :-
+    "(und|) (in|) (einem|welchen) Land?",
+    or("An welches Land denkst Du?", "Aus welchem Land kommst Du?").
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) (in einem|in welchem|welches|ein|) Land?",
+    or ("Das Land ist {C:mem|f1ent:rdfsLabel|de, s}.",
+        "Du meinst {C:mem|f1ent:rdfsLabel|de, s}?").
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) Was (ist|war) (das|es) (nochmal|)?",
+    or ("Das Land ist {C:mem|f1ent:rdfsLabel|de, s}.",
+        "Du meinst {C:mem|f1ent:rdfsLabel|de, s}?").
+
+answer_federated_state_location_context(en) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdCountry(FEDERATED_STATE, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+
+    C:context|topic := wdeFederatedState,
+
+    rdfsLabel(COUNTRY, en, CYLABEL),
+
+    "{CLABEL,s} is a state in {CYLABEL,s}.".
+
+answer_federated_state_location_context(de) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdCountry(FEDERATED_STATE, COUNTRY),
+    C:mem|f1loc := COUNTRY,
+
+    C:context|topic := wdeFederatedState,
+
+    rdfsLabel(COUNTRY, de, CYLABEL),
+
+    "{CLABEL,s} ist ein Land in {CYLABEL,s}.".
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) where (is|was) (it|that) (again|)?",
+    inline answer_federated_state_location_context (en).
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) Wo (ist|war) (das|es) (nochmal|)?",
+    inline answer_federated_state_location_context (de).
+
+%
+% population
+%
+
+answer_federated_state_population_tokens(en, TS, TE) :-
+
+    ner (en, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdPopulation(FEDERATED_STATE, POPULATION),
+
+    C:context|topic := wdeFederatedState,
+
+    "The population of {CLABEL,s} is {POPULATION,d}.".
+
+answer_federated_state_population_tokens(de, TS, TE) :-
+
+    ner (de, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdPopulation(FEDERATED_STATE, POPULATION),
+
+    C:context|topic := wdeFederatedState,
+
+    "{CLABEL,s} hat {POPULATION,d} Einwohner.".
+
+train(en) :-
+    "(what is the population of |how many people live in | how many humans reside in) {federated_states:LABEL} (do you know it|do you know that|)?",
+    inline answer_federated_state_population_tokens (en, tstart(federated_states), tend(federated_states)).
+
+train(de) :-
+    "(wie hoch ist die bevölkerung von|wie ist die bevölkerung von|wie viele menschen leben in|wie viele leute leben in|wie viele Einwohner hat) {federated_states:LABEL} (weißt Du das|)?",
+    inline answer_federated_state_population_tokens (de, tstart(federated_states), tend(federated_states)).
+
+test(en, s0002) :-
+    "How many people live in Texas?",
+    "The population of Texas is 27469114".
+
+test(de, s0003) :-
+    "Wie viele Menschen leben in Texas?",
+    "Texas hat 27469114 Einwohner.".
+
+answer_federated_state_population_context(en) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdPopulation(FEDERATED_STATE, POPULATION),
+
+    C:context|topic := wdeFederatedState,
+
+    "The population of {CLABEL,s} is {POPULATION,d}.".
+
+answer_federated_state_population_context(de) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdPopulation(FEDERATED_STATE, POPULATION),
+
+    C:context|topic := wdeFederatedState,
+
+    "{CLABEL,s} hat {POPULATION,d} Einwohner.".
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) (what is the population of |how many people live in | how many humans reside in) it (do you know it|do you know that|)?",
+    inline answer_federated_state_population_context (en).
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) how many residents does it have (do you know it|do you know that|)?",
+    inline answer_federated_state_population_context (en).
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) how many people live there (do you know it|do you know that|)?",
+    inline answer_federated_state_population_context (en).
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) (wie hoch ist die bevölkerung von|wie ist die bevölkerung von|wie viele menschen leben |wie viele leute leben |wie viele Einwohner hat es) dort (weißt Du das|)?",
+    inline answer_federated_state_population_context (de).
+
+%
+% area
+%
+
+answer_federated_state_area_tokens(en, TS, TE) :-
+
+    ner (en, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdArea(FEDERATED_STATE, AREA),
+
+    C:context|topic := wdeFederatedState,
+
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
+
+answer_federated_state_area_tokens(de, TS, TE) :-
+
+    ner (de, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdArea(FEDERATED_STATE, AREA),
+
+    C:context|topic := wdeFederatedState,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
+
+train(en) :-
+    "(what is the area of |how big is|what is the size of) {federated_states:LABEL} (do you know it|do you know that|)?",
+    inline answer_federated_state_area_tokens (en, tstart(federated_states), tend(federated_states)).
+
+train(de) :-
+    "(wie groß ist|wie ist die fläche von|wie groß ist die fläche von|wie viele quadratmeter hat) {federated_states:LABEL} (weißt Du das|)?",
+    inline answer_federated_state_area_tokens (de, tstart(federated_states), tend(federated_states)).
+
+test(en, s0002) :-
+    "How big is California?",
+    "The area of California is 423970 square kilometers".
+
+test(de, s0003) :-
+    "Wie groß ist Kalifornien?",
+    "Die Fläche von Kalifornien ist 423970 Quadratkilometer.".
+
+answer_federated_state_area_context(en) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdArea(FEDERATED_STATE, AREA),
+
+    C:context|topic := wdeFederatedState,
+
+    "The area of {CLABEL,s} is {AREA,d} square kilometers.".
+
+answer_federated_state_area_context(de) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdArea(FEDERATED_STATE, AREA),
+
+    C:context|topic := wdeFederatedState,
+
+    "Die Fläche von {CLABEL,s} ist {AREA,d} Quadratkilometer.".
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) (what is the area of |how big is | what is the size of) it (do you know it|do you know that|)?",
+    inline answer_federated_state_area_context (en).
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) (wie groß ist es|wie ist die fläche|wie viele quadratmeter hat es|wie groß ist die fläche) (weißt Du das|)?",
+    inline answer_federated_state_area_context (de).
+
+%
+% capital
+%
+
+answer_federated_state_capital_tokens(en, TS, TE) :-
+
+    ner (en, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdCapital(FEDERATED_STATE, CAPITAL),
+    rdfsLabel(CAPITAL, en, CALABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "The capital of {CLABEL,s} is {CALABEL,s}.".
+
+answer_federated_state_capital_tokens(de, TS, TE) :-
+
+    ner (de, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdCapital(FEDERATED_STATE, CAPITAL),
+    rdfsLabel(CAPITAL, de, CALABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "Die Hauptstadt von {CLABEL,s} ist {CALABEL,s}.".
+
+train(en) :-
+    "(what is the|what is the name of the|) capital of {federated_states:LABEL} (do you know it|do you know that|)?",
+    inline answer_federated_state_capital_tokens (en, tstart(federated_states), tend(federated_states)).
+
+train(en) :-
+    "what is the name of {federated_states:LABEL}'s capital (do you know it|do you know that|)?",
+    inline answer_federated_state_capital_tokens (en, tstart(federated_states), tend(federated_states)).
+
+train(de) :-
+    "(Was|Welches) ist (der Name der|die) Hauptstadt von {federated_states:LABEL} (weißt Du das|)?",
+    inline answer_federated_state_capital_tokens (de, tstart(federated_states), tend(federated_states)).
+
+train(de) :-
+    "Wie heißt die Hauptstadt (von|der) {federated_states:LABEL} (weißt Du das|)?",
+    inline answer_federated_state_capital_tokens (de, tstart(federated_states), tend(federated_states)).
+
+test(en, s0002) :-
+    "What is the Capital of Bavaria?",
+    "The capital of Bavaria is Munich".
+
+test(de, s0003) :-
+    "Welches ist die Hauptstadt von Bayern?",
+    "Die Hauptstadt von Bayern ist München.".
+
+answer_federated_state_capital_context(en) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    wdpdCapital(FEDERATED_STATE, CAPITAL),
+    rdfsLabel(CAPITAL, en, CALABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "The capital of {CLABEL,s} is {CALABEL,s}.".
+
+answer_federated_state_capital_context(de) :-
+
+    mem(C, f1ent, FEDERATED_STATE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    wdpdCapital(FEDERATED_STATE, CAPITAL),
+    rdfsLabel(CAPITAL, de, CALABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "Die Hauptstadt von {CLABEL,s} ist {CALABEL,s}.".
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) (what is the|) capital of it (do you know it|do you know that|)?",
+    inline answer_federated_state_capital_context (en).
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    "(and|) what is its capital (do you know it|do you know that|)?",
+    inline answer_federated_state_capital_context (en).
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    "(und|) (was|welches) ist die Hauptstadt (davon|) (weißt Du das|)?",
+    inline answer_federated_state_capital_context (de).
+
+%
+% federated_state topic label
+%
+
+get_topic_label(C, en, "Countries") :- context(C, topic, wdeFederatedState), r_score(C, 10).
+get_topic_label(C, de, "Staaten") :- context(C, topic, wdeFederatedState), r_score(C, 10).
+
+train(en) :-
+    context(topic, wdeFederatedState),
+    inline question_what_was_our_topic(en),
+    r_score(C, 100.0),
+    or(say(C, "We have been talking about {C:mem|f1ent:rdfsLabel|en,s}, I think."),
+       say(C, "Our topic was {C:mem|f1ent:rdfsLabel|en,s}, I believe."),
+       say(C, "Didn't we talk about {C:mem|f1ent:rdfsLabel|en,s}?")).
+
+train(de) :-
+    context(topic, wdeFederatedState),
+    inline question_what_was_our_topic(de),
+    r_score(C, 100.0),
+    or(say(C, "Wir hatten über {C:mem|f1ent:rdfsLabel|de,s} gesprochen, glaube ich."),
+       say(C, "Ich denke unser Thema war {C:mem|f1ent:rdfsLabel|de,s}."),
+       say(C, "Sprachen wir nicht über {C:mem|f1ent:rdfsLabel|de,s} ?")).
+
+% context test
+
+test(en, s0004) :-
+    "What about Hesse?",
+    "Hesse is a state in germany",
+    "Which State?",
+    "The State is Hesse.",
+    "What was our topic?",
+    "We have been talking about Hesse, I think.",
+    "How many people live there?",
+    "The population of Hesse is 6045425",
+    "And where is it again?",
+    "Hesse is a state in germany",
+    "And what is its capital?",
+    "The capital of Hesse is Wiesbaden.",
+    "And what is the size of it?",
+    "The area of Hesse is 21100 square kilometers.".
+
+test(de, s0005) :-
+    "Was ist mit Hessen?",
+    "Hessen ist ein Land in Deutschland",
+    "Welches Land?",
+    "Das Land ist Hessen.",
+    "Was war unser Thema?",
+    "Wir hatten über Hessen gesprochen, glaube ich.",
+    "Wie viele Menschen leben dort?",
+    "Hessen hat 6045425 Einwohner.",
+    "Und wo ist es nochmal?",
+    "Hessen ist ein Land in Deutschland",
+    "Und welches ist die Hauptstadt?",
+    "Die Hauptstadt von Hessen ist Wiesbaden.",
+    "Und wie groß ist die Fläche?",
+    "Die Fläche von Hessen ist 21100 quadratkilometer.".
+
+%
+% misc
+%
+
+train(en) :- "how is {federated_states:LABEL}", "Not sure if states have feelings?".  
+train(de) :- "wie ist {federated_states:LABEL}", "Ich glaube Länder haben keine Gefühle.".
+
+answer_federated_state_sure(en, TS, TE) :-
+
+    ner (en, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, en, CLABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "Sure, {CLABEL,s}.".
+
+answer_federated_state_sure(de, TS, TE) :-
+
+    ner (de, federated_state, TS, TE, C:tokens, FEDERATED_STATE, SCORE),
+
+    C:mem|f1ent := FEDERATED_STATE,
+    r_score(C, SCORE),
+
+    rdfsLabel(FEDERATED_STATE, de, CLABEL),
+
+    C:context|topic := wdeFederatedState,
+
+    "Klar, {CLABEL,s}.".
+
+train(en) :- 
+    "in {federated_states:LABEL} (maybe|)",
+    inline answer_federated_state_sure (en, tstart(federated_states), tend(federated_states)).
+
+train(de) :- 
+    "in {federated_states:LABEL} (vielleicht|)",
+    inline answer_federated_state_sure (de, tstart(federated_states), tend(federated_states)).
+

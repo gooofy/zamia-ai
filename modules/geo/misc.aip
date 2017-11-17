@@ -1,0 +1,32 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% landscapes / sights
+%
+
+train(en) :- "(at|in) the (Ocean|Atlantic|Pacific|North Sea|Baltic Sea|Gulf)", "Holidays?".
+train(de) :- "(an|in) (dem|der|) (Ozean|Atlantik|Pazifik|Nordsee|Ostsee|Golf)", "Urlaub?".
+
+%
+% misc
+%
+
+train(en) :- "(at|in) my house", "Really?".
+train(de) :- "(an|in) meinem haus", "Wirklich?".
+train(en) :- "(at|in) everything", "Everything?".
+train(de) :- "(an|in) (alles|allem)", "Ganz sicher?".
+
+train(en) :- "where can i find one", "Search and you will find one eventually.".    
+train(de) :- "wo kann ich (eines|einen|eine) finden", "Suchet, so werdet ihr finden!".
+
+train(en) :- "where exactly", "Right there maybe?".
+train(de) :- "wo genau", "Genau da vielleicht?".
+
+train(en) :- "where is the car", "That is the question!".
+train(de) :- "wo ist das auto", "Das ist hier die Frage!".
+
+train(en) :- "where, then", "There, then.".
+train(de) :- "wo denn", "Dort vielleicht?".
+

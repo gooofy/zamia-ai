@@ -504,7 +504,14 @@ test(de, t0009) :-
     "Und wo wohnt er nochmal?",
     "Ich denke Stephen King lebt in Maine.".
 
-% TODO
+% FIXME / TODO
 
-% train(en) :- "in which country he was born", "".    % in welchem land wurde er geboren
+answer_sounds_familiar(en) :- or('that name sounds familiar', 'where have I heard that name before?').
+answer_sounds_familiar(de) :- or('der name klingt bekannt', 'wo habe ich diesen namen schon einmal gehört?').
+
+train(en) :- "do you know (turing|von neumann|einstein|Marianne Rosenberg|pele|goethe|shakespeare|beethoven)?", answer_sounds_familiar(en).
+train(de) :- "kennst du (turing|von neumann|einstein|Marianne Rosenberg|pele|goethe|shakespeare|beethoven)?", answer_sounds_familiar(de).
+
+train(en) :- "do you know (captain kirk|alex|elvira|homer|marvin)?", answer_sounds_familiar(en).
+train(de) :- "kennst du (captain kirk|alex|elvira|homer|marvin)?", answer_sounds_familiar(de).
 

@@ -11,6 +11,9 @@ macro(de, known_politicians, LABEL) :- wdpdPositionHeld (PERSON, wdePresidentOfG
 macro(en, known_politicians, LABEL) :- wdpdPositionHeld (PERSON, wdeFederalChancellorOfGermany), rdfsLabel(PERSON, en, LABEL).
 macro(de, known_politicians, LABEL) :- wdpdPositionHeld (PERSON, wdeFederalChancellorOfGermany), rdfsLabel(PERSON, de, LABEL).
 
+train(en) :- "do you know politics?", "a little".   
+train(de) :- "kennst du dich mit politik aus", "ein wenig".
+
 %
 % US presidents
 %

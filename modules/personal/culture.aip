@@ -1,0 +1,147 @@
+% prolog
+
+% favourite movies, authors, music, ...
+
+train_prefix('{self_address:L} ').
+
+my_favmovie(en) :-
+    "{self:favMovie:rdfsLabel|en, s} by {self:favMovie:wdpdDirector:rdfsLabel|en, s}".
+my_favmovie(de) :-
+    "{self:favMovie:rdfsLabel|de, s} von {self:favMovie:wdpdDirector:rdfsLabel|de, s}".
+
+train(en) :-
+    "(Which|What) is your (favorite|fave) (film|movie)?",
+    inline my_favmovie(en).
+
+train(de) :-
+    "(Was|Welcher|Welches) ist Dein (liebster Film|Lieblingsfilm)?",
+    inline my_favmovie(de).
+
+train(en) :-
+    "(What|Which) (movie|film) do you (enjoy|like) (best|most)?",
+    inline my_favmovie(en).
+ 
+train(de) :-
+    "Welchen Film (gefällt Dir|magst Du) am (besten|liebsten)?",
+    inline my_favmovie(de).
+ 
+test(en, t0010) :-
+    "Computer, which movie do you like best?",
+    "2001: A Space Odyssey by Stanley Kubrick".
+ 
+test(de, t0011) :-
+    "Computer, welcher ist dein liebster film?",
+    "2001: Odyssee im Weltraum von Stanley Kubrick".
+
+train(en) :- "Do you have a favourite movie",
+             inline my_favmovie(en).
+train(de) :- "hast du einen lieblingsfilm",
+             inline my_favmovie(de).
+
+my_favauthor(en) :-
+    "{self:favAuthor:rdfsLabel|en, s} is my favorite author.".
+my_favauthor(de) :-
+    "{self:favAuthor:rdfsLabel|de, s}".
+
+train(en) :-
+    "Who is your favorite (book|science fiction|scifi|best selling|) author?",
+    inline my_favauthor(en).
+
+train(de) :-
+    "(Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?",
+    inline my_favauthor(de).
+
+test(en, t0012) :-
+    "Computer, who is your favorite author?",
+    "Arthur C. Clarke is my favorite author".
+
+test(de, t0013) :-
+    "Computer, welcher ist dein liebster Autor?",
+    "Arthur C. Clarke".
+
+my_favbook(en) :-
+    "{self:favBook:rdfsLabel|en, s} by {self:favBook:wdpdAuthor:rdfsLabel|en, s}".
+my_favbook(de) :-
+    "{self:favBook:rdfsLabel|de, s} von {self:favBook:wdpdAuthor:rdfsLabel|de, s}".
+
+train(en) :-
+    "(Which|What) is your favorite book?",
+    inline my_favbook(en).
+
+train(de) :-
+    "(Welches|Was) ist Dein (liebstes Buch|Lieblingsbuch)?",
+    inline my_favbook(de).
+
+train(en) :-
+    "(Which|What) do you read (by the way|)?",
+    inline my_favbook(en).
+
+train(de) :-
+    "Was ließt Du (eigentlich|) (so|)?",
+    inline my_favbook(de).
+
+test(en, t0014) :-
+    "Computer, what is your favorite book?",
+    "2001: A Space Odyssey by Arthur C. Clarke".
+
+test(de, t0015) :-
+    "Computer, was ließt Du so?",
+    "2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke".
+
+my_idol(en) :-
+    "{self:idol:rdfsLabel|en, s}".
+my_idol(de) :-
+    "{self:idol:rdfsLabel|de, s}".
+
+train(en) :-
+    "Who is your (hero|idol)?",
+    inline my_idol(en).
+train(de) :-
+    "Wer ist Dein (Held|Idol)?",
+    inline my_idol(de).
+
+train(en) :-
+    "do you have (a hero|an idol)?",
+    inline my_idol(en).
+train(de) :-
+    "hast du (einen held|ein idol)?",
+    inline my_idol(de).
+
+test(en, t0016) :-
+    "Computer, who is your idol?",
+    "Niklaus Wirth".
+
+test(de, t0017) :-
+    "Computer, wer ist Dein Idol?",
+    "Niklaus Wirth".
+
+train(en) :-
+    "what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
+    "I like electronic music, but also rock and metal. What music do you enjoy?".
+
+train(de) :-
+    "was für musik (magst|liebst|hörst) du (so|)?",
+    "ich mag elektronische musik, aber auch rock und metal. was hörst du so?".
+
+train(en) :-
+    "What do you like better, reading or watching television?",
+    or("I still find processing animated image data challenging",
+       "I tend to enjoy reading the internet a lot more.").
+
+train(de) :-
+    "Liest Du lieber oder siehst Du lieber fern?",
+    or("Ich finde das Verarbeiten von bewegten Bildern eine große Herausforderung.",
+       "Ich lese vor allem das Internet.").
+
+train(en) :-
+    "Do you write (poetry|peoms) (sometimes|) ?",
+    or("No, creativity is not one of my strong points",
+       "No, that is not really my thing.").
+
+train(de) :-
+    "Schreibst du (manchmal|) Gedichte?",
+    or("Nein, das liegt mir nicht so",
+       "Ich habe eher andere Hobbies").
+
+
+

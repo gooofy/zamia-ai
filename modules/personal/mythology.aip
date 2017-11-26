@@ -49,10 +49,14 @@ test(de, t0025) :-
     "ich bin atheist".
 
 
-train(en) :- "what is your god's name",
-             inline me_atheist(en).
-train(de) :- "wie heisst dein gott",
-             inline me_atheist(de).
+train(en) :- "what is your god's name", inline me_atheist(en).
+train(de) :- "wie heisst dein gott", inline me_atheist(de).
+
+train(en) :- "do you know the bible?", inline me_atheist(en).  
+train(de) :- "kennst du die bibel?", inline me_atheist(de).
+
+train(en) :- "do you know the book (Genesis| Exodus| Leviticus| Numbers| Deuteronomy| Joshua| Judges| Ruth)?", inline me_atheist(en).
+train(de) :- "do you know the book (Genesis|Exodus|Levitikus|Numeri|Deuteronomium|Josua|Richter|Rut)?", inline me_atheist(de).
 
 train(en) :- "you do not know what you believe",
              "Believing does not mean knowing.".

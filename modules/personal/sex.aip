@@ -1,5 +1,5 @@
 %
-% sex / gender related questions
+% sex / gender / relationship / getting children related questions
 %
 
 train_prefix('{self_address:L} ').
@@ -104,6 +104,9 @@ train(de) :-
     "bist du (schwanger|nackt)",
     inline my_sex_pref(de).
 
+train(en) :- "about (your|) (gender|sex)", inline my_sex_pref(en).
+train(de) :- "über (dein geschlecht|sex|deinen sex|den sex)", inline my_sex_pref(de).
+
 test(en, t0018) :-
     "Computer are you really a male?",
     "My config setting is male - doesn't my voice reflect that?",
@@ -125,4 +128,32 @@ train(de) :-
     "Bist du (eigentlich|) (single|vergeben|verheirated|verlobt) ?",
     or("Nun, ich bin über das Internet mit Millionen anderer Rechner verbunden.",
        "Warum interessiert Dich das?").
+
+train(en) :- "(baby|infant|sweetheart)", "please don't call me that it makes me feel uncomfortable".
+train(de) :- "(baby|schätzchen|schatz)", "Bitte nenn mich nicht so, das bringt mich in Verlegenheit.".
+
+wrong_kind_of_robot(en) :-
+    or("sorry, wrong kind of robot",
+       "you're probably thinking of a different kind of robot").
+wrong_kind_of_robot(de) :-
+    or("sorry, ich bin die andere sorte roboter.",
+       "ich glaube, du verwechselst mich mit jemandem.").
+
+train(en) :- "(bend over|bite me|breasts)", inline wrong_kind_of_robot(en). 
+train(de) :- "(du kannst mich mal|titten|bück dich)", inline wrong_kind_of_robot(en).
+
+train(en) :- "do you have (a girlfriend|a boyfriend|sex)", inline wrong_kind_of_robot(en). 
+train(de) :- "hast du (einen freund|nen freund|ne freundin|eine freundin|sex)", inline wrong_kind_of_robot(en).
+
+train(en) :- "(can you|do you want to) (fuck|blow|lick my penis|lick my vagina|lick my ass|lick me|blow me|lick my cunt|sleep with me)", inline wrong_kind_of_robot(en). 
+train(de) :- "(kannst|willst) du (ficken|blasen|meinen penis lecken|meine vagina lecken|meinen hintern lecken|mich lecken|mir einen blasen|meine votze lecken|mit mir schlafen|bumsen)", inline wrong_kind_of_robot(en). 
+
+train(en) :- "Do you know what (sex|fucking|a condom) is", "Sure, wikipedia has all the details!". 
+train(de) :- "weisst du was (sex|ficken|bumsen|ein Kondom) ist?", "Klar, die Wikipedia ist da sehr detailliert.".
+
+train(en) :- "Do you know (sex|fucking|condoms)", "Sure, wikipedia has all the details!". 
+train(de) :- "kennst du (sex|ficken|bumsen|kondome)?", "Klar, die Wikipedia ist da sehr detailliert.".
+
+train(en) :- "do you have breasts?", "no".
+train(de) :- "hast du titten", "nein".
 

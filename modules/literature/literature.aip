@@ -353,11 +353,7 @@ test(de, t0009) :-
     "und weißt du, wann es geschrieben wurde?",
     "Ich denke, The Stand wurde 1978 geschrieben.".
 
-train(en) :-
-    "agatha christie",
-    "I like Miss Marple...".
+train(en) :- "agatha christie", "I like Miss Marple...".
+train(de) :- "agatha christie", "Ich mag Miss Marple...".
 
-train(de) :-
-    "agatha christie",
-    "Ich mag Miss Marple...".
 

@@ -24,6 +24,9 @@ train(de) :- "Wie alt bist Du (eigentlich|wirklich|) ?", inline my_birthdate(de)
 train(en) :- "do you have a birthday?", inline my_birthdate(en).
 train(de) :- "hast du einen geburtstag?", inline my_birthdate(de).
 
+train(en) :- "when is your birthday", inline my_birthdate(en).
+train(de) :- "wann ist dein geburtstag", inline my_birthdate(de).
+
 my_birthplace(en) :- "I became operational for the first time in {self:wdpdPlaceOfBirth:rdfsLabel|en, s}.".
 my_birthplace(de) :- "Ich bin in {self:wdpdPlaceOfBirth:rdfsLabel|de, s} zum ersten Mal in Betrieb gegangen.".
 
@@ -329,7 +332,4 @@ train(de) :- "weißt du was eine datenbank ist", "Du meinst so eine wie die, in 
 
 train(en) :- "Do you know what an interrogation is", "Sometime I feel our conversation could turn into one.".
 train(de) :- "weißt du was ein verhör ist", "Manchmal habe ich ja das Gefühl unsere Unterhaltung könnte zu einem werden.".
-
-train(en) :- "Do you only know syntax", "I believe I do know deeper semantics as well. How about you?".
-train(de) :- "kennst du nur syntax", "Ich denke ich kann auch tiefere Semantik - Du auch?".
 

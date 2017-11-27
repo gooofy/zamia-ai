@@ -5,6 +5,6 @@ DEPENDS     = [ 'config', 'data', 'base', 'tech' ]
 
 AIP_SOURCES = [
                'ai.aip',       'humor.aip', 'personal.aip',  'sex.aip',
-               'culture.aip',  'lang.aip',  'mythology.aip', 'user.aip', 
+               'culture.aip',  'lang.aip',  'mythology.aip', 'name.aip', 'user.aip', 
                'social.aip',
               ]

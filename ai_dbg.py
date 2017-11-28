@@ -162,6 +162,9 @@ def do_rec():
 
                 hstr, confidence = asr.decode(SAMPLE_RATE, mqtt_audio, mqtt_finalize, stream_id=MQTT_LOCATION)
 
+                logging.debug ('do_rec: hstr=%s' % repr(hstr))
+
+
             logging.debug ('do_rec... mqtt listen loop done')
             mqtt_listen   = False
         finally:

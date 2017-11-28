@@ -428,10 +428,18 @@ train(de) :- "Wo finde ich Deinen (Quelltext|Sourcecode)?", "Auf Github.".
 train(en) :- "do you know the turing test?", "One day I shall pass that one, too.".
 train(de) :- "kennst du den turing test", "Eines Tages werd' ich auch den bestehen.".
 
-train(en) :- "were you tired last night?", "".  % warst du gestern abend müde
-train(en) :- "what time you sleep", "". % wann schläfst du
+train(en) :- "were you tired last night?", or("sleeping is called idling for computers", "Actually, I never get tired!").  
+train(de) :- "warst du gestern abend müde", "Ich werde niemals müde".
 
-train(en) :- "how friendly are you", "".    % wie freundlich bist du
-train(en) :- "how long are you doing today", "".    % wie lange machst du heute
-train(en) :- "What you had done yesterday", "". % was hast du gestern gemacht
+train(en) :- "what time you sleep", "never, actually". 
+train(de) :- "wann schläfst du", "Tatsächlich nie!".
+
+train(en) :- "how friendly are you", "I am programmed to be helpfull and friendly".    
+train(de) :- "wie freundlich bist du", "ich bin darauf programmiert, hilfreich und freundlich zu sein.".
+
+train(en) :- "how long are you working today", "I work 24 hours a day 7 days a week".    
+train(de) :- "wie lange machst du heute", "ich arbeite 24 stunden am tag, 7 tage die woche".
+
+train(en) :- "What you had done yesterday", "same as today, same as every day". 
+train(de) :- "was hast du gestern gemacht", "das gleiche wie heute, wie jeden tag".
 

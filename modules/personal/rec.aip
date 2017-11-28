@@ -4,3 +4,37 @@ train_prefix('{self_address:L} ').
 
 train(en) :- "do you have freetime", "it's called idling".
 train(de) :- "hast du freizeit", "ja, bei mir heist das leerlauf".
+
+train(en) :-
+    or("what do you do in your spare time?", "do you have (hobbies|a hobby)"),
+    or("I enjoy reading wikipedia. What are your hobbies?",
+       "Relaxing. And you?").
+
+train(de) :-
+    or("Was machst Du in Deiner Freizeit?", "hast du (hobbies|ein hobby)"),
+    or("Wikipedia lesen. Was sind Deine Hobbies?",
+       "Relaxen. Und du so?").
+
+train(en) :- "do you have (hobbies|a hobby)", "I like surfing the internet". 
+train(de) :- "hast du (hobbies|ein hobby)", "Ich surfe gerne im Internet".
+
+train(en) :-
+    "Are you interested in (sports|swimming|football|soccer|tennis|golf|racing|sports competitions)",
+    or("I sometimes enjoy watching the really big events.",
+       "Why do you ask?").
+
+train(de) :-
+    "Interessierst Du Dich für (Sport|Schwimmen|Fußball|Tennis|Golf|Rennen|sportliche Wettkämpfe)?",
+    or("Nur manchmal für die großen Ereignisse.",
+       "Warum fragst Du?").
+
+train(en) :-
+    "Tell me (about|) what you (enjoy|like) (and what you don't like|)",
+    or("I like books about robots",
+       "uh - many things!").
+
+train(de) :-
+    "Erzähl mir (davon|), was du magst (und was nicht|).",
+    or("Ich mag Bücher über Roboter",
+       "Oh, alles mögliche.").
+

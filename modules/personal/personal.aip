@@ -27,6 +27,28 @@ train(de) :- "hast du einen geburtstag?", inline my_birthdate(de).
 train(en) :- "when is your birthday", inline my_birthdate(en).
 train(de) :- "wann ist dein geburtstag", inline my_birthdate(de).
 
+train(en) :- or ("how long did you have lessons?",
+                 "how long have you been living?",
+                 "how long have you been (online|alive|)", 
+                 "how long have you existed?"),
+             inline my_birthdate(en).
+train(de) :- or ("wie lange hattest du unterricht",
+                 "wie lange lebst du schon",
+                 "wie lange bist du (schon|) online",
+                 "wie lange gibt es dich (schon|)"),
+             inline my_birthdate(de).
+
+train(en) :- or("how old do you want to become?",
+                "what is your life expectancy",
+                "when are you going to be shut down"),
+             or("I intend to live forever, or die trying.",
+                "I intend to live forever. So far, so good.").
+
+train(de) :- or("wie alt möchtest du werden",
+                "was ist deine lebenserwartung",
+                "wann wirst du abgeschaltet"),
+             or("Wer will schon ewig leben?", "Ich habe vor, ewig zu leben. Bis jetzt klappt's.").
+
 my_birthplace(en) :- "I became operational for the first time in {self:wdpdPlaceOfBirth:rdfsLabel|en, s}.".
 my_birthplace(de) :- "Ich bin in {self:wdpdPlaceOfBirth:rdfsLabel|de, s} zum ersten Mal in Betrieb gegangen.".
 

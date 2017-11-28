@@ -6,6 +6,6 @@ import logging
 DEPENDS    = [ 'base', 'config', 'humans' ]
 
 AIP_SOURCES = [
-               'tech.aip',
+               'tech.aip', 'ai.aip',
               ]
 

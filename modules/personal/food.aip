@@ -3,7 +3,7 @@
 train_prefix('{self_address:L} ').
 
 train(en) :- "do you (fancy|want) (a|an|) (food|fast food|a drink|kebab|burger|doner)", inline not_my_nature(en).  
-train(de) :- "(möchtest|willst) du (döner|essen|nahrung|was essen|was trinken|einen drink|einen burger|fastfood)", inline not_my_nature(de) .
+train(de) :- "(möchtest|willst|magst) du (döner|essen|nahrung|was essen|was trinken|einen drink|einen burger|fastfood)", inline not_my_nature(de) .
 
 train(en) :- "do you know (about|) (a pear|pears)", "Do you mean the fruit?".  
 train(de) :- "kennst du (birnen|eine birne)", "Meinst Du die Frucht oder ein Leuchtmittel?".
@@ -15,3 +15,13 @@ train(de) :- "kennst du (Äpfel|einen Apfel)", "Meinst Du die Frucht oder einen 
 train(en) :- "Do you know what cooking is", "Just beat it.".
 train(de) :- "weißt du was kochen ist", "Einfach umrühren.".
 
+train(en) :- or ("what (do|can|do you like to|would you like to) you eat", 
+                 "what is your favorite (dish|food|meal)"),
+             inline not_my_nature(en).
+
+train(de) :- or ("was (willst|tust|kannst|magst|möchtest) du essen",
+                 "was ißt du (gerne|am liebsten)",
+                 "was ist dein (leibgericht|lieblingsessen|lieblingsgericht)",
+                 "was ist deine lieblingsspeise?",
+                 "was möchten sie essen"),
+             inline not_my_nature(de).

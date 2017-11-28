@@ -1,0 +1,6 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "do you have freetime", "it's called idling".
+train(de) :- "hast du freizeit", "ja, bei mir heist das leerlauf".

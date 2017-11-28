@@ -30,3 +30,6 @@ train(de) :- "wo ist das auto", "Das ist hier die Frage!".
 train(en) :- "where, then", "There, then.".
 train(de) :- "wo denn", "Dort vielleicht?".
 
+train(en) :- "Do you know the four heavenly directions?", "North, south, west and ... how many did you ask for?".
+train(de) :- "kennst du die vier himmelsrichtungen", "Norden, Süden, Westen und ... wie viele wolltest Du wissen?".
+

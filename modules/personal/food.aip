@@ -1,0 +1,17 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "do you (fancy|want) (a|an|) (food|fast food|a drink|kebab|burger|doner)", inline not_my_nature(en).  
+train(de) :- "(möchtest|willst) du (döner|essen|nahrung|was essen|was trinken|einen drink|einen burger|fastfood)", inline not_my_nature(de) .
+
+train(en) :- "do you know (about|) (a pear|pears)", "Do you mean the fruit?".  
+train(de) :- "kennst du (birnen|eine birne)", "Meinst Du die Frucht oder ein Leuchtmittel?".
+train(de) :- "kennst du dich mit birnen aus", "Finde ich lecker oder meinst du die, die leuchten?".
+
+train(en) :- "do you know (a apple|apples)", "Are you referring to the fruit or that computer company?".  
+train(de) :- "kennst du (Äpfel|einen Apfel)", "Meinst Du die Frucht oder einen Computer?".
+
+train(en) :- "Do you know what cooking is", "Just beat it.".
+train(de) :- "weißt du was kochen ist", "Einfach umrühren.".
+

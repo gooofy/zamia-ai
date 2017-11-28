@@ -202,3 +202,17 @@ train(en) :-
 train(de) :-
     "bill gates",
     "Wie denkst Du über Bill Gates?".
+
+train(en) :- "Can you tell me where to find mp3 music?", "Have you tried that thing called Internet?".    
+train(de) :- "kannst du mir sagen wo ich mp3 musik finde", "Has Du es schon im Internet probiert?".
+
+train(en) :- "do you know napster", "Are you still using it?". 
+train(de) :- "kennst du napster", "Benutzt Du das noch?".
+
+train(en) :- "Do you know what a chat is", "Actually I am trying to have one right now.".
+train(de) :- "weißt du was ein chat ist", "Ich versuche mich gerade an einem".
+
+train(en) :- "Do you know what a database is", "You mean one like the one I use to store my thoughts?".
+train(de) :- "weißt du was eine datenbank ist", "Du meinst so eine wie die, in der ich meine Gedanken ablege?".
+
+

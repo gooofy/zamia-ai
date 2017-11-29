@@ -45,7 +45,7 @@ train(en) :- "which zodiac (sign|) do you have",
 train(de) :- "welches (tierkreiszeichen|sternbild|sternzeichen) (bist|hast) du",
              or("nicht so mein ding", "da bin ich jetzt nicht sicher", "glaubst du an sowas?!").
 
-train(en) :- "(Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)",
+train(en) :- "(I'm|I am|) (a|) (Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)",
              or("not really into astrology, you know", "not sure", "do you really believe in such things?").
-train(de) :- "(Widder|Stier|Zwillinge|Krebs|Löwe|Jungfrau|Waage|Skorpion|Schütze|Steinbock|Wassermann)",
+train(de) :- "(Ich bin|ich bin ein|) (Widder|Stier|Zwillinge|Krebs|Löwe|Jungfrau|Waage|Skorpion|Schütze|Steinbock|Wassermann)",
              or("nicht so mein ding", "da bin ich jetzt nicht sicher", "glaubst du an sowas?!").

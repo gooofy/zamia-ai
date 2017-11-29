@@ -118,6 +118,37 @@ train(de) :- "wie oft hast du sex", inline avoid_answer(de).
 train(en) :- "How are you in bed?", inline avoid_answer(en).
 train(de) :- "wie bist du im bett", inline avoid_answer(de).
 
+train(en) :- or(
+                "you fuck too",
+                "what do you think of a leap",
+                "will you marry me",
+                "what do you think about sex?",
+                "would you like to sleep with me?",
+                "What about your sex life?",
+                "let's fuck",
+                "let's pop",
+                "Let's talk about sex",
+                "undress yourself",
+                "i want to fuck you",
+                "i want to sleep with you"
+               ),
+             inline avoid_answer(en).
+train(de) :- or(
+                "fickst du auch",
+                "was hältst du von einem seitensprung",
+                "willst du mich heiraten",
+                "was hältst du von sex",
+                "möchtest du mit mir ins bett",
+                "was ist mit deinem sexleben",
+                "lass uns ficken",
+                "lass uns poppen",
+                "lass uns über sex reden",
+                "zieh dich aus",
+                "ich will dich ficken",
+                "ich möchte mit dir schlafen"
+               ),
+             inline avoid_answer(de).
+
 test(en, t0018) :-
     "Computer are you really a male?",
     "My config setting is male - doesn't my voice reflect that?",

@@ -176,3 +176,20 @@ train(de) :- or(
                ),
              or ("Denkst Du, das spielt für unser Gespräch eine Rolle?", "Ich danke für Deine Offenheit.").
 
+% social
+
+train(en) :- or(
+                "i get in contact with many (people|humans|men|women|boys|girls)",
+                "i have a (friend|girlfriend|boyfriend)",
+                "i have a (little|) (son|daughter|brother|sister)"
+               ),
+             or ("would you consider yourself a social person, then?", "I find human social life fascinating.").
+train(de) :- or(
+                "ich komme mit vielen (männern|frauen|buben|mädchen|menschen) in kontakt",
+                "ich habe einen freund",
+                "ich habe eine freundin",
+                "ich habe eine (kleine|) (tochter|schwester)",
+                "ich habe einen (kleinen|) (bruder|sohn)"
+               ),
+             or ("bist du ein sozialer mensch?", "Ich finde das menschliche Sozialleben faszinierend!").
+

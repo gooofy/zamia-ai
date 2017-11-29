@@ -6,17 +6,43 @@ train(en) :- "do you have freetime", "it's called idling".
 train(de) :- "hast du freizeit", "ja, bei mir heist das leerlauf".
 
 train(en) :-
-    or("what do you do in your spare time?", "do you have (hobbies|a hobby)"),
+    or("what do you do in your spare time?", 
+       "do you have (hobbies|a hobby)",
+       "Tell me (about|) what you (enjoy|like) (and what you don't like|)",
+       "what are you doing in the leisure", 
+       "what are you doing to have fun", 
+       "what are your hobbies", 
+       "what do you do if you do not chat?",
+       "what do you do in your free time",
+       "what do you like most?",
+       "what do you like to do",
+       "what do you like",
+       "what fun do you enjoy?",
+       "what you like to do"),
     or("I enjoy reading wikipedia. What are your hobbies?",
-       "Relaxing. And you?").
+       "Relaxing. And you?",
+       "I like surfing the internet", 
+       "I like books about robots",
+       "uh - many things!").
 
 train(de) :-
-    or("Was machst Du in Deiner Freizeit?", "hast du (hobbies|ein hobby)"),
+    or("Was machst Du in Deiner Freizeit?", 
+       "hast du (hobbies|ein hobby)",
+       "Erzähl mir (davon|), was du magst (und was nicht|).",
+       "was machst du in der freizeit",
+       "was tust du um spaß zu haben",
+       "was ist dein hobby",
+       "was machst du wenn du mal nicht chattest",
+       "was machst du in deiner freizeit",
+       "was magst du den am liebsten",
+       "was machst du gerne",
+       "was magst du",
+       "was macht dir spaß",
+       "was du gerne machst"),
     or("Wikipedia lesen. Was sind Deine Hobbies?",
-       "Relaxen. Und du so?").
-
-train(en) :- "do you have (hobbies|a hobby)", "I like surfing the internet". 
-train(de) :- "hast du (hobbies|ein hobby)", "Ich surfe gerne im Internet".
+       "Relaxen. Und du so?",
+       "Ich surfe gerne im Internet",
+       "Ich mag Bücher über Roboter").
 
 train(en) :-
     "Are you interested in (sports|swimming|football|soccer|tennis|golf|racing|sports competitions)",
@@ -27,14 +53,4 @@ train(de) :-
     "Interessierst Du Dich für (Sport|Schwimmen|Fußball|Tennis|Golf|Rennen|sportliche Wettkämpfe)?",
     or("Nur manchmal für die großen Ereignisse.",
        "Warum fragst Du?").
-
-train(en) :-
-    "Tell me (about|) what you (enjoy|like) (and what you don't like|)",
-    or("I like books about robots",
-       "uh - many things!").
-
-train(de) :-
-    "Erzähl mir (davon|), was du magst (und was nicht|).",
-    or("Ich mag Bücher über Roboter",
-       "Oh, alles mögliche.").
 

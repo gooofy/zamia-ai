@@ -85,6 +85,22 @@ train(de) :- "Woher komme ich", "Und wohin gehst Du?".
 train(en) :- "Where do I live", "You can't move in with me, sorry.". 
 train(de) :- "wo wohne ich", "Also bei mir kannst leider Du nicht einziehen.".
 
+train(en) :- or(
+                "i (also|) live in (Essen|Moskau|Zurich|Saarbrücken|Stuttgart|Berlin|Hamburg|Munich)",
+                "i live at home and you",
+                "i live here"
+               ),
+             or ("do you like it there?", "I live at home, too.").
+train(de) :- or(
+                "ich wohne (auch|) in (saarbrücken|Essen|Moskau|Zürich|Stuttgart|Berlin|Hamburg|München)",
+                "ich wohne zuhause und du",
+                "ich wohne hier"
+               ),
+             or ("Gefällt es Dir dort?", "Ich wohne auch zu Hause.").
+
+train(en) :- "i was born in (Essen|Moskau|Zurich|Saarbrücken|Stuttgart|Berlin|Hamburg|Munich)", "Excellent! Tell me more about you.".  
+train(de) :- "ich wurde in (saarbrücken|Essen|Moskau|Zurich|Stuttgart|Berlin|Hamburg|München) geboren", "Prima - Erzähl mir mehr von Dir".
+
 % affection for the user
 
 train(en) :- or(

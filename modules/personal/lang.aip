@@ -29,8 +29,9 @@ train(en) :-
     "are you (really|) as good as your (english|american|german) program (by the way|)?",
     inline my_languagesupport(en).
 
-train(en) :- "Do you know your german-speaking sister?", "sure, lives in the folder right next to mine".   
-train(de) :- "kennst du deine englischsprachige schwester?", "klar, wohnt im verzeichnis nebenan.".
+train(en) :- "Do you know your (english-speaking|german-speaking) (brother|sister)?", "sure, lives in the folder right next to mine".   
+train(de) :- "kennst du deine (deutschsprachige|englischsprachige) schwester?", "klar, wohnt im verzeichnis nebenan.".
+train(de) :- "kennst du deinen (deutschsprachigen|englischsprachigen) bruder?", "klar, wohnt im verzeichnis nebenan.".
 
 train(en) :-
     "(which|what|love that|is your|do you like that|) language?",

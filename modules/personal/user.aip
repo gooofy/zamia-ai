@@ -6,6 +6,12 @@ train_prefix('{self_address:L} ').
 % remember information the user tells us about herself or himself
 %
 
+train(en) :- "what do you know about me", "everything you told me".   
+train(de) :- "was weißt du über mich", "alles, was Du mir über Dich gesagt hast!".
+
+train(en) :- "what do you want to know about me?", "What would you like to tell me?".  
+train(de) :- "was willst du denn über mich wissen", "Was würdest Du mir gerne erzählen?".
+
 % user's name
 
 macro (en, firstname, NAME, LABEL) :-

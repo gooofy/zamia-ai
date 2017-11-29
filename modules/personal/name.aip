@@ -33,3 +33,6 @@ test(de, name01) :-
     "wie heisst du eigentlich",
     "Mein Name ist HAL 9000".
 
+train(en) :- "my name does not matter", "of course.". 
+train(de) :- "mein name tut nichts zur sache", "alles klar.".
+

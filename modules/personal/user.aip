@@ -153,3 +153,26 @@ train(de) :- or(
                ),
              or ("das entscheidende ist, wie man sich fühlt", "ist das alter wirklich so wichtig?").
 
+% gender
+
+train(en) :- or(
+                "i am a human",
+                "i am a woman",
+                "i am married",
+                "i am female or male",
+                "i am male",
+                "i'm a man",
+                "i am androgynous"
+               ),
+             or ("Do you feel this is relevant for our conversation?", "I appreciate your openness.").
+train(de) :- or(
+                "ich bin ein mensch",
+                "ich bin eine frau",
+                "ich bin verheiratet",
+                "bin ich weiblich oder männlich",
+                "ich bin männlich",
+                "ich bin ein mann",
+                "ich bin androgyn"
+               ),
+             or ("Denkst Du, das spielt für unser Gespräch eine Rolle?", "Ich danke für Deine Offenheit.").
+

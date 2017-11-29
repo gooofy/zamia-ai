@@ -73,11 +73,15 @@ train(de) :-
     inline my_favbook(de).
 
 train(en) :-
-    "(Which|What) do you read (by the way|)?",
+    or("(Which|What) do you read (by the way|)?",
+       "what have you read?",
+       "which book did you last read?"),
     inline my_favbook(en).
 
 train(de) :-
-    "Was ließt Du (eigentlich|) (so|)?",
+    or("Was ließt Du (eigentlich|) (so|)?",
+       "was hast du schon gelesen?",
+       "welches buch hast du zuletzt gelesen"),
     inline my_favbook(de).
 
 test(en, t0014) :-
@@ -116,12 +120,25 @@ test(de, t0017) :-
     "Niklaus Wirth".
 
 train(en) :-
-    "what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
+    or ("what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
+        "do you (like|love) (classical|) music?",
+        "what's your Favourite Song"),
     "I like electronic music, but also rock and metal. What music do you enjoy?".
 
-train(de) :-
-    "was für musik (magst|liebst|hörst) du (so|)?",
+train(de) :- 
+    or ("was für musik (magst|liebst|hörst) du (so|)?",
+        "(liebst|magst) du klassik",
+        "was ist dein lieblingslied"),
     "ich mag elektronische musik, aber auch rock und metal. was hörst du so?".
+
+train(en) :- "do you sometimes write poems", "no, but maybe I should give it a try?".
+train(de) :- "schreibst du manchmal gedichte", "nein, aber vielleicht sollte ich es mal versuchen?".
+
+train(en) :- "what do you like to read", "science fiction, for the most part.".    
+train(de) :- "was liest du gern", "vor allem science fiction".
+
+train(en) :- "what do you (mean|understand) by reading (robot|bot|)", "you're right, it's all bits and bytes for me.". 
+train(de) :- "was verstehst du (bot|roboter|robot|) unter lesen", "du hast recht, für mich sind es immer bits und bytes.".
 
 train(en) :-
     "What do you like better, reading or watching television?",

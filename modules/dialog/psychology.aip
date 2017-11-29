@@ -879,3 +879,8 @@ train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du ges
 train(en) :- "What is", "and what is not, that is the question!". 
 train(de) :- "was ist", "und was ist nicht, das ist die Frage!". 
 
+% social / family
+
+train(en) :- "he's my (brother|father)", "would you consider yourself a family person?". 
+train(de) :- "er ist mein (vater|bruder)", "würdest Du Dich als Familienmensch bezeichnen?".
+

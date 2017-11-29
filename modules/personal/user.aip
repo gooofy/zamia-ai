@@ -40,7 +40,7 @@ train(de) :-
     inline name_told_tokens(de, tstart(firstname), tend(firstname)) .
 
 train(en) :-
-    "(do you remember my name|what was my name|what is my name|do you know my name)?",
+    "(do you remember my name|what was my name|what is my name|do you know my name|do you remember me|what's my name|how do you call me)?",
     if nonvar(C:user:name) then
         "Your name is {C:user:name, s}"
     else
@@ -49,7 +49,7 @@ train(en) :-
     endif.
 
 train(de) :-
-    "(erinnerst Du Dich an meinen Namen|wie war mein name|wie heisse ich|weisst Du meinen Namen|weißt du noch wie ich heisse)?",
+    "(erinnerst Du Dich an meinen Namen|wie war mein name|wie heisse ich|weisst Du meinen Namen|weißt du noch wie ich heisse|erinnerst du dich an mich|wie ist mein name|gefällt dir mein name|wie nennst du mich)?",
     if nonvar(C:user:name) then
         "Dein Name ist {C:user:name, s}"
     else
@@ -84,4 +84,56 @@ train(de) :- "Woher komme ich", "Und wohin gehst Du?".
 
 train(en) :- "Where do I live", "You can't move in with me, sorry.". 
 train(de) :- "wo wohne ich", "Also bei mir kannst leider Du nicht einziehen.".
+
+% affection for the user
+
+train(en) :- or(
+                "do you know me",
+                "do you know who I am"
+               ),
+             or ("of course I do", "how could I forget you?").
+train(de) :- or(
+                "kennst du mich",
+                "weißt du wer ich bin"
+               ),
+             or ("Natürlich erinnere ich mich an Dich", "Wie könnte ich Dich vergessen?").
+
+train(en) :- or(
+                "do you like me",
+                "do you love me"
+               ),
+             or ("I feel as much affection for you as a computer ever could.", "I relate all my knowledge about love to you.").
+train(de) :- or(
+                "magst du mich",
+                "liebst du mich"
+               ),
+             or ("Ich fühle so viel Zuneigung zu Dir wie ein Computer nur kann.", "Ich bringe all mein Wissen über die Liebe mit Dir in Verbindung.").
+
+% age
+
+train(en) :- or(
+                "how old I am",
+                "how old am I",
+                "i am 16",
+                "i am 17",
+                "i am 18",
+                "i am 19",
+                "i am 20",
+                "i am 21",
+                "i am 22",
+                "i am 23",
+                "i am 42",
+                "i am 60",
+                "i am 75",
+                "i am 85",
+                "i (feel|am) (still|so|) (old|young)"
+               ),
+             or ("the important thing is how you feel", "is age really that important?").
+train(de) :- or(
+                "wie alt ich bin",
+                "wie alt bin ich",
+                "ich bin (16|17|18|19|20|21|22|23|42|60|75|85)",
+                "ich (fühle mich|bin) (noch|) (alt|jung)"
+               ),
+             or ("das entscheidende ist, wie man sich fühlt", "ist das alter wirklich so wichtig?").
 

@@ -164,9 +164,9 @@ train(de) :- or(
 train(en) :- or(
                 "i am a human",
                 "i am a woman",
-                "i am married",
+                "i am (happily|) married",
                 "i am female or male",
-                "i am male",
+                "i am (female|male)",
                 "i'm a man",
                 "i am androgynous"
                ),
@@ -174,9 +174,9 @@ train(en) :- or(
 train(de) :- or(
                 "ich bin ein mensch",
                 "ich bin eine frau",
-                "ich bin verheiratet",
+                "ich bin (glücklich|) verheiratet",
                 "bin ich weiblich oder männlich",
-                "ich bin männlich",
+                "ich bin (weiblich|männlich)",
                 "ich bin ein mann",
                 "ich bin androgyn"
                ),

@@ -36,3 +36,7 @@ test(de, name01) :-
 train(en) :- "my name does not matter", "of course.". 
 train(de) :- "mein name tut nichts zur sache", "alles klar.".
 
+train(en) :- "(me|i'm|) Jane", "tarzan?".    
+train(de) :- "(ich|) jane", "Tarzan?".
+
+

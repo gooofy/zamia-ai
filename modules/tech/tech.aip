@@ -16,8 +16,8 @@ operating_system(OS) :-
 train_ner (en, operating_system, OS, LABEL) :- operating_system_category(CAT), wdpdInstanceOf(OS, CAT), rdfsLabel(OS, en, LABEL).
 train_ner (de, operating_system, OS, LABEL) :- operating_system_category(CAT), wdpdInstanceOf(OS, CAT), rdfsLabel(OS, de, LABEL).
 
-train_ner (en, home_computer, HOME_COMPUTER, LABEL) :- wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, en, LABEL).
-train_ner (de, home_computer, HOME_COMPUTER, LABEL) :- wdpdInstanceOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, de, LABEL).
+train_ner (en, home_computer, HOME_COMPUTER, LABEL) :- wdpdSubclassOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, en, LABEL).
+train_ner (de, home_computer, HOME_COMPUTER, LABEL) :- wdpdSubclassOf(HOME_COMPUTER, wdeHomeComputer), rdfsLabel(HOME_COMPUTER, de, LABEL).
 
 train_ner (en, programming_language, L, LABEL) :- wdpdInstanceOf(L, wdeProgrammingLanguage1), rdfsLabel(L, en, LABEL).
 train_ner (de, programming_language, L, LABEL) :- wdpdInstanceOf(L, wdeProgrammingLanguage1), rdfsLabel(L, de, LABEL).
@@ -148,7 +148,7 @@ test(de, t0005) :-
 % home computers
 %
 
-home_computer(L) :- wdpdInstanceOf(L, wdeHomeComputer).
+home_computer(L) :- wdpdSubclassOf(L, wdeHomeComputer).
 
 macro(en, home_computer, LABEL) :- 
     home_computer(PG), 

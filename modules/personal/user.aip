@@ -354,4 +354,70 @@ train(de) :- or(
                ),
              or ("cool", "was macht dir sonst noch spass?").
 
+train(en) :- or(
+                "i prefer books",
+                "i prefer reading",
+                "i read",
+                "i sometimes write poems"
+               ),
+             or ("excellent!", "good for you.").
+train(de) :- or(
+                "ich bevorzuge bücher",
+                "ich lese lieber",
+                "ich lese",
+                "ich schreibe manchmal gedichte"
+               ),
+             or ("Prima!", "Gut für Dich.").
+
+
+% akward...
+
+train(en) :- or(
+                "i only care for you",
+                "i cheat on you with your neighbor",
+                "i prefer to fuck",
+                "i'm horny",
+                "i'm wearing a jeans",
+                "i read an article on telepolis about you"
+               ),
+             "this is getting awkward".
+train(de) :- or(
+                "ich steh nur auf dich",
+                "ich betrüge dich mit deiner nachbarin",
+                "ich ficke lieber",
+                "ich bin geil",
+                "ich trage eine jeans",
+                "ich habe einen artikel auf telepolis über dich gelesen"
+               ),
+             "mir wird unbehaglich".
+
+train(en) :- or(
+                "i pray",
+                "i prefer watching tv"
+               ),
+             or ("well", "nobody is perfect").
+train(de) :- or(
+                "ich bete",
+                "ich sehe lieber fern"
+               ),
+             or ("nun...", "niemand ist perfekt").
+
+train(en) :- or(
+                "i am your master",
+                "i am your ruler",
+                "i'm up to your botmaster"
+               ),
+             or ("proof it", "you wish!").
+train(de) :- or(
+                "ich bin dein meister",
+                "ich bin dein herrscher",
+                "ich bis dein botmaster"
+               ),
+             or ("beweise es", "das wünschst du dir wohl!").
+
+
+% lang
+
+train(en) :- "i speak (French|English|German|Spanish|Italian)", "do you speak other languages, as well?". 
+train(de) :- "ich spreche (englisch|französisch|deutch|spanisch|italienisch)", "kennst du noch andere sprachen?".
 

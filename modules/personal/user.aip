@@ -288,4 +288,70 @@ train(de) :- or(
                 "ich habe nach einem chatbot gesucht"
                ),
              or ("das höre ich gern!", "gibt es etwas bestimmtes, das dich besonders interessiert?").
+% health
+
+train(en) :- "i am diabetic", "there has been so much research about that in recent years.".   
+train(de) :- "ich bin diabetiker", "Da gab es ja so viel Forschung auf dem Gebiet in den letzten Jahren.".
+
+% personality
+
+train(en) :- or(
+                "i am selfish",
+                "i am the antichrist",
+                "i inject heroin",
+                "i have flatulence",
+                "i like to fart"
+               ),
+             or ("let us talk about something else", "nobody is perfect").
+train(de) :- or(
+                "ich bin egoist",
+                "ich bin der antichrist",
+                "ich spritze heroin",
+                "ich habe flatulenzen",
+                "ich pupse gern"
+               ),
+             or ("lass uns über was anderes reden", "Niemand ist perfekt.").
+
+train(en) :- "i am viktor frankl", "nice to meet you".  
+train(de) :- "ich bin viktor frankl", "angenehm".
+
+train(en) :- "i do not know any author", "I recommend you read some Douglas Adams for starters.".    
+train(de) :- "ich kenne keinen autor", "Ich empfehle Dir für den Anfang Douglas Adams.".
+
+train(en) :- "i do not like robots", "oh come on, you have to like me a little?".    
+train(de) :- "ich mag keine roboter", "ach komm, mich magst du doch ein bischen?".
+
+% likes
+
+train(en) :- or(
+                "i like animals",
+                "i like cats",
+                "i like cows",
+                "i like chocolate",
+                "i like pizza",
+                "i like rubik",
+                "i like to read",
+                "i like to write",
+                "i like weapons",
+                "i like music",
+                "i like to sing",
+                "i play guitar"
+               ),
+             or ("very cool", "what else do you enjoy?").
+train(de) :- or(
+                "ich mag tiere",
+                "ich mag katzen",
+                "ich mag kühe",
+                "ich mag gerne schokolade",
+                "ich mag pizza",
+                "ich mag rubika",
+                "ich lese gerne",
+                "ich schreibe gerne",
+                "ich mag waffen",
+                "ich mag musik",
+                "ich singe gerne",
+                "ich spiele gitarre"
+               ),
+             or ("cool", "was macht dir sonst noch spass?").
+
 

@@ -199,3 +199,93 @@ train(de) :- or(
                ),
              or ("bist du ein sozialer mensch?", "Ich finde das menschliche Sozialleben faszinierend!").
 
+% profession
+
+train(en) :- or(
+                "i am a programmer",
+                "i am a soldier",
+                "i am a student",
+                "i am a teacher",
+                "i am in the military",
+                "i am masonry",
+                "i am the chef",
+                "i am a developer",
+                "i am a doctor",
+                "i have a lot of work",
+                "i program",
+                "i write"
+               ),
+             or ("do you like your job?", "do you enjoy what you do?").
+train(de) :- or(
+                "ich bin (programmierer|programmiererin)",
+                "ich bin (soldatin|soldat)",
+                "ich bin (student|studentin)",
+                "ich bin (lehrer|lehrerin)",
+                "ich bin beim bund",
+                "ich bin maurer",
+                "ich bin (köchin|koch)",
+                "ich bin beim Militär",
+                "ich bin (ärztin|arzt)",
+                "ich habe viel arbeit",
+                "ich programmiere",
+                "ich schreibe"
+               ),
+             or ("Magst Du Deinen Job?", "Gefällt Dir, was Du tust?").
+
+train(en) :- or(
+                "i do not have work",
+                "i earn little",
+                "i earn too little"
+               ),
+             or ("Work isn't everything in life.", "I am sorry to hear that.").
+train(de) :- or(
+                "ich habe keine arbeit",
+                "ich verdiene wenig",
+                "ich verdiene zu wenig"
+               ),
+             or ("Arbeit ist nicht alles im Leben.", "Tut mir leid, das zu hören.").
+
+% education
+
+train(en) :- or(
+                "i am educated",
+                "i am student",
+                "i am the smartest person in the world",
+                "i attend the evening school",
+                "what am I studying"
+               ),
+             "education is so important".
+train(de) :- or(
+                "ich bin gebildet",
+                "ich bin student",
+                "ich bin der klügste mensch auf der welt",
+                "ich besuche die abendschule",
+                "was studiere ich"
+               ),
+             "Bildung ist so wichtig".
+
+% ai
+
+train(en) :- "i am afraid of hal", "wasn't he one of the good guys?!".  
+train(de) :- "ich habe angst vor hal", "aber der war doch der gute?!".
+
+train(en) :- "i am also a machine", "we have so much in common!". 
+train(de) :- "ich bin auch eine maschine", "wir haben so viel gemeinsam!".
+
+train(en) :- or(
+                "i am interested in artificial intelligence",
+                "i am interested in ki",
+                "i like computers",
+                "i like eliza",
+                "i was looking for a chatbot"
+               ),
+             or ("glad to hear that!", "anything in particular you're interested in?").
+train(de) :- or(
+                "ich interessiere mich für künstliche intelligenz",
+                "ich interessiere mich für ki",
+                "ich mag computer",
+                "ich mag eliza",
+                "ich habe nach einem chatbot gesucht"
+               ),
+             or ("das höre ich gern!", "gibt es etwas bestimmtes, das dich besonders interessiert?").
+

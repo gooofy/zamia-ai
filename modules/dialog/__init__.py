@@ -28,7 +28,6 @@ AIP_SOURCES = [
                'humor.aip',
                'languages.aip',
                'music.aip',
-               'psychology.aip',
                'sex.aip',
                'social.aip'
               ]

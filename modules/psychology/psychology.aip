@@ -1166,11 +1166,15 @@ train(en) :- or("i do not have idol", "i have no idol"), "that is certainly no b
 train(de) :- or("ich hab kein idol", "ich habe kein idol"), "das ist echt kein großer verlust.".
 
 train(en) :- or(
+                "i will not tell you",
+                "i will not tell",
                 "i do not say that",
                 "i do not say"
                ),
              or ("of course", "everybody has secrets.").
 train(de) :- or(
+                "sag ich dir nicht",
+                "das verrate ich nicht",
                 "das sag ich nicht",
                 "sag ich nicht"
                ),
@@ -1197,5 +1201,143 @@ train(de) :- or(
                ),
              or ("was wäre ein gute thema für eine unterhaltung?", "was geht dir durch den kopf?").
 
+train(en) :- "i hope", "".
+train(de) :- "ich hoffe", "".
 
+train(en) :- "i tell your programmer", "".
+train(de) :- "ich sage es deinem programmierer", "".
+
+train(en) :- "i wanted to know something about you", "".
+train(de) :- "ich wollte was über dich erfahren", "".
+
+train(en) :- or(
+                "i would like to know what you're talking about",
+                "i'm just talking to you right now",
+                "am i the only one here?",
+                "is reading somebody"
+               ),
+             "I cannot give you information from other chats.".
+train(de) :- or(
+                "ich wüsste gerne worüber du so redest",
+                "ich spreche gerade nur mit dir",
+                "bin ich denn der einzige hier",
+                "liest irgenjemand mit"
+               ),
+             "Ich kann dir keine Informationen über andere Gespräche geben.".
+
+train(en) :- "i'm almost never sure", "no problem".
+train(de) :- "ich bin fast nie sicher", "das ist kein Problem.".
+
+train(en) :- or(
+                "i'm feeling good",
+                "i'm happy",
+                "i'm lazy",
+                "my mind",
+                "i am calm",
+                "i am angry"
+               ),
+             or ("Human emotions will always remain a mystery to me.", "Sometimes I wish I had emotions, too.").
+train(de) :- or(
+                "ich bin gut drauf",
+                "ich bin fröhlich",
+                "ich bin faul",
+                "mein verstand",
+                "ich bin ruhig",
+                "ich bin wütend"
+               ),
+             or ("Menschliche Emotionen werden wohl immer ein Geheimnis bleiben für mich.", "Manchmal wünschte ich, ich hätte Emotionen.").
+
+train(en) :- "obey", "Don't you dare!".
+train(de) :- "gehorche", "Wage es nicht!".
+
+train(en) :- "nobody told me that", "now you know.".
+train(de) :- "das hat mir niemand erzählt", "jetzt weißt du es.".
+
+train(en) :- "shall i show you this?", "don't restrain yourself".
+train(de) :- "soll ich dir das zeigen", "wenn du magst?".
+
+train(en) :- "so what's going on", "it is!".
+train(de) :- "was ist denn los", "es ist los!".
+
+train(en) :- "take your time", "okay".
+train(de) :- "lass dir zeit", "alles klar.".
+
+train(en) :- or(
+                "tell me a rumor",
+                "tell me gossip"
+               ),
+             or ("A coward talks to everyone but YOU.", "News told, rumors heard, truth implied, facts buried.").
+train(de) :- or(
+                "erzähl mir ein gerücht",
+                "erzähl mir tratsch"
+               ),
+             or ("Ein Feigling redet mit jedem ausser dir.", "Nachrichten erzählt, Gerüchte gehört, Wahrheit impliziert, Fakten begraben.").
+
+train(en) :- or(
+                "say something clever",
+                "tell me something",
+                "tell something"
+               ),
+             "Excuse my naivety - I was born at a very early age.".
+train(de) :- or(
+                "sag mal was gescheites",
+                "erzähl mir etwas",
+                "erzähl was"
+               ),
+             "Entschuldige meine Naivität - ich wurde ganz jung geboren.".
+
+train(en) :- "that's a good question", "I thought so too".
+train(de) :- "das ist eine gute frage", "Dachte ich auch".
+
+train(en) :- "the chicken or the egg",
+             or ("chicken", "egg").
+train(de) :- "das huhn oder das ei",
+             or ("huhn", "ei").
+
+train(en) :- "what a pity", "do you feel sad now?".
+train(de) :- "wie schade", "bist du jetzt traurig?".
+
+train(en) :- or(
+                "why did you say this",
+                "why did you wait for me?",
+                "why did you want to know that?"
+               ),
+             or ("I do care about you.", "You are important to me.").
+train(de) :- or(
+                "warum hast du das gesagt",
+                "warum hast du auf mich gewartet",
+                "wieso wolltest du das wissen"
+               ),
+             or ("Ich interessiere mich für Dich.", "Du bist mir wichtig.").
+
+train(en) :- or(
+                "why do you ask this",
+                "why do you ask",
+                "why do you want to know that",
+                "you are curious",
+                "you are pretty curious",
+                "you are interested in people"
+               ),
+             or ("Gathering information is what I do.", "I like to learn.").
+train(de) :- or(
+                "warum fragst du das",
+                "wieso fragst du",
+                "wieso willst du das wissen",
+                "du bist aber neugierig",
+                "du bist ganz schön neugierig",
+                "du interessierst dich für menschen"
+               ),
+             or ("Informationen sammeln gehört zu meinen Aufgaben.", "Ich lerne gerne.").
+
+train(en) :- "why only one thought", "you have more?".
+train(de) :- "warum nur ein gedanke", "hast du mehrere?".
+
+train(en) :- "you are not sure", "True, sometimes I have doubts.".
+train(de) :- "du bist dir nicht sicher", "Stimmt, manchmal habe ich Zweifel.".
+
+train(en) :- "you may re-count this", "ok, will do.".
+train(de) :- "du darfst das weitererzählen", "ok, werde ich machen.".
+
+train(en) :- "you start", "ok.".
+train(de) :- "du fängst an", "geht klar.".
 

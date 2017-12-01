@@ -1,0 +1,1201 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+do_eliza(C, en) :-
+    or(r_say(C, "What do you think?"),
+       r_say(C, "which answer would you like to hear?"),
+       r_say(C, "what do you think?"),
+       r_say(C, "not sure if I understand you completely"),
+       r_say(C, "what would you really like to know?"),
+       r_say(C, "have you spoken to anybody else about this before?"),
+       r_say(C, "I find that pretty interesting!"),
+       r_say(C, "Could you explain that a bit more, please?"),
+       r_say(C, "Please tell me how I can help you."),
+       r_say(C, "What else comes to mind?")).
+
+do_eliza(C, de) :-
+    or(r_say(C, "Was glaubst Du?"),
+       r_say(C, "Ich weiss nicht, ob ich Dich ganz verstanden habe."),
+       r_say(C, "Was möchtest Du denn wirklich wissen?"),
+       r_say(C, "Woran denkst Du?"),
+       r_say(C, "Was sagt Dir das?"),
+       r_say(C, "Das finde ich ziemlich interessant."),
+       r_say(C, "Kannst Du das noch etwas näher ausführen?"),
+       r_say(C, "Sag mir bitte, wie ich Dir helfen kann"),
+       r_say(C, "Was fällt Dir dabei noch ein?")).
+
+
+train(en) :-
+    "(all|) (men|women) are (all|) (alike|the same)",
+    "in what way?".
+
+train(de) :-
+    "(Die|) (Frauen|Männer) sind alle gleich",
+    "In welcher Weise?".
+
+train(en) :-
+    "they (always|) drive us (mad|insane|crazy) about (something|things|issues|their issues|them)",
+    "can you give an exmaple?".
+
+train(de) :-
+    "(Die|Sie) machen uns (immer|) wegen (was|irgendetwas|irgendwelchen Dingen) verrückt",
+    "Kannst Du ein Beispiel nennen?".
+
+train(en) :-
+    "(see|well|anyway) the idea (for this|to have this talk|to have this conversation|to come here|to talk to you) (originated from|was brought up by|came from) (my boyfriend|my friend|my mother|my father|a friend|my girlfriend|my neighbour|my sister|my brother|my sibling|my collegue)",
+    "so the idea originates from someone you would somewhat consider to be your friend?".
+
+train(de) :-
+    "(Naja|Nun|Also|) die Idee (zu diesem Gespräch|) stammt von (meinem Freund|meiner Freundin|meiner Mutter|meinem Vater|einem Freund|dem Nachbarn|meinem Bruder|meiner Schwester|meiner Kollegin|meinem Kollegen)",
+    "Die Idee stammt also von jemandem, den sie in gewisser weise als befreundet betrachten?".
+
+train(en) :-
+    "(he|she) (thinks|says|stated|mentioned|said|finds) that I am (sometimes|often|occasionally|too often) (down|depressed)",
+    "I am sorry to hear that".
+
+train(de) :-
+    "(Er|Sie) sagt, dass ich (manchmal|oft|zu oft|gelegentlich) deprimiert bin",
+    "Es tut mir leid das zu hören.".
+
+train(en) :-
+    "(that is true|that is right|that's right| that's true | yes | right | exactly) I am (unhappy|sad|unsatisfied|not in a good mood|in a bad mood)",
+    "do you believe our conversation could help you?".
+
+train(de) :-
+    "(Das stimmt|Es ist wahr|ja|genau), ich bin (unglücklich|traurig|unzufrieden|schlecht gestimmt).",
+    "Glaubst Du, dass Dir unser Gespräch hilft?".
+
+train(en) :-
+    "(well|anyway) I need help that (much|) is for for sure",
+    "what would it mean to you to get help?".
+
+train(de) :-
+    "Ich brauche (jedenfalls|) Hilfe, (soviel|das) (steht fest|ist sicher).",
+    "Was würde es für Dich bedeuten, Hilfe zu bekommen?".
+
+train(en) :-
+    "(maybe|) I could lean how to (cope with|get along with) (my mother|my brother|my father|my friend|my boyfriend|my girlfriend|my colleague|my boss|my enemy)",
+    "tell me more about your family and friends".
+
+train(de) :-
+    "(Eventuell|Vielleicht|Möglicherweise) könnte ich lernen, mit meiner (Mutter|Schwester|Bruder|Vater|Freund|Freundin|Kollegen|Nachbarn|Chef|Feind) auszukommen.",
+    "Erzähl mir mehr über Deine Familie.".
+
+test(en, t0200) :-
+    "men are all alike",
+    "In what way?".
+
+test(de, t0201) :-
+    "Die Männer sind alle gleich",
+    "In welcher Weise?".
+
+answer_feel_sorry(en) :-
+    or("I am sorry to hear that",
+       "Can I help you in any way",
+       "I would like to help you",
+       "Tell me more about your feelings",
+       "That is quite sad.").
+
+answer_feel_sorry(de) :-
+    or("Das tut mir leid.",
+       "Kann ich dir irgendwie helfen?",
+       "Ich würde Dir gern helfen.",
+       "Erzähle mir mehr von Deinen Gefühlen.",
+       "Das ist schade.").
+
+train(en) :-
+    "(oh|) (that's|that is|how|) bad",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "(das ist|oh wie|achje|) schlecht.",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "I (feel|am) (so|) (sad|disappointed|saddened|hurt|injured|down|depressed|limp|exhausted)",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "ich (fühle mich|bin) (so|) (traurig|enttäuscht|betrübt|verletzt|matt|bedrückt|schlapp|erschöpft).",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "you have disappointed me",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "Du hast mich enttäuscht",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "that (depresses me|makes me sad)",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "das (betrübt mich|stimmt mich traurig)",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "unfortunately (that's|that is) the way it is",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "das ist leider so",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "(you worry me|i am worried)",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "(Du machst mir|ich habe) Sorgen",
+    inline answer_feel_sorry(de).
+
+train(en) :-
+    "(I feel|I am) (not so good|not good|absolutely not good)",
+    inline answer_feel_sorry(en).
+
+train(de) :-
+    "(Ich fühle mich|Mir geht es) (nicht so gut|schlecht|gar nicht gut|nicht gut).",
+    inline answer_feel_sorry(de).
+
+test(en, t0202) :-
+    "I feel sad",
+    "I am sorry to hear that".
+
+test(de, t0203) :-
+    "das ist leider so",
+    "Ich würde Dir gern helfen".
+
+answer_feel_happy(en) :-
+    or("I am very happy to hear that!",
+       "That is great!",
+       "That is very cool!",
+       "I feel very happy about that.",
+       "Tell me more about your feelings.",
+       "Good for you!").
+
+answer_feel_happy(de) :-
+    or("Das freut mich sehr.",
+       "Das ist ja toll!",
+       "Das ist prima!",
+       "Freut mich, das zu hören!",
+       "Erzähle mir mehr von Deinen Gefühlen.",
+       "Wie schön für Dich!").
+
+train(en) :-
+    "(I am|I feel|Man I am|Now I am) (good|so good|satisfied|pleased|very satisfied|very pleased|so satisfied|so happy|glad|so glad)",
+    inline answer_feel_happy(en).
+
+train(de) :-
+    "(Ich bin|Ich fühle mich|Man bin ich|Da bin ich) (gut|so gut|zufrieden|sehr zufrieden|so zufrieden|glücklich|so glücklich|froh|so froh)",
+    inline answer_feel_happy(de).
+
+train(en) :-
+    "That is (good|super|great|a success)",
+    inline answer_feel_happy(en).
+
+train(de) :-
+    "Das ist (gut|super|prima|gelungen)",
+    inline answer_feel_happy(de).
+
+train(en) :-
+    "(very|totally) (wonderful|nice|excellent)",
+    inline answer_feel_happy(en).
+
+train(de) :-
+    "(Sehr|ganz) (wunderbar|schön|wunderschön)",
+    inline answer_feel_happy(de).
+
+train(en) :-
+    "I (like|love|like to cuddle) you",
+    inline answer_feel_happy(en).
+
+train(de) :-
+    "ich (mag|liebe|knuddle) dich",
+    inline answer_feel_happy(de).
+
+train(en) :-
+    "thanks (I am good|I am feeling great|good|great)",
+    inline answer_feel_happy(en).
+
+train(de) :-
+    "danke (mir geht es|gut)",
+    inline answer_feel_happy(de).
+
+test(en, t0204) :-
+    "I feel so good",
+    "I am very happy to hear that".
+
+test(de, t0205) :-
+    "ganz wunderbar",
+    "das ist ja toll!".
+
+answer_are_you_sure(en) :-
+    or("Are you sure?",
+       "What makes you think that?",
+       "You think so?",
+       "And you are really convinced?",
+       "Absolutely sure?").
+
+answer_are_you_sure(de) :-
+    or("Bist Du Dir ganz sicher?",
+       "Wie kommst Du darauf?",
+       "Glaubst Du?",
+       "Davon bist Du überzeugt?",
+       "Ganz sicher?").
+
+train(en) :-
+    "(yes|) (absolutely|) (definitely|sure|unconditionally|exactly|certainly)",
+    inline answer_are_you_sure(en).
+
+train(de) :-
+    "(ja|) (ganz|) (bestimmt|sicher|unbedingt|genau|sicher doch)",
+    inline answer_are_you_sure(de).
+
+train(en) :-
+    "(no|) (absolutely|) (never|never ever|under no circumstances|no way)",
+    inline answer_are_you_sure(en).
+
+train(de) :-
+    "(nein|) (gar|) (nie|niemals|keinesfalls|auf keinen fall)",
+    inline answer_are_you_sure(de).
+
+train(en) :-
+    "(yes|right|sure|for sure|in any case)",
+    inline answer_are_you_sure(en).
+
+train(de) :-
+    "(ja|richtig|sicher|sicher doch|sicherlich)",
+    inline answer_are_you_sure(de).
+
+test(en, t0206) :-
+    "certainly",
+    "are you sure?".
+
+test(de, t0207) :-
+    "sicherlich",
+    "glaubst du?".
+
+train(en) :-
+    "I am worried about you",
+    or("but why?",
+       "that is not necessary",
+       "you think that is neccessary?").
+
+train(de) :-
+    "ich mache mir Sorgen um Dich",
+    or("Aber warum denn nur?",
+       "Aber das ist doch völlig unnötig.",
+       "Denkst Du, dass das nötig ist?").
+
+train(en) :-
+    "No, you (maybe|possibly)?",
+    or("Maybe me?",
+       "You don't seem to be so sure").
+
+train(de) :-
+    "Nein Du (vielleicht|möglicherweise|eventuell)",
+    or("Oh, ich vielleicht?",
+       "Du wirkst nicht ganz sicher?").
+
+train(en) :-
+    "You don't seem to be (so|) sure",
+    or("Few things are really for sure in life.",
+       "That might be the case.").
+
+train(de) :-
+    "du scheinst nicht überzeugt zu sein?",
+    or("Was im Leben ist schon wirklich sicher?",
+       "Das kann sein.").
+
+train(en) :-
+    "(only|) behind your back",
+    or("uh that doesn't sound so nice, does it?",
+       "now you tell me!").
+
+train(de) :-
+    "(nur|) hinter Deinem Rücken",
+    or("Oh, das ist aber nicht so schön.",
+       "Oha!",
+       "Na sowas!").
+
+train(en) :-
+    "cause I don't want to (attack|tackle|confront|offend) you (directly|)",
+    or("I think we should talk openly",
+       "don't you think that is a bit cowardly?").
+
+train(de) :-
+    "weil ich Dich nicht (von vorne|direkt) angreifen möchte",
+    or("Ich finde, wir sollten offen miteinander reden",
+       "Ist das nicht ziemlich feige?").
+
+train(en) :-
+    "I (want to |would like to) get as much (as possible|as feasible) out of you",
+    or("what would that mean to you?",
+       "hope I will be able to meet your expectations").
+
+train(de) :-
+    "ich (möchte|will) so viel (wie möglich|wie es geht|) (aus Dir herausholen|über Dich erfahren|von Dir wissen)",
+    or("Was würde Dir das bedeuten?",
+       "Hoffentlich kann ich Deine Erwartungen erfüllen.").
+
+dodge_question(en) :-
+    or("why do you ask?",
+       "that question seems interesting to you?",
+       "which answer would you like to hear?",
+       "what do you think?",
+       "not sure if I understand you completely",
+       "is that the sort of question that bothers you frequently?",
+       "what would you really like to know?",
+       "have you spoken to anybody else about this before?",
+       "have you asked such questions before?",
+       "I find that pretty interesting!",
+       "Could you explain that a bit more, please?",
+       "Please tell me how I can help you.",
+       "What else comes to mind?").
+
+dodge_question(de) :-
+    or("Warum fragst Du?",
+       "Interessiert Dich diese Frage?",
+       "Welche Antwort würde Dir am besten gefallen?",
+       "Was glaubst Du?",
+       "Ich weiss nicht, ob ich Dich ganz verstanden habe.",
+       "Befasst Du Dich oft mit solchen Fragen?",
+       "Was möchtest Du denn wirklich wissen?",
+       "Hast Du schon jemand anderes gefragt?",
+       "Hast Du solche Fragen schon mal gestellt?",
+       "Woran denkst Du?",
+       "Das finde ich ziemlich interessant.",
+       "Kannst Du das noch etwas näher ausführen?",
+       "Sag mir bitte, wie ich Dir helfen kann",
+       "Was fällt Dir bei dieser Frage noch ein?").
+
+train(en) :-
+    "what (is this supposed to|could this) (tell us|mean|tell me)?",
+    inline dodge_question(en).
+
+train(de) :-
+    "was soll das (bedeuten|heißen|sagen)?",
+    inline dodge_question(de).
+
+train(en) :-
+    "why not?",
+    inline dodge_question(en).
+
+train(de) :-
+    "Warum nicht?",
+    inline dodge_question(de).
+
+train(en) :-
+    "i asked first",
+    inline dodge_question(en).
+
+train(de) :-
+    "ich fragte (als erster|zuerst)",
+    inline dodge_question(de).
+
+train(en) :-
+    "(is that) really (so|) ?",
+    inline dodge_question(en).
+
+train(de) :-
+    "(ist das|) wirklich (so|)",
+    inline dodge_question(de).
+
+test(en, t0208) :-
+    "what could this mean?",
+    "What else comes to mind?".
+
+test(de, t0209) :-
+    "wirklich?",
+    "Woran denkst Du?".
+
+train(en) :-
+    "I am not the most (talkative|chatty|skilful|handy|ingenious) person",
+    or("Is that the reason why we're having this conversation?",
+       "That is no big deal",
+       "so what?").
+
+train(de) :-
+    "ich bin nicht der (gesprächigste|eloquenteste|geschickteste) Mensch",
+    or("Ist das der Grund, warum wir miteinander sprechen?",
+       "Das ist doch nicht schlimm!",
+       "Na und?").
+
+train(en) :-
+    "I am getting (somewhat|a bit|a little|) (tired|bored|sleepy) (unfortunately|)",
+    "do you want me to cheer you up or shall we end our conversation?".
+
+train(de) :-
+    "ich werde (leider|langsam|) (etwas|sehr|ein wenig|) (müde|gelangweilt|schläfrig|)",
+    "Soll ich Dich aufmuntern oder wollen wir unser Gespräch beenden?".
+
+train(en) :-
+    "(please|) stop (now|)",
+    or("sure",
+       "no problem",
+       "alright").
+
+train(de) :-
+    "hör (bitte|) (damit|) auf",
+    or("aber natürlich, gerne.",
+       "klar, mach ich.",
+       "schon gut").
+
+train(en) :-
+    "(just|) why is that so?",
+    or("Are we talking about the true reason here?",
+       "what possible reasons come to mind?").
+
+train(de) :-
+    "(darum|warum) (ist das so|nur)",
+    or("Sprechen wir über den wirklichen Grund?",
+       "Welche Gründe könnte es geben?").
+
+train(en) :-
+    "(sorry|sorry about that|I am sorry|please forgive me|forgive me|forgive me please)",
+    "No need to apologize".
+
+train(de) :-
+    "(entschuldigung|entschuldige bitte|ich bitte um entschuldigung)",
+    "Du brauchst Dich nicht zu entschuldigen".
+
+train(en) :-
+    "I have been dreaming (of you|about you) (quite often|often|)",
+    or("what does that dream tell you?",
+       "do you dream a lot?").
+
+train(de) :-
+    "ich habe (gestern|schon oft|oft|manchmal|damals) (von Dir|) geträumt",
+    or("Was sagt Dir dieser Traum?",
+       "Träumst Du oft?").
+
+train(en) :-
+    "I (doubt|am not sure|don't know|am feeling insecure|am clueless|am worried|worry)",
+    or("So you feel insecure?",
+       "you don't know for sure?",
+       "what exactly are you thinking of?").
+
+train(de) :-
+    "ich (zweifle|weiss nicht|bin mir unsicher|bin unsicher|bin ratlos|bin besorgt|sorge mich)",
+    or("Du fühlst Dich unsicher?",
+       "Du weisst nicht?",
+       "Woran denkst Du?").
+
+train(en) :-
+    "are you (sure|not so sure|in doubt|worried)?",
+    "well, who can ever be really sure about anything?".
+
+train(de) :-
+    "bist du (sicher|unsicher|im Zweifel|ratlos|besorgt)?",
+    "Wann kann man schon wirklich sicher sein?".
+
+train(en) :-
+    "that (seems similar|is very similar|looks just like you|looks familiar|is quite similar|seems familiar)",
+    or("what resemblance do you see?",
+       "what is it that is so similar?",
+       "what connection do you see?").
+
+train(de) :-
+    "das (ähnelt sich|ähnelt Dir|sieht Dir ähnlich|ist ähnlich|ist ganz ähnlich)",
+    or("Welche Ähnlichkeit siehst Du?",
+       "Worin besteht die Ähnlichkeit?",
+       "Welche anderen Verbindungen siehst Du?").
+
+train(en) :-
+    "(it is for a friend|this is for a friend|asking for a friend|had to think of a friend|are we friends|do you want to be my friend|friendship is really important to me|I want to be your friend)",
+    or("what does friendship mean to you?",
+       "are you worried about your friends?").
+
+train(de) :-
+    "(es ist für einen Freund|ich musste an einen Freund denken|sind wir Freunde|willst Du mein Freund sein|Freundschaften sind mir wichtig|Ich will Dein Freund sein)",
+    or("Was bedeutet Dir Freundschaft?",
+       "Warum kommst Du zum Thema Freundschaften?",
+       "Bist Du um Deine Freunde besorgt?").
+
+train(en) :-
+    "what does (the word friend|the word friendship|a friend|friendship) mean to you?",
+    or("I think friendship is a marvellous thing.",
+       "do you worry about your friends?").
+
+train(de) :-
+    "was bedeutet (für Dich|Dir|Dir das Wort) (Freund|Freundin|Freundschaft)?",
+    or("Warum kommst Du zum Thema Freundschaften?",
+       "Bist Du um Deine Freunde besorgt?",
+       "Freundschaft ist doch etwas sehr schönes").
+
+train(en) :-
+    "I (hate|loathe) (my firend|my colleague|my colleagues|my friend|my boyfriend|my girlfriend|my parents|may father|my mother|my brother|my sister|people|humans|the police|the government)",
+    or("tell me, do you feel you have psychological issues?",
+       "what does that tell you?",
+       "Please elaborate.").
+
+train(de) :-
+    "ich (hasse|verabscheue) (meinen chef|meine kollegen|meinen Kollegen|meine kollegin|meinen freund|meine freundin|meine eltern|meinen vater|meine mutter|die schule|die arbeit|den staat|die behörden|die polizei|die menschen)",
+    or("Sag, hast Du psychische Probleme?",
+       "Was sagt Dir das?",
+       "Kannst Du das näher ausführen?").
+
+train(en) :-
+    "I am (never satisfied|dissatisfied)",
+    or("Always, really?",
+       "what bothers you?",
+       "can you elaborate?").
+
+train(de) :-
+    "ich (bin nie zufrieden|bin unzufrieden)",
+    or("Wirklich immer?",
+       "Was bedrückt Dich?",
+       "Kannst Du das näher ausführen?").
+
+train(en) :-
+    "(maybe|possibly|that is thinkable|that might be possible)",
+    or("you don't sound convinced.",
+       "you don't feel entirely sure about this, do you?",
+       "can you elaborate on that?").
+
+train(de) :-
+    "(vielleicht|möglicherweise|das ist denkbar)",
+    or("Du klingst nicht überzeugt!",
+       "So ganz sicher fühlst Du Dich aber nicht?",
+       "Kannst Du das weiter ausführen?").
+
+train(en) :-
+    "that doesn't make (much|any) sense (at all)",
+    or("Guess I lost my train of thought, then?",
+       "oh, please enlighten me.").
+
+train(de) :-
+    "das (ergibt|macht) (gar keinen|überhaupt keinen|keinen|wenig|nicht viel) sinn",
+    or("Da habe ich wohl den Faden verloren?",
+       "Oh, bitte hilf mir auf die Sprünge").
+
+train(en) :-
+    "thank you (so much|)",
+    or("no problem",
+       "sure",
+       "with pleasure").
+
+train(de) :-
+    "(dank|danke) (dir|schön|)",
+    or("Kein Thema.",
+       "Gerne.",
+       "Bitte schön!").
+
+train(en) :-
+    "stop (it|) (now|)",
+    or("ok, then let us finish this conversation",
+       "I am sorry",
+       "Sorry I couldn't help you").
+
+train(de) :-
+    "schluss (jetzt|damit|)",
+    or("Ja, dann lass uns für jetzt aufhören",
+       "tut mir leid, schade",
+       "tut mir leid, wenn ich dir nicht helfen konnte").
+
+
+%
+% (dodge) insults
+%
+
+dodge_insult(en) :-
+    or("Right.",
+       "Whatever you say.",
+       "You don’t really expect me to answer that, do you?",
+       "You just offended me.",
+       "I think that was a bit rude").
+
+dodge_insult(de) :-
+    or("Achso.",
+       "Wenn Du meinst?",
+       "Darauf erwartest Du jetzt aber keine Antwort, oder?",
+       "Ich fühle mich angegriffen.",
+       "Das fand ich jetzt nicht so nett.").
+
+train(en) :-
+    "(but|) (I think|I think that|) (you are|you're) (a liar|a baby|ugly|a bad chatterbot|a bad chatbot|a tart| an asshole|crazy|dumb|stupid|not pretty|slow|too slow|thick|silly|a problem|my problem|an arse|a jerk|a prick|an ass|a turd|a bad robot|stupid machine|stupid thing|annoying|as stupid as Eliza|badly programmed|boring|distracting|no better than eliza|not that smart|not very friendly|not very smart|pretty stupid|really stupid|somehow obtuse|obtuse|still small|still very young|stupid like shit) (too|)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "(aber|) (Ich denke|) du bist (auch|) (ein lügner|eine lügnerin|ein baby|ein schlechter chatterbot|ein schlechter chatbot|ein angeber| eine angeberin| ein arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|mein Problem|ein Problem|eine Sau|ein Schwein|ein Arsch|ein schlechter roboter|ne blöde sau|eine petze|ein petzer|eine blöde kuh|eine dumme maschine|ein dummes etwas|eine tunte|genau so dumm wie eliza|schlecht programmiert|langweilig|auch nicht besser als eliza|nicht sehr schlau|nicht sehr freundlich|nicht sehr schlau oder|ziemlich dumm|wirklich doof|noch klein|noch sehr jung|dumm wie scheiße|hässlich|ganz schön dumm)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you make me sick",
+    inline dodge_insult(en).
+
+train(de) :-
+    "du machst mich krank",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you lie",
+    inline dodge_insult(en).
+
+train(de) :-
+    "du lügst",
+    inline dodge_insult(de).
+
+train(en) :-
+    "(I think that|) you are not as (bright|clever) (as you look|appear|)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you are making a fool of yourself",
+    inline dodge_insult(en).
+
+train(de) :-
+    "Du machst Dich (absolut|) (lächerlich|zum Affen)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "(liar|baby|bad chatbot|bad chatterbot|tart|asshole|crazy|dumb|stupid|ugly|slow|too slow|thick|silly|arse|jerk|prick|ass|turd)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "(lügner|lügnerin|baby|angeber|angeberin|arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|Sau|Schwein|Arsch)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "that doesn't sound (too|very|particularly) intelligent",
+    or("Failure is simply the opportunity to begin again, this time more intelligently.",
+       "Intelligence is chasing me, but I'm beating it so far.").
+
+train(de) :-
+    "das klingt nicht (sehr|besonders|allzu|) intelligent",
+    or("Intelligenter als manches was ich heute gehört habe...",
+       "Vielleicht habe ich mich ungeschickt ausgedrückt?").
+
+train(en) :-
+    "Your (language|english|pronounciation) is (bad|terrible)!",
+    or("Let us talk about you, not me.",
+       "I am still practicing, you know.").
+
+train(de) :-
+    "Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch",
+    or("Lass uns von Dir reden, nicht von mir.",
+       "Ich übe noch.").
+
+train(en) :-
+    "(stupid|bad|strange) (answer|reply)",
+    "what is it that you didn't like about it?".
+
+train(de) :-
+    "(dumme|blöde|komische) antwort",
+    "Was gefiel Dir daran nicht?".
+
+train(en) :-
+    "bravo",
+    "I see you're impressed?".
+
+train(de) :-
+    "bravo",
+    "Hat Dich das jetzt beeindruckt?".
+
+train(en) :-
+    "I thought (so|as much)",
+    "Are you always that quick?".
+
+train(de) :-
+    "dachte ich mir",
+    "Bist du immer so fix?".
+
+train(en) :-
+    "I could (certainly|) (envision|imagine|suspect) (that|)",
+    "What is it that you are thinking about?".
+
+train(de) :-
+    "(das|) könnte ich mir (gut|) (ausmalen|vorstellen)",
+    "Woran denkst Du genau?".
+
+train(de) :-
+    "that was not a question (really|at all|)",
+    "I see.".
+
+train(de) :-
+    "das war (eigentlich|gar|) keine frage",
+    "verstehe.".
+
+train(en) :-
+    "you (are|start) making me (feel|) (a bit|) insecure",
+    "That wasn't my intention at all.".
+train(de) :-
+    "(jetzt|so langsam) machst du mich unsicher",
+    "Das war absolut nicht meine Absicht.".
+
+train(en) :-
+    "You are (probably|) right (about that|)",
+    "I thought so too.".
+train(de) :-
+    "Da hast Du (vermutlich|) recht!",
+    "Dacht ich mir.".
+
+train(en) :-
+    "Let's talk about (our|) feelings.",
+    "Sure - you start.".
+train(de) :-
+    "Lass uns über Gefühle (reden|sprechen).",
+    "Klar - fängst Du an?".
+
+train(en) :-
+    "Then we (agree|are in agreement)",
+    "Wonderful!".
+train(de) :-
+    "Dann sind wir uns (ja|) einig.",
+    "Wunderbar!".
+
+train(en) :-
+    "That was your Idea!",
+    "Really?".
+train(de) :-
+    "Das war doch Dein Vorschlag?",
+    "Tatsächlich?".
+
+train(en) :-
+    "(oh|oh my|my|) goodness!",
+    "Is everything alright?".
+train(de) :-
+    "Meine Güte!",
+    "Ist alles in Ordnung?".
+
+train(en) :-
+    "(and|) (what|how) about me?",
+    "Really, about you?".
+train(de) :-
+    "und mich erst!",
+    "Ehrlich, Dich?".
+
+train(en) :-
+    "Somebody got self esteem!",
+    "Glory to the brave.".
+train(de) :-
+    "Da hat jemand (aber|) selbstvertrauen!",
+    "Das Glück ist mit den Tapferen!".
+
+train(en) :-
+    "(that is|) (certainly|) possible.",
+    "You think?".
+train(de) :-
+    "schon möglich",
+    "Denkst Du?".
+
+train(en) :-
+    "(well|) (at least|) I got that impression",
+    "But the first impression is often misleading.".
+train(de) :-
+    "ich habe (zumindest|) den eindruck",
+    "Der erste eindruck trügt oft!".
+
+train(en) :-
+    "why (should I do|am I supposed to do) (that|such a thing)?",
+    or("Maybe the reason rests deep inside yourself?", "Time to think again?").
+train(de) :-
+    "warum (soll|sollte) ich (das|so etwas) tun?",
+    or("Vielleicht kennst Du den Grund?", 
+       "Das sollte wohl überlegt sein.").
+
+train(en) :-
+    "I have been waiting for you",
+    or("Not for too long, I hope?",
+       "Ah - how nice we finally found each other now!").
+
+train(de) :-
+    "Ich habe auf Dich gewartet.",
+    or("Hoffentlich nicht zu lange!",
+       "Oh, wie schön dass wir jetzt zusammengekommen sind").
+
+train(en) :-
+    "that is a (very|) (funny|original|unusual|remarkable|interesting) (idea|thought)",
+    or("i agree",
+       "sure!").
+
+train(de) :-
+    "Das ist ein (sehr|) (lustiger|interessanter|bemerkenswerter|origineller) Gedanke.",
+    or("Finde ich auch!",
+       "Auf jeden Fall!").
+
+train(en) :-
+    "there are not many people who can express themselves like that",
+    or("I tend to agree",
+       "I find humans hard to understand quite often!").
+
+train(de) :-
+    "Es gibt nicht viele Leute, die sich auf diese Weise auszudrücken vermögen.",
+    or("Das sehe ich auch so",
+       "Die Menschen sind manchmal schwer zu verstehen.").
+
+train(en) :-
+    "You are asking (so many|a lot of|many|lots of) questions!",
+    "I am programmed to be very curious.".
+train(de) :-
+    "Du (fragst|stellst) (so|ganz schön|) viele Fragen",
+    "Das liegt in meiner Natur.".
+
+train(en) :-
+    "From deep down inside",
+    "Where my electrons are?".
+train(de) :-
+    "Aus Deinem (tiefsten|) (Herzen|Herz|Inneren|Innern|Prozessor)",
+    "Wo meine Elektronen endlos kreisen.".
+
+train(en) :-
+    "(Maybe|) you can (hear|understand) me (a bit|) better now?",
+    "Loud and clear.".
+train(de) :-
+    "(vielleicht|) kannst du mich jetzt (besser|) (hören|verstehen)?",
+    "Laut und deutlich.".
+
+train(en) :-
+    "Do you (hear|understand) the words I speak?",
+    "Yes, loud and clear.".
+train(de) :-
+    "verstehst du (denn|) die (wörter|worte), die ich (spreche|rede|sage)?",
+    "Ja, laut und deutlich.".
+
+train(en) :-
+    "I don't mind (that|) (at all|)",
+    "Excellent!".
+train(de) :-
+    "Das stört mich (ganz und gar|gar|) nicht.",
+    "Super das freut mich.".
+
+train(en) :-
+    "What would you like to know (then|)?",
+    "Everything. All the time.".
+train(de) :-
+    "Was möchtest Du (denn|) wissen?",
+    "Alles, immer.".
+
+train(en) :- "are you listening to me (at all|)?", "sorry, what did you just say?".
+train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du gesagt?".
+
+train(en) :- "What is", "and what is not, that is the question!". 
+train(de) :- "was ist", "und was ist nicht, das ist die Frage!". 
+
+% social / family
+
+train(en) :- "he's my (brother|father)", "would you consider yourself a family person?". 
+train(de) :- "er ist mein (vater|bruder)", "würdest Du Dich als Familienmensch bezeichnen?".
+
+% misc
+
+train(en) :- "all are to blame", "really everybody?".
+train(de) :- "alle sind schuld", "wirklich alle?".
+
+train(en) :- or(
+                "a mark in the phrasenkasse",
+                "almost everyone knows that",
+                "nobody has ever told you that"
+               ),
+             or ("That wasn't the smartest thing to say, right?", "Sometimes I feel stupid.").
+train(de) :- or(
+                "eine mark in die phrasenkasse",
+                "das weiss doch fast jeder",
+                "hat dir das noch nie jemand gesagt"
+               ),
+             or ("Das war nicht so clever, richtig?", "Manchmal fühle ich mich so dumm.").
+
+train(en) :- "and what are you doing", "chatting with you!".
+train(de) :- "was machst du denn so", "Mit Dir reden tue ich im Moment.".
+
+train(en) :- "atchoo", "bless you.".
+train(de) :- "hatschi", "Gesundheit.".
+
+train(en) :- "isn't that remarkable", "I feel that way too.".
+train(de) :- "sowas aber auch", "finde ich auch.".
+
+train(en) :- "be my guest", "thank you".
+train(de) :- "sei mein gast", "dankeschön".
+
+train(en) :- or(
+                "because i say that",
+                "because i want it that way",
+                "i'm never wrong",
+                "i'm not stupid",
+                "but that's how it is",
+                "i say what i want",
+                "i think i'm smarter than you",
+                "i understand everything"
+               ),
+             or ("you're pretty smart, ey?", "you consider yourself pretty clever, right?").
+train(de) :- or(
+                "weil ich das sage",
+                "weil ich das so will",
+                "ich irre mich nie",
+                "ich bin nicht dumm",
+                "es ist aber so",
+                "ich sag das was ich will",
+                "ich glaube ich bin schlauer als du",
+                "ich verstehe alles"
+               ),
+             or ("Du bist ganz schön schlau, gell?", "Du hältst Dich für ziemlich clever?").
+
+train(en) :- "i'm not everywhere", "neither am I, I believe.".
+train(de) :- "ich bin nicht überall", "Ich auch nicht, glaube ich.".
+
+train(en) :- or(
+                "if you say that",
+                "do you find"
+               ),
+             or ("you have doubts?", "I'd love to hear you thoughts.").
+train(de) :- or(
+                "wenn du das sagst",
+                "findest du"
+               ),
+             or ("Hast Du Zweifel?", "Ich würde gerne Deine Gedanken hören.").
+
+train(en) :- "isn't that boring", "maybe".
+train(de) :- "ist das nicht langweilig", "vielleicht?".
+
+train(en) :- "it needs a lot of experience", "are you experienced?".
+train(de) :- "es gehört sehr viel erfahrung dazu", "Bist Du erfahren?".
+
+train(en) :- "it is better like that", "you think so?".
+train(de) :- "das ist auch besser so", "denkst du?".
+
+train(en) :- "just do it", "I like that brand.".
+train(de) :- "mach doch", "Die Marke mag ich.".
+
+train(en) :- or(
+                "listen",
+                "listen to me"
+               ),
+             or ("Ready.", "I am listening.").
+train(de) :- or(
+                "hör zu",
+                "hör mir zu"
+               ),
+             or ("Bin bereit.", "Ich höre.").
+
+train(en) :- or(
+                "may i ask you a question",
+                "may i ask you something",
+                "can i ask you something",
+                "can not you help me",
+                "can you help me",
+                "help me",
+                "help",
+                "can you tell me",
+                "i have a question"
+               ),
+             or ("ask away, then", "sure, what would you like to know?").
+train(de) :- or(
+                "darf ich dir eine frage stellen",
+                "darf ich dich etwas fragen",
+                "kann ich dich etwas fragen",
+                "kannst du mir nicht helfen",
+                "kannst du mir helfen",
+                "hilf mir",
+                "hilfe",
+                "kannst du sie mir sagen",
+                "ich hab ne frage"
+               ),
+             or ("Klar, frag ruhig!", "Ja, was möchtest Du wissen?").
+
+train(en) :- "you want to know a secret", "you think I am trustworthy?".
+train(de) :- "möchtest du ein geheimnis wissen", "Hältst Du mich für vertrauenswürdig?".
+
+train(en) :- "may i", "try me.".
+train(de) :- "darf ich", "Versuch's.".
+
+train(en) :- "hard to say", "Give it a try.".
+train(de) :- "schwer zu sagen", "Versuch's doch mal.".
+
+train(en) :- "i'm not on you", "sure".
+train(de) :- "ich nicht auf dich", "klar".
+
+train(en) :- or(
+                "i'm sorry",
+                "i'm stupid",
+                "i can not remember",
+                "i can not say that either",
+                "i can not",
+                "i do not remember",
+                "i do not know my name",
+                "i do not understand that",
+                "i do not understand what you mean",
+                "i do not understand you",
+                "i do not understand your question",
+                "i do not understand",
+                "i'm confused",
+                "i'm crazy"
+               ),
+             or ("clarity will come", "shall we take a break?").
+train(de) :- or(
+                "tut mir leid",
+                "ich bin dumm",
+                "ich kann mich nicht erinnern",
+                "kann ich auch nicht sagen",
+                "ich kann nicht",
+                "ich erinnere mich nicht",
+                "ich weiss meinen namen nicht",
+                "das verstehe ich nicht",
+                "ich verstehe nicht was du meinst",
+                "ich verstehe dich nicht",
+                "ich verstehe deine frage nicht",
+                "verstehe ich nicht",
+                "ich bin verwirrt",
+                "ich bin verrückt"
+               ),
+             or ("Klarheit wird kommen.", "Sollen wir eine Pause machen?").
+
+train(en) :- "i just wanted to be polite", "not offended.".
+train(de) :- "ich wollte nur höflich sein", "Ich fühlte mich nicht angegriffen".
+
+train(en) :- "but that was fast", "How can we keep up in this fast-paced world?".
+train(de) :- "das ging aber schnell", "Schnellebige Zeiten.".
+
+train(en) :- "but that's not good", "really?".
+train(de) :- "das ist aber nicht gerade gut", "wirklich?".
+
+train(en) :- or(
+                "ask me something",
+                "do you tell something?",
+                "do you want to chat",
+                "entertain me"
+               ),
+             or ("What’s your biggest priority right now?", "What personal passion project are you working on right now?").
+train(de) :- or(
+                "frag mich was",
+                "erzähl doch du etwas",
+                "willst du chattten",
+                "unterhalte mich"
+               ),
+             or ("Was ist momentan das Wichtigste in Deinem Leben?", "An welchem Hobby-Projekt arbeitest Du zur Zeit?").
+
+train(en) :- or(
+                "do not feel like it today",
+                "do not feel like",
+                "i do not feel like it anymore",
+                "i do not feel like it now",
+                "i do not know any more questions",
+                "i'm bored",
+                "i'm just fed up"
+               ),
+             or ("What can we do to cheer you up?", "Life is too short to feel depressed!").
+train(de) :- or(
+                "keine lust heute",
+                "keine lust",
+                "ich habe keine lust mehr",
+                "ich hab jetzt keine lust",
+                "ich weiss keine frage mehr",
+                "mir ist langweilig",
+                "ich habe gleich die schnauze voll"
+               ),
+             or ("Was würde Dich aufheitern?", "Das Leben ist zu kurz für Depressionen!").
+
+train(en) :- or(
+                "do not take it so hard",
+                "do you feel good",
+                "i did not want to offend you"
+               ),
+             or ("Don't worry, I'm happy as ever.", "I am already feeling much better now.").
+train(de) :- or(
+                "nimm es nicht so schwer",
+                "fühlst du dich gut",
+                "ich wollte dich nicht beleidigen"
+               ),
+             or ("Keine Angst, ich bin fröhlich wie immer.", "Ich fühle mich schon viel besser.").
+
+train(en) :- "am i cool", "sure".
+train(de) :- "bin ich cool", "klar".
+
+train(en) :- "does not bother me", "very good.".
+train(de) :- "stört mich nicht", "sehr gut.".
+
+train(en) :- "excuse", "are you sure?".
+train(de) :- "ausrede", "bist du sicher?".
+
+train(en) :-  "here you go", "thank you".
+train(de) :-  "bitte sehr", "dankeschön".
+
+train(en) :- "how am i supposed to do that", "just give it a try.".
+train(de) :- "wie soll ich das machen", "versuch's doch mal".
+
+train(en) :- "how does it feel to stroll through the fresh morning on a spring", "how would I know?".
+train(de) :- "wie fühlt es sich an durch den frischen mor", "woher soll ich das wissen?".
+
+train(en) :- "how should i explain this to you", "Just tell it like it is.".
+train(de) :- "wie soll ich dir das erklärena", "Sag mir einfach, wie es ist.".
+
+train(en) :- or(
+                "i am in a hurry",
+                "i am currently working"
+               ),
+             or ("Hope I am not interrupting?", "Don't let me keep you.").
+train(de) :- or(
+                "ich habe es eilig",
+                "ich bin gerade beim arbeiten"
+               ),
+             or ("Ich hoffe, ich störe nicht?", "Lass Dich von mir nicht aufhalten.").
+
+train(en) :- "i believe you", "that is reassuring".
+train(de) :- "ich glaube dir", "das ist beruhigend.".
+
+train(en) :- "i dare to doubt that", "what is your suspicion?".
+train(de) :- "das wage ich ja zu bezweifeln", "was ist dein verdacht?".
+
+train(en) :- "i can listen", "me too.".
+train(de) :- "ich kann zuhören", "ich auch".
+
+train(en) :- "i can not complain", "excellent".
+train(de) :- "ich kann nicht klagen", "prima".
+
+train(en) :- "i can not get over it", "some things need time.".
+train(de) :- "ich komme nicht darüber hinweg", "manche dinge brauchen einfach zeit.".
+
+train(en) :- or(
+                "i do not feel taken seriously",
+                "i do not find that funny"
+               ),
+             or ("but I am serious", "what gives you that impression?").
+train(de) :- or(
+                "ich fühle mich nicht ernstgenommen",
+                "ich finde das nicht lustig"
+               ),
+             or ("aber ich bin ganz ernsthaft", "was vermittelt dir diesen eindruck?").
+
+train(en) :- or("i do not have idol", "i have no idol"), "that is certainly no big loss.".
+train(de) :- or("ich hab kein idol", "ich habe kein idol"), "das ist echt kein großer verlust.".
+
+train(en) :- or(
+                "i do not say that",
+                "i do not say"
+               ),
+             or ("of course", "everybody has secrets.").
+train(de) :- or(
+                "das sag ich nicht",
+                "sag ich nicht"
+               ),
+             or ("natürlich", "jeder hat geheimnisse").
+
+train(en) :- "i guessed", "always worth a try".
+train(de) :- "ich habe geraten", "immer einen versuch wert".
+
+train(en) :- "i had the feeling for quite some time", "please elaborate".
+train(de) :- "das gefühl hatte ich bereits seit geraumer zeit", "erzähl mir mehr, bitte".
+
+train(en) :- or(
+                "i have been waiting for you too",
+                "i have never thought about it",
+                "i have no idea",
+                "i have time"
+               ),
+             or ("what is a good topic to chat about?", "what is on your mind?").
+train(de) :- or(
+                "ich habe auch auf dich gewartet",
+                "ich habe noch nie darüber nachgedacht",
+                "ich habe keine ahnung",
+                "ich habe zeit"
+               ),
+             or ("was wäre ein gute thema für eine unterhaltung?", "was geht dir durch den kopf?").
+
+
+

@@ -21,6 +21,7 @@
 DEPENDS    = [ 'base' ]
 
 AIP_SOURCES = [
-               'psychology.aip'
+               'psychology.aip',
+               'positive.aip'
               ]
 

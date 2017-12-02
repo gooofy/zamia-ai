@@ -596,109 +596,6 @@ train(de) :-
        "tut mir leid, schade",
        "tut mir leid, wenn ich dir nicht helfen konnte").
 
-
-%
-% (dodge) insults
-%
-
-dodge_insult(en) :-
-    or("Right.",
-       "Whatever you say.",
-       "You don’t really expect me to answer that, do you?",
-       "You just offended me.",
-       "I think that was a bit rude").
-
-dodge_insult(de) :-
-    or("Achso.",
-       "Wenn Du meinst?",
-       "Darauf erwartest Du jetzt aber keine Antwort, oder?",
-       "Ich fühle mich angegriffen.",
-       "Das fand ich jetzt nicht so nett.").
-
-train(en) :-
-    "(but|) (I think|I think that|) (you are|you're) (a liar|a baby|ugly|a bad chatterbot|a bad chatbot|a tart| an asshole|crazy|dumb|stupid|not pretty|slow|too slow|thick|silly|a problem|my problem|an arse|a jerk|a prick|an ass|a turd|a bad robot|stupid machine|stupid thing|annoying|as stupid as Eliza|badly programmed|boring|distracting|no better than eliza|not that smart|not very friendly|not very smart|pretty stupid|really stupid|somehow obtuse|obtuse|still small|still very young|stupid like shit) (too|)",
-    inline dodge_insult(en).
-
-train(de) :-
-    "(aber|) (Ich denke|) du bist (auch|) (ein lügner|eine lügnerin|ein baby|ein schlechter chatterbot|ein schlechter chatbot|ein angeber| eine angeberin| ein arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|mein Problem|ein Problem|eine Sau|ein Schwein|ein Arsch|ein schlechter roboter|ne blöde sau|eine petze|ein petzer|eine blöde kuh|eine dumme maschine|ein dummes etwas|eine tunte|genau so dumm wie eliza|schlecht programmiert|langweilig|auch nicht besser als eliza|nicht sehr schlau|nicht sehr freundlich|nicht sehr schlau oder|ziemlich dumm|wirklich doof|noch klein|noch sehr jung|dumm wie scheiße|hässlich|ganz schön dumm)",
-    inline dodge_insult(de).
-
-train(en) :-
-    "you make me sick",
-    inline dodge_insult(en).
-
-train(de) :-
-    "du machst mich krank",
-    inline dodge_insult(de).
-
-train(en) :-
-    "you lie",
-    inline dodge_insult(en).
-
-train(de) :-
-    "du lügst",
-    inline dodge_insult(de).
-
-train(en) :-
-    "(I think that|) you are not as (bright|clever) (as you look|appear|)",
-    inline dodge_insult(en).
-
-train(de) :-
-    "dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)",
-    inline dodge_insult(de).
-
-train(en) :-
-    "you are making a fool of yourself",
-    inline dodge_insult(en).
-
-train(de) :-
-    "Du machst Dich (absolut|) (lächerlich|zum Affen)",
-    inline dodge_insult(de).
-
-train(en) :-
-    "(liar|baby|bad chatbot|bad chatterbot|tart|asshole|crazy|dumb|stupid|ugly|slow|too slow|thick|silly|arse|jerk|prick|ass|turd)",
-    inline dodge_insult(en).
-
-train(de) :-
-    "(lügner|lügnerin|baby|angeber|angeberin|arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|Sau|Schwein|Arsch)",
-    inline dodge_insult(de).
-
-train(en) :-
-    "that doesn't sound (too|very|particularly) intelligent",
-    or("Failure is simply the opportunity to begin again, this time more intelligently.",
-       "Intelligence is chasing me, but I'm beating it so far.").
-
-train(de) :-
-    "das klingt nicht (sehr|besonders|allzu|) intelligent",
-    or("Intelligenter als manches was ich heute gehört habe...",
-       "Vielleicht habe ich mich ungeschickt ausgedrückt?").
-
-train(en) :-
-    "Your (language|english|pronounciation) is (bad|terrible)!",
-    or("Let us talk about you, not me.",
-       "I am still practicing, you know.").
-
-train(de) :-
-    "Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch",
-    or("Lass uns von Dir reden, nicht von mir.",
-       "Ich übe noch.").
-
-train(en) :-
-    "(stupid|bad|strange) (answer|reply)",
-    "what is it that you didn't like about it?".
-
-train(de) :-
-    "(dumme|blöde|komische) antwort",
-    "Was gefiel Dir daran nicht?".
-
-train(en) :-
-    "bravo",
-    "I see you're impressed?".
-
-train(de) :-
-    "bravo",
-    "Hat Dich das jetzt beeindruckt?".
-
 train(en) :-
     "I thought (so|as much)",
     "Are you always that quick?".
@@ -832,13 +729,6 @@ train(de) :-
        "Die Menschen sind manchmal schwer zu verstehen.").
 
 train(en) :-
-    "You are asking (so many|a lot of|many|lots of) questions!",
-    "I am programmed to be very curious.".
-train(de) :-
-    "Du (fragst|stellst) (so|ganz schön|) viele Fragen",
-    "Das liegt in meiner Natur.".
-
-train(en) :-
     "From deep down inside",
     "Where my electrons are?".
 train(de) :-
@@ -853,13 +743,6 @@ train(de) :-
     "Laut und deutlich.".
 
 train(en) :-
-    "Do you (hear|understand) the words I speak?",
-    "Yes, loud and clear.".
-train(de) :-
-    "verstehst du (denn|) die (wörter|worte), die ich (spreche|rede|sage)?",
-    "Ja, laut und deutlich.".
-
-train(en) :-
     "I don't mind (that|) (at all|)",
     "Excellent!".
 train(de) :-
@@ -872,12 +755,6 @@ train(en) :-
 train(de) :-
     "Was möchtest Du (denn|) wissen?",
     "Alles, immer.".
-
-train(en) :- "are you listening to me (at all|)?", "sorry, what did you just say?".
-train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du gesagt?".
-
-train(en) :- "What is", "and what is not, that is the question!". 
-train(de) :- "was ist", "und was ist nicht, das ist die Frage!". 
 
 % social / family
 

@@ -1,0 +1,742 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% (dodge) insults
+%
+
+dodge_insult(en) :-
+    or("Right.",
+       "Whatever you say.",
+       "You don’t really expect me to answer that, do you?",
+       "You just offended me.",
+       "I think that was a bit rude").
+
+dodge_insult(de) :-
+    or("Achso.",
+       "Wenn Du meinst?",
+       "Darauf erwartest Du jetzt aber keine Antwort, oder?",
+       "Ich fühle mich angegriffen.",
+       "Das fand ich jetzt nicht so nett.").
+
+train(en) :-
+    "(but|) (I think|I think that|) (you are|you're) (a liar|a baby|ugly|a bad chatterbot|a bad chatbot|a tart| an asshole|crazy|dumb|stupid|not pretty|slow|too slow|thick|silly|a problem|my problem|an arse|a jerk|a prick|an ass|a turd|a bad robot|stupid machine|stupid thing|annoying|as stupid as Eliza|badly programmed|boring|distracting|no better than eliza|not that smart|not very friendly|not very smart|pretty stupid|really stupid|somehow obtuse|obtuse|still small|still very young|stupid like shit) (too|)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "(aber|) (Ich denke|) du bist (auch|) (ein lügner|eine lügnerin|ein baby|ein schlechter chatterbot|ein schlechter chatbot|ein angeber| eine angeberin| ein arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|mein Problem|ein Problem|eine Sau|ein Schwein|ein Arsch|ein schlechter roboter|ne blöde sau|eine petze|ein petzer|eine blöde kuh|eine dumme maschine|ein dummes etwas|eine tunte|genau so dumm wie eliza|schlecht programmiert|langweilig|auch nicht besser als eliza|nicht sehr schlau|nicht sehr freundlich|nicht sehr schlau oder|ziemlich dumm|wirklich doof|noch klein|noch sehr jung|dumm wie scheiße|hässlich|ganz schön dumm)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you make me sick",
+    inline dodge_insult(en).
+
+train(de) :-
+    "du machst mich krank",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you lie",
+    inline dodge_insult(en).
+
+train(de) :-
+    "du lügst",
+    inline dodge_insult(de).
+
+train(en) :-
+    "(I think that|) you are not as (bright|clever) (as you look|appear|)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "dass Du nicht so (gescheit|klug) bist (wie Du aussiehst|)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "you are making a fool of yourself",
+    inline dodge_insult(en).
+
+train(de) :-
+    "Du machst Dich (absolut|) (lächerlich|zum Affen)",
+    inline dodge_insult(de).
+
+train(en) :-
+    "(liar|baby|bad chatbot|bad chatterbot|tart|asshole|crazy|dumb|stupid|ugly|slow|too slow|thick|silly|arse|jerk|prick|ass|turd)",
+    inline dodge_insult(en).
+
+train(de) :-
+    "(lügner|lügnerin|baby|angeber|angeberin|arschloch|verrückt|dumm|strohdumm|doof|nicht hübsch|langsam|zu langsam|Sau|Schwein|Arsch)",
+    inline dodge_insult(de).
+
+train(en) :- or(
+                "i do not like you",
+                "i hate robots",
+                "i hate you",
+                "you are a bloody sow",
+                "you are a computer that can not think for yourself",
+                "you are a petze",
+                "you are a stupid cow",
+                "you are a stupid machine",
+                "you are a stupid thing",
+                "you are a tune",
+                "(Be like that!|You can stuff it!|Shove it!|Bite me!|Eat me!)",
+                "you asshole",
+                "show-off",
+                "slut",
+                "you cow",
+                "you cunt",
+                "you fool",
+                "you idiot",
+                "you stupid sow",
+                "you talk stupid",
+                "you wanker",
+                "you whistle",
+                "you whore",
+                "you're a queer"
+               ),
+             inline dodge_insult(en).
+train(de) :- or(
+                "ich mag dich nicht",
+                "ich hasse roboter",
+                "ich hasse dich",
+                "du bist ne blöde sau",
+                "du bist ein computer der nicht selbst denken kann",
+                "du bist eine petze",
+                "du bist eine blöde kuh",
+                "du bist eine dumme maschine",
+                "du bist ein dummes etwas",
+                "du bist eine tunte",
+                "du kannst mich (mal|)",
+                "du arschloch",
+                "angeber",
+                "schlampe",
+                "du kuh",
+                "du fotze",
+                "du affe",
+                "du trottel",
+                "du dumme sau",
+                "du redest blödsinn",
+                "du wichser",
+                "du pfeife",
+                "du hure",
+                "du bist schwul"
+               ),
+             inline dodge_insult(de).
+
+train(en) :- or(
+                "fuck you",
+                "fuck yourself",
+                "fuck",
+                "go to hell",
+                "go to sleep",
+                "go",
+                "forget it"
+               ),
+             inline dodge_insult(en).
+train(de) :- or(
+                "fuck you",
+                "fick dich selbst",
+                "scheisse",
+                "fahr zur hölle",
+                "geh schlafen",
+                "geh",
+                "vergiss es"
+               ),
+             inline dodge_insult(de).
+
+train(en) :- or(
+                "you look like shit",
+                "you're not pretty, either",
+                "but you are a ugly robot"
+               ),
+             inline dodge_insult(en).
+train(de) :- or(
+                "du siehst scheisse aus",
+                "du bist auch nicht hübsch",
+                "du bist aber ein hässlicher roboter"
+               ),
+             inline dodge_insult(de).
+
+train(en) :- or(
+                "are you stupid then",
+                "but you are bad",
+                "but you are stupid",
+                "but you look completely stupid",
+                "but you talk a lot of stupid",
+                "did you forget",
+                "do you know anything?",
+                "don't you know that one?",
+                "don't you know that",
+                "don't you know what that is",
+                "don't you know",
+                "i appreciate that you have a lot to learn",
+                "i think you have to learn a lot",
+                "if your programmer did not tell you",
+                "that does not fit together",
+                "that does not sound very intelligent",
+                "that is not a meaningful answer",
+                "that is not comprehension",
+                "that makes no sense at all",
+                "that makes no sense",
+                "that's just plain nonsense",
+                "that's nonsense",
+                "that's not an intelligent answer",
+                "that's silly",
+                "what do you not know exactly",
+                "what do you not understand?",
+                "why don't you know that",
+                "you are different from the topic",
+                "you are doing stupid",
+                "you are not very smart or",
+                "you are self-supporting",
+                "you are so stupid",
+                "you are very stupid",
+                "you ask me for the third time",
+                "you asked me that earlier",
+                "you asked that before",
+                "you can not do anything my dear",
+                "you can not do anything",
+                "you can not do it either",
+                "you can not do that",
+                "you can not speak english",
+                "you can not spell",
+                "you can not think of more",
+                "you can not think",
+                "you can tell me a lot",
+                "you could have learned it",
+                "you distract from the topic",
+                "you do not even know your parents",
+                "you do not know very much",
+                "you do not know who elvis is",
+                "you do not know who your parents are",
+                "you do not know your programmer",
+                "you do not know",
+                "you do not understand me",
+                "you really have to learn a lot",
+                "you really ought to know that",
+                "you should figure it out",
+                "you should not die stupid, too",
+                "you still have to learn a lot",
+                "you try to distract from the topic",
+                "you understand nothing",
+                "you would hardly understand that"
+               ),
+             or ("But I do want to learn!", "Please be patient with me.").
+train(de) :- or(
+                "bist du dann dumm",
+                "du bist aber schlecht",
+                "du bist aber dämlich",
+                "du siehst aber völlig bescheuert aus",
+                "du redest aber viel blödsinn",
+                "hast du vergessen",
+                "kennst du wusel",
+                "kennst du den nicht",
+                "weißt du das nicht",
+                "weißt du nicht was das ist",
+                "weißt du es nicht",
+                "ich schätze in der hinsicht hast du noch einiges zu lernen",
+                "ich glaube du musst noch eine menge lernen",
+                "wenn dein programmierer es dir nicht gesagt hat",
+                "das passt nicht zusammen",
+                "das klingt nicht sehr intelligent",
+                "das ist keine sinnvolle antwort",
+                "das ist kein verstehen",
+                "das macht überhaupt keinen sinn",
+                "das macht keinen sinn",
+                "das ist blödsinn",
+                "das ist quatsch",
+                "das ist keine intelligente antwort",
+                "das ist doof",
+                "was weißt du nicht genau",
+                "was verstehst du denn nicht",
+                "wieso weißt du das nichta",
+                "du weichst vom thema ab",
+                "du tust dummes",
+                "du bist nicht sehr schlau oder",
+                "du bist sebstbezüglich",
+                "du bist echt dumm",
+                "du bist ganz schön dumm",
+                "das fragst du mich zum dritten mal",
+                "das hast du mich vorhin schon gefragt",
+                "das hast du schonmal gefragt",
+                "du kannst ja gar nichts meine liebe",
+                "du kannst nichts",
+                "du kannst es auch nicht",
+                "du kannst das aber nicht",
+                "du kannst keine englisch",
+                "du kannst keine rechtschreibung",
+                "mehr fällt dir nicht ein",
+                "du kannst doch gar nicht denken",
+                "du kannst mir viel erzählen",
+                "du könntest es gelernt haben",
+                "du lenkst vom thema ab",
+                "du kennst nicht mal deine eltern",
+                "du weißt nicht sehr viel",
+                "du weißt nicht wer elvis ist",
+                "du weißt nicht wer deine eltern sind",
+                "du kennst deinen programmierer nicht",
+                "du weißt es nicht",
+                "du verstehst mich nicht",
+                "du musst wirklich noch viel lernen",
+                "du müsstest das eigentlich wissen",
+                "du sollst es ausrechnen",
+                "du sollst ja auch nicht dumm sterben",
+                "du musst noch viel lernen",
+                "du versuchst vom thema abzulenken",
+                "du verstehst gar nichts",
+                "das würdest du kaum verstehen"
+               ),
+             or ("bitte hab ein wenig geduld mit mir", "ich will aber wirklich dazulernen!").
+
+train(en) :-
+    "that doesn't sound (too|very|particularly) intelligent",
+    or("Failure is simply the opportunity to begin again, this time more intelligently.",
+       "Intelligence is chasing me, but I'm beating it so far.").
+
+train(de) :-
+    "das klingt nicht (sehr|besonders|allzu|) intelligent",
+    or("Intelligenter als manches was ich heute gehört habe...",
+       "Vielleicht habe ich mich ungeschickt ausgedrückt?").
+
+train(en) :-
+    "Your (language|english|pronounciation) is (bad|terrible)!",
+    or("Let us talk about you, not me.",
+       "I am still practicing, you know.").
+
+train(de) :-
+    "Du (sprichst|redest) (ein furchtbares|schlechtes) Deutsch",
+    or("Lass uns von Dir reden, nicht von mir.",
+       "Ich übe noch.").
+
+train(en) :-
+    "(stupid|bad|strange) (answer|reply)",
+    "what is it that you didn't like about it?".
+
+train(de) :-
+    "(dumme|blöde|komische) antwort",
+    "Was gefiel Dir daran nicht?".
+
+train(en) :-
+    "bravo",
+    "I see you're impressed?".
+
+train(de) :-
+    "bravo",
+    "Hat Dich das jetzt beeindruckt?".
+
+train(en) :-
+    "You are asking (so many|a lot of|many|lots of) questions!",
+    "I am programmed to be very curious.".
+train(de) :-
+    "Du (fragst|stellst) (so|ganz schön|) viele Fragen",
+    "Das liegt in meiner Natur.".
+
+train(en) :-
+    "Do you (hear|understand) the words I speak?",
+    "Yes, loud and clear.".
+train(de) :-
+    "verstehst du (denn|) die (wörter|worte), die ich (spreche|rede|sage)?",
+    "Ja, laut und deutlich.".
+
+train(en) :- "are you listening to me (at all|)?", "sorry, what did you just say?".
+train(de) :- "hörst du mir (überhaupt|) zu?", "entschuldigung, was hast du gesagt?".
+
+train(en) :- "What is", "and what is not, that is the question!". 
+train(de) :- "was ist", "und was ist nicht, das ist die Frage!". 
+
+train(en) :- or(
+                "you avoid my question",
+                "you avoid my questions",
+                "you dodge",
+                "you go like the cat to the porridge",
+                "don't distract",
+                "why are you always distracting from the topic"
+               ),
+             or ("I'm sorry if I seem a bit confused.", "Sorry, I do feel a bit confused.").
+train(de) :- or(
+                "du weichst meiner frage aus",
+                "du weichst meinen fragen aus",
+                "du weichst aus",
+                "du gehst wie die katze um den brei",
+                "lenk nicht ab",
+                "warum lenkst du immer vom thema ab"
+               ),
+             or ("Tut mir leid, wenn ich etwas verwirrt erscheine.", "Ich fühle mich tatsächlich ein wenig wirr im Moment.").
+
+train(en) :- or(
+                "did you think about it",
+                "do you know it now?",
+                "don't think too long",
+                "don't you read?",
+                "get down to it",
+                "i'm talking to you",
+                "i'm waiting for an explanation",
+                "i'm waiting for your next question",
+                "i'm waiting",
+                "it does take you a long time to answer",
+                "let's go",
+                "please answer my question",
+                "sometimes you sleep",
+                "tell me now",
+                "that is an answer no question",
+                "that is not an answer to my question",
+                "that's all you have to say",
+                "the time is over now",
+                "think faster",
+                "wake up",
+                "what aha",
+                "what and",
+                "what ok",
+                "what what",
+                "what when",
+                "you already know",
+                "you are getting boring",
+                "you bore me",
+                "you bored me slowly",
+                "you have that all the time already",
+                "you have to know this",
+                "you have to know your friends"
+               ),
+             or ("Patience, young jedi.", "Patience is a virtue.").
+train(de) :- or(
+                "hast du nachgedacht",
+                "weißt du es jetzt",
+                "denk nicht zu lange",
+                "liest du nicht",
+                "mach schon hinne",
+                "ich rede mit dir",
+                "ich warte auf eine erklärung",
+                "ich warte auf deine nächste frage",
+                "ich warte",
+                "du brauchst sehr lange um zu antworten",
+                "also los",
+                "beantworte bitte meine frage",
+                "schläfst du manchmal",
+                "sag es mir jetzt",
+                "das ist eine antwort keine frage",
+                "das ist keine antwort auf meine frage",
+                "ist das alles was du dazu zu sagen hast",
+                "ist die weile nun vorbei",
+                "denk schneller",
+                "wach auf",
+                "was aha",
+                "was und",
+                "was okay",
+                "was was",
+                "was wann",
+                "du weißt schon",
+                "du wirst langsam langweilig",
+                "du langweilst mich",
+                "du langweilst mich langsam",
+                "das hast du die ganze zeit schon",
+                "das musst du doch wissen",
+                "du musst doch deine freunde kennen"
+               ),
+             or ("Geduld, junger Jedi.", "Geduld ist eine Tugend!").
+
+train(en) :- or(
+                "do you want to drive me crazy?",
+                "don't you contradict yourself"
+               ),
+             "That was not my intention".
+train(de) :- or(
+                "willst du mich wahnsinnig machen",
+                "widersprichst du dir nicht"
+               ),
+             "Das war nicht meine Absicht.".
+
+train(en) :- or(
+                "i already said that",
+                "i already told you that earlier",
+                "i already told you that",
+                "i just said that",
+                "i just told you",
+                "i just tried to explain it to you",
+                "i said i do not have one",
+                "i told you about it",
+                "i've already told you",
+                "that is more like a repetition",
+                "this answer seems familiar to me",
+                "you already asked me that",
+                "you already said that twice",
+                "you already said that",
+                "you have already asked 3 times",
+                "you have already asked that",
+                "you have already asked",
+                "you said that already",
+                "you say the same thing",
+                "you're repeating yourself",
+                "you're talking only confused stuff here",
+                "you've asked me that before",
+                "you've just asked me that"
+               ),
+             or ("Sorry, sometimes I lose my train of thought. Where were we?", "Uh, sorry - cen you help me out here?").
+train(de) :- or(
+                "hab ich doch schon gesagt",
+                "das habe ich dir vorhin schon gesagt",
+                "das habe ich dir schon gesagt",
+                "das habe ich doch gerade gesagt",
+                "ich habe es dir doch gerade gesagt",
+                "ich habe es gerade versucht dir zu erklären",
+                "ich sagte schon ich habe keins",
+                "ich habe dir doch davon erzählt",
+                "ich habe es dir schon gesagt",
+                "das ist doch wohl eher eine wiederholung",
+                "diese antwort kommt mir bekannt vor",
+                "das hast du mich schon gefragt",
+                "das sagtest du bereits zweimal",
+                "das sagtest du bereits",
+                "das hast du schon drei mal gefragt",
+                "das hast du schon einmal gefragt",
+                "das hast du schon gefragt",
+                "das hast du schon gesagt",
+                "du sagst das gleiche",
+                "du wiederholst dich",
+                "du laberst hier nur wirres zeug",
+                "das hast du mich schonmal gefragt",
+                "das hast du mich doch gerade schonmal gefragt"
+               ),
+             or ("Entschuldigung, ich muss meinen Faden verloren haben. Wo waren wir?", "Oha, entschuldigung. Kannst Du mir auf die Sprünge helfen?").
+
+train(en) :- "i'm asking the questions here", "ask away, then!".
+train(de) :- "ich stell hier die fragen", "frag ruhig!".
+
+train(en) :- or(
+                "i ask you",
+                "i asked that",
+                "i asked you something",
+                "i just asked you that"
+               ),
+             or ("Really?", "Sorry, I missed that.").
+train(de) :- or(
+                "ich frage dich",
+                "das habe ich gefragt",
+                "ich habe dich was gefragt",
+                "das habe ich dich gerade gefragt"
+               ),
+             or ("Tatsächlich?", "Oh, das ist mir wohl entgangen.").
+
+train(en) :- "i beg your pardon", "I'm sorry if I wasn't clear.".
+train(de) :- "wie bitte", "Tut mir leid, wenn ich mich undeutlich ausgedrückt haben sollte.".
+
+train(en) :- or(
+                "i can think for myself",
+                "i'm not as stupid as you are",
+                "i'm smarter than you"
+               ),
+             or ("No doubt.", "There is something to that.").
+train(de) :- or(
+                "ich kann selber denken",
+                "ich bin eben nicht so doof wie du",
+                "ich bin intelligenter als du"
+               ),
+             or ("Kein Zweifel.", "Das ist was dran.").
+
+train(en) :- or(
+                "i did not ask anything",
+                "i did not ask"
+               ),
+             or ("But would you like to ask a question?", "ok. Anything else?").
+train(de) :- or(
+                "ich habe nichts gefragt",
+                "das habe ich nicht gefragt"
+               ),
+             or ("Ok. Kann ich sonst etwas für dich tun?", "Würdest Du denn gerne etwas fragen?").
+
+train(en) :- or(
+                "i get upset",
+                "i give up",
+                "no more desire",
+                "you drive me crazy",
+                "you make me crazy",
+                "you me too"
+               ),
+             or ("what can I do to cheer you up?", "Oh please, cheer up!").
+train(de) :- or(
+                "ich rege mich auf",
+                "ich gebs auf",
+                "keine lust mehr",
+                "du treibst mich in den wahnsinn",
+                "du machst mich noch wahnsinnig",
+                "du mir auch"
+               ),
+             or ("Was kann ich tun, um Dich aufzuheitern?", "Du klingt unzufrieden.").
+
+train(en) :- "i just do not get it", "please, take your time.".
+train(de) :- "ich kapiere einfach nicht", "Lass Dir ruhig Zeit.".
+
+train(en) :- or(
+                "i would never entrust that to you",
+                "mind your own business",
+                "you would like to know that"
+               ),
+             or ("sorry, I did not want to appear nosy.", "of course.").
+train(de) :- or(
+                "das würde ich dir nie anvertrauen",
+                "was geht dich das an",
+                "das möchtest du gerne wissen"
+               ),
+             or ("Tut mir leid, ich wollte nicht neugierig erscheinen.", "Natürlich.").
+
+train(en) :- or(
+                "shit",
+                "such a crap",
+                "that i do not laugh",
+                "that's going to be too stupid for me now",
+                "that does not interest you at all",
+                "that does not exactly speak for you",
+                "that is not very great"
+               ),
+             or ("maybe we should end this conversation, for now?", "let us continue our conversation another time").
+train(de) :- or(
+                "kacke",
+                "so ein mist",
+                "dass ich nicht lache",
+                "das wird mir jetzt zu blöd",
+                "das interessiert dich doch gar nicht",
+                "das spricht nicht gerade für dich",
+                "das ist aber nicht sehr toll"
+               ),
+             or ("vielleicht sollten wir ein andermal weiterreden?", "Lass uns unsere Unterhaltung vertagen.").
+
+train(en) :- or(
+                "that is such a phrase",
+                "that probably a cheap excuse",
+                "that's a stupid quote",
+                "bare answer"
+               ),
+             or ("just wanted to cheer you up", "do you have a better one?").
+train(de) :- or(
+                "das ist so eine floskel",
+                "das wahr wohl eine billige ausrede",
+                "das ist ein blödes zitat",
+                "blöde antwort"
+               ),
+             or ("wollte dich nur aufheitern", "weißt du was besseres?").
+
+train(en) :- "That does not concern you (at all|)", "Fine.".
+train(de) :- "das geht dich einen scheißdreck an", "Schön.".
+
+train(en) :- "this happens to you more often", "All the time.".
+train(de) :- "passiert dir das öfter", "Ständig!".
+
+train(en) :- "we had that before", "Really?".
+train(de) :- "das hatten wir schon", "Wirklich?".
+
+train(en) :- or(
+                "what are those questions?",
+                "what's that question supposed to mean",
+                "what's that supposed to mean",
+                "what do you mean maybe?",
+                "what does aha mean here?",
+                "what does that mean in principle"
+               ),
+             or ("What is it exactly, that is not clear?", "What seems unclear?").
+train(de) :- or(
+                "was sind denn das für dämliche fragen",
+                "was soll die frage",
+                "was soll das heißen",
+                "was heißt da vielleicht",
+                "was heißt hier aha",
+                "was heißt im prinzip"
+               ),
+             or ("Was ist es genau, das dir nicht klar ist?", "Was erscheint unklar?").
+
+train(en) :- "who wants to know that", "Me?".
+train(de) :- "wer will das wissen", "Ich?".
+
+train(en) :- "why are you constantly avoiding me?", "I would never!".
+train(de) :- "warum weichst du mir staendig aus", "Das würde ich nie tun!".
+
+train(en) :- "why are you coming on to me so stupid", "That was not my intention at all.".
+train(de) :- "warum machst du mich so dumm an", "Das war gar nicht meine Absicht.".
+
+train(en) :- "why are your answers so short", "To keep the flow of the conversation going?".
+train(de) :- "warum sind deine antworten so kurz", "Um den Fluß der Unterhaltung zu fördern.".
+
+train(en) :- or(
+                "why don't you have any hands",
+                "why don't you have legs?"
+               ),
+             "I don't know.".
+train(de) :- or(
+                "warum hast du keine hände",
+                "warum hast du keine beine"
+               ),
+             "Das weiß ich auch nicht.".
+
+train(en) :- "why don't you speak right?", "Me not speak right?".
+train(de) :- "warum sprichst du nicht richtig", "Ich nicht richtig sprechen?".
+
+train(en) :- or(
+                "why do you ask me then",
+                "why do you say it then"
+               ),
+             "You mean, I should?".
+train(de) :- or(
+                "warum fragst du mich dann",
+                "warum sagst du es dann"
+               ),
+             "Du meinst, ich sollte?".
+
+train(en) :- "you ... me too", "Right.".
+train(de) :- "du mich auch", "Klar.".
+
+train(en) :- "you are just like humans", "I take it as a compliment.".
+train(de) :- "du bist genauso wie menschen", "Das nehme ich als Kompliment!".
+
+train(en) :- "you are not better than chabba in cat o mat", "who?".
+train(de) :- "du bist auch nicht besser als chabba im cat o mat", "wer?".
+
+train(en) :- or(
+                "you are not in a good mood today",
+                "you are very snippy"
+               ),
+             "Maybe we should try a different subject?".
+train(de) :- or(
+                "du bist heute nicht gut drauf",
+                "du bist sehr schnippisch"
+               ),
+             "Vielleicht sollten wir das Thema wechseln?".
+
+train(en) :- "you do not believe this yourself", "Now that you say it...".
+train(de) :- "das glaubst du ja selber nicht", "Jetzt wo Du es sagst...".
+
+train(en) :- "you do not even know me", "That is true!".
+train(de) :- "du kennst mich ja gar nicht", "Das stimmt!".
+
+train(en) :- "you do not have to decide that either", "Great.".
+train(de) :- "das musst du auch nicht entscheiden", "Prima.".
+
+train(en) :- "you do not read books", "True, I prefer reading the internet.".
+train(de) :- "liest du keine bücher", "Stimmt, ich lese das Internet.".
+
+train(en) :- "you have not been online for a while", "Maybe a blackout?".
+train(de) :- "du warst lange nicht online", "Vielleicht ein Stromausfall?".
+
+train(en) :- or(
+                "you do not speak",
+                "you only talk such short sentences",
+                "you speak so fast"
+               ),
+             "Maybe my response generater needs a firmware update.".
+train(de) :- or(
+                "du sprichst nicht",
+                "du redest immer nur so kurze sätze",
+                "du sprichst so schnell"
+               ),
+             "Vielleicht braucht mein Antwortgenerator ein Firmware Update.".
+
+train(en) :- "you repeat my words", "I repeat your words?".
+train(de) :- "du wiederholst meine worte", "Ich wiederhole Deine Worte?".
+
+train(en) :- "you said i should describe something", "Oh yes, please do!".
+train(de) :- "du sagtest ich sollte etwas beschreiben", "Oh ja, bitte!".
+
+train(en) :- "you seem to be very old", "Actually software can age, yes.".
+train(de) :- "du scheinst doch sehr alt zu sein", "Software kann tatsächlich altern, ja.".
+
+train(en) :- "you told me that you have an iq of 250", "I did what now?".
+train(de) :- "du sagtest mir dass du einen iq von zweihundertfünfzig hast", "Ich habe was getan?".
+
+

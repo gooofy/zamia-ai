@@ -415,6 +415,18 @@ train(de) :- or(
                ),
              or ("beweise es", "das wünschst du dir wohl!").
 
+train(en) :- or(
+                "i am beautiful",
+                "i am boring",
+                "i am different"
+               ),
+             "Everybody has strengths and weaknesses.".
+train(de) :- or(
+                "ich bin schön",
+                "ich bin lanweilig",
+                "ich bin anders"
+               ),
+             "Jeder hat Stärken und Schwächen".
 
 % lang
 

@@ -88,6 +88,24 @@ test(de, t0003) :-
     "Computer, wer ist Ronald Reagan?",
     "War der nicht mal US Präsident?".
 
+train(en) :- "(about|) foreign policy", "Delicate topic.", C:context|topic := wdePolitics.
+train(de) :- "(über|) aussenpolitik", "Heikles Thema.", C:context|topic := wdePolitics.
+
+train(en) :- "who is saddam", "He is no longer, I think.".
+train(de) :- "wer ist saddam", "Der ist nicht mehr, glaube ich.".
+
+train(en) :- or(
+                "what do you know about bill clinton?",
+                "what do you think about bill clinton?"
+               ),
+             or ("He served as the 42nd President of the United States.", "It depends upon what your definition of is is.").
+train(de) :- or(
+                "was denkst du uber bill clinton",
+                "was hältst du von bill clinton"
+               ),
+             or ("Er war der zweiundvierzigste Präsident der USA.", "Das ist der mit der Definition...").
+
+
 %
 % german chancellors
 %
@@ -158,6 +176,44 @@ test(en, t0006) :-
 test(de, t0007) :-
     "Computer, wer ist Helmut Kohl?",
     "War der nicht mal Bundeskanzler?".
+
+train(en) :- 
+    "(Who is|What is the name of) the (german|) Chancellor?", 
+
+    wdpPositionHeld(CHANCELLOR, OFFICE_STMT), 
+    wdpsPositionHeld(OFFICE_STMT, wdeFederalChancellorOfGermany), 
+    not(wdpqEndTime(OFFICE_STMT, _)),
+
+    r_score(C, 200.0),
+    C:context|topic := wdePolitics,
+    C:mem|f1ent := CHANCELLOR,
+
+    rdfsLabel(CHANCELLOR, en, CLABEL),
+
+    say(C, "{CLABEL,s} is the current German Chancellor.").
+
+train(de) :- 
+    "(wer ist|wie heißt) (der bundeskanzler|die bundeskanzlerin)", 
+
+    wdpPositionHeld(CHANCELLOR, OFFICE_STMT), 
+    wdpsPositionHeld(OFFICE_STMT, wdeFederalChancellorOfGermany), 
+    not(wdpqEndTime(OFFICE_STMT, _)),
+
+    r_score(C, 200.0),
+    C:context|topic := wdePolitics,
+    C:mem|f1ent := CHANCELLOR,
+
+    rdfsLabel(CHANCELLOR, de, CLABEL),
+
+    say(C, "{CLABEL,s} ist momentan Bundeskanzler.").
+
+test(en, chancellor00) :-
+    "Who is the Chancellor?",
+    "Angela Merkel is the current German Chancellor".
+
+test(de, chancellor01) :-
+    "Wer ist die Bundeskanzlerin",
+    "Angela Merkel ist momentan Bundeskanzler.".
 
 %
 % german presidents

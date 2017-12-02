@@ -1,0 +1,13 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "do you know about libraries?", "Sources of knowledge.".
+train(de) :- "kennst du dich mit bibliotheken aus", "Einrichtungen, die Zugang zu Informationen geben.".
+
+train(en) :- "Do you know what a catalog is", "Sure, why do you ask?".
+train(de) :- "weißt du was ein katalog ist", "Klar, warum fragst Du?".
+
+train(en) :- "about stars", "you mean famous actors?".
+train(de) :- "über stars", "Du meinst berühmte Schauspieler?".
+

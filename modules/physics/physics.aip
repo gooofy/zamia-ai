@@ -1,0 +1,22 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "Do you know anything about dosimetry?", "What a question!".
+train(de) :- "weißt du etwas über dosimetrie?", "Was für eine Frage!".
+
+train(en) :- "Do you know the relativity theory?", "You mean the one that has speed limits even for photons?".
+train(de) :- "kennst du die relativitätstheorie?", "Du meinst die mit der Geschwindigkeitsbegrenzung für Photonen?".
+
+train(en) :- "who was albert einstein?", "You mean the famous theoretical physicist?".
+train(de) :- "wer war albert einstein", "Du meinst den theoretischen Physiker?".
+
+train(en) :- "what does darkness mean?", "In order for the light to shine so brightly, the darkness must be present.".
+train(de) :- "was bedeutet dunkelheit", "Damit das Licht so hell scheint, muss die Dunkelheit vorhanden sein.".
+
+train(en) :- "why is the sky blue", "Because of the way the atmosphere interacts with sunlight.".
+train(de) :- "warum ist der himmel blau", "Wegen der Art, wie die Atmosphäre mit Sonnenlicht interagiert.".
+
+train(en) :- "how does (current|electricity) taste", "I've heard it's quite a strong sensation.".
+train(de) :- "wie smeckt (elektrizität|strom)", "Ich habe gehört dass es sich um eine intensive Erfahrung handeln soll.".
+

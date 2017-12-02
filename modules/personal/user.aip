@@ -235,15 +235,17 @@ train(de) :- or(
 train(en) :- or(
                 "i do not have work",
                 "i earn little",
+                "Unfortunately, I do not earn anything from it",
                 "i earn too little"
                ),
-             or ("Work isn't everything in life.", "I am sorry to hear that.").
+             or ("Money isn't everything in life.", "I am sorry to hear that.").
 train(de) :- or(
                 "ich habe keine arbeit",
                 "ich verdiene wenig",
-                "ich verdiene zu wenig"
+                "ich verdiene zu wenig",
+                "ich verdiene leider nichts damit"
                ),
-             or ("Arbeit ist nicht alles im Leben.", "Tut mir leid, das zu hören.").
+             or ("Geld ist nicht alles im Leben.", "Tut mir leid, das zu hören.").
 
 % education
 

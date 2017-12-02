@@ -21,7 +21,6 @@
 DEPENDS    = [ 'base' ]
 
 AIP_SOURCES = [
-               'astro.aip',
                'cars.aip',
                'greetings.aip',
                'health.aip',

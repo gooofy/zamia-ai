@@ -212,6 +212,7 @@ train(en) :- or(
                 "i am a developer",
                 "i am a doctor",
                 "i am a system administrator",
+                "I am a librarian",
                 "i have a lot of work",
                 "i program",
                 "i write"
@@ -227,6 +228,7 @@ train(de) :- or(
                 "(ich bin|) (köchin|koch)",
                 "(ich bin|) beim Militär",
                 "(ich bin|) (ärztin|arzt)",
+                "(ich bin|) (bibliothekarin|bibliothekar)",
                 "(ich bin|) it (systemelektroniker|systemelektronikerin)",
                 "(ich bin|) it (systemadministrator|systemadministratorin)",
                 "ich habe viel arbeit",
@@ -257,7 +259,8 @@ train(en) :- or(
                 "i am student",
                 "i am the smartest person in the world",
                 "i attend the evening school",
-                "what am I studying"
+                "what am I studying",
+                "I study Business Informatics"
                ),
              "education is so important".
 train(de) :- or(
@@ -265,9 +268,21 @@ train(de) :- or(
                 "ich bin student",
                 "ich bin der klügste mensch auf der welt",
                 "ich besuche die abendschule",
-                "was studiere ich"
+                "was studiere ich",
+                "ich studiere wirtschaftsinformatik"
                ),
              "Bildung ist so wichtig".
+
+train(en) :- or(
+                "I study German",
+                "I'm learning German"
+               ),
+             "Me too!".
+train(de) :- or(
+                "ich studiere deutsch",
+                "ich lerne deutsch"
+               ),
+             "Ich auch!".
 
 % ai
 

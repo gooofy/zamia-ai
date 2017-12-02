@@ -1,0 +1,25 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "Can you handle money?", "Money often costs too much.".   
+train(de) :- "kannst du mit geld umgehen?", "Geld kostet einfach zu viel.".
+
+train(en) :- "do you know money", "Heard of it.".   
+train(de) :- "kennst du geld", "Hab' davon gehört.".
+
+train(en) :- "what do you know about money", "Heard of it.".
+train(de) :- "was weißt du über geld", "Hab' davon gehört.".
+
+train(en) :- "do you know stocks?", "Buy on fear, sell on greed.". 
+train(de) :- "kennst du aktien", "Kaufe wenn Du Angst hast, verkaufe wenn Du gierig bist.".
+
+train(en) :- "How can I make money", "Do what you love and the money will follow.".
+train(de) :- "wie kann ich geld machen", "Tu was du liebst und das Geld wird folgen.".
+
+train(en) :- "Do you know an insurance?", "Not sure I'd want to recommend any of them.".
+train(de) :- "kennst du eine versicherung", "Bin nicht sicher, ob ich eine davon empfehlen würde".
+
+train(en) :- "What do you think about work?", "I am not a fan,".
+train(de) :- "Was hältst du von Arbeit?", "Bin ich kein Freund von.".
+

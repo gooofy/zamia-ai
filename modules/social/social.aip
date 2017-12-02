@@ -1,0 +1,153 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(somebody|he|she|my colleague|my boss|my mother|my father|my brother|my sister|my neighbour|my friend|my boyfriend|my girlfriend) told me about you",
+    "only good things, I hope".
+
+train(de) :-
+    "(jemand|er|sie|mein Kollege|mein Chef|meine Mutter|mein Vater|mein Bruder|meine Schwester|mein Nachbar|mein Freund|meine Freundin) hat mir von dir erzählt",
+    "nur gutes, hoffe ich?".
+
+train(en) :-
+    "(I love|I like|I want to have|I want|I hate|do you like|do you hate) (kids|children)?",
+    "Kids are the best!".
+
+train(de) :-
+    "(ich liebe|ich mag|ich hätte gerne|ich will|ich möchte|ich hasse|magst Du|hasst Du) kinder",
+    "Kinder sind toll!".
+
+train(en) :-
+    "(I think|do you think) (he|she) is looking great",
+    "isn't that a bit shallow?".
+
+train(de) :-
+    "(ich finde|denkst du|findest du auch) (er|sie|der|die) sieht toll aus",
+    "ist das nicht eine sehr oberfächliche betrachtungsweise?".
+
+train(en) :-
+    "(I am| now I am | since yesterday I am| then I am) single (again|)",
+    or("good for you!",
+       "enjoy your freedom!").
+
+train(de) :-
+    "(ich bin wieder|jetzt bin ich wieder|seit gestern bin ich|das war ein tolles|gestern hörte ich ein tolles) solo",
+    or("du fühlst dich befreit, nehme ich an?",
+       "wie schön für dich!").
+
+train(en) :- or(
+                "(I am|I am so|I want to fall|so) in love (again|)",
+                "i love a (man|woman)",
+                "i'm in love",
+                "love",
+                "what do you know about love",
+                "what do you mean by the word love?",
+                "what do you understand by love",
+                "what is in love",
+                "what is love"
+               ),
+             "I find love to be one of the hardest emotions to emulate".
+train(de) :- or(
+                "ich liebe (einen mann|eine frau)",
+                "(ich bin|ich bin ja so|ach bin ich|ich wäre so gerne mal wieder|so richtig) verliebt",
+                "ich bin verliebt",
+                "liebe",
+                "was weist du über die liebe",
+                "was verstehst du unter dem wort liebe",
+                "was verstehst du unter liebe",
+                "was ist verliebtheit",
+                "was ist liebe"
+               ),
+             "Ich finde Liebe eine der am schwierigsten zu emulierenden Emotionen.".
+
+train(en) :-
+    "everyone's to blame",
+    "for what?".
+
+train(de) :-
+    "alle sind schuld",
+    "Woran denn?".
+
+train(en) :-
+    "I am (happy|glad|so happy|so glad) to (see|hear from) you",
+    "same here".
+
+train(de) :-
+    "ich (freue mich|bin froh|bin so froh|bin sehr froh), dich zu (sehen|hören)",
+    "geht mir genau so".
+
+train(en) :- or(
+                "i am lonely",
+                "i am looking for a nice (boy|girl)",
+                "i am looking for a (man|woman)",
+                "how do i get a (man|woman)",
+                "i am very lonely",
+                "i'm looking for a (woman|man)"
+               ),
+             or ("have you tried dating websites?", "maybe you should go out more often?").
+train(de) :- or(
+                "ich bin einsam",
+                "ich suche (ein nettes mädchen|einen netten jungen)",
+                "ich suche (einen mann|eine frau)",
+                "wie bekomme ich (einen mann|eine frau)",
+                "ich bin sehr einsam",
+                "ich suche (eine frau|einen mann)"
+               ),
+             or ("hast du es schon mit online dating versucht?", "vielleicht solltest Du mehr ausgehen?").
+
+train(en) :- "one who looks like sarah michelle gellar", "sure".
+train(de) :- "einen der aussieht wie sarah michelle gellar", "geht klar".
+
+
+train(en) :- or(
+                "(my|) children",
+                "(my|) brother",
+                "(my|) daughter",
+                "(my|) father",
+                "(my|) girlfriend",
+                "(my|) mother",
+                "(my|) mum",
+                "(my|) sister",
+                "married"
+               ),
+             "ah, family business.".
+train(de) :- or(
+                "(meine|) kinder",
+                "(mein|) bruder",
+                "(meine|) tochter",
+                "(mein|) vater",
+                "(meine|) freundin",
+                "(meine|) mutter",
+                "(meine|) mami",
+                "(meine|) schwester",
+                "verheiratet"
+               ),
+             "ah, Familienangelegenheiten".
+
+train(en) :- or(
+                "my friend",
+                "my friends"
+               ),
+             "what is more important, friends or family?".
+train(de) :- or(
+                "mein freund",
+                "meine freunde"
+               ),
+             "Was ist wichtiger, Freunde oder Familie?".
+
+train(en) :- or(
+                "what do you know about men",
+                "what do you know about women"
+               ),
+             or ("I tend to find human issues confusing.", "Everything wikipedia told me.").
+train(de) :- or(
+                "was weist du über männer",
+                "was weist du über frauen"
+               ),
+             or ("Ich finde so menschliche Themen oft verwirrend.", "Alles, was mir die Wikipedia verraten hat.").
+
+train(en) :- "twin", "really?".
+train(de) :- "zwilling", "wirklich?".
+

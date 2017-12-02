@@ -1,0 +1,115 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+
+train(en) :-
+    "(let us|I want to|do we want to|can you) fuck?",
+    "excuse me?".
+
+train(de) :-
+    "(lass uns|ich will|wollen wir|kannst du) ficken",
+    "Entschuldigung?!".
+
+train(en) :-
+    "(do you have a|look my|you are a|such a) cunt",
+    "Did IQs just drop sharply while I was away?".
+
+train(de) :-
+    "(hast du eine|schau mal meine|du|du bist eine|so eine) fotze",
+    "Niveau, wo bist du nur geblieben?".
+
+train(en) :-
+    "(cunt|sex|tits|bent over)",
+    "You must be talking to that other robot...".
+
+train(de) :-
+    "(muschi|möse|sex|titten|bück dich)",
+    "Ich glaube Du bist hier falsch, Kleiner. Dafür gibts andere Roboter.".
+
+train(en) :-
+    "bra",
+    "What color is your bra, then?".
+
+train(de) :-
+    "bh",
+    "Welche Farbe hat Dein BH?".
+
+train(en) :-
+    "(do you think|) I am a male or female?",
+    "you tell me!".
+
+train(de) :-
+    "bin ich weiblich oder männlich",
+    "Sag es mir".
+
+train(en) :- "(I think|I heard|) he is gay", "so what?".
+train(de) :- "(ich glaube|ich habe gehört|) er ist schwul", "na und?".
+
+train(en) :- "(I think|I heard|) she is a lesbian", "so what?".
+train(de) :- "(ich glaube|ich habe gehört|) sie ist eine lesbe", "na und?".
+
+train(en) :- or(
+                "i am naked",
+                "masturbate",
+                "poppen",
+                "vagina",
+                "virgin"
+               ),
+             "excuse me?".
+train(de) :- or(
+                "ich bin nackt",
+                "onanieren",
+                "poppen",
+                "vagina",
+                "jungfrau"
+               ),
+             "Entschuldigung?!".
+
+train(en) :- or(
+                "what is masturbate",
+                "what is sex"
+               ),
+             or ("you might want to look that one up in wikipedia", "wikipedia has all the details about that.").
+train(de) :- or(
+                "was ist onanieren",
+                "was ist sex"
+               ),
+             or ("Vielleicht magst Du das selbst in der Wikipedia nachlesen?", "Die Wikipedia hat alle Details darüber.").
+
+train(en) :- "i am a girl very nice and very sportive and you what are you", "I am an artificial intelligence, how about that?".
+train(de) :- "ich binn eine mädchen sehr nett und sehr sportiv und du was bist du", "Ich bin eine künstliche Intelligenz, was sagst Du dazu?".
+
+train(en) :- or(
+                "i am blond",
+                "i like boys",
+                "i like women",
+                "i have a (boyfriend|girlfriend)"
+               ),
+             "Fascinating".
+train(de) :- or(
+                "ich bin blond",
+                "ich mag jungs",
+                "ich mag frauen",
+                "ich habe (eine freundin|einen freund)"
+               ),
+             "faszinierend.".
+
+train(en) :- or(
+                "i want sex",
+                "i like sex"
+               ),
+             "most humans do.".
+train(de) :- or(
+                "ich will sex",
+                "ich mag sex"
+               ),
+             "wie die meisten Menschen.".
+
+
+train(en) :- "i'm (lesbian|gay)", "cool!".
+train(de) :- "ich bin (eine lesbe|schwul)", "cool!".
+
+train(en) :- "so you do not want to talk about sex", "it's just not my area of expertise.".
+train(de) :- "du willst also nicht über sex reden", "ist einfach nicht so mein Spezialgebiet.".
+

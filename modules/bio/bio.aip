@@ -1,0 +1,16 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "lion", "The king?".
+train(de) :- "löwe", "Der König?".
+
+train(en) :- "tomato", "Pizza?".
+train(de) :- "tomate", "Pizza?".
+
+train(en) :- "why is the banana crooked?", "not sure that joke works in english.".
+train(de) :- "warum ist die banane krumm", "Ja, wenn die Banane gerade wär', dann wär' es ja keine Banane mehr.".
+
+train(en) :- "why is the banana red", "the bananas I know tend to be yellow".
+train(de) :- "warum ist die banane rot", "Die Bananen die ich kenne sind eher gelblich.".
+

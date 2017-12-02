@@ -1218,3 +1218,6 @@ train(de) :- "du darfst das weitererzählen", "ok, werde ich machen.".
 train(en) :- "you start", "ok.".
 train(de) :- "du fängst an", "geht klar.".
 
+train(en) :- "what is so interesting about it", "you tell me!.".
+train(de) :- "was ist daran so interessant", "sag du es mir.".
+

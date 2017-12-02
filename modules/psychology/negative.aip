@@ -468,7 +468,8 @@ train(en) :- or(
                 "you're repeating yourself",
                 "you're talking only confused stuff here",
                 "you've asked me that before",
-                "you've just asked me that"
+                "you've just asked me that",
+                "why are you asking for it again?"
                ),
              or ("Sorry, sometimes I lose my train of thought. Where were we?", "Uh, sorry - cen you help me out here?").
 train(de) :- or(
@@ -494,7 +495,8 @@ train(de) :- or(
                 "du wiederholst dich",
                 "du laberst hier nur wirres zeug",
                 "das hast du mich schonmal gefragt",
-                "das hast du mich doch gerade schonmal gefragt"
+                "das hast du mich doch gerade schonmal gefragt",
+                "warum fragst du schon wieder danach"
                ),
              or ("Entschuldigung, ich muss meinen Faden verloren haben. Wo waren wir?", "Oha, entschuldigung. Kannst Du mir auf die Sprünge helfen?").
 

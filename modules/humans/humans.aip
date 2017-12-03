@@ -61,7 +61,7 @@ test(en, t0001) :-
     "Would you like to know more about her?".
 
 train(en) :-
-    "(what about | who is | what is) {known_humans:LABEL}",
+    "(what about | who is | who was | what is| what do you think of|) {known_humans:LABEL}",
 
     ner (en, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
@@ -71,7 +71,7 @@ train(en) :-
     answer_info_human (C, en, ENTITY).
 
 train(de) :-
-    "(wer ist|wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über) {known_humans:LABEL}",
+    "(wer ist| wer war | wer war eigentlich | wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über| was hältst du von|) {known_humans:LABEL}",
 
     ner (de, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 

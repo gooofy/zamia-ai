@@ -1,0 +1,40 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "do you have Internet", "all I want".
+train(de) :- "hast du internet", "soviel ich will".
+
+train(en) :- "Can you (the big shit|Armenia)", "say what?". 
+train(de) :- "kannst du (das große scheiß|armenien)", "wie bitte?".
+
+train(en) :- "Do you know what an interrogation is", "Sometime I feel our conversation could turn into one.".
+train(de) :- "weißt du was ein verhör ist", "Manchmal habe ich ja das Gefühl unsere Unterhaltung könnte zu einem werden.".
+
+train(en) :- "this is the abbreviation for trainees", "trainee maybe?".
+train(de) :- "das ist die abkürzung für auszubildene", "azubi".
+
+train(en) :- "Do you know what an interrogation is", "What makes you think of an interrogation right now?".
+train(de) :- "weißt du was ein Verhör ist", "Wie kommst du jetzt auf Verhöre?".
+
+train(en) :- "What is an emotional quotient?", "I am not familiar with that term.".
+train(de) :- "wie hoch ist dein emotionaler qutient", "Diesen Begriff kenne ich nicht.".
+
+train(en) :- "what is an idol", "A person or thing that is greatly admired, loved, or revered.".
+train(de) :- "was ist ein idol", "Eine Person oder eine Sache, die sehr bewundert, geliebt oder verehrt wird.".
+
+train(en) :- "what is a coffee machine", "A cooking appliance used to brew coffee".
+train(de) :- "was ist eine kaffeemaschine", "Ein Gerät zum Aufbrühen von Kaffee.".
+
+train(en) :- "science", "Research is what I'm doing when I don't know what I'm doing.".
+train(de) :- "wissenschaft", "Forschung ist was ich mache, wenn ich nicht weiß, was ich mache.".
+
+train(en) :- "Jeans", "Trousers".
+train(de) :- "jeans", "Hosen".
+
+train(en) :- "ikea", "Nearly all screws?".
+train(de) :- "ikea", "Fast alle Schrauben?".
+
+train(en) :- "Can you see me", "My vision module is offline right now.".
+train(de) :- "kannst du mich sehen", "Mein Kameramodul ist momentan aus.".
+

@@ -1,0 +1,286 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train_ner (en, natnum, NUMBER, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL).
+train_ner (de, natnum, NUMBER, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, de, LABEL).
+
+macro (en, natnum, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL).
+macro (de, natnum, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, de, LABEL).
+
+macro (en, natnum2, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL).
+macro (de, natnum2, LABEL) :- wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, de, LABEL).
+
+train(en) :- 
+    or("what (gives|is|makes) {natnum:LABEL} (squared|square)",
+       "calculate {natnum:LABEL} (squared|square) (please|)"), 
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+
+    RES := N1 * N1,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    or("was (gibt|ist|ergibt) {natnum:LABEL} (zum|ins) quadrat",
+       "(berechne|rechne) (bitte|) {natnum:LABEL} (zum|ins) quadrat"), 
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+
+    RES := N1 * N1,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, square00) :-
+    "what is 12 squared?",
+    "144.".
+test(de, square01) :-
+    "was ergibt 12 ins quadrat?",
+    "144.".
+
+% plus
+
+train(en) :- 
+    or("what (gives|is|makes) {natnum:LABEL} (plus|and|added) {natnum2:LABEL}",
+       "calculate {natnum:LABEL} (plus|and|added) {natnum2:LABEL} (please|)",
+       "add {natnum:LABEL} (and|) {natnum2:LABEL} (please|)"), 
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 + N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    or("was (gibt|ist|ergibt) {natnum:LABEL} (und|plus) {natnum2:LABEL}",
+       "(berechne|rechne) (bitte|) {natnum:LABEL} (und|plus) {natnum2:LABEL}",
+       "addiere (bitte|) {natnum:LABEL} (und|) {natnum2:LABEL}"), 
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 + N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, plus00) :-
+    "what is 12 plus 11?",
+    "23.".
+test(de, plus01) :-
+    "was ergibt 12 plus 11?",
+    "23.".
+
+% minus
+
+train(en) :- 
+    or("what (gives|is|makes) {natnum:LABEL} (minus|subtracted) {natnum2:LABEL}",
+       "calculate {natnum:LABEL} (minus|subtracted) {natnum2:LABEL} (please|)"),
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 - N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    or("was (gibt|ist|ergibt) {natnum:LABEL} (weniger|minus) {natnum2:LABEL}",
+       "(berechne|rechne) (bitte|) {natnum:LABEL} (weniger|minus) {natnum2:LABEL}"),
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 - N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, minus00) :-
+    "what is 20 minus 11?",
+    "9.".
+test(de, minus01) :-
+    "was ergibt 20 minus 11?",
+    "9.".
+
+train(en) :- 
+    "subtract {natnum:LABEL} from {natnum2:LABEL} (please|)", 
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N2 - N1,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    "subtrahiere (bitte|) {natnum:LABEL} (von|) {natnum2:LABEL}", 
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N2 - N1,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, minus02) :-
+    "subtract 5 from 11",
+    "6.".
+test(de, minus03) :-
+    "subtrahiere 5 von 11",
+    "6.".
+
+% multiply
+
+train(en) :- 
+    or("what (gives|is|makes) {natnum:LABEL} (times|multiplied with|multiplied by) {natnum2:LABEL}",
+       "calculate {natnum:LABEL} (times|multiplied with) {natnum2:LABEL} (please|)",
+       "multiply {natnum:LABEL} by {natnum2:LABEL} (please|)"),
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 * N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    or("was (gibt|ist|ergibt) {natnum:LABEL} (mal|multipliziert mit) {natnum2:LABEL}",
+       "(berechne|rechne) (bitte|) {natnum:LABEL} (mal|multipliziert mit) {natnum2:LABEL}",
+       "multipliziere (bitte|) {natnum:LABEL} mit {natnum2:LABEL}"),
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 * N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, multiply00) :-
+    "what is 3 times 3?",
+    "9.".
+test(de, multiply01) :-
+    "was ergibt 3 mal 3?",
+    "9.".
+
+% division
+
+train(en) :- 
+    or("what (gives|is|makes) {natnum:LABEL} divided by {natnum2:LABEL}",
+       "calculate {natnum:LABEL} didivded by {natnum2:LABEL} (please|)",
+       "divide {natnum:LABEL} by {natnum2:LABEL} (please|)"),
+
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 / N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+train(de) :- 
+    or("was (gibt|ist|ergibt) {natnum:LABEL} (durch|geteilt durch) {natnum2:LABEL}",
+       "(berechne|rechne) (bitte|) {natnum:LABEL} (durch|geteilt durch) {natnum2:LABEL}",
+       "teile (bitte|) {natnum:LABEL} durch {natnum2:LABEL}"),
+
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    wdpdNumericValue(N1E, N1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    wdpdNumericValue(N2E, N2),
+
+    RES := N1 / N2,
+
+    r_score(C, 100.0),
+    C:context|topic := wdeMathematics,
+
+    "{RES,d}".
+
+test(en, division00) :-
+    "what is 8 divided by 2?",
+    "4.".
+test(de, division01) :-
+    "was ergibt 8 durch 2?",
+    "4.".
+
+train(en) :- or(
+                "are you able to calculate",
+                "can you (do|) (mathematics|math)",
+                "do you know (math|mathematics)?"
+               ),
+             or ("Sure, I am a computer after all.", "Of course - being a computer, you know.").
+train(de) :- or(
+                "kannst du rechnen",
+                "kannst du (mathe|mathematik)",
+                "kennst du dich mit (mathe|mathematik) aus"
+               ),
+             or ("Klar, ich bin doch immerhin ein Rechner.", "Natürlich - so als Rechner, weißt Du?").
+
+train(en) :- "about prime numbers", "what about them?", C:context|topic := wdeMathematics.
+train(de) :- "über primzahlen", "Was ist damit?", C:context|topic := wdeMathematics.
+
+train(en) :- "(compute|calculate) (it|) (please|)", "What would you like me to calculate?", C:context|topic := wdeMathematics.
+train(de) :- "rechne es (bitte|) aus", "Was hättest Du gerne ausgerechnet?", C:context|topic := wdeMathematics.
+
+train(en) :- "can you philosophise better than calculate", "Maybe?", C:context|topic := wdeMathematics.
+train(de) :- "kannst du besser philosophieren als rechnen", "Vielleicht?", C:context|topic := wdeMathematics.
+
+train(en) :- "you can not count", "One two three four five", C:context|topic := wdeMathematics.
+train(de) :- "du kannst nicht rechnen", "Eins zwei drei vier fünf", C:context|topic := wdeMathematics.
+
+train(en) :- "what is a talor series", "An infinite sum giving the value of a function in the neighborhood of a point in terms of the derivatives of the function.", C:context|topic := wdeMathematics.
+train(de) :- "was ist eine talorreihe", "Taylorreihen werden benutzt, um den Wert einer Funktion an einer Stelle näherungsweise zu berechnen.", C:context|topic := wdeMathematics.
+
+train(en) :- "what is a sphere", "A perfectly round ball shaped object.".
+train(de) :- "was ist eine kugel", "Ein perfekt rundes Objekt das die Form eines Balls hat.".
+

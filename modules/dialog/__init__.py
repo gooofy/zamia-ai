@@ -22,7 +22,6 @@ DEPENDS    = [ 'base' ]
 
 AIP_SOURCES = [
                'greetings.aip',
-               'health.aip',
                'humor.aip',
                'languages.aip',
               ]

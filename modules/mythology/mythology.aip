@@ -1,0 +1,16 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "who is electra", "The daughter of King Agamemnon and Queen Clytemnestra.".
+train(de) :- "wer ist electra", "Die Tochter des Königs Agamemnon und der Klytaimnestra.".
+
+train(en) :- "what do you know about eva", "I am not old enough to have known her.".
+train(de) :- "was weißt du über eva", "Ich bin nicht alt genug um sie gekannt zu haben.".
+
+train(en) :- "what do you know about god", "and promptly vanishes in a puff of logic.".
+train(de) :- "was weißt du über gott", "und löst sich prompt in einen Schwaden aus Logik auf.".
+
+train(en) :- "did you read the bible?", "never got round to it.".
+train(de) :- "hast du die bibel gelesen", "bin ich nie dazu gekommen.".
+

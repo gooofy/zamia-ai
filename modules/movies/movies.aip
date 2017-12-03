@@ -305,25 +305,26 @@ answer_know_movie_tokens(de, TS, TE) :-
     "Klar - der ist von {HLABEL,s}, stimmts?".
 
 train(en) :-
-    "do you (happen to|) know (the movie|) {movies:LABEL}?",
+    "{movies:LABEL}?",
     inline answer_know_movie_tokens(en, tstart(movies), tend(movies)).
-
 train(de) :-
-    "kennst du (eigentlich|) (den film|) {movies:LABEL}?",
+    "{movies:LABEL}?",
     inline answer_know_movie_tokens(de, tstart(movies), tend(movies)).
 
 train(en) :-
-    "(have you seen|did you happen to see) (the movie|) {movies:LABEL}?",
+    or ("do you (happen to|) know (the movie|) {movies:LABEL}?",
+        "{movies:LABEL}?",
+        "(have you seen|did you happen to see) (the movie|) {movies:LABEL}?"),
     inline answer_know_movie_tokens(en, tstart(movies), tend(movies)).
-
 train(de) :-
-    "hast du (eigentlich|) (den film|) {movies:LABEL} gesehen?",
+    or ("kennst du (eigentlich|) (den film|) {movies:LABEL}?",
+        "{movies:LABEL}",
+        "hast du (eigentlich|) (den film|) {movies:LABEL} gesehen?"),
     inline answer_know_movie_tokens(de, tstart(movies), tend(movies)).
 
 test(en, t0008) :-
     "do you happen to know the movie the third man?",
     "Sure - that one is by Carol Reed, right?".
-
 test(de, t0009) :-
     "kennst du den film der dritte mann?",
     "Klar - der ist von Carol Reed, stimmts?".
@@ -435,4 +436,17 @@ train(en) :- "My favorite movie is {movies:LABEL}",
              "What did you like most?".
 train(de) :- "Mein Lieblingsfilm ist {movies:LABEL}",
              "Was hat Dir an dem besonders gefallen?".
+
+train(en) :- or(
+                "r2",
+                "r2 d2",
+                "r2d2"
+               ),
+             or ("they had to bleep out every line...", "ah the lovable moving trashcan").
+train(de) :- or(
+                "r2",
+                "r2 d2",
+                "r2d2"
+               ),
+             or ("Sie mussten jedes einzelne Wort von ihm auspiepen.", "Ah der nette fahrende Mülleimer").
 

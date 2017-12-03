@@ -2156,6 +2156,31 @@ RDF_ALIASES = {
                 u'wde:TexasInstrumentsTI994A'           : u'http://www.wikidata.org/entity/Q454390',
                 u'wde:AmstradCPC'                       : u'http://www.wikidata.org/entity/Q478829',
 
+                # math
+                
+                u'wde:Mathematics'                      : u'http://www.wikidata.org/entity/Q395',
+                u'wde:NaturalNumber'                    : u'http://www.wikidata.org/entity/Q21199',
+                u'wde:1'                                : u'http://www.wikidata.org/entity/Q199',
+                u'wde:2'                                : u'http://www.wikidata.org/entity/Q200',
+                u'wde:3'                                : u'http://www.wikidata.org/entity/Q201',
+                u'wde:4'                                : u'http://www.wikidata.org/entity/Q202',
+                u'wde:5'                                : u'http://www.wikidata.org/entity/Q203',
+                u'wde:6'                                : u'http://www.wikidata.org/entity/Q23488',
+                u'wde:7'                                : u'http://www.wikidata.org/entity/Q23350',
+                u'wde:8'                                : u'http://www.wikidata.org/entity/Q23355',
+                u'wde:9'                                : u'http://www.wikidata.org/entity/Q19108',
+                u'wde:10'                               : u'http://www.wikidata.org/entity/Q23806',
+                u'wde:11'                               : u'http://www.wikidata.org/entity/Q37136',
+                u'wde:12'                               : u'http://www.wikidata.org/entity/Q36977',
+                u'wde:13'                               : u'http://www.wikidata.org/entity/Q37141',
+                u'wde:14'                               : u'http://www.wikidata.org/entity/Q38582',
+                u'wde:15'                               : u'http://www.wikidata.org/entity/Q38701',
+                u'wde:16'                               : u'http://www.wikidata.org/entity/Q40254',
+                u'wde:17'                               : u'http://www.wikidata.org/entity/Q40118',
+                u'wde:18'                               : u'http://www.wikidata.org/entity/Q38712',
+                u'wde:19'                               : u'http://www.wikidata.org/entity/Q39850',
+                u'wde:20'                               : u'http://www.wikidata.org/entity/Q40292',
+
               }
 
 # wikidata properties
@@ -2209,6 +2234,38 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
 
 
 RES_PATHS = [
+
+              # math
+
+              (
+                [
+                  u'wde:1',
+                  u'wde:2',
+                  u'wde:3',
+                  u'wde:4',
+                  u'wde:5',
+                  u'wde:6',
+                  u'wde:7',
+                  u'wde:8',
+                  u'wde:9',
+                  u'wde:10',
+                  u'wde:11',
+                  u'wde:12',
+                  u'wde:13',
+                  u'wde:14',
+                  u'wde:15',
+                  u'wde:16',
+                  u'wde:17',
+                  u'wde:18',
+                  u'wde:19',
+                  u'wde:20',
+                  # ('wdpd:InstanceOf', 'wde:NaturalNumber'),
+                ],
+                [
+                  ['wdpd:InstanceOf'],
+                  ['wdpd:SubclassOf'],
+                ]
+              ),
 
               # geo
 

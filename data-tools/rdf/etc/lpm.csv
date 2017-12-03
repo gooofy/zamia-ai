@@ -100,6 +100,7 @@ wdpAsComAthleteID,http://www.wikidata.org/prop/P3427
 wdpAspectRatio,http://www.wikidata.org/prop/P2061
 wdpAtheneumPersonID,http://www.wikidata.org/prop/P4145
 wdpAtlasID,http://www.wikidata.org/prop/P1212
+wdpAtomicHeritageFoundationID,http://www.wikidata.org/prop/P4590
 wdpAttendance,http://www.wikidata.org/prop/P1110
 wdpAucklandArtGalleryArtistID,http://www.wikidata.org/prop/P3372
 wdpAudio,http://www.wikidata.org/prop/P51
@@ -112,6 +113,7 @@ wdpAustralianStatisticalGeography2016ID,http://www.wikidata.org/prop/P4093
 wdpAustrianMunicipalityKey,http://www.wikidata.org/prop/P964
 wdpAuthor,http://www.wikidata.org/prop/P50
 wdpAuthority,http://www.wikidata.org/prop/P797
+wdpAuñamendiID,http://www.wikidata.org/prop/P3218
 wdpAwardReceived,http://www.wikidata.org/prop/P166
 wdpBAGCodeForDutchLocations,http://www.wikidata.org/prop/P981
 wdpBAVID,http://www.wikidata.org/prop/P1017
@@ -133,6 +135,7 @@ wdpBNEID,http://www.wikidata.org/prop/P950
 wdpBVMCPersonID,http://www.wikidata.org/prop/P2799
 wdpBVMCPlaceId,http://www.wikidata.org/prop/P4098
 wdpBVMCWorkID,http://www.wikidata.org/prop/P3976
+wdpBabelNetId,http://www.wikidata.org/prop/P2581
 wdpBabelioAuthorID,http://www.wikidata.org/prop/P3630
 wdpBaitLaZemerHaIvriArtistID,http://www.wikidata.org/prop/P3997
 wdpBallotpediaID,http://www.wikidata.org/prop/P2390
@@ -244,6 +247,7 @@ wdpCodename,http://www.wikidata.org/prop/P1638
 wdpCoextensiveWith,http://www.wikidata.org/prop/P3403
 wdpCollageImage,http://www.wikidata.org/prop/P2716
 wdpCollection,http://www.wikidata.org/prop/P195
+wdpCollectiveBiographiesOfWomenID,http://www.wikidata.org/prop/P4539
 wdpColognePhonetics,http://www.wikidata.org/prop/P3879
 wdpColor,http://www.wikidata.org/prop/P462
 wdpComicBookDBID,http://www.wikidata.org/prop/P1392
@@ -782,6 +786,7 @@ wdpMaximumNumberOfPlayers,http://www.wikidata.org/prop/P1873
 wdpMcCuneReischauerRomanization,http://www.wikidata.org/prop/P1942
 wdpMeSHCode,http://www.wikidata.org/prop/P672
 wdpMeSHID,http://www.wikidata.org/prop/P486
+wdpMeanAge,http://www.wikidata.org/prop/P4442
 wdpMeasuredBy,http://www.wikidata.org/prop/P1880
 wdpMediaType,http://www.wikidata.org/prop/P1163
 wdpMedianIncome,http://www.wikidata.org/prop/P3529
@@ -812,6 +817,7 @@ wdpMother,http://www.wikidata.org/prop/P25
 wdpMotto,http://www.wikidata.org/prop/P1546
 wdpMottoText,http://www.wikidata.org/prop/P1451
 wdpMount,http://www.wikidata.org/prop/P3091
+wdpMountainRange,http://www.wikidata.org/prop/P4552
 wdpMouthOfTheWatercourse,http://www.wikidata.org/prop/P403
 wdpMovement,http://www.wikidata.org/prop/P135
 wdpMovieMeterDirectorID,http://www.wikidata.org/prop/P1969
@@ -906,6 +912,7 @@ wdpNumberOfPartsOfAWorkOfArt,http://www.wikidata.org/prop/P2635
 wdpNumberOfRepresentativesInAnOrganizationLegislature,http://www.wikidata.org/prop/P1410
 wdpNumberOfSeasons,http://www.wikidata.org/prop/P2437
 wdpNumberOfSpeakers,http://www.wikidata.org/prop/P1098
+wdpNumericValue,http://www.wikidata.org/prop/P1181
 wdpOCLCControlNumber,http://www.wikidata.org/prop/P243
 wdpODISID,http://www.wikidata.org/prop/P2372
 wdpOFDbID,http://www.wikidata.org/prop/P3138
@@ -1020,6 +1027,7 @@ wdpPrismaID,http://www.wikidata.org/prop/P4515
 wdpProducer,http://www.wikidata.org/prop/P162
 wdpProductOrMaterialProduced,http://www.wikidata.org/prop/P1056
 wdpProductionCompany,http://www.wikidata.org/prop/P272
+wdpProductionDate,http://www.wikidata.org/prop/P2754
 wdpProductionDesigner,http://www.wikidata.org/prop/P2554
 wdpProductionStatistics,http://www.wikidata.org/prop/P2746
 wdpProfessorship,http://www.wikidata.org/prop/P803
@@ -1041,6 +1049,7 @@ wdpPublisher,http://www.wikidata.org/prop/P123
 wdpQuantity,http://www.wikidata.org/prop/P1114
 wdpQuoraTopicID,http://www.wikidata.org/prop/P3417
 wdpQuoraUsername,http://www.wikidata.org/prop/P4411
+wdpRACollectionsID,http://www.wikidata.org/prop/P4553
 wdpRARSRating,http://www.wikidata.org/prop/P2637
 wdpREROID,http://www.wikidata.org/prop/P3065
 wdpRKDartistsID,http://www.wikidata.org/prop/P650
@@ -1259,6 +1268,7 @@ wdpVineUserID,http://www.wikidata.org/prop/P3207
 wdpVisionOfBritainPlaceID,http://www.wikidata.org/prop/P3616
 wdpVisionOfBritainUnitID,http://www.wikidata.org/prop/P3615
 wdpVisitorsPerYear,http://www.wikidata.org/prop/P1174
+wdpVocalizedName,http://www.wikidata.org/prop/P4239
 wdpVoiceActor,http://www.wikidata.org/prop/P725
 wdpVoltage,http://www.wikidata.org/prop/P2436
 wdpVoteSmartID,http://www.wikidata.org/prop/P3344
@@ -1280,6 +1290,7 @@ wdpWikiLovesMonumentsID,http://www.wikidata.org/prop/P2186
 wdpWikiSkriptaID,http://www.wikidata.org/prop/P3471
 wdpWikiTreeID,http://www.wikidata.org/prop/P2949
 wdpWikiaWikiID,http://www.wikidata.org/prop/P4073
+wdpWikidataProject,http://www.wikidata.org/prop/P4570
 wdpWikidataProperty,http://www.wikidata.org/prop/P1687
 wdpWikidataPropertyExample,http://www.wikidata.org/prop/P1855
 wdpWikidataSPARQLQueryEquivalent,http://www.wikidata.org/prop/P3921
@@ -1354,6 +1365,7 @@ wdpdAsComAthleteID,http://www.wikidata.org/prop/direct/P3427
 wdpdAspectRatio,http://www.wikidata.org/prop/direct/P2061
 wdpdAtheneumPersonID,http://www.wikidata.org/prop/direct/P4145
 wdpdAtlasID,http://www.wikidata.org/prop/direct/P1212
+wdpdAtomicHeritageFoundationID,http://www.wikidata.org/prop/direct/P4590
 wdpdAttendance,http://www.wikidata.org/prop/direct/P1110
 wdpdAucklandArtGalleryArtistID,http://www.wikidata.org/prop/direct/P3372
 wdpdAudio,http://www.wikidata.org/prop/direct/P51
@@ -1366,6 +1378,7 @@ wdpdAustralianStatisticalGeography2016ID,http://www.wikidata.org/prop/direct/P40
 wdpdAustrianMunicipalityKey,http://www.wikidata.org/prop/direct/P964
 wdpdAuthor,http://www.wikidata.org/prop/direct/P50
 wdpdAuthority,http://www.wikidata.org/prop/direct/P797
+wdpdAuñamendiID,http://www.wikidata.org/prop/direct/P3218
 wdpdAwardReceived,http://www.wikidata.org/prop/direct/P166
 wdpdBAGCodeForDutchLocations,http://www.wikidata.org/prop/direct/P981
 wdpdBAVID,http://www.wikidata.org/prop/direct/P1017
@@ -1387,6 +1400,7 @@ wdpdBNEID,http://www.wikidata.org/prop/direct/P950
 wdpdBVMCPersonID,http://www.wikidata.org/prop/direct/P2799
 wdpdBVMCPlaceId,http://www.wikidata.org/prop/direct/P4098
 wdpdBVMCWorkID,http://www.wikidata.org/prop/direct/P3976
+wdpdBabelNetId,http://www.wikidata.org/prop/direct/P2581
 wdpdBabelioAuthorID,http://www.wikidata.org/prop/direct/P3630
 wdpdBaitLaZemerHaIvriArtistID,http://www.wikidata.org/prop/direct/P3997
 wdpdBallotpediaID,http://www.wikidata.org/prop/direct/P2390
@@ -1498,6 +1512,7 @@ wdpdCodename,http://www.wikidata.org/prop/direct/P1638
 wdpdCoextensiveWith,http://www.wikidata.org/prop/direct/P3403
 wdpdCollageImage,http://www.wikidata.org/prop/direct/P2716
 wdpdCollection,http://www.wikidata.org/prop/direct/P195
+wdpdCollectiveBiographiesOfWomenID,http://www.wikidata.org/prop/direct/P4539
 wdpdColognePhonetics,http://www.wikidata.org/prop/direct/P3879
 wdpdColor,http://www.wikidata.org/prop/direct/P462
 wdpdComicBookDBID,http://www.wikidata.org/prop/direct/P1392
@@ -2034,6 +2049,7 @@ wdpdMaximumNumberOfPlayers,http://www.wikidata.org/prop/direct/P1873
 wdpdMcCuneReischauerRomanization,http://www.wikidata.org/prop/direct/P1942
 wdpdMeSHCode,http://www.wikidata.org/prop/direct/P672
 wdpdMeSHID,http://www.wikidata.org/prop/direct/P486
+wdpdMeanAge,http://www.wikidata.org/prop/direct/P4442
 wdpdMeasuredBy,http://www.wikidata.org/prop/direct/P1880
 wdpdMediaType,http://www.wikidata.org/prop/direct/P1163
 wdpdMedianIncome,http://www.wikidata.org/prop/direct/P3529
@@ -2064,6 +2080,7 @@ wdpdMother,http://www.wikidata.org/prop/direct/P25
 wdpdMotto,http://www.wikidata.org/prop/direct/P1546
 wdpdMottoText,http://www.wikidata.org/prop/direct/P1451
 wdpdMount,http://www.wikidata.org/prop/direct/P3091
+wdpdMountainRange,http://www.wikidata.org/prop/direct/P4552
 wdpdMouthOfTheWatercourse,http://www.wikidata.org/prop/direct/P403
 wdpdMovement,http://www.wikidata.org/prop/direct/P135
 wdpdMovieMeterDirectorID,http://www.wikidata.org/prop/direct/P1969
@@ -2158,6 +2175,7 @@ wdpdNumberOfPartsOfAWorkOfArt,http://www.wikidata.org/prop/direct/P2635
 wdpdNumberOfRepresentativesInAnOrganizationLegislature,http://www.wikidata.org/prop/direct/P1410
 wdpdNumberOfSeasons,http://www.wikidata.org/prop/direct/P2437
 wdpdNumberOfSpeakers,http://www.wikidata.org/prop/direct/P1098
+wdpdNumericValue,http://www.wikidata.org/prop/direct/P1181
 wdpdOCLCControlNumber,http://www.wikidata.org/prop/direct/P243
 wdpdODISID,http://www.wikidata.org/prop/direct/P2372
 wdpdOFDbID,http://www.wikidata.org/prop/direct/P3138
@@ -2272,6 +2290,7 @@ wdpdPrismaID,http://www.wikidata.org/prop/direct/P4515
 wdpdProducer,http://www.wikidata.org/prop/direct/P162
 wdpdProductOrMaterialProduced,http://www.wikidata.org/prop/direct/P1056
 wdpdProductionCompany,http://www.wikidata.org/prop/direct/P272
+wdpdProductionDate,http://www.wikidata.org/prop/direct/P2754
 wdpdProductionDesigner,http://www.wikidata.org/prop/direct/P2554
 wdpdProductionStatistics,http://www.wikidata.org/prop/direct/P2746
 wdpdProfessorship,http://www.wikidata.org/prop/direct/P803
@@ -2293,6 +2312,7 @@ wdpdPublisher,http://www.wikidata.org/prop/direct/P123
 wdpdQuantity,http://www.wikidata.org/prop/direct/P1114
 wdpdQuoraTopicID,http://www.wikidata.org/prop/direct/P3417
 wdpdQuoraUsername,http://www.wikidata.org/prop/direct/P4411
+wdpdRACollectionsID,http://www.wikidata.org/prop/direct/P4553
 wdpdRARSRating,http://www.wikidata.org/prop/direct/P2637
 wdpdREROID,http://www.wikidata.org/prop/direct/P3065
 wdpdRKDartistsID,http://www.wikidata.org/prop/direct/P650
@@ -2511,6 +2531,7 @@ wdpdVineUserID,http://www.wikidata.org/prop/direct/P3207
 wdpdVisionOfBritainPlaceID,http://www.wikidata.org/prop/direct/P3616
 wdpdVisionOfBritainUnitID,http://www.wikidata.org/prop/direct/P3615
 wdpdVisitorsPerYear,http://www.wikidata.org/prop/direct/P1174
+wdpdVocalizedName,http://www.wikidata.org/prop/direct/P4239
 wdpdVoiceActor,http://www.wikidata.org/prop/direct/P725
 wdpdVoltage,http://www.wikidata.org/prop/direct/P2436
 wdpdVoteSmartID,http://www.wikidata.org/prop/direct/P3344
@@ -2532,6 +2553,7 @@ wdpdWikiLovesMonumentsID,http://www.wikidata.org/prop/direct/P2186
 wdpdWikiSkriptaID,http://www.wikidata.org/prop/direct/P3471
 wdpdWikiTreeID,http://www.wikidata.org/prop/direct/P2949
 wdpdWikiaWikiID,http://www.wikidata.org/prop/direct/P4073
+wdpdWikidataProject,http://www.wikidata.org/prop/direct/P4570
 wdpdWikidataProperty,http://www.wikidata.org/prop/direct/P1687
 wdpdWikidataPropertyExample,http://www.wikidata.org/prop/direct/P1855
 wdpdWikidataSPARQLQueryEquivalent,http://www.wikidata.org/prop/direct/P3921

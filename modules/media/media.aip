@@ -132,4 +132,16 @@ test(de, t0009) :-
      'schalte bitte das radio ein',
      '',
      action(media, tune, aiNewRock).
- 
+
+
+train(en) :- or(
+                "My radio is on",
+                "I am listening to the radio"
+               ),
+             or ("Which station?", "I will try to filter out the baground noise.").
+train(de) :- or(
+                "ich habe radio an",
+                "ich höre radio"
+               ),
+             or ("Welches Programm?", "Ich werde versuchen, die Hintergrundgeräusche auszufiltern.").
+

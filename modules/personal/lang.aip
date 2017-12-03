@@ -29,6 +29,21 @@ train(en) :-
     "are you (really|) as good as your (english|american|german) program (by the way|)?",
     inline my_languagesupport(en).
 
+train(en) :- or(
+                "why do you speak german",
+                "since when do you speak German",
+                "why are you talking German",
+                "which languages do you speak"
+               ),
+             inline my_languagesupport(en).
+train(de) :- or(
+                "warum kannst du deutsch",
+                "seit wann sprichst du deutsch",
+                "warum redest du deutsch",
+                "welche sprachen sprichst du"
+               ),
+             inline my_languagesupport(de).
+
 train(en) :- "Do you know your (english-speaking|german-speaking) (brother|sister)?", "sure, lives in the folder right next to mine".   
 train(de) :- "kennst du deine (deutschsprachige|englischsprachige) schwester?", "klar, wohnt im verzeichnis nebenan.".
 train(de) :- "kennst du deinen (deutschsprachigen|englischsprachigen) bruder?", "klar, wohnt im verzeichnis nebenan.".

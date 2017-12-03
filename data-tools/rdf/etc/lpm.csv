@@ -915,6 +915,7 @@ wdpNumberOfSpeakers,http://www.wikidata.org/prop/P1098
 wdpNumericValue,http://www.wikidata.org/prop/P1181
 wdpOCLCControlNumber,http://www.wikidata.org/prop/P243
 wdpODISID,http://www.wikidata.org/prop/P2372
+wdpOEISID,http://www.wikidata.org/prop/P829
 wdpOFDbID,http://www.wikidata.org/prop/P3138
 wdpOKATOID,http://www.wikidata.org/prop/P721
 wdpOKTMOID,http://www.wikidata.org/prop/P764
@@ -2178,6 +2179,7 @@ wdpdNumberOfSpeakers,http://www.wikidata.org/prop/direct/P1098
 wdpdNumericValue,http://www.wikidata.org/prop/direct/P1181
 wdpdOCLCControlNumber,http://www.wikidata.org/prop/direct/P243
 wdpdODISID,http://www.wikidata.org/prop/direct/P2372
+wdpdOEISID,http://www.wikidata.org/prop/direct/P829
 wdpdOFDbID,http://www.wikidata.org/prop/direct/P3138
 wdpdOKATOID,http://www.wikidata.org/prop/direct/P721
 wdpdOKTMOID,http://www.wikidata.org/prop/direct/P764

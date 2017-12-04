@@ -14,3 +14,22 @@ train(de) :- "warum ist die banane krumm", "Ja, wenn die Banane gerade wär', da
 train(en) :- "why is the banana red", "the bananas I know tend to be yellow".
 train(de) :- "warum ist die banane rot", "Die Bananen die ich kenne sind eher gelblich.".
 
+train(en) :- "(what is a|what are|) fish", "You mean an animal with gills and fins living wholly in water?".
+train(de) :- "(was sind|) fische", "Du meinst Tiere mit Kiemen und Flossen, die ganz im Wasser leben?".
+train(de) :- "(was ist ein|) fisch", "Du meinst ein Tier mit Kiemen und Flossen, das ganz im Wasser lebt?".
+
+train(en) :- "what is a tree", "a woody plant, typically having a single stem or trunk growing to a considerable height and bearing lateral branches at some distance from the ground.".
+train(de) :- "was ist ein baum", "eine verholzte Pflanze, die aus einer Wurzel, einem hochgewachsenen Stamm und einer belaubten Krone besteht.".
+
+train(en) :- "what is an apple", "the round fruit of a tree of the rose family, which typically has thin green or red skin and crisp flesh.".
+train(de) :- "was ist ein apfel", "die runde Frucht eines Baumes der Rosenfamilie, der typischerweise dünne grüne oder rote Haut und knackiges Fleisch hat.".
+
+train(en) :- "what horses", "Horses? Where?".
+train(de) :- "was für pferde", "Pferde? Wo?".
+
+train(en) :- "what is a horse", "A solid-hoofed plant-eating domesticated mammal with a mane and tail.".
+train(de) :- "was ist ein pferd", "Ein festhufiges, pflanzenfressendes domestiziertes Säugetier mit einer Mähne und einem Schwanz.".
+
+train(en) :- "what is a dog", "A domesticated mammal that typically has a long snout, an acute sense of smell and a barking voice.".
+train(de) :- "was ist ein hund", "Ein domestiziertes Säugetier, das typischerweise eine lange Schnauze, einen scharfen Geruchssinn und eine bellende Stimme hat.".
+

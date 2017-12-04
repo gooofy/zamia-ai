@@ -245,10 +245,10 @@ test(de, t0014) :-
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie wird das Wetter (werden|)?", 
+        "wie (ist|ist denn|wird) das Wetter (werden|)?", 
         "wie (kalt|warm) wird es (werden|) ?",
         "(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?",
-        "(und|) wie (ist das Wetter|sieht das Wetter aus) (dort|dann|)?"
+        "(und|) wie (ist das Wetter|sieht das Wetter aus|wie wird das wetter) (dort|dann|)?"
        ),
     inline answer_weather_context (de, full).
 
@@ -343,7 +343,8 @@ train(en) :-
     or (
         "what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?",
         "how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?",
-        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?"
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?",
+        "How is the weather {timespec:LABEL} ?"
        ),
     inline answer_weather_expl_time (en, full, mvar(timespec, time)).
 
@@ -385,7 +386,7 @@ train(de) :-
     or (
         "wie wird {timespec:LABEL} das Wetter?", 
         "wie (kalt|warm) wird es {timespec:LABEL} (werden|)?",
-        "wie wird das Wetter {timespec:LABEL}?",
+        "wie (ist|wird|ist denn) das Wetter {timespec:LABEL}?",
         "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} ?"
        ),
      inline answer_weather_expl_time (de, full, mvar(timespec, time)).
@@ -515,7 +516,8 @@ train(en) :-
     or (
         "what ( will the weather | is the weather gonna | is the weather going to ) be (like|) in {weather_location:LABEL} ?", 
         "how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL} ?",
-        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} ?"
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} ?",
+        "How is the weather in {weather_location:LABEL} ?"
        ),
     inline answer_weather_expl_place (en, full, tstart(weather_location), tend(weather_location)).
 
@@ -581,8 +583,8 @@ test(de, t0215) :-
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie wird in {weather_location:LABEL} das Wetter?", 
-        "wie wird das Wetter in {weather_location:LABEL}?",
+        "wie (ist|ist denn|wird) in {weather_location:LABEL} das Wetter?", 
+        "wie (ist|ist denn|wird) das Wetter in {weather_location:LABEL}?",
         "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {weather_location:LABEL}?"
        ),
     inline answer_weather_expl_place (de, full, tstart(weather_location), tend(weather_location)).
@@ -651,7 +653,8 @@ train(en) :-
         "how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL} {timespec:LABEL}?",
         "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {weather_location:LABEL} {timespec:LABEL} ?",
         "(what will the weather be|what is the weather gonna be|what is the weather going to be) (like|) in {weather_location:LABEL} {timespec:LABEL} ?",
-        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} {timespec:LABEL} ?"
+        "what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {weather_location:LABEL} {timespec:LABEL} ?",
+        "How is the weather in {weather_location:LABEL} {timespec:LABEL}?"
        ),
     inline answer_weather_expl_place_time (en, full, tstart(weather_location), tend(weather_location), mvar(timespec, time)).
 
@@ -671,8 +674,8 @@ train(de) :-
 train(de) :- 
     or (true, context(topic, wdeWeatherForecast)), 
     or (
-        "wie wird {timespec:LABEL} in {weather_location:LABEL} das Wetter?",
-        "wie wird {timespec:LABEL} das Wetter in {weather_location:LABEL}?",
+        "wie (ist|ist denn|wird) {timespec:LABEL} in {weather_location:LABEL} das Wetter?",
+        "wie (ist|ist denn|wird) {timespec:LABEL} das Wetter in {weather_location:LABEL}?",
         "wie wird das Wetter {timespec:LABEL} in {weather_location:LABEL}?",
         "(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} für {weather_location:LABEL}?"
        ),
@@ -740,4 +743,10 @@ train(de) :-
     or(say(C, "Alles eine Frage der richtigen Kleidung!"),
        say(C, "Ich sende eine Beschwerde an das Wetteramt."),
        say(C, "Vielleicht solltest Du über einen Umzug nachdenken?")).
+
+train(en) :- "about the weather", "Always a good topic.".
+train(de) :- "über das wetter", "Immer ein gutes Thema.".
+
+train(en) :- "the weather is bad", "So let's stay inside and chat some more!".
+train(de) :- "das wetter ist schlecht", "Dann lass uns drinnen bleiben und noch ein wenig reden!".
 

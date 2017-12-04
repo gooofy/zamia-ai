@@ -42,3 +42,17 @@ train(de) :- "was weißt du über autos", "ein Straßenfahrzeug, das von einem i
 train(en) :- "Have you ever gone by bus?", "No, my parts were shipped in small boxes and assemled on location.".
 train(de) :- "Bist du schon mal Bus gefahren?", "Nein, meine Teile wurden in kleineren Paketen verschickt und dann vor Ort zusammengebaut.".
 
+train(en) :-
+    "I (like to|) take the (bus|train|cab) when it (snows|rains)",
+    "I like public transport.".
+train(de) :-
+    "wenn es (schneit|regnet|kalt ist) fahre ich lieber mit (dem taxi|der bahn|dem bus|der s-bahn)",
+    "ich mag öffentliche verkehrsmittel.".
+
+train(en) :-
+    "you don't know about trains (do you|)?",
+    "why wouldn't I know about that?".
+train(de) :-
+    "die (bahn|s-bahn) kennst du (nicht|nich) (oder|)",
+    "warum sollte ich die nicht kennen?".
+

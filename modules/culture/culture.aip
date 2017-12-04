@@ -11,3 +11,9 @@ train(de) :- "weißt du was ein katalog ist", "Klar, warum fragst Du?".
 train(en) :- "about stars", "you mean famous actors?".
 train(de) :- "über stars", "Du meinst berühmte Schauspieler?".
 
+train(en) :- "what is a hairstyle", "A particular way in which a person's hair is cut or arranged.".
+train(de) :- "was ist eine frisur", "Eine besondere Art, in der das Haar einer Person geschnitten oder arrangiert wird.".
+
+train(en) :- "what is science fiction", "Fiction based on imagined future scientific or technological advances and major social or environmental changes, frequently portraying space or time travel and life on other planets.".
+train(de) :- "was ist science fiction", "Fiktion basierend auf imaginierten zukünftigen wissenschaftlichen oder technologischen Fortschritten und bedeutenden sozialen oder Umweltveränderungen, die häufig Raum- oder Zeitreisen und das Leben auf anderen Planeten darstellen.".
+

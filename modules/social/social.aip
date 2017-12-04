@@ -148,6 +148,6 @@ train(de) :- or(
                ),
              or ("Ich finde so menschliche Themen oft verwirrend.", "Alles, was mir die Wikipedia verraten hat.").
 
-train(en) :- "twin", "really?".
-train(de) :- "zwilling", "wirklich?".
+train(en) :- "(twin|twins)", "really?".
+train(de) :- "(zwilling|zwillinge)", "wirklich?".
 

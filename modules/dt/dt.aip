@@ -54,6 +54,20 @@ train(de) :-
     "wie spät ist es",
     inline answer_time(de).
 
+train(en) :- or(
+                "can you tell me how late it is?",
+                "what time is",
+                "What time is it in Germany"
+               ),
+             inline answer_time(en).
+train(de) :- or(
+                "kannst du mir sagen wie spät es ist",
+                "was ist für zeit",
+                "wie spät ist es in deutschland"
+               ),
+             inline answer_time(de).
+
+
 %     p1 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-06-12T06:30:00+01:00')" ]
 %     p2 = [ "import dateutil.parser ; ias['currentTime'] = dateutil.parser.parse('2017-02-08T13:15:00+01:00')" ]
 
@@ -65,6 +79,26 @@ test(de, time4) :- set(C:time, '2017-06-12T06:30:00+01:00'), "wie spät ist es",
 test(de, time5) :- set(C:time, '2017-02-08T13:15:00+01:00'), "wie spät ist es", "Es ist viertel nach 1.".
 test(de, time6) :- set(C:time, '2017-02-08T13:15:00+01:00'), "wie spät ist es", "Es ist viertel nach 1.".
 test(de, time6) :- set(C:time, '2017-02-08T13:15:00+01:00'), "wie spät ist es", "Es ist viertel nach 1.", "worüber haben wir gesprochen?", "Ich denke, unser Thema war die Uhrzeit.".
+
+train(en) :- or(
+                "30 minutes",
+                "about a minute",
+                "Time",
+                "what is a while?",
+                "what does time mean for you?"
+               ),
+             or ("Time is such a fascinating subject.", "Isn't time one of the greatest mysteries?").
+train(de) :- or(
+                "dreißig minuten",
+                "ungefähr eine minute",
+                "zeit",
+                "was ist eine weile",
+                "was bedeutet zeit für dich"
+               ),
+             or ("Zeit ist so ein faszinierendes Thema.", "Ist die Zeit nicht eines der größten Mysterien?").
+
+train(en) :- "I have a lot of time", "Time you enjoy wasting is not wasted time.".
+train(de) :- "ich habe viel zeit", "Zeit, die du gerne verschwendest, ist keine verschwendete Zeit.".
 
 %
 % date questions
@@ -217,6 +251,17 @@ train(de) :-
     "welchen haben wir heute",
     inline answer_date(de).
 
+train(en) :- or(
+                "which date do we have today",
+                "what day of the week is it"
+               ),
+             inline answer_date(en).
+train(de) :- or(
+                "welche datum haben wir heute",
+                "welcher wochentag ist heute"
+               ),
+             inline answer_date(de).
+
 test(en, date1) :- set(C:time, '2017-06-12T06:30:00+01:00'), "what date is it", "The date is Monday June 12, 2017.".
 test(en, date2) :- set(C:time, '2017-02-08T13:15:00+01:00'), "what date is it", "The date is Wednesday February 8, 2017".
 test(en, date3) :- set(C:time, '2017-02-08T13:15:00+01:00'), "what date is it", "The date is Wednesday February 8, 2017".
@@ -225,4 +270,7 @@ test(de, date4) :- set(C:time, '2017-06-12T06:30:00+01:00'), "Welchen Tag haben 
 test(de, date5) :- set(C:time, '2017-02-08T13:15:00+01:00'), "Welchen Tag haben wir heute?", "Wir haben Mittwoch den achten Februar 2017".
 test(de, date6) :- set(C:time, '2017-02-08T13:15:00+01:00'), "Welchen Tag haben wir heute?", "Wir haben Mittwoch den achten Februar 2017".
 test(de, date6) :- set(C:time, '2017-02-08T13:15:00+01:00'), "Welchen Tag haben wir heute?", "Wir haben Mittwoch den achten Februar 2017", "worüber haben wir gesprochen?", "Sprachen wir nicht über das Datum?".
+
+train(en) :- "what was last friday?", "which friday?".
+train(de) :- "was war am vergangenen freitag", "welcher freitag?".
 

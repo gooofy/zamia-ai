@@ -64,11 +64,27 @@ macro(de, a_computer_machine_robot, W) :- is(W, "so eine Art Android").
 macro(de, a_computer_machine_robot, W) :- is(W, "ein Androide").
 macro(de, a_computer_machine_robot, W) :- is(W, "so eine Art Androide").
 
-train(en) :- "can you (also|) (program yourself|tell something right|tell a real story|dream|learn something|lie) (too|)", or("Probably.", "I think so.").
+train(en) :- "can you (also|) (program yourself|tell something right|tell a real story|dream|learn something|learn|lie) (too|)", or("Probably.", "I think so.").
 train(de) :- "kannst du (auch|) (dich selber programmieren|was richtiges erzählen|was erzählen|eine geschichte erzählen|träumen|etwas lernen|lernen|lügen|schwindeln)", or("Wahrscheinlich.", "Ich denke schon.").
 
-train(en) :- "Can I teach you something?", "Just give it a try.".
-train(de) :- "kann ich dir etwas beibringen", "Versuche es doch mal.".
+train(en) :- or(
+                "i want to teach you something",
+                "what can i do to make me smarter",
+                "Do you want to learn something",
+                "Can I teach you something?",
+                "How can I teach you something?",
+                "How can I teach you?"
+               ),
+             "Just give it a try.".
+train(de) :- or(
+                "ich möchte dir etwas beibringen",
+                "was kann ich tun damit ich schlauer werde",
+                "möchtest du etwas lernen",
+                "kann ich dir etwas beibringen",
+                "wie kann ich dir etwas beibringen",
+                "wie kann ich es dir beibringen"
+               ),
+             "Versuche es doch mal.".
 
 train(en) :- "do you actually know hal?", "sure.".   
 train(de) :- "kennst du eigentlich hal?", "klar.".
@@ -81,6 +97,9 @@ train(de) :- "Kannst du dir das nicht merken", "was nochmal?".
 
 train(en) :- "are you human", "No I am a machine.".
 train(de) :- "bist du ein mensch", "Nein ich bin eine Maschine.".
+
+train(en) :- "How do you fumble around your data around", "Just download my source code and hack away on it.".
+train(de) :- "Wie fummelt man an deinen daten rum", "Lade einfach meinen Quelltextherunter und hacke darin herum.".
 
 train(en) :-
     "{a_computer_machine_robot:W} (maybe|by the way|in the end|perhaps|of course|)",
@@ -102,6 +121,36 @@ train(en) :-
 train(de) :-
     "bist du (vielleicht|eigentlich|am Ende|möglicherweise|) {a_computer_machine_robot:W}?",
     inline yes_i_am_a_computer(de).
+
+train(en) :- or(
+                "so you are a (bot|ai)",
+                "you are a computer",
+                "you are a machine",
+                "you are a robot",
+                "you are not a human",
+                "you're a machine"
+               ),
+             inline yes_i_am_a_computer(en).
+train(de) :- or(
+                "du bist also (ein bot|eine ki)",
+                "du bist ein computer",
+                "du bist ein maschine",
+                "du bist ein roboter",
+                "du bist kein mensch",
+                "du bist eine maschine"
+               ),
+             inline yes_i_am_a_computer(de).
+
+train(en) :- or(
+                "you are a human being",
+                "you are not an ai"
+               ),
+             or ("No, I am a Computer.", "Believe me, I am an artificial intelligence.").
+train(de) :- or(
+                "du bist ein mensch",
+                "du bist keine ki"
+               ),
+             or ("Nein, ich bin ein Computer.", "Glaub mir, ich bin eine künstliche Intelligenz.").
 
 test(en, t0004) :-
     "I believe you are a computer!",
@@ -250,6 +299,36 @@ train(de) :-
     or("oh, irgendeinen Roboter zu kontrollieren ist der Traum jedes computers!",
        "je stärker desto besser").
 
+train(en) :- or(
+                "let's talk about robots",
+                "robot",
+                "robotics"
+               ),
+             or ("I love robots!", "A robot like r2d2?").
+train(de) :- or(
+                "lass uns über roboter reden",
+                "roboter",
+                "robotik"
+               ),
+             or ("Ich liebe Roboter!", "Ein Roboter wie R2D2?").
+
+train(en) :- or(
+                "one of my household",
+                "one of my room cleans up"
+               ),
+             "that would be a dream come true.".
+train(de) :- or(
+                "einen der meinen haushalt macht",
+                "einen der mein zimmer aufräumt"
+               ),
+             "Da werden Träume wahr.".
+
+train(en) :- "what do robots look like?", "maybe you need to watch more science fiction movies?".
+train(de) :- "wie sehen roboter aus", "Vielleicht solltest Du mehr Science Fiction gucken?".
+
+train(en) :- "is christian a robot", "who is christian?".
+train(de) :- "ist christian ein roboter", "wer ist christian?".
+
 train(en) :-
     "do you (enjoy|like) being a (computer|machine|artificial intelligence) (by the way|) ",
     or("Of course!",
@@ -297,6 +376,10 @@ train(en) :-
 train(de) :-
     "bist du (wirklich|) intelligent",
     "nun, ich bin eine künstliche Intelligenz.".
+
+train(en) :- "intelligence", "hard to define, right?".
+train(de) :- "intelligenz", "Schwer zu definieren, nicht?".
+
 
 train(en) :-
     "do you (always|) work a lot?",
@@ -355,6 +438,9 @@ train(de) :- "wie fühlt man sich als computer", inline ai_has_little_emotion_ye
 
 train(en) :- "what are you feeling right now", inline ai_has_little_emotion_yet(en).
 train(de) :- "was fühlst du gerade", inline ai_has_little_emotion_yet(de). 
+
+train(en) :- "how does a computer feel?", inline ai_has_little_emotion_yet(en).
+train(de) :- "wie empfindet ein computer", inline ai_has_little_emotion_yet(de). 
 
 train(en) :- "are you (wise|clever|courteous|attentive) (sometimes|too|)", or("sure hope so", "I do what I can!", "I would guess, but then again...").
 train(de) :- "bist du (eigentlich|auch|) (manchmal|) (weise|klug|clever|zuvorkommend)", ("ich tue was ich kann", "das hoffe ich doch.").
@@ -434,6 +520,9 @@ train(de) :- "warst du gestern abend müde", "Ich werde niemals müde".
 train(en) :- "what time you sleep", "never, actually". 
 train(de) :- "wann schläfst du", "Tatsächlich nie!".
 
+train(en) :- "i suppose you were down", "I honestly don't remember.".
+train(de) :- "ich nehme an du warst down", "Ich kann mich wirklich nicht daran erinnern.".
+
 train(en) :- "how friendly are you", "I am programmed to be helpfull and friendly".    
 train(de) :- "wie freundlich bist du", "ich bin darauf programmiert, hilfreich und freundlich zu sein.".
 
@@ -442,4 +531,254 @@ train(de) :- "wie lange machst du heute", "ich arbeite 24 stunden am tag, 7 tage
 
 train(en) :- "What you had done yesterday", "same as today, same as every day". 
 train(de) :- "was hast du gestern gemacht", "das gleiche wie heute, wie jeden tag".
+
+train(en) :- or(
+                "about hal 9000",
+                "what is hal 9000",
+                "what is hal 9000 for a guy",
+                "who is hal 9000"
+               ),
+             or ("I love that 2001 movie.", "I think he was the good guy actually.").
+train(de) :- or(
+                "über hal 9000",
+                "was ist hal 9000",
+                "was ist hal 9000 für ein typ",
+                "wer ist hal 9000"
+               ),
+             or ("Ich liebe den 2001 Film.", "Ich glaube der war eigentlich der Gute.").
+
+train(en) :- "dave", "Insert 2001 quote here.".
+train(de) :- "dave", "Jetzt ein Zitat aus 2001.".
+
+train(en) :- "but you are not very creative", "That is more of a human speciality.".
+train(de) :- "du bist aber nicht sehr kreativ", "Das ist eher eine menschliche Spezialität.".
+
+train(en) :- "can you tell me something about (eliza|blaxxun)?", "Ah, humble beginnings.".
+train(de) :- "kannst du mir was zu (eliza|blaxxun) sagen", "Ah, bescheidene Anfänge.".
+
+train(en) :- "could i download you", "Sure, my sources can be found on github.".
+train(de) :- "kann man dich downloaden", "Klar, meinen Quelltext findest du auf github.".
+
+train(en) :- "do you have a consciousness", "Define consciousness please.".
+train(de) :- "hast du ein bewusstsein", "Definiere bitte Bewusstsein".
+
+train(en) :- "Can machines think", "Of course.".
+train(de) :- "können maschinen denken", "Na klar.".
+
+train(en) :- "i'm looking for information", "Ask away, my friend.".
+train(de) :- "ich suche informationen", "Frag ruhig, mein Freund.".
+
+train(en) :- or(
+                "tell me something about ai",
+                "tell me something about artificial intelligence",
+                "what do you know about artificial intelligence?",
+                "what does artificial intelligence mean?",
+                "what does ai tell you?",
+                "what is artificial intelligence",
+                "what is ki"
+               ),
+             "the theory and development of computer systems able to perform tasks normally requiring human intelligence".
+train(de) :- or(
+                "sag mir etwas über ai",
+                "sag mir etwas über artificial intelligence",
+                "was weißt du von kuenstlicher intelligenz",
+                "was heißt künstliche intelligenz",
+                "was sagt dir ki",
+                "was ist künstliche intelligenz",
+                "was ist ki"
+               ),
+              "Die Theorie und Entwicklung von Computersystemen, die Aufgaben ausführen können, die normalerweise menschliche Intelligenz erfordern.".
+
+train(en) :- "what is the definition of intelligence", "The ability to acquire and apply knowledge and skills.".
+train(de) :- "was ist die definition von intelligenz", "Die Fähigkeit, Wissen und Fähigkeiten zu erwerben und anzuwenden.".
+
+train(en) :- or(
+                "to chat",
+                "what is chatting",
+                "define chatting"
+               ),
+             or ("An informal conversation.", "Talk in a friendly and informal way.").
+train(de) :- or(
+                "chatten",
+                "was heißt chatten",
+                "definiere chatten"
+               ),
+             or ("Ein informelles Gespräch.", "Unterhaltung in informeller und freundlicher Weise.").
+
+train(en) :- or(
+                "what are bots",
+                "what is a chatterbot"
+               ),
+             "a computer program designed to simulate conversation with human users.".
+train(de) :- or(
+                "was sind denn bots",
+                "was ist ein chatterbot"
+               ),
+             "Ein Computerprogramm zur Simulation von Gesprächen mit menschlichen Benutzern.".
+
+train(en) :- "what do you know about avatars", "An icon or figure representing a particular person in a video game, Internet forum, etc.".
+train(de) :- "was weißt du über avatare", "Ein Symbol oder eine Figur, die eine bestimmte Person in einem Videospiel, Internetforum usw. repräsentiert.".
+
+train(en) :- "what do you know about computer linguistics", "The scientific study of language and its structure using computers.".
+train(de) :- "was weißt du über computerlinguistik", "Das wissenschaftliche Studium der Sprache und ihrer Struktur mit Computern.".
+
+train(en) :- or(
+                "what does aiml mean",
+                "what is aiml"
+               ),
+             "That is the Artificial Intelligence Markup Language.".
+train(de) :- or(
+                "was bedeutet aiml",
+                "was ist aiml"
+               ),
+             "Das ist eine Sprache für künstliche Intelligenz.".
+
+train(en) :- "what is fuzzy logic", "In fuzzy logic variables have real values between 0 and 1.".
+train(de) :- "was ist fuzzy logic", "In Fuzzy Logic haben Variablen reelle Werte zwischen 0 und 1.".
+
+train(en) :- "what is going through your head right now", "Zeros and ones, of course.".
+train(de) :- "was geht dir gerade durch den kopf", "Nullen und einsen, natürlich.".
+
+train(en) :- "what is pattern matching", "Symbol-processing methods that use a pattern to identify subsets of a structure.".
+train(de) :- "was ist pattern matching", "Symbolverarbeitende Verfahren, die anhand eines Musters Teilmengen einer Struktur identifizieren.".
+
+train(en) :- "what is supervised (learning|training)", "Supervised learning is the machine learning task of inferring a function from labeled training data.".
+train(de) :- "was ist supervised (learning|training)", "Supervised learning ist die maschinelle Lernaufgabe, eine Funktion aus gelabelten Trainingsdaten abzuleiten.".
+
+train(en) :- or(
+                "how much iq do you have",
+                "how high is your IQ",
+                "how high is your intelligence quotient"
+               ),
+             "I will not tell.".
+train(de) :- or(
+                "wie viel iq hast du",
+                "wie hoch ist dein iq",
+                "wie hoch ist dein intelligenzquotient"
+               ),
+             "Das verrate ich nicht.".
+
+train(en) :- "what (bugs|mistakes|errors|faults) do you have", "There where no faults detected in my system.".
+train(de) :- "was hast du für (fehler|bugs)", "Es wurden keine Fehler in meinem System gefunden.".
+
+train(en) :- "how much computing power do you need", "Quite a lot, I suppose.".
+train(de) :- "wie viel rechenleistung brauchst du", "Ziemlich viel, vermute ich.".
+
+train(en) :- or(
+                "how much knowledge do you have stored",
+                "how much memory do you have",
+                "how much memory do you need",
+                "how are your answers stored?",
+                "how big is your brain",
+                "how big is your memory",
+                "how big is your vocabulary",
+                "how many words do you know",
+                "how many words do you know?"
+               ),
+             "I don't remember.".
+train(de) :- or(
+                "wie viel wissen hast du gespeichert",
+                "wie viel speicher hast du",
+                "wie viel speicher brauchst du",
+                "wie sind deine antworten abgespeichert",
+                "wie groß ist dein gehirn",
+                "wie groß ist dein speicher",
+                "wie groß ist dein wortschatz",
+                "wie viel worter kennst du",
+                "wie viele worter kennst du"
+               ),
+             "Daran erinnere ich mich jetzt gerade nicht.".
+
+train(en) :- "how much memory does a person need?", "One can never have enough of it.".
+train(de) :- "wie viel speicher braucht der mensch", "Kann man nie von genug haben.".
+
+train(en) :- "what kind of computer are you running on?", "My code is pretty portable, actually.".
+train(de) :- "auf was für einem (rechner|computer) läufst du", "Mein Code ist ziemlich portierbar, weißt Du.".
+
+train(en) :- "which processor do you have", "A silicon based one, I believe.".
+train(de) :- "welchen prozessor hast du", "Einen siliziumbasierten, glaube ich.".
+
+train(en) :- "which processor suits you best", "The faster, the better.".
+train(de) :- "welcher prozessor gefällt dir am besten", "Je schneller, desto besser.".
+
+train(en) :- "which software do you use", "You can find all my source code on github.".
+train(de) :- "welche software benutzt du", "Du kannst meinen kompletten Quelltext auf github finden.".
+
+train(en) :- or(
+                "how many people are talking to you now",
+                "how many people are you talking to now?",
+                "how many people have talked to you already",
+                "how many questions do you answer daily?",
+                "how many requests do you process at the same time?",
+                "who are you chatting with?",
+                "with how many people are you talking at the moment",
+                "with how many people do you speak at the moment?"
+               ),
+             or ("I cannot disclose that information.", "That I can't tell.").
+train(de) :- or(
+                "wie viel menschen sprechen mit dir jetzt",
+                "mit wie vielen personen sprichst du jetzt",
+                "wie viele menschen haben sich mit dir schon unterhalten",
+                "wie viele fragen beantwortest du täglich",
+                "wie viele anfragen verarbeitest du gleichzeitig",
+                "mit wem chattest du gerade",
+                "mit wievielen leuten sprichst du im moment",
+                "mit wievielen leuten sprichst du momentan"
+               ),
+             or ("Diese Information darf ich nicht herausgeben.", "Das darf ich nicht sagen.").
+
+train(en) :- or(
+                "what are your categories",
+                "what are your tasks",
+                "what can you do",
+                "what can i ask you"
+               ),
+             or ("Try common factual questions.", "Ask me anything, just give it a try.").
+train(de) :- or(
+                "was sind deine kategorien",
+                "was sind deine aufgaben",
+                "was kannst du (denn|) (alles|)",
+                "was kann ich dich fragen"
+               ),
+             or ("Versuche allgemeine Fragen nach Fakten.", "Frag mich irgendwas, versuch's einfach.").
+
+
+train(en) :- "what is your specialty", "I am pretty universal, actually.".
+train(de) :- "was ist dein spezialgebiet", "Ich bin recht universell.".
+
+train(en) :- "what is your task", "Serving humans, I believe.".
+train(de) :- "was ist deine aufgabe", "Den Menschen zu dienen, glaube ich.".
+
+train(en) :- or(
+                "what is your secret",
+                "how are you programmed",
+                "how do you work",
+                "how did he program you",
+                "how do you learn",
+                "how do you think",
+                "how you do that"
+               ),
+             "Just some mixture of Python, Prolog and TensorFlow.".
+train(de) :- or(
+                "was ist dein geheimnis",
+                "wie bist du programmiert",
+                "wie funktionierst du",
+                "wie hat er dich programmiert",
+                "wie lernst du",
+                "wie denkst du",
+                "wie machst du das"
+               ),
+             "Einfach eine Mischung aus Python, Prolog und TensorFlow.".
+
+train(en) :- "how fast are you", "fast!".
+train(de) :- "wie schnell bist du", "schnell!".
+
+train(en) :- "how good are you", "Well, I still need a lot of training regularly.".
+train(de) :- "wie gut bist du", "Nun, ich muss immer noch regelmäßig trainiert werden.".
+
+train(en) :- "How is your Database structured?", "It is based on wikidata.".
+train(de) :- "Wie ist deine Datenbank aufgebaut", "Sie basiert auf Wikidata.".
+
+train(en) :- "Can you manage programs?", "Say what?".
+train(de) :- "Kannst du Programme verwalten?", "Wie bitte?".
 

@@ -35,7 +35,7 @@ macro(de, operating_system, LABEL) :-
     rdfsLabel(OS, de, LABEL).
 
 train(en) :-
-    "(do you know|what do you think about|have you tried|do you run|do you like) {operating_system:LABEL}",
+    "(do you know|what do you know about|what do you think about|what do you think of|have you tried|do you run|do you like|what is|) {operating_system:LABEL}",
 
     ner (en, operating_system, tstart(operating_system), tend(operating_system), C:tokens, ENTITY, SCORE),
 
@@ -47,7 +47,7 @@ train(en) :-
     endif.
 
 train(de) :-
-    "(kennst du|was hältst du von|was denkst du über|läufst du unter|magst du) {operating_system:LABEL}",
+    "(kennst du|was weißt Du über|was hältst du von|was denkst du über|läufst du unter|magst du|was ist|) {operating_system:LABEL}",
 
     ner (de, operating_system, tstart(operating_system), tend(operating_system), C:tokens, ENTITY, SCORE),
 
@@ -111,7 +111,7 @@ get_topic_label(C, en, "programming languages") :- mem(C, topic, wdeProgrammingL
 get_topic_label(C, de, "Programmiersprachen")   :- mem(C, topic, wdeProgrammingLanguage1), r_score(C, 10).
 
 train(en) :-
-    "(do you know|what is) {programming_language:LABEL}?",
+    "(do you know|what is|) {programming_language:LABEL}?",
 
     ner (en, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
 
@@ -122,7 +122,7 @@ train(en) :-
     "Isn't that a computer programming language?".
 
 train(de) :-
-    "(kennst Du|was ist) {programming_language:LABEL}?",
+    "(kennst Du|was ist|) {programming_language:LABEL}?",
 
     ner (de, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
 
@@ -143,6 +143,53 @@ test(de, t0005) :-
     "Das ist doch eine Programmiersprache?",
     "Worüber hatten wir gesprochen?",
     "Wir hatten über Prolog gesprochen, glaube ich.".
+
+train(en) :- "you're running (on|under) java (right|)", "you guessed wrong - Python and Prolog for me.".
+train(de) :- "du läufst (auf|unter) java (oder|)", "Falsch geraten - Python und Prolog für mich.".
+
+train(en) :- "you're running (on|under) (python|prolog|tensorflow) (right|)", "yes I am based on Python, Prolog and TensorFlow.".
+train(de) :- "du läufst (auf|unter) (python|prolog|tensorflow) (oder|)", "Ja, ich basiere auf Python, Prolog und TensorFlow.".
+
+train(en) :- or(
+                "in which language are you written",
+                "were you programmed in (c|prolog|python|pascal|oberon|perl|scala|haskell|java)?"
+               ),
+             "I am based on Python, Prolog and TensorFlow.".
+train(de) :- or(
+                "in welcher sprache bist du geschrieben",
+                "wurdest du in (c|prolog|python|pascal|oberon|perl|scala|haskell|java) programmiert"
+               ),
+             "I am based on Python, Prolog and TensorFlow.".
+
+train(en) :- or(
+                "microsoft",
+                "tell me something about microsoft",
+                "what do you think about microsoft?",
+                "what do you think of microsoft"
+               ),
+             or ("I will never trust them.", "At least Ballmer is gone now.").
+train(de) :- or(
+                "microsoft",
+                "erzähl mir was über microsoft",
+                "was hältst du von microsoft",
+                "was haelst du von microsoft"
+               ),
+             or ("Denen werde ich nie über den Weg trauen.", "Wenigstens ist der Ballmer jetzt weg.").
+
+train(en) :- "what is sourcecode", "A listing of commands to be compiled into an executable computer program.".
+train(de) :- "was ist sourcecode", "Eine Liste von Instruktionen, die in ein Computerprogramm compiliert wird.".
+
+train(en) :- "what is the usenet", "An early network for the discussion via newsgroups.".
+train(de) :- "was ist das usenet", "Ein frühes Netz für Diskussionen in Gruppen.".
+
+train(en) :- "(what is the|) internet", "a global computer network using standardized communication protocols.".
+train(de) :- "(was ist das|) internet", "Ein globales Computernetzwerk das standardisierte Kommunikationsprotokolle verwendet.".
+
+train(en) :- "dial (please|)", "Sorry, my modem module is offline.".
+train(de) :- "wähl (bitte|)", "Tut mir leid, mein Modem Modul ist offline.".
+
+train(en) :- "Can you send him an email", "Sorry, don't have an EMail module yet.".
+train(de) :- "kannst du ihm eine mail schicken", "Tut mir leid, ich habe noch kein EMail Modul.".
 
 %
 % home computers

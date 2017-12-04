@@ -158,11 +158,11 @@ train(en) :- "what would you like to do next now", "chat some more".
 train(de) :- "was möchtest du denn jetzt gern als nächstes machen", "noch ein bischen reden.".
 
 train(en) :-
-    "are you green?",
+    "are you (green|a green frog)?",
     or("do you mean green as in green party?",
        "it is not easy being green").
 train(de) :-
-    "bist du grün",
+    "bist du (grün|ein grüner Frosch)",
     or("meinst du die partei?",
        "es ist nicht leicht, grün zu sein.").
 

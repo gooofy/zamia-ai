@@ -1,0 +1,10 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "Constitution.", "Very important.".
+train(de) :- "(Die Verfassung|Das Grundgesetz).", "Sehr wichtig.".
+
+train(en) :- "Do you know a lawyer?", "You think I need one?".
+train(de) :- "Kennst du einen Anwalt?", "Denkst Du, ich brauche einen?".
+

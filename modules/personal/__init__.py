@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-DEPENDS     = [ 'config', 'data', 'base', 'tech' ]
+DEPENDS     = [ 'config', 'data', 'base', 'dialog', 'tech' ]
 
 AIP_SOURCES = [
                'personal.aip', 'humor.aip',   'private.aip',

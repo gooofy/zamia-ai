@@ -25,7 +25,7 @@ from zamiaprolog.errors import PrologRuntimeError
 from zamiaprolog.logic  import StringLiteral, NumberLiteral
 from kb_weather         import fetch_weather_forecast
 
-DEPENDS = [ 'base', 'config' ]
+DEPENDS = [ 'base', 'config', 'dialog' ]
 
 AIP_SOURCES = [
                'weather_test.aip', 'weather.aip',

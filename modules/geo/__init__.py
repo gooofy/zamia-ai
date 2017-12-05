@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEPENDS    = [ 'base', 'data' ]
+DEPENDS    = [ 'base', 'data', 'dialog' ]
 
 AIP_SOURCES = [
                'cities.aip', 'countries.aip', 'states.aip', 'misc.aip',

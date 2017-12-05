@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEPENDS    = [ 'base' ]
+DEPENDS    = [ 'base', 'dialog' ]
 
 AIP_SOURCES = [
                'transport.aip',

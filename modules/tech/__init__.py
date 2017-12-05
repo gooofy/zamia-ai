@@ -3,7 +3,7 @@
 
 import logging
 
-DEPENDS    = [ 'base', 'config', 'humans' ]
+DEPENDS    = [ 'base', 'config', 'dialog', 'humans' ]
 
 AIP_SOURCES = [
                'tech.aip', 'ai.aip',

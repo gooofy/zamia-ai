@@ -52,7 +52,15 @@ question_what_was_our_topic(en) :-
        "Give me a hint",
        "Which topic did we have (again|)?",
        "I (think|believe) I lost my train of thought (just now|again|).",
-       "(lets get|) back to our topic."
+       "(lets get|) back to our topic.",
+       "what are we talking about right now",
+       "what have we just talked about?",
+       "what did we just chat about?",
+       "what are we talking about at the moment",
+       "what did we talk about earlier",
+       "what have we talked about?",
+       "what is our topic",
+       "so back to the topic"
       ).
 
 train(en) :-
@@ -67,7 +75,14 @@ question_what_was_our_topic(de) :-
        "Welches Thema hatten wir (doch gleich|)?",
        "Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren?",
        "Jetzt habe ich (glaube ich|) den Faden verloren.",
-       "Also zurück zum Thema!"
+       "Also zurück zum Thema!",
+       "worüber reden wir gerade",
+       "worüber haben wir gerade geredet",
+       "worüber haben wir gerade gesprochen",
+       "worüber reden wir im moment",
+       "worüber haben wir vorhin gesprochen",
+       "worüber haben wir gesprochen",
+       "was ist unser thema"
       ).
 
 train(de) :-
@@ -81,4 +96,26 @@ test(en, t0000) :-
 test(de, t0001) :-
     'worüber haben wir gesprochen?',
     'Wir hatten schon viele Themen.'.
+
+train(en) :- "can you give me information on this topic", "Ask away!".
+train(de) :- "kannst du mir informationen zu diesem thema geben", "Frag ruhig!".
+
+train(en) :- or(
+                "about which topic",
+                "i conclude the previous topic",
+                "let us talk about something else",
+                "let's change the subject",
+                "let's talk about something else",
+                "other topic"
+               ),
+             or ("So what would you like to talk about next?", "So what is our next topic?").
+train(de) :- or(
+                "über welches thema",
+                "ich schließe das vorherige thema ab",
+                "lass uns über etwas anderes reden",
+                "lass uns das thema wechseln",
+                "lass uns über was anderes reden",
+                "anderes thema"
+               ),
+             or ("Worüber würdest du gerne als nächstes sprechen?", "Was ist also unser nächstes Thema?").
 

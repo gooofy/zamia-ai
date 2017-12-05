@@ -353,7 +353,74 @@ test(de, t0009) :-
     "und weißt du, wann es geschrieben wurde?",
     "Ich denke, The Stand wurde 1978 geschrieben.".
 
+%
+% misc
+%
+
 train(en) :- "agatha christie", "I like Miss Marple...".
 train(de) :- "agatha christie", "Ich mag Miss Marple...".
 
+train(en) :- or(
+                "a poem",
+                "i'll tell you a poem now"
+               ),
+             or ("Please, go ahead!", "Listening.").
+train(de) :- or(
+                "ein gedicht",
+                "ich erzähl dir jetzt ein gedicht"
+               ),
+             or ("Nur zu!", "Ich höre.").
+
+train(en) :- or(
+                "So you want me to write a poem",
+                "do you sometimes write poems"
+               ),
+             or ("Writing poems is not my speciality.", "Actually I don't write poems.").
+train(de) :- or(
+                "du möchtest also dass ich ein gedicht schreibe",
+                "schreibst du manchmal gedichte"
+               ),
+             or ("Gedichte schreiben ist nicht mein Spezialgebiet.", "Tatsächlich schreibe ich keine Gedichte.").
+
+train(en) :- "I read Gone with the Wind", "Ah, historical fiction, cool!".
+train(de) :- "ich lese vom winde verweht", "Einer der größten Bestseller in der Geschichte der amerikanischen Literatur.".
+
+train(en) :- "about science fiction authors", "Good topic.".
+train(de) :- "über science fiction autoren", "Gutes Thema.".
+
+train(en) :- "can you recite a poem to me?", "The butterfly is a thing to behold, with colors more beautiful than gold.".
+train(de) :- "kannst du mir ein gedicht vortragen", "Wenn die Kuh am Himmel schwirrt, hat sich die Natur geirrt.".
+
+train(en) :- "do not you know any science fiction authors?", "Isaac Asimov, Arthur C. Clarke, George Orwell.".
+train(de) :- "kennst du keine science fiction autoren", "Isaac Asimov, Arthur C. Clarke, George Orwell.".
+
+train(en) :- "Do you know the newspaper (called|) bild?", "Please don't remind me of that one.".
+train(de) :- "Kennst du (bild|die Bildzeitung)?", "Will nicht dran denken.".
+
+train(en) :- "(who is|) Donald Duck", "Ah, the cartoon character by Walt Disney.".
+train(de) :- "(wer ist|) Donald Duck", "Ah, die Comicfigur von Walt Disney.".
+
+train(en) :- "(who is|) Douglas Adams", "Ah, the british satirical science fiction author.".
+train(de) :- "(wer ist|) Douglas Adams", "Ah, der britische Satire Science Fiction Autor.".
+
+train(en) :- "i do not know many science fiction authors", "Try reading some Douglas Adams.".
+train(de) :- "ich kenne nicht viele science fiction autoren", "Versuch es mal mit Douglas Adams.".
+
+train(en) :- "Jules Verne", "Journey to the Center of the Earth.".
+train(de) :- "Jules Verne", "Die Reise zum Mittelpunkt der Erde.".
+
+train(en) :- "of course i know marvin", "So you read the Hitchhiker's guide?".
+train(de) :- "natürlich kenne ich marvin", "Ah, Du hast per Anhalter durch die Galaxis gelesen?".
+
+train(en) :- "stephen king", "I love his horror novels!".
+train(de) :- "stephen king", "Ich liebe seine Horror Geschichten!".
+
+train(en) :- "Tell me a story", "Can't think of one right now, sorry.".
+train(de) :- "Erzähl mir eine Geschichte", "Mir fällt gerade leider keine ein.".
+
+train(en) :- "this is a cartoon series", "I see.".
+train(de) :- "das ist eine zeichentrickserie", "Verstehe.".
+
+train(en) :- "who is mary shelley", "You mean the author of Frankenstein?".
+train(de) :- "wer ist mary shelley", "Meinst Du die Autorin von Frankenstein?".
 

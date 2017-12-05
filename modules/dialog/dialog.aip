@@ -1,0 +1,38 @@
+%prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% basic dialog building blocks
+%
+% we provide just eliza-style responses here, but other modules may re-use
+% these building blocks and provides more meaningful higher-scoring responses
+%
+
+%
+% say again type follow up questions
+%
+
+train (en) :-
+    "(huh|say again please|say again|what was that)?",
+
+    prev(C, PC),
+    list_findall(X, say(PC, X), L),
+    list_str_join(" ", L, S),
+
+    or("I said {S, s}",
+       "As I just said {S, s}",
+       "I repeat {S, s}").
+
+train (de) :-
+    "(was|wie war das|bitte sag nochmal was du gesagt hast|wie bitte)?",
+
+    prev(C, PC),
+    list_findall(X, say(PC, X), L),
+    list_str_join(" ", L, S),
+
+    or("Ich sagte {S, s}",
+       "Ich sagte gerade {S, s}",
+       "Ich wiederhole {S, s}").
+
+

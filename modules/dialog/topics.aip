@@ -1,0 +1,84 @@
+%prolog
+
+train_prefix('{self_address:L} ').
+
+%
+% basic building blocks for topic handling
+%
+
+get_topic_label(C, LANG, L) :-
+    mem(C, f1ent, ENT),
+    rdfsLabel(ENT, LANG, L),
+    r_score(C, 20).
+
+ 
+answer_what_was_our_topic_real(C, en) :-
+    get_topic_label(C, en, L),
+    or(say(C, "We have been talking about {L,s}, I think."),
+       say(C, "Our topic was {L,s}, I believe."),
+       say(C, "Didn't we talk about {L,s}?")).
+
+answer_what_was_our_topic_real(C, de) :-
+    get_topic_label(C, de, L),
+    or(say(C, "Wir hatten über {L,s} gesprochen, glaube ich."),
+       say(C, "Ich denke unser Thema war {L,s}."),
+       say(C, "Sprachen wir nicht über {L,s} ?")).
+
+% dodge the question if we don't know
+
+answer_what_was_our_topic_dodge(C, en) :-
+    or(say(C, 'We have had many topics.'),
+       say(C, 'We were talking about you for the most part, I believe.'),
+       say(C, 'What would you like to talk about?')).
+
+answer_what_was_our_topic_dodge(C, de) :-
+    or( say(C, 'Wir hatten schon viele Themen.'), 
+        say(C, 'Ich glaube wir haben vor allem über Dich gesprochen.'),
+        say(C, 'Worüber würdest Du denn gerne sprechen?')).
+
+answer_what_was_our_topic(en) :-
+    or(
+        answer_what_was_our_topic_real(C, en),
+        answer_what_was_our_topic_dodge(C, en)).
+answer_what_was_our_topic(de) :-
+    or(
+        answer_what_was_our_topic_real(C, de),
+        answer_what_was_our_topic_dodge(C, de)).
+
+question_what_was_our_topic(en) :-
+    or(
+       "What (were we talking|did we talk) about (again|) ?",
+       "(Which|What) was our topic (again|)?",
+       "Give me a hint",
+       "Which topic did we have (again|)?",
+       "I (think|believe) I lost my train of thought (just now|again|).",
+       "(lets get|) back to our topic."
+      ).
+
+train(en) :-
+    inline question_what_was_our_topic(en),
+    inline answer_what_was_our_topic(en).
+
+question_what_was_our_topic(de) :-
+    or(
+       "(Wovon|Worüber|Was) (hatten|haben) wir (eben|) gesprochen?",
+       "(Wie|Was) war (doch gleich|gleich|) unser Thema?",
+       "(Hilfst Du|Hilf) mir (bitte|) auf die Sprünge?",
+       "Welches Thema hatten wir (doch gleich|)?",
+       "Ich (glaub|glaube|) ich habe (jetzt|) den Faden verloren?",
+       "Jetzt habe ich (glaube ich|) den Faden verloren.",
+       "Also zurück zum Thema!"
+      ).
+
+train(de) :-
+    inline question_what_was_our_topic(de),
+    inline answer_what_was_our_topic(de).
+
+test(en, t0000) :-
+    'what did we talk about',
+    'We have had many topics.'.
+
+test(de, t0001) :-
+    'worüber haben wir gesprochen?',
+    'Wir hatten schon viele Themen.'.
+

@@ -21,7 +21,9 @@
 DEPENDS    = [ 'base' ]
 
 AIP_SOURCES = [
+               'dialog.aip',
                'greetings.aip',
                'smalltalk.aip',
+               'topics.aip',
               ]
 

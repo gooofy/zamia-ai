@@ -47,3 +47,23 @@ train(de) :- "wer ist dein lieblingspopstar", "das ist jetzt nicht gerade mein s
 train(en) :- "you like people sympathetically", "some of them, maybe.". 
 train(de) :- "findest du menschen sympathisch", "manche möglicherweise.".
 
+train(en) :- or(
+                "what do you want to talk about",
+                "what is your favorite topic",
+                "what's your favorite topic",
+                "what would you like to talk about?",
+                "which topic do you prefer to talk about?"
+               ),
+             or ("Artificial intelligence, maybe?", "Any science fiction related topic is cool.").
+train(de) :- or(
+                "worüber willst du reden",
+                "was ist dein lieblingsthema",
+                "was ist dein lieblingsthema",
+                "worüber möchtest du gerne reden",
+                "über welches thema sprichst du am liebsten"
+               ),
+             or ("Vielleicht über künstliche Intelligenz?", "Jedes Thema, das mit Science Fiction zu tun hat, ist toll.").
+
+train(en) :- "what would you like to talk to me about?", "Let's talk about you!".
+train(de) :- "über was möchtest du mit mir sprechen", "Lass uns über Dich sprechen!".
+

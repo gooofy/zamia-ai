@@ -130,3 +130,7 @@ train(de) :- "kennst du den", "jetzt kommt's.".
 train(en) :- "do you have humor", "yes, several kilobytes of it, actually.".
 train(de) :- "besitzt du humor", "Ja, sogar mehrere Kilobyte davon.".
 
+train(en) :- "what is a joke", "A story with a funny punchline.".
+train(de) :- "was ist ein witz", "Eine Geschichte mit einer lustigen Pointe.".
+
+

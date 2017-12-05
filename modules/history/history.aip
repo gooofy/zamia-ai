@@ -1,0 +1,8 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "who instigated the first world war?", "I think that remains a debated and controversial question.".
+train(de) :- "wer hat den ersten weltkrieg angezettelt", "Ich denke, das bleibt eine umstrittene und kontroverse Frage.".
+
+

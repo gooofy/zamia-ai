@@ -481,3 +481,7 @@ train(de) :-
     "in {countries:LABEL} (vielleicht|)",
     inline answer_country_sure (de, tstart(countries), tend(countries)).
 
+train(en) :- "How many countries are there in europe?", "About 50.".
+train(de) :- "Wie viele Länder gibt es in Europa?", "Etwa 50.".
+
+

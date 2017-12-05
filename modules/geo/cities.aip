@@ -57,11 +57,11 @@ answer_city_location_tokens(de, TS, TE) :-
     "{CLABEL,s} ist eine Stadt in {CYLABEL,s}.".
 
 train(en) :-
-    "(what is|what about|what do you know about|where is|in what country is|in|) {cities:LABEL} (and you|) (do you know it|do you know that|)?",
+    "(what is|what about|what do you know about|where is|in what country is|in|do you know|do you know the city|over|) {cities:LABEL} (and you|) (again|then|do you know it|do you know that|)?",
     inline answer_city_location_tokens (en, tstart(cities), tend(cities)).
 
 train(de) :-
-    "(was ist|was ist mit|was weißt Du über|wo ist|wo liegt|in|in welchem land ist|) {cities:LABEL} (und du|kennst Du das|)?",
+    "(was ist|was ist mit|was weißt Du über|wo ist|wo liegt|in|in welchem land ist|kennst du|kennst du die stadt|über|) {cities:LABEL} (nochmal|denn|und du|kennst Du das|)?",
     inline answer_city_location_tokens (de, tstart(cities), tend(cities)).
 
 test(en, c0000) :-
@@ -372,4 +372,20 @@ test(de, c0005) :-
     "Berlin ist eine Stadt in Deutschland",
     "Und wie groß ist die Fläche?",
     "Die Fläche von Berlin ist 891 Quadratkilometer.".
+
+%
+% FIXME: coordinates
+%
+
+train(en) :-
+    "(what are the coordinates of|coordinates of) {cities:LABEL} (please|) ?",
+    "sorry, I do not have geo coordinates in my database yet.".
+
+train(de) :-
+    "(wie sind die koordinaten von|was sind die koordinaten von|koordinaten von) {cities:LABEL} (bitte|)?",
+    "tut mir leid, ich habe keine geo koordinaten in meiner datenbank".
+
+train(en) :- "the expo takes place in Hanover", "Have you been there?".
+train(de) :- "in hannover findet die expo statt", "Warst Du da schon mal?".
+
 

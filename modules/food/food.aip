@@ -1,0 +1,7 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+train(en) :- "what is wine", "An alcoholic drink made from fermented grape juice.".
+train(de) :- "was ist wein", "Ein alkoholisches Getränk aus fermentiertem Traubensaft.".
+

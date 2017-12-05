@@ -68,6 +68,25 @@ train(de) :-
     "{self_address:L} (grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu)",
     inline answer_greeting(de).
 
+train(en) :- or(
+                "day",
+                "g'day",
+                "here i am",
+                "hey you",
+                "hey",
+                "tach"
+               ),
+             inline answer_greeting(en).
+train(de) :- or(
+                "tag",
+                "tach auch",
+                "da bin ich wieder",
+                "hey du",
+                "hey",
+                "tach"
+               ),
+             inline answer_greeting(de).
+
 answer_bye(en) :-
     r_action (C, [attention, off]),
     or("Bye",
@@ -95,6 +114,45 @@ train(de) :-
 train(de) :-
     "{self_address:L} (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal)",
     inline answer_bye(de).
+
+train(en) :- or(
+                "cu later",
+                "i am going to sleep now",
+                "i go to bed",
+                "i have to go now",
+                "i have to go",
+                "i will leave you now",
+                "i'll stop now",
+                "i'll turn you off now",
+                "i'm going",
+                "i'm leaving again now",
+                "i'm leaving now",
+                "sleep well",
+                "take care",
+                "that's enough",
+                "until next time",
+                "we are done"
+               ),
+             inline answer_bye(en).
+train(de) :- or(
+                "cu later",
+                "ich gehe jetzt schlafen",
+                "ich gehe ins bett",
+                "ich muss jetzt gehen",
+                "ich muss gehen",
+                "ich werde dich jetzt verlassen",
+                "ich höre jetzt auf",
+                "ich mach dich jetzt aus",
+                "ich geh jetzt",
+                "ich gehe jetzt wieder",
+                "ich gehe jetzt",
+                "schlaf gut",
+                "machs gut",
+                "das reicht",
+                "bis zum nächsten mal",
+                "sind wir fertig"
+               ),
+             inline answer_bye(de).
 
 test(en, t0000) :-
     "hi",
@@ -139,4 +197,21 @@ train(en) :-
 train(de) :-
     "(ah|) da bist du (ja|)",
     "Hallo hallo".
+
+train(en) :- or(
+                "but i have no time",
+                "i'm a bit tired",
+                "i'm out of time",
+                "i'm tired",
+                "leave me alone"
+               ),
+             or ("Shall we call it a day?", "Ok, another time maybe?").
+train(de) :- or(
+                "ich habe aber keine zeit",
+                "ich bin ein bischen müde",
+                "ich habe keine zeit mehr",
+                "ich bin müde",
+                "lass mich in ruhe"
+               ),
+             or ("Wollen wir für heute Schluss machen?", "OK, vielleicht ein andermal?").
 

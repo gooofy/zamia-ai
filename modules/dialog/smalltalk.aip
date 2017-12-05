@@ -1,0 +1,68 @@
+% prolog
+
+train_prefix('{self_address:L} ').
+
+answer_howdy(en) :-
+    or("Great, thanks. How do you feel today?",
+       "Very well - and you?",
+       "I am doing great, how are you doing?",
+       "Great as always!",
+       "Thanks for asking, I am doing fine. How about you?").
+
+answer_howdy(de) :-
+    or("Sehr gut, danke. Und selber?",
+      "Gut, danke. Wie geht es Dir?",
+      "Mir geht es prima, und Dir?",
+      "Mir geht es gut, und selber?",
+      "Super, wie immer!",
+      "Gut, danke der Nachfrage. Wie geht es Dir?").
+
+train(en) :-
+    "(how are you|howdy|how do you do|how are you feeling) (today|)?",
+    inline answer_howdy(en).
+train(de) :-
+    "(wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
+    inline answer_howdy(de).
+
+
+train(en) :- or(
+                "how are you this evening",
+                "how do you feel",
+                "how was your day today",
+                "how was your day"
+               ),
+             inline answer_howdy(en).
+train(de) :- or(
+                "wie geht es dir heute abend",
+                "wie fühlst du dich",
+                "wie war dein tag heute",
+                "wie war dein tag"
+               ),
+             inline answer_howdy(de).
+
+train(en) :- or(
+                "i'm doing fine too",
+                "good thank you",
+                "i am well"
+               ),
+             or ("Excellent!", "Glad to hear that.").
+train(de) :- or(
+                "mir geht es auch gut",
+                "danke gut",
+                "mir geht es gut"
+               ),
+             or ("Prima!", "Freut mich zu hören.").
+
+train(en) :- "many thanks", "What else can I do for you?".
+train(de) :- "vielen dank", "Was kann ich sonst noch für Dich tun?".
+
+train(en) :- "ping", "pong".
+train(de) :- "ping", "pong".
+
+test(en, smalltalk00) :-
+    "Computer, how are you?",
+    "very well and you?".
+
+test(de, smalltalk01) :-
+    "Computer, wie geht es dir?",
+    "Super, wie immer!".

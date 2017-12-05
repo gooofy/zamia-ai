@@ -132,36 +132,6 @@ test(de, t0007) :-
     "Bis bald",
     action(attention, off).
 
-answer_howdy(en) :-
-    or("Great, thanks. How do you feel today?",
-       "Very well - and you?",
-       "I am doing great, how are you doing?",
-       "Great as always!",
-       "Thanks for asking, I am doing fine. How about you?").
-
-answer_howdy(de) :-
-    or("Sehr gut, danke. Und selber?",
-      "Gut, danke. Wie geht es Dir?",
-      "Mir geht es prima, und Dir?",
-      "Mir geht es gut, und selber?",
-      "Super, wie immer!",
-      "Gut, danke der Nachfrage. Wie geht es Dir?").
-
-train(en) :-
-    "{self_address:L} (how are you|howdy|how do you do|how are you feeling) (today|)?",
-    inline answer_howdy(en).
-
-train(de) :-
-    "{self_address:L} (wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
-    inline answer_howdy(de).
-
-test(en, t0008) :-
-    "Computer, how are you?",
-    "very well and you?".
-
-test(de, t0009) :-
-    "Computer, wie geht es dir?",
-    "Super, wie immer!".
 
 train(en) :-
     "(ah|) there you are!",
@@ -169,18 +139,4 @@ train(en) :-
 train(de) :-
     "(ah|) da bist du (ja|)",
     "Hallo hallo".
-
-train(en) :-
-    "I (like to|) take the (bus|train|cab) when it (snows|rains)",
-    "I like public transport.".
-train(de) :-
-    "wenn es (schneit|regnet|kalt ist) fahre ich lieber mit (dem taxi|der bahn|dem bus|der s-bahn)",
-    "ich mag öffentliche verkehrsmittel.".
-
-train(en) :-
-    "you don't know about trains (do you|)?",
-    "why wouldn't I know about that?".
-train(de) :-
-    "die (bahn|s-bahn) kennst du (nicht|nich) (oder|)",
-    "warum sollte ich die nicht kennen?".
 

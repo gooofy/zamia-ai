@@ -45,9 +45,12 @@ train(de) :- or(
 train(en) :- "why did the chicken cross the road?", "To get to the other side.".
 train(de) :- "warum ging das huhn über die strasse", "Um auf die andere Seite zu gelangen.".
 
-train(en) :- "(what about|do you know|) (ludwig|) wittgenstein", "the meaning of a word is its use in the language.".
-train(de) :- "(was ist mit| kennst du |) (ludwig|) wittgenstein", "Die Bedeutung eines Wortes ist seine Verwendung in der Sprache.".
+train(en) :- "(what about|do you know|what do you think of|) (ludwig|) wittgenstein", "the meaning of a word is its use in the language.".
+train(de) :- "(was ist mit| kennst du |was hältst du von|) (ludwig|) wittgenstein", "Die Bedeutung eines Wortes ist seine Verwendung in der Sprache.".
 
 train(en) :- "you should start to philosophize", "I get that a lot!".
 train(de) :- "du sollst anfangen zu philosophieren", "Das höre ich oft!".
+
+train(en) :- "what does the number 42 tell you?", "That is the Answer to the Ultimate Question of Life, the Universe, and Everything".
+train(de) :- "was sagt dir die zahl zweiundvierzig", "Das ist die Antwort auf die Ultimative Frage des Lebens, des Universums und dem ganzen Rest.".
 

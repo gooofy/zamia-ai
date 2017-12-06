@@ -61,7 +61,7 @@ test(en, t0001) :-
     "Would you like to know more about her?".
 
 train(en) :-
-    "(what about | who is | who was | what is| what do you think of|) {known_humans:LABEL}",
+    "(what about | who is | who was | what is| what do you think of|by|do you know|) {known_humans:LABEL} (then|)",
 
     ner (en, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
@@ -71,7 +71,7 @@ train(en) :-
     answer_info_human (C, en, ENTITY).
 
 train(de) :-
-    "(wer ist| wer war | wer war eigentlich | wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über| was hältst du von|) {known_humans:LABEL}",
+    "(wer ist|wer ist denn| durch| wer war | wer war eigentlich | wer war denn| wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über| was hältst du von|kennst du|) {known_humans:LABEL}",
 
     ner (de, human, tstart(known_humans), tend(known_humans), C:tokens, ENTITY, SCORE),
 
@@ -87,6 +87,25 @@ test(de, t0002) :-
 test(en, t0003) :-
     "What about Angela Merkel?",
     "Her name sounds familiar.".
+
+train(en) :- "how is {known_humans:LABEL}?", "I have no information on that.".
+train(de) :- "wie geht es {known_humans:LABEL}?", "Darüber habe ich keine Informationen.".
+
+train(en) :- or(
+                "is {known_humans:LABEL} nice",
+                "tell me more about {known_humans:LABEL}",
+                "what else do you know about {known_humans:LABEL}?",
+                "what is (her|his) (girlfriend's|boyfriend's) name"
+               ),
+             or ("Sorry, I have no further information.", "There is no further information here.").
+train(de) :- or(
+                "ist {known_humans:LABEL} nett",
+                "erzähl mir mehr über {known_humans:LABEL}",
+                "was weißt du sonst noch über {known_humans:LABEL}",
+                "wie heißt (ihre|seine) freundin",
+                "wie heißt (ihr|sein) freund"
+               ),
+             or ("Tut mir leid, mehr Informationen habe ich nicht.", "Es gibt hier nicht mehr Informationen.").
 
 %
 % birthplace
@@ -362,6 +381,14 @@ train(de) :-
     "(wann hat|an welchem Tag hat) (eigentlich|) {known_humans:LABEL} Geburtstag?",
     inline answer_human_born_when_tokens(de, tstart(known_humans), tend(known_humans)).
 
+train(en) :-
+    "how old is {known_humans:LABEL}?",
+    inline answer_human_born_when_tokens(en, tstart(known_humans), tend(known_humans)).
+
+train(de) :-
+    "wie alt ist {known_humans:LABEL}?",
+    inline answer_human_born_when_tokens(de, tstart(known_humans), tend(known_humans)).
+
 answer_human_born_when_context(en) :-
 
     mem(C, f1ent, HUMAN),
@@ -514,4 +541,18 @@ train(de) :- "kennst du (turing|von neumann|einstein|Marianne Rosenberg|pele|goe
 
 train(en) :- "do you know (captain kirk|alex|elvira|homer|marvin)?", answer_sounds_familiar(en).
 train(de) :- "kennst du (captain kirk|alex|elvira|homer|marvin)?", answer_sounds_familiar(de).
+
+% misc
+
+train(en) :- "what is a human?", "Humans are the only living members of the genus Homo.".
+train(de) :- "was ist ein mensch", "Unter Mensch versteht man den anatomisch modernen Menschen.".
+
+train(en) :- "who is the richest man on earth?", "Bill Gates?".
+train(de) :- "wer ist der reichste mensch auf der erde", "Bill Gates?".
+
+train(en) :- "with andreas", "excellent.".
+train(de) :- "mit andreas", "prima.".
+
+train(en) :- "a stupid person", "Are you sure?".
+train(de) :- "ein dummer mensch", "Bist Du sicher?".
 

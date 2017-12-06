@@ -350,7 +350,9 @@ train(en) :- or(
                 "you dodge",
                 "you go like the cat to the porridge",
                 "don't distract",
-                "why are you always distracting from the topic"
+                "why are you always distracting from the topic",
+                "that does not belong to the topic",
+                "we already covered that topic"
                ),
              or ("I'm sorry if I seem a bit confused.", "Sorry, I do feel a bit confused.").
 train(de) :- or(
@@ -359,7 +361,9 @@ train(de) :- or(
                 "du weichst aus",
                 "du gehst wie die katze um den brei",
                 "lenk nicht ab",
-                "warum lenkst du immer vom thema ab"
+                "warum lenkst du immer vom thema ab",
+                "das gehört aber nicht zum thema",
+                "das thema hatten wir schon"
                ),
              or ("Tut mir leid, wenn ich etwas verwirrt erscheine.", "Ich fühle mich tatsächlich ein wenig wirr im Moment.").
 

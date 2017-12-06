@@ -1224,3 +1224,19 @@ train(de) :- "was ist daran so interessant", "sag du es mir.".
 train(en) :- "what you up to", "I want to understand you better.".
 train(de) :- "was hast du vor", "Ich möchte Dich besser verstehen.".
 
+train(en) :- or(
+                "what's going on",
+                "what's happening",
+                "what's new"
+               ),
+             or ("why? what did your hear?", "life is going on. Are you missing it?").
+train(de) :- or(
+                "was geht",
+                "was ist los",
+                "was gibt es neues"
+               ),
+             or ("Warum? Was hast du aufgeschnappt?", "Das Leben geht weiter - Du verpasst es doch nicht?").
+
+train(en) :- "Do you tell something?", "OK.".
+train(de) :- "Erzähl doch du etwas.", "OK.".
+

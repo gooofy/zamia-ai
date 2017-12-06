@@ -731,14 +731,16 @@ train(en) :- or(
                 "what are your categories",
                 "what are your tasks",
                 "what can you do",
-                "what can i ask you"
+                "what can i ask you",
+                "from which topic areas you can answer questions"
                ),
              or ("Try common factual questions.", "Ask me anything, just give it a try.").
 train(de) :- or(
                 "was sind deine kategorien",
                 "was sind deine aufgaben",
                 "was kannst du (denn|) (alles|)",
-                "was kann ich dich fragen"
+                "was kann ich dich fragen",
+                "aus welchen themengebieten kannst du fragen beantworten"
                ),
              or ("Versuche allgemeine Fragen nach Fakten.", "Frag mich irgendwas, versuch's einfach.").
 

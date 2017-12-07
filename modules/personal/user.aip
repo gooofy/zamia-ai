@@ -111,11 +111,13 @@ train(de) :- "ich wurde in (saarbrücken|Essen|Moskau|Zurich|Stuttgart|Berlin|Ha
 
 train(en) :- or(
                 "do you know me",
+                "do you remember me",
                 "do you know who I am"
                ),
              or ("of course I do", "how could I forget you?").
 train(de) :- or(
                 "kennst du mich",
+                "erinnerst du dich an mich",
                 "weißt du wer ich bin"
                ),
              or ("Natürlich erinnere ich mich an Dich", "Wie könnte ich Dich vergessen?").

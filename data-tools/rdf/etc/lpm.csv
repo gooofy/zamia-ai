@@ -294,6 +294,7 @@ wdpCzechNeighbourhoodIDCode,http://www.wikidata.org/prop/P2788
 wdpDBLPID,http://www.wikidata.org/prop/P2456
 wdpDBNLAuthorID,http://www.wikidata.org/prop/P723
 wdpDMOZID,http://www.wikidata.org/prop/P998
+wdpDNBEditions,http://www.wikidata.org/prop/P1292
 wdpDNFFilmID,http://www.wikidata.org/prop/P1804
 wdpDNFPersonID,http://www.wikidata.org/prop/P2626
 wdpDOI,http://www.wikidata.org/prop/P356
@@ -1096,6 +1097,7 @@ wdpSIRENNumber,http://www.wikidata.org/prop/P1616
 wdpSOCCode2010,http://www.wikidata.org/prop/P919
 wdpSTWThesaurusForEconomicsID,http://www.wikidata.org/prop/P3911
 wdpSUDOCAuthorities,http://www.wikidata.org/prop/P269
+wdpSUDOCEditions,http://www.wikidata.org/prop/P1025
 wdpSWBEditions,http://www.wikidata.org/prop/P1044
 wdpSaidToBeTheSameAs,http://www.wikidata.org/prop/P460
 wdpSandrartNetPersonID,http://www.wikidata.org/prop/P1422
@@ -1242,6 +1244,7 @@ wdpUNESCOThesaurusID,http://www.wikidata.org/prop/P3916
 wdpUNII,http://www.wikidata.org/prop/P652
 wdpUNLOCODE,http://www.wikidata.org/prop/P1937
 wdpUNSPSCCode,http://www.wikidata.org/prop/P2167
+wdpUNZAuthorIdentifier,http://www.wikidata.org/prop/P2734
 wdpUSCongressBioID,http://www.wikidata.org/prop/P1157
 wdpUSFederalElectionCommissionID,http://www.wikidata.org/prop/P1839
 wdpUbuntu1610Package,http://www.wikidata.org/prop/P3473
@@ -1559,6 +1562,7 @@ wdpdCurrency,http://www.wikidata.org/prop/direct/P38
 wdpdDBLPID,http://www.wikidata.org/prop/direct/P2456
 wdpdDBNLAuthorID,http://www.wikidata.org/prop/direct/P723
 wdpdDMOZID,http://www.wikidata.org/prop/direct/P998
+wdpdDNBEditions,http://www.wikidata.org/prop/direct/P1292
 wdpdDNFFilmID,http://www.wikidata.org/prop/direct/P1804
 wdpdDNFPersonID,http://www.wikidata.org/prop/direct/P2626
 wdpdDOI,http://www.wikidata.org/prop/direct/P356
@@ -2360,6 +2364,7 @@ wdpdSIRENNumber,http://www.wikidata.org/prop/direct/P1616
 wdpdSOCCode2010,http://www.wikidata.org/prop/direct/P919
 wdpdSTWThesaurusForEconomicsID,http://www.wikidata.org/prop/direct/P3911
 wdpdSUDOCAuthorities,http://www.wikidata.org/prop/direct/P269
+wdpdSUDOCEditions,http://www.wikidata.org/prop/direct/P1025
 wdpdSWBEditions,http://www.wikidata.org/prop/direct/P1044
 wdpdSaidToBeTheSameAs,http://www.wikidata.org/prop/direct/P460
 wdpdSandrartNetPersonID,http://www.wikidata.org/prop/direct/P1422
@@ -2506,6 +2511,7 @@ wdpdUNESCOThesaurusID,http://www.wikidata.org/prop/direct/P3916
 wdpdUNII,http://www.wikidata.org/prop/direct/P652
 wdpdUNLOCODE,http://www.wikidata.org/prop/direct/P1937
 wdpdUNSPSCCode,http://www.wikidata.org/prop/direct/P2167
+wdpdUNZAuthorIdentifier,http://www.wikidata.org/prop/direct/P2734
 wdpdUSCongressBioID,http://www.wikidata.org/prop/direct/P1157
 wdpdUSFederalElectionCommissionID,http://www.wikidata.org/prop/direct/P1839
 wdpdUbuntu1610Package,http://www.wikidata.org/prop/direct/P3473

@@ -119,3 +119,7 @@ train(de) :- or(
                ),
              or ("Worüber würdest du gerne als nächstes sprechen?", "Was ist also unser nächstes Thema?").
 
+train(en) :- "can you give me an answer", "I tend to answer all questions, sometimes even successfully!".
+train(de) :- "kannst du mir eine antwort geben", "Ich neige dazu, alle Fragen zu beantworten - manchmal sogar erfolgreich!".
+
+

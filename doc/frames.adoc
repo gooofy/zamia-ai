@@ -12,3 +12,103 @@ Zamia-AI frames are very loosely based on FrameNet but follow are more generic, 
 |=== 
 
 see https://en.wikipedia.org/wiki/Thematic_relation for more information thematic relations.
+
+Knowledge Base Structure
+------------------------
+
+* personal
+* personal.private
+* personal.food
+* personal.name
+* personal.opinion
+* personal.rec
+* personal.culture
+* personal.lang
+* personal.sex
+* personal.user
+
+* archeology
+* architecture
+* astro            astronomy, also astrology
+
+* bio              biology
+* chem             chemistry
+* crafts
+* culture          except literature, movies, music (extra modules)
+* dialog           
+
+* dialog.smalltalk
+* dialog.greetings
+* dialog.topics
+
+* economy
+
+* edu              education
+
+* engr             engineering
+
+* food
+
+* games
+
+* geo              geography, geology
+
+* health           also: medicine   
+* health.fitness
+
+* history
+
+* humans       
+
+* humor
+
+* language
+
+* legal
+
+* literature       also: poems
+
+* mathematics
+
+* media
+
+* miscellaneous
+
+* movies
+
+* music
+
+* mythology
+
+* news
+
+* philosophy
+
+* photo
+
+* physics
+
+* politics
+
+* psychology
+
+* psychology.positive nice / compliments 
+* psychology.negative insults / aggressive / impatient
+
+* radio
+
+* social           also covers family, kids, love, sex, ...
+
+* sports
+
+* tech
+* tech.ai
+
+* time
+
+* transport   cars, bikes, motorcycles, public transport, aviation, boats, ...
+
+* television
+
+* weather
+

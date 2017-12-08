@@ -44,7 +44,10 @@ train(en) :- or(
                 "you're smart",
                 "you're sweet",
                 "you're the one",
-                "this should be a compliment"
+                "this should be a compliment",
+                "well countered",
+                "you're welcome",
+                "you are welcome"
                ),
              or ("that is very kind of you", "thank you").
 train(de) :- or(
@@ -89,7 +92,9 @@ train(de) :- or(
                 "du bist schlau",
                 "du bist ja süß",
                 "du bist es",
-                "soll das ein kompliment sein"
+                "soll das ein kompliment sein",
+                "gut gekontert",
+                "bitte (schön|)"
                ),
              or ("das ist lieb von dir", "dankeschön").
 

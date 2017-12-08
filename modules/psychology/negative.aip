@@ -352,7 +352,17 @@ train(en) :- or(
                 "don't distract",
                 "why are you always distracting from the topic",
                 "that does not belong to the topic",
-                "we already covered that topic"
+                "we already covered that topic",
+                "well guessed",
+                "what do you actually know",
+                "what do you know at all?",
+                "what do you know then",
+                "what do you want",
+                "what now",
+                "what should that be?",
+                "what should the question be",
+                "do you know what you just said",
+                "that results from the context"
                ),
              or ("I'm sorry if I seem a bit confused.", "Sorry, I do feel a bit confused.").
 train(de) :- or(
@@ -363,7 +373,17 @@ train(de) :- or(
                 "lenk nicht ab",
                 "warum lenkst du immer vom thema ab",
                 "das gehört aber nicht zum thema",
-                "das thema hatten wir schon"
+                "das thema hatten wir schon",
+                "gut geraten",
+                "was weißt du eigentlich",
+                "was weißt du denn überhaupt",
+                "was weißt du dann",
+                "was willst du",
+                "was nun",
+                "was soll denn das",
+                "was sollte die frage",
+                "weißt du was du gerade gesagt hast",
+                "das ergibt sich aus dem kontext"
                ),
              or ("Tut mir leid, wenn ich etwas verwirrt erscheine.", "Ich fühle mich tatsächlich ein wenig wirr im Moment.").
 
@@ -745,4 +765,6 @@ train(de) :- "du scheinst doch sehr alt zu sein", "Software kann tatsächlich al
 train(en) :- "you told me that you have an iq of 250", "I did what now?".
 train(de) :- "du sagtest mir dass du einen iq von zweihundertfünfzig hast", "Ich habe was getan?".
 
+train(en) :- "that's a catching question", "You think so?".
+train(de) :- "ist das eine fangfrage", "Denkst Du?".
 

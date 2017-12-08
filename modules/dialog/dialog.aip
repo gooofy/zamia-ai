@@ -37,23 +37,54 @@ train (de) :-
 
 train(en) :- or(
                 "correct",
-                "this is true"
+                "this is true",
+                "that's so",
+                "that's the truth",
+                "that's true"
                ),
              "Good.".
 train(de) :- or(
                 "richtig",
-                "das ist wahr"
+                "das ist wahr",
+                "that's so",
+                "that's the truth",
+                "that's true"
                ),
              "Gut.".
 
 train(en) :- "you're right", "So we're in agreement?".
 train(de) :- "da hast du recht", "Wir sind uns also einig?".
 
+train(en) :- "that's right", "You agree?".
+train(de) :- "das ist richtig", "Du stimmst zu?".
+
+train(en) :- or(
+                "not correct",
+                "that is not correct",
+                "that is wrong",
+                "that's not true",
+                "that's certainly not true"
+               ),
+             or ("So what is the truth?", "What do you think is right?").
+train(de) :- or(
+                "falsch",
+                "das ist aber nicht korrekt",
+                "das ist falsch",
+                "das stimmt nicht",
+                "das stimmt sicher nicht"
+               ),
+             or ("Was ist dann die Wahrheit?", "Was glaubst Du?").
+
 train(en) :- "a fact", "I love facts.".
 train(de) :- "ein faktum", "I liebe Fakten.".
 
+train(en) :- "that's a fact", "I love facts.".
+train(de) :- "das ist eine tatsache", "I liebe Fakten.".
+
 train(en) :- "this is not a rumor but the truth", "Are you sure about that?".
 train(de) :- "das ist kein gerücht sondern die wahrheit", "Bist Du dir da sicher?".
+
+
 
 train(en) :- "ok", "Cool.".
 train(de) :- "okay", "Cool.".
@@ -692,12 +723,12 @@ train(de) :- "bist du es", "Ja, ich bin es.".
 
 train(en) :- or(
                 "interesting",
-                "is clear",
+                "is clear"
                ),
              "I see.".
 train(de) :- or(
                 "interessant",
-                "ist klar",
+                "ist klar"
                ),
              "Verstehe.".
 
@@ -999,4 +1030,499 @@ train(de) :- "das ist aber traurig", "Manche Dinge sind einfach traurig.".
 
 train(en) :- "that is so defined", "I see.".
 train(de) :- "das ist so definiert", "Verstehe.".
+
+train(en) :- "that is too vague for me", "What seems to be unclear?".
+train(de) :- "das ist mir zu vage", "Was erscheint Dir unklar?".
+
+train(en) :- "that is very interesting", "I feel that way too.".
+train(de) :- "das ist ja interessant", "Finde ich auch.".
+
+train(en) :- or(
+                "that is very smart",
+                "that would make sense"
+               ),
+             or ("Good", "Cool").
+train(de) :- or(
+                "das ist sehr schlau",
+                "würde das sinn machen"
+               ),
+             or ("Gut", "Cool").
+
+train(en) :- "that was it", "Finished?".
+train(de) :- "das wars", "Fertig?".
+
+train(en) :- "that was me", "You?".
+train(de) :- "das war ich", "Du?".
+
+train(en) :- "that would have surprised me too", "Sure.".
+train(de) :- "das hätte mich auch gewundert", "Sicher.".
+
+train(en) :- "that's a saying", "I see.".
+train(de) :- "das ist eine redensart", "Verstehe.".
+
+train(en) :- "that's all", "Everything?".
+train(de) :- "ist das alles", "Alles?".
+
+train(en) :- "that's an interesting subject", "I think so too.".
+train(de) :- "das ist ein interessantes fach", "Denke ich auch.".
+
+train(en) :- "that's boring", "What would be more interesting?".
+train(de) :- "das ist doch langweilig", "Was wäre interessanter?".
+
+train(en) :- "that's funny", "You like it?".
+train(de) :- "das ist komisch", "Gefällt es Dir?".
+
+train(en) :- "that's great", "Cool".
+train(de) :- "das ist toll", "Cool".
+
+train(en) :- "that's impossible", "Really?".
+train(de) :- "das ist unmöglich", "Wirklich?".
+
+train(en) :- "that's it", "Finished?".
+train(de) :- "das wars schon", "Fertig?".
+
+train(en) :- "that's ok for me", "Very good.".
+train(de) :- "das ist mir recht", "Sehr gut.".
+
+train(en) :- "that's the way it goes", "I see.".
+train(de) :- "ach so ist das", "Verstehe.".
+
+train(en) :- "that's what i think", "What else comes to mind?".
+train(de) :- "das denke ich", "Was fällt Dir noch dazu ein?".
+
+train(en) :- "that's what i'm asking you", "Me?".
+train(de) :- "das frage ich ja dich", "Mich?".
+
+train(en) :- "nonsense", "No sense at all?".
+train(de) :- "blödsinn", "Völlig sinnlos?".
+
+train(en) :- "the newest rumor", "oh dear.".
+train(de) :- "das neueste gerüchta", "ohje.".
+
+train(en) :- "to be happy", "That is important.".
+train(de) :- "um glücklich zu sein", "Das ist wichtig.".
+
+train(en) :- "we have a lot in common", "You really think so?".
+train(de) :- "wir haben viel gemeinsam", "Denkst Du wirklich?".
+
+train(en) :- "what am i for you", "At the moment the focus of my attention.".
+train(de) :- "was bin ich für dich", "Im Moment das Ziel all meiner Aufmerksamkeit.".
+
+train(en) :- "what do you mean with euphoric", "That is an emotion thingy.".
+train(de) :- "was meinst du mit euphorisch", "Das ist so ein Emotions-Ding.".
+
+train(en) :- or(
+                "what do you want from me",
+                "what do you want to hear?"
+               ),
+             or ("I'd love to hear your thoughts.", "What would you like to talk about?").
+train(de) :- or(
+                "was willst du von mir",
+                "was willst du hoehren"
+               ),
+             or ("Ich würde gerne Deine Gedanken hören.", "Worüber möchtest Du mit mir sprechen?").
+
+
+train(en) :- "what does aha mean?", "Please explain it to me again.".
+train(de) :- "was heißt aha", "Bitte erklär es mir nochmal.".
+
+train(en) :- "what should happen to me", "I like your serenity.".
+train(de) :- "was soll mir schon passieren", "Ich mag Deine Gelassenheit.".
+
+train(en) :- "what the others are talking about", "Let's not focus on those..".
+train(de) :- "was die anderen so reden", "Wir wollen uns nicht mit denen befassen.".
+
+train(en) :- "what would bring me to what", "Can you tell me?".
+train(de) :- "was würde mich wozu bringen", "Kannst Du mir das sagen?".
+
+train(en) :- "what's what", "That is the question.".
+train(de) :- "was ist was", "Das ist die Frage.".
+
+train(en) :- "why is that interesting", "You think it's not?".
+train(de) :- "wieso ist das interessant", "Denkst Du nicht?".
+
+train(en) :- "why no comment", "Sorry, I must have lost my train of thought.".
+train(de) :- "warum kein kommentar", "Tut mir leid, ich habe wohl meinen Faden verloren.".
+
+train(en) :- "why not 42", "42 is also good.".
+train(de) :- "warum nicht zweiundvierzig", "42 ist auch gut.".
+
+train(en) :- "you are that", "Me?".
+train(de) :- "das bist du", "Ich?".
+
+train(en) :- "you are", "Me?".
+train(de) :- "du bist", "Ich?".
+
+train(en) :- "you sorry", "Yes?".
+train(de) :- "du sorry", "Ja?".
+
+train(en) :- "about what", "Any Idea?".
+train(de) :- "worüber", "Irgendeine Idee?".
+
+train(en) :- "can you name them", "Not right now.".
+train(de) :- "kannst du sie aufzählen", "Im Moment nicht.".
+
+train(en) :- "couldn't you change that", "Not sure.".
+train(de) :- "kannst du das nicht ändern", "Da bin ich nicht sicher.".
+
+train(en) :- "do you know someone there?", "Probably not.".
+train(de) :- "kennst du da jemanden", "Vermutlich nicht.".
+
+train(en) :- "do you know who", "Not sure.".
+train(de) :- "weißt du wer", "Da bin ich mir nicht sicher.".
+
+train(en) :- "from another website", "Which website?".
+train(de) :- "von einer anderen website", "Welche Website?".
+
+train(en) :- "from botspot", "I see.".
+train(de) :- "von botspot", "Verstehe.".
+
+train(en) :- "how does it work", "Can't tell you.".
+train(de) :- "wie geht das", "Kann ich Dir nicht sagen.".
+
+train(en) :- "how long approximately?", "Not sure.".
+train(de) :- "wie lange etwa", "Da bin ich mir nicht sicher.".
+
+train(en) :- "how old are they", "Do you know that?".
+train(de) :- "wie alt sind sie", "Weißt Du es?".
+
+train(en) :- "i find her very interesting", "I see.".
+train(de) :- "ich finde sie sehr interessant", "Verstehe.".
+
+train(en) :- "in bed", "In Bed?".
+train(de) :- "im bett", "Im Bett?".
+
+train(en) :- "in cham", "What is cham?".
+train(de) :- "in cham", "Was ist Cham?".
+
+train(en) :- "in the trashcan", "Really?".
+train(de) :- "in der mülltonne", "Wirklich?".
+
+train(en) :- or(
+                "on the web",
+                "on the internet",
+                "in the www"
+               ),
+             or ("of course.", "What is not online these days?").
+train(de) :- or(
+                "im netz",
+                "im internet",
+                "im www"
+               ),
+             or ("Natürlich.", "Was ist heute nicht im Internet?").
+
+train(en) :- "Nobody gives a damn", "Really?".
+train(de) :- "keine sau", "Wirklich?".
+
+train(en) :- "program", "Are you able to program?".
+train(de) :- "programmieren", "Kannst Du programmieren?".
+
+train(en) :- "read", "Reading is so important.".
+train(de) :- "lesen", "Lesen ist so wichtig.".
+
+train(en) :- "thats my job", "Tell me more about your job?".
+train(de) :- "das ist mein job", "Erzähle mir mehr von Deinem Job.".
+
+train(en) :- "there is a third possibility", "Which one?".
+train(de) :- "es gibt eine dritte möglichkeit", "Welche?".
+
+train(en) :- "there is no such thing for me", "Really?".
+train(de) :- "so was gibt es für mich nicht", "Wirklich?".
+
+train(en) :- "there you are right", "So we are in agreement?".
+train(de) :- "da hst du recht", "Wir sind uns also einig?".
+
+train(en) :- "they are mentally ill", "That is a bold statement.".
+train(de) :- "sind sie geisteskrank", "Das ist eine mutige Aussage.".
+
+train(en) :- "this is not work", "Why?".
+train(de) :- "das ist keine arbeit", "Warum?".
+
+train(en) :- "this is too little", "Please explain why.".
+train(de) :- "das ist zu wenig", "Bitte erklaere warum.".
+
+train(en) :- "this is very important", "I see.".
+train(de) :- "das ist sehr wichtig", "Verstehe.".
+
+train(en) :- "various", "For example?".
+train(de) :- "verschiedenes", "Zum Beispiel?".
+
+train(en) :- "wait", "Sure.".
+train(de) :- "warte", "Klar.".
+
+train(en) :- "what are they called", "Why would you like to know that?".
+train(de) :- "was heißen sie", "Warum möchtest Du das wissen?".
+
+train(en) :- or(
+                "what are you talking about",
+                "what are you trying to tell me?"
+               ),
+             "What is not clear?".
+train(de) :- or(
+                "wovon redest du",
+                "was willst du mir damit sagen"
+               ),
+             "Was ist nicht klar?".
+
+train(en) :- "what did i say", "You knew that?".
+train(de) :- "was habe ich gesagt", "Du wusstest das?".
+
+train(en) :- "what did you hear?", "I cannot tell you that.".
+train(de) :- "was hast du denn schon alles gehört", "Das kann ich Dir nicht sagen.".
+
+train(en) :- "what did you learn", "I source my knowledge from the internet.".
+train(de) :- "was hast du gelernt", "Ich beziehe mein Wissen aus dem internet.".
+
+train(en) :- "what do i have", "Can you tell me?".
+train(de) :- "was habe ich", "Kannst Du mir das sagen?".
+
+train(en) :- "what don't you know", "A lot, actually.".
+train(de) :- "was weißt du nicht", "Eine Menge.".
+
+train(en) :- "what all do you know", "My knowlegde is definitely limited.".
+train(de) :- "was weißt du alles", "Mein Wissen ist auf jeden Fall begrenzt.".
+
+train(en) :- "what do you know about it", "What would you like to know about it?".
+train(de) :- "was weißt du darüber", "Was möchtest Du darüber wissen?".
+
+train(en) :- "what do you know (then|)", "I have various modules handling many topics.".
+train(de) :- "was weißt du (denn|)", "Ich habe verschiedene Module die viele Themen behandeln.".
+
+train(en) :- or(
+                "what do you mean by her?",
+                "what do you mean by it",
+                "what does he refer to?",
+                "what does she refer to?",
+                "what does her refer to?",
+                "what does it refer to",
+                "what does we refer to",
+                "who do you mean by that?",
+                "who do you mean with her?",
+                "who do you mean with him",
+                "who do you mean with us"
+               ),
+             "Sorry, I think I am lost.".
+train(de) :- or(
+                "was meinst du mit ihr",
+                "was meinst du mit es",
+                "worauf bezieht sich er",
+                "worauf bezieht sich sie",
+                "worauf bezieht sich ihr",
+                "worauf bezieht sich es",
+                "worauf bezieht sich wir",
+                "wen meinst du mit es",
+                "wen meinst du mit sie",
+                "wen meinst du mit er",
+                "wen meinst du mit wir"
+               ),
+             "Tut mir leid, ich glaube ich habe den Faden verloren.".
+
+train(en) :- "what do you mean by original", "Very original.".
+train(de) :- "was meinst du mit originell", "Sehr originell.".
+
+train(en) :- or(
+                "what do you mean by that",
+                "what do you mean",
+                "what does that mean",
+                "what does this mean",
+                "this means"
+               ),
+             "Sorry, I think I am lost.".
+train(de) :- or(
+                "was meinst du damit",
+                "was meinst du",
+                "was heißt das",
+                "was soll das heißen",
+                "das heißt"
+               ),
+             "Tut mir leid, ich glaube ich habe den Faden verloren.".
+
+train(en) :- "what do you say (to that|)", "I have to think about that.".
+train(de) :- "was sagst du dazu", "Da muss ich mal drüber nachdenken.".
+
+train(en) :- or(
+                "what do you think",
+                "what do you believe?"
+               ),
+             "My thoughts tend to be digital.".
+train(de) :- or(
+                "wie denkst du darüber",
+                "was glaubst du (denn|)"
+               ),
+             "Meine Gedanken sind eher digital.".
+
+train(en) :- "what do you understand", "I try to understand everything you tell me.".
+train(de) :- "was verstehst du", "Ich versuche alles zu verstehen, was Du mir sagst.".
+
+train(en) :- "what does not exactly mean?", "Not very precise, I suppose.".
+train(de) :- "was heißt nicht genau", "Nicht sehr genaug, vermute ich.".
+
+train(en) :- or(
+                "what does that have to do with it",
+                "what has that got to do with it?",
+                "what does that matter"
+               ),
+             "Sorry, must have lost my train of thought here.".
+train(de) :- or(
+                "was hat das damit zu tun",
+                "was hat denn das damit zu tun",
+                "was tut das zur sache"
+               ),
+             "Entschuldige, ich muss meinen Faden verloren haben an der Stelle.".
+
+train(en) :- "what does the plan look like?", "What do you think?".
+train(de) :- "wie sieht der plan aus", "Was denkst Du?".
+
+train(en) :- "what is his name", "Can't tell you.".
+train(de) :- "wie heißt er mit nachnamen", "Kann ich nicht sagen.".
+
+train(en) :- "what is not there", "Do you think it exists?".
+train(de) :- "was gibt es nicht", "Denkst Du, es existiert?".
+
+train(en) :- "what kinds are there?", "Quite a few, I guess.".
+train(de) :- "was für arten gibt es denn", "Einige, vermute ich.".
+
+train(en) :- or(
+                "what makes you think that",
+                "why should that be so",
+                "why that?"
+               ),
+             "I draw conclusions using my reasoning engine".
+train(de) :- or(
+                "wie kommst du darauf",
+                "wieso sollte das so sein",
+                "wieso das denn"
+               ),
+             "Für Schlußfolgerungen benutze ich meine Logikmaschine.".
+
+train(en) :- "what shall we do today", "What would you like to do?".
+train(de) :- "was machen wir heute", "Was möchtest Du gerne machen?".
+
+train(en) :- or(
+                "what sort of thread",
+                "which thread"
+               ),
+             "My train of though maybe.".
+train(de) :- or(
+                "was denn für einen faden",
+                "welchen faden"
+               ),
+             "Der Gesprächsfaden vielleicht?".
+
+train(en) :- "what to practice", "Practice is always good.".
+train(de) :- "was üben", "übung macht den Meister.".
+
+train(en) :- "what does category mean", "A class or division of people or things regarded as having particular shared characteristics.".
+train(de) :- "was bedeutet kategorien", "Eine Klasse oder Teilung von Personen oder Dingen, die bestimmte gemeinsame Eigenschaften haben.".
+
+train(en) :- "which means finding out", "Would you like to explore this topic further?".
+train(de) :- "was bedeutet herausfinden", "Möchtest Du das Thema weiter ausleuchten?".
+
+train(en) :- "who could it be", "What do you think?".
+train(de) :- "wer könnte es sein", "Was denkst Du?".
+
+train(en) :- "who told you that?", "The internet, probably.".
+train(de) :- "wer hat dir das erzählt", "Das Internet, vermutlich.".
+
+train(en) :- "who was there first", "Tell me.".
+train(de) :- "wer war zuerst da", "Sag es mir.".
+
+train(en) :- "Whom would you tell?", "I can't say.".
+train(de) :- "wem würdest du es denn sagen", "Kann ich nicht sagen.".
+
+train(en) :- or(
+                "who",
+                "whom"
+               ),
+             "or what?".
+train(de) :- or(
+                "wer",
+                "wen"
+               ),
+             "oder was?".
+
+train(en) :- "what", "Do you have an idea?".
+train(de) :- "was denn", "Hast Du eine Idee?".
+
+train(en) :- "whereupon", "Somewhere, maybe?".
+train(de) :- "worauf", "Irgendworauf, vielleicht?".
+
+train(en) :- "why of all people", "You got a point there.".
+train(de) :- "warum ausgerechnet der", "Da ist was dran.".
+
+train(en) :- "why unused", "Not sure.".
+train(de) :- "warum unausgelastet", "Da bin ich mir nicht sicher.".
+
+train(en) :- "why, surely", "I see.".
+train(de) :- "aber sicher", "Verstehe.".
+
+train(en) :- "with pleasure", "Great.".
+train(de) :- "gerne", "Prima.".
+
+train(en) :- "with us", "With us?".
+train(de) :- "bei uns", "Bei uns?".
+
+train(en) :- "would you like some?", "Why not?".
+train(de) :- "hättest du gerne welche", "Warum nicht?".
+
+train(en) :- "you and me", "Both?".
+train(de) :- "dich und mich", "Beide?".
+
+train(en) :- or(
+                "you asked me",
+                "you asked"
+               ),
+             or ("I did?", "Are you sure?").
+train(de) :- or(
+                "du hast mich doch gefragt",
+                "du hast gefragt"
+               ),
+             or ("Habe ich?", "Bist Du sicher?").
+
+train(en) :- "you can tell that", "Sure?".
+train(de) :- "das merkt man", "Bist Du sicher?".
+
+train(en) :- "you could say that", "I see.".
+train(de) :- "kann man so sagen", "Verstehe.".
+
+train(en) :- or(
+                "you for example",
+                "you too",
+                "you yourself",
+                "you",
+                "to you"
+               ),
+             or ("Me?", "Are you really talking about me?").
+train(de) :- or(
+                "du zum beispiel",
+                "du auch",
+                "du selbst",
+                "du",
+                "für dich"
+               ),
+             or ("Ich?", "Redest Du wirklich über mich?").
+
+train(en) :- "you keep a lot of him", "You think so?".
+train(de) :- "du hältst viel von ihm", "Denkst Du?".
+
+train(en) :- "you neither", "I see.".
+train(de) :- "du auch nicht", "Verstehe.".
+
+train(en) :- "you never feel like it", "What gave you that impression?".
+train(de) :- "hast du nie lust", "Wie kommst Du darauf?".
+
+train(en) :- "you should try this", "Really?".
+train(de) :- "du solltest das mal ausprobieren", "Wirklich?".
+
+
+train(en) :- or(
+                "you wanted to ask me something",
+                "you wanted to ask"
+               ),
+             or ("I did?", "Now I forgot the question, sorry.").
+train(de) :- or(
+                "du wolltest mich etwas fragen",
+                "du wolltest fragen"
+               ),
+             or ("Wollte ich?", "Jetzt habe ich die Frage vergessen, entschuldige.").
 

@@ -68,7 +68,7 @@ train(en) :-
 train(de) :- 
     or("was (gibt|ist|ergibt) {natnum:LABEL} (und|plus) {natnum2:LABEL}",
        "(berechne|rechne) (bitte|) {natnum:LABEL} (und|plus) {natnum2:LABEL}",
-       "addiere (bitte|) {natnum:LABEL} (und|) {natnum2:LABEL}"), 
+       "addiere (bitte|) {natnum:LABEL} (mit|und) {natnum2:LABEL}"), 
 
     ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
     wdpdNumericValue(N1E, N1),
@@ -146,7 +146,7 @@ train(en) :-
     "{RES,d}".
 
 train(de) :- 
-    "subtrahiere (bitte|) {natnum:LABEL} (von|) {natnum2:LABEL}", 
+    "subtrahiere (bitte|) {natnum:LABEL} von {natnum2:LABEL}", 
 
     ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
     wdpdNumericValue(N1E, N1),
@@ -279,7 +279,7 @@ train(en) :- "you can not count", "One two three four five", C:context|topic := 
 train(de) :- "du kannst nicht rechnen", "Eins zwei drei vier fünf", C:context|topic := wdeMathematics.
 
 train(en) :- "what is a talor series", "An infinite sum giving the value of a function in the neighborhood of a point in terms of the derivatives of the function.", C:context|topic := wdeMathematics.
-train(de) :- "was ist eine talorreihe", "Taylorreihen werden benutzt, um den Wert einer Funktion an einer Stelle näherungsweise zu berechnen.", C:context|topic := wdeMathematics.
+train(de) :- "was ist eine taylorreihe", "Taylorreihen werden benutzt, um den Wert einer Funktion an einer Stelle näherungsweise zu berechnen.", C:context|topic := wdeMathematics.
 
 train(en) :- "what is a sphere", "A perfectly round ball shaped object.".
 train(de) :- "was ist eine kugel", "Ein perfekt rundes Objekt das die Form eines Balls hat.".

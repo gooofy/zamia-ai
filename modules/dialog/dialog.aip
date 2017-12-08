@@ -485,7 +485,7 @@ train(en) :- or(
                ),
              "Can't tell.".
 train(de) :- or(
-                "wieviele",
+                "wie viele",
                 "wie viel genau"
                ),
              "Kann ich nicht sagen.".
@@ -668,7 +668,7 @@ train(de) :- or(
              "Wärest Du dann glücklicher?".
 
 train(en) :- "i want to know that from you", "From me?".
-train(de) :- "das will ich von dir wissena", "Von mir?".
+train(de) :- "das will ich von dir wissen", "Von mir?".
 
 train(en) :- "i will create one", "Tell me when you are done.".
 train(de) :- "ich werde eine erstellen", "Sag mir, wenn Du fertig bist.".
@@ -1097,7 +1097,7 @@ train(en) :- "nonsense", "No sense at all?".
 train(de) :- "blödsinn", "Völlig sinnlos?".
 
 train(en) :- "the newest rumor", "oh dear.".
-train(de) :- "das neueste gerüchta", "ohje.".
+train(de) :- "das neueste gerücht", "ohje.".
 
 train(en) :- "to be happy", "That is important.".
 train(de) :- "um glücklich zu sein", "Das ist wichtig.".
@@ -1118,7 +1118,7 @@ train(en) :- or(
              or ("I'd love to hear your thoughts.", "What would you like to talk about?").
 train(de) :- or(
                 "was willst du von mir",
-                "was willst du hoehren"
+                "was willst du höhren"
                ),
              or ("Ich würde gerne Deine Gedanken hören.", "Worüber möchtest Du mit mir sprechen?").
 
@@ -1230,7 +1230,7 @@ train(en) :- "there is no such thing for me", "Really?".
 train(de) :- "so was gibt es für mich nicht", "Wirklich?".
 
 train(en) :- "there you are right", "So we are in agreement?".
-train(de) :- "da hst du recht", "Wir sind uns also einig?".
+train(de) :- "da hast du recht", "Wir sind uns also einig?".
 
 train(en) :- "they are mentally ill", "That is a bold statement.".
 train(de) :- "sind sie geisteskrank", "Das ist eine mutige Aussage.".

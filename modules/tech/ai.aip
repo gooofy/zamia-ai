@@ -731,7 +731,11 @@ train(en) :- or(
                 "what are your categories",
                 "what are your tasks",
                 "what can you do",
+                "what exactly can you",
+                "was kannst du genau",
                 "what can i ask you",
+                "what should i ask",
+                "what should i say now",
                 "from which topic areas you can answer questions"
                ),
              or ("Try common factual questions.", "Ask me anything, just give it a try.").
@@ -740,6 +744,8 @@ train(de) :- or(
                 "was sind deine aufgaben",
                 "was kannst du (denn|) (alles|)",
                 "was kann ich dich fragen",
+                "was soll ich fragen",
+                "was soll ich jetzt sagen",
                 "aus welchen themengebieten kannst du fragen beantworten"
                ),
              or ("Versuche allgemeine Fragen nach Fakten.", "Frag mich irgendwas, versuch's einfach.").
@@ -758,6 +764,7 @@ train(en) :- or(
                 "how did he program you",
                 "how do you learn",
                 "how do you think",
+                "what does your programming look like?",
                 "how you do that"
                ),
              "Just some mixture of Python, Prolog and TensorFlow.".
@@ -768,6 +775,7 @@ train(de) :- or(
                 "wie hat er dich programmiert",
                 "wie lernst du",
                 "wie denkst du",
+                "wie sieht deine programmierung aus",
                 "wie machst du das"
                ),
              "Einfach eine Mischung aus Python, Prolog und TensorFlow.".
@@ -783,4 +791,19 @@ train(de) :- "Wie ist deine Datenbank aufgebaut", "Sie basiert auf Wikidata.".
 
 train(en) :- "Can you manage programs?", "Say what?".
 train(de) :- "Kannst du Programme verwalten?", "Wie bitte?".
+
+train(en) :- or(
+                "what should i tell more about",
+                "what should i tell you something about",
+                "what should i tell you",
+                "what should i tell"
+               ),
+             or ("Tell me something about you.", "What topics are you into?").
+train(de) :- or(
+                "über was soll ich mehr erzählen",
+                "über was soll ich dir was erzählen",
+                "was soll ich dir erzählen",
+                "was soll ich erzählen"
+               ),
+             or ("Erzähl mir etwas von Dir.", "Welche Themen interessieren Dich besonders?").
 

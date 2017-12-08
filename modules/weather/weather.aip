@@ -728,7 +728,7 @@ train(de) :-
 % misc
 %
 
-train(de) :-
+train(en) :-
     context(topic, wdeWeatherForecast),
     or("that is (definitely|) (pretty|too) (cold|warm|hot)",
        "that is too (cold|warm|hot) for (me|my taste)"),
@@ -738,8 +738,8 @@ train(de) :-
 
 train(de) :-
     context(topic, wdeWeatherForecast),
-    or("das ist (ja|) (ganz schön|zu|) (warm|kalt|heiss)",
-       "das ist mir zu (warm|kalt|heiss)"),
+    or("das ist (ja|) (ganz schön|zu|) (warm|kalt|heiß)",
+       "das ist mir zu (warm|kalt|heiß)"),
     or(say(C, "Alles eine Frage der richtigen Kleidung!"),
        say(C, "Ich sende eine Beschwerde an das Wetteramt."),
        say(C, "Vielleicht solltest Du über einen Umzug nachdenken?")).

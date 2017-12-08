@@ -46,9 +46,9 @@ train(en) :- or(
 train(de) :- or(
                 "richtig",
                 "das ist wahr",
-                "that's so",
-                "that's the truth",
-                "that's true"
+                "das ist so",
+                "das ist die Wahrheit",
+                "das ist richtig"
                ),
              "Gut.".
 
@@ -1118,7 +1118,7 @@ train(en) :- or(
              or ("I'd love to hear your thoughts.", "What would you like to talk about?").
 train(de) :- or(
                 "was willst du von mir",
-                "was willst du höhren"
+                "was willst du hören"
                ),
              or ("Ich würde gerne Deine Gedanken hören.", "Worüber möchtest Du mit mir sprechen?").
 

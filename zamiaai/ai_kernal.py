@@ -965,32 +965,39 @@ class AIKernal(object):
                         continue
                     dic.add(parts[0])
 
-        all_utterances = []
-
         req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
 
         if module and module != 'all':
             req = req.filter(model.TrainingData.module==module)
 
+        req_utts = []
         for dr in req:
+            req_utts.append(dr.utterance)
 
-            if not dic:
-                all_utterances.append(dr.utterance)
-            else:
+        if not dic:
+
+            all_utterances = sorted(req_utts)
+
+        else:
+
+            all_utterances = []
+            random.shuffle(req_utts)
+            for utt in req_utts:
 
                 # is at least one word not covered by our dictionary?
 
                 unk = False
-                for t in tokenize(dr.utterance):
+                for t in tokenize(utt):
                     if not t in dic:
-                        # print u"unknown word: %s in %s" % (t, dr.utterance)
+                        # print u"unknown word: %s in %s" % (t, utt)
                         unk = True
-                        dic.add(t)
                         break
                 if not unk:
                     continue
 
-                all_utterances.append(dr.utterance)
+                for t in tokenize(utt):
+                    dic.add(t)
+                all_utterances.append(utt)
 
         utts = set()
 
@@ -1005,7 +1012,7 @@ class AIKernal(object):
             for utt in all_utterances:
                 utts.add(utt)
                 
-        for utt in utts:
+        for utt in sorted(list(utts)):
             print (utt)
 
     def setup_align_utterances (self, lang):

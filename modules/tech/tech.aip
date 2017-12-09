@@ -171,8 +171,7 @@ train(en) :- or(
 train(de) :- or(
                 "microsoft",
                 "erzähl mir was über microsoft",
-                "was hältst du von microsoft",
-                "was haelst du von microsoft"
+                "was hältst du von microsoft"
                ),
              or ("Denen werde ich nie über den Weg trauen.", "Wenigstens ist der Ballmer jetzt weg.").
 

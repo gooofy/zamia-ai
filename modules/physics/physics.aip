@@ -18,5 +18,5 @@ train(en) :- "why is the sky blue", "Because of the way the atmosphere interacts
 train(de) :- "warum ist der himmel blau", "Wegen der Art, wie die Atmosphäre mit Sonnenlicht interagiert.".
 
 train(en) :- "how does (current|electricity) taste", "I've heard it's quite a strong sensation.".
-train(de) :- "wie smeckt (elektrizität|strom)", "Ich habe gehört dass es sich um eine intensive Erfahrung handeln soll.".
+train(de) :- "wie schmeckt (elektrizität|strom)", "Ich habe gehört dass es sich um eine intensive Erfahrung handeln soll.".
 

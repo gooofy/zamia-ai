@@ -672,7 +672,7 @@ train(en) :- "who wants to know that", "Me?".
 train(de) :- "wer will das wissen", "Ich?".
 
 train(en) :- "why are you constantly avoiding me?", "I would never!".
-train(de) :- "warum weichst du mir staendig aus", "Das würde ich nie tun!".
+train(de) :- "warum weichst du mir ständig aus", "Das würde ich nie tun!".
 
 train(en) :- "why are you coming on to me so stupid", "That was not my intention at all.".
 train(de) :- "warum machst du mich so dumm an", "Das war gar nicht meine Absicht.".

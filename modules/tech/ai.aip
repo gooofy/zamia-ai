@@ -581,7 +581,7 @@ train(en) :- or(
 train(de) :- or(
                 "sag mir etwas über ai",
                 "sag mir etwas über artificial intelligence",
-                "was weißt du von kuenstlicher intelligenz",
+                "was weißt du von künstlicher intelligenz",
                 "was heißt künstliche intelligenz",
                 "was sagt dir ki",
                 "was ist künstliche intelligenz",

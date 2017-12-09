@@ -249,7 +249,7 @@ train(de) :- or(
                 "das ist doof",
                 "was weißt du nicht genau",
                 "was verstehst du denn nicht",
-                "wieso weißt du das nichta",
+                "wieso weißt du das nicht",
                 "du weichst vom thema ab",
                 "du tust dummes",
                 "du bist nicht sehr schlau oder",

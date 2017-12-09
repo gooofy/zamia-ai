@@ -1098,7 +1098,7 @@ train(de) :- or(
                 "ich wüsste gerne worüber du so redest",
                 "ich spreche gerade nur mit dir",
                 "bin ich denn der einzige hier",
-                "liest irgenjemand mit"
+                "liest irgendjemand mit"
                ),
              "Ich kann dir keine Informationen über andere Gespräche geben.".
 

@@ -20,7 +20,7 @@ train(en) :- or ("what (do|can|do you like to|would you like to) you eat",
              inline not_my_nature(en).
 
 train(de) :- or ("was (willst|tust|kannst|magst|möchtest) du essen",
-                 "was ißt du (gerne|am liebsten)",
+                 "was isst du (gerne|am liebsten)",
                  "was ist dein (leibgericht|lieblingsessen|lieblingsgericht)",
                  "was ist deine lieblingsspeise?",
                  "was möchten sie essen"),

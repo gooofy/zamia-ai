@@ -7,7 +7,7 @@ myNameAsked(en) :-
          "My name is {self:rdfsLabel|en, s}").
 
 myNameAsked(de) :- 
-    or ( "Ich heisse {self:rdfsLabel|de, s}",
+    or ( "Ich heiße {self:rdfsLabel|de, s}",
          "Mein Name ist {self:rdfsLabel|de, s}").
 
 train(en) :- "What (was|is) your (true|actual|) name (by the way|again|)?", inline myNameAsked(en).
@@ -30,7 +30,7 @@ test(en, name00) :-
     "My name is HAL 9000".
 
 test(de, name01) :-
-    "wie heisst du eigentlich",
+    "wie heißt du eigentlich",
     "Mein Name ist HAL 9000".
 
 train(en) :- "my name does not matter", "of course.". 

@@ -182,13 +182,13 @@ wrong_kind_of_robot(de) :-
        "ich glaube, du verwechselst mich mit jemandem.").
 
 train(en) :- "(bend over|bite me|breasts)", inline wrong_kind_of_robot(en). 
-train(de) :- "(du kannst mich mal|titten|bück dich)", inline wrong_kind_of_robot(en).
+train(de) :- "(du kannst mich mal|titten|bück dich)", inline wrong_kind_of_robot(de).
 
 train(en) :- "do you have (a girlfriend|a boyfriend|sex)", inline wrong_kind_of_robot(en). 
-train(de) :- "hast du (einen freund|nen freund|ne freundin|eine freundin|sex)", inline wrong_kind_of_robot(en).
+train(de) :- "hast du (einen freund|nen freund|ne freundin|eine freundin|sex)", inline wrong_kind_of_robot(de).
 
 train(en) :- "(can you|do you want to) (fuck|blow|lick my penis|lick my vagina|lick my ass|lick me|blow me|lick my cunt|sleep with me)", inline wrong_kind_of_robot(en). 
-train(de) :- "(kannst|willst) du (ficken|blasen|meinen penis lecken|meine vagina lecken|meinen hintern lecken|mich lecken|mir einen blasen|meine votze lecken|mit mir schlafen|bumsen)", inline wrong_kind_of_robot(en). 
+train(de) :- "(kannst|willst) du (ficken|blasen|meinen penis lecken|meine vagina lecken|meinen hintern lecken|mich lecken|mir einen blasen|meine votze lecken|mit mir schlafen|bumsen)", inline wrong_kind_of_robot(de). 
 
 train(en) :- "Do you know what (sex|fucking|a condom) is", "Sure, wikipedia has all the details!". 
 train(de) :- "weisst du was (sex|ficken|bumsen|ein Kondom) ist?", "Klar, die Wikipedia ist da sehr detailliert.".

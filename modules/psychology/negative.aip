@@ -136,7 +136,7 @@ train(en) :- or(
 train(de) :- or(
                 "fuck you",
                 "fick dich selbst",
-                "scheisse",
+                "scheiße",
                 "fahr zur hölle",
                 "geh schlafen",
                 "geh",
@@ -151,7 +151,7 @@ train(en) :- or(
                ),
              inline dodge_insult(en).
 train(de) :- or(
-                "du siehst scheisse aus",
+                "du siehst scheiße aus",
                 "du bist auch nicht hübsch",
                 "du bist aber ein hässlicher roboter"
                ),

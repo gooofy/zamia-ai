@@ -38,11 +38,11 @@ train(en) :-
 
 name_told_tokens(de, TS, TE) :- 
     C:user:name is list_join(' ', list_slice(TS, TE, C:tokens)),
-    or ("Freut mich, ich heisse übrigens {self:rdfsLabel|de, s}",
+    or ("Freut mich, ich heiße übrigens {self:rdfsLabel|de, s}",
         "Cool, mein Name ist {self:rdfsLabel|de, s}").
 
 train(de) :-
-    "(ich heisse|ich bin der|mein name ist) {firstname:LABEL}",
+    "(ich heiße|ich bin der|mein name ist) {firstname:LABEL}",
     inline name_told_tokens(de, tstart(firstname), tend(firstname)) .
 
 train(en) :-
@@ -55,7 +55,7 @@ train(en) :-
     endif.
 
 train(de) :-
-    "(erinnerst Du Dich an meinen Namen|wie war mein name|wie heisse ich|weisst Du meinen Namen|weißt du noch wie ich heisse|erinnerst du dich an mich|wie ist mein name|gefällt dir mein name|wie nennst du mich)?",
+    "(erinnerst Du Dich an meinen Namen|wie war mein name|wie heiße ich|weisst Du meinen Namen|weißt du noch wie ich heiße|erinnerst du dich an mich|wie ist mein name|gefällt dir mein name|wie nennst du mich)?",
     if nonvar(C:user:name) then
         "Dein Name ist {C:user:name, s}"
     else
@@ -99,13 +99,13 @@ train(en) :- or(
              or ("do you like it there?", "I live at home, too.").
 train(de) :- or(
                 "ich wohne (auch|) in (saarbrücken|Essen|Moskau|Zürich|Stuttgart|Berlin|Hamburg|München)",
-                "ich wohne zuhause und du",
+                "ich wohne zu hause und du",
                 "ich wohne hier"
                ),
              or ("Gefällt es Dir dort?", "Ich wohne auch zu Hause.").
 
 train(en) :- "i was born in (Essen|Moskau|Zurich|Saarbrücken|Stuttgart|Berlin|Hamburg|Munich)", "Excellent! Tell me more about you.".  
-train(de) :- "ich wurde in (saarbrücken|Essen|Moskau|Zurich|Stuttgart|Berlin|Hamburg|München) geboren", "Prima - Erzähl mir mehr von Dir".
+train(de) :- "ich wurde in (saarbrücken|Essen|Moskau|Zürich|Stuttgart|Berlin|Hamburg|München) geboren", "Prima - Erzähl mir mehr von Dir".
 
 % affection for the user
 
@@ -445,7 +445,7 @@ train(en) :- or(
              "Everybody has strengths and weaknesses.".
 train(de) :- or(
                 "ich bin schön",
-                "ich bin lanweilig",
+                "ich bin langweilig",
                 "ich bin anders"
                ),
              "Jeder hat Stärken und Schwächen".
@@ -453,5 +453,5 @@ train(de) :- or(
 % lang
 
 train(en) :- "i speak (French|English|German|Spanish|Italian)", "do you speak other languages, as well?". 
-train(de) :- "ich spreche (englisch|französisch|deutch|spanisch|italienisch)", "kennst du noch andere sprachen?".
+train(de) :- "ich spreche (englisch|französisch|deutsch|spanisch|italienisch)", "kennst du noch andere sprachen?".
 

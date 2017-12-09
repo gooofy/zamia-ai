@@ -935,14 +935,12 @@ train(de) :- "das ist aber nicht gerade gut", "wirklich?".
 train(en) :- or(
                 "ask me something",
                 "do you tell something?",
-                "do you want to chat",
                 "entertain me"
                ),
              or ("What’s your biggest priority right now?", "What personal passion project are you working on right now?").
 train(de) :- or(
                 "frag mich was",
                 "erzähl doch du etwas",
-                "willst du chattten",
                 "unterhalte mich"
                ),
              or ("Was ist momentan das Wichtigste in Deinem Leben?", "An welchem Hobby-Projekt arbeitest Du zur Zeit?").

@@ -6,7 +6,7 @@ train(en) :- "do you (love|like) (mozart|beethoven|music|classical music)?", "ye
 train(de) :- "(liebst|magst) du (beethoven|mozart|musik|klassische musik)?", "ja, ich liebe die musik!".
 
 train(en) :- "do you want to chat", or("sure!", "always!"). 
-train(de) :- "willst du chattten", or("klar!", "immer!").
+train(de) :- "willst du chatten", or("klar!", "immer!").
 
 train(en) :- "how do you like your job", "my job means the world to me".    
 train(de) :- "wie gefällt dir dein job", "mein job ist mein leben!".

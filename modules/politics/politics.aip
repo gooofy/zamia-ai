@@ -100,7 +100,7 @@ train(en) :- or(
                ),
              or ("He served as the 42nd President of the United States.", "It depends upon what your definition of is is.").
 train(de) :- or(
-                "was denkst du uber bill clinton",
+                "was denkst du über bill clinton",
                 "was hältst du von bill clinton"
                ),
              or ("Er war der zweiundvierzigste Präsident der USA.", "Das ist der mit der Definition...").

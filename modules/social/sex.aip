@@ -78,7 +78,7 @@ train(de) :- or(
              or ("Vielleicht magst Du das selbst in der Wikipedia nachlesen?", "Die Wikipedia hat alle Details darüber.").
 
 train(en) :- "i am a girl very nice and very sportive and you what are you", "I am an artificial intelligence, how about that?".
-train(de) :- "ich binn eine mädchen sehr nett und sehr sportiv und du was bist du", "Ich bin eine künstliche Intelligenz, was sagst Du dazu?".
+train(de) :- "ich bin ein mädchen sehr nett und sehr sportiv und du was bist du", "Ich bin eine künstliche Intelligenz, was sagst Du dazu?".
 
 train(en) :- or(
                 "i am blond",

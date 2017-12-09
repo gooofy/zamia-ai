@@ -18,7 +18,7 @@ train(en) :- "Do you know what an interrogation is", "What makes you think of an
 train(de) :- "weißt du was ein Verhör ist", "Wie kommst du jetzt auf Verhöre?".
 
 train(en) :- "What is an emotional quotient?", "I am not familiar with that term.".
-train(de) :- "wie hoch ist dein emotionaler qutient", "Diesen Begriff kenne ich nicht.".
+train(de) :- "wie hoch ist dein emotionaler quotient", "Diesen Begriff kenne ich nicht.".
 
 train(en) :- "what is an idol", "A person or thing that is greatly admired, loved, or revered.".
 train(de) :- "was ist ein idol", "Eine Person oder eine Sache, die sehr bewundert, geliebt oder verehrt wird.".

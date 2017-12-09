@@ -690,6 +690,9 @@ try:
             do_playback()
         elif c == ord('e'):
             do_edit_prompt()
+        elif c == ord('E'):
+            prompt = u''
+            do_edit_prompt()
         elif c == ord('m'):
             do_change_module()
         elif c == ord('a'):

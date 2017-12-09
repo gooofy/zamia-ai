@@ -997,10 +997,10 @@ train(en) :- "how am i supposed to do that", "just give it a try.".
 train(de) :- "wie soll ich das machen", "versuch's doch mal".
 
 train(en) :- "how does it feel to stroll through the fresh morning on a spring", "how would I know?".
-train(de) :- "wie fühlt es sich an durch den frischen mor", "woher soll ich das wissen?".
+train(de) :- "Wie fühlt es sich an, durch den frischen Morgen an einer Quelle zu spazieren?", "woher soll ich das wissen?".
 
 train(en) :- "how should i explain this to you", "Just tell it like it is.".
-train(de) :- "wie soll ich dir das erklärena", "Sag mir einfach, wie es ist.".
+train(de) :- "wie soll ich dir das erklären", "Sag mir einfach, wie es ist.".
 
 train(en) :- or(
                 "i am in a hurry",

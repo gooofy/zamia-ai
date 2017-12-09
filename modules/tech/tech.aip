@@ -159,7 +159,7 @@ train(de) :- or(
                 "in welcher sprache bist du geschrieben",
                 "wurdest du in (c|prolog|python|pascal|oberon|perl|scala|haskell|java) programmiert"
                ),
-             "I am based on Python, Prolog and TensorFlow.".
+             "Ich basiere auf Python, Prolog und TensorFlow.".
 
 train(en) :- or(
                 "microsoft",

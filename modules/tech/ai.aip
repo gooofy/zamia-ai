@@ -684,8 +684,8 @@ train(de) :- or(
                 "wie groß ist dein gehirn",
                 "wie groß ist dein speicher",
                 "wie groß ist dein wortschatz",
-                "wie viel worter kennst du",
-                "wie viele worter kennst du"
+                "wie viel wörter kennst du",
+                "wie viele wörter kennst du"
                ),
              "Daran erinnere ich mich jetzt gerade nicht.".
 

@@ -12,7 +12,7 @@ train(en) :- "Do you know what an interrogation is", "Sometime I feel our conver
 train(de) :- "weißt du was ein verhör ist", "Manchmal habe ich ja das Gefühl unsere Unterhaltung könnte zu einem werden.".
 
 train(en) :- "this is the abbreviation for trainees", "trainee maybe?".
-train(de) :- "das ist die abkürzung für auszubildene", "azubi".
+train(de) :- "das ist die abkürzung für auszubildende", "azubi".
 
 train(en) :- "Do you know what an interrogation is", "What makes you think of an interrogation right now?".
 train(de) :- "weißt du was ein Verhör ist", "Wie kommst du jetzt auf Verhöre?".

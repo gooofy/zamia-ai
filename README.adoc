@@ -22,6 +22,90 @@ Possible applications range from rather simple fun or educational toys up to
 serious systems for command and control in industrial or automotive contexts
 or assistive technology and healthcare solutions.
 
+Requirements
+------------
+
+*Note*: probably incomplete.
+
+* Python 2.7 with nltk, numpy, ...
+* tensorflow
+* from my other repositories: py-nltools, zamia-prolog
+
+Setup Notes
+-----------
+
+Just some rough notes on the environment needed to get these scripts to run. This is in no way a complete set of
+instructions, just some hints to get you started.
+
+create a file called `~/.airc`:
+
+```ini
+[db]
+url                 = sqlite:///ai.db
+
+[semantics]
+modules             = data, config, base, dialog, mathematics, dt, humans, weather, media, movies, television, literature, tech, geo, astro, culture, social, economy, physics, games, miscellaneous, music, mythology, transport, health, humor, psychology, politics, language, sports, food, news, history, legal, personal, home
+server_host         = dagobert
+server_port         = 8302
+
+[weather]
+api_key             = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+city_id             = 2825297
+city_pred           = stuttgart
+
+[context]
+place               = 'http://www.wikidata.org/entity/Q1022'
+channel             = 'http://www.wikidata.org/entity/Q795291'
+time                = today
+```
+
+compile the knowledge base:
+```bash
+./ai_cli.py compile all
+```
+train a model:
+```bash
+./ai_cli.py train models/en_3_512.ini
+```
+alternatively, you can download a pre-built model here: http://goofy.zamia.org/zamia-ai/
+
+chat with the model:
+```bash
+[guenter@dagobert zamia-ai]$ ./ai_cli.py chat models/en_3_512.ini 
+[...]
+INFO:root:models/en_3_512/in_dict.csv read, 3128 entries, output_max_len=21.
+INFO:root:models/en_3_512/out_dict.csv read, 1811 entries, output_max_len=128.
+INFO:root:creating decode seq2seq model: 3 layer(s) of 512 units.
+INFO:root:building model..
+INFO:root:building encoder..
+INFO:root:building decoder and attention..
+INFO:root:use beamsearch decoding..
+INFO:root:building beamsearch decoder..
+INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
+INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
+INFO:root:model restored from models/en_3_512/latest.ckpt
+ai> hello computer
+INFO:root:RESP: [00000] hello ! 
+ai> how are you?
+INFO:root:RESP: [00000] thanks for asking , i am doing fine . how about you ? 
+ai> I am well
+INFO:root:RESP: [00000] glad to hear that . 
+ai> what is 2 times 2
+INFO:root:RESP: [00100] 4 
+ai> correct
+INFO:root:RESP: [00000] good . 
+ai> where do you live?
+INFO:root:RESP: [00000] i am locted in Stuttgart . 
+ai> what is your favorite movie?
+INFO:root:RESP: [00000] 2001: A Space Odyssey by Stanley Kubrick 
+ai> How about the weather?
+INFO:root:RESP: [00000] always a good topic . 
+ai> I thought so too.
+INFO:root:RESP: [00000] so we are in agreement ? 
+ai> Tell me something about yourself
+INFO:root:RESP: [00000] my clock ticks more than a billion times a second . 
+```
+
 Architecture
 ------------
 
@@ -249,90 +333,6 @@ Links
 -----
 
 * Code: https://github.com/gooofy/zamia-ai
-
-Requirements
-------------
-
-*Note*: probably incomplete.
-
-* Python 2.7 with nltk, numpy, ...
-* tensorflow
-* from my other repositories: py-nltools, zamia-prolog
-
-Setup Notes
------------
-
-Just some rough notes on the environment needed to get these scripts to run. This is in no way a complete set of
-instructions, just some hints to get you started.
-
-create a file called `~/.airc`:
-
-```ini
-[db]
-url                 = sqlite:///ai.db
-
-[semantics]
-modules             = data, config, base, dialog, mathematics, dt, humans, weather, media, movies, television, literature, tech, geo, astro, culture, social, economy, physics, games, miscellaneous, music, mythology, transport, health, humor, psychology, politics, language, sports, food, news, history, legal, personal, home
-server_host         = dagobert
-server_port         = 8302
-
-[weather]
-api_key             = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-city_id             = 2825297
-city_pred           = stuttgart
-
-[context]
-place               = 'http://www.wikidata.org/entity/Q1022'
-channel             = 'http://www.wikidata.org/entity/Q795291'
-time                = today
-```
-
-compile the knowledge base:
-```bash
-./ai_cli.py compile all
-```
-train a model:
-```bash
-./ai_cli.py train models/en_3_512.ini
-```
-alternatively, you can download a pre-built model here: http://goofy.zamia.org/zamia-ai/
-
-chat with the model:
-```bash
-[guenter@dagobert zamia-ai]$ ./ai_cli.py chat models/en_3_512.ini 
-[...]
-INFO:root:models/en_3_512/in_dict.csv read, 3128 entries, output_max_len=21.
-INFO:root:models/en_3_512/out_dict.csv read, 1811 entries, output_max_len=128.
-INFO:root:creating decode seq2seq model: 3 layer(s) of 512 units.
-INFO:root:building model..
-INFO:root:building encoder..
-INFO:root:building decoder and attention..
-INFO:root:use beamsearch decoding..
-INFO:root:building beamsearch decoder..
-INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
-INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
-INFO:root:model restored from models/en_3_512/latest.ckpt
-ai> hello computer
-INFO:root:RESP: [00000] hello ! 
-ai> how are you?
-INFO:root:RESP: [00000] thanks for asking , i am doing fine . how about you ? 
-ai> I am well
-INFO:root:RESP: [00000] glad to hear that . 
-ai> what is 2 times 2
-INFO:root:RESP: [00100] 4 
-ai> correct
-INFO:root:RESP: [00000] good . 
-ai> where do you live?
-INFO:root:RESP: [00000] i am locted in Stuttgart . 
-ai> what is your favorite movie?
-INFO:root:RESP: [00000] 2001: A Space Odyssey by Stanley Kubrick 
-ai> How about the weather?
-INFO:root:RESP: [00000] always a good topic . 
-ai> I thought so too.
-INFO:root:RESP: [00000] so we are in agreement ? 
-ai> Tell me something about yourself
-INFO:root:RESP: [00000] my clock ticks more than a billion times a second . 
-```
 
 Language Model
 --------------

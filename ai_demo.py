@@ -43,6 +43,7 @@ from nltools.pulserecorder  import PulseRecorder
 from nltools.pulseplayer    import PulsePlayer
 from nltools.tokenizer      import tokenize
 from nltools.asr            import ASR, ASR_ENGINE_NNET3
+from nltools.tts            import TTS
 
 PROC_TITLE        = 'ai_demo'
 AI_USER           = 'demo'
@@ -111,6 +112,14 @@ source                         = config.get      ('vad',    'source')
 volume                         = config.getint   ('vad',    'volume')
 aggressiveness                 = config.getint   ('vad',    'aggressiveness')
 
+tts_host                       = config.get   ('tts',    'tts_host')
+tts_port                       = config.getint('tts',    'tts_port')
+tts_locale                     = config.get   ('tts',    'tts_locale')
+tts_voice                      = config.get   ('tts',    'tts_voice')
+tts_engine                     = config.get   ('tts',    'tts_engine')
+tts_speed                      = config.getint('tts',    'tts_speed')
+tts_pitch                      = config.getint('tts',    'tts_pitch')
+
 #
 # pulseaudio recorder
 #
@@ -152,9 +161,16 @@ asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = k
 logging.debug ('ASR initialized.')
 
 #
+# TTS
+#
+
+tts = TTS (host_tts = tts_host, port_tts = tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
+
+#
 # main loop
 #
 
+print(chr(27) + "[2J")
 
 while True:
 
@@ -179,20 +195,20 @@ while True:
 
         recording.extend(audio)
 
-        hstr, confidence = asr.decode(SAMPLE_RATE, audio, finalize, stream_id=loc)
+        user_utt, confidence = asr.decode(SAMPLE_RATE, audio, finalize, stream_id=loc)
 
-        print "\r             \rYou: %s      " % hstr,
+        print "\r             \rYou: %s      " % user_utt,
 
-        if finalize and not hstr:
+        if finalize and not user_utt:
             finalize = False
             recording  = []
 
-    logging.info ("conv_hstr: %s" % hstr)
+    logging.info ("conv_user: %s" % user_utt)
 
     rec.stop_recording()
     print
 
-    score, resps, actions, solutions, current_ctx = kernal.process_input(hstr, kernal.nlp_model.lang, USER_URI, prev_ctx=current_ctx)
+    score, resps, actions, solutions, current_ctx = kernal.process_input(user_utt, kernal.nlp_model.lang, USER_URI, prev_ctx=current_ctx)
 
     for idx in range (len(resps)):
         logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
@@ -209,13 +225,17 @@ while True:
             ovl.do_apply(AI_MODULE, kernal.db, commit=True)
 
         resp = resps[idx]
-        print('AI : %s' % u' '.join(resps[idx]))
+        ai_utt = u' '.join(resps[idx])
+        print('AI : %s' % ai_utt)
 
-        logging.info ("conv_resp: %s" % u' '.join(resps[idx]))
+        logging.info ("conv_ai   : %s" % ai_utt)
 
         for act in actions[idx]:
             print('     %s' % repr(act))
             logging.info ("conv_action: %s" % repr(act))
+
+        if ai_utt:
+            tts.say(ai_utt)
 
     print
 
@@ -254,7 +274,7 @@ while True:
 
         promptsfn = '%s/prompts-original' % etcdirfn
         with codecs.open(promptsfn, 'a') as promptsf:
-            promptsf.write('de5-%03d %s\n' % (cnt, hstr))
+            promptsf.write('de5-%03d %s\n' % (cnt, user_utt))
 
         logging.info('conv_recording saved to %s' % audiofn)
 

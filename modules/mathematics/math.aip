@@ -17,6 +17,7 @@ train(en) :-
 
     ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
     wdpdNumericValue(N1E, N1),
+    r_score(C, SCORE),
 
     RES := N1 * N1,
 
@@ -31,6 +32,7 @@ train(de) :-
 
     ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
     wdpdNumericValue(N1E, N1),
+    r_score(C, SCORE),
 
     RES := N1 * N1,
 
@@ -53,10 +55,12 @@ train(en) :-
        "calculate {natnum:LABEL} (plus|and|added) {natnum2:LABEL} (please|)",
        "add {natnum:LABEL} (and|) {natnum2:LABEL} (please|)"), 
 
-    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 + N2,
 
@@ -70,10 +74,12 @@ train(de) :-
        "(berechne|rechne) (bitte|) {natnum:LABEL} (und|plus) {natnum2:LABEL}",
        "addiere (bitte|) {natnum:LABEL} (mit|und) {natnum2:LABEL}"), 
 
-    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 + N2,
 
@@ -95,10 +101,12 @@ train(en) :-
     or("what (gives|is|makes) {natnum:LABEL} (minus|subtracted) {natnum2:LABEL}",
        "calculate {natnum:LABEL} (minus|subtracted) {natnum2:LABEL} (please|)"),
 
-    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 - N2,
 
@@ -111,10 +119,12 @@ train(de) :-
     or("was (gibt|ist|ergibt) {natnum:LABEL} (weniger|minus) {natnum2:LABEL}",
        "(berechne|rechne) (bitte|) {natnum:LABEL} (weniger|minus) {natnum2:LABEL}"),
 
-    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 - N2,
 
@@ -133,10 +143,12 @@ test(de, minus01) :-
 train(en) :- 
     "subtract {natnum:LABEL} from {natnum2:LABEL} (please|)", 
 
-    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N2 - N1,
 
@@ -148,10 +160,12 @@ train(en) :-
 train(de) :- 
     "subtrahiere (bitte|) {natnum:LABEL} von {natnum2:LABEL}", 
 
-    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N2 - N1,
 
@@ -174,10 +188,12 @@ train(en) :-
        "calculate {natnum:LABEL} (times|multiplied with) {natnum2:LABEL} (please|)",
        "multiply {natnum:LABEL} by {natnum2:LABEL} (please|)"),
 
-    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 * N2,
 
@@ -191,10 +207,12 @@ train(de) :-
        "(berechne|rechne) (bitte|) {natnum:LABEL} (mal|multipliziert mit) {natnum2:LABEL}",
        "multipliziere (bitte|) {natnum:LABEL} mit {natnum2:LABEL}"),
 
-    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 * N2,
 
@@ -217,10 +235,12 @@ train(en) :-
        "calculate {natnum:LABEL} didivded by {natnum2:LABEL} (please|)",
        "divide {natnum:LABEL} by {natnum2:LABEL} (please|)"),
 
-    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (en, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 / N2,
 
@@ -234,10 +254,12 @@ train(de) :-
        "(berechne|rechne) (bitte|) {natnum:LABEL} (durch|geteilt durch) {natnum2:LABEL}",
        "teile (bitte|) {natnum:LABEL} durch {natnum2:LABEL}"),
 
-    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE),
+    ner (de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE1),
     wdpdNumericValue(N1E, N1),
-    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE),
+    r_score(C, SCORE1),
+    ner (de, natnum, tstart(natnum2), tend(natnum2), C:tokens, N2E, SCORE2),
     wdpdNumericValue(N2E, N2),
+    r_score(C, SCORE2),
 
     RES := N1 / N2,
 

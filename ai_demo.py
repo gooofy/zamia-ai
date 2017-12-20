@@ -148,7 +148,8 @@ logging.debug ('VAD initialized.')
 db     = LogicDB(db_url)
 kernal = AIKernal(db=db, all_modules=all_modules, load_all_modules=True)
 kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
-current_ctx = kernal.find_prev_context(USER_URI)
+# current_ctx = kernal.find_prev_context(USER_URI)
+current_ctx = None
 logging.debug ('AI kernal initialized.')
 
 #
@@ -171,7 +172,6 @@ tts = TTS (host_tts = tts_host, port_tts = tts_port, locale=tts_locale, voice=tt
 #
 
 print(chr(27) + "[2J")
-
 while True:
 
     #
@@ -208,6 +208,7 @@ while True:
     rec.stop_recording()
     print
 
+    # import pdb; pdb.set_trace()
     score, resps, actions, solutions, current_ctx = kernal.process_input(user_utt, kernal.nlp_model.lang, USER_URI, prev_ctx=current_ctx)
 
     for idx in range (len(resps)):
@@ -233,6 +234,14 @@ while True:
         for act in actions[idx]:
             print('     %s' % repr(act))
             logging.info ("conv_action: %s" % repr(act))
+
+        if current_ctx:
+            s1s = kernal.rt.search_predicate ('context', [current_ctx, '_1', '_2'], env={})
+            if s1s:
+                print '     context:',
+                for s1 in s1s:
+                     print '%s is %s' % (s1['_1'], s1['_2']),
+                print
 
         if ai_utt:
             tts.say(ai_utt)

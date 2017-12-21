@@ -177,7 +177,7 @@ train(de) :- or(
                 "schade",
                 "das ist schade"
                ),
-             "Du klingt ein wenig betrübt.".
+             "Du klingst ein wenig betrübt.".
 
 train(en) :- "great", "excellent.".
 train(de) :- "toll", "prima.".

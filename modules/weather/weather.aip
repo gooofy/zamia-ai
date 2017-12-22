@@ -732,17 +732,17 @@ train(en) :-
     context(topic, wdeWeatherForecast),
     or("that is (definitely|) (pretty|too) (cold|warm|hot)",
        "that is too (cold|warm|hot) for (me|my taste)"),
-    or(say(C, "Proper clothing will fix that."),
-       say(C, "The weather service will hear about that."),
-       say(C, "Maybe you should move to a milder climate?")).
+    or("Proper clothing will fix that.",
+       "The weather service will hear about that.",
+       "Maybe you should move to a milder climate?").
 
 train(de) :-
     context(topic, wdeWeatherForecast),
     or("das ist (ja|) (ganz schön|zu|) (warm|kalt|heiß)",
        "das ist mir zu (warm|kalt|heiß)"),
-    or(say(C, "Alles eine Frage der richtigen Kleidung!"),
-       say(C, "Ich sende eine Beschwerde an das Wetteramt."),
-       say(C, "Vielleicht solltest Du über einen Umzug nachdenken?")).
+    or("Alles eine Frage der richtigen Kleidung!",
+       "Ich sende eine Beschwerde an das Wetteramt.",
+       "Vielleicht solltest Du über einen Umzug nachdenken?").
 
 train(en) :- "about the weather", "Always a good topic.".
 train(de) :- "über das wetter", "Immer ein gutes Thema.".

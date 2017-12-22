@@ -247,6 +247,9 @@ while True:
             tts.say(ai_utt)
 
     print
+    
+    # FIXME: contexts are incomplete, disable them for now
+    current_ctx = None
 
     #
     # save audio recording, if requested

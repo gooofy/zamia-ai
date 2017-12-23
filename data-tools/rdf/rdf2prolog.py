@@ -334,87 +334,87 @@ def prolog_string_escape (o):
 
 cnt = 0
 
+prolog_code = []
+for elu in lem:
+
+    entity = lem[elu]
+
+    cnt += 1
+
+    triples = list(g.triples((entity, None, None)))
+
+    if len(triples)==0:
+        continue
+
+    logging.info ('%5d/%5d generating prolog code for %s ...' % (cnt, len(lem), elu))
+
+    # f.write(u'\n%% URI: %s\n\n' % unicode(entity))
+
+    for s, p, o in triples:
+
+        pl = property_label(p)
+        el = elm[s]
+
+        if isinstance(o, rdflib.term.Literal):
+            if o.datatype:
+
+                datatype = str(o.datatype)
+
+                if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    continue
+                elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    continue
+                elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
+                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    continue
+                elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                    dt = dateutil.parser.parse(unicode(o))
+                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
+                    continue
+                elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
+                    dt = dateutil.parser.parse(unicode(o))
+                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
+                    continue
+                elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
+                    # FIXME
+                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, unicode(o)))
+                    continue
+                elif datatype == 'http://www.w3.org/1998/Math/MathML':
+                    # FIXME
+                    continue
+                 
+                else:
+                    raise Exception('unknown literal datatype %s (value: %s) .' % (datatype, unicode(o)))
+            else:
+                if o.value is None:
+                    prolog_code.append(u"%s(%s, []).\n" % (pl, el))
+                    continue
+                if o.language:
+                    if o.language in LANGUAGES:
+                        prolog_code.append(u"%s(%s, %s, \"%s\").\n" % (pl, el, o.language, prolog_string_escape(o)))
+                    continue
+
+                prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, prolog_string_escape(o)))
+                continue
+
+        elif isinstance (o, rdflib.term.URIRef):
+            if o in elm:
+                ol = elm[o]
+            else:
+                ol = u'"' + unicode(o) + '"'
+
+            prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
+        else:
+            raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
+
 with codecs.open(outputfn, 'w', 'utf8') as f:
 
     f.write('%prolog\n')
 
-    for elu in sorted(lem):
-
-        entity = lem[elu]
-
-        cnt += 1
-
-        triples = list(g.triples((entity, None, None)))
-
-        if len(triples)==0:
-            continue
-
-        logging.info ('%5d/%5d dumping prolog code for %s ...' % (cnt, len(lem), elu))
-
-        f.write(u'\n%% URI: %s\n\n' % unicode(entity))
-
-        for s, p, o in triples:
-
-            pl = property_label(p)
-            el = elm[s]
-
-            # if '1' in pl:
-            #     if not 'unlabeled' in pl:
-            #         import pdb; pdb.set_trace()
-
-            if isinstance(o, rdflib.term.Literal):
-                if o.datatype:
-
-                    datatype = str(o.datatype)
-
-                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                        f.write(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                        continue
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                        f.write(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                        continue
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
-                        f.write(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                        continue
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                        dt = dateutil.parser.parse(unicode(o))
-                        f.write(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
-                        continue
-                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                        dt = dateutil.parser.parse(unicode(o))
-                        f.write(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
-                        continue
-                    elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
-                        # FIXME
-                        f.write(u"%s(%s, \"%s\").\n" % (pl, el, unicode(o)))
-                        continue
-                    elif datatype == 'http://www.w3.org/1998/Math/MathML':
-                        # FIXME
-                        continue
-                     
-                    else:
-                        raise Exception('unknown literal datatype %s (value: %s) .' % (datatype, unicode(o)))
-                else:
-                    if o.value is None:
-                        f.write(u"%s(%s, []).\n" % (pl, el))
-                        continue
-                    if o.language:
-                        if o.language in LANGUAGES:
-                            f.write(u"%s(%s, %s, \"%s\").\n" % (pl, el, o.language, prolog_string_escape(o)))
-                        continue
-
-                    f.write(u"%s(%s, \"%s\").\n" % (pl, el, prolog_string_escape(o)))
-                    continue
-
-            elif isinstance (o, rdflib.term.URIRef):
-                if o in elm:
-                    ol = elm[o]
-                else:
-                    ol = u'"' + unicode(o) + '"'
-
-                f.write(u"%s(%s, %s).\n" % (pl, el, ol))
-            else:
-                raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
+    for pc in sorted(prolog_code):
+        f.write(pc)
 
 logging.info (' %s written' % outputfn)
 

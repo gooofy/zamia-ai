@@ -107,16 +107,16 @@ macro(de, programming_language, LABEL) :-
     programming_language(PG), 
     rdfsLabel(PG, de, LABEL).
 
-get_topic_label(C, en, "programming languages") :- mem(C, topic, wdeProgrammingLanguage1), r_score(C, 10).
-get_topic_label(C, de, "Programmiersprachen")   :- mem(C, topic, wdeProgrammingLanguage1), r_score(C, 10).
+get_topic_label(C, en, "programming languages") :- C:context|topic = wdeProgrammingLanguage1, r_score(C, 10).
+get_topic_label(C, de, "Programmiersprachen")   :- C:context|topic = wdeProgrammingLanguage1, r_score(C, 10).
 
 train(en) :-
     "(do you know|what is|) {programming_language:LABEL}?",
 
     ner (en, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
-    C:mem|topic is wdeProgrammingLanguage1,
+    C:mem|f1ent     := ENTITY,
+    C:context|topic := wdeProgrammingLanguage1,
     r_score(C, SCORE),
 
     "Isn't that a computer programming language?".
@@ -126,8 +126,8 @@ train(de) :-
 
     ner (de, programming_language, tstart(programming_language), tend(programming_language), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
-    C:mem|topic is wdeProgrammingLanguage1,
+    C:mem|f1ent     := ENTITY,
+    C:context|topic := wdeProgrammingLanguage1,
     r_score(C, SCORE),
 
     "Das ist doch eine Programmiersprache?".
@@ -204,16 +204,16 @@ macro(de, home_computer, LABEL) :-
     home_computer(PG), 
     rdfsLabel(PG, de, LABEL).
 
-get_topic_label(C, en, "home computers") :- mem(C, topic, wdeHomeComputer), r_score(C, 10).
-get_topic_label(C, de, "Heimcomputer")   :- mem(C, topic, wdeHomeComputer), r_score(C, 10).
+get_topic_label(C, en, "home computers") :- C:context|topic = wdeHomeComputer, r_score(C, 10).
+get_topic_label(C, de, "Heimcomputer")   :- C:context|topic = wdeHomeComputer, r_score(C, 10).
 
 train(en) :-
     "(do you know|what is) (the|) {home_computer:LABEL}?",
 
     ner (en, home_computer, tstart(home_computer), tend(home_computer), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
-    C:mem|topic is wdeHomeComputer,
+    C:mem|f1ent     := ENTITY,
+    C:context|topic := wdeHomeComputer,
     r_score(C, SCORE),
 
     or("Isn't that a home computer?", "I love those vintage home computers!").
@@ -223,8 +223,8 @@ train(de) :-
 
     ner (de, home_computer, tstart(home_computer), tend(home_computer), C:tokens, ENTITY, SCORE),
 
-    C:mem|f1ent is ENTITY,
-    C:mem|topic is wdeHomeComputer,
+    C:mem|f1ent     := ENTITY,
+    C:context|topic := wdeHomeComputer,
     r_score(C, SCORE),
 
     "Das ist doch ein Heimcomputer?".

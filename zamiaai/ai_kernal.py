@@ -20,7 +20,7 @@
 #
 # ai kernal, central hub for all the other components to hook into
 #
-# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> AIProlog -> [ Context ] -> actions/says
+# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> Python/SWI-Prolog -> response
 #
 
 from __future__ import print_function
@@ -42,6 +42,7 @@ import numpy as np
 from six                    import viewitems
 from tzlocal                import get_localzone # $ pip install tzlocal
 from copy                   import deepcopy, copy
+from sqlalchemy             import create_engine
 from sqlalchemy.orm         import sessionmaker
 from six                    import text_type
 from scipy.spatial.distance import cosine
@@ -49,16 +50,19 @@ from threading              import RLock, Lock
 
 from zamiaai                import model
 
-from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
-from aiprolog.parser        import AIPrologParser
-from zamiaprolog.builtins   import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
-                                   json_to_prolog, prolog_to_json
-from zamiaprolog.errors     import PrologRuntimeError
+from pyswip                 import Prolog
+
+# from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
+# from aiprolog.parser        import AIPrologParser
+# from zamiaprolog.builtins   import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
+# from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
+#                                    json_to_prolog, prolog_to_json
+# from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
-from nltools.tts            import TTS
 
+USER_PREFIX        = u'user'
+DEFAULT_USER       = USER_PREFIX + u'Default'
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
@@ -79,7 +83,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db, all_modules=[], load_all_modules=False):
+    def __init__(self, db_url, all_modules=[], load_all_modules=False):
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -98,14 +102,15 @@ class AIKernal(object):
         sys.path.append('modules')
 
         #
-        # AIProlog parser, runtime
+        # DB session, SWI-Prolog engine
         #
 
-        self.db         = db
-        self.session    = db.session
-        self.aip_parser = AIPrologParser(self.db)
-        self.rt         = AIPrologRuntime(self.db)
-        self.dummyloc   = SourceLocation ('<rt>')
+        self.engine  = create_engine(db_url, echo=False)
+        self.Session = sessionmaker(bind=self.engine)
+        self.session = self.Session()
+        model.Base.metadata.create_all(self.engine)
+
+        self.prolog = Prolog()
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -211,6 +216,18 @@ class AIKernal(object):
             for m2 in getattr (m, 'DEPENDS'):
                 self.load_module(m2)
 
+            if hasattr(m, 'PL_SOURCES'):
+
+                logging.info ('module %s prolog compilation...' % module_name)
+
+                for inputfn in m.PL_SOURCES:
+
+                    q = 'consult("modules/%s/%s.qlf")' % (module_name, inputfn)
+
+                    logging.info(q)
+
+                    logging.info(list(self.prolog.query(q)))
+
             if hasattr(m, 'CRONJOBS'):
 
                 # update cronjobs in db
@@ -238,10 +255,6 @@ class AIKernal(object):
                     self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
 
                 self.session.commit()
-
-            if hasattr(m, 'init_module'):
-                initializer = getattr(m, 'init_module')
-                initializer(self)
 
         except:
             logging.error('failed to load module "%s"' % module_name)
@@ -279,13 +292,44 @@ class AIKernal(object):
 
         solutions = self.rt.search(c)
 
+        if hasattr(m, 'init_module'):
+            initializer = getattr(m, 'init_module')
+            initializer(self)
+
     def compile_module (self, module_name, run_trace=False):
 
         m = self.modules[module_name]
 
-        # clear module, delete old NLP training data
+        # compile prolog code, if any
 
-        self.db.clear_module(module_name, commit=True)
+        if hasattr(m, 'PL_SOURCES'):
+
+            logging.info ('module %s prolog compilation...' % module_name)
+
+            for inputfn in m.PL_SOURCES:
+
+                q = 'qcompile("modules/%s/%s.pl")' % (module_name, inputfn)
+
+                logging.info(q)
+
+                logging.info(list(self.prolog.query(q)))
+
+                # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
+
+                # train_ds.extend(ds)
+                # tests.extend(ts)
+
+                # for lang in ne:
+                #     if not lang in ner:
+                #         ner[lang] = {}
+                #     for cls in ne[lang]:
+                #         if not cls in ner[lang]:
+                #             ner[lang][cls] = {}
+                #         for entity in ne[lang][cls]:
+                #             ner[lang][cls][entity] = ne[lang][cls][entity]
+
+        # delete old NLP training data
+
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
         self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
         self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
@@ -312,25 +356,6 @@ class AIKernal(object):
             nlp_test = getattr(m, 'nlp_test')
             nlp_tests = nlp_test(self)
             tests.extend(nlp_tests)
-
-        if hasattr(m, 'AIP_SOURCES'):
-
-            logging.info ('module %s AIP training data extraction...' % module_name)
-
-            for inputfn in m.AIP_SOURCES:
-                ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
-
-                train_ds.extend(ds)
-                tests.extend(ts)
-
-                for lang in ne:
-                    if not lang in ner:
-                        ner[lang] = {}
-                    for cls in ne[lang]:
-                        if not cls in ner[lang]:
-                            ner[lang][cls] = {}
-                        for entity in ne[lang][cls]:
-                            ner[lang][cls][entity] = ne[lang][cls][entity]
 
         logging.info ('module %s training data extraction done. %d training samples, %d tests' % (module_name, len(train_ds), len(tests)))
 

@@ -33,12 +33,12 @@ import time
 
 from six.moves            import input
 
-from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logic    import Predicate
-from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
-from zamiaprolog.errors   import PrologError, PrologRuntimeError
-from zamiaprolog.logicdb  import LogicDB
-from aiprolog.runtime     import USER_PREFIX
+# from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
+# from zamiaprolog.logic    import Predicate
+# from zamiaprolog.runtime  import PROLOG_LOGGER_NAME
+# from zamiaprolog.errors   import PrologError, PrologRuntimeError
+# from zamiaprolog.logicdb  import LogicDB
+# from aiprolog.runtime     import USER_PREFIX
 from zamiaai.ai_kernal    import AIKernal
 from zamiaai              import model
 from nltools              import misc
@@ -55,13 +55,10 @@ class AICli(cmdln.Cmdln):
         cmdln.Cmdln.__init__(self)
 
         self.config = misc.load_config('.airc')
-
         all_modules = list(map (lambda m: m.strip(), self.config.get('semantics', 'modules').split(',')))
-
         db_url      = self.config.get('db', 'url')
-        db          = LogicDB(db_url)
 
-        self.kernal = AIKernal(db=db, all_modules=all_modules)
+        self.kernal = AIKernal(db_url=db_url, all_modules=all_modules)
 
     @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
            help="clean predicates from logicdb")
@@ -133,11 +130,11 @@ class AICli(cmdln.Cmdln):
                 else:
                     logging.info('all %d test(s) worked!' % num_tests)
 
-        except PrologError as e:
-            logging.error("*** ERROR: %s" % e)
+        except:
+            logging.error(traceback.format_exc())
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-        logging.getLogger(PROLOG_LOGGER_NAME).setLevel(DEFAULT_LOGLEVEL)
+        # logging.getLogger(PROLOG_LOGGER_NAME).setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")
@@ -225,77 +222,77 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
-           help="enable prolog tracing")
-    @cmdln.option ("-u", "--user", dest="username", type = "str", default="chat",
-           help="username, default: chat")
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
-    @cmdln.option ("-s", "--global-step", dest="global_step", type = "int", default=0,
-           help="global step to load, default: 0 (latest)")
-    def do_chat(self, subcmd, opts, *paths):
-        """${cmd_name}: chat with model in natural language
+    # @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
+    #        help="enable prolog tracing")
+    # @cmdln.option ("-u", "--user", dest="username", type = "str", default="chat",
+    #        help="username, default: chat")
+    # @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+    #        help="verbose logging")
+    # @cmdln.option ("-s", "--global-step", dest="global_step", type = "int", default=0,
+    #        help="global step to load, default: 0 (latest)")
+    # def do_chat(self, subcmd, opts, *paths):
+    #     """${cmd_name}: chat with model in natural language
 
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
+    #     ${cmd_usage}
+    #     ${cmd_option_list}
+    #     """
 
-        if len(paths) != 1:
-            raise Exception ("You need to specify exactly one model ini file")
+    #     if len(paths) != 1:
+    #         raise Exception ("You need to specify exactly one model ini file")
 
-        if opts.verbose:
-            logging.getLogger().setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
+    #     if opts.verbose:
+    #         logging.getLogger().setLevel(logging.DEBUG)
+    #     else:
+    #         logging.getLogger().setLevel(logging.INFO)
 
-        for mn2 in self.kernal.all_modules:
-            self.kernal.load_module (mn2)
-            self.kernal.init_module (mn2)
+    #     for mn2 in self.kernal.all_modules:
+    #         self.kernal.load_module (mn2)
+    #         self.kernal.init_module (mn2)
 
-        self.kernal.setup_tf_model('decode', True, paths[0], global_step=opts.global_step)
+    #     self.kernal.setup_tf_model('decode', True, paths[0], global_step=opts.global_step)
 
-        user_uri    = USER_PREFIX + opts.username
-        cur_context = None
+    #     user_uri    = USER_PREFIX + opts.username
+    #     cur_context = None
 
-        while True:
+    #     while True:
 
-            line = input ('ai> ')
+    #         line = input ('ai> ')
 
-            if line == 'quit' or line == 'exit':
-                break
+    #         if line == 'quit' or line == 'exit':
+    #             break
 
-            try:
-                score, resps, actions, solutions, cur_context = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, run_trace=opts.run_trace, prev_ctx = cur_context)
+    #         try:
+    #             score, resps, actions, solutions, cur_context = self.kernal.process_input(line, self.kernal.nlp_model.lang, user_uri, run_trace=opts.run_trace, prev_ctx = cur_context)
 
-                for idx in range (len(resps)):
-                    logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
+    #             for idx in range (len(resps)):
+    #                 logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
 
-                # if we have multiple responses, pick one at random
+    #             # if we have multiple responses, pick one at random
 
-                if len(resps)>0:
+    #             if len(resps)>0:
 
-                    idx = random.randint(0, len(resps)-1)
+    #                 idx = random.randint(0, len(resps)-1)
 
-                    # apply DB overlay, if any
-                    ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-                    if ovl:
-                        # logging.info(str(ovl))
-                        # import pdb; pdb.set_trace()
-                        ovl.do_apply(CLI_MODULE, self.kernal.db, commit=True)
+    #                 # apply DB overlay, if any
+    #                 ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
+    #                 if ovl:
+    #                     # logging.info(str(ovl))
+    #                     # import pdb; pdb.set_trace()
+    #                     ovl.do_apply(CLI_MODULE, self.kernal.db, commit=True)
 
-                    acts = actions[idx]
-                    for action in acts:
-                        logging.debug("ACTION %s" % repr(action))
+    #                 acts = actions[idx]
+    #                 for action in acts:
+    #                     logging.debug("ACTION %s" % repr(action))
 
-                    resp = resps[idx]
-                    logging.info('RESP: [%05d] %s ' % (score, u' '.join(resp)))
+    #                 resp = resps[idx]
+    #                 logging.info('RESP: [%05d] %s ' % (score, u' '.join(resp)))
 
-                    # import pdb; pdb.set_trace()
-                            
-            except Exception as e:
-                logging.error(traceback.format_exc())
+    #                 # import pdb; pdb.set_trace()
+    #                         
+    #         except Exception as e:
+    #             logging.error(traceback.format_exc())
 
-        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+    #     logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option ("-d", "--dict", dest="dictfn", type = "str", default=None,
            help="dictionary to use to detect unknown words, default: none")

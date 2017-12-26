@@ -42,14 +42,9 @@ import numpy as np
 from six                    import viewitems
 from tzlocal                import get_localzone # $ pip install tzlocal
 from copy                   import deepcopy, copy
-from sqlalchemy             import create_engine
-from sqlalchemy.orm         import sessionmaker
 from six                    import text_type
 from scipy.spatial.distance import cosine
 from threading              import RLock, Lock
-
-from zamiaai                import model
-
 from pyswip                 import Prolog
 
 # from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
@@ -60,6 +55,7 @@ from pyswip                 import Prolog
 # from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
+from zamiaai.macro_engine   import MacroEngine
 
 USER_PREFIX        = u'user'
 DEFAULT_USER       = USER_PREFIX + u'Default'
@@ -83,7 +79,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db_url, all_modules=[], load_all_modules=False):
+    def __init__(self, all_modules=[], load_all_modules=False):
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -97,20 +93,17 @@ class AIKernal(object):
         #
 
         self.modules             = {}
+        self.consulted_modules   = set()
         self.initialized_modules = set()
         self.all_modules         = all_modules
         sys.path.append('modules')
 
         #
-        # DB session, SWI-Prolog engine
+        # SWI-Prolog engine, macro engine
         #
 
-        self.engine  = create_engine(db_url, echo=False)
-        self.Session = sessionmaker(bind=self.engine)
-        self.session = self.Session()
-        model.Base.metadata.create_all(self.engine)
-
         self.prolog = Prolog()
+        self.me     = MacroEngine()
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -160,33 +153,33 @@ class AIKernal(object):
                 self.tf_model.restore(self.tf_session, self.nlp_model.model_fn)
 
 
-    def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
-                                   clean_cronjobs):
+    # def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
+    #                                clean_cronjobs):
 
-        for module_name in module_names:
+    #     for module_name in module_names:
 
-            if clean_logic or clean_all:
-                logging.info('cleaning logic for %s...' % module_name)
-                if module_name == 'all':
-                    self.db.clear_all_modules()
-                else:
-                    self.db.clear_module(module_name)
+    #         if clean_logic or clean_all:
+    #             logging.info('cleaning logic for %s...' % module_name)
+    #             if module_name == 'all':
+    #                 self.db.clear_all_modules()
+    #             else:
+    #                 self.db.clear_module(module_name)
 
-            if clean_discourses or clean_all:
-                logging.info('cleaning discourses for %s...' % module_name)
-                if module_name == 'all':
-                    self.session.query(model.DiscourseRound).delete()
-                else:
-                    self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
+    #         if clean_discourses or clean_all:
+    #             logging.info('cleaning discourses for %s...' % module_name)
+    #             if module_name == 'all':
+    #                 self.session.query(model.DiscourseRound).delete()
+    #             else:
+    #                 self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
 
-            if clean_cronjobs or clean_all:
-                logging.info('cleaning cronjobs for %s...' % module_name)
-                if module_name == 'all':
-                    self.session.query(model.Cronjob).delete()
-                else:
-                    self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name).delete()
+    #         if clean_cronjobs or clean_all:
+    #             logging.info('cleaning cronjobs for %s...' % module_name)
+    #             if module_name == 'all':
+    #                 self.session.query(model.Cronjob).delete()
+    #             else:
+    #                 self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name).delete()
 
-        self.session.commit()
+    #     self.session.commit()
 
     def load_module (self, module_name):
 
@@ -216,45 +209,35 @@ class AIKernal(object):
             for m2 in getattr (m, 'DEPENDS'):
                 self.load_module(m2)
 
-            if hasattr(m, 'PL_SOURCES'):
+            self.me.load(module_name)
 
-                logging.info ('module %s prolog compilation...' % module_name)
+            # if hasattr(m, 'CRONJOBS'):
 
-                for inputfn in m.PL_SOURCES:
+            #     # update cronjobs in db
 
-                    q = 'consult("modules/%s/%s.qlf")' % (module_name, inputfn)
+            #     old_cronjobs = set()
+            #     for cronjob in self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name):
+            #         old_cronjobs.add(cronjob.name)
 
-                    logging.info(q)
+            #     new_cronjobs = set()
+            #     for name, interval, f in getattr (m, 'CRONJOBS'):
 
-                    logging.info(list(self.prolog.query(q)))
+            #         logging.debug ('registering cronjob %s' %name)
 
-            if hasattr(m, 'CRONJOBS'):
+            #         cj = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
+            #         if not cj:
+            #             cj = model.Cronjob(module=module_name, name=name, last_run=0)
+            #             self.session.add(cj)
 
-                # update cronjobs in db
+            #         cj.interval = interval
+            #         new_cronjobs.add(cj.name)
 
-                old_cronjobs = set()
-                for cronjob in self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name):
-                    old_cronjobs.add(cronjob.name)
+            #     for cjn in old_cronjobs:
+            #         if cjn in new_cronjobs:
+            #             continue
+            #         self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
 
-                new_cronjobs = set()
-                for name, interval, f in getattr (m, 'CRONJOBS'):
-
-                    logging.debug ('registering cronjob %s' %name)
-
-                    cj = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
-                    if not cj:
-                        cj = model.Cronjob(module=module_name, name=name, last_run=0)
-                        self.session.add(cj)
-
-                    cj.interval = interval
-                    new_cronjobs.add(cj.name)
-
-                for cjn in old_cronjobs:
-                    if cjn in new_cronjobs:
-                        continue
-                    self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
-
-                self.session.commit()
+            #     self.session.commit()
 
         except:
             logging.error('failed to load module "%s"' % module_name)
@@ -268,37 +251,110 @@ class AIKernal(object):
 
         return m
 
-    def init_module (self, module_name, run_trace=False):
+    def consult_module (self, module_name):
 
-        if module_name in self.initialized_modules:
+        if module_name in self.consulted_modules:
             return
 
-        logging.debug("initializing module '%s'" % module_name)
-
-        self.initialized_modules.add(module_name)
+        logging.debug("consulting module '%s'" % module_name)
 
         m = self.load_module(module_name)
+        self.consulted_modules.add(module_name)
 
-        if not m:
-            raise Exception ('init_module: module "%s" not found.' % module_name)
+        try:
 
-        for m2 in getattr (m, 'DEPENDS'):
-            self.init_module(m2)
+            # print m
+            # print getattr(m, '__all__', None)
 
-        prolog_s = u'init(\'%s\')' % (module_name)
-        c = self.aip_parser.parse_line_clause_body(prolog_s)
+            # for name in dir(m):
+            #     print name
 
-        self.rt.set_trace(run_trace)
+            for m2 in getattr (m, 'DEPENDS'):
+                self.consult_module(m2)
 
-        solutions = self.rt.search(c)
+            if hasattr(m, 'PL_SOURCES'):
 
-        if hasattr(m, 'init_module'):
-            initializer = getattr(m, 'init_module')
-            initializer(self)
+                for inputfn in m.PL_SOURCES:
+
+                    qlf_path = "modules/%s/%s.qlf" % (module_name, inputfn)
+                    if not os.path.exists(qlf_path):
+                        raise Exception ('%s not found.' % qlf_path)
+
+                    q = 'consult("%s")' % qlf_path
+
+                    logging.info(q)
+
+                    logging.info(list(self.prolog.query(q)))
+
+            # if hasattr(m, 'CRONJOBS'):
+
+            #     # update cronjobs in db
+
+            #     old_cronjobs = set()
+            #     for cronjob in self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name):
+            #         old_cronjobs.add(cronjob.name)
+
+            #     new_cronjobs = set()
+            #     for name, interval, f in getattr (m, 'CRONJOBS'):
+
+            #         logging.debug ('registering cronjob %s' %name)
+
+            #         cj = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
+            #         if not cj:
+            #             cj = model.Cronjob(module=module_name, name=name, last_run=0)
+            #             self.session.add(cj)
+
+            #         cj.interval = interval
+            #         new_cronjobs.add(cj.name)
+
+            #     for cjn in old_cronjobs:
+            #         if cjn in new_cronjobs:
+            #             continue
+            #         self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
+
+            #     self.session.commit()
+
+        except:
+            logging.error('failed to load module "%s"' % module_name)
+            logging.error(traceback.format_exc())
+            sys.exit(1)
+
+        return m
+
+    # def init_module (self, module_name, run_trace=False):
+
+    #     if module_name in self.initialized_modules:
+    #         return
+
+    #     logging.debug("initializing module '%s'" % module_name)
+
+    #     self.initialized_modules.add(module_name)
+
+    #     m = self.load_module(module_name)
+
+    #     if not m:
+    #         raise Exception ('init_module: module "%s" not found.' % module_name)
+
+    #     for m2 in getattr (m, 'DEPENDS'):
+    #         self.init_module(m2)
+
+    #     prolog_s = u'init(\'%s\')' % (module_name)
+    #     c = self.aip_parser.parse_line_clause_body(prolog_s)
+
+    #     self.rt.set_trace(run_trace)
+
+    #     solutions = self.rt.search(c)
+
+    #     if hasattr(m, 'init_module'):
+    #         initializer = getattr(m, 'init_module')
+    #         initializer(self)
+
+    def add_macro(self, lang, name, soln):
+        self.me.add_named_macro(self.data_module_name, lang, name, soln)
 
     def compile_module (self, module_name, run_trace=False):
 
-        m = self.modules[module_name]
+        m = self.load_module(module_name)
 
         # compile prolog code, if any
 
@@ -314,6 +370,10 @@ class AIKernal(object):
 
                 logging.info(list(self.prolog.query(q)))
 
+        # tell prolog engine to consult all prolog files plus their dependencies
+
+        self.consult_module(module_name)
+
                 # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
 
                 # train_ds.extend(ds)
@@ -328,146 +388,137 @@ class AIKernal(object):
                 #         for entity in ne[lang][cls]:
                 #             ner[lang][cls][entity] = ne[lang][cls][entity]
 
-        # delete old NLP training data
+        # delete old data
 
-        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
-        self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
-        self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
+        self.me.clear(module_name)
+
+        # self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+        # self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
+        # self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
 
         # extract new training data for this module
 
-        train_ds = []
-        tests    = []
-        ner      = {}
+        self.data_module_name = module_name
+        self.data_train       = []
+        self.data_test        = []
+        self.data_ner         = {}
 
-        if hasattr(m, 'nlp_train'):
+        if hasattr(m, 'get_data'):
 
-            # training_data_cnt = 0
+            logging.info ('module %s data extraction...' % module_name)
 
-            logging.info ('module %s python training data extraction...' % module_name)
+            get_data = getattr(m, 'get_data')
+            get_data(self)
 
-            nlp_train = getattr(m, 'nlp_train')
-            train_ds.extend(nlp_train(self))
+        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, len(self.data_train), len(self.data_test)))
 
-        if hasattr(m, 'nlp_test'):
+        # write data to files
 
-            logging.info ('module %s python test case extraction...' % module_name)
+        self.me.save(module_name)
 
-            nlp_test = getattr(m, 'nlp_test')
-            nlp_tests = nlp_test(self)
-            tests.extend(nlp_tests)
+        # # put training data into our DB
 
-        logging.info ('module %s training data extraction done. %d training samples, %d tests' % (module_name, len(train_ds), len(tests)))
+        # td_set  = set()
+        # td_list = []
 
-        # put training data into our DB
+        # for utt_lang, contexts, i, resp, loc_fn, loc_line, loc_col, prio in train_ds:
 
-        td_set  = set()
-        td_list = []
+        #     inp = copy(contexts)
+        #     inp.extend(i)
 
-        for utt_lang, contexts, i, resp, loc_fn, loc_line, loc_col, prio in train_ds:
+        #     inp_json  = json.dumps(inp)
+        #     resp_json = json.dumps(resp)
 
-            inp = copy(contexts)
-            inp.extend(i)
+        #     # utterance = u' '.join(map(lambda c: text_type(c), contexts))
+        #     # if utterance:
+        #     #     utterance += u' '
+        #     # utterance += u' '.join(i)
+        #     utterance = u' '.join(i)
 
-            inp_json  = json.dumps(inp)
-            resp_json = json.dumps(resp)
+        #     k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
+        #     if not k in td_set:
+        #         td_set.add(k)
+        #         td_list.append(model.TrainingData(lang      = utt_lang,
+        #                                           module    = module_name,
+        #                                           utterance = utterance,
+        #                                           inp       = inp_json,
+        #                                           resp      = resp_json,
 
-            # utterance = u' '.join(map(lambda c: text_type(c), contexts))
-            # if utterance:
-            #     utterance += u' '
-            # utterance += u' '.join(i)
-            utterance = u' '.join(i)
+        #                                           prio      = prio,
 
-            k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-            if not k in td_set:
-                td_set.add(k)
-                td_list.append(model.TrainingData(lang      = utt_lang,
-                                                  module    = module_name,
-                                                  utterance = utterance,
-                                                  inp       = inp_json,
-                                                  resp      = resp_json,
+        #                                           loc_fn    = loc_fn,
+        #                                           loc_line  = loc_line,
+        #                                           loc_col   = loc_col,
+        #                                           ))
 
-                                                  prio      = prio,
+        # logging.info ('module %s training data conversion done. %d unique training samples.' %(module_name, len(td_list)))
 
-                                                  loc_fn    = loc_fn,
-                                                  loc_line  = loc_line,
-                                                  loc_col   = loc_col,
-                                                  ))
+        # start_time = time.time()
+        # logging.info (u'bulk saving to db...')
+        # self.session.bulk_save_objects(td_list)
+        # self.session.commit()
+        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-        logging.info ('module %s training data conversion done. %d unique training samples.' %(module_name, len(td_list)))
+        # # put test data into our DB
 
-        start_time = time.time()
-        logging.info (u'bulk saving to db...')
-        self.session.bulk_save_objects(td_list)
-        self.session.commit()
-        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
+        # td_list = []
 
-        # put test data into our DB
+        # for name, lang, prep, rounds, loc_fn, loc_line, loc_col in tests:
 
-        td_list = []
+        #     prep_json   = prolog_to_json(prep)
+        #     rounds_json = json.dumps(rounds)
 
-        for name, lang, prep, rounds, loc_fn, loc_line, loc_col in tests:
+        #     td_list.append(model.TestCase(lang      = lang,
+        #                                   module    = module_name,
+        #                                   name      = name,
+        #                                   prep      = prep_json,
+        #                                   rounds    = rounds_json,
+        #                                   loc_fn    = loc_fn,
+        #                                   loc_line  = loc_line,
+        #                                   loc_col   = loc_col))
 
-            prep_json   = prolog_to_json(prep)
-            rounds_json = json.dumps(rounds)
+        # logging.info ('module %s test data conversion done. %d tests.' %(module_name, len(td_list)))
 
-            td_list.append(model.TestCase(lang      = lang,
-                                          module    = module_name,
-                                          name      = name,
-                                          prep      = prep_json,
-                                          rounds    = rounds_json,
-                                          loc_fn    = loc_fn,
-                                          loc_line  = loc_line,
-                                          loc_col   = loc_col))
+        # start_time = time.time()
+        # logging.info (u'bulk saving to db...')
+        # self.session.bulk_save_objects(td_list)
+        # self.session.commit()
+        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-        logging.info ('module %s test data conversion done. %d tests.' %(module_name, len(td_list)))
+        # # put NER data into our DB
 
-        start_time = time.time()
-        logging.info (u'bulk saving to db...')
-        self.session.bulk_save_objects(td_list)
-        self.session.commit()
-        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
+        # # import pdb; pdb.set_trace()
 
-        # put NER data into our DB
+        # ner_list = []
 
-        # import pdb; pdb.set_trace()
+        # for lang in ner:
+        #     for cls in ner[lang]:
+        #         for entity in ner[lang][cls]:
+        #             ner_list.append(model.NERData(lang      = lang,
+        #                                           module    = module_name,
+        #                                           cls       = cls,
+        #                                           entity    = entity,
+        #                                           label     = ner[lang][cls][entity]))
 
-        ner_list = []
+        # logging.info ('module %s NER data conversion done. %d rows.' %(module_name, len(ner_list)))
 
-        for lang in ner:
-            for cls in ner[lang]:
-                for entity in ner[lang][cls]:
-                    ner_list.append(model.NERData(lang      = lang,
-                                                  module    = module_name,
-                                                  cls       = cls,
-                                                  entity    = entity,
-                                                  label     = ner[lang][cls][entity]))
+        # start_time = time.time()
+        # logging.info (u'bulk saving to db...')
+        # self.session.bulk_save_objects(ner_list)
+        # self.session.commit()
+        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
 
-        logging.info ('module %s NER data conversion done. %d rows.' %(module_name, len(ner_list)))
-
-        start_time = time.time()
-        logging.info (u'bulk saving to db...')
-        self.session.bulk_save_objects(ner_list)
-        self.session.commit()
-        logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
-
-        self.session.commit()
+        # self.session.commit()
 
     def compile_module_multi (self, module_names, run_trace=False):
 
         for module_name in module_names:
-
             if module_name == 'all':
-
                 for mn2 in self.all_modules:
-                    self.load_module (mn2)
                     self.compile_module (mn2, run_trace=run_trace)
 
             else:
-                self.load_module (module_name)
                 self.compile_module (module_name, run_trace=run_trace)
-
-        self.session.commit()
 
     # _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
 

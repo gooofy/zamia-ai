@@ -2031,7 +2031,7 @@ wde5,http://www.wikidata.org/entity/Q203
 wde6,http://www.wikidata.org/entity/Q23488
 wde7,http://www.wikidata.org/entity/Q23350
 wde8,http://www.wikidata.org/entity/Q23355
-wde8½,http://www.wikidata.org/entity/Q12018
+wde8U189,http://www.wikidata.org/entity/Q12018
 wde9,http://www.wikidata.org/entity/Q19108
 wdeAATID,http://www.wikidata.org/entity/P1014
 wdeABSASCLCode,http://www.wikidata.org/entity/P1251
@@ -3087,7 +3087,7 @@ wdeEpiscopalSee,http://www.wikidata.org/entity/Q866196
 wdeEpistemologist,http://www.wikidata.org/entity/Q15632482
 wdeEpitomeAstronomiaeCopernicanae,http://www.wikidata.org/entity/Q16777454
 wdeEquivalentClass,http://www.wikidata.org/entity/P1709
-wdeErdősNumber,http://www.wikidata.org/entity/P2021
+wdeErdU337sNumber,http://www.wikidata.org/entity/P2021
 wdeErfurt,http://www.wikidata.org/entity/Q1729
 wdeErfurtDistrict,http://www.wikidata.org/entity/Q48054
 wdeErfurtGovernmentRegion,http://www.wikidata.org/entity/Q930404
@@ -3496,7 +3496,7 @@ wdeHMDBID,http://www.wikidata.org/entity/P2057
 wdeHTML,http://www.wikidata.org/entity/Q8811
 wdeHabsburgEmpire,http://www.wikidata.org/entity/Q153136
 wdeHachiADogSTale,http://www.wikidata.org/entity/Q59249
-wdeHachikō,http://www.wikidata.org/entity/Q186486
+wdeHachikU333,http://www.wikidata.org/entity/Q186486
 wdeHacker,http://www.wikidata.org/entity/Q2798820
 wdeHacksawRidge,http://www.wikidata.org/entity/Q21010856
 wdeHairColor,http://www.wikidata.org/entity/P1884
@@ -4325,7 +4325,7 @@ wdeMilitaryScienceFiction,http://www.wikidata.org/entity/Q904447
 wdeMillard,http://www.wikidata.org/entity/Q16279478
 wdeMillardFillmore,http://www.wikidata.org/entity/Q12306
 wdeMillionDollarBaby,http://www.wikidata.org/entity/Q184255
-wdeMilošForman,http://www.wikidata.org/entity/Q51525
+wdeMiloU353Forman,http://www.wikidata.org/entity/Q51525
 wdeMilton,http://www.wikidata.org/entity/Q739428
 wdeMinehead,http://www.wikidata.org/entity/Q1020217
 wdeMinimumAge,http://www.wikidata.org/entity/P2899
@@ -5692,6 +5692,8 @@ wdeTwelveYearsASlave,http://www.wikidata.org/entity/Q7857661
 wdeTwitterHashtag,http://www.wikidata.org/entity/P2572
 wdeTwitterUsername,http://www.wikidata.org/entity/P2002
 wdeTyler,http://www.wikidata.org/entity/Q1707301
+wdeU268SFDFilmID,http://www.wikidata.org/entity/P2529
+wdeU268SFDPersonID,http://www.wikidata.org/entity/P2605
 wdeUEFAPlayerID,http://www.wikidata.org/entity/P2276
 wdeUICAlphabeticalCountryCode,http://www.wikidata.org/entity/P2981
 wdeUICNumericalCountryCode,http://www.wikidata.org/entity/P2982
@@ -5956,7 +5958,7 @@ wdeWürttembergBaden,http://www.wikidata.org/entity/Q251660
 wdeWürzburg,http://www.wikidata.org/entity/Q2999
 wdeYDNAHaplogroup,http://www.wikidata.org/entity/P4426
 wdeYSOID,http://www.wikidata.org/entity/P2347
-wdeYasujirōOzu,http://www.wikidata.org/entity/Q55402
+wdeYasujirU333Ozu,http://www.wikidata.org/entity/Q55402
 wdeYate,http://www.wikidata.org/entity/Q1025095
 wdeYavuzTurgul,http://www.wikidata.org/entity/Q8050423
 wdeYeleidy,http://www.wikidata.org/entity/Q15618266
@@ -5978,9 +5980,7 @@ wdeZooBankAuthorID,http://www.wikidata.org/entity/P2006
 wdeZoologist,http://www.wikidata.org/entity/Q350979
 wdeZootopia,http://www.wikidata.org/entity/Q15270647
 wdeZurich,http://www.wikidata.org/entity/Q72
-wdeÇağanIrmak,http://www.wikidata.org/entity/Q272718
+wdeÇaU287anIrmak,http://www.wikidata.org/entity/Q272718
 wdeÉricToledano,http://www.wikidata.org/entity/Q2778106
-wdeČSFDFilmID,http://www.wikidata.org/entity/P2529
-wdeČSFDPersonID,http://www.wikidata.org/entity/P2605
 wdrExecutiveBranchPersonnelPublicFinancialDisclosureReportOGEForm278e,http://www.wikidata.org/reference/7d333e140df0392895866e6aaef0931c00cc8501
 wdrPresidentDonaldJTrump,http://www.wikidata.org/reference/0ddc16a2923f0e91d3428ab21c9af19272217fba

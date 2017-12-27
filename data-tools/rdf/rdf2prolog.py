@@ -36,28 +36,31 @@ from optparse    import OptionParser
 from nltools     import misc
 from config      import RDF_PREFIXES
 
-DEFAULT_OUTPUT   = 'bar.pl'
-DEFAULT_LOGLEVEL = logging.INFO
-LEM_FN           = 'etc/lem.csv'
-LPM_FN           = 'etc/lpm.csv'
-RDF_SCHEMA_LABEL = rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label')
-LANGUAGES        = set([u'en', u'de'])
+DEFAULT_OUTPUT     = 'bar.pl'
+DEFAULT_LOGLEVEL   = logging.INFO
+LEM_FN             = 'etc/lem.csv'
+LPM_FN             = 'etc/lpm.csv'
+RDF_SCHEMA_LABEL   = rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label')
+LANGUAGES          = set([u'en', u'de'])
+LEGAL_ENTITY_CHARS = set(u"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöùúûüý")
 
 def mangle_prolog(n):
 
     res = u''
-    make_upper = True # enforce CamelCase
+    make_upper = False # to enforce CamelCase
 
     for c in n:
         if not c.isalnum():
             make_upper = True
             continue
         if make_upper:
-            res += c.upper()
+            c = c.upper()
             make_upper=False
-        else:
-            res += c
 
+        if c in LEGAL_ENTITY_CHARS:
+            res += c
+        else:
+            res += u"U%d" % ord(c)
     return res
 
 def mangle_url(s):
@@ -131,7 +134,7 @@ def property_label(p):
             l = prefix + mangle_prolog(unicode(o))
 
         if not l:
-            l = 'unlabeled'
+            return None
             
 
     # make unique
@@ -222,7 +225,7 @@ if os.path.isfile(LEM_FN):
                 continue
 
             parts = line.split(',')
-            elu = parts[0]
+            elu = mangle_prolog(parts[0])
             entity = rdflib.URIRef(u','.join(parts[1:]))
 
             if elu in lem:
@@ -232,7 +235,7 @@ if os.path.isfile(LEM_FN):
             elm[entity] = elu
 
 #
-# generate missing entity labels
+# generate missing entity labels from rdfsLabels
 #
 
 for t in triples:
@@ -246,32 +249,35 @@ for t in triples:
 
     # 1: see if we have an rdfsLabel
 
-    for s, p, o in g.triples((s, RDF_SCHEMA_LABEL, None)):
-        if not isinstance(o, rdflib.Literal) or o.language != 'en':
+    for s2, p2, o2 in g.triples((s, RDF_SCHEMA_LABEL, None)):
+        if not isinstance(o2, rdflib.Literal) or o2.language != 'en':
             continue
-        label_base = unicode(o)
+        label_base = unicode(o2)
         break
 
-    # 2: take any literal we can find if we do not have an rdfsLabel
-
     if not label_base:
-        for s, p, o in g.triples((s, None, None)):
-            if not isinstance(o, rdflib.Literal) or o.language != 'en':
-                continue
-            label_base = unicode(o)
-            break
+        continue
 
-    # 3: take last segment of url
+    # # 2: take any literal we can find if we do not have an rdfsLabel
 
-    if not label_base:
+    # if not label_base:
+    #     for s, p, o in g.triples((s, None, None)):
+    #         if not isinstance(o, rdflib.Literal) or o.language != 'en':
+    #             continue
+    #         label_base = unicode(o)
+    #         break
 
-        url_parts = unicode(s).split('/')
-        last_part = url_parts[len(url_parts)-1]
+    # # 3: take last segment of url
 
-        if not last_part[0].isalpha():
-            last_part = 'u' + last_part
+    # if not label_base:
 
-        label_base = 'unlabeled_'+last_part
+    #     url_parts = unicode(s).split('/')
+    #     last_part = url_parts[len(url_parts)-1]
+
+    #     if not last_part[0].isalpha():
+    #         last_part = 'u' + last_part
+
+    #     label_base = 'unlabeled_'+last_part
 
     el = entity_label (s, label_base)
 
@@ -324,7 +330,7 @@ if os.path.isfile(LPM_FN):
 def prolog_string_escape (o):
 
     s = unicode(o)
-    s = s.replace('\\',' ').replace ('"', '\\"')
+    s = s.replace('\\',' ').replace ("'", "\\'")
 
     return s
 
@@ -335,6 +341,7 @@ def prolog_string_escape (o):
 cnt = 0
 
 prolog_code = []
+predicate_set = set()
 for elu in lem:
 
     entity = lem[elu]
@@ -352,8 +359,13 @@ for elu in lem:
 
     for s, p, o in triples:
 
-        pl = property_label(p)
+        if not s in elm:
+            continue
         el = elm[s]
+
+        pl = property_label(p)
+        if not pl:
+            continue
 
         if isinstance(o, rdflib.term.Literal):
             if o.datatype:
@@ -362,24 +374,30 @@ for elu in lem:
 
                 if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
                     prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
                     prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
                     prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
                     dt = dateutil.parser.parse(unicode(o))
-                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
+                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
                     dt = dateutil.parser.parse(unicode(o))
-                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, dt.isoformat()))
+                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
                     # FIXME
-                    prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, unicode(o)))
+                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, unicode(o)))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 elif datatype == 'http://www.w3.org/1998/Math/MathML':
                     # FIXME
@@ -390,28 +408,37 @@ for elu in lem:
             else:
                 if o.value is None:
                     prolog_code.append(u"%s(%s, []).\n" % (pl, el))
+                    predicate_set.add(u'%s/2' % pl)
                     continue
                 if o.language:
                     if o.language in LANGUAGES:
-                        prolog_code.append(u"%s(%s, %s, \"%s\").\n" % (pl, el, o.language, prolog_string_escape(o)))
+                        prolog_code.append(u"%s(%s, %s, '%s').\n" % (pl, el, o.language, prolog_string_escape(o)))
+                        predicate_set.add(u'%s/3' % pl)
                     continue
 
-                prolog_code.append(u"%s(%s, \"%s\").\n" % (pl, el, prolog_string_escape(o)))
+                prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, prolog_string_escape(o)))
+                predicate_set.add(u'%s/2' % pl)
                 continue
 
         elif isinstance (o, rdflib.term.URIRef):
             if o in elm:
                 ol = elm[o]
             else:
-                ol = u'"' + unicode(o) + '"'
+                ol = u"'" + unicode(o) + "'"
 
             prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
+            predicate_set.add(u'%s/2' % pl)
         else:
             raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
 
 with codecs.open(outputfn, 'w', 'utf8') as f:
 
     f.write('%prolog\n')
+
+    for p in sorted(predicate_set):
+        f.write(u':- multifile %s.\n' % p)
+
+    f.write('\n')
 
     for pc in sorted(prolog_code):
         f.write(pc)

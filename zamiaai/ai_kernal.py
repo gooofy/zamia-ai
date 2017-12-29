@@ -45,7 +45,7 @@ from copy                   import deepcopy, copy
 from six                    import text_type
 from scipy.spatial.distance import cosine
 from threading              import RLock, Lock
-from pyswip                 import Prolog
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close
 
 # from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 # from aiprolog.parser        import AIPrologParser
@@ -79,7 +79,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, all_modules=[], load_all_modules=False):
+    def __init__(self, xsb_root, all_modules=[], load_all_modules=False):
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -99,11 +99,11 @@ class AIKernal(object):
         sys.path.append('modules')
 
         #
-        # SWI-Prolog engine, macro engine
+        # Prolog engine, macro engine
         #
 
-        self.prolog = Prolog()
-        self.me     = MacroEngine()
+        xsb_hl_init([xsb_root])
+        self.me = MacroEngine()
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -276,15 +276,9 @@ class AIKernal(object):
 
                 for inputfn in m.PL_SOURCES:
 
-                    qlf_path = "modules/%s/%s.qlf" % (module_name, inputfn)
-                    if not os.path.exists(qlf_path):
-                        raise Exception ('%s not found.' % qlf_path)
+                    pl_path = "modules/%s/%s" % (module_name, inputfn)
 
-                    q = 'consult("%s")' % qlf_path
-
-                    logging.info(q)
-
-                    logging.info(list(self.prolog.query(q)))
+                    xsb_hl_command('consult', [pl_path])
 
             # if hasattr(m, 'CRONJOBS'):
 
@@ -355,20 +349,6 @@ class AIKernal(object):
     def compile_module (self, module_name, run_trace=False):
 
         m = self.load_module(module_name)
-
-        # compile prolog code, if any
-
-        if hasattr(m, 'PL_SOURCES'):
-
-            logging.info ('module %s prolog compilation...' % module_name)
-
-            for inputfn in m.PL_SOURCES:
-
-                q = 'qcompile("modules/%s/%s.pl")' % (module_name, inputfn)
-
-                logging.info(q)
-
-                logging.info(list(self.prolog.query(q)))
 
         # tell prolog engine to consult all prolog files plus their dependencies
 

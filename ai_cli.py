@@ -55,8 +55,9 @@ class AICli(cmdln.Cmdln):
 
         self.config = misc.load_config('.airc')
         all_modules = list(map (lambda m: m.strip(), self.config.get('semantics', 'modules').split(',')))
+        xsb_root    = self.config.get('semantics', 'xsb_root')
 
-        self.kernal = AIKernal(all_modules=all_modules)
+        self.kernal = AIKernal(xsb_root, all_modules=all_modules)
 
     # @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
     #        help="clean predicates from logicdb")

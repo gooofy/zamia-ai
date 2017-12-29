@@ -24,4 +24,5 @@ recordings
 ai.db
 ai.db-journal
 models-dist
-*.qlf
+*.xwam
+*.json

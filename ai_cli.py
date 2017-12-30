@@ -30,6 +30,8 @@ import logging
 import cmdln
 import random
 import time
+import readline
+import atexit
 
 from six.moves            import input
 
@@ -41,6 +43,7 @@ from six.moves            import input
 # from aiprolog.runtime     import USER_PREFIX
 from zamiaai.ai_kernal    import AIKernal
 from nltools              import misc
+from xsbprolog            import xsb_hl_query_string
 
 DEFAULT_LOGLEVEL   = logging.INFO
 CLI_MODULE        = '__cli__'
@@ -341,7 +344,41 @@ class AICli(cmdln.Cmdln):
         self.kernal.align_utterances(opts.lang, utterances)
 
 
+    def do_prolog(self, subcmd, opts, *paths):
+        """${cmd_name}: open prolog shell for debugging
 
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if len(paths) == 0:
+            for mn2 in self.kernal.all_modules:
+                self.kernal.consult_module (mn2)
+        else:
+            self.kernal.consult_module (paths[0])
+
+        histfile = os.path.join(os.path.expanduser("~"), ".xsb_hist")
+        try:
+            readline.read_history_file(histfile)
+            # default history len is -1 (infinite), which may grow unruly
+            readline.set_history_length(1000)
+        except IOError:
+            pass
+        atexit.register(readline.write_history_file, histfile)
+
+        while True:
+
+            line = input ('prolog> ')
+
+            if line == 'quit' or line == 'exit':
+                break
+
+            try:
+                for res in xsb_hl_query_string(line):
+                    logging.info('  %s' % repr(res))
+
+            except Exception as e:
+                logging.error(traceback.format_exc())
 
 #
 # init terminal

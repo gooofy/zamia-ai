@@ -36,6 +36,9 @@ import codecs
 import datetime
 import pytz
 import json
+import inspect
+import ast
+import codegen
 
 import numpy as np
 
@@ -280,34 +283,6 @@ class AIKernal(object):
 
                     xsb_hl_command('consult', [pl_path])
 
-            # if hasattr(m, 'CRONJOBS'):
-
-            #     # update cronjobs in db
-
-            #     old_cronjobs = set()
-            #     for cronjob in self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name):
-            #         old_cronjobs.add(cronjob.name)
-
-            #     new_cronjobs = set()
-            #     for name, interval, f in getattr (m, 'CRONJOBS'):
-
-            #         logging.debug ('registering cronjob %s' %name)
-
-            #         cj = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
-            #         if not cj:
-            #             cj = model.Cronjob(module=module_name, name=name, last_run=0)
-            #             self.session.add(cj)
-
-            #         cj.interval = interval
-            #         new_cronjobs.add(cj.name)
-
-            #     for cjn in old_cronjobs:
-            #         if cjn in new_cronjobs:
-            #             continue
-            #         self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
-
-            #     self.session.commit()
-
         except:
             logging.error('failed to load module "%s"' % module_name)
             logging.error(traceback.format_exc())
@@ -346,6 +321,64 @@ class AIKernal(object):
     def add_macro(self, lang, name, soln):
         self.me.add_named_macro(self.data_module_name, lang, name, soln)
 
+    def dt_set_prefix(self, pfx):
+        self.data_pfx = pfx
+
+    def _unindent(self, code):
+        lines = code.split('\n')
+        indent_len = 0
+        for line in lines:
+            stripped = line.strip()
+            if stripped:
+                indent_len = line.index(stripped[0])
+                break
+        if indent_len == 0:
+            return code
+
+        new_lines = []
+        for line in lines:
+            if line.strip():
+                line = line[indent_len:]
+            new_lines.append(line)
+        return u'\n'.join(new_lines)
+
+    def dt(self, lang, inp, resp):
+
+        # transform response(s)
+
+        if isinstance (resp, list):
+            resp_code = "def _resp(c):\n"
+            for r in resp:
+                resp_code += "    c.response(u'%s', 0.0, [])\n" % r
+        elif isinstance (resp, basestring):
+            resp_code = "def _resp(c):\n"
+            resp_code += "    c.response(u'%s', 0.0, [])\n" % resp
+            
+        else:
+            import pdb; pdb.set_trace()
+            src_txt = inspect.getsource(resp)
+
+            src_txt = self._unindent(src_txt)
+
+            src_ast = ast.parse(src_txt)
+
+            code_ast = None
+
+            for node in ast.walk(src_ast):
+
+                print (node)
+
+                if isinstance(node, ast.FunctionDef):
+                    code_ast = node
+                    break
+           
+            # print ast.dump(code_ast)
+            resp_code = codegen.to_source(code_ast)
+        print (resp_code)
+
+        # FIXME: todo
+        pass
+
     def compile_module (self, module_name, run_trace=False):
 
         m = self.load_module(module_name)
@@ -354,19 +387,6 @@ class AIKernal(object):
 
         self.consult_module(module_name)
 
-                # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
-
-                # train_ds.extend(ds)
-                # tests.extend(ts)
-
-                # for lang in ne:
-                #     if not lang in ner:
-                #         ner[lang] = {}
-                #     for cls in ne[lang]:
-                #         if not cls in ner[lang]:
-                #             ner[lang][cls] = {}
-                #         for entity in ne[lang][cls]:
-                #             ner[lang][cls][entity] = ne[lang][cls][entity]
 
         # delete old data
 
@@ -382,6 +402,7 @@ class AIKernal(object):
         self.data_train       = []
         self.data_test        = []
         self.data_ner         = {}
+        self.data_pfx         = ""
 
         if hasattr(m, 'get_data'):
 
@@ -391,6 +412,20 @@ class AIKernal(object):
             get_data(self)
 
         logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, len(self.data_train), len(self.data_test)))
+
+        # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
+
+        # train_ds.extend(ds)
+        # tests.extend(ts)
+
+        # for lang in ne:
+        #     if not lang in ner:
+        #         ner[lang] = {}
+        #     for cls in ne[lang]:
+        #         if not cls in ner[lang]:
+        #             ner[lang][cls] = {}
+        #         for entity in ne[lang][cls]:
+        #             ner[lang][cls][entity] = ne[lang][cls][entity]
 
         # write data to files
 

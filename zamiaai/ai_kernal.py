@@ -36,9 +36,6 @@ import codecs
 import datetime
 import pytz
 import json
-import inspect
-import ast
-import codegen
 
 import numpy as np
 
@@ -58,7 +55,7 @@ from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xs
 # from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
-from zamiaai.macro_engine   import MacroEngine
+from zamiaai.data_engine    import DataEngine
 
 USER_PREFIX        = u'user'
 DEFAULT_USER       = USER_PREFIX + u'Default'
@@ -102,11 +99,11 @@ class AIKernal(object):
         sys.path.append('modules')
 
         #
-        # Prolog engine, macro engine
+        # Prolog engine, data engine
         #
 
         xsb_hl_init([xsb_root])
-        self.me = MacroEngine()
+        self.dte = DataEngine()
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -212,7 +209,7 @@ class AIKernal(object):
             for m2 in getattr (m, 'DEPENDS'):
                 self.load_module(m2)
 
-            self.me.load(module_name)
+            self.dte.load(module_name)
 
             # if hasattr(m, 'CRONJOBS'):
 
@@ -318,67 +315,6 @@ class AIKernal(object):
     #         initializer = getattr(m, 'init_module')
     #         initializer(self)
 
-    def add_macro(self, lang, name, soln):
-        self.me.add_named_macro(self.data_module_name, lang, name, soln)
-
-    def dt_set_prefix(self, pfx):
-        self.data_pfx = pfx
-
-    def _unindent(self, code):
-        lines = code.split('\n')
-        indent_len = 0
-        for line in lines:
-            stripped = line.strip()
-            if stripped:
-                indent_len = line.index(stripped[0])
-                break
-        if indent_len == 0:
-            return code
-
-        new_lines = []
-        for line in lines:
-            if line.strip():
-                line = line[indent_len:]
-            new_lines.append(line)
-        return u'\n'.join(new_lines)
-
-    def dt(self, lang, inp, resp):
-
-        # transform response(s)
-
-        if isinstance (resp, list):
-            resp_code = "def _resp(c):\n"
-            for r in resp:
-                resp_code += "    c.response(u'%s', 0.0, [])\n" % r
-        elif isinstance (resp, basestring):
-            resp_code = "def _resp(c):\n"
-            resp_code += "    c.response(u'%s', 0.0, [])\n" % resp
-            
-        else:
-            import pdb; pdb.set_trace()
-            src_txt = inspect.getsource(resp)
-
-            src_txt = self._unindent(src_txt)
-
-            src_ast = ast.parse(src_txt)
-
-            code_ast = None
-
-            for node in ast.walk(src_ast):
-
-                print (node)
-
-                if isinstance(node, ast.FunctionDef):
-                    code_ast = node
-                    break
-           
-            # print ast.dump(code_ast)
-            resp_code = codegen.to_source(code_ast)
-        print (resp_code)
-
-        # FIXME: todo
-        pass
-
     def compile_module (self, module_name, run_trace=False):
 
         m = self.load_module(module_name)
@@ -387,22 +323,9 @@ class AIKernal(object):
 
         self.consult_module(module_name)
 
+        # prepare data engine for module compilation
 
-        # delete old data
-
-        self.me.clear(module_name)
-
-        # self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
-        # self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
-        # self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
-
-        # extract new training data for this module
-
-        self.data_module_name = module_name
-        self.data_train       = []
-        self.data_test        = []
-        self.data_ner         = {}
-        self.data_pfx         = ""
+        self.dte.prepare_compilation(module_name)
 
         if hasattr(m, 'get_data'):
 
@@ -411,7 +334,7 @@ class AIKernal(object):
             get_data = getattr(m, 'get_data')
             get_data(self)
 
-        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, len(self.data_train), len(self.data_test)))
+        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, len(self.dte.data_train), len(self.dte.data_test)))
 
         # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
 
@@ -429,7 +352,7 @@ class AIKernal(object):
 
         # write data to files
 
-        self.me.save(module_name)
+        self.dte.save(module_name)
 
         # # put training data into our DB
 

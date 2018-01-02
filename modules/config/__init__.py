@@ -19,7 +19,7 @@ def get_data(kernal):
     # macro(de, my_forename, W) :- forename (self, de, W).
   
     for soln in xsb_hl_query('forename', ['self', 'L', 'W']):
-        kernal.add_macro(soln['L'], 'my_forename', soln)
+        kernal.dte.macro(soln['L'], 'my_forename', soln)
  
     # macro(en, self_address, L) :- forename (self, en, L), str_append(L, ', ').
     # macro(en, self_address, L) :- L is "".
@@ -27,8 +27,7 @@ def get_data(kernal):
     # macro(de, self_address, L) :- L is "".
     
     for soln in xsb_hl_query('forename', ['self', 'L', 'W']):
-        kernal.add_macro(soln['L'], 'self_address', {'W': soln['W'] + ', '})
-    kernal.add_macro('en', 'self_address', {'W': ''})
-    kernal.add_macro('de', 'self_address', {'W': ''})
-
+        kernal.dte.macro(soln['L'], 'self_address', {'W': soln['W'] + ', '})
+    kernal.dte.macro('en', 'self_address', {'W': ''})
+    kernal.dte.macro('de', 'self_address', {'W': ''})
 

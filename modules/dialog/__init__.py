@@ -18,12 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from dialog import dlg
+
 DEPENDS    = [ 'base' ]
 
-AIP_SOURCES = [
-               'dialog.aip',
-               'greetings.aip',
-               'smalltalk.aip',
-               'topics.aip',
-              ]
+# PL_SOURCES = [
+#                'dialog',
+#                'greetings',
+#                'smalltalk',
+#                'topics',
+#               ]
+
+def get_data(kernal):
+    dlg.get_data(kernal)
+
+    pass
 

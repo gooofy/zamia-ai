@@ -59,8 +59,11 @@ class DataEngine(object):
         self.named_macros_mod  = {}
         self.code_map          = {}
         self.code_map_mod      = {}
-
-        self.module_name       = None
+        self.data_train        = []
+        self.data_train_mod    = {}
+        self.data_test         = []
+        # self.data_ner          = {}
+        self.data_module_name  = None
         self.source_location   = ('unknown', 0)
 
     def report_error(self, s):
@@ -68,12 +71,7 @@ class DataEngine(object):
 
     def prepare_compilation (self, module_name):
         self.clear(module_name)
-
         self.data_module_name = module_name
-        self.data_train       = []
-        self.data_test        = []
-        self.data_ner         = {}
-        self.data_pfx         = ""
 
     def compute_named_macros(self):
         self.named_macros = {}
@@ -94,13 +92,21 @@ class DataEngine(object):
                     self.code_map[n] = []
                 self.code_map[n].extend(self.code_map_mod[module][n])
 
+    def compute_data_train(self):
+        self.data_train = []
+        for module in self.data_train_mod:
+            self.data_train[n].extend(self.data_train_mod[module])
+
     def clear (self, module_name):
         if module_name in self.named_macros_mod:
             del self.named_macros_mod[module_name]
         if module_name in self.code_map_mod:
             del self.code_map_mod[module_name]
+        if module_name in self.data_train_mod:
+            del self.data_train_mod[module_name]
         self.compute_named_macros()
         self.compute_code_map()
+        self.compute_data_train()
   
     def load (self, module_name):
 
@@ -114,6 +120,8 @@ class DataEngine(object):
                 self.named_macros_mod[module_name] = nmm
                 self.compute_named_macros()
 
+        # FIXME: load code and dt data
+
     def save (self, module_name):
         fn = 'modules/%s/_macros.json' % module_name
         if module_name in self.named_macros_mod:
@@ -123,10 +131,18 @@ class DataEngine(object):
             if os.path.exists(fn):
                 os.unlink(fn)
 
-        fn = 'modules/%s/_data.json' % module_name
+        fn = 'modules/%s/_code.json' % module_name
         if module_name in self.code_map_mod:
             with open(fn, 'w') as of:
                 json.dump(self.code_map_mod[module_name], of, indent=2)
+        else:
+            if os.path.exists(fn):
+                os.unlink(fn)
+ 
+        fn = 'modules/%s/_dt.json' % module_name
+        if module_name in self.data_train_mod:
+            with open(fn, 'w') as of:
+                json.dump(self.data_train_mod[module_name], of, indent=2)
         else:
             if os.path.exists(fn):
                 os.unlink(fn)
@@ -369,6 +385,8 @@ class DataEngine(object):
         prefixes = self.prefixes if self.prefixes else [u'']
         if not self.data_module_name in self.code_map_mod:
             self.code_map_mod[self.data_module_name] = {}
+        if not self.data_module_name in self.data_train_mod:
+            self.data_train_mod[self.data_module_name] = []
 
         for prefix in prefixes:
 
@@ -387,7 +405,10 @@ class DataEngine(object):
                     self.code_map[md5s]             = r
                     self.code_map_mod[self.data_module_name][md5s] = r
 
-                    self.data_train.append((lang, d, md5s, self.src_location[0], self.src_location[1]))
+                    data = (lang, d, md5s, self.src_location[0], self.src_location[1])
+
+                    self.data_train.append(data)
+                    self.data_train_mod[self.data_module_name].append(data)
 
                     if len(self.data_train) % 100 == 0:
                         logging.info ('%6d training samples extracted so far...' % len(self.data_train))

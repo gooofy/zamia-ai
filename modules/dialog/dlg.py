@@ -35,17 +35,17 @@ def get_data(k):
 #    train(de) :- and("(was|wie war das|bitte sag nochmal was du gesagt hast|wie bitte)?", prev(C, PC), list_findall(X, say(PC, X), L), list_str_join(" ", L, S), or("Ich sagte {S, s}", "Ich sagte gerade {S, s}", "Ich wiederhole {S, s}")).
 
     k.dte.dt('en', [u"correct",
-                u"this is true",
-                u"that's so",
-                u"that's the truth",
-                u"that's true"],
-               u"Good.")
+                    u"this is true",
+                    u"that's so",
+                    u"that's the truth",
+                    u"that's true"],
+                   u"Good.")
     k.dte.dt('de', [u"richtig",
-                u"das ist wahr",
-                u"das ist so",
-                u"das ist die Wahrheit",
-                u"das ist richtig"],
-               u"Gut.")
+                    u"das ist wahr",
+                    u"das ist so",
+                    u"das ist die Wahrheit",
+                    u"das ist richtig"],
+                   u"Gut.")
 
     k.dte.dt('en', u"you're right", u"So we're in agreement?")
     k.dte.dt('de', u"da hast du recht", u"Wir sind uns also einig?")
@@ -54,19 +54,19 @@ def get_data(k):
     k.dte.dt('de', u"das ist richtig", u"Du stimmst zu?")
 
     k.dte.dt('en', [u"not correct",
-                u"that is not correct",
-                u"that is wrong",
-                u"that's not true",
-                u"that's certainly not true"],
-               [u"So what is the truth?",
-                u"What do you think is right?"])
+                    u"that is not correct",
+                    u"that is wrong",
+                    u"that's not true",
+                    u"that's certainly not true"],
+                   [u"So what is the truth?",
+                    u"What do you think is right?"])
     k.dte.dt('de', [u"falsch",
-                u"das ist aber nicht korrekt",
-                u"das ist falsch",
-                u"das stimmt nicht",
-                u"das stimmt sicher nicht"],
-               [u"Was ist dann die Wahrheit?",
-                u"Was glaubst Du?"])
+                    u"das ist aber nicht korrekt",
+                    u"das ist falsch",
+                    u"das stimmt nicht",
+                    u"das stimmt sicher nicht"],
+                   [u"Was ist dann die Wahrheit?",
+                    u"Was glaubst Du?"])
 
     k.dte.dt('en', u"a fact", u"I love facts.")
     k.dte.dt('de', u"ein faktum", u"I liebe Fakten.")
@@ -108,37 +108,37 @@ def get_data(k):
     k.dte.dt('de', u"erwischt", u"Zeit sich zu verstecken?")
 
     k.dte.dt('en', [u"achso",
-                u"aha",
-                u"oh"],
-               u"An Inspiration?")
+                    u"aha",
+                    u"oh"],
+                   u"An Inspiration?")
     k.dte.dt('de', [u"achso",
-                u"aha",
-                u"oh"],
-               u"Eine Eingebung?")
+                    u"aha",
+                    u"oh"],
+                   u"Eine Eingebung?")
 
     k.dte.dt('en', u"also", u"Please, elaborate.")
     k.dte.dt('de', u"auch", u"Sprich bitte weiter.")
 
     k.dte.dt('en', [u"amazing",
-                u"fascinating",
-                u"crass",
-                u"cool"],
-               u"What do you like in particular?")
+                    u"fascinating",
+                    u"crass",
+                    u"cool"],
+                   u"What do you like in particular?")
     k.dte.dt('de', [u"erstaunlich",
-                u"faszinierend",
-                u"krass",
-                u"cool"],
-               u"Was gefällt Dir besonders?")
+                    u"faszinierend",
+                    u"krass",
+                    u"cool"],
+                   u"Was gefällt Dir besonders?")
 
     k.dte.dt('en', u"for real", u"Isn't reality a strange concept?")
     k.dte.dt('de', u"wirklich", u"Ist Wirklichkeit nicht ein merkwüriger Begriff?")
 
     k.dte.dt('en', [u"funny",
-                u"lol"],
-               u"I like it when you're happy.")
+                    u"lol"],
+                   u"I like it when you're happy.")
     k.dte.dt('de', [u"komisch",
-                u"lol"],
-               u"Ich mag es, wenn Du fröhlich bist.")
+                    u"lol"],
+                   u"Ich mag es, wenn Du fröhlich bist.")
 
     k.dte.dt('en', u"creepy", u"Did you hear that?")
     k.dte.dt('de', u"gruselig", u"Hast Du das gehört?")

@@ -21,14 +21,14 @@ def get_data(k):
     def say_again_en(c):
 
         if len(c.log_me) == 0:
-            c.response ("I don't think we have spoken before.")
+            c.response (u"I don't think we have spoken before.")
             return
 
         s = c.log_me[len(c.log_me)-1].resp
 
-        c.response("I said %s" % s, 0.0, [])
-        c.response("As I just said %s" % s, 0.0, [])
-        c.response("I repeat %s" %s , 0.0, [])
+        c.response(u"I said %s" % s, 0.0, [])
+        c.response(u"As I just said %s" % s, 0.0, [])
+        c.response(u"I repeat %s" %s , 0.0, [])
 
     k.dte.dt('en', "(huh|say again please|say again|what was that)?", say_again_en)
 
@@ -46,6 +46,10 @@ def get_data(k):
                     u"das ist die Wahrheit",
                     u"das ist richtig"],
                    u"Gut.")
+
+    k.dte.ts('en', 't0000', [(u"say again please", u"I don't think we have spoken before.", []),
+                             (u"correct", u"Good", []),
+                             ("huh?", "I said correct", [])])
 
     k.dte.dt('en', u"you're right", u"So we're in agreement?")
     k.dte.dt('de', u"da hast du recht", u"Wir sind uns also einig?")
@@ -147,11 +151,11 @@ def get_data(k):
     k.dte.dt('de', u"blendend", u"Welche Farbe?")
 
     k.dte.dt('en', [u"a pity",
-                u"this is a pity"],
-               u"You sound a bit sad.")
+                    u"this is a pity"],
+                   u"You sound a bit sad.")
     k.dte.dt('de', [u"schade",
-                u"das ist schade"],
-               u"Du klingst ein wenig betrübt.")
+                    u"das ist schade"],
+                   u"Du klingst ein wenig betrübt.")
 
     k.dte.dt('en', u"great", u"excellent.")
     k.dte.dt('de', u"toll", u"prima.")
@@ -166,11 +170,11 @@ def get_data(k):
     k.dte.dt('de', u"das ist unfair", u"Das Leben ist nicht immer Fair, fürchte ich.")
 
     k.dte.dt('en', [u"aha what?",
-                u"what what?"],
-               u"Sorry, must have lost my train of thought here.")
+                    u"what what?"],
+                   u"Sorry, must have lost my train of thought here.")
     k.dte.dt('de', [u"wie aha",
-                u"wie was"],
-               u"Entschuldige, ich muss meinen Faden verloren haben an der Stelle.")
+                    u"wie was"],
+                   u"Entschuldige, ich muss meinen Faden verloren haben an der Stelle.")
 
     k.dte.dt('en', u"absolutely nothing", u"Are you sure?")
     k.dte.dt('de', u"absolut nichts", u"Bist Du Dir sicher?")
@@ -203,38 +207,38 @@ def get_data(k):
     k.dte.dt('de', u"ein geheimnis", u"Kannst Du es bewahren?")
 
     k.dte.dt('en', [u"an assertion",
-                u"an interesting hypothesis"],
-               u"Maybe?")
+                    u"an interesting hypothesis"],
+                   u"Maybe?")
     k.dte.dt('de', [u"eine behauptung",
-                u"eine interessante hypothese"],
-               u"Vielleicht?")
+                    u"eine interessante hypothese"],
+                   u"Vielleicht?")
 
     k.dte.dt('en', u"that is a bad assumption", u"Really?")
     k.dte.dt('de', u"das ist ein böse unterstellung", u"Wirklich?")
 
     k.dte.dt('en', [u"as a matter of fact",
-                u"but it is so"],
-               u"How does that make you feel?")
+                    u"but it is so"],
+                   u"How does that make you feel?")
     k.dte.dt('de', [u"in der tat",
-                u"das ist aber so"],
-               u"Und wie fühlst Du dich dabei?")
+                    u"das ist aber so"],
+                   u"Und wie fühlst Du dich dabei?")
 
     k.dte.dt('en', [u"about me",
-                u"because of me"],
-               u"Really, you?")
+                    u"because of me"],
+                   u"Really, you?")
     k.dte.dt('de', [u"über mich",
-                u"meinetwegen"],
-               u"Wirklich, Du?")
+                    u"meinetwegen"],
+                   u"Wirklich, Du?")
 
     k.dte.dt('en', u"pretty stupid", u"To err is human.")
     k.dte.dt('de', u"schön blöd", u"Irren ist menschlich.")
 
     k.dte.dt('en', [u"about you",
-                u"about yours"],
-               u"Me?")
+                    u"about yours"],
+                   u"Me?")
     k.dte.dt('de', [u"über dich",
-                u"über deins"],
-               u"Ich?")
+                    u"über deins"],
+                   u"Ich?")
 
     k.dte.dt('en', u"but you do it", u"Really?")
     k.dte.dt('de', u"aber du tust es", u"Wirklich?")

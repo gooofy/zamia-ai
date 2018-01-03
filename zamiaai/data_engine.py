@@ -62,6 +62,7 @@ class DataEngine(object):
         self.data_train        = []
         self.data_train_mod    = {}
         self.data_test         = []
+        self.data_test_mod     = {}
         # self.data_ner          = {}
         self.data_module_name  = None
         self.source_location   = ('unknown', 0)
@@ -97,6 +98,11 @@ class DataEngine(object):
         for module in self.data_train_mod:
             self.data_train[n].extend(self.data_train_mod[module])
 
+    def compute_data_test(self):
+        self.data_test = []
+        for module in self.data_test_mod:
+            self.data_test[n].extend(self.data_test_mod[module])
+
     def clear (self, module_name):
         if module_name in self.named_macros_mod:
             del self.named_macros_mod[module_name]
@@ -104,9 +110,12 @@ class DataEngine(object):
             del self.code_map_mod[module_name]
         if module_name in self.data_train_mod:
             del self.data_train_mod[module_name]
+        if module_name in self.data_test_mod:
+            del self.data_test_mod[module_name]
         self.compute_named_macros()
         self.compute_code_map()
         self.compute_data_train()
+        self.compute_data_test()
   
     def load (self, module_name):
 
@@ -120,7 +129,7 @@ class DataEngine(object):
                 self.named_macros_mod[module_name] = nmm
                 self.compute_named_macros()
 
-        # FIXME: load code and dt data
+        # FIXME: load code, ts and dt data
 
     def save (self, module_name):
         fn = 'modules/%s/_macros.json' % module_name
@@ -143,6 +152,14 @@ class DataEngine(object):
         if module_name in self.data_train_mod:
             with open(fn, 'w') as of:
                 json.dump(self.data_train_mod[module_name], of, indent=2)
+        else:
+            if os.path.exists(fn):
+                os.unlink(fn)
+ 
+        fn = 'modules/%s/_ts.json' % module_name
+        if module_name in self.data_test_mod:
+            with open(fn, 'w') as of:
+                json.dump(self.data_test_mod[module_name], of, indent=2)
         else:
             if os.path.exists(fn):
                 os.unlink(fn)
@@ -413,90 +430,6 @@ class DataEngine(object):
                     if len(self.data_train) % 100 == 0:
                         logging.info ('%6d training samples extracted so far...' % len(self.data_train))
 
-    # def extract_test_data (self, clause):
-
-    #     if len(clause.head.args) != 2:
-    #         self.report_error ('test: 2 arguments (lang, test_name) expected')
-
-    #     self.lang = clause.head.args[0].name
-    #     test_name = clause.head.args[1].name
-
-    #     if not clause.body or clause.body.name != 'and':
-    #         self.report_error ('test: flat (and) body expected')
-
-    #     prep    = []
-    #     rounds  = []
-
-    #     inp     = None
-    #     resp    = None
-    #     actions = []
-    #     cnt     = 0
-
-    #     for a in clause.body.args:
-
-    #         # import pdb; pdb.set_trace()
-    #         if isinstance (a, StringLiteral):
-
-    #             if cnt % 2 == 0:
-    #                 if inp:
-    #                     rounds.append ((inp, resp, actions))
-    #                 inp     = tokenize(a.s, lang=self.lang, keep_punctuation = False)
-    #                 resp    = None
-    #                 actions = []
-
-    #             else:
-    #                 resp    = tokenize(a.s, lang=self.lang, keep_punctuation = False)
-
-    #             cnt += 1
-    #         else:
-
-    #             if not inp:
-    #                 prep.append(a)
-    #             else:
-    #                 if not isinstance(a, Predicate) or a.name != 'action':
-    #                     self.report_error('only action predicates allowed here.')
-    #                 actions.append(list(map (lambda x: unicode(x), a.args)))
-
-
-    #     if inp:
-    #         rounds.append ((inp, resp, actions))
-
-    #     self.ts.append((test_name, self.lang, prep, rounds, clause.location.fn, clause.location.line, clause.location.col))
-
-    # def extract_ner_training (self, clause):
-
-    #     if len(clause.head.args) != 4:
-    #         self.report_error ('train_ner: 4 arguments (+Lang, +Class, -Entity, -Label) expected')
-
-    #     arg_Lang   = clause.head.args[0].name
-    #     arg_Cls    = clause.head.args[1].name
-    #     arg_Entity = clause.head.args[2].name
-    #     arg_Label  = clause.head.args[3].name
-
-    #     logging.info ('computing NER training data for %s [%s] ...' % (arg_Cls, arg_Lang))
-
-    #     # cProfile.run('self.rt.search(clause)', 'mestats')
-    #     # self.rt.set_trace(True)
-    #     solutions = self.rt.search(clause)
-
-    #     if not arg_Lang in self.ner:
-    #         self.ner[arg_Lang] = {}
-
-    #     if not arg_Cls in self.ner[arg_Lang]:
-    #         self.ner[arg_Lang][arg_Cls] = {}
-    #         
-    #     ner = self.ner[arg_Lang][arg_Cls]
-
-    #     cnt = 0
-    #     for s in solutions:
-    #         entity = s[arg_Entity].name
-    #         label  = s[arg_Label].s
-
-    #         ner[entity] = label
-    #         cnt += 1
-
-    #     logging.info ('computing NER training data for %s [%s] ... done. %d entries processed.' % (arg_Cls, arg_Lang, cnt))
-
     def dt_set_prefixes(self, prefixes):
         self.me.set_prefixes(prefixes)
 
@@ -563,3 +496,56 @@ class DataEngine(object):
 
         # import pdb; pdb.set_trace()
  
+    def ts (self, lang, test_name, rounds, prep=None):
+
+        # import pdb; pdb.set_trace()
+
+        if not self.data_module_name in self.data_test_mod:
+            self.data_test_mod[self.data_module_name] = []
+
+        # caller's source location:
+
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+
+        self.src_location = (calframe[1][1], calframe[1][2])
+
+        data = (test_name, lang, prep, rounds, self.src_location[0], self.src_location[1])
+
+        self.data_test.append(data)
+        self.data_test_mod[self.data_module_name].append(data)
+
+    # def extract_ner_training (self, clause):
+
+    #     if len(clause.head.args) != 4:
+    #         self.report_error ('train_ner: 4 arguments (+Lang, +Class, -Entity, -Label) expected')
+
+    #     arg_Lang   = clause.head.args[0].name
+    #     arg_Cls    = clause.head.args[1].name
+    #     arg_Entity = clause.head.args[2].name
+    #     arg_Label  = clause.head.args[3].name
+
+    #     logging.info ('computing NER training data for %s [%s] ...' % (arg_Cls, arg_Lang))
+
+    #     # cProfile.run('self.rt.search(clause)', 'mestats')
+    #     # self.rt.set_trace(True)
+    #     solutions = self.rt.search(clause)
+
+    #     if not arg_Lang in self.ner:
+    #         self.ner[arg_Lang] = {}
+
+    #     if not arg_Cls in self.ner[arg_Lang]:
+    #         self.ner[arg_Lang][arg_Cls] = {}
+    #         
+    #     ner = self.ner[arg_Lang][arg_Cls]
+
+    #     cnt = 0
+    #     for s in solutions:
+    #         entity = s[arg_Entity].name
+    #         label  = s[arg_Label].s
+
+    #         ner[entity] = label
+    #         cnt += 1
+
+    #     logging.info ('computing NER training data for %s [%s] ... done. %d entries processed.' % (arg_Cls, arg_Lang, cnt))
+

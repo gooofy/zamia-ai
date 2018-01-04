@@ -96,12 +96,12 @@ class DataEngine(object):
     def compute_data_train(self):
         self.data_train = []
         for module in self.data_train_mod:
-            self.data_train[n].extend(self.data_train_mod[module])
+            self.data_train.extend(self.data_train_mod[module])
 
     def compute_data_test(self):
         self.data_test = []
         for module in self.data_test_mod:
-            self.data_test[n].extend(self.data_test_mod[module])
+            self.data_test.extend(self.data_test_mod[module])
 
     def clear (self, module_name):
         if module_name in self.named_macros_mod:
@@ -129,7 +129,29 @@ class DataEngine(object):
                 self.named_macros_mod[module_name] = nmm
                 self.compute_named_macros()
 
-        # FIXME: load code, ts and dt data
+        fn = 'modules/%s/_code.json' % module_name
+        if os.path.exists(fn):
+            with open(fn, 'r') as of:
+                nmm = json.load(of)
+
+                self.code_map_mod[module_name] = nmm
+                self.compute_code_map()
+
+        fn = 'modules/%s/_dt.json' % module_name
+        if os.path.exists(fn):
+            with open(fn, 'r') as of:
+                nmm = json.load(of)
+
+                self.data_train_mod[module_name] = nmm
+                self.compute_data_train()
+
+        fn = 'modules/%s/_ts.json' % module_name
+        if os.path.exists(fn):
+            with open(fn, 'r') as of:
+                nmm = json.load(of)
+
+                self.data_test_mod[module_name] = nmm
+                self.compute_data_test()
 
     def save (self, module_name):
         fn = 'modules/%s/_macros.json' % module_name

@@ -79,7 +79,27 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 class AIContext(object):
 
     def __init__(self):
-        self.dlg_log  = []
+        self.dlg_log      = []
+        self.staged_resps = []
+        self.high_score   = 0.0
+        self.inp          = u''
+
+    def set_inp(self, inp):
+        self.inp = inp
+
+    def resp(self, resp, score=0.0, actions=[], mems=[]):
+        if score > self.high_score:
+            self.high_score   = score
+            self.staged_resps = []
+        self.staged_resps.append( (resp, score, actions, mems) )
+
+    def get_resps(self):
+        return self.staged_resps
+
+    def commit_resp(self, i):
+        self.dlg_log.append( { 'inp': self.inp, 
+                               'out': self.staged_resps[i][0] })
+        
 
 class AIKernal(object):
 
@@ -353,149 +373,6 @@ class AIKernal(object):
             else:
                 self.compile_module (module_name)
 
-    # _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
-
-    def _compute_net_input (self, res, cur_context):
-
-        solutions = self.rt.search_predicate ('tokens', [cur_context, '_1'], env=res)
-        tokens = solutions[0]['_1'].l
-
-        solutions = self.rt.search_predicate ('context', [cur_context, '_2', '_3'], env=res)
-        d = {}
-        for s in solutions:
-
-            k = s['_2']
-            if not isinstance(k, Predicate):
-                continue
-            k = k.name
-
-            v = s['_3']
-            if isinstance(v, Predicate):
-                v = v.name
-            elif isinstance(v, StringLiteral):
-                v = v.s
-            else:
-                v = text_type(v)
-
-            d[k] = v
-
-        # import pdb; pdb.set_trace()
-        inp = []
-        for t in reversed(tokens):
-            inp.insert(0, t.s)
-
-        for k in sorted(list(d)):
-            inp.insert(0, [k, d[k]])
-
-        return inp
-
-    def find_prev_context (self, user, env={}):
-
-        pc    = None
-        ctxid = 0
-
-        # logging.debug ('find_prev_context: user=%s' % user)
-
-        for s in self.rt.search_predicate('user', ['_1', Predicate(user)], env=env):
-
-            cid = int (s['_1'].name[7:])
-            if not pc or cid>ctxid:
-                pc = s['_1']
-            # logging.debug ('find_prev_context: s=%s, pc=%s' % (unicode(s), unicode(pc)))
-
-        return pc
-
-    def _setup_context (self, user, lang, inp, prev_context, prev_res):
-
-        cur_context = Predicate(do_gensym (self.rt, 'context'))
-        res = { }
-        if ASSERT_OVERLAY_VAR_NAME in prev_res:
-            res[ASSERT_OVERLAY_VAR_NAME] = prev_res[ASSERT_OVERLAY_VAR_NAME].clone()
-
-        res = do_assertz ({}, Clause ( Predicate('user',   [cur_context, Predicate(user)])  , location=self.dummyloc), res=res)
-        res = do_assertz ({}, Clause ( Predicate('lang',   [cur_context, Predicate(lang)])  , location=self.dummyloc), res=res)
-
-        token_literal = ListLiteral (list(map(lambda x: StringLiteral(x), inp)))
-        res = do_assertz ({}, Clause ( Predicate('tokens', [cur_context, token_literal])    , location=self.dummyloc), res=res)
-
-        currentTime = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).isoformat()
-        res = do_assertz ({}, Clause ( Predicate('time',   [cur_context, StringLiteral(currentTime)]) , location=self.dummyloc), res=res)
-
-        if prev_context:
-
-            res = do_assertz ({}, Clause ( Predicate('prev', [cur_context, prev_context]) , location=self.dummyloc), res=res)
-
-            # copy over all previous context statements to the new one
-            s1s = self.rt.search_predicate ('context', [prev_context, '_1', '_2'], env=res)
-            for s1 in s1s:
-                res = do_assertz ({}, Clause ( Predicate('context', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
-            # copy over all previous mem statements to the new one
-            s1s = self.rt.search_predicate ('mem', [prev_context, '_1', '_2'], env=res)
-            for s1 in s1s:
-                res = do_assertz ({}, Clause ( Predicate('mem', [cur_context, s1['_1'], s1['_2']]) , location=self.dummyloc), res=res)
-            # import pdb; pdb.set_trace()
-
-        res['C'] = cur_context
-
-        return res, cur_context
-
-    def _extract_response (self, cur_context, env):
-
-        #import pdb; pdb.set_trace()
-
-        res       = []
-        s2s = self.rt.search_predicate ('c_say', [cur_context, '_1'], env=env)
-        for s2 in s2s:
-            if not '_1' in s2:
-                continue
-            res.append(s2['_1'].s)
-
-        actions   = []
-        s2s = self.rt.search_predicate ('c_action', [cur_context, '_1'], env=env)
-        for s2 in s2s:
-            if not '_1' in s2:
-                continue
-            actions.append(list(map (lambda x: text_type(x), s2['_1'].l)))
-
-        score     = 0.0
-        s2s = self.rt.search_predicate ('c_score', [cur_context, '_1'], env=env)
-        for s2 in s2s:
-            if not '_1' in s2:
-                continue
-            score += s2['_1'].f
-
-        return res, actions, score
-
-    def _reconstruct_prolog_code (self, acode):
-
-        todo = [('and', [])]
-
-        idx = 0
-        while idx < len(acode):
-
-            a = acode[idx]
-            if a == 'or(':
-                todo.append (('or', []))
-            elif a == 'and(':
-                todo.append (('and', []))
-            elif a == ')':
-                c = todo.pop()
-                todo[len(todo)-1][1].append(Predicate (c[0], c[1]))
-            else:
-
-                clause = self.aip_parser.parse_line_clause_body (a)
-
-                todo[len(todo)-1][1].append(clause.body)
-
-            idx += 1
-
-        if len(todo) != 1:
-            logging.warn ('unbalanced acode detected.')
-            return None
-
-        c = todo.pop()
-        return Predicate (c[0], c[1])
-
     def test_module (self, module_name, run_trace=False, test_name=None):
 
         if run_trace:
@@ -517,8 +394,9 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx       = AIContext()
-            round_num = 0
+            ctx        = AIContext()
+            round_num  = 0
+            num_tests += 1
 
             # FIXME
             # res, cur_context = self._setup_context ( user          = TEST_USER, 
@@ -533,82 +411,85 @@ class AIKernal(object):
                 # FIXME
                 import pdb; pdb.set_trace()
 
-            for test_inp, test_resp, test_actions in rounds:
+            for test_inp, test_out, test_actions in rounds:
                
                 logging.info("nlp_test: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
-                logging.info("nlp_test: %s round %d test_resp   : %s" % (t_name, round_num, repr(test_resp)) )
+                logging.info("nlp_test: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
                 logging.info("nlp_test: %s round %d test_actions: %s" % (t_name, round_num, repr(test_actions)) )
 
                 # look up code in data engine
 
                 matching_resp = False
+                acode         = None
 
                 for lang, d, md5s, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
 
+                    ctx.set_inp(test_inp)
+
                     afn, acode = self.dte.lookup_code(md5s)
+                    ecode = '%s\n%s(ctx)\n' % (acode, afn)
+                    try:
+                        exec (ecode, globals(), locals())
+                    except:
+                        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
-                    # FIXME: execute acode
-                    import pdb; pdb.set_trace()
+                    resps = ctx.get_resps()
 
-                #     for solution in solutions:
+                    for i, resp in enumerate(resps):
+                        actual_out, score, actual_actions, actual_mems = resp
+                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                #         actual_out, actual_actions, score = self._extract_response (cur_context, solution)
+                        if len(test_out) > 0:
+                            if len(actual_out)>0:
+                                actual_out = u' '.join(tokenize(actual_out, lang))
+                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
+                            if actual_out != test_out:
+                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
+                                continue # no match
 
-                #         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
 
-                #         if len(test_out) > 0:
-                #             if len(actual_out)>0:
-                #                 actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
-                #             logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
-                #             if actual_out != test_out:
-                #                 logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
-                #                 continue # no match
+                        # check actions
 
-                #         logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
+                        if len(test_actions)>0:
 
-                #         # check actions
+                            logging.info("nlp_test: %s round %d actual acts : %s" % (t_name, round_num, repr(actual_actions)) )
+                            # print repr(test_actions)
 
-                #         if len(test_actions)>0:
+                            actions_matched = True
+                            act             = None
+                            for action in test_actions:
+                                for act in actual_actions:
+                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                                    if action == act:
+                                        break
+                                if action != act:
+                                    actions_matched = False
+                                    break
 
-                #             logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
-                #             # print repr(test_actions)
+                            if not actions_matched:
+                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (t_name, round_num))
+                                continue
 
-                #             actions_matched = True
-                #             act             = None
-                #             for action in test_actions:
-                #                 for act in actual_actions:
-                #                     # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                #                     if action == act:
-                #                         break
-                #                 if action != act:
-                #                     actions_matched = False
-                #                     break
+                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (t_name, round_num))
 
-                #             if not actions_matched:
-                #                 logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
-                #                 continue
+                        matching_resp = True
+                        ctx.commit_resp(i)
+                        break
 
-                #             logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
+                    if matching_resp:
+                        break
 
-                #         matching_resp = True
-                #         res           = solution
-                #         break
+                if acode is None:
+                    logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (t_name, test_inp))
+                    num_fails += 1
+                    break
 
-                #     if matching_resp:
-                #         break
+                if not matching_resp:
+                    logging.error (u'nlp_test: %s round %d no matching response found.' % (t_name, round_num))
+                    num_fails += 1
+                    break
 
-                # if acode is None:
-                #     logging.error('failed to find db entry for %s' % json.dumps(inp))
-                #     logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
-                #     num_fails += 1
-                #     break
-
-                # if not matching_resp:
-                #     logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
-                #     num_fails += 1
-                #     break
-
-                # prev_context = cur_context
                 round_num   += 1
 
         return num_tests, num_fails

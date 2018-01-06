@@ -21,18 +21,29 @@ def get_data(k):
     def say_again_en(c):
 
         if len(c.dlg_log) == 0:
-            c.response (u"I don't think we have spoken before.")
+            c.resp (u"I don't think we have spoken before.")
             return
 
-        s = c.dlg_log[len(c.dlg_log)-1].resp
+        s = c.dlg_log[len(c.dlg_log)-1]['out']
 
-        c.response(u"I said %s" % s, 0.0, [])
-        c.response(u"As I just said %s" % s, 0.0, [])
-        c.response(u"I repeat %s" %s , 0.0, [])
+        c.resp(u"I said %s" % s)
+        c.resp(u"As I just said %s" % s)
+        c.resp(u"I repeat %s" %s)
 
-    k.dte.dt('en', "(huh|say again please|say again|what was that)?", say_again_en)
+    k.dte.dt('en', u"(huh|say again please|say again|what was that)?", say_again_en)
 
-#    train(de) :- and("(was|wie war das|bitte sag nochmal was du gesagt hast|wie bitte)?", prev(C, PC), list_findall(X, say(PC, X), L), list_str_join(" ", L, S), or("Ich sagte {S, s}", "Ich sagte gerade {S, s}", "Ich wiederhole {S, s}")).
+    def say_again_de(c):
+        if len(c.dlg_log) == 0:
+            c.resp (u"Ich glaube nicht, dass wir schon gesprochen haben?")
+            return
+
+        s = c.dlg_log[len(c.dlg_log)-1]['out']
+
+        c.resp(u"Ich sagte: %s" % s)
+        c.resp(u"Ich sagte gerade: %s" % s)
+        c.resp(u"Ich wiederhole: %s" %s)
+
+    k.dte.dt('de', u"(was|wie war das|bitte sag nochmal was du gesagt hast|wie bitte)?",say_again_de)
 
     k.dte.dt('en', [u"correct",
                     u"this is true",
@@ -47,9 +58,12 @@ def get_data(k):
                     u"das ist richtig"],
                    u"Gut.")
 
-    k.dte.ts('en', 't0000', [(u"say again please", u"I don't think we have spoken before.", []),
-                             (u"correct", u"Good", []),
-                             ("huh?", "I said correct", [])])
+    k.dte.ts('en', 'dlg0000', [(u"say again please", u"I don't think we have spoken before.", []),
+                               (u"correct", u"Good", []),
+                               ("huh?", "I said good", [])])
+    k.dte.ts('de', 'dlg0001', [(u"wie war das", u"Ich glaube nicht, dass wir schon gesprochen haben?", []),
+                               (u"richtig", u"Gut.", []),
+                               ("was?", "Ich sagte: Gut.", [])])
 
     k.dte.dt('en', u"you're right", u"So we're in agreement?")
     k.dte.dt('de', u"da hast du recht", u"Wir sind uns also einig?")

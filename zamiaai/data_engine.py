@@ -411,13 +411,13 @@ class DataEngine(object):
         if isinstance (resp, list):
             src_txt = "def _resp(c):\n"
             for r in resp:
-                src_txt += "    c.response(u\"%s\", 0.0, [])\n" % r
+                src_txt += "    c.resp(u\"%s\", 0.0, [])\n" % r
             code_ast = ast.parse(src_txt)
             code_fn  = '_resp'
 
         elif isinstance (resp, basestring):
             src_txt = "def _resp(c):\n"
-            src_txt += "    c.response(u\"%s\", 0.0, [])\n" % resp
+            src_txt += "    c.resp(u\"%s\", 0.0, [])\n" % resp
             code_ast = ast.parse(src_txt)
             code_fn  = '_resp'
             

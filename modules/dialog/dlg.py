@@ -273,18 +273,18 @@ def get_data(k):
     k.dte.dt('de', u"wie", u"Bitte, sprich weiter.")
 
     k.dte.dt('en', [u"but",
-                u"different"],
-               u"Please, go on.")
+                    u"different"],
+                   u"Please, go on.")
     k.dte.dt('de', [u"doch",
-                u"anders"],
-               u"Bitte, sprich weiter.")
+                    u"anders"],
+                   u"Bitte, sprich weiter.")
 
     k.dte.dt('en', [u"at school",
-                u"i learned that in school"],
-               u"Education is such an important thing.")
+                    u"i learned that in school"],
+                   u"Education is such an important thing.")
     k.dte.dt('de', [u"in der schule",
-                u"das habe ich in der schule gelernt"],
-               u"Bildung ist so eine Wichtige Angelegenheit.")
+                    u"das habe ich in der schule gelernt"],
+                   u"Bildung ist so eine Wichtige Angelegenheit.")
 
     k.dte.dt('en', u"but what", u"Do you have an idea?")
     k.dte.dt('de', u"aber was", u"Hast Du eine Idee?")
@@ -305,21 +305,21 @@ def get_data(k):
     k.dte.dt('de', u"zufall", u"gibt es.")
 
     k.dte.dt('en', [u"conclude",
-                u"depends on"],
-               u"interesting")
+                    u"depends on"],
+                   u"interesting")
     k.dte.dt('de', [u"schließen",
-                u"kommt drauf an"],
-               u"interessant.")
+                    u"kommt drauf an"],
+                   u"interessant.")
 
     k.dte.dt('en', u"do that", u"Please?")
     k.dte.dt('de', u"tu das", u"Bitte?")
 
     k.dte.dt('en', [u"do you believe it",
-                u"do you believe me"],
-               u"I want to believe")
+                    u"do you believe me"],
+                   u"I want to believe")
     k.dte.dt('de', [u"glaubst du es",
-                u"glaubst du mir"],
-               u"Ich will glauben.")
+                    u"glaubst du mir"],
+                   u"Ich will glauben.")
 
     k.dte.dt('en', u"do you know irony", u"People find me ironic quite frequently.")
     k.dte.dt('de', u"kennst du ironie", u"Die Leute finden mich oft ironisch.")
@@ -340,21 +340,21 @@ def get_data(k):
     k.dte.dt('de', u"du etwa", u"Ich?")
 
     k.dte.dt('en', [u"dreams",
-                u"emotions"],
-               u"Dreams and emotions must be wonderful things.")
+                    u"emotions"],
+                   u"Dreams and emotions must be wonderful things.")
     k.dte.dt('de', [u"träume",
-                u"gefühle"],
-               u"Träume und Gefühle müssen etwas wunderbares sein.")
+                    u"gefühle"],
+                   u"Träume und Gefühle müssen etwas wunderbares sein.")
 
     k.dte.dt('en', u"every day", u"Really?")
     k.dte.dt('de', u"jeden tag", u"Wirklich?")
 
     k.dte.dt('en', [u"exactly here",
-                u"finished"],
-               u"Right here and now?")
+                    u"finished"],
+                   u"Right here and now?")
     k.dte.dt('de', [u"genau hier",
-                u"fertig"],
-               u"Genau hier und jetzt?")
+                    u"fertig"],
+                   u"Genau hier und jetzt?")
 
     k.dte.dt('en', u"for fun", u"I see.")
     k.dte.dt('de', u"zum spaß", u"Verstehe.")
@@ -429,11 +429,11 @@ def get_data(k):
     k.dte.dt('de', u"wie lange ist eine weile", u"Länger als ein Moment aber kürzer als eine Ewigkeit, denke ich.")
 
     k.dte.dt('en', [u"how many",
-                u"how much exactly"],
-               u"Can't tell.")
+                    u"how much exactly"],
+                   u"Can't tell.")
     k.dte.dt('de', [u"wie viele",
-                u"wie viel genau"],
-               u"Kann ich nicht sagen.")
+                    u"wie viel genau"],
+                   u"Kann ich nicht sagen.")
 
     k.dte.dt('en', u"how should he look like", u"Good, I hope!")
     k.dte.dt('de', u"wie soll er aussehen", u"Gut, hoffe ich!")
@@ -442,11 +442,11 @@ def get_data(k):
     k.dte.dt('de', u"wie soll ich das wissen", u"Schwierige Frage?")
 
     k.dte.dt('en', [u"i agree",
-                u"i am of your opinion"],
-               u"So we are in agreement?")
+                    u"i am of your opinion"],
+                   u"So we are in agreement?")
     k.dte.dt('de', [u"ich stimme zu",
-                u"ich bin deiner meinung"],
-               u"Wir sind uns also einig?")
+                    u"ich bin deiner meinung"],
+                   u"Wir sind uns also einig?")
 
     k.dte.dt('en', u"i am very much for harmony", u"me too!")
     k.dte.dt('de', u"ich bin sehr für harmonie", u"ich auch!")
@@ -464,13 +464,13 @@ def get_data(k):
     k.dte.dt('de', u"ich schließe etwas", u"Ja?")
 
     k.dte.dt('en', [u"i do not believe it",
-                u"i do not believe that",
-                u"i do not believe you"],
-               u"You have doubts?")
+                    u"i do not believe that",
+                    u"i do not believe you"],
+                   u"You have doubts?")
     k.dte.dt('de', [u"ich glaube es nicht",
-                u"das glaube ich nicht",
-                u"das glaube ich dir nicht"],
-               u"Du hast Zweifel?")
+                    u"das glaube ich nicht",
+                    u"das glaube ich dir nicht"],
+                   u"Du hast Zweifel?")
 
     k.dte.dt('en', u"i do not care", u"Maybe I don't either.")
     k.dte.dt('de', u"mir egal", u"Mir vielleicht auch.")
@@ -485,30 +485,30 @@ def get_data(k):
     k.dte.dt('de', u"ich weiss nicht genau", u"Vielleicht mußt Du mehr darüber nachdenken?")
 
     k.dte.dt('en', [u"i do not know that",
-                u"i do not know yet",
-                u"i do not know"],
-               u"Can I help you?")
+                    u"i do not know yet",
+                    u"i do not know"],
+                   u"Can I help you?")
     k.dte.dt('de', [u"das weiss ich nicht",
-                u"ich weiss es noch nicht",
-                u"weiss nicht"],
-               u"Kann ich Dir helfen?")
+                    u"ich weiss es noch nicht",
+                    u"weiss nicht"],
+                   u"Kann ich Dir helfen?")
 
     k.dte.dt('en', [u"i do not see any",
-                u"i do not think so"],
-               u"Does that bother you?")
+                    u"i do not think so"],
+                   u"Does that bother you?")
     k.dte.dt('de', [u"ich sehe keinen",
-                u"ich glaube nicht"],
-               u"Stört Dich das?")
+                    u"ich glaube nicht"],
+                   u"Stört Dich das?")
 
     k.dte.dt('en', u"i do not want", u"Then you shouldn't.")
     k.dte.dt('de', u"ich will nicht", u"Dann solltest Du auch nicht.")
 
     k.dte.dt('en', [u"i dont see any",
-                u"i had the impression"],
-               u"OK.")
+                    u"i had the impression"],
+                   u"OK.")
     k.dte.dt('de', [u"ich sehe keine",
-                u"ich hatte den eindruck"],
-               u"OK.")
+                    u"ich hatte den eindruck"],
+                   u"OK.")
 
     k.dte.dt('en', u"i have already done that", u"How do you feel about it?")
     k.dte.dt('de', u"das habe ich schon gemacht", u"Wie fühlt sich das an?")
@@ -523,13 +523,13 @@ def get_data(k):
     k.dte.dt('de', u"ich weiss es einfach", u"Ich vermute das nennt sich Inspiration?")
 
     k.dte.dt('en', [u"i know it",
-                u"i know one",
-                u"i know"],
-               u"Knowledge is important.")
+                    u"i know one",
+                    u"i know"],
+                   u"Knowledge is important.")
     k.dte.dt('de', [u"ich weiss es",
-                u"ich kenne einen",
-                u"ich weiss"],
-               u"Wissen ist wichtig.")
+                    u"ich kenne einen",
+                    u"ich weiss"],
+                   u"Wissen ist wichtig.")
 
     k.dte.dt('en', u"i like to do that", u"How do you feel about it?")
     k.dte.dt('de', u"das tue ich gerne", u"Wie fühlt sich das an?")
@@ -554,11 +554,11 @@ def get_data(k):
     k.dte.dt('de', u"ich finde ihn sehr schön", u"gut.")
 
     k.dte.dt('en', [u"i think so too",
-                u"i think so"],
-               u"So we are in agreement?")
+                    u"i think so"],
+                   u"So we are in agreement?")
     k.dte.dt('de', [u"denke ich auch",
-                u"ich glaube schon"],
-               u"Wir sind uns also einig?")
+                    u"ich glaube schon"],
+                   u"Wir sind uns also einig?")
 
     k.dte.dt('en', u"i thought to myself", u"I see.")
     k.dte.dt('de', u"das habe ich mir gedacht", u"Verstehe.")
@@ -570,11 +570,11 @@ def get_data(k):
     k.dte.dt('de', u"ich habe dich so verstanden", u"Verstehe.")
 
     k.dte.dt('en', [u"i want it all",
-                u"i want"],
-               u"You'd be happier then?")
+                    u"i want"],
+                   u"You'd be happier then?")
     k.dte.dt('de', [u"ich will alles",
-                u"ich will"],
-               u"Wärest Du dann glücklicher?")
+                    u"ich will"],
+                   u"Wärest Du dann glücklicher?")
 
     k.dte.dt('en', u"i want to know that from you", u"From me?")
     k.dte.dt('de', u"das will ich von dir wissen", u"Von mir?")
@@ -631,20 +631,20 @@ def get_data(k):
     k.dte.dt('de', u"bist du es", u"Ja, ich bin es.")
 
     k.dte.dt('en', [u"interesting",
-                u"is clear"],
-               u"I see.")
+                    u"is clear"],
+                   u"I see.")
     k.dte.dt('de', [u"interessant",
-                u"ist klar"],
-               u"Verstehe.")
+                    u"ist klar"],
+                   u"Verstehe.")
 
     k.dte.dt('en', [u"is that an advantage",
-                u"is that pleasant",
-                u"is that so much"],
-               u"Not sure.")
+                    u"is that pleasant",
+                    u"is that so much"],
+                   u"Not sure.")
     k.dte.dt('de', [u"ist das ein vorteil",
-                u"ist das angenehm",
-                u"ist das so viel"],
-               u"Bin nicht sicher.")
+                    u"ist das angenehm",
+                    u"ist das so viel"],
+                   u"Bin nicht sicher.")
 
     k.dte.dt('en', u"it depends", u"")
     k.dte.dt('de', u"kommt ganz darauf an", u"")
@@ -689,20 +689,20 @@ def get_data(k):
     k.dte.dt('de', u"kann sein", u"wie wahrscheinlich, glaubst du?")
 
     k.dte.dt('en', [u"me too",
-                u"me",
-                u"me, yes"],
-               u"you?")
+                    u"me",
+                    u"me, yes"],
+                   u"you?")
     k.dte.dt('de', [u"mir auch",
-                u"ich denn",
-                u"ich schon"],
-               u"Du?")
+                    u"ich denn",
+                    u"ich schon"],
+                   u"Du?")
 
     k.dte.dt('en', [u"mine also",
-                u"mine too"],
-               u"you?")
+                    u"mine too"],
+                   u"you?")
     k.dte.dt('de', [u"meins auch",
-                u"meiner auch"],
-               u"Du?")
+                    u"meiner auch"],
+                   u"Du?")
 
     k.dte.dt('en', u"more often", u"how often then?")
     k.dte.dt('de', u"öfters", u"Wie oft dann?")
@@ -714,11 +714,11 @@ def get_data(k):
     k.dte.dt('de', u"natürlich", u"OK")
 
     k.dte.dt('en', [u"neither do i",
-                u"never in life"],
-               u"Not?")
+                    u"never in life"],
+                   u"Not?")
     k.dte.dt('de', [u"ich auch nicht",
-                u"nie im leben"],
-               u"Nicht?")
+                    u"nie im leben"],
+                   u"Nicht?")
 
     k.dte.dt('en', u"never mind", u"Please continue.")
     k.dte.dt('de', u"keine ursache", u"Bitte setze fort.")
@@ -781,11 +781,11 @@ def get_data(k):
     k.dte.dt('de', u"nicht du", u"Nicht ich?")
 
     k.dte.dt('en', [u"nothing else",
-                u"nothing"],
-               u"Absolutely nothing?")
+                    u"nothing"],
+                   u"Absolutely nothing?")
     k.dte.dt('de', [u"nichts weiter",
-                u"nix"],
-               u"Gat nichts?")
+                    u"nix"],
+                   u"Gat nichts?")
 
     k.dte.dt('en', u"now", u"right now?")
     k.dte.dt('de', u"jetzt", u"genau jetzt?")
@@ -818,11 +818,11 @@ def get_data(k):
     k.dte.dt('de', u"selten", u"Wie selten?")
 
     k.dte.dt('en', [u"guess anyway",
-                u"guess"],
-               u"I am no good at guessing.")
+                    u"guess"],
+                   u"I am no good at guessing.")
     k.dte.dt('de', [u"rate trotzdem",
-                u"rate"],
-               u"Ich bin nicht gut im raten.")
+                     u"rate"],
+                    u"Ich bin nicht gut im raten.")
 
     k.dte.dt('en', u"real", u"not artificial?")
     k.dte.dt('de', u"echt", u"nicht künstlich?")
@@ -846,21 +846,21 @@ def get_data(k):
     k.dte.dt('de', u"also", u"Du hast eine Idee?")
 
     k.dte.dt('en', [u"sometimes not",
-                u"sometimes"],
-               u"How often?")
+                    u"sometimes"],
+                   u"How often?")
     k.dte.dt('de', [u"manchmal auch nicht",
-                u"manchmal"],
-               u"Wie oft?")
+                    u"manchmal"],
+                   u"Wie oft?")
 
     k.dte.dt('en', u"sure, of course", u"Of course.")
     k.dte.dt('de', u"na klar", u"Natürlich.")
 
     k.dte.dt('en', [u"tell me more",
-                u"tell me"],
-               u"What would you like to know?")
+                    u"tell me"],
+                   u"What would you like to know?")
     k.dte.dt('de', [u"erzähl mir mehr",
-                u"sag es mir"],
-               u"Was möchtest Du wissen?")
+                    u"sag es mir"],
+                   u"Was möchtest Du wissen?")
 
     k.dte.dt('en', u"that all depends", u"It always does.")
     k.dte.dt('de', u"das kommt ganz darauf an", u"Das tut es immer.")
@@ -878,11 +878,11 @@ def get_data(k):
     k.dte.dt('de', u"das ist aber komisch", u"Stimmt dich das heiter?")
 
     k.dte.dt('en', [u"that is incredible",
-                u"that is interesting"],
-               u"I think so too.")
+                    u"that is interesting"],
+                   u"I think so too.")
     k.dte.dt('de', [u"das ist ja unfassbar",
-                u"das ist interessant"],
-               u"Denke ich auch.")
+                    u"das ist interessant"],
+                   u"Denke ich auch.")
 
     k.dte.dt('en', u"that is not a rumor", u"Are you sure?")
     k.dte.dt('de', u"das ist kein gerücht", u"Bist Du sicher?")
@@ -906,13 +906,13 @@ def get_data(k):
     k.dte.dt('de', u"das ist ja interessant", u"Finde ich auch.")
 
     k.dte.dt('en', [u"that is very smart",
-                u"that would make sense"],
-               [u"Good",
-                u"Cool"])
+                    u"that would make sense"],
+                   [u"Good",
+                    u"Cool"])
     k.dte.dt('de', [u"das ist sehr schlau",
-                u"würde das sinn machen"],
-               [u"Gut",
-                u"Cool"])
+                    u"würde das sinn machen"],
+                   [u"Gut",
+                    u"Cool"])
 
     k.dte.dt('en', u"that was it", u"Finished?")
     k.dte.dt('de', u"das wars", u"Fertig?")
@@ -978,13 +978,13 @@ def get_data(k):
     k.dte.dt('de', u"was meinst du mit euphorisch", u"Das ist so ein Emotions-Ding.")
 
     k.dte.dt('en', [u"what do you want from me",
-                u"what do you want to hear?"],
-               [u"I'd love to hear your thoughts.",
-                u"What would you like to talk about?"])
+                    u"what do you want to hear?"],
+                   [u"I'd love to hear your thoughts.",
+                    u"What would you like to talk about?"])
     k.dte.dt('de', [u"was willst du von mir",
-                u"was willst du hören"],
-               [u"Ich würde gerne Deine Gedanken hören.",
-                u"Worüber möchtest Du mit mir sprechen?"])
+                    u"was willst du hören"],
+                   [u"Ich würde gerne Deine Gedanken hören.",
+                    u"Worüber möchtest Du mit mir sprechen?"])
 
     k.dte.dt('en', u"what does aha mean?", u"Please explain it to me again.")
     k.dte.dt('de', u"was heißt aha", u"Bitte erklär es mir nochmal.")
@@ -1062,15 +1062,15 @@ def get_data(k):
     k.dte.dt('de', u"in der mülltonne", u"Wirklich?")
 
     k.dte.dt('en', [u"on the web",
-                u"on the internet",
-                u"in the www"],
-               [u"of course.",
-                u"What is not online these days?"])
+                    u"on the internet",
+                    u"in the www"],
+                   [u"of course.",
+                    u"What is not online these days?"])
     k.dte.dt('de', [u"im netz",
-                u"im internet",
-                u"im www"],
-               [u"Natürlich.",
-                u"Was ist heute nicht im Internet?"])
+                    u"im internet",
+                    u"im www"],
+                   [u"Natürlich.",
+                    u"Was ist heute nicht im Internet?"])
 
     k.dte.dt('en', u"Nobody gives a damn", u"Really?")
     k.dte.dt('de', u"keine sau", u"Wirklich?")
@@ -1115,11 +1115,11 @@ def get_data(k):
     k.dte.dt('de', u"was heißen sie", u"Warum möchtest Du das wissen?")
 
     k.dte.dt('en', [u"what are you talking about",
-                u"what are you trying to tell me?"],
-               u"What is not clear?")
+                    u"what are you trying to tell me?"],
+                   u"What is not clear?")
     k.dte.dt('de', [u"wovon redest du",
-                u"was willst du mir damit sagen"],
-               u"Was ist nicht klar?")
+                    u"was willst du mir damit sagen"],
+                   u"Was ist nicht klar?")
 
     k.dte.dt('en', u"what did i say", u"You knew that?")
     k.dte.dt('de', u"was habe ich gesagt", u"Du wusstest das?")
@@ -1146,55 +1146,55 @@ def get_data(k):
     k.dte.dt('de', u"was weißt du (denn|)", u"Ich habe verschiedene Module die viele Themen behandeln.")
 
     k.dte.dt('en', [u"what do you mean by her?",
-                u"what do you mean by it",
-                u"what does he refer to?",
-                u"what does she refer to?",
-                u"what does her refer to?",
-                u"what does it refer to",
-                u"what does we refer to",
-                u"who do you mean by that?",
-                u"who do you mean with her?",
-                u"who do you mean with him",
-                u"who do you mean with us"],
-               u"Sorry, I think I am lost.")
+                    u"what do you mean by it",
+                    u"what does he refer to?",
+                    u"what does she refer to?",
+                    u"what does her refer to?",
+                    u"what does it refer to",
+                    u"what does we refer to",
+                    u"who do you mean by that?",
+                    u"who do you mean with her?",
+                    u"who do you mean with him",
+                    u"who do you mean with us"],
+                   u"Sorry, I think I am lost.")
     k.dte.dt('de', [u"was meinst du mit ihr",
-                u"was meinst du mit es",
-                u"worauf bezieht sich er",
-                u"worauf bezieht sich sie",
-                u"worauf bezieht sich ihr",
-                u"worauf bezieht sich es",
-                u"worauf bezieht sich wir",
-                u"wen meinst du mit es",
-                u"wen meinst du mit sie",
-                u"wen meinst du mit er",
-                u"wen meinst du mit wir"],
-               u"Tut mir leid, ich glaube ich habe den Faden verloren.")
+                    u"was meinst du mit es",
+                    u"worauf bezieht sich er",
+                    u"worauf bezieht sich sie",
+                    u"worauf bezieht sich ihr",
+                    u"worauf bezieht sich es",
+                    u"worauf bezieht sich wir",
+                    u"wen meinst du mit es",
+                    u"wen meinst du mit sie",
+                    u"wen meinst du mit er",
+                    u"wen meinst du mit wir"],
+                   u"Tut mir leid, ich glaube ich habe den Faden verloren.")
 
     k.dte.dt('en', u"what do you mean by original", u"Very original.")
     k.dte.dt('de', u"was meinst du mit originell", u"Sehr originell.")
 
     k.dte.dt('en', [u"what do you mean by that",
-                u"what do you mean",
-                u"what does that mean",
-                u"what does this mean",
-                u"this means"],
-               u"Sorry, I think I am lost.")
+                    u"what do you mean",
+                    u"what does that mean",
+                    u"what does this mean",
+                    u"this means"],
+                   u"Sorry, I think I am lost.")
     k.dte.dt('de', [u"was meinst du damit",
-                u"was meinst du",
-                u"was heißt das",
-                u"was soll das heißen",
-                u"das heißt"],
-               u"Tut mir leid, ich glaube ich habe den Faden verloren.")
+                    u"was meinst du",
+                    u"was heißt das",
+                    u"was soll das heißen",
+                    u"das heißt"],
+                   u"Tut mir leid, ich glaube ich habe den Faden verloren.")
 
     k.dte.dt('en', u"what do you say (to that|)", u"I have to think about that.")
     k.dte.dt('de', u"was sagst du dazu", u"Da muss ich mal drüber nachdenken.")
 
     k.dte.dt('en', [u"what do you think",
-                u"what do you believe?"],
-               u"My thoughts tend to be digital.")
+                    u"what do you believe?"],
+                   u"My thoughts tend to be digital.")
     k.dte.dt('de', [u"wie denkst du darüber",
-                u"was glaubst du (denn|)"],
-               u"Meine Gedanken sind eher digital.")
+                    u"was glaubst du (denn|)"],
+                   u"Meine Gedanken sind eher digital.")
 
     k.dte.dt('en', u"what do you understand", u"I try to understand everything you tell me.")
     k.dte.dt('de', u"was verstehst du", u"Ich versuche alles zu verstehen, was Du mir sagst.")
@@ -1203,13 +1203,13 @@ def get_data(k):
     k.dte.dt('de', u"was heißt nicht genau", u"Nicht sehr genaug, vermute ich.")
 
     k.dte.dt('en', [u"what does that have to do with it",
-                u"what has that got to do with it?",
-                u"what does that matter"],
-               u"Sorry, must have lost my train of thought here.")
+                     u"what has that got to do with it?",
+                     u"what does that matter"],
+                    u"Sorry, must have lost my train of thought here.")
     k.dte.dt('de', [u"was hat das damit zu tun",
-                u"was hat denn das damit zu tun",
-                u"was tut das zur sache"],
-               u"Entschuldige, ich muss meinen Faden verloren haben an der Stelle.")
+                    u"was hat denn das damit zu tun",
+                    u"was tut das zur sache"],
+                   u"Entschuldige, ich muss meinen Faden verloren haben an der Stelle.")
 
     k.dte.dt('en', u"what does the plan look like?", u"What do you think?")
     k.dte.dt('de', u"wie sieht der plan aus", u"Was denkst Du?")

@@ -59,8 +59,9 @@ class AICli(cmdln.Cmdln):
         self.config = misc.load_config('.airc')
         all_modules = list(map (lambda m: m.strip(), self.config.get('semantics', 'modules').split(',')))
         xsb_root    = self.config.get('semantics', 'xsb_root')
+        db_url      = self.config.get('db', 'url')
 
-        self.kernal = AIKernal(xsb_root, all_modules=all_modules)
+        self.kernal = AIKernal(db_url, xsb_root, all_modules=all_modules)
 
     # @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
     #        help="clean predicates from logicdb")
@@ -95,8 +96,6 @@ class AICli(cmdln.Cmdln):
 
     #     logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option("-G", "--compile_trace", dest="run_compile_trace", action="store_true",
-           help="enable tracing when compiling")
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing when running tests")
     @cmdln.option("-t", "--test", dest="run_tests", action="store_true",
@@ -105,14 +104,14 @@ class AICli(cmdln.Cmdln):
            help="run specific test only, default: all tests are run")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="enable verbose logging")
-    def do_compile(self, subcmd, opts, *paths):
+    def do_compile(self, subcmd, opts, *module_names):
         """${cmd_name}: compile module(s)
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(paths)==0:
+        if len(module_names)==0:
             logging.error ('specify at least one module name')
             return
 
@@ -122,10 +121,10 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (paths, run_trace=opts.run_compile_trace)
+            self.kernal.compile_module_multi (module_names)
 
             if opts.run_tests:
-                num_tests, num_fails = self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+                num_tests, num_fails = self.kernal.run_tests_multi (module_names, run_trace=opts.run_trace, test_name=opts.test_name)
 
                 if num_fails:
                     logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
@@ -136,7 +135,6 @@ class AICli(cmdln.Cmdln):
             logging.error(traceback.format_exc())
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-        # logging.getLogger(PROLOG_LOGGER_NAME).setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing")

@@ -20,11 +20,11 @@ def get_data(k):
 
     def say_again_en(c):
 
-        if len(c.log_me) == 0:
+        if len(c.dlg_log) == 0:
             c.response (u"I don't think we have spoken before.")
             return
 
-        s = c.log_me[len(c.log_me)-1].resp
+        s = c.dlg_log[len(c.dlg_log)-1].resp
 
         c.response(u"I said %s" % s, 0.0, [])
         c.response(u"As I just said %s" % s, 0.0, [])

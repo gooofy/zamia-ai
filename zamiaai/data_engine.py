@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# macro-engine
+# data engine
+#
+# controller sitting between zamia ai modules and the database
 #
 # maintains dict of named macros for various languages
 # contains utility functions that expand macros to produce
@@ -37,8 +39,11 @@ import inspect
 
 from copy                import copy
 from io                  import StringIO
+from sqlalchemy          import create_engine
+from sqlalchemy.orm      import sessionmaker
 
 from nltools.tokenizer   import tokenize
+from zamiaai             import model
 
 # class RewriteName(NodeTransformer):
 # 
@@ -50,22 +55,28 @@ from nltools.tokenizer   import tokenize
 
 class DataEngine(object):
 
-    def __init__(self):
+    def __init__(self, db_url):
 
         self.md5               = hashlib.md5()
 
+        #
+        # database connection
+        #
+
+        self.engine  = create_engine(db_url, echo=False)
+        self.Session = sessionmaker(bind=self.engine)
+        self.session = self.Session()
+        model.Base.metadata.create_all(self.engine)
+
         self.prefixes          = []
-        self.named_macros      = {}
-        self.named_macros_mod  = {}
-        self.code_map          = {}
-        self.code_map_mod      = {}
-        self.data_train        = []
-        self.data_train_mod    = {}
-        self.data_test         = []
-        self.data_test_mod     = {}
-        # self.data_ner          = {}
         self.data_module_name  = None
         self.source_location   = ('unknown', 0)
+
+        self.cnt_dt            = 0
+        self.cnt_ts            = 0
+
+    def get_stats(self):
+        return self.cnt_dt, self.cnt_ts
 
     def report_error(self, s):
         raise Exception ("%s: error in line %d: %s" % (self.source_location[0], self.source_location[1], s))
@@ -85,140 +96,54 @@ class DataEngine(object):
                         self.named_macros[lang][n] = []
                     self.named_macros[lang][n].extend(self.named_macros_mod[module][lang][n])
 
-    def compute_code_map(self):
-        self.code_map = {}
-        for module in self.code_map_mod:
-            for n in self.code_map_mod[module]:
-                if not n in self.code_map:
-                    self.code_map[n] = []
-                self.code_map[n].extend(self.code_map_mod[module][n])
-
-    def compute_data_train(self):
-        self.data_train = []
-        for module in self.data_train_mod:
-            self.data_train.extend(self.data_train_mod[module])
-
-    def compute_data_test(self):
-        self.data_test = []
-        for module in self.data_test_mod:
-            self.data_test.extend(self.data_test_mod[module])
-
     def clear (self, module_name):
-        if module_name in self.named_macros_mod:
-            del self.named_macros_mod[module_name]
-        if module_name in self.code_map_mod:
-            del self.code_map_mod[module_name]
-        if module_name in self.data_train_mod:
-            del self.data_train_mod[module_name]
-        if module_name in self.data_test_mod:
-            del self.data_test_mod[module_name]
-        self.compute_named_macros()
-        self.compute_code_map()
-        self.compute_data_train()
-        self.compute_data_test()
-  
-    def load (self, module_name):
 
-        self.clear(module_name)
+        logging.debug("Clearing %s ..." % module_name)
+        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
+        self.session.query(model.Code).filter(model.Code.module==module_name).delete()
+        self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
+        self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
+        self.session.query(model.NamedMacro).filter(model.NamedMacro.module==module_name).delete()
+        logging.debug("Clearing %s ... done." % module_name)
 
-        fn = 'modules/%s/_macros.json' % module_name
-        if os.path.exists(fn):
-            with open(fn, 'r') as of:
-                nmm = json.load(of)
+        self.cnt_dt = 0
+        self.cnt_ts = 0
 
-                self.named_macros_mod[module_name] = nmm
-                self.compute_named_macros()
+    def commit(self):
+        self.session.commit()
 
-        fn = 'modules/%s/_code.json' % module_name
-        if os.path.exists(fn):
-            with open(fn, 'r') as of:
-                nmm = json.load(of)
+    def lookup_code(self, md5s):
+        cd = self.session.query(model.Code).filter(model.Code.md5s==md5s).first()
+        if not cd:
+            return None
+        return cd.fn, cd.code
 
-                self.code_map_mod[module_name] = nmm
-                self.compute_code_map()
+    def lookup_data_train(self, inp, lang):
+        res = []
 
-        fn = 'modules/%s/_dt.json' % module_name
-        if os.path.exists(fn):
-            with open(fn, 'r') as of:
-                nmm = json.load(of)
+        for td in self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang).filter(model.TrainingData.inp==inp):
+            res.append( (lang, inp, td.md5s, td.loc_fn, td.loc_line) )
 
-                self.data_train_mod[module_name] = nmm
-                self.compute_data_train()
+        return res
 
-        fn = 'modules/%s/_ts.json' % module_name
-        if os.path.exists(fn):
-            with open(fn, 'r') as of:
-                nmm = json.load(of)
-
-                self.data_test_mod[module_name] = nmm
-                self.compute_data_test()
-
-    def save (self, module_name):
-        fn = 'modules/%s/_macros.json' % module_name
-        if module_name in self.named_macros_mod:
-            with open(fn, 'w') as of:
-                json.dump(self.named_macros_mod[module_name], of, indent=2)
-        else:
-            if os.path.exists(fn):
-                os.unlink(fn)
-
-        fn = 'modules/%s/_code.json' % module_name
-        if module_name in self.code_map_mod:
-            with open(fn, 'w') as of:
-                json.dump(self.code_map_mod[module_name], of, indent=2)
-        else:
-            if os.path.exists(fn):
-                os.unlink(fn)
- 
-        fn = 'modules/%s/_dt.json' % module_name
-        if module_name in self.data_train_mod:
-            with open(fn, 'w') as of:
-                json.dump(self.data_train_mod[module_name], of, indent=2)
-        else:
-            if os.path.exists(fn):
-                os.unlink(fn)
- 
-        fn = 'modules/%s/_ts.json' % module_name
-        if module_name in self.data_test_mod:
-            with open(fn, 'w') as of:
-                json.dump(self.data_test_mod[module_name], of, indent=2)
-        else:
-            if os.path.exists(fn):
-                os.unlink(fn)
- 
     def macro(self, lang, name, soln):
+
         # import pdb; pdb.set_trace()
-        if not lang in self.named_macros:
-            self.named_macros[lang] = {}
-        if not name in self.named_macros[lang]:
-            self.named_macros[lang][name] = []
 
-        self.named_macros[lang][name].append(soln)
+        nm = model.NamedMacro(lang   = lang,
+                              module = self.data_module_name,
+                              name   = name,
+                              soln   = json.dumps(soln))
+        self.session.add(nm)
 
-        if not self.data_module_name in self.named_macros_mod:
-            self.named_macros_mod[self.data_module_name] = {}
-        if not lang in self.named_macros_mod[self.data_module_name]:
-            self.named_macros_mod[self.data_module_name][lang] = {}
-        if not name in self.named_macros_mod[self.data_module_name][lang]:
-            self.named_macros_mod[self.data_module_name][lang][name] = []
+    def lookup_named_macro (self, lang, name):
 
-        self.named_macros_mod[self.data_module_name][lang][name].append(soln)
- 
-    ###############################################
-    #
-    # training data extraction 
-    #
-    ###############################################
+        res = []
 
-    def fetch_named_macro (self, lang, name):
+        for nm in self.session.query(model.NamedMacro).filter(model.NamedMacro.lang==lang).filter(model.NamedMacro.name==name):
+            res.append(json.loads(nm.soln))
 
-        if not lang in self.named_macros:
-            self.named_macros[lang] = {}
-
-        if name in self.named_macros[lang]:
-            return self.named_macros[lang][name]
-
-        return None
+        return res
 
     def _expand_macros (self, lang, txt):
 
@@ -300,7 +225,7 @@ class DataEngine(object):
                     if name in macro_rs:
                         macro = [ macro_rs[name] ]
                     else:
-                        macro = self.fetch_named_macro(lang, name)
+                        macro = self.lookup_named_macro(lang, name)
                         if not macro:
                             macro = implicit_macros.get(name, None)
                         if not macro:
@@ -419,13 +344,9 @@ class DataEngine(object):
     def set_prefixes (self, prefixes):
         self.prefixes = prefixes
 
-    def generate_training_data (self, lang, inps, code_ast):
+    def generate_training_data (self, lang, inps, code_ast, code_fn):
 
         prefixes = self.prefixes if self.prefixes else [u'']
-        if not self.data_module_name in self.code_map_mod:
-            self.code_map_mod[self.data_module_name] = {}
-        if not self.data_module_name in self.data_train_mod:
-            self.data_train_mod[self.data_module_name] = []
 
         for prefix in prefixes:
 
@@ -441,16 +362,23 @@ class DataEngine(object):
 
                     self.md5.update (r)
                     md5s = self.md5.hexdigest()
-                    self.code_map[md5s]             = r
-                    self.code_map_mod[self.data_module_name][md5s] = r
 
-                    data = (lang, d, md5s, self.src_location[0], self.src_location[1])
+                    cd = model.Code(md5s=md5s, module=self.data_module_name, code=r, fn=code_fn)
+                    self.session.add(cd)
 
-                    self.data_train.append(data)
-                    self.data_train_mod[self.data_module_name].append(data)
+                    d_inps = u' '.join(d)
 
-                    if len(self.data_train) % 100 == 0:
-                        logging.info ('%6d training samples extracted so far...' % len(self.data_train))
+                    td = model.TrainingData(lang     = lang, 
+                                            module   = self.data_module_name, 
+                                            inp      = d_inps, 
+                                            md5s     = md5s, 
+                                            loc_fn   = self.src_location[0], 
+                                            loc_line = self.src_location[1])
+                    self.session.add(td)
+
+                    self.cnt_dt += 1
+                    if self.cnt_dt % 100 == 0:
+                        logging.info ('%6d training samples extracted so far...' % self.cnt_dt)
 
     def dt_set_prefixes(self, prefixes):
         self.me.set_prefixes(prefixes)
@@ -485,11 +413,13 @@ class DataEngine(object):
             for r in resp:
                 src_txt += "    c.response(u\"%s\", 0.0, [])\n" % r
             code_ast = ast.parse(src_txt)
+            code_fn  = '_resp'
 
         elif isinstance (resp, basestring):
             src_txt = "def _resp(c):\n"
             src_txt += "    c.response(u\"%s\", 0.0, [])\n" % resp
             code_ast = ast.parse(src_txt)
+            code_fn  = '_resp'
             
         else:
             src_txt = inspect.getsource(resp)
@@ -503,6 +433,7 @@ class DataEngine(object):
             for node in ast.walk(src_ast):
                 if isinstance(node, ast.FunctionDef):
                     code_ast = node
+                    code_fn  = node.name
                     break
           
         # caller's source location:
@@ -514,16 +445,13 @@ class DataEngine(object):
 
         # use macro engine to generate input strings
 
-        self.generate_training_data (lang, inps, code_ast)
+        self.generate_training_data (lang, inps, code_ast, code_fn)
 
         # import pdb; pdb.set_trace()
  
     def ts (self, lang, test_name, rounds, prep=None):
 
         # import pdb; pdb.set_trace()
-
-        if not self.data_module_name in self.data_test_mod:
-            self.data_test_mod[self.data_module_name] = []
 
         # caller's source location:
 
@@ -532,10 +460,33 @@ class DataEngine(object):
 
         self.src_location = (calframe[1][1], calframe[1][2])
 
-        data = (test_name, lang, prep, rounds, self.src_location[0], self.src_location[1])
+        # normalize rounds by tokenizing inp/resp
+        rs = []
+        for r in rounds:
+            rs.append((u' '.join(tokenize(r[0], lang=lang)),
+                       u' '.join(tokenize(r[1], lang=lang)),
+                       r[2]))
 
-        self.data_test.append(data)
-        self.data_test_mod[self.data_module_name].append(data)
+        tc = model.TestCase(lang     = lang,
+                            module   = self.data_module_name,
+                            name     = test_name,
+                            prep     = prep,
+                            rounds   = json.dumps(rs),
+                            loc_fn   = self.src_location[0], 
+                            loc_line = self.src_location[1])
+        self.session.add(tc)
+
+        self.cnt_ts += 1
+
+    def lookup_tests (self, module_name):
+
+        data_ts = []
+        
+        for ts in self.session.query(model.TestCase).filter(model.TestCase.module==module_name).order_by(model.TestCase.name).all():
+
+            data_ts.append( (ts.name, ts.lang, ts.prep, json.loads(ts.rounds), ts.loc_fn, ts.loc_line) )
+
+        return data_ts
 
     # def extract_ner_training (self, clause):
 

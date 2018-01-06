@@ -44,8 +44,7 @@ from tzlocal                import get_localzone # $ pip install tzlocal
 from copy                   import deepcopy, copy
 from six                    import text_type
 from scipy.spatial.distance import cosine
-from threading              import RLock, Lock
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string
 
 # from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
 # from aiprolog.parser        import AIPrologParser
@@ -77,9 +76,14 @@ def avg_feature_vector(words, model, num_features, index2word_set):
         featureVec = np.divide(featureVec, nwords)
     return featureVec
 
+class AIContext(object):
+
+    def __init__(self):
+        self.dlg_log  = []
+
 class AIKernal(object):
 
-    def __init__(self, xsb_root, all_modules=[], load_all_modules=False):
+    def __init__(self, db_url, xsb_root, all_modules=[], load_all_modules=False):
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -103,7 +107,7 @@ class AIKernal(object):
         #
 
         xsb_hl_init([xsb_root])
-        self.dte = DataEngine()
+        self.dte = DataEngine(db_url)
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -206,10 +210,10 @@ class AIKernal(object):
             # for name in dir(m):
             #     print name
 
-            for m2 in getattr (m, 'DEPENDS'):
-                self.load_module(m2)
+            # for m2 in getattr (m, 'DEPENDS'):
+            #     self.load_module(m2)
 
-            self.dte.load(module_name)
+            # self.dte.load(module_name)
 
             # if hasattr(m, 'CRONJOBS'):
 
@@ -315,7 +319,7 @@ class AIKernal(object):
     #         initializer = getattr(m, 'init_module')
     #         initializer(self)
 
-    def compile_module (self, module_name, run_trace=False):
+    def compile_module (self, module_name):
 
         m = self.load_module(module_name)
 
@@ -334,129 +338,20 @@ class AIKernal(object):
             get_data = getattr(m, 'get_data')
             get_data(self)
 
-        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, len(self.dte.data_train), len(self.dte.data_test)))
+        self.dte.commit()
 
-        # ds, ts, ne = self.aip_parser.compile_file('modules/%s/%s' % (module_name, inputfn), module_name, run_trace=run_trace)
+        cnt_dt, cnt_ts = self.dte.get_stats()
+        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, cnt_dt, cnt_ts))
 
-        # train_ds.extend(ds)
-        # tests.extend(ts)
-
-        # for lang in ne:
-        #     if not lang in ner:
-        #         ner[lang] = {}
-        #     for cls in ne[lang]:
-        #         if not cls in ner[lang]:
-        #             ner[lang][cls] = {}
-        #         for entity in ne[lang][cls]:
-        #             ner[lang][cls][entity] = ne[lang][cls][entity]
-
-        # write data to files
-
-        self.dte.save(module_name)
-
-        # # put training data into our DB
-
-        # td_set  = set()
-        # td_list = []
-
-        # for utt_lang, contexts, i, resp, loc_fn, loc_line, loc_col, prio in train_ds:
-
-        #     inp = copy(contexts)
-        #     inp.extend(i)
-
-        #     inp_json  = json.dumps(inp)
-        #     resp_json = json.dumps(resp)
-
-        #     # utterance = u' '.join(map(lambda c: text_type(c), contexts))
-        #     # if utterance:
-        #     #     utterance += u' '
-        #     # utterance += u' '.join(i)
-        #     utterance = u' '.join(i)
-
-        #     k = utt_lang + '#0#' + '#' + inp_json + '#' + resp_json
-        #     if not k in td_set:
-        #         td_set.add(k)
-        #         td_list.append(model.TrainingData(lang      = utt_lang,
-        #                                           module    = module_name,
-        #                                           utterance = utterance,
-        #                                           inp       = inp_json,
-        #                                           resp      = resp_json,
-
-        #                                           prio      = prio,
-
-        #                                           loc_fn    = loc_fn,
-        #                                           loc_line  = loc_line,
-        #                                           loc_col   = loc_col,
-        #                                           ))
-
-        # logging.info ('module %s training data conversion done. %d unique training samples.' %(module_name, len(td_list)))
-
-        # start_time = time.time()
-        # logging.info (u'bulk saving to db...')
-        # self.session.bulk_save_objects(td_list)
-        # self.session.commit()
-        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
-
-        # # put test data into our DB
-
-        # td_list = []
-
-        # for name, lang, prep, rounds, loc_fn, loc_line, loc_col in tests:
-
-        #     prep_json   = prolog_to_json(prep)
-        #     rounds_json = json.dumps(rounds)
-
-        #     td_list.append(model.TestCase(lang      = lang,
-        #                                   module    = module_name,
-        #                                   name      = name,
-        #                                   prep      = prep_json,
-        #                                   rounds    = rounds_json,
-        #                                   loc_fn    = loc_fn,
-        #                                   loc_line  = loc_line,
-        #                                   loc_col   = loc_col))
-
-        # logging.info ('module %s test data conversion done. %d tests.' %(module_name, len(td_list)))
-
-        # start_time = time.time()
-        # logging.info (u'bulk saving to db...')
-        # self.session.bulk_save_objects(td_list)
-        # self.session.commit()
-        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
-
-        # # put NER data into our DB
-
-        # # import pdb; pdb.set_trace()
-
-        # ner_list = []
-
-        # for lang in ner:
-        #     for cls in ner[lang]:
-        #         for entity in ner[lang][cls]:
-        #             ner_list.append(model.NERData(lang      = lang,
-        #                                           module    = module_name,
-        #                                           cls       = cls,
-        #                                           entity    = entity,
-        #                                           label     = ner[lang][cls][entity]))
-
-        # logging.info ('module %s NER data conversion done. %d rows.' %(module_name, len(ner_list)))
-
-        # start_time = time.time()
-        # logging.info (u'bulk saving to db...')
-        # self.session.bulk_save_objects(ner_list)
-        # self.session.commit()
-        # logging.info (u'bulk saving to db... done. Took %fs.' % (time.time()-start_time))
-
-        # self.session.commit()
-
-    def compile_module_multi (self, module_names, run_trace=False):
+    def compile_module_multi (self, module_names):
 
         for module_name in module_names:
             if module_name == 'all':
                 for mn2 in self.all_modules:
-                    self.compile_module (mn2, run_trace=run_trace)
+                    self.compile_module (mn2)
 
             else:
-                self.compile_module (module_name, run_trace=run_trace)
+                self.compile_module (module_name)
 
     # _IGNORE_CONTEXT_KEYS = set([ 'user', 'lang', 'tokens', 'time', 'prev', 'resp' ])
 
@@ -603,7 +498,10 @@ class AIKernal(object):
 
     def test_module (self, module_name, run_trace=False, test_name=None):
 
-        self.rt.set_trace(run_trace)
+        if run_trace:
+            xsb_command_string("trace.")
+        else:
+            xsb_command_string("notrace.")
 
         m = self.modules[module_name]
 
@@ -611,130 +509,107 @@ class AIKernal(object):
 
         num_tests = 0
         num_fails = 0
-        for tc in self.session.query(model.TestCase).filter(model.TestCase.module==module_name):
+        for tc in self.dte.lookup_tests(module_name):
+            t_name, lang, prep, rounds, src_fn, self.src_line = tc
 
             if test_name:
-                if tc.name != test_name:
-                    logging.info ('skipping test %s' % tc.name)
+                if t_name != test_name:
+                    logging.info ('skipping test %s' % t_name)
                     continue
 
-            num_tests += 1
+            ctx       = AIContext()
+            round_num = 0
 
-            rounds = json.loads(tc.rounds)
-            prep   = json_to_prolog(tc.prep)
+            # FIXME
+            # res, cur_context = self._setup_context ( user          = TEST_USER, 
+            #                                          lang          = tc.lang, 
+            #                                          inp           = t_in,
+            #                                          prev_context  = prev_context,
+            #                                          prev_res      = res)
 
-            round_num    = 0
-            prev_context = None
-            res          = {}
+            # prep
 
-            for t_in, t_out, test_actions in rounds:
+            if prep:
+                # FIXME
+                import pdb; pdb.set_trace()
+
+            for test_inp, test_resp, test_actions in rounds:
                
-                test_in  = u' '.join(t_in)
-                test_out = u' '.join(t_out)
+                logging.info("nlp_test: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
+                logging.info("nlp_test: %s round %d test_resp   : %s" % (t_name, round_num, repr(test_resp)) )
+                logging.info("nlp_test: %s round %d test_actions: %s" % (t_name, round_num, repr(test_actions)) )
 
-                logging.info("nlp_test: %s round %d test_in     : %s" % (tc.name, round_num, repr(test_in)) )
-                logging.info("nlp_test: %s round %d test_out    : %s" % (tc.name, round_num, repr(test_out)) )
-                logging.info("nlp_test: %s round %d test_actions: %s" % (tc.name, round_num, repr(test_actions)) )
+                # look up code in data engine
 
-                #if round_num>0:
-                #    import pdb; pdb.set_trace()
-                res, cur_context = self._setup_context ( user          = TEST_USER, 
-                                                         lang          = tc.lang, 
-                                                         inp           = t_in,
-                                                         prev_context  = prev_context,
-                                                         prev_res      = res)
-                # prep
-
-                if prep:
-                    # import pdb; pdb.set_trace()
-                    # self.rt.set_trace(True)
-                    for p in prep:
-                        solutions = self.rt.search (Clause(None, p, location=self.dummyloc), env=res)
-                        if len(solutions) != 1:
-                            raise(PrologRuntimeError('Expected exactly one solution from preparation code for test "%s", got %d.' % (tc.name, len(solutions))))
-                        res = solutions[0]
-
-                # inp / resp
-
-                inp = self._compute_net_input (res, cur_context)
-
-                # look up code in DB
-
-                acode         = None
                 matching_resp = False
-                for tdr in self.session.query(model.TrainingData).filter(model.TrainingData.lang  == tc.lang,
-                                                                         model.TrainingData.inp   == json.dumps(inp)):
-                    if acode:
-                        logging.warn (u'%s: more than one acode for test_in "%s" found in DB!' % (tc.name, test_in))
 
-                    acode     = json.loads (tdr.resp)
-                    pcode     = self._reconstruct_prolog_code (acode)
-                    clause    = Clause (None, pcode, location=self.dummyloc)
-                    solutions = self.rt.search (clause, env=res)
-                    # import pdb; pdb.set_trace()
+                for lang, d, md5s, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
 
-                    for solution in solutions:
+                    afn, acode = self.dte.lookup_code(md5s)
 
-                        actual_out, actual_actions, score = self._extract_response (cur_context, solution)
+                    # FIXME: execute acode
+                    import pdb; pdb.set_trace()
 
-                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                #     for solution in solutions:
 
-                        if len(test_out) > 0:
-                            if len(actual_out)>0:
-                                actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
-                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
-                            if actual_out != test_out:
-                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
-                                continue # no match
+                #         actual_out, actual_actions, score = self._extract_response (cur_context, solution)
 
-                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
+                #         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
-                        # check actions
+                #         if len(test_out) > 0:
+                #             if len(actual_out)>0:
+                #                 actual_out = u' '.join(tokenize(u' '.join(actual_out), tc.lang))
+                #             logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (tc.name, round_num, actual_out, score) )
+                #             if actual_out != test_out:
+                #                 logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (tc.name, round_num))
+                #                 continue # no match
 
-                        if len(test_actions)>0:
+                #         logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (tc.name, round_num))
 
-                            logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
-                            # print repr(test_actions)
+                #         # check actions
 
-                            actions_matched = True
-                            act             = None
-                            for action in test_actions:
-                                for act in actual_actions:
-                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                    if action == act:
-                                        break
-                                if action != act:
-                                    actions_matched = False
-                                    break
+                #         if len(test_actions)>0:
 
-                            if not actions_matched:
-                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
-                                continue
+                #             logging.info("nlp_test: %s round %d actual acts : %s" % (tc.name, round_num, repr(actual_actions)) )
+                #             # print repr(test_actions)
 
-                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
+                #             actions_matched = True
+                #             act             = None
+                #             for action in test_actions:
+                #                 for act in actual_actions:
+                #                     # print "    check action match: %s vs %s" % (repr(action), repr(act))
+                #                     if action == act:
+                #                         break
+                #                 if action != act:
+                #                     actions_matched = False
+                #                     break
 
-                        matching_resp = True
-                        res           = solution
-                        break
+                #             if not actions_matched:
+                #                 logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (tc.name, round_num))
+                #                 continue
 
-                    if matching_resp:
-                        break
+                #             logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (tc.name, round_num))
 
-                if acode is None:
-                    logging.error('failed to find db entry for %s' % json.dumps(inp))
-                    logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
-                    num_fails += 1
-                    break
+                #         matching_resp = True
+                #         res           = solution
+                #         break
 
-                if not matching_resp:
-                    logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
-                    num_fails += 1
-                    break
+                #     if matching_resp:
+                #         break
 
-                prev_context = cur_context
+                # if acode is None:
+                #     logging.error('failed to find db entry for %s' % json.dumps(inp))
+                #     logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (tc.name, test_in))
+                #     num_fails += 1
+                #     break
+
+                # if not matching_resp:
+                #     logging.error (u'nlp_test: %s round %d no matching response found.' % (tc.name, round_num))
+                #     num_fails += 1
+                #     break
+
+                # prev_context = cur_context
                 round_num   += 1
-
-        self.rt.set_trace(False)
 
         return num_tests, num_fails
 
@@ -748,15 +623,13 @@ class AIKernal(object):
             if module_name == 'all':
 
                 for mn2 in self.all_modules:
-                    self.load_module (mn2)
-                    self.init_module (mn2, run_trace=run_trace)
+                    self.consult_module (mn2)
                     n, f = self.test_module (mn2, run_trace=run_trace, test_name=test_name)
                     num_tests += n
                     num_fails += f
 
             else:
-                self.load_module (module_name)
-                self.init_module (module_name, run_trace=run_trace)
+                self.consult_module (module_name)
                 n, f = self.test_module (module_name, run_trace=run_trace, test_name=test_name)
                 num_tests += n
                 num_fails += f

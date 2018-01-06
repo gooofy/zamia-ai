@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016, 2017 Guenter Bartsch
+# Copyright 2016, 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -46,10 +46,6 @@ engine = create_engine(url)
 
 Base = declarative_base()
 
-#
-# NLP stuff
-#
-
 class TrainingData(Base):
 
     __tablename__ = 'training_data'
@@ -59,18 +55,23 @@ class TrainingData(Base):
     lang              = Column(String(2), index=True)
     module            = Column(String(255), index=True)
 
-    utterance         = Column(UnicodeText, index=True)
-
-    inp               = Column(Text, index=True)
-    resp              = Column(Text)
-
-    prio              = Column(Integer)
+    inp               = Column(UnicodeText, index=True)
+    md5s              = Column(String(32), index=True)
 
     loc_fn            = Column(String(255))
     loc_line          = Column(Integer)
-    loc_col           = Column(Integer)
 
     __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), )
+
+class Code(Base):
+    __tablename__ = "code"
+
+    md5s              = Column(String(32), primary_key=True)
+
+    module            = Column(String(255), index=True)
+
+    code              = Column(Text)
+    fn                = Column(String(255))
 
 class TestCase(Base):
 
@@ -81,14 +82,13 @@ class TestCase(Base):
     lang              = Column(String(2), index=True)
     module            = Column(String(255), index=True)
 
-    name              = Column(Unicode(255), index=True)
+    name              = Column(String(255), index=True)
 
     prep              = Column(Text)
     rounds            = Column(Text)
 
     loc_fn            = Column(String(255))
     loc_line          = Column(Integer)
-    loc_col           = Column(Integer)
 
     # __table_args__    = (Index('idx_tc_inp_lang', "inp", "lang"), )
 
@@ -105,15 +105,18 @@ class NERData(Base):
     entity            = Column(Unicode(255))
     label             = Column(Unicode(255))
 
-class Cronjob(Base):
+class NamedMacro(Base):
 
-    __tablename__ = 'cronjobs'
+    __tablename__ = 'named_macro'
 
     id                = Column(Integer, primary_key=True)
 
-    module            = Column(String, index=True)
-    name              = Column(String, index=True)
-    last_run          = Column(Integer, index=True)
+    lang              = Column(String(2), index=True)
+    module            = Column(String(255), index=True)
+
+    name              = Column(String(255), index=True)
+
+    soln              = Column(Text)
 
 Base.metadata.create_all(engine)
 

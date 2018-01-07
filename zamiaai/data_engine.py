@@ -380,9 +380,6 @@ class DataEngine(object):
                     if self.cnt_dt % 100 == 0:
                         logging.info ('%6d training samples extracted so far...' % self.cnt_dt)
 
-    def dt_set_prefixes(self, prefixes):
-        self.me.set_prefixes(prefixes)
-
     def _unindent(self, code):
         lines = code.split('\n')
         indent_len = 0

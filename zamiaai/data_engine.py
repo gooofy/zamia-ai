@@ -464,13 +464,38 @@ class DataEngine(object):
                        u' '.join(tokenize(r[1], lang=lang)),
                        r[2]))
 
-        tc = model.TestCase(lang     = lang,
-                            module   = self.data_module_name,
-                            name     = test_name,
-                            prep     = prep,
-                            rounds   = json.dumps(rs),
-                            loc_fn   = self.src_location[0], 
-                            loc_line = self.src_location[1])
+        # extract prep code, if any
+
+        if prep:
+            src_txt = inspect.getsource(prep)
+
+            src_txt = self._unindent(src_txt)
+
+            src_ast = ast.parse(src_txt)
+
+            code_ast = None
+
+            for node in ast.walk(src_ast):
+                if isinstance(node, ast.FunctionDef):
+                    prep_ast = node
+                    prep_fn  = node.name
+                    break
+
+            if prep_ast:
+                prep_code = codegen.to_source(prep_ast)
+
+        else:
+            prep_code = None 
+            prep_fn   = None
+
+        tc = model.TestCase(lang      = lang,
+                            module    = self.data_module_name,
+                            name      = test_name,
+                            prep_code = prep_code,
+                            prep_fn   = prep_fn,
+                            rounds    = json.dumps(rs),
+                            loc_fn    = self.src_location[0], 
+                            loc_line  = self.src_location[1])
         self.session.add(tc)
 
         self.cnt_ts += 1
@@ -481,7 +506,7 @@ class DataEngine(object):
         
         for ts in self.session.query(model.TestCase).filter(model.TestCase.module==module_name).order_by(model.TestCase.name).all():
 
-            data_ts.append( (ts.name, ts.lang, ts.prep, json.loads(ts.rounds), ts.loc_fn, ts.loc_line) )
+            data_ts.append( (ts.name, ts.lang, ts.prep_code, ts.prep_fn, json.loads(ts.rounds), ts.loc_fn, ts.loc_line) )
 
         return data_ts
 

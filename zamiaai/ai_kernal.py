@@ -44,14 +44,8 @@ from tzlocal                import get_localzone # $ pip install tzlocal
 from copy                   import deepcopy, copy
 from six                    import text_type
 from scipy.spatial.distance import cosine
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string, xsb_query_string, xsb_make_vars, xsb_var_string, xsb_next
 
-# from aiprolog.runtime       import AIPrologRuntime, USER_PREFIX, DEFAULT_USER
-# from aiprolog.parser        import AIPrologParser
-# from zamiaprolog.builtins   import do_gensym, do_assertz, ASSERT_OVERLAY_VAR_NAME
-# from zamiaprolog.logic      import Clause, Predicate, StringLiteral, NumberLiteral, ListLiteral, Literal, SourceLocation, \
-#                                    json_to_prolog, prolog_to_json
-# from zamiaprolog.errors     import PrologRuntimeError
 from nltools                import misc
 from nltools.tokenizer      import tokenize
 from zamiaai.data_engine    import DataEngine
@@ -78,11 +72,12 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self):
+    def __init__(self, user):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
         self.inp          = u''
+        self.user         = user
 
     def set_inp(self, inp):
         self.inp = inp
@@ -387,14 +382,14 @@ class AIKernal(object):
         num_tests = 0
         num_fails = 0
         for tc in self.dte.lookup_tests(module_name):
-            t_name, lang, prep, rounds, src_fn, self.src_line = tc
+            t_name, lang, prep_code, prep_fn, rounds, src_fn, self.src_line = tc
 
             if test_name:
                 if t_name != test_name:
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext()
+            ctx        = AIContext(TEST_USER)
             round_num  = 0
             num_tests += 1
 
@@ -407,9 +402,12 @@ class AIKernal(object):
 
             # prep
 
-            if prep:
-                # FIXME
-                import pdb; pdb.set_trace()
+            if prep_code:
+                pcode = '%s\n%s(ctx)\n' % (prep_code, prep_fn)
+                try:
+                    exec (pcode, globals(), locals())
+                except:
+                    logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
             for test_inp, test_out, test_actions in rounds:
                

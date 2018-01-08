@@ -84,7 +84,9 @@ class TestCase(Base):
 
     name              = Column(String(255), index=True)
 
-    prep              = Column(Text)
+    prep_code         = Column(Text)
+    prep_fn           = Column(String(255))
+
     rounds            = Column(Text)
 
     loc_fn            = Column(String(255))

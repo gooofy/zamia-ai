@@ -18,11 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from dialog import dlg, greetings, smalltalk
+from dialog import dlg, greetings, smalltalk, topics
 
 DEPENDS    = [ 'base' ]
 
 def get_data(kernal):
+    topics.get_data(kernal)
     dlg.get_data(kernal)
     greetings.get_data(kernal)
     smalltalk.get_data(kernal)

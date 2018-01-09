@@ -302,7 +302,7 @@ class AICli(cmdln.Cmdln):
            help="extract utterances from specific module only, default: all modules")
     @cmdln.option ("-n", "--num-utterances", dest="num_utterances", type = "int", default=0,
            help="number of utterances to extract, default: 0 (all)")
-    def do_utterances(self, subcmd, opts, *paths):
+    def do_utterances(self, subcmd, opts):
         """${cmd_name}: get sample or all utterances from DB
 
         ${cmd_usage}

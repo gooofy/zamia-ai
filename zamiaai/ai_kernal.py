@@ -74,7 +74,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self, user, session):
+    def __init__(self, user, session, lang):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
@@ -82,6 +82,7 @@ class AIContext(object):
         self.user         = user
         self.ner_dict     = {} # DB cache
         self.session      = session
+        self.lang         = lang
 
     def set_inp(self, inp):
         self.inp = inp
@@ -506,7 +507,7 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER, self.dte.session)
+            ctx        = AIContext(TEST_USER, self.dte.session, lang)
             round_num  = 0
             num_tests += 1
 
@@ -848,14 +849,14 @@ class AIKernal(object):
                         continue
                     dic.add(parts[0])
 
-        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
+        req = self.dte.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
 
         if module and module != 'all':
             req = req.filter(model.TrainingData.module==module)
 
         req_utts = []
         for dr in req:
-            req_utts.append(dr.utterance)
+            req_utts.append(dr.inp)
 
         if not dic:
 

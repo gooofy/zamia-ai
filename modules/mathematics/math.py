@@ -31,8 +31,8 @@ def get_data(k):
 
             rcode = xsb_next()
 
-    def compute_squared_en(c):
-        for n1e, score in c.ner('en', 'natnum', tstart(natnum), tend(natnum)):
+    def compute_squared(c):
+        for n1e, score in c.ner(c.lang, 'natnum', tstart(natnum), tend(natnum)):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
                 res = n1 * n1
@@ -40,9 +40,10 @@ def get_data(k):
                 c.resp(u"%d" % res, score=score+100.0)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (squared|square)", 
-                    u"calculate {natnum:W} (squared|square) (please|)"], compute_squared_en)
-# train(en) :- and(or("what (gives|is|makes) {natnum:W} (squared|square)", "calculate {natnum:W} (squared|square) (please|)"), ner(en, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE), wdpdNumericValue(N1E, N1), r_score(C, SCORE), set(RES, *(N1, N1)), r_score(C, 100.0), set(C:context|topic, wdeMathematics), "{RES,d}").
-# train(de) :- and(or("was (gibt|ist|ergibt) {natnum:W} (zum|ins) quadrat", "(berechne|rechne) (bitte|) {natnum:W} (zum|ins) quadrat"), ner(de, natnum, tstart(natnum), tend(natnum), C:tokens, N1E, SCORE), wdpdNumericValue(N1E, N1), r_score(C, SCORE), set(RES, *(N1, N1)), r_score(C, 100.0), set(C:context|topic, wdeMathematics), "{RES,d}").
+                    u"calculate {natnum:W} (squared|square) (please|)"], compute_squared)
+    k.dte.dt('de', [u"was (gibt|ist|ergibt) {natnum:W} (zum|ins) quadrat",
+                    u"(berechne|rechne) (bitte|) {natnum:W} (zum|ins) quadrat"], compute_squared)
+
     k.dte.ts('en', 'square00', [(u"what is 12 squared?", u"144.", [])])
     k.dte.ts('de', 'square01', [(u"was ergibt 12 ins quadrat?", u"144.", [])])
 

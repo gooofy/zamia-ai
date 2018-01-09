@@ -510,37 +510,14 @@ class DataEngine(object):
 
         return data_ts
 
-    # def extract_ner_training (self, clause):
+    def ner (self, lang, cls, entity, label):
 
-    #     if len(clause.head.args) != 4:
-    #         self.report_error ('train_ner: 4 arguments (+Lang, +Class, -Entity, -Label) expected')
+        l_tok = u' '.join(tokenize(label, lang=lang))
 
-    #     arg_Lang   = clause.head.args[0].name
-    #     arg_Cls    = clause.head.args[1].name
-    #     arg_Entity = clause.head.args[2].name
-    #     arg_Label  = clause.head.args[3].name
-
-    #     logging.info ('computing NER training data for %s [%s] ...' % (arg_Cls, arg_Lang))
-
-    #     # cProfile.run('self.rt.search(clause)', 'mestats')
-    #     # self.rt.set_trace(True)
-    #     solutions = self.rt.search(clause)
-
-    #     if not arg_Lang in self.ner:
-    #         self.ner[arg_Lang] = {}
-
-    #     if not arg_Cls in self.ner[arg_Lang]:
-    #         self.ner[arg_Lang][arg_Cls] = {}
-    #         
-    #     ner = self.ner[arg_Lang][arg_Cls]
-
-    #     cnt = 0
-    #     for s in solutions:
-    #         entity = s[arg_Entity].name
-    #         label  = s[arg_Label].s
-
-    #         ner[entity] = label
-    #         cnt += 1
-
-    #     logging.info ('computing NER training data for %s [%s] ... done. %d entries processed.' % (arg_Cls, arg_Lang, cnt))
+        nd = model.NERData(lang   = lang,
+                           module = self.data_module_name,
+                           cls    = cls,
+                           entity = entity,
+                           label  = l_tok)
+        self.session.add(nd)
 

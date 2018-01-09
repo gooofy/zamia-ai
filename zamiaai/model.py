@@ -103,7 +103,7 @@ class NERData(Base):
     lang              = Column(String(2), index=True)
     module            = Column(String(255), index=True)
 
-    cls               = Column(Unicode(255))
+    cls               = Column(String(255))
     entity            = Column(Unicode(255))
     label             = Column(Unicode(255))
 

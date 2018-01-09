@@ -37,7 +37,7 @@ def get_data(k):
                 n1 = row['N1']
                 res = n1 * n1
                 # FIXME: set(C:context|topic, wdeMathematics)
-                r.resp(u"%d" % res, score=score+100.0)
+                c.resp(u"%d" % res, score=score+100.0)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (squared|square)", 
                     u"calculate {natnum:W} (squared|square) (please|)"], compute_squared_en)

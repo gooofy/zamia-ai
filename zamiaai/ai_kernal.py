@@ -49,12 +49,14 @@ from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xs
 from nltools                import misc
 from nltools.tokenizer      import tokenize
 from zamiaai.data_engine    import DataEngine
+from zamiaai                import model
 
 USER_PREFIX        = u'user'
 DEFAULT_USER       = USER_PREFIX + u'Default'
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_MODULE        = '__test__'
+MAX_NER_RESULTS    = 5
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -72,13 +74,14 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self, user):
+    def __init__(self, user, session):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
         self.inp          = u''
         self.user         = user
         self.ner_dict     = {} # DB cache
+        self.session      = session
 
     def set_inp(self, inp):
         self.inp = inp
@@ -96,7 +99,7 @@ class AIContext(object):
         self.dlg_log.append( { 'inp': self.inp, 
                                'out': self.staged_resps[i][0] })
        
-    def _ner_learn(lang, cls):
+    def _ner_learn(self, lang, cls):
 
         entities = []
         labels   = []
@@ -134,7 +137,7 @@ class AIContext(object):
             # import pdb; pdb.set_trace()
             # s1 = repr(nd[token])
             # s2 = limit_str(s1, 10)
-            logging.debug ('ner_learn: nd[%-20s]=%s' % (token, limit_str(repr(nd[token]), 80)))
+            logging.debug ('ner_learn: nd[%-20s]=%s' % (token, misc.limit_str(repr(nd[token]), 80)))
             cnt += 1
             if cnt > 10:
                 break
@@ -503,7 +506,7 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER)
+            ctx        = AIContext(TEST_USER, self.dte.session)
             round_num  = 0
             num_tests += 1
 

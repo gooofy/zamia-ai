@@ -45,13 +45,62 @@ from sqlalchemy.orm      import sessionmaker
 from nltools.tokenizer   import tokenize
 from zamiaai             import model
 
-# class RewriteName(NodeTransformer):
-# 
-#     def visit_Name(self, node):
-#         return copy_location(Subscript(value = Name(id='data', ctx=Load()),
-#                                        slice = Index(value=Str(s=node.id)),
-#                                        ctx   = node.ctx), 
-#                              node)
+class RewriteBuiltins(ast.NodeTransformer):
+
+    def __init__(self, mpos):
+        self.mpos = mpos
+        super(RewriteBuiltins, self).__init__()
+
+    def visit_Call(self, node):
+
+        # Call(func=Name(id='tstart', ctx=Load()), args=[Name(id='natnum', ctx=Load())], keywords=[], starargs=None, kwargs=None),
+        # Call(func=Name(id='tend', ctx=Load()), args=[Name(id='natnum', ctx=Load())], keywords=[], starargs=None, kwargs=None)
+
+        if not isinstance(node.func, ast.Name):
+            return self.generic_visit(node)
+
+        if node.func.id == 'tstart':
+
+            if len(node.args) == 1:
+                pos = 0
+            else:
+                # FIXME:
+                import pdb; pdb.set_trace()
+
+            name = node.args[0].id
+
+            mpid = '%s_%d_start' % (name, pos)
+
+            if not mpid in self.mpos:
+                raise Exception ('%s not found in mpos.' % mpid)
+
+            return ast.Num(n=self.mpos[mpid])
+
+        elif node.func.id == 'tend':
+
+            if len(node.args) == 1:
+                pos = 0
+            else:
+                # FIXME:
+                import pdb; pdb.set_trace()
+
+            name = node.args[0].id
+
+            mpid = '%s_%d_end' % (name, pos)
+
+            if not mpid in self.mpos:
+                raise Exception ('%s not found in mpos.' % mpid)
+
+            return ast.Num(n=self.mpos[mpid])
+
+        else:
+            return node
+
+
+        # return copy_location(Subscript(value = Name(id='data', ctx=Load()),
+        #                                slice = Index(value=Str(s=node.id)),
+        #                                ctx   = node.ctx), 
+        #                      node)
 
 class DataEngine(object):
 
@@ -276,65 +325,9 @@ class DataEngine(object):
 
 
     def _generate_training_code (self, lang, code_ast, mpos):
-
-        # import pdb; pdb.set_trace()
-
-        # FIXME:
-        # use ast NodeTransformer to replace tstart / tend / mvar occurences
-
-        # if a.name == 'tstart':
-
-        #     if len(a.args) == 1:
-        #         occ = 0
-        #         tname = a.args[0]
-        #     elif len(a.args) == 2:
-        #         occ   = int(a.args[1].f)
-        #         tname = a.args[0]
-        #     else:
-        #         self.report_error ('tstart: one or two args expected, found "%s" instead' % unicode(a))
-
-        #     k = '%s_%d_start' % (tname, occ)
-        #     if not k in mpos:
-        #         self.report_error ('tstart: could not determine "%s"' % unicode(a))
-
-        #     return NumberLiteral(mpos[k])
-
-        # elif a.name == 'tend':
-
-        #     if len(a.args) == 1:
-        #         occ = 0
-        #         tname = a.args[0]
-        #     elif len(a.args) == 2:
-        #         occ   = int(a.args[1].f)
-        #         tname = a.args[0]
-        #     else:
-        #         self.report_error ('tend: one or two args expected, found "%s" instead' % unicode(a))
-
-        #     k = '%s_%d_end' % (tname, occ)
-        #     if not k in mpos:
-        #         self.report_error ('tend: could not determine "%s"' % unicode(a))
-
-        #     return NumberLiteral(mpos[k])
-
-        # elif a.name == 'mvar':
-
-        #     # import pdb; pdb.set_trace()
-        #     if len(a.args) == 2:
-        #         tname = a.args[0]
-        #         vname = a.args[1]
-        #         occ = 0
-        #     elif len(a.args) == 3:
-        #         tname = a.args[0]
-        #         vname = a.args[1]
-        #         occ   = int(a.args[2].f)
-        #     else:
-        #         self.report_error ('mvar: one or two args expected, found "%s" instead' % unicode(a))
-
-        #     k = '%s_%d_%s' % (tname, occ, vname)
-        #     if not k in mpos:
-        #         self.report_error ('mvar: could not determine "%s"' % unicode(a))
-
-        #     return mpos[k
+    
+        # expand tstart/tend:
+        code_ast  = RewriteBuiltins(mpos).visit(code_ast)
 
         resp_code = codegen.to_source(code_ast)
         # print (resp_code)

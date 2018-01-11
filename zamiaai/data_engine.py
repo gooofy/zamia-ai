@@ -37,7 +37,7 @@ import hashlib
 import ast
 import inspect
 
-from copy                import copy
+from copy                import copy, deepcopy
 from io                  import StringIO
 from sqlalchemy          import create_engine
 from sqlalchemy.orm      import sessionmaker
@@ -45,68 +45,9 @@ from sqlalchemy.orm      import sessionmaker
 from nltools.tokenizer   import tokenize
 from zamiaai             import model
 
-class RewriteBuiltins(ast.NodeTransformer):
-
-    def __init__(self, mpos):
-        self.mpos = mpos
-        super(RewriteBuiltins, self).__init__()
-
-    def visit_Call(self, node):
-
-        # Call(func=Name(id='tstart', ctx=Load()), args=[Name(id='natnum', ctx=Load())], keywords=[], starargs=None, kwargs=None),
-        # Call(func=Name(id='tend', ctx=Load()), args=[Name(id='natnum', ctx=Load())], keywords=[], starargs=None, kwargs=None)
-
-        if not isinstance(node.func, ast.Name):
-            return self.generic_visit(node)
-
-        if node.func.id == 'tstart':
-
-            if len(node.args) == 1:
-                pos = 0
-            else:
-                # FIXME:
-                import pdb; pdb.set_trace()
-
-            name = node.args[0].id
-
-            mpid = '%s_%d_start' % (name, pos)
-
-            if not mpid in self.mpos:
-                raise Exception ('%s not found in mpos.' % mpid)
-
-            return ast.Num(n=self.mpos[mpid])
-
-        elif node.func.id == 'tend':
-
-            if len(node.args) == 1:
-                pos = 0
-            else:
-                # FIXME:
-                import pdb; pdb.set_trace()
-
-            name = node.args[0].id
-
-            mpid = '%s_%d_end' % (name, pos)
-
-            if not mpid in self.mpos:
-                raise Exception ('%s not found in mpos.' % mpid)
-
-            return ast.Num(n=self.mpos[mpid])
-
-        else:
-            return node
-
-
-        # return copy_location(Subscript(value = Name(id='data', ctx=Load()),
-        #                                slice = Index(value=Str(s=node.id)),
-        #                                ctx   = node.ctx), 
-        #                      node)
-
 class DataEngine(object):
 
     def __init__(self, db_url):
-
-        self.md5               = hashlib.md5()
 
         #
         # database connection
@@ -164,14 +105,14 @@ class DataEngine(object):
     def lookup_code(self, md5s):
         cd = self.session.query(model.Code).filter(model.Code.md5s==md5s).first()
         if not cd:
-            return None
+            raise Exception ('Code %s not found.' % md5s)
         return cd.fn, cd.code
 
     def lookup_data_train(self, inp, lang):
         res = []
 
         for td in self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang).filter(model.TrainingData.inp==inp):
-            res.append( (lang, inp, td.md5s, td.loc_fn, td.loc_line) )
+            res.append( (lang, inp, td.md5s, json.loads(td.args), td.loc_fn, td.loc_line) )
 
         return res
 
@@ -323,21 +264,10 @@ class DataEngine(object):
 
         return done
 
-
-    def _generate_training_code (self, lang, code_ast, mpos):
-    
-        # expand tstart/tend:
-        code_ast  = RewriteBuiltins(mpos).visit(code_ast)
-
-        resp_code = codegen.to_source(code_ast)
-        # print (resp_code)
-
-        return resp_code
-
     def set_prefixes (self, prefixes):
         self.prefixes = prefixes
 
-    def generate_training_data (self, lang, inps, code_ast, code_fn):
+    def generate_training_data (self, lang, inps, md5s, code_fn, args):
 
         prefixes = self.prefixes if self.prefixes else [u'']
 
@@ -349,22 +279,20 @@ class DataEngine(object):
 
                 for d, mpos in self._expand_macros(lang, pinp):
 
-                    r = self._generate_training_code (lang, code_ast, mpos)
-
-                    logging.debug( '%s -> %s' % (repr(d), repr(r)))
-
-                    self.md5.update (r)
-                    md5s = self.md5.hexdigest()
-
-                    cd = model.Code(md5s=md5s, module=self.data_module_name, code=r, fn=code_fn)
-                    self.session.add(cd)
-
                     d_inps = u' '.join(d)
+                    # if d_inps == u'subtract five from eleven':
+                    #     import pdb; pdb.set_trace()
+
+                    if args:
+                        d_args = map(lambda x: mpos[x], args)
+                    else:
+                        d_args = None
 
                     td = model.TrainingData(lang     = lang, 
                                             module   = self.data_module_name, 
                                             inp      = d_inps, 
-                                            md5s     = md5s, 
+                                            md5s     = md5s,
+                                            args     = json.dumps(d_args),
                                             loc_fn   = self.src_location[0], 
                                             loc_line = self.src_location[1])
                     self.session.add(td)
@@ -391,41 +319,43 @@ class DataEngine(object):
             new_lines.append(line)
         return u'\n'.join(new_lines)
 
-    def dt(self, lang, inps, resp):
+    def dt(self, lang, inps, resp, args=None):
 
         if isinstance (inps, basestring):
             inps = [ inps ]
             
-        # transform response(s)
+        # transform response(s) to a python code snipped, has it + put in db
 
         if isinstance (resp, list):
-            src_txt = "def _resp(c):\n"
+            code_src = "def _resp(c):\n"
             for r in resp:
-                src_txt += "    c.resp(u\"%s\", 0.0, [])\n" % r
-            code_ast = ast.parse(src_txt)
+                code_src += "    c.resp(u\"%s\", 0.0, [])\n" % r
             code_fn  = '_resp'
 
         elif isinstance (resp, basestring):
-            src_txt = "def _resp(c):\n"
-            src_txt += "    c.resp(u\"%s\", 0.0, [])\n" % resp
-            code_ast = ast.parse(src_txt)
+            code_src = "def _resp(c):\n"
+            code_src += "    c.resp(u\"%s\", 0.0, [])\n" % resp
             code_fn  = '_resp'
             
         else:
-            src_txt = inspect.getsource(resp)
+            code_src = inspect.getsource(resp)
+            code_src = self._unindent(code_src)
+            code_ast = ast.parse(code_src)
 
-            src_txt = self._unindent(src_txt)
-
-            src_ast = ast.parse(src_txt)
-
-            code_ast = None
-
-            for node in ast.walk(src_ast):
+            for node in ast.walk(code_ast):
                 if isinstance(node, ast.FunctionDef):
-                    code_ast = node
                     code_fn  = node.name
+                    code_src = codegen.to_source(node)
                     break
-          
+         
+        md5 = hashlib.md5()
+        md5.update (code_src)
+        md5s = md5.hexdigest()
+
+        if not self.session.query(model.Code).filter(model.Code.md5s==md5s).first():
+            cd = model.Code(md5s=md5s, module=self.data_module_name, code=code_src, fn=code_fn)
+            self.session.add(cd)
+
         # caller's source location:
 
         curframe = inspect.currentframe()
@@ -435,7 +365,7 @@ class DataEngine(object):
 
         # use macro engine to generate input strings
 
-        self.generate_training_data (lang, inps, code_ast, code_fn)
+        self.generate_training_data (lang, inps, md5s, code_fn, args)
 
         # import pdb; pdb.set_trace()
  

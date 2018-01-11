@@ -538,12 +538,18 @@ class AIKernal(object):
                 matching_resp = False
                 acode         = None
 
-                for lang, d, md5s, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
+                for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
 
                     ctx.set_inp(test_inp)
 
+                    # import pdb; pdb.set_trace()
+
                     afn, acode = self.dte.lookup_code(md5s)
-                    ecode = '%s\n%s(ctx)\n' % (acode, afn)
+                    ecode = '%s\n%s(ctx' % (acode, afn)
+                    if args:
+                        for arg in args:
+                            ecode += ',%s' % str(arg)
+                    ecode += ')\n'
                     try:
                         exec (ecode, globals(), locals())
                     except:

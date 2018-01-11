@@ -56,7 +56,8 @@ class TrainingData(Base):
     module            = Column(String(255), index=True)
 
     inp               = Column(UnicodeText, index=True)
-    md5s              = Column(String(32), index=True)
+    md5s              = Column(String(32))
+    args              = Column(String(255))
 
     loc_fn            = Column(String(255))
     loc_line          = Column(Integer)

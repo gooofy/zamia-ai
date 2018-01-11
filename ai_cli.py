@@ -142,14 +142,14 @@ class AICli(cmdln.Cmdln):
            help="verbose logging")
     @cmdln.option("-N", "--test-name", dest="test_name", type="str",
            help="run specific test only, default: all tests are run")
-    def do_test(self, subcmd, opts, *paths):
+    def do_test(self, subcmd, opts, *module_names):
         """${cmd_name}: run tests from module(s)
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(paths)==0:
+        if len(module_names)==0:
             logging.error ('specify at least one module name (or all to run tests from all modules)')
             return
 
@@ -160,7 +160,7 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            num_tests, num_fails = self.kernal.run_tests_multi (paths, run_trace=opts.run_trace, test_name=opts.test_name)
+            num_tests, num_fails = self.kernal.run_tests_multi (module_names, run_trace=opts.run_trace, test_name=opts.test_name)
             if num_fails:
                 logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
             else:

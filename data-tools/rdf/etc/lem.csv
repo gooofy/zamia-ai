@@ -2033,6 +2033,7 @@ wde7,http://www.wikidata.org/entity/Q23350
 wde8,http://www.wikidata.org/entity/Q23355
 wde8U189,http://www.wikidata.org/entity/Q12018
 wde9,http://www.wikidata.org/entity/Q19108
+wde911,http://www.wikidata.org/entity/Q4645527
 wdeAATID,http://www.wikidata.org/entity/P1014
 wdeABSASCLCode,http://www.wikidata.org/entity/P1251
 wdeABeautifulMind,http://www.wikidata.org/entity/Q164103
@@ -2104,6 +2105,7 @@ wdeAlbstadt,http://www.wikidata.org/entity/Q7019
 wdeAlchemist,http://www.wikidata.org/entity/Q15954519
 wdeAlcoholism,http://www.wikidata.org/entity/Q15326
 wdeAlejandroGonzálezIñárritu,http://www.wikidata.org/entity/Q55215
+wdeAlexaRank,http://www.wikidata.org/entity/P1661
 wdeAlexanderHamilton,http://www.wikidata.org/entity/Q178903
 wdeAlfred,http://www.wikidata.org/entity/Q3480335
 wdeAlfredHitchcock,http://www.wikidata.org/entity/Q7374
@@ -2135,6 +2137,7 @@ wdeAmboise,http://www.wikidata.org/entity/Q205116
 wdeAmericanBeauty,http://www.wikidata.org/entity/Q25139
 wdeAmericanEnglish,http://www.wikidata.org/entity/Q7976
 wdeAmericanHistoryX,http://www.wikidata.org/entity/Q208572
+wdeAmericanPowerAndTheNewMandarins,http://www.wikidata.org/entity/Q4744720
 wdeAmiga,http://www.wikidata.org/entity/Q100047
 wdeAmnesticDisorder,http://www.wikidata.org/entity/Q11072
 wdeAmoleGupte,http://www.wikidata.org/entity/Q4747497
@@ -2142,6 +2145,7 @@ wdeAmoresPerros,http://www.wikidata.org/entity/Q474098
 wdeAmsterdam,http://www.wikidata.org/entity/Q727
 wdeAmstradCPC,http://www.wikidata.org/entity/Q478829
 wdeAmélie,http://www.wikidata.org/entity/Q484048
+wdeAnalyst,http://www.wikidata.org/entity/Q485178
 wdeAnalyticPhilosopher,http://www.wikidata.org/entity/Q18930418
 wdeAnatomist,http://www.wikidata.org/entity/Q10872101
 wdeAnchiano,http://www.wikidata.org/entity/Q154184
@@ -2326,9 +2330,13 @@ wdeBasicFormOfGovernment,http://www.wikidata.org/entity/P122
 wdeBasque,http://www.wikidata.org/entity/Q8752
 wdeBatman,http://www.wikidata.org/entity/Q2633138
 wdeBatmanBegins,http://www.wikidata.org/entity/Q166262
+wdeBatmanKnightfall,http://www.wikidata.org/entity/Q920793
+wdeBatmanTheLongHalloween,http://www.wikidata.org/entity/Q512835
+wdeBatmanYearOne,http://www.wikidata.org/entity/Q383811
 wdeBattleOfBerlin,http://www.wikidata.org/entity/Q154182
 wdeBavaria,http://www.wikidata.org/entity/Q980
 wdeBavarikonID,http://www.wikidata.org/entity/P4005
+wdeBechdelTestMovieListID,http://www.wikidata.org/entity/P4632
 wdeBeekmanWinthrop,http://www.wikidata.org/entity/Q3701898
 wdeBeethoven,http://www.wikidata.org/entity/Q42864897
 wdeBeforeSunrise,http://www.wikidata.org/entity/Q659609
@@ -2472,6 +2480,7 @@ wdeCONORID,http://www.wikidata.org/entity/P1280
 wdeCPDLID,http://www.wikidata.org/entity/P2000
 wdeCPM,http://www.wikidata.org/entity/Q219528
 wdeCPU,http://www.wikidata.org/entity/P880
+wdeCSPANOrganizationID,http://www.wikidata.org/entity/P4725
 wdeCSPANPersonID,http://www.wikidata.org/entity/P2190
 wdeCTHSPersonID,http://www.wikidata.org/entity/P2383
 wdeCabinetAdenauerI,http://www.wikidata.org/entity/Q646196
@@ -2495,6 +2504,7 @@ wdeCabinetSchmidtIII,http://www.wikidata.org/entity/Q481626
 wdeCabinetSchröderI,http://www.wikidata.org/entity/Q663009
 wdeCabinetSchröderII,http://www.wikidata.org/entity/Q704213
 wdeCaldwell,http://www.wikidata.org/entity/Q717516
+wdeCalendarDate,http://www.wikidata.org/entity/Q205892
 wdeCalifornia,http://www.wikidata.org/entity/Q99
 wdeCaliforniaS12thCongressionalDistrict,http://www.wikidata.org/entity/Q1002264
 wdeCalvinCoolidge,http://www.wikidata.org/entity/Q36023
@@ -2506,6 +2516,7 @@ wdeCanberra,http://www.wikidata.org/entity/Q3114
 wdeCandidacyInElection,http://www.wikidata.org/entity/P3602
 wdeCandidate,http://www.wikidata.org/entity/P726
 wdeCanonicalSMILES,http://www.wikidata.org/entity/P233
+wdeCantorNumber,http://www.wikidata.org/entity/Q12786684
 wdeCapital,http://www.wikidata.org/entity/Q5119
 wdeCapital1,http://www.wikidata.org/entity/P36
 wdeCapitalOf,http://www.wikidata.org/entity/P1376
@@ -2521,6 +2532,7 @@ wdeCarolineReynolds,http://www.wikidata.org/entity/Q608408
 wdeCarrie,http://www.wikidata.org/entity/Q623394
 wdeCarstens,http://www.wikidata.org/entity/Q21504811
 wdeCarter,http://www.wikidata.org/entity/Q16101731
+wdeCartesianLinguistics,http://www.wikidata.org/entity/Q4357609
 wdeCartographer,http://www.wikidata.org/entity/Q1734662
 wdeCasablanca,http://www.wikidata.org/entity/Q132689
 wdeCasino,http://www.wikidata.org/entity/Q220910
@@ -2567,6 +2579,7 @@ wdeCentralDistrict,http://www.wikidata.org/entity/Q1125982
 wdeCentralEurope,http://www.wikidata.org/entity/Q27509
 wdeCentralGovernmentDebtAsAPercentOfGDP,http://www.wikidata.org/entity/P1689
 wdeCentralHungary,http://www.wikidata.org/entity/Q852742
+wdeCertifiedPublicAccountant,http://www.wikidata.org/entity/Q1056337
 wdeChEBIID,http://www.wikidata.org/entity/P683
 wdeChEMBLID,http://www.wikidata.org/entity/P592
 wdeChairmanOfTheSocialDemocraticParty,http://www.wikidata.org/entity/Q29576752
@@ -2632,6 +2645,8 @@ wdeCincinnati,http://www.wikidata.org/entity/Q43196
 wdeCineGrFilmID,http://www.wikidata.org/entity/P3129
 wdeCinemaID,http://www.wikidata.org/entity/P3933
 wdeCinemaParadiso,http://www.wikidata.org/entity/Q464032
+wdeCinemagiaActorID,http://www.wikidata.org/entity/P4666
+wdeCinemagiaFilmID,http://www.wikidata.org/entity/P4665
 wdeCinenacionalComMovieID,http://www.wikidata.org/entity/P3851
 wdeCinenacionalComPersonID,http://www.wikidata.org/entity/P3857
 wdeCineplexFilmID,http://www.wikidata.org/entity/P3077
@@ -2732,6 +2747,7 @@ wdeComputerScience,http://www.wikidata.org/entity/Q21198
 wdeComputerScientist,http://www.wikidata.org/entity/Q82594
 wdeComputingMachineryAndIntelligence,http://www.wikidata.org/entity/Q772056
 wdeComuneOfItaly,http://www.wikidata.org/entity/Q747074
+wdeConditionsOnTransformations,http://www.wikidata.org/entity/Q5159299
 wdeConfederation,http://www.wikidata.org/entity/Q170156
 wdeConflict,http://www.wikidata.org/entity/P607
 wdeConsolidatedCityCounty,http://www.wikidata.org/entity/Q3301053
@@ -2745,6 +2761,8 @@ wdeContainsAdministrativeTerritorialEntity,http://www.wikidata.org/entity/P150
 wdeContainsSettlement,http://www.wikidata.org/entity/P1383
 wdeContinent,http://www.wikidata.org/entity/P30
 wdeConurbation,http://www.wikidata.org/entity/Q245260
+wdeConversionToSIUnit,http://www.wikidata.org/entity/P2370
+wdeConversionToStandardUnit,http://www.wikidata.org/entity/P2442
 wdeConvictedOf,http://www.wikidata.org/entity/P1399
 wdeConway,http://www.wikidata.org/entity/Q659823
 wdeCookCounty,http://www.wikidata.org/entity/Q108418
@@ -2757,7 +2775,9 @@ wdeCoordinateOfEasternmostPoint,http://www.wikidata.org/entity/P1334
 wdeCoordinateOfNorthernmostPoint,http://www.wikidata.org/entity/P1332
 wdeCoordinateOfSouthernmostPoint,http://www.wikidata.org/entity/P1333
 wdeCoordinateOfWesternmostPoint,http://www.wikidata.org/entity/P1335
+wdeCoordinateSystem,http://www.wikidata.org/entity/Q11210
 wdeCopenhagen,http://www.wikidata.org/entity/Q1748
+wdeCopyrightOwner,http://www.wikidata.org/entity/P3931
 wdeCoriolanus,http://www.wikidata.org/entity/Q463126
 wdeCorporateNumberJapan,http://www.wikidata.org/entity/P3225
 wdeCorporateOfficer,http://www.wikidata.org/entity/P2828
@@ -2765,6 +2785,7 @@ wdeCosmologist,http://www.wikidata.org/entity/Q2998308
 wdeCost,http://www.wikidata.org/entity/P2130
 wdeCostumeDesigner,http://www.wikidata.org/entity/P2515
 wdeCostumeDrama,http://www.wikidata.org/entity/Q542475
+wdeCounterRevolutionaryViolenceBloodbathsInFactPropaganda,http://www.wikidata.org/entity/Q5176873
 wdeCountry,http://www.wikidata.org/entity/Q6256
 wdeCountry1,http://www.wikidata.org/entity/P17
 wdeCountryCallingCode,http://www.wikidata.org/entity/P474
@@ -2788,6 +2809,7 @@ wdeCrippledAmerica,http://www.wikidata.org/entity/Q21427293
 wdeCritiqueOfJudgment,http://www.wikidata.org/entity/Q1056332
 wdeCritiqueOfPracticalReason,http://www.wikidata.org/entity/Q870851
 wdeCritiqueOfPureReason,http://www.wikidata.org/entity/Q220002
+wdeCrossrefFunderID,http://www.wikidata.org/entity/P3153
 wdeCrunchbaseOrganisationID,http://www.wikidata.org/entity/P2088
 wdeCryptographer,http://www.wikidata.org/entity/Q15442776
 wdeCuba,http://www.wikidata.org/entity/Q241
@@ -2798,6 +2820,7 @@ wdeCultFilm,http://www.wikidata.org/entity/Q219557
 wdeCulture,http://www.wikidata.org/entity/P2596
 wdeCultureelWoordenboekIdentifier,http://www.wikidata.org/entity/P3569
 wdeCurrency,http://www.wikidata.org/entity/P38
+wdeCurrentIssuesInLinguisticTheory,http://www.wikidata.org/entity/Q35999116
 wdeCurtisHanson,http://www.wikidata.org/entity/Q263486
 wdeCyberpunk,http://www.wikidata.org/entity/Q174526
 wdeCyberpunkNovel,http://www.wikidata.org/entity/Q26228231
@@ -2808,6 +2831,7 @@ wdeCzechNeighbourhoodIDCode,http://www.wikidata.org/entity/P2788
 wdeCzechRepublic,http://www.wikidata.org/entity/Q213
 wdeCzechSocialistRepublic,http://www.wikidata.org/entity/Q1991965
 wdeCzechoslovakia,http://www.wikidata.org/entity/Q33946
+wdeDACSID,http://www.wikidata.org/entity/P4663
 wdeDBLPID,http://www.wikidata.org/entity/P2456
 wdeDBNLAuthorID,http://www.wikidata.org/entity/P723
 wdeDMOZID,http://www.wikidata.org/entity/P998
@@ -2815,6 +2839,7 @@ wdeDNBEditions,http://www.wikidata.org/entity/P1292
 wdeDNFFilmID,http://www.wikidata.org/entity/P1804
 wdeDNFPersonID,http://www.wikidata.org/entity/P2626
 wdeDOI,http://www.wikidata.org/entity/P356
+wdeDORISID,http://www.wikidata.org/entity/P4630
 wdeDSSTOXSubstanceIdentifier,http://www.wikidata.org/entity/P3117
 wdeDagensNyheterTopicID,http://www.wikidata.org/entity/P3509
 wdeDagensNæringslivTopicID,http://www.wikidata.org/entity/P4167
@@ -2838,6 +2863,7 @@ wdeDanskefilmPersonID,http://www.wikidata.org/entity/P3786
 wdeDanskfilmogtvPerson,http://www.wikidata.org/entity/P4112
 wdeDanskfilmogtvTitleID,http://www.wikidata.org/entity/P4209
 wdeDantaiCode,http://www.wikidata.org/entity/P429
+wdeDarkRomanticism,http://www.wikidata.org/entity/Q1418745
 wdeDarrenAronofsky,http://www.wikidata.org/entity/Q192762
 wdeDarrenFletcher,http://www.wikidata.org/entity/Q172792
 wdeDarwin,http://www.wikidata.org/entity/Q1166891
@@ -2862,6 +2888,7 @@ wdeDavidPalmer,http://www.wikidata.org/entity/Q249898
 wdeDavidSilverman,http://www.wikidata.org/entity/Q919608
 wdeDavidTurpie,http://www.wikidata.org/entity/Q260534
 wdeDavidYates,http://www.wikidata.org/entity/Q312988
+wdeDay,http://www.wikidata.org/entity/Q573
 wdeDayInYearForPeriodicOccurrence,http://www.wikidata.org/entity/P837
 wdeDeCometisLibelliTres,http://www.wikidata.org/entity/Q20962170
 wdeDeanDeBlois,http://www.wikidata.org/entity/Q1181049
@@ -2873,6 +2900,7 @@ wdeDedicatedTo,http://www.wikidata.org/entity/P825
 wdeDeepestPoint,http://www.wikidata.org/entity/P1589
 wdeDeficientNumber,http://www.wikidata.org/entity/Q467511
 wdeDefiningFormula,http://www.wikidata.org/entity/P2534
+wdeDelargeID,http://www.wikidata.org/entity/P1988
 wdeDelaware,http://www.wikidata.org/entity/Q986183
 wdeDelmenhorst,http://www.wikidata.org/entity/Q3907
 wdeDemocracy,http://www.wikidata.org/entity/Q7174
@@ -2889,6 +2917,7 @@ wdeDepictedBy,http://www.wikidata.org/entity/P1299
 wdeDepicts,http://www.wikidata.org/entity/P180
 wdeDepictsIconclassNotation,http://www.wikidata.org/entity/P1257
 wdeDeprecatedNARAPersonID,http://www.wikidata.org/entity/P1222
+wdeDeputyDirectorOfTheCentralIntelligenceAgency,http://www.wikidata.org/entity/Q5261025
 wdeDescribedAtURL,http://www.wikidata.org/entity/P973
 wdeDescribedBySource,http://www.wikidata.org/entity/P1343
 wdeDescriptiveItemUsedAsUnit,http://www.wikidata.org/entity/Q22302160
@@ -2898,7 +2927,9 @@ wdeDesperation,http://www.wikidata.org/entity/Q913576
 wdeDetailMap,http://www.wikidata.org/entity/P1621
 wdeDetectiveFiction,http://www.wikidata.org/entity/Q186424
 wdeDetectiveWriter,http://www.wikidata.org/entity/Q10297252
+wdeDeterringDemocracy,http://www.wikidata.org/entity/Q5265720
 wdeDetmold,http://www.wikidata.org/entity/Q3922
+wdeDeutscheSynchronkarteiActorID,http://www.wikidata.org/entity/P4332
 wdeDeutscheSynchronkarteiFilmID,http://www.wikidata.org/entity/P3844
 wdeDeutscherSparkassenUndGiroverband,http://www.wikidata.org/entity/Q315510
 wdeDeutschlandfunk,http://www.wikidata.org/entity/Q695328
@@ -2916,6 +2947,7 @@ wdeDieHard,http://www.wikidata.org/entity/Q105598
 wdeDifferentFrom,http://www.wikidata.org/entity/P1889
 wdeDigitalAtlasOfTheRomanEmpireID,http://www.wikidata.org/entity/P1936
 wdeDigitalFortress,http://www.wikidata.org/entity/Q207964
+wdeDimension,http://www.wikidata.org/entity/P4020
 wdeDinosaur,http://www.wikidata.org/entity/Q430
 wdeDiocese,http://www.wikidata.org/entity/P708
 wdeDiplomat,http://www.wikidata.org/entity/Q193391
@@ -2969,6 +3001,7 @@ wdeDortmund,http://www.wikidata.org/entity/Q1295
 wdeDoubanMovieID,http://www.wikidata.org/entity/P4529
 wdeDoubleIndemnity,http://www.wikidata.org/entity/Q478209
 wdeDoubleIndemnity1,http://www.wikidata.org/entity/Q2270341
+wdeDoubleMersenneNumber,http://www.wikidata.org/entity/Q1318413
 wdeDouglas,http://www.wikidata.org/entity/Q463035
 wdeDouglasAdams,http://www.wikidata.org/entity/Q42
 wdeDownfall,http://www.wikidata.org/entity/Q152857
@@ -2977,6 +3010,8 @@ wdeDrama,http://www.wikidata.org/entity/Q25372
 wdeDrama1,http://www.wikidata.org/entity/Q21010853
 wdeDramaAnimeAndManga,http://www.wikidata.org/entity/Q15637299
 wdeDramaFilm,http://www.wikidata.org/entity/Q130232
+wdeDramaturge,http://www.wikidata.org/entity/Q487596
+wdeDramaturgy,http://www.wikidata.org/entity/Q492537
 wdeDreamWorld,http://www.wikidata.org/entity/Q4425624
 wdeDreamcatcher,http://www.wikidata.org/entity/Q569790
 wdeDresden,http://www.wikidata.org/entity/Q1731
@@ -3009,10 +3044,14 @@ wdeEGAXAID,http://www.wikidata.org/entity/P1309
 wdeEHAKId,http://www.wikidata.org/entity/P1140
 wdeEIDRIdentifier,http://www.wikidata.org/entity/P2704
 wdeEIRINFilmRating,http://www.wikidata.org/entity/P2756
+wdeEMLOLocationID,http://www.wikidata.org/entity/P4672
 wdeEMLOPersonID,http://www.wikidata.org/entity/P1802
 wdeEMedicine,http://www.wikidata.org/entity/P673
 wdeEPPOCode,http://www.wikidata.org/entity/P3031
+wdeESCOOccupationID,http://www.wikidata.org/entity/P4652
+wdeEUTAPersonID,http://www.wikidata.org/entity/P4534
 wdeEUTransparencyRegisterID,http://www.wikidata.org/entity/P2657
+wdeEarliestDate,http://www.wikidata.org/entity/P1319
 wdeEastFrancia,http://www.wikidata.org/entity/Q153080
 wdeEastOakLane,http://www.wikidata.org/entity/Q5329064
 wdeEberhardDiepgen,http://www.wikidata.org/entity/Q60957
@@ -3021,7 +3060,9 @@ wdeEd,http://www.wikidata.org/entity/Q1282258
 wdeEdKealty,http://www.wikidata.org/entity/Q5335019
 wdeEdgar,http://www.wikidata.org/entity/Q2660560
 wdeEdgarAllanPoe,http://www.wikidata.org/entity/Q16867
+wdeEdinburgh,http://www.wikidata.org/entity/Q23436
 wdeEdison,http://www.wikidata.org/entity/Q37027345
+wdeEditionOrTranslationOf,http://www.wikidata.org/entity/P629
 wdeEditionS,http://www.wikidata.org/entity/P747
 wdeEditor,http://www.wikidata.org/entity/P98
 wdeEdmundRandolph,http://www.wikidata.org/entity/Q318703
@@ -3068,6 +3109,7 @@ wdeEnciclopédiaItaúCulturalID,http://www.wikidata.org/entity/P4399
 wdeEnclaveWithin,http://www.wikidata.org/entity/P501
 wdeEncyclopediaOfAustralianScienceID,http://www.wikidata.org/entity/P4228
 wdeEncyclopediaOfLifeID,http://www.wikidata.org/entity/P830
+wdeEncyclopediaOfModernUkraineID,http://www.wikidata.org/entity/P4613
 wdeEncyclopædiaBritannicaOnlineID,http://www.wikidata.org/entity/P1417
 wdeEncyclopædiaUniversalisOnlineID,http://www.wikidata.org/entity/P3219
 wdeEndPeriod,http://www.wikidata.org/entity/P3416
@@ -3151,6 +3193,7 @@ wdeFacebookProfileID,http://www.wikidata.org/entity/P2013
 wdeFacetOf,http://www.wikidata.org/entity/P1269
 wdeFactorialPrime,http://www.wikidata.org/entity/Q973861
 wdeFagadays,http://www.wikidata.org/entity/Q24451228
+wdeFailedStatesTheAbuseOfPowerAndTheAssaultOnDemocracy,http://www.wikidata.org/entity/Q1198699
 wdeFairbanks,http://www.wikidata.org/entity/Q79638
 wdeFairfield,http://www.wikidata.org/entity/Q1393235
 wdeFallOfGiants,http://www.wikidata.org/entity/Q472222
@@ -3347,6 +3390,7 @@ wdeGarretHobart,http://www.wikidata.org/entity/Q310841
 wdeGates,http://www.wikidata.org/entity/Q16870134
 wdeGauck,http://www.wikidata.org/entity/Q23952585
 wdeGavinOConnor,http://www.wikidata.org/entity/Q3099599
+wdeGazaInCrisis,http://www.wikidata.org/entity/Q5528984
 wdeGebhardMüller,http://www.wikidata.org/entity/Q69051
 wdeGedbasGenealogyPersonID,http://www.wikidata.org/entity/P4108
 wdeGender,http://www.wikidata.org/entity/Q48277
@@ -3489,6 +3533,7 @@ wdeGustav,http://www.wikidata.org/entity/Q746076
 wdeGustavHeinemann,http://www.wikidata.org/entity/Q2573
 wdeGuyRitchie,http://www.wikidata.org/entity/Q192990
 wdeGéopatronymeID,http://www.wikidata.org/entity/P3370
+wdeGüntherRiesen,http://www.wikidata.org/entity/Q1526952
 wdeHDSID,http://www.wikidata.org/entity/P902
 wdeHKMDbFilmID,http://www.wikidata.org/entity/P2883
 wdeHKMDbPersonID,http://www.wikidata.org/entity/P3346
@@ -3562,6 +3607,7 @@ wdeHeadquartersLocation,http://www.wikidata.org/entity/P159
 wdeHeartOfDarkness,http://www.wikidata.org/entity/Q129778
 wdeHeat,http://www.wikidata.org/entity/Q42198
 wdeHebrew,http://www.wikidata.org/entity/Q9288
+wdeHegemonyOrSurvival,http://www.wikidata.org/entity/Q2386750
 wdeHeidelbergAcademyForSciencesAndHumanitiesMemberID,http://www.wikidata.org/entity/P2273
 wdeHeight,http://www.wikidata.org/entity/P2048
 wdeHeilbronn,http://www.wikidata.org/entity/Q715
@@ -3644,6 +3690,7 @@ wdeHughLawsonWhite,http://www.wikidata.org/entity/Q1634433
 wdeHuisClos,http://www.wikidata.org/entity/Q21209409
 wdeHuman,http://www.wikidata.org/entity/Q5
 wdeHumanDevelopmentIndex,http://www.wikidata.org/entity/P1081
+wdeHumanGeographicTerritorialEntity,http://www.wikidata.org/entity/Q15642541
 wdeHumanPregnancy,http://www.wikidata.org/entity/Q11995
 wdeHumanSettlement,http://www.wikidata.org/entity/Q486972
 wdeHumanWhoMayBeFictional,http://www.wikidata.org/entity/Q21070568
@@ -3703,6 +3750,7 @@ wdeISO6395Code,http://www.wikidata.org/entity/P1798
 wdeISO6396Code,http://www.wikidata.org/entity/P221
 wdeISOCATId,http://www.wikidata.org/entity/P2263
 wdeISOStandard,http://www.wikidata.org/entity/P503
+wdeISQBaseQuantity,http://www.wikidata.org/entity/Q30337748
 wdeISTATID,http://www.wikidata.org/entity/P635
 wdeISzDbFilmID,http://www.wikidata.org/entity/P3110
 wdeITISTSN,http://www.wikidata.org/entity/P815
@@ -3729,6 +3777,7 @@ wdeImageOfGrave,http://www.wikidata.org/entity/P1442
 wdeImmanuel,http://www.wikidata.org/entity/Q18199901
 wdeImmanuelKant,http://www.wikidata.org/entity/Q9312
 wdeImmediateCauseOf,http://www.wikidata.org/entity/P1536
+wdeImperialAmbitions,http://www.wikidata.org/entity/Q6006356
 wdeInChI,http://www.wikidata.org/entity/P234
 wdeInChIKey,http://www.wikidata.org/entity/P235
 wdeInPhOID,http://www.wikidata.org/entity/P863
@@ -3768,8 +3817,10 @@ wdeIntendedPublic,http://www.wikidata.org/entity/P2360
 wdeInternetArchiveID,http://www.wikidata.org/entity/P724
 wdeInternetBroadwayDatabasePersonID,http://www.wikidata.org/entity/P1220
 wdeInternetBroadwayDatabaseShowID,http://www.wikidata.org/entity/P1219
+wdeInternetOffBroadwayDatabaseID,http://www.wikidata.org/entity/P4456
 wdeInterstellar,http://www.wikidata.org/entity/Q13417189
 wdeInterstellarTravel,http://www.wikidata.org/entity/Q834826
+wdeInterventions,http://www.wikidata.org/entity/Q1671448
 wdeIntoTheWild,http://www.wikidata.org/entity/Q269912
 wdeIntoTheWild1,http://www.wikidata.org/entity/Q1235125
 wdeInvasionOfNormandy,http://www.wikidata.org/entity/Q16471
@@ -3825,6 +3876,7 @@ wdeJamesDWatson,http://www.wikidata.org/entity/Q83333
 wdeJamesECampbell,http://www.wikidata.org/entity/Q881053
 wdeJamesFairmanFielder,http://www.wikidata.org/entity/Q883011
 wdeJamesHeller,http://www.wikidata.org/entity/Q3056715
+wdeJamesHunt,http://www.wikidata.org/entity/Q140393
 wdeJamesKPolk,http://www.wikidata.org/entity/Q11891
 wdeJamesLloyd,http://www.wikidata.org/entity/Q1680712
 wdeJamesMadison,http://www.wikidata.org/entity/Q11813
@@ -3955,6 +4007,7 @@ wdeKarlovac,http://www.wikidata.org/entity/Q3617
 wdeKen,http://www.wikidata.org/entity/Q2645657
 wdeKenFollett,http://www.wikidata.org/entity/Q210669
 wdeKennedy,http://www.wikidata.org/entity/Q120401
+wdeKennedy1,http://www.wikidata.org/entity/Q67761
 wdeKensington,http://www.wikidata.org/entity/Q288781
 wdeKentucky,http://www.wikidata.org/entity/Q1603
 wdeKepler,http://www.wikidata.org/entity/Q16277846
@@ -3988,6 +4041,7 @@ wdeKinopolisFilmID,http://www.wikidata.org/entity/P2970
 wdeKit,http://www.wikidata.org/entity/Q811844
 wdeKlausTöpfer,http://www.wikidata.org/entity/Q62889
 wdeKldB2010OccupationCode,http://www.wikidata.org/entity/P1021
+wdeKnowledgeOfLanguageItsNatureOriginAndUse,http://www.wikidata.org/entity/Q6423386
 wdeKohl,http://www.wikidata.org/entity/Q1778468
 wdeKomi,http://www.wikidata.org/entity/Q36126
 wdeKonrad,http://www.wikidata.org/entity/Q18156186
@@ -4028,6 +4082,7 @@ wdeLabelInSignLanguage,http://www.wikidata.org/entity/P2919
 wdeLadyWithAnErmine,http://www.wikidata.org/entity/Q474338
 wdeLagaan,http://www.wikidata.org/entity/Q843949
 wdeLak,http://www.wikidata.org/entity/Q36206
+wdeLakesOnRiver,http://www.wikidata.org/entity/P469
 wdeLamar,http://www.wikidata.org/entity/Q572172
 wdeLanaWachowski,http://www.wikidata.org/entity/Q9545711
 wdeLandSurveyor,http://www.wikidata.org/entity/Q294126
@@ -4045,11 +4100,13 @@ wdeLasseHallström,http://www.wikidata.org/entity/Q316051
 wdeLastFmMusicID,http://www.wikidata.org/entity/P3192
 wdeLastLine,http://www.wikidata.org/entity/P3132
 wdeLatinAmerica,http://www.wikidata.org/entity/Q12585
+wdeLatveriMs,http://www.wikidata.org/entity/Q2415171
 wdeLawrenceOfArabia,http://www.wikidata.org/entity/Q228186
 wdeLawyer,http://www.wikidata.org/entity/Q40348
 wdeLazio,http://www.wikidata.org/entity/Q1282
 wdeLdiFID,http://www.wikidata.org/entity/P3107
 wdeLeMondeDiplomatiqueSubjectID,http://www.wikidata.org/entity/P3612
+wdeLecturesOnGovernmentAndBindingThePisaLectures,http://www.wikidata.org/entity/Q6512436
 wdeLeeUnkrich,http://www.wikidata.org/entity/Q380920
 wdeLegalEntityID,http://www.wikidata.org/entity/P1278
 wdeLegalForm,http://www.wikidata.org/entity/P1454
@@ -4108,6 +4165,7 @@ wdeListOfWorks,http://www.wikidata.org/entity/P1455
 wdeLiteraryCharacter,http://www.wikidata.org/entity/Q3658341
 wdeLiteraryCritic,http://www.wikidata.org/entity/Q4263842
 wdeLiteraryScience,http://www.wikidata.org/entity/Q208217
+wdeLiteraryWork,http://www.wikidata.org/entity/Q7725634
 wdeLocalDialingCode,http://www.wikidata.org/entity/P473
 wdeLocalGovernmentInGermany,http://www.wikidata.org/entity/Q1418640
 wdeLocatedAtStreetAddress,http://www.wikidata.org/entity/P969
@@ -4189,6 +4247,7 @@ wdeMaintainedBy,http://www.wikidata.org/entity/P126
 wdeMainz,http://www.wikidata.org/entity/Q1720
 wdeMajidMajidi,http://www.wikidata.org/entity/Q81770
 wdeMajorRegionalCenter,http://www.wikidata.org/entity/Q253030
+wdeMakingTheFuture,http://www.wikidata.org/entity/Q6739682
 wdeMale,http://www.wikidata.org/entity/Q6581097
 wdeMaleFormOfLabel,http://www.wikidata.org/entity/P3321
 wdeMaleGivenName,http://www.wikidata.org/entity/Q12308941
@@ -4229,6 +4288,7 @@ wdeMattSantos,http://www.wikidata.org/entity/Q610519
 wdeMatthew,http://www.wikidata.org/entity/Q4927231
 wdeMax,http://www.wikidata.org/entity/Q16422172
 wdeMaxPlanck,http://www.wikidata.org/entity/Q9021
+wdeMaxWallraf,http://www.wikidata.org/entity/Q1913578
 wdeMaximumNumberOfPlayers,http://www.wikidata.org/entity/P1873
 wdeMayor,http://www.wikidata.org/entity/Q30185
 wdeMayorOfEssen,http://www.wikidata.org/entity/Q645769
@@ -4239,6 +4299,7 @@ wdeMeSHID,http://www.wikidata.org/entity/P486
 wdeMeanAge,http://www.wikidata.org/entity/P4442
 wdeMeasureForMeasure,http://www.wikidata.org/entity/Q665446
 wdeMeasuredBy,http://www.wikidata.org/entity/P1880
+wdeMeasuredPhysicalQuantity,http://www.wikidata.org/entity/P111
 wdeMechanicalEngineer,http://www.wikidata.org/entity/Q1906857
 wdeMecklenburgWesternPomerania,http://www.wikidata.org/entity/Q1196
 wdeMediaCritic,http://www.wikidata.org/entity/Q19251029
@@ -4316,9 +4377,11 @@ wdeMicrocomputer,http://www.wikidata.org/entity/Q32738
 wdeMicrosoft,http://www.wikidata.org/entity/Q2283
 wdeMicrosoftWindows,http://www.wikidata.org/entity/Q1406
 wdeMiddleEast,http://www.wikidata.org/entity/Q7204
+wdeMiddleEastIllusions,http://www.wikidata.org/entity/Q16821245
 wdeMilan,http://www.wikidata.org/entity/Q490
 wdeMilan1,http://www.wikidata.org/entity/Q1645063
 wdeMilitaryBranch,http://www.wikidata.org/entity/P241
+wdeMilitaryLeader,http://www.wikidata.org/entity/Q1402561
 wdeMilitaryPersonnel,http://www.wikidata.org/entity/Q47064
 wdeMilitaryRank,http://www.wikidata.org/entity/P410
 wdeMilitaryScienceFiction,http://www.wikidata.org/entity/Q904447
@@ -4338,6 +4401,7 @@ wdeMinisterPresidentOfLowerSaxony,http://www.wikidata.org/entity/Q31524732
 wdeMinisterPresidentOfNorthRhineWestphalia,http://www.wikidata.org/entity/Q30534793
 wdeMinistryForEconomicCooperationAndDevelopmentOfGermany,http://www.wikidata.org/entity/Q684357
 wdeMinkulturyFilmID,http://www.wikidata.org/entity/P2636
+wdeMinneapolisInstituteOfArtConstituentID,http://www.wikidata.org/entity/P3603
 wdeMinnesota,http://www.wikidata.org/entity/Q1527
 wdeMisery,http://www.wikidata.org/entity/Q596874
 wdeMissaSolemnis,http://www.wikidata.org/entity/Q723790
@@ -4353,6 +4417,7 @@ wdeMoksha,http://www.wikidata.org/entity/Q13343
 wdeMolecularBiologist,http://www.wikidata.org/entity/Q15839206
 wdeMolecularBiologyOfTheGene,http://www.wikidata.org/entity/Q29458433
 wdeMonaLisa,http://www.wikidata.org/entity/Q12418
+wdeMonarch,http://www.wikidata.org/entity/Q116
 wdeMonroe,http://www.wikidata.org/entity/Q2780460
 wdeMonsterFilm,http://www.wikidata.org/entity/Q1342372
 wdeMonstersInc,http://www.wikidata.org/entity/Q187726
@@ -4456,6 +4521,7 @@ wdeNathanielPitcher,http://www.wikidata.org/entity/Q881557
 wdeNationalAcademyOfMedicineFranceMemberID,http://www.wikidata.org/entity/P3956
 wdeNationalArchivesIdentifier,http://www.wikidata.org/entity/P1225
 wdeNationalCentralCity,http://www.wikidata.org/entity/Q1066538
+wdeNationalDiscographyOfItalianSongArtistGroupID,http://www.wikidata.org/entity/P2510
 wdeNationalFootballTeamsComPlayerID,http://www.wikidata.org/entity/P2574
 wdeNationalGalleryOfArtArtistID,http://www.wikidata.org/entity/P2252
 wdeNationalGalleryOfVictoriaArtistID,http://www.wikidata.org/entity/P2041
@@ -4465,6 +4531,7 @@ wdeNationalLibraryOfIrelandAuthority,http://www.wikidata.org/entity/P1946
 wdeNationalLibraryOfIsraelID,http://www.wikidata.org/entity/P949
 wdeNationalPortraitGalleryLondonPersonID,http://www.wikidata.org/entity/P1816
 wdeNationalReorganizationProcess,http://www.wikidata.org/entity/Q645986
+wdeNationalSecurityAdvisor,http://www.wikidata.org/entity/Q1414246
 wdeNationalThesaurusForAuthorNamesID,http://www.wikidata.org/entity/P1006
 wdeNationalmuseumSwedenArtistID,http://www.wikidata.org/entity/P2538
 wdeNativeLabel,http://www.wikidata.org/entity/P1705
@@ -4507,6 +4574,7 @@ wdeNightOverWater,http://www.wikidata.org/entity/Q753153
 wdeNightfall,http://www.wikidata.org/entity/Q1138091
 wdeNightsOfCabiria,http://www.wikidata.org/entity/Q18405
 wdeNighttimeView,http://www.wikidata.org/entity/P3451
+wdeNikiLauda,http://www.wikidata.org/entity/Q78489
 wdeNiklaus,http://www.wikidata.org/entity/Q18145372
 wdeNiklausWirth,http://www.wikidata.org/entity/Q92604
 wdeNikola,http://www.wikidata.org/entity/Q15501913
@@ -4519,6 +4587,7 @@ wdeNixon,http://www.wikidata.org/entity/Q20748921
 wdeNixon1,http://www.wikidata.org/entity/Q16880460
 wdeNoCountryForOldMen,http://www.wikidata.org/entity/Q183081
 wdeNoCountryForOldMen1,http://www.wikidata.org/entity/Q611689
+wdeNoManSLand,http://www.wikidata.org/entity/Q891189
 wdeNoah,http://www.wikidata.org/entity/Q19819780
 wdeNoahDaniels,http://www.wikidata.org/entity/Q10337170
 wdeNoam,http://www.wikidata.org/entity/Q1994678
@@ -4555,6 +4624,7 @@ wdeNumberOfDeaths,http://www.wikidata.org/entity/P1120
 wdeNumberOfEpisodes,http://www.wikidata.org/entity/P1113
 wdeNumberOfHouseholds,http://www.wikidata.org/entity/P1538
 wdeNumberOfHouses,http://www.wikidata.org/entity/P4080
+wdeNumberOfOutOfSchoolChildren,http://www.wikidata.org/entity/P2573
 wdeNumberOfPages,http://www.wikidata.org/entity/P1104
 wdeNumberOfPartsOfAWorkOfArt,http://www.wikidata.org/entity/P2635
 wdeNumberOfRepresentativesInAnOrganizationLegislature,http://www.wikidata.org/entity/P1410
@@ -4575,10 +4645,12 @@ wdeOS2,http://www.wikidata.org/entity/Q189794
 wdeOSGridReference,http://www.wikidata.org/entity/P613
 wdeObama,http://www.wikidata.org/entity/Q5280414
 wdeOberwiesenthal,http://www.wikidata.org/entity/Q57926
+wdeObjectivityAndLiberalScholarship,http://www.wikidata.org/entity/Q7075090
 wdeOccitan,http://www.wikidata.org/entity/Q14185
 wdeOccupant,http://www.wikidata.org/entity/P466
 wdeOccupation,http://www.wikidata.org/entity/P106
 wdeOccupationOfJapan,http://www.wikidata.org/entity/Q696251
+wdeOccupy,http://www.wikidata.org/entity/Q7075828
 wdeOceania,http://www.wikidata.org/entity/Q538
 wdeOctagonalNumber,http://www.wikidata.org/entity/Q2634498
 wdeOddNumber,http://www.wikidata.org/entity/Q13366129
@@ -4602,6 +4674,7 @@ wdeOhioS19thCongressionalDistrict,http://www.wikidata.org/entity/Q7080691
 wdeOil,http://www.wikidata.org/entity/Q7081270
 wdeOldAge,http://www.wikidata.org/entity/Q191089
 wdeOldBoy,http://www.wikidata.org/entity/Q1648035
+wdeOldManLogan,http://www.wikidata.org/entity/Q1649084
 wdeOldWorld,http://www.wikidata.org/entity/Q174807
 wdeOldboy,http://www.wikidata.org/entity/Q475693
 wdeOliverHirschbiegel,http://www.wikidata.org/entity/Q60634
@@ -4609,6 +4682,7 @@ wdeOliverStone,http://www.wikidata.org/entity/Q179497
 wdeOlivierNakache,http://www.wikidata.org/entity/Q74428
 wdeOlona,http://www.wikidata.org/entity/Q3351539
 wdeOmaha,http://www.wikidata.org/entity/Q43199
+wdeOmahaBeach,http://www.wikidata.org/entity/Q464257
 wdeOmarBradley,http://www.wikidata.org/entity/Q207955
 wdeOmegaWikiDefinedMeaning,http://www.wikidata.org/entity/P1245
 wdeOmniTopicID,http://www.wikidata.org/entity/P3479
@@ -4619,6 +4693,7 @@ wdeOnceUponATimeInAmerica,http://www.wikidata.org/entity/Q206388
 wdeOnceUponATimeInTheWest,http://www.wikidata.org/entity/Q168154
 wdeOneFlewOverTheCuckooSNest,http://www.wikidata.org/entity/Q171669
 wdeOneFlewOverTheCuckooSNest1,http://www.wikidata.org/entity/Q857313
+wdeOnlineBooksPageAuthorID,http://www.wikidata.org/entity/P4629
 wdeOntario,http://www.wikidata.org/entity/Q1904
 wdeOpenCitationsBibliographicResourceID,http://www.wikidata.org/entity/P3181
 wdeOpenDomesdaySettlementID,http://www.wikidata.org/entity/P3118
@@ -4643,6 +4718,7 @@ wdeOpticksOrATreatiseOfTheReflectionsRefractionsInflectionsAndColoursOfLight,htt
 wdeOrganisationDirectedFromTheOffice,http://www.wikidata.org/entity/P2389
 wdeOrganizedCrime,http://www.wikidata.org/entity/Q46952
 wdeOrigin,http://www.wikidata.org/entity/Q30610044
+wdeOriginOfTheWatercourse,http://www.wikidata.org/entity/P885
 wdeOriginalFilmFormat,http://www.wikidata.org/entity/P3803
 wdeOriginalLanguageOfWork,http://www.wikidata.org/entity/P364
 wdeOriginalNetwork,http://www.wikidata.org/entity/P449
@@ -4679,7 +4755,9 @@ wdePageS,http://www.wikidata.org/entity/P304
 wdePainter,http://www.wikidata.org/entity/Q1028181
 wdePalmer,http://www.wikidata.org/entity/Q568872
 wdePanSLabyrinth,http://www.wikidata.org/entity/Q216006
+wdePanoramaView,http://www.wikidata.org/entity/P4291
 wdePapalStates,http://www.wikidata.org/entity/Q170174
+wdeParentOrganization,http://www.wikidata.org/entity/P749
 wdeParentTaxon,http://www.wikidata.org/entity/P171
 wdeParis,http://www.wikidata.org/entity/Q90
 wdeParkChanWook,http://www.wikidata.org/entity/Q315484
@@ -4698,6 +4776,7 @@ wdePascal,http://www.wikidata.org/entity/Q81571
 wdePastor,http://www.wikidata.org/entity/Q152002
 wdePatBrown,http://www.wikidata.org/entity/Q724121
 wdePathsOfGlory,http://www.wikidata.org/entity/Q747936
+wdePatientOf,http://www.wikidata.org/entity/P3205
 wdePatientplusID,http://www.wikidata.org/entity/P1461
 wdePatrickHenry,http://www.wikidata.org/entity/Q311885
 wdePatrickJHillings,http://www.wikidata.org/entity/Q1259373
@@ -4720,6 +4799,7 @@ wdePerimeter,http://www.wikidata.org/entity/P2547
 wdePeriod,http://www.wikidata.org/entity/P2348
 wdePerl,http://www.wikidata.org/entity/Q42478
 wdePerlentaucherID,http://www.wikidata.org/entity/P866
+wdePermID,http://www.wikidata.org/entity/P3347
 wdePermanentDuplicatedItem,http://www.wikidata.org/entity/P2959
 wdePermanentMemberOfTheUnitedNationsSecurityCouncil,http://www.wikidata.org/entity/Q6688521
 wdePerrinNumber,http://www.wikidata.org/entity/Q599093
@@ -4826,6 +4906,7 @@ wdePowerHitRadio,http://www.wikidata.org/entity/Q12372710
 wdePowerOf10,http://www.wikidata.org/entity/Q184611
 wdePowerOf1000,http://www.wikidata.org/entity/Q41068772
 wdePowerOfTwo,http://www.wikidata.org/entity/Q1136880
+wdePracticedBy,http://www.wikidata.org/entity/P3095
 wdePrague,http://www.wikidata.org/entity/Q1085
 wdePrefectureOfJapan,http://www.wikidata.org/entity/Q50337
 wdePregnancyCategory,http://www.wikidata.org/entity/P3489
@@ -4855,6 +4936,7 @@ wdePrismaID,http://www.wikidata.org/entity/P4515
 wdePrisonFilm,http://www.wikidata.org/entity/Q586250
 wdePrisoners,http://www.wikidata.org/entity/Q3404003
 wdePriyadarshan,http://www.wikidata.org/entity/Q3115713
+wdeProducedSound,http://www.wikidata.org/entity/P4733
 wdeProducer,http://www.wikidata.org/entity/P162
 wdeProductOrMaterialProduced,http://www.wikidata.org/entity/P1056
 wdeProductionCompany,http://www.wikidata.org/entity/P272
@@ -4864,6 +4946,7 @@ wdeProductionStatistics,http://www.wikidata.org/entity/P2746
 wdeProfession,http://www.wikidata.org/entity/Q28640
 wdeProfessor,http://www.wikidata.org/entity/Q121594
 wdeProfessorship,http://www.wikidata.org/entity/P803
+wdeProfitOverPeopleNeoliberalismAndGlobalOrder,http://www.wikidata.org/entity/Q4377740
 wdeProgrammer,http://www.wikidata.org/entity/Q5482740
 wdeProgrammingLanguage,http://www.wikidata.org/entity/P277
 wdeProgrammingLanguage1,http://www.wikidata.org/entity/Q9143
@@ -4874,6 +4957,7 @@ wdeProlegomenaToAnyFutureMetaphysics,http://www.wikidata.org/entity/Q1761342
 wdeProlog,http://www.wikidata.org/entity/Q163468
 wdePronicNumber,http://www.wikidata.org/entity/Q1486643
 wdePronunciationAudio,http://www.wikidata.org/entity/P443
+wdePropagandaAndThePublicMind,http://www.wikidata.org/entity/Q18669751
 wdePropertiesForThisType,http://www.wikidata.org/entity/P1963
 wdeProperty,http://www.wikidata.org/entity/Q31208391
 wdePropertyDeveloper,http://www.wikidata.org/entity/Q695829
@@ -4906,8 +4990,10 @@ wdePublishedIn,http://www.wikidata.org/entity/P1433
 wdePublisher,http://www.wikidata.org/entity/P123
 wdePulpFiction,http://www.wikidata.org/entity/Q104123
 wdePython,http://www.wikidata.org/entity/Q28865
+wdeQUDTUnitID,http://www.wikidata.org/entity/P2968
 wdeQingDynasty,http://www.wikidata.org/entity/Q8733
 wdeQuantity,http://www.wikidata.org/entity/P1114
+wdeQuantitySymbol,http://www.wikidata.org/entity/P416
 wdeQuentinTarantino,http://www.wikidata.org/entity/Q3772
 wdeQuoraTopicID,http://www.wikidata.org/entity/P3417
 wdeQuoraUsername,http://www.wikidata.org/entity/P4411
@@ -4919,6 +5005,7 @@ wdeROMEOccupationCodeV3,http://www.wikidata.org/entity/P867
 wdeRSLIDPerson,http://www.wikidata.org/entity/P947
 wdeRTCFilmRating,http://www.wikidata.org/entity/P3834
 wdeRTECSNumber,http://www.wikidata.org/entity/P657
+wdeRacingReferenceDriverID,http://www.wikidata.org/entity/P3048
 wdeRacism,http://www.wikidata.org/entity/Q8461
 wdeRadioPersonality,http://www.wikidata.org/entity/Q2722764
 wdeRagingBull,http://www.wikidata.org/entity/Q220780
@@ -5059,6 +5146,7 @@ wdeRudolfScharping,http://www.wikidata.org/entity/Q61321
 wdeRudolphineTables,http://www.wikidata.org/entity/Q611853
 wdeRugbyUnionPlayer,http://www.wikidata.org/entity/Q14089670
 wdeRuhrDepartment,http://www.wikidata.org/entity/Q1270636
+wdeRunebergAuthorID,http://www.wikidata.org/entity/P3154
 wdeRuprechtPolenz,http://www.wikidata.org/entity/Q74218
 wdeRush,http://www.wikidata.org/entity/Q1768437
 wdeRussia,http://www.wikidata.org/entity/Q159
@@ -5111,6 +5199,7 @@ wdeSavingPrivateRyan,http://www.wikidata.org/entity/Q165817
 wdeSaxonAcademyOfSciencesMemberID,http://www.wikidata.org/entity/P3411
 wdeSaxony,http://www.wikidata.org/entity/Q1202
 wdeSaxonyAnhalt,http://www.wikidata.org/entity/Q1206
+wdeScalarPhysicalQuantity,http://www.wikidata.org/entity/Q181175
 wdeScandinavia,http://www.wikidata.org/entity/Q21195
 wdeScarface,http://www.wikidata.org/entity/Q471306
 wdeScarface1,http://www.wikidata.org/entity/Q47075
@@ -5320,6 +5409,7 @@ wdeSteveMcQueen,http://www.wikidata.org/entity/Q706475
 wdeStevenSpielberg,http://www.wikidata.org/entity/Q8877
 wdeStevensThomsonMason,http://www.wikidata.org/entity/Q331107
 wdeStockExchange,http://www.wikidata.org/entity/P414
+wdeStockbroker,http://www.wikidata.org/entity/Q4182927
 wdeStockholm,http://www.wikidata.org/entity/Q1754
 wdeStonewall,http://www.wikidata.org/entity/Q975048
 wdeStoryboardArtist,http://www.wikidata.org/entity/P3275
@@ -5392,6 +5482,7 @@ wdeTOID,http://www.wikidata.org/entity/P3120
 wdeTRS80,http://www.wikidata.org/entity/Q610305
 wdeTRS801,http://www.wikidata.org/entity/Q14523564
 wdeTVComID,http://www.wikidata.org/entity/P2638
+wdeTVGuidePersonID,http://www.wikidata.org/entity/P3845
 wdeTVGuideShowID,http://www.wikidata.org/entity/P3804
 wdeTaareZameenPar,http://www.wikidata.org/entity/Q1043614
 wdeTabasaran,http://www.wikidata.org/entity/Q34079
@@ -5457,6 +5548,7 @@ wdeTheColoradoKid,http://www.wikidata.org/entity/Q464557
 wdeTheComedyOfErrors,http://www.wikidata.org/entity/Q506505
 wdeTheDaVinciCode,http://www.wikidata.org/entity/Q81689
 wdeTheDarkKnight,http://www.wikidata.org/entity/Q163872
+wdeTheDarkKnightReturns,http://www.wikidata.org/entity/Q810863
 wdeTheDarkKnightRises,http://www.wikidata.org/entity/Q189330
 wdeTheDarkTower,http://www.wikidata.org/entity/Q280898
 wdeTheDarkTowerIVWizardAndGlass,http://www.wikidata.org/entity/Q670552
@@ -5473,6 +5565,7 @@ wdeTheElephantMan,http://www.wikidata.org/entity/Q272860
 wdeTheExpressionOfTheEmotionsInManAndAnimals,http://www.wikidata.org/entity/Q1192325
 wdeTheEyesOfTheDragon,http://www.wikidata.org/entity/Q471926
 wdeTheFallOfTheHouseOfUsher,http://www.wikidata.org/entity/Q1197735
+wdeTheFatefulTriangle,http://www.wikidata.org/entity/Q10322956
 wdeTheFellowshipOfTheRing,http://www.wikidata.org/entity/Q208002
 wdeTheFormationOfVegetableMouldThroughTheActionOfWorms,http://www.wikidata.org/entity/Q917790
 wdeTheFountainsOfParadise,http://www.wikidata.org/entity/Q786025
@@ -5518,6 +5611,7 @@ wdeTheLuckOfBarryLyndon,http://www.wikidata.org/entity/Q2124771
 wdeTheMalteseFalcon,http://www.wikidata.org/entity/Q221462
 wdeTheMalteseFalcon1,http://www.wikidata.org/entity/Q870551
 wdeTheManFromStPetersburg,http://www.wikidata.org/entity/Q2276991
+wdeTheManWhoFalls,http://www.wikidata.org/entity/Q3798402
 wdeTheMatrix,http://www.wikidata.org/entity/Q83495
 wdeTheMerchantOfVenice,http://www.wikidata.org/entity/Q206400
 wdeTheMerryWivesOfWindsor,http://www.wikidata.org/entity/Q844836
@@ -5529,10 +5623,12 @@ wdeTheNarrativeOfArthurGordonPymOfNantucket,http://www.wikidata.org/entity/Q6153
 wdeTheNumbersMovieID,http://www.wikidata.org/entity/P3808
 wdeTheOvalPortrait,http://www.wikidata.org/entity/Q878571
 wdeThePassionOfJoanOfArc,http://www.wikidata.org/entity/Q51520
+wdeThePeeragePersonID,http://www.wikidata.org/entity/P4638
 wdeThePianist,http://www.wikidata.org/entity/Q150804
 wdeThePianist1,http://www.wikidata.org/entity/Q2641481
 wdeThePillarsOfTheEarth,http://www.wikidata.org/entity/Q1163227
 wdeThePitAndThePendulum,http://www.wikidata.org/entity/Q379449
+wdeThePoliticalEconomyOfHumanRights,http://www.wikidata.org/entity/Q27628282
 wdeThePowerOfMovementInPlants,http://www.wikidata.org/entity/Q4354654
 wdeThePresident,http://www.wikidata.org/entity/Q24043569
 wdeThePrestige,http://www.wikidata.org/entity/Q46551
@@ -5540,6 +5636,7 @@ wdeThePrestige1,http://www.wikidata.org/entity/Q944991
 wdeThePrincessBride,http://www.wikidata.org/entity/Q506418
 wdeThePrincessBride1,http://www.wikidata.org/entity/Q1935913
 wdeThePrivateLifeOfGenghisKhan,http://www.wikidata.org/entity/Q7758404
+wdeTheProsperousFewAndTheRestlessMany,http://www.wikidata.org/entity/Q7758607
 wdeTheProtectorate,http://www.wikidata.org/entity/Q1987351
 wdeThePurloinedLetter,http://www.wikidata.org/entity/Q733448
 wdeTheQuestionInTheirEyes,http://www.wikidata.org/entity/Q5967869
@@ -5558,6 +5655,7 @@ wdeTheSilenceOfTheLambs,http://www.wikidata.org/entity/Q133654
 wdeTheSilenceOfTheLambs1,http://www.wikidata.org/entity/Q897685
 wdeTheSilmarillion,http://www.wikidata.org/entity/Q79762
 wdeTheSixthSense,http://www.wikidata.org/entity/Q183063
+wdeTheSoundPatternOfEnglish,http://www.wikidata.org/entity/Q1074959
 wdeTheStand,http://www.wikidata.org/entity/Q149552
 wdeTheSting,http://www.wikidata.org/entity/Q62665
 wdeTheTalisman,http://www.wikidata.org/entity/Q462454
@@ -5619,6 +5717,7 @@ wdeThriller,http://www.wikidata.org/entity/Q182015
 wdeThrillerFilm,http://www.wikidata.org/entity/Q2484376
 wdeThuringia,http://www.wikidata.org/entity/Q1205
 wdeTibre,http://www.wikidata.org/entity/Q3528124
+wdeTime,http://www.wikidata.org/entity/Q11471
 wdeTimeLoop,http://www.wikidata.org/entity/Q186610
 wdeTimeOfDiscovery,http://www.wikidata.org/entity/P575
 wdeTimeOfEarliestWrittenRecord,http://www.wikidata.org/entity/P1249
@@ -5694,6 +5793,7 @@ wdeTwitterUsername,http://www.wikidata.org/entity/P2002
 wdeTyler,http://www.wikidata.org/entity/Q1707301
 wdeU268SFDFilmID,http://www.wikidata.org/entity/P2529
 wdeU268SFDPersonID,http://www.wikidata.org/entity/P2605
+wdeUBioID,http://www.wikidata.org/entity/P4728
 wdeUEFAPlayerID,http://www.wikidata.org/entity/P2276
 wdeUICAlphabeticalCountryCode,http://www.wikidata.org/entity/P2981
 wdeUICNumericalCountryCode,http://www.wikidata.org/entity/P2982
@@ -5708,6 +5808,7 @@ wdeUNII,http://www.wikidata.org/entity/P652
 wdeUNLOCODE,http://www.wikidata.org/entity/P1937
 wdeUNSPSCCode,http://www.wikidata.org/entity/P2167
 wdeUNZAuthorIdentifier,http://www.wikidata.org/entity/P2734
+wdeUSBVendorID,http://www.wikidata.org/entity/P1167
 wdeUSCongressBioID,http://www.wikidata.org/entity/P1157
 wdeUSFederalElectionCommissionID,http://www.wikidata.org/entity/P1839
 wdeUbuntu1610Package,http://www.wikidata.org/entity/P3473
@@ -5718,12 +5819,15 @@ wdeUltimateCaptainAmerica,http://www.wikidata.org/entity/Q7880141
 wdeUltimateThor,http://www.wikidata.org/entity/Q4003185
 wdeUlysses,http://www.wikidata.org/entity/Q4003050
 wdeUlyssesSGrant,http://www.wikidata.org/entity/Q34836
+wdeUnderstandingPower,http://www.wikidata.org/entity/Q16547846
 wdeUnemploymentRate,http://www.wikidata.org/entity/P1198
 wdeUnforgiven,http://www.wikidata.org/entity/Q104137
 wdeUnicodeCharacter,http://www.wikidata.org/entity/P487
 wdeUnifiedAstronomyThesaurusID,http://www.wikidata.org/entity/P4466
 wdeUniformTypeIdentifier,http://www.wikidata.org/entity/P3641
 wdeUnifranceFilmID,http://www.wikidata.org/entity/P3961
+wdeUnit,http://www.wikidata.org/entity/Q2198779
+wdeUnitSymbol,http://www.wikidata.org/entity/P558
 wdeUnitaryState,http://www.wikidata.org/entity/Q179164
 wdeUnitedKingdom,http://www.wikidata.org/entity/Q145
 wdeUnitedKingdomOfGreatBritainAndIreland,http://www.wikidata.org/entity/Q174193
@@ -5736,6 +5840,7 @@ wdeUnitedStatesAmbassadorToRussia,http://www.wikidata.org/entity/Q1515730
 wdeUnitedStatesAmbassadorToTheNetherlands,http://www.wikidata.org/entity/Q7889414
 wdeUnitedStatesAmbassadorToTheUnitedKingdom,http://www.wikidata.org/entity/Q2841904
 wdeUnitedStatesAmbassadorToTheUnitedNations,http://www.wikidata.org/entity/Q1785225
+wdeUnitedStatesCongressionalSelectOrSpecialCommittee,http://www.wikidata.org/entity/Q18175356
 wdeUnitedStatesHouseOfRepresentativesElections1946,http://www.wikidata.org/entity/Q4450698
 wdeUnitedStatesMinorOutlyingIslands,http://www.wikidata.org/entity/Q16645
 wdeUnitedStatesOfAmerica,http://www.wikidata.org/entity/Q30
@@ -5758,8 +5863,10 @@ wdeUnitedStatesSecretaryOfWar,http://www.wikidata.org/entity/Q2419102
 wdeUnitedStatesSenateCareerOfBarackObama,http://www.wikidata.org/entity/Q7891359
 wdeUnitedStatesSenateElectionInIllinois2004,http://www.wikidata.org/entity/Q3586671
 wdeUnitedStatesSenateElections1952,http://www.wikidata.org/entity/Q4348063
+wdeUnitedStatesSenateReceptionRoom,http://www.wikidata.org/entity/Q30637857
 wdeUnitedStatesSenator,http://www.wikidata.org/entity/Q13217683
 wdeUnitedStatesSolicitorGeneral,http://www.wikidata.org/entity/Q2298067
+wdeUnitsUsedForThisProperty,http://www.wikidata.org/entity/P2237
 wdeUniversalDecimalClassification,http://www.wikidata.org/entity/P1190
 wdeUniversityOfBarcelonaAuthorityID,http://www.wikidata.org/entity/P1580
 wdeUniversityTeacher,http://www.wikidata.org/entity/Q1622272
@@ -5789,6 +5896,7 @@ wdeVertigo,http://www.wikidata.org/entity/Q202548
 wdeViceChancellorOfGermany,http://www.wikidata.org/entity/Q504272
 wdeVicePresidentOfTheUnitedStates,http://www.wikidata.org/entity/Q11699
 wdeVictorFleming,http://www.wikidata.org/entity/Q62503
+wdeVictory,http://www.wikidata.org/entity/P2522
 wdeVideo,http://www.wikidata.org/entity/P10
 wdeVienna,http://www.wikidata.org/entity/Q1741
 wdeVietnamWar,http://www.wikidata.org/entity/Q8740
@@ -5826,6 +5934,7 @@ wdeWLeeODaniel,http://www.wikidata.org/entity/Q676664
 wdeWOEID,http://www.wikidata.org/entity/P1281
 wdeWSJTopicID,http://www.wikidata.org/entity/P3183
 wdeWWEComSuperstarID,http://www.wikidata.org/entity/P2857
+wdeWales,http://www.wikidata.org/entity/Q25
 wdeWalker,http://www.wikidata.org/entity/Q16622960
 wdeWalter,http://www.wikidata.org/entity/Q499249
 wdeWalterMondale,http://www.wikidata.org/entity/Q49216
@@ -5838,6 +5947,7 @@ wdeWarrior,http://www.wikidata.org/entity/Q1415964
 wdeWashington,http://www.wikidata.org/entity/Q2550388
 wdeWashingtonDC,http://www.wikidata.org/entity/Q61
 wdeWaterAsPercentOfArea,http://www.wikidata.org/entity/P2927
+wdeWatershed,http://www.wikidata.org/entity/P4614
 wdeWatershedArea,http://www.wikidata.org/entity/P2053
 wdeWatson,http://www.wikidata.org/entity/Q1184721
 wdeWaxhaws,http://www.wikidata.org/entity/Q2552970
@@ -5857,6 +5967,7 @@ wdeWestBerlin,http://www.wikidata.org/entity/Q56036
 wdeWestBranch,http://www.wikidata.org/entity/Q1798762
 wdeWestGermany,http://www.wikidata.org/entity/Q713750
 wdeWestern,http://www.wikidata.org/entity/Q172980
+wdeWestern1,http://www.wikidata.org/entity/Q21590660
 wdeWesternRomanEmpire,http://www.wikidata.org/entity/Q42834
 wdeWestmorelandCounty,http://www.wikidata.org/entity/Q494413
 wdeWhatEverHappenedToBabyJane,http://www.wikidata.org/entity/Q26644
@@ -5867,6 +5978,7 @@ wdeWhiteHouse,http://www.wikidata.org/entity/Q35525
 wdeWhiteHouseChiefOfStaff,http://www.wikidata.org/entity/Q786242
 wdeWhoGoesThere,http://www.wikidata.org/entity/Q7617836
 wdeWhoSWhoInFranceBiographyID,http://www.wikidata.org/entity/P4124
+wdeWhyOnlyUs,http://www.wikidata.org/entity/Q26215999
 wdeWidth,http://www.wikidata.org/entity/P2049
 wdeWiesbaden,http://www.wikidata.org/entity/Q1721
 wdeWigettaEsReal,http://www.wikidata.org/entity/Q8963
@@ -5881,6 +5993,7 @@ wdeWikidataProperty1,http://www.wikidata.org/entity/Q18616576
 wdeWikidataPropertyExample,http://www.wikidata.org/entity/P1855
 wdeWikidataPropertyForTheRelationshipBetweenClasses,http://www.wikidata.org/entity/Q28326461
 wdeWikidataSPARQLQueryEquivalent,http://www.wikidata.org/entity/P3921
+wdeWikidataTimePrecision,http://www.wikidata.org/entity/P2803
 wdeWikidataUsageInstructions,http://www.wikidata.org/entity/P2559
 wdeWikimediaLanguageCode,http://www.wikidata.org/entity/P424
 wdeWikivoyageBanner,http://www.wikidata.org/entity/P948
@@ -5888,6 +6001,7 @@ wdeWildStrawberries,http://www.wikidata.org/entity/Q239756
 wdeWildTales,http://www.wikidata.org/entity/Q16672466
 wdeWilhelm,http://www.wikidata.org/entity/Q11027623
 wdeWilhelmKaisen,http://www.wikidata.org/entity/Q73921
+wdeWilliSuth,http://www.wikidata.org/entity/Q2577546
 wdeWilliam,http://www.wikidata.org/entity/Q12344159
 wdeWilliamABlakley,http://www.wikidata.org/entity/Q4088427
 wdeWilliamAMoseley,http://www.wikidata.org/entity/Q8004011
@@ -5953,6 +6067,7 @@ wdeWriter,http://www.wikidata.org/entity/Q36180
 wdeWritingSystem,http://www.wikidata.org/entity/P282
 wdeWulff,http://www.wikidata.org/entity/Q28317637
 wdeWuppertal,http://www.wikidata.org/entity/Q2107
+wdeWurvocOrgMeasureID,http://www.wikidata.org/entity/P3328
 wdeWuxiaFilm,http://www.wikidata.org/entity/Q15858553
 wdeWürttembergBaden,http://www.wikidata.org/entity/Q251660
 wdeWürzburg,http://www.wikidata.org/entity/Q2999

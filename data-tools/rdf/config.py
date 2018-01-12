@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch
+# Copyright 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -1905,10 +1905,12 @@ RDF_ALIASES = {
                 u'wde:OperatingSystem'                     : u'http://www.wikidata.org/entity/Q9135',
                 u'wde:ProgrammingLanguage'                 : u'http://www.wikidata.org/entity/Q9143',
                 u'wde:Film'                                : u'http://www.wikidata.org/entity/Q11424',
+                u'wde:Time'                                : u'http://www.wikidata.org/entity/Q11471',
                 u'wde:PresidentOfTheUnitedStatesOfAmerica' : u'http://www.wikidata.org/entity/Q11696',
                 u'wde:PresidentOfGermany'                  : u'http://www.wikidata.org/entity/Q25223',
                 u'wde:Writer'                              : u'http://www.wikidata.org/entity/Q36180',
                 u'wde:ComputerScientist'                   : u'http://www.wikidata.org/entity/Q82594',
+                u'wde:CalendarDate'                        : u'http://www.wikidata.org/entity/Q205892',
                 u'wde:HomeComputer'                        : u'http://www.wikidata.org/entity/Q473708',
                 u'wde:FilmDirector'                        : u'http://www.wikidata.org/entity/Q2526255',
                 u'wde:FederalChancellorOfGermany'          : u'http://www.wikidata.org/entity/Q4970706',
@@ -2672,6 +2674,8 @@ RES_PATHS = [
                   u'wde:GeographicLocation',
                   u'wde:Location',
                   u'wde:MultitaskingOperatingSystem',
+                  u'wde:Time',
+                  u'wde:CalendarDate',
                 ],
                 [
                   ['wdpd:SubclassOf'],

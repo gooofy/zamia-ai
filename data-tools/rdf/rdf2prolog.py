@@ -44,10 +44,10 @@ RDF_SCHEMA_LABEL   = rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label')
 LANGUAGES          = set([u'en', u'de'])
 LEGAL_ENTITY_CHARS = set(u"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöùúûüý")
 
-def mangle_prolog(n):
+def mangle_prolog(n, start_uppercase=False):
 
     res = u''
-    make_upper = False # to enforce CamelCase
+    make_upper = start_uppercase # to enforce CamelCase
 
     for c in n:
         if not c.isalnum():
@@ -75,7 +75,7 @@ def mangle_url(s):
     if not prefix:
         raise Exception ('no prefix for %s found' % s)
 
-    return prefix + mangle_prolog(n)
+    return prefix + mangle_prolog(n, start_uppercase=True)
 
 def entity_label(s, label):
 
@@ -89,7 +89,7 @@ def entity_label(s, label):
     if not prefix:
         raise Exception ('no prefix for %s found' % s)
 
-    l = prefix + mangle_prolog(label)
+    l = prefix + mangle_prolog(label, start_uppercase=True)
 
     return l[:100]
 
@@ -131,7 +131,7 @@ def property_label(p):
             if o.language != 'en':
                 continue
 
-            l = prefix + mangle_prolog(unicode(o))
+            l = prefix + mangle_prolog(unicode(o), start_uppercase=True)
 
         if not l:
             return None

@@ -10,6 +10,36 @@ DEPENDS    = [ 'config' ]
 
 PL_SOURCES = ['time.pl', 'utils.pl']
 
+def transcribe_time_en(dt):
+
+    h12 = dt.hour if dt.hour < 13 else dt.hour - 12
+
+    if dt.minute == 0:
+        return u"exactly %d o'clock" % h12
+    elif dt.minute == 1:
+        return u"one minute past %d" % h12
+    elif dt.minute == 15:
+        return u"a quarter past %d" % h12
+    elif dt.minute == 30:
+        return u"half past %d" % h12
+
+    return u"%d minutes past %d" % (dt.minute, h12)
+
+def transcribe_time_de(dt):
+
+    h12 = dt.hour if dt.hour < 13 else dt.hour - 12
+
+    if dt.minute == 0:
+        return u"genau %d Uhr" % h12
+    elif dt.minute == 1:
+        return u"eine Minute nach %d" % h12
+    elif dt.minute == 15:
+        return u"viertel nach %d" % h12
+    elif dt.minute == 30:
+        return u"eine halbe Stunde nach %d" % h12
+
+    return u"%d Minuten nach %d" % (dt.minute, h12)
+
 # FIXME: port to python
 
 # def builtin_transcribe_number (g, pe):

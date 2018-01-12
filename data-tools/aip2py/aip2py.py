@@ -54,6 +54,8 @@ def convert_test(clause):
 
     global outf, ts_count
 
+    logging.debug (u'convert_test: %s' % unicode(clause))
+
     lang = clause.head.args[0].name
 
     if not isinstance(clause.body, Predicate) or clause.body.name != 'and':
@@ -62,10 +64,18 @@ def convert_test(clause):
 
     outf.write(u"    k.dte.ts('%s', '%s', [" % (clause.head.args[0], clause.head.args[1]))
 
-    idx = 0
+    idx  = 0
+    prep = []
+    while idx < len(clause.body.args) and isinstance (clause.body.args[idx], Predicate):
+        prep.append(clause.body.args[idx])
+        idx += 1
+
+    first = True
     while idx < len(clause.body.args):
 
-        if idx > 0:
+        if first:
+            first = False
+        else:
             outf.write(u',\n                               ')
 
         inp  = clause.body.args[idx].s  
@@ -82,7 +92,10 @@ def convert_test(clause):
 
         outf.write(u'(u"%s", u"%s", %s)' % (inp, resp, repr(actions)) )
 
-    outf.write(u"])\n")
+    outf.write(u"]")
+    if prep:
+        outf.write(u", prep=%s" % unicode(prep))
+    outf.write(u")\n")
 
     ts_count += 1
     if ts_count % 2 == 0:

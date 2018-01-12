@@ -83,6 +83,7 @@ class AIContext(object):
         self.ner_dict     = {} # DB cache
         self.session      = session
         self.lang         = lang
+        self.current_dt   = datetime.datetime.now()
 
     def set_inp(self, inp):
         self.inp = inp

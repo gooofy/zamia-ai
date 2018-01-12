@@ -338,8 +338,10 @@ class DataEngine(object):
             code_fn  = '_resp'
             
         else:
+
             code_src = inspect.getsource(resp)
             code_src = self._unindent(code_src)
+            logging.debug('dte: code_src=%s' % code_src)
             code_ast = ast.parse(code_src)
 
             for node in ast.walk(code_ast):

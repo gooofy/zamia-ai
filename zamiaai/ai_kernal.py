@@ -99,6 +99,14 @@ class AIContext(object):
     def commit_resp(self, i):
         self.dlg_log.append( { 'inp': self.inp, 
                                'out': self.staged_resps[i][0] })
+
+        mems = self.staged_resps[i][3]
+        if mems:
+            for m in mems:
+                logging.debug ('executing mem %s' % repr(m))
+                xsb_command_string(m)
+
+        self.staged_resps = []
        
     def _ner_learn(self, lang, cls):
 

@@ -42,43 +42,6 @@
 % time_label(CT, de, dayAfterTomorrow, "übermorgen").
 % time_label(CT, de, nextThreeDays,    "in den nächsten drei Tagen").
 % 
-% transcribe_month(en,  1, 'january').
-% transcribe_month(en,  2, 'february').
-% transcribe_month(en,  3, 'march').
-% transcribe_month(en,  4, 'april').
-% transcribe_month(en,  5, 'may').
-% transcribe_month(en,  6, 'june').
-% transcribe_month(en,  7, 'july').
-% transcribe_month(en,  8, 'august').
-% transcribe_month(en,  9, 'september').
-% transcribe_month(en, 10, 'october').
-% transcribe_month(en, 11, 'november').
-% transcribe_month(en, 12, 'december').
-% 
-% transcribe_month(de,  1, 'januar').
-% transcribe_month(de,  2, 'februar').
-% transcribe_month(de,  3, 'märz').
-% transcribe_month(de,  4, 'april').
-% transcribe_month(de,  5, 'mai').
-% transcribe_month(de,  6, 'juni').
-% transcribe_month(de,  7, 'juli').
-% transcribe_month(de,  8, 'august').
-% transcribe_month(de,  9, 'september').
-% transcribe_month(de, 10, 'oktober').
-% transcribe_month(de, 11, 'november').
-% transcribe_month(de, 12, 'dezember').
-% 
-% transcribe_date(en, dativ, TS, SCRIPT) :-
-%     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-%     transcribe_number(en, nominative, D, DS),
-%     transcribe_month(en, M, MS),
-%     SCRIPT is format_str('%s %s, %s', MS, DS, Y).
-% 
-% transcribe_date(de, dativ, TS, SCRIPT) :-
-%     stamp_date_time(TS, date(Y,M,D,H,Mn,S,'local')),
-%     transcribe_number(de, ordgen, D, DS),
-%     transcribe_month(de, M, MS),
-%     SCRIPT is format_str('%s %s %s', DS, MS, Y).
 % 
 % %
 % % time and dates
@@ -125,43 +88,4 @@
 % macro (de, timespec, TIME, LABEL) :- TIME is dayAfterTomorrow, LABEL is 'übermorgen'.
 % macro (de, timespec, TIME, LABEL) :- TIME is nextThreeDays   , LABEL is 'die nächsten drei Tage'.
 %  
-% hour12(H, H12) :- H < 13, H12 is H, !.
-% hour12(H, H12) :- H > 12, H12 is H - 12, !.
-% 
-% transcribe_time (en, H,   0, TS) :- hour12(H, H12), TS is format_str ("exactly %d o'clock", H12), !.
-% transcribe_time (en, H,   1, TS) :- hour12(H, H12), TS is format_str ("one minute past %d", H12), !.
-% transcribe_time (en, H,  15, TS) :- hour12(H, H12), TS is format_str ("a quarter past %d", H12), !.
-% transcribe_time (en, H,  30, TS) :- hour12(H, H12), TS is format_str ("half past %d", H12), !.
-% transcribe_time (en, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d minutes past %d", MIN, H12).
-% 
-% transcribe_time (de, H,   0, TS) :- hour12(H, H12), TS is format_str ("genau %d Uhr", H12), !.
-% transcribe_time (de, H,   1, TS) :- hour12(H, H12), TS is format_str ("eine Minute nach %d", H12), !.
-% transcribe_time (de, H,  15, TS) :- hour12(H, H12), TS is format_str ("Viertel nach %d", H12), !.
-% transcribe_time (de, H,  30, TS) :- hour12(H, H12), TS is format_str ("eine halbe Stunde nach %d", H12), !.
-% transcribe_time (de, H, MIN, TS) :- hour12(H, H12), TS is format_str ("%d Minuten nach %d", MIN, H12).
-% 
-% transcribe_time (LANG, T, TS) :-
-%     stamp_date_time(T, date(Y,M,D,H,MIN,S,'local')),
-%     transcribe_time (LANG, H, MIN, TS).
-% 
-% 
-% transcribe_wday_ts (LANG, T, TD) :-
-%     day_of_the_week(T, DOW),
-%     transcribe_wday (LANG, DOW, TD).
-% 
-% transcribe_wday (en, 1, 'Monday').
-% transcribe_wday (en, 2, 'Tuesday').
-% transcribe_wday (en, 3, 'Wednesday').
-% transcribe_wday (en, 4, 'Thursday').
-% transcribe_wday (en, 5, 'Friday').
-% transcribe_wday (en, 6, 'Saturday').
-% transcribe_wday (en, 7, 'Sunday').
-% 
-% transcribe_wday (de, 1, 'Montag').
-% transcribe_wday (de, 2, 'Dienstag').
-% transcribe_wday (de, 3, 'Mittwoch').
-% transcribe_wday (de, 4, 'Donnerstag').
-% transcribe_wday (de, 5, 'Freitag').
-% transcribe_wday (de, 6, 'Samstag').
-% transcribe_wday (de, 7, 'Sonntag').
 

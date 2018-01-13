@@ -31,13 +31,15 @@ def get_data(k):
 
             rcode = xsb_next()
 
+
     def compute_squared(c, n1_start, n1_end):
+        def action_set_ent_math(c):
+            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, score in c.ner(c.lang, 'natnum', n1_start, n1_end):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
                 res = n1 * n1
-                # FIXME: set(C:context|topic, wdeMathematics)
-                c.resp(u"%d" % res, score=score+100.0)
+                c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (squared|square)", 
                     u"calculate {natnum:W} (squared|square) (please|)"], compute_squared, ['natnum_0_start', 'natnum_0_end'])
@@ -48,6 +50,8 @@ def get_data(k):
     k.dte.ts('de', 'square01', [(u"was ergibt 12 ins quadrat?", u"144.", [])])
 
     def compute_addition(c, n1_start, n1_end, n2_start, n2_end):
+        def action_set_ent_math(c):
+            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
@@ -56,8 +60,7 @@ def get_data(k):
                     n2 = row['N2']
                     res = n1 + n2
                     score = s1+s2
-                    # FIXME: set(C:context|topic, wdeMathematics)
-                    c.resp(u"%d" % res, score=score+100.0)
+                    c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (plus|and|added) {natnum2:W}", 
                     u"calculate {natnum:W} (plus|and|added) {natnum2:W} (please|)", 
@@ -72,6 +75,8 @@ def get_data(k):
     k.dte.ts('de', 'plus01', [(u"was ergibt 12 plus 11?", u"23.", [])])
 
     def compute_subtraction(c, n1_start, n1_end, n2_start, n2_end):
+        def action_set_ent_math(c):
+            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
@@ -80,8 +85,7 @@ def get_data(k):
                     n2 = row['N2']
                     res = n1 - n2
                     score = s1+s2
-                    # FIXME: set(C:context|topic, wdeMathematics)
-                    c.resp(u"%d" % res, score=score+100.0)
+                    c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (minus|subtracted) {natnum2:W}", 
                     u"calculate {natnum:W} (minus|subtracted) {natnum2:W} (please|)",
@@ -97,6 +101,8 @@ def get_data(k):
     k.dte.ts('de', 'minus03', [(u"subtrahiere 5 von 11", u"6.", [])])
 
     def compute_multiplication(c, n1_start, n1_end, n2_start, n2_end):
+        def action_set_ent_math(c):
+            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
@@ -105,8 +111,7 @@ def get_data(k):
                     n2 = row['N2']
                     res = n1 * n2
                     score = s1+s2
-                    # FIXME: set(C:context|topic, wdeMathematics)
-                    c.resp(u"%d" % res, score=score+100.0)
+                    c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} (times|multiplied with|multiplied by) {natnum2:W}", 
                     u"calculate {natnum:W} (times|multiplied with) {natnum2:W} (please|)", 
@@ -120,6 +125,8 @@ def get_data(k):
     k.dte.ts('de', 'multiply01', [(u"was ergibt 3 mal 3?", u"9.", [])])
 
     def compute_division(c, n1_start, n1_end, n2_start, n2_end):
+        def action_set_ent_math(c):
+            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
             for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
@@ -128,8 +135,7 @@ def get_data(k):
                     n2 = row['N2']
                     res = n1 / n2
                     score = s1+s2
-                    # FIXME: set(C:context|topic, wdeMathematics)
-                    c.resp(u"%d" % res, score=score+100.0)
+                    c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
     k.dte.dt('en', [u"what (gives|is|makes) {natnum:W} divided by {natnum2:W}", 
                     u"calculate {natnum:W} didivded by {natnum2:W} (please|)", 

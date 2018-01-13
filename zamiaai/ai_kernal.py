@@ -55,8 +55,9 @@ USER_PREFIX        = u'user'
 DEFAULT_USER       = USER_PREFIX + u'Default'
 TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
-TEST_MODULE        = '__test__'
+TEST_REALM         = '__test__'
 MAX_NER_RESULTS    = 5
+MAX_MEM_ENTRIES    = 5
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -74,12 +75,13 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self, user, session, lang):
+    def __init__(self, user, session, lang, realm):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
         self.inp          = u''
         self.user         = user
+        self.realm        = realm
         self.ner_dict     = {} # DB cache
         self.session      = session
         self.lang         = lang
@@ -88,11 +90,11 @@ class AIContext(object):
     def set_inp(self, inp):
         self.inp = inp
 
-    def resp(self, resp, score=0.0, actions=[], mems=[]):
+    def resp(self, resp, score=0.0, action=None):
         if score > self.high_score:
             self.high_score   = score
             self.staged_resps = []
-        self.staged_resps.append( (resp, score, actions, mems) )
+        self.staged_resps.append( (resp, score, action) )
 
     def get_resps(self):
         return self.staged_resps
@@ -101,11 +103,9 @@ class AIContext(object):
         self.dlg_log.append( { 'inp': self.inp, 
                                'out': self.staged_resps[i][0] })
 
-        mems = self.staged_resps[i][3]
-        if mems:
-            for m in mems:
-                logging.debug ('executing mem %s' % repr(m))
-                xsb_command_string(m)
+        action = self.staged_resps[i][2]
+        if action:
+            action(self)
 
         self.staged_resps = []
        
@@ -222,6 +222,46 @@ class AIContext(object):
                 break
 
         return res
+
+    def mem_clear(self, realm):
+        self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()
+
+    def mem_set(self, realm, k, v):
+        self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).delete()
+        m = model.Mem(realm=realm, k=k, v=json.dumps(v))
+        self.session.add(m)
+
+    def mem_get(self, realm, k):
+        m = self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).first()
+        if not m:
+            return None
+        return json.loads(m.v)
+
+    def mem_get_multi (self, realm, k):
+
+        m = self.mem_get(realm, k)
+        if not m:
+            return []
+        if not isinstance (m, list):
+            return [1.0, m]
+
+        s = 1.0
+        res = []
+        for m2 in m:
+            res.append((s, m2))
+            s = s / 2
+
+        return res
+    
+    def mem_push (self, realm, k, v):
+        oldv = self.mem_get(realm, k)
+        if not oldv:
+            newv = [v]
+        elif isinstance (oldv, list):
+            newv = [v] + oldv
+        else:
+            newv = [v, oldv]
+        self.mem_set(realm, k, newv)
 
 class AIKernal(object):
 
@@ -516,16 +556,9 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER, self.dte.session, lang)
+            ctx        = AIContext(TEST_USER, self.dte.session, lang, TEST_REALM)
             round_num  = 0
             num_tests += 1
-
-            # FIXME
-            # res, cur_context = self._setup_context ( user          = TEST_USER, 
-            #                                          lang          = tc.lang, 
-            #                                          inp           = t_in,
-            #                                          prev_context  = prev_context,
-            #                                          prev_res      = res)
 
             # prep
 
@@ -536,11 +569,10 @@ class AIKernal(object):
                 except:
                     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
-            for test_inp, test_out, test_actions in rounds:
+            for test_inp, test_out, test_action in rounds:
                
                 logging.info("nlp_test: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
                 logging.info("nlp_test: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
-                logging.info("nlp_test: %s round %d test_actions: %s" % (t_name, round_num, repr(test_actions)) )
 
                 # look up code in data engine
 
@@ -551,14 +583,13 @@ class AIKernal(object):
 
                     ctx.set_inp(test_inp)
 
-                    # import pdb; pdb.set_trace()
-
                     afn, acode = self.dte.lookup_code(md5s)
                     ecode = '%s\n%s(ctx' % (acode, afn)
                     if args:
                         for arg in args:
                             ecode += ',%s' % str(arg)
                     ecode += ')\n'
+                    # import pdb; pdb.set_trace()
                     try:
                         exec (ecode, globals(), locals())
                     except:
@@ -567,7 +598,7 @@ class AIKernal(object):
                     resps = ctx.get_resps()
 
                     for i, resp in enumerate(resps):
-                        actual_out, score, actual_actions, actual_mems = resp
+                        actual_out, score, actual_action = resp
                         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:
@@ -579,33 +610,20 @@ class AIKernal(object):
                                 continue # no match
 
                         logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
-
-                        # check actions
-
-                        if len(test_actions)>0:
-
-                            logging.info("nlp_test: %s round %d actual acts : %s" % (t_name, round_num, repr(actual_actions)) )
-                            # print repr(test_actions)
-
-                            actions_matched = True
-                            act             = None
-                            for action in test_actions:
-                                for act in actual_actions:
-                                    # print "    check action match: %s vs %s" % (repr(action), repr(act))
-                                    if action == act:
-                                        break
-                                if action != act:
-                                    actions_matched = False
-                                    break
-
-                            if not actions_matched:
-                                logging.info("nlp_test: %s round %d ACTIONS MISMATCH." % (t_name, round_num))
-                                continue
-
-                            logging.info("nlp_test: %s round %d ACTIONS MATCHED!" % (t_name, round_num))
-
                         matching_resp = True
                         ctx.commit_resp(i)
+
+                        # check action
+
+                        if test_action:
+                            afn, acode = self.dte.lookup_code(test_action)
+                            ecode = '%s\n%s(ctx' % (acode, afn)
+                            if args:
+                                for arg in args:
+                                    ecode += ',%s' % str(arg)
+                            ecode += ')\n'
+                            exec (ecode, globals(), locals())
+
                         break
 
                     if matching_resp:

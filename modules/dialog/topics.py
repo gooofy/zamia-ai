@@ -37,74 +37,58 @@ def question_what_was_our_topic_de():
 def get_data(k):
     k.dte.set_prefixes([u'{self_address:W} '])
 
-
-    def answer_what_was_our_topic_en(c):
+    def answer_what_was_our_topic(c):
 
         # did we talk about some entity?
 
-        xsb_make_vars(2)
-        rcode = xsb_query_string("mem(%s, f1ent, E), rdfsLabel(E, en, L)." % c.user)
+        for score, entity in c.mem_get_multi(c.user, 'f1ent'):
 
-        if not rcode:
+            xsb_make_vars(1)
+            rcode = xsb_query_string("rdfsLabel(%s, %s, L)." % (entity, c.lang))
 
-            while not rcode:
+            if not rcode:
 
-                s1 = xsb_var_string(1)
-                s2 = xsb_var_string(2)
+                while not rcode:
 
-                # import pdb; pdb.set_trace()
+                    s2 = xsb_var_string(1)
 
-                c.resp(u"We have been talking about %s, I think." % s2, score=100.0)
-                c.resp(u"Our topic was %s, I believe." % s2, score=100.0)
-                c.resp(u"Didn't we talk about %s?" % s2, score=100.0)
+                    # import pdb; pdb.set_trace()
 
-                rcode = xsb_next()
-        else:
+                    if c.lang == 'en':
+                        c.resp(u"We have been talking about %s, I think." % s2, score=score*100.0)
+                        c.resp(u"Our topic was %s, I believe." % s2, score=score*100.0)
+                        c.resp(u"Didn't we talk about %s?" % s2, score=score*100.0)
+                    elif c.lang == 'de':
+                        c.resp(u"Wir hatten über %s gesprochen, glaube ich." % s2, score=score*100.0)
+                        c.resp(u"Ich denke unser Thema war %s." % s2, score=score*100.0)
+                        c.resp(u"Sprachen wir nicht über %s ?" % s2, score=score*100.0)
+                    else:
+                        raise Exception ("Sorry, language %s not implemented yet." % c.lang)
 
-            # dodge question
+                    rcode = xsb_next()
+    
 
+        # dodge question (low score)
+
+        if c.lang == 'en':
             c.resp(u"We have had many topics.")
             c.resp(u"We were talking about you for the most part, I believe.")
             c.resp(u"What would you like to talk about?")
-
-    def answer_what_was_our_topic_de(c):
-
-        # did we talk about some entity?
-
-        xsb_make_vars(2)
-        rcode = xsb_query_string("mem(%s, f1ent, E), rdfsLabel(E, de, L)." % c.user)
-
-        if not rcode:
-
-            while not rcode:
-
-                s1 = xsb_var_string(1)
-                s2 = xsb_var_string(2)
-
-                # import pdb; pdb.set_trace()
-
-                c.resp(u"Wir hatten über %s gesprochen, glaube ich." % s2, score=100.0)
-                c.resp(u"Ich denke unser Thema war %s." % s2, score=100.0)
-                c.resp(u"Sprachen wir nicht über %s ?" % s2, score=100.0)
-
-                rcode = xsb_next()
-        else:
-
-            # dodge question
-
+        elif c.lang == 'de':
             c.resp(u"Wir hatten schon viele Themen.")
             c.resp(u"Ich glaube wir haben vor allem über Dich gesprochen.")
             c.resp(u"Worüber würdest Du denn gerne sprechen?")
+        else:
+            raise Exception ("Sorry, language %s not implemented yet." % c.lang)
 
-    k.dte.dt('en', question_what_was_our_topic_en(), answer_what_was_our_topic_en)
-    k.dte.dt('de', question_what_was_our_topic_de(), answer_what_was_our_topic_de)
+    k.dte.dt('en', question_what_was_our_topic_en(), answer_what_was_our_topic)
+    k.dte.dt('de', question_what_was_our_topic_de(), answer_what_was_our_topic)
 
     k.dte.ts('en', 'topics0000', [(u"what did we talk about", u"We have had many topics.", [])])
     k.dte.ts('de', 'topics0001', [(u"worüber haben wir gesprochen?", u"Wir hatten schon viele Themen.", [])])
 
     def prep_topic(c):
-        xsb_command_string('retractall(mem(%s, f1ent, _)).' % c.user)
-        xsb_command_string('assertz(mem(%s, f1ent, wdeStuttgart)).' % c.user)
+        c.mem_push(c.user, 'f1ent', 'wdeStuttgart')
 
     k.dte.ts('en', 'topics0002', [(u"what did we talk about", u"our topic was stuttgart i believe", [])], prep=prep_topic)
     k.dte.ts('de', 'topics0003', [(u"worüber haben wir gesprochen?", u"Sprachen wir nicht über Stuttgart?", [])], prep=prep_topic)

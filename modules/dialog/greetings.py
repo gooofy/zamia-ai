@@ -5,45 +5,56 @@ def get_data(k):
 
     k.dte.set_prefixes([])
 
-    def answer_greeting_att_en(c):
-        c.resp(u"Hello!",     actions=[['attention', 'on']])
-        c.resp(u"Hi!",        actions=[['attention', 'on']])
-        c.resp(u"Greetings!", actions=[['attention', 'on']])
-        c.resp(u"Hey!",       actions=[['attention', 'on']])
+    def answer_greeting_att(c):
 
-    def answer_greeting_att_de(c):
-        c.resp(u"Hallo!",     actions=[['attention', 'on']])
-        c.resp(u"Hi!",        actions=[['attention', 'on']])
-        c.resp(u"Grüß Dich!", actions=[['attention', 'on']])
-        c.resp(u"Hey!",       actions=[['attention', 'on']])
+        def action_attention_on(c):
+            c.mem_set(c.realm, 'attention', 'on')
 
-    k.dte.dt('en', u"ok, {my_forename:W}", answer_greeting_att_en)
-    k.dte.dt('de', u"ok, {my_forename:W}", answer_greeting_att_de)
+        if c.lang == 'en':
+            c.resp(u"Hello!",     action=action_attention_on)
+            c.resp(u"Hi!",        action=action_attention_on)
+            c.resp(u"Greetings!", action=action_attention_on)
+            c.resp(u"Hey!",       action=action_attention_on)
+        elif c.lang == 'de':
+            c.resp(u"Hallo!",     action=action_attention_on)
+            c.resp(u"Hi!",        action=action_attention_on)
+            c.resp(u"Grüß Dich!", action=action_attention_on)
+            c.resp(u"Hey!",       action=action_attention_on)
+        else:
+            raise Exception ('sorry, language %s not implemented yet.' % lang)
 
-    k.dte.ts('en', 't0010', [(u"ok, computer", u"hello!", [['attention', 'on']])])
-    k.dte.ts('de', 't0011', [(u"OK, HAL!", u"Hallo!", [['attention', 'on']])])
+    k.dte.dt('en', u"ok, {my_forename:W}", answer_greeting_att)
+    k.dte.dt('de', u"ok, {my_forename:W}", answer_greeting_att)
 
-    def answer_greeting_en(c):
-        c.resp("Hello!")
-        c.resp("Hi!")
-        c.resp("Greetings!")
-        c.resp("Hey!")
+    def check_att_on(c):
+        assert c.mem_get(c.realm, 'attention') == 'on'
 
-    def answer_greeting_de(c):
-        c.resp("Hallo!")
-        c.resp("Hi!")
-        c.resp("Grüß Dich!")
-        c.resp("Hey!")
+    k.dte.ts('en', 't0010', [(u"ok, computer", u"hello!", check_att_on)])
+    k.dte.ts('de', 't0011', [(u"OK, HAL!", u"Hallo!", check_att_on)])
+
+    def answer_greeting(c):
+        if c.lang == 'en':
+            c.resp("Hello!")
+            c.resp("Hi!")
+            c.resp("Greetings!")
+            c.resp("Hey!")
+        elif c.lang == 'de':
+            c.resp("Hallo!")
+            c.resp("Hi!")
+            c.resp("Grüß Dich!")
+            c.resp("Hey!")
+        else:
+            raise Exception ('sorry, language %s not implemented yet.' % lang)
 
     k.dte.dt('en', u"(greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there) {self_address:W}",
-                   answer_greeting_en)
+                   answer_greeting)
     k.dte.dt('en', u"{self_address:W} (greetings| good morning | hello | hallo | hi | good day | morning | good evening | good night | Cooee| Cooey | hi there)",
-                   answer_greeting_en)
+                   answer_greeting)
 
     k.dte.dt('de', u"(grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu) {self_address:W}",
-                   answer_greeting_de)
+                   answer_greeting)
     k.dte.dt('de', u"{self_address:W} (grüß dich|guten morgen | hallo | hi | guten tag | tag | morgen | guten abend | gute nacht | huhu)",
-                   answer_greeting_de)
+                   answer_greeting)
 
     k.dte.dt('en', [u"day",
                     u"g'day",
@@ -51,36 +62,41 @@ def get_data(k):
                     u"hey you",
                     u"hey",
                     u"tach"],
-                   answer_greeting_en)
+                   answer_greeting)
     k.dte.dt('de', [u"tag",
                     u"tach auch",
                     u"da bin ich wieder",
                     u"hey du",
                     u"hey",
                     u"tach"],
-                   answer_greeting_de)
+                   answer_greeting)
 
-    def answer_bye_en(c):
-        c.resp(u"Bye",           actions=[['attention', 'off']])
-        c.resp(u"So long",       actions=[['attention', 'off']])
-        c.resp(u"See you later", actions=[['attention', 'off']])
-        c.resp(u"Bye for now",   actions=[['attention', 'off']])
 
-    def answer_bye_de(c):
-        c.resp(u"Ade",           actions=[['attention', 'off']])
-        c.resp(u"Tschüss",       actions=[['attention', 'off']])
-        c.resp(u"Bis bald",      actions=[['attention', 'off']])
-        c.resp(u"Ciao",          actions=[['attention', 'off']])
+    def answer_bye(c):
+        def action_attention_off(c):
+            c.mem_set(c.realm, 'attention', 'off')
+        if c.lang == 'en':
+            c.resp(u"Bye",           action=action_attention_off)
+            c.resp(u"So long",       action=action_attention_off)
+            c.resp(u"See you later", action=action_attention_off)
+            c.resp(u"Bye for now",   action=action_attention_off)
+        elif c.lang == 'de':
+            c.resp(u"Ade",           action=action_attention_off)
+            c.resp(u"Tschüss",       action=action_attention_off)
+            c.resp(u"Bis bald",      action=action_attention_off)
+            c.resp(u"Ciao",          action=action_attention_off)
+        else:
+            raise Exception ('sorry, language %s not implemented yet.' % lang)
 
     k.dte.dt('en', u"(goodbye | bye | ciao | so long | bye for now | see ya | see you later | till next time) {self_address:W}",
-                   answer_bye_en)
+                   answer_bye)
     k.dte.dt('en', u"{self_address:W} (goodbye | bye | ciao | so long | bye for now | see ya | see you later | till next time)",
-                   answer_bye_en)
+                   answer_bye)
 
     k.dte.dt('de', u"(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) {self_address:W}",
-                   answer_bye_de)
+                   answer_bye)
     k.dte.dt('de', u"{self_address:W} (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal)",
-                   answer_bye_de)
+                   answer_bye)
 
     k.dte.dt('en', [u"cu later",
                     u"i am going to sleep now",
@@ -98,7 +114,7 @@ def get_data(k):
                     u"that's enough",
                     u"until next time",
                     u"we are done"],
-                   answer_bye_en)
+                   answer_bye)
     k.dte.dt('de', [u"cu later",
                     u"ich gehe jetzt schlafen",
                     u"ich gehe ins bett",
@@ -115,7 +131,7 @@ def get_data(k):
                     u"das reicht",
                     u"bis zum nächsten mal",
                     u"sind wir fertig"],
-                   answer_bye_de)
+                   answer_bye)
 
     k.dte.ts('en', 't0000', [(u"hi", u"hello!", [])])
     k.dte.ts('de', 't0001', [(u"hi", u"Hallo!", [])])
@@ -123,11 +139,14 @@ def get_data(k):
     k.dte.ts('en', 't0002', [(u"computer hello", u"Hi!", [])])
     k.dte.ts('de', 't0003', [(u"computer hallo", u"Hi!", [])])
 
-    k.dte.ts('en', 't0004', [(u"bye computer",     u"bye",      [['attention', 'off']])]) 
-    k.dte.ts('de', 't0005', [(u"Tschüss computer", u"Tschüss!", [['attention', 'off']])])
+    def check_att_off(c):
+        assert c.mem_get(c.realm, 'attention') == 'off'
 
-    k.dte.ts('en', 't0006', [(u"bye",  u"so long",  [['attention', 'off']])])
-    k.dte.ts('de', 't0007', [(u"Ciao", u"Bis bald", [['attention', 'off']])])
+    k.dte.ts('en', 't0004', [(u"bye computer",     u"bye",      check_att_off)]) 
+    k.dte.ts('de', 't0005', [(u"Tschüss computer", u"Tschüss!", check_att_off)])
+
+    k.dte.ts('en', 't0006', [(u"bye",  u"so long",  check_att_off)])
+    k.dte.ts('de', 't0007', [(u"Ciao", u"Bis bald", check_att_off)])
 
     k.dte.dt('en', u"(ah|) there you are!", u"Hi there!")
     k.dte.dt('de', u"(ah|) da bist du (ja|)", u"Hallo hallo")

@@ -102,6 +102,16 @@ class DataEngine(object):
     def commit(self):
         self.session.commit()
 
+    def store_code(self, code_src, code_fn):
+        md5 = hashlib.md5()
+        md5.update (code_src)
+        md5s = md5.hexdigest()
+
+        if not self.session.query(model.Code).filter(model.Code.md5s==md5s).first():
+            cd = model.Code(md5s=md5s, module=self.data_module_name, code=code_src, fn=code_fn)
+            self.session.add(cd)
+        return md5s
+
     def lookup_code(self, md5s):
         cd = self.session.query(model.Code).filter(model.Code.md5s==md5s).first()
         if not cd:
@@ -349,15 +359,9 @@ class DataEngine(object):
                     code_fn  = node.name
                     code_src = codegen.to_source(node)
                     break
-         
-        md5 = hashlib.md5()
-        md5.update (code_src)
-        md5s = md5.hexdigest()
-
-        if not self.session.query(model.Code).filter(model.Code.md5s==md5s).first():
-            cd = model.Code(md5s=md5s, module=self.data_module_name, code=code_src, fn=code_fn)
-            self.session.add(cd)
-
+        
+        md5s = self.store_code(code_src, code_fn)
+ 
         # caller's source location:
 
         curframe = inspect.currentframe()
@@ -385,9 +389,24 @@ class DataEngine(object):
         # normalize rounds by tokenizing inp/resp
         rs = []
         for r in rounds:
+
+            code     = r[2]
+            md5s     = None
+            if code:
+                code_src = inspect.getsource(code)
+                code_src = self._unindent(code_src)
+                code_ast = ast.parse(code_src)
+
+                for node in ast.walk(code_ast):
+                    if isinstance(node, ast.FunctionDef):
+                        code_fn  = node.name
+                        code_src = codegen.to_source(node)
+                        md5s = self.store_code(code_src, code_fn)
+                        break
+
             rs.append((u' '.join(tokenize(r[0], lang=lang)),
                        u' '.join(tokenize(r[1], lang=lang)),
-                       r[2]))
+                       md5s))
 
         # extract prep code, if any
 

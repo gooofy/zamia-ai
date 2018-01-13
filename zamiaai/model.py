@@ -121,5 +121,17 @@ class NamedMacro(Base):
 
     soln              = Column(Text)
 
+class Mem(Base):
+
+    __tablename__ = 'mem'
+
+    id                = Column(Integer, primary_key=True)
+
+    realm             = Column(String(255), index=True)
+    k                 = Column(String(255), index=True)
+    v                 = Column(Text)
+
+    __table_args__    = (Index('idx_mem_realm_k', "realm", "k"), )
+
 Base.metadata.create_all(engine)
 

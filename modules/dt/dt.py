@@ -10,19 +10,19 @@ def get_data(k):
 
         ts = base.transcribe_time (c.current_dt, c.lang)
 
-        mems = ['retractall(mem(%s, f1ent, _)).' % c.user,
-                'assertz(mem(%s, f1ent, wdeTime)).' % c.user] 
+        def set_ent(c):
+            c.mem_push(c.user, 'f1ent', 'wdeTime')
 
         if c.lang == 'en':
-            c.resp(u"It is %s" % ts, score=100.0, mems=mems)
-            c.resp(u"It is now %s" % ts, score=100.0, mems=mems)
-            c.resp(u"The time is %s" % ts, score=100.0, mems=mems)
-            c.resp(u"The time is now %s" % ts, score=100.0, mems=mems)
+            c.resp(u"It is %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"It is now %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"The time is %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"The time is now %s" % ts, score=100.0, action=set_ent)
         else:
-            c.resp(u"Es ist %s" % ts, score=100.0, mems=mems)
-            c.resp(u"Es ist jetzt %s" % ts, score=100.0, mems=mems)
-            c.resp(u"Wir haben es %s" % ts, score=100.0, mems=mems)
-            c.resp(u"Die Uhrzeit ist %s" % ts, score=100.0, mems=mems)
+            c.resp(u"Es ist %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"Es ist jetzt %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"Wir haben es %s" % ts, score=100.0, action=set_ent)
+            c.resp(u"Die Uhrzeit ist %s" % ts, score=100.0, action=set_ent)
 
     k.dte.dt('en', u"do you know what time it is (now|)",
                    answer_time)
@@ -94,18 +94,18 @@ def get_data(k):
 
         import base
 
-        mems = ['retractall(mem(%s, f1ent, _)).' % c.user,
-                'assertz(mem(%s, f1ent, wdeCalendarDate)).' % c.user] 
+        def set_ent(c):
+            c.mem_push(c.user, 'f1ent', 'wdeCalendarDate')
 
         ts  = base.transcribe_date(c.current_dt, c.lang, 'dativ') 
         wds = base.transcribe_wday_ts(c.current_dt, c.lang)
 
         if c.lang == 'en':
-            c.resp(u"The date is %s, %s." % (wds, ts), score=100.0, mems=mems)
-            c.resp(u"Today is %s, %s" % (wds, ts), score=100.0, mems=mems)
+            c.resp(u"The date is %s, %s." % (wds, ts), score=100.0, action=set_ent)
+            c.resp(u"Today is %s, %s" % (wds, ts), score=100.0, action=set_ent)
         else:
-            c.resp(u"Wir haben %s den %s." % (wds, ts), score=100.0, mems=mems)
-            c.resp(u"Heute ist %s den %s." % (wds, ts), score=100.0, mems=mems)
+            c.resp(u"Wir haben %s den %s." % (wds, ts), score=100.0, action=set_ent)
+            c.resp(u"Heute ist %s den %s." % (wds, ts), score=100.0, action=set_ent)
 
 
     k.dte.dt('en', u"do you know what (date|day) it is (today|now|)", answer_date)

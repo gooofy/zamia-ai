@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016, 2017 Guenter Bartsch
+# Copyright 2016, 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,12 +18,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import humans
+from xsbprolog import xsb_hl_query_string
+
 DEPENDS    = [ 'base', 'dialog' ]
 
-AIP_SOURCES = [ 'humans.aip' ]
+def get_place_of_birth(e):
+    solutions = xsb_hl_query_string("wdpdPlaceOfBirth(%s, BP)." % e)
+    if not solutions:
+        return None
+    return solutions[0][0]
+
+def get_country_of_birth(e):
+    solutions = xsb_hl_query_string("wdpdPlaceOfBirth(%s, BP), wdpdCountry(BP, COUNTRY)." % e)
+    if not solutions:
+        return None
+    return solutions[0][1]
+
+def get_data(k):
+
+    humans.get_data(k)
 
 #
-# FIXME: port code to AI-Prolog
+# FIXME: port and delete old code below
 #
 
 # from base.utils        import hears, says, nlp_base_self_address_s, rdf, entity_label, is_male, is_female

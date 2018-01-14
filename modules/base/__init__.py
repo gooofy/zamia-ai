@@ -1,14 +1,54 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
+#
+# Copyright 2016, 2017, 2018 Guenter Bartsch
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 import logging
 
 from num2words         import num2words
 from zamiaprolog.logic import StringLiteral
+from xsbprolog         import xsb_make_vars, xsb_query_string, xsb_var_string, xsb_next, xsb_hl_query_string
 
 DEPENDS    = [ 'config' ]
 
 PL_SOURCES = ['time.pl', 'utils.pl']
+
+# wikidata utils in python
+
+def is_entity(e):
+    res = xsb_hl_query_string("is_entity(%s)." % e)
+    return len(res)>0
+def is_human(e):
+    res = xsb_hl_query_string("is_human(%s)." % e)
+    return len(res)>0
+def is_male(e):
+    res = xsb_hl_query_string("is_male(%s)." % e)
+    return len(res)>0
+def is_female(e):
+    res = xsb_hl_query_string("is_female(%s)." % e)
+    return len(res)>0
+
+def get_label(e, lang):
+    solutions = xsb_hl_query_string("rdfsLabel(%s, %s, LABEL)." % (e, lang))
+    if not solutions:
+        return None
+    return solutions[0][0] 
+
 
 def transcribe_number (n, lang, flx):
 

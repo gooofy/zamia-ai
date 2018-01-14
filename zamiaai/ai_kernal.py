@@ -90,11 +90,11 @@ class AIContext(object):
     def set_inp(self, inp):
         self.inp = inp
 
-    def resp(self, resp, score=0.0, action=None):
+    def resp(self, resp, score=0.0, action=None, action_arg=None):
         if score > self.high_score:
             self.high_score   = score
             self.staged_resps = []
-        self.staged_resps.append( (resp, score, action) )
+        self.staged_resps.append( (resp, score, action, action_arg) )
 
     def get_resps(self):
         return self.staged_resps
@@ -103,9 +103,13 @@ class AIContext(object):
         self.dlg_log.append( { 'inp': self.inp, 
                                'out': self.staged_resps[i][0] })
 
-        action = self.staged_resps[i][2]
+        action     = self.staged_resps[i][2]
+        action_arg = self.staged_resps[i][3]
         if action:
-            action(self)
+            if action_arg:
+                action(self, action_arg)
+            else:
+                action(self)
 
         self.staged_resps = []
        
@@ -598,7 +602,7 @@ class AIKernal(object):
                     resps = ctx.get_resps()
 
                     for i, resp in enumerate(resps):
-                        actual_out, score, actual_action = resp
+                        actual_out, score, actual_action, actual_action_arg = resp
                         # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:

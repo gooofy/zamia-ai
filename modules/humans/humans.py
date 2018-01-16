@@ -182,66 +182,100 @@ def get_data(k):
                                (u"Welches Thema hatten wir?", u"Sprachen wir nicht über Angela Merkel?", []),
                                (u"Und in welchem Land wurde sie nochmal geboren?", u"Angela Merkel ist in Deutschland geboren, denke ich", [])])
 
-#     def answer_human_born_when_tokens(en, TS, TE):
-#         and(ner(en, human, TS, TE, C:tokens, HUMAN, SCORE), set(C:mem|f1ent, HUMAN), r_score(C, SCORE), rdfsLabel(HUMAN, en, HLABEL), wdpdDateOfBirth(HUMAN, BD), set(C:mem|f1time, BD), transcribe_date(en, dativ, BD, BDLABEL), or("{HLABEL,s} was born on {BDLABEL,s}, I think.", "I believe {HLABEL,s} was born on {BDLABEL,s}."))
-#     def answer_human_born_when_tokens(de, TS, TE):
-#         and(ner(de, human, TS, TE, C:tokens, HUMAN, SCORE), set(C:mem|f1ent, HUMAN), r_score(C, SCORE), rdfsLabel(HUMAN, de, HLABEL), wdpdDateOfBirth(HUMAN, BD), set(C:mem|f1time, BD), transcribe_date(de, dativ, BD, BDLABEL), or("{HLABEL,s} ist am {BDLABEL,s} geboren, denke ich.", "Ich glaube {HLABEL,s} ist am {BDLABEL,s} geboren."))
-#     k.dte.dt('en', u"(when|in which year) (was|is) {known_humans:W} born?",
-#                    % inline(answer_human_born_when_tokens(en, tstart(known_humans), tend(known_humans))))
-#     k.dte.dt('de', u"(wann|in welchem Jahr) (wurde|ist) (eigentlich|) {known_humans:W} geboren?",
-#                    % inline(answer_human_born_when_tokens(de, tstart(known_humans), tend(known_humans))))
-# 
-#     k.dte.dt('en', u"(when is|on what day is) {known_humans:W}S birthday?",
-#                    % inline(answer_human_born_when_tokens(en, tstart(known_humans), tend(known_humans))))
-#     k.dte.dt('de', u"(wann hat|an welchem Tag hat) (eigentlich|) {known_humans:W} Geburtstag?",
-#                    % inline(answer_human_born_when_tokens(de, tstart(known_humans), tend(known_humans))))
-# 
-#     k.dte.dt('en', u"how old is {known_humans:W}?",
-#                    % inline(answer_human_born_when_tokens(en, tstart(known_humans), tend(known_humans))))
-#     k.dte.dt('de', u"wie alt ist {known_humans:W}?",
-#                    % inline(answer_human_born_when_tokens(de, tstart(known_humans), tend(known_humans))))
-# 
-#     def answer_human_born_when_context(en):
-#         and(mem(C, f1ent, HUMAN), rdfsLabel(HUMAN, en, HLABEL), wdpdDateOfBirth(HUMAN, BD), set(C:mem|f1time, BD), transcribe_date(en, dativ, BD, BDLABEL), or("{HLABEL,s} was born on {BDLABEL,s}, I think.", "I believe {HLABEL,s} was born on {BDLABEL,s}."))
-#     def answer_human_born_when_context(de):
-#         and(mem(C, f1ent, HUMAN), rdfsLabel(HUMAN, de, HLABEL), wdpdDateOfBirth(HUMAN, BD), set(C:mem|f1time, BD), transcribe_date(de, dativ, BD, BDLABEL), or("{HLABEL,s} ist am {BDLABEL,s} geboren, denke ich.", "Ich glaube {HLABEL,s} ist am {BDLABEL,s} geboren."))
-#     k.dte.dt('en', u"(and|) (when|in which year) (was|is) (he|she) born (again|)?",
-#                    % inline(answer_human_born_when_context(en)))
-#     k.dte.dt('de', u"(und|) (wann|in welchem Jahr) (wurde|ist) (eigentlich|) (sie|er) (nochmal|) geboren?",
-#                    % inline(answer_human_born_when_context(de)))
-# 
-#     k.dte.ts('en', 't0006', [(u"When was Angela Merkel born?", u"I believe Angela Merkel was born on July 17, 1954.", []),
-#                                (u"What were we talking about?", u"Didn't we talk about angela merkel?", []),
-#                                (u"And when was she born?", u"I believe Angela Merkel was born on July 17, 1954.", []),
-#                                (u"And where was she born again?", u"I believe Angela Merkel was born in Barmbek-Nord", [])])
-#     k.dte.ts('de', 't0007', [(u"Wann wurde Angela Merkel geboren?", u"Ich glaube Angela Merkel ist am siebzehnten Juli 1954 geboren.", []),
-#                                (u"Welches Thema hatten wir?", u"Sprachen wir nicht über Angela Merkel?", []),
-#                                (u"Und wann wurde sie nochmal geboren?", u"Ich glaube Angela Merkel ist am siebzehnten Juli 1954 geboren.", []),
-#                                (u"Und wo wurde sie nochmal geboren?", u"Angela Merkel ist in Barmbek-Nord geboren, denke ich", [])])
-# 
-#     def answer_human_residence_tokens(en, TS, TE):
-#         and(ner(en, human, TS, TE, C:tokens, HUMAN, SCORE), set(C:mem|f1ent, HUMAN), r_score(C, SCORE), rdfsLabel(HUMAN, en, HLABEL), wdpdResidence(HUMAN, RESIDENCE), set(C:mem|f1loc, RESIDENCE), rdfsLabel(RESIDENCE, en, RLABEL), or("{HLABEL,s} lives in {RLABEL,s}, I think.", "I believe {HLABEL,s} lives in {RLABEL,s}."))
-#     def answer_human_residence_tokens(de, TS, TE):
-#         and(ner(de, human, TS, TE, C:tokens, HUMAN, SCORE), set(C:mem|f1ent, HUMAN), r_score(C, SCORE), rdfsLabel(HUMAN, de, HLABEL), wdpdResidence(HUMAN, RESIDENCE), set(C:mem|f1loc, RESIDENCE), rdfsLabel(RESIDENCE, de, RLABEL), or("{HLABEL,s} lebt in {RLABEL,s}, glaube ich.", "Ich denke {HLABEL,s} lebt in {RLABEL,s}."))
-#     k.dte.dt('en', u"(and|) (where|in which town|in which city|in which place) (does|did) {known_humans:W} (reside|live) (again|)?",
-#                    % inline(answer_human_residence_tokens(en, tstart(known_humans), tend(known_humans))))
-#     k.dte.dt('de', u"(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) {known_humans:W} (eigentlich|) (nochmal|)?",
-#                    % inline(answer_human_residence_tokens(de, tstart(known_humans), tend(known_humans))))
-# 
-#     def answer_human_residence_context(en):
-#         and(mem(C, f1ent, HUMAN), rdfsLabel(HUMAN, en, HLABEL), wdpdResidence(HUMAN, RESIDENCE), set(C:mem|f1loc, RESIDENCE), rdfsLabel(RESIDENCE, en, RLABEL), or("{HLABEL,s} lives in {RLABEL,s}, I think.", "I believe {HLABEL,s} lives in {RLABEL,s}."))
-#     def answer_human_residence_context(de):
-#         and(mem(C, f1ent, HUMAN), rdfsLabel(HUMAN, de, HLABEL), wdpdResidence(HUMAN, RESIDENCE), set(C:mem|f1loc, RESIDENCE), rdfsLabel(RESIDENCE, de, RLABEL), or("{HLABEL,s} lebt in {RLABEL,s}, glaube ich.", "Ich denke {HLABEL,s} lebt in {RLABEL,s}."))
-#     k.dte.dt('en', u"(and|) (where|in which town|in which city|in which place) (does|did) (he|she) (reside|live) (again|)?",
-#                    % inline(answer_human_residence_context(en)))
-#     k.dte.dt('de', u"(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) (sie|er) (eigentlich|) (nochmal|)?",
-#                    % inline(answer_human_residence_context(de)))
-# 
-#     k.dte.ts('en', 't0008', [(u"Where does Stephen King live?", u"I believe Stephen King lives in Maine.", []),
-#                                (u"And where does he live again?", u"I believe Stephen King lives in Maine.", [])])
-#     k.dte.ts('de', 't0009', [(u"Wo wohnt Stephen King?", u"Ich denke Stephen King lebt in Maine.", []),
-#                                (u"Und wo wohnt er nochmal?", u"Ich denke Stephen King lebt in Maine.", [])])
+    def answer_human_born_when(c, ts, te):
+
+        def act(c, args):
+            human, bd = args
+            c.kernal.mem_push(c.user, 'f1ent', human)
+            c.kernal.mem_push(c.user, 'f1time', bd)
+
+        import base
+        import dateutil.parser
+
+        if ts>=0:
+            hss = c.ner(c.lang, 'human', ts, te)
+        else:
+            hss = c.kernal.mem_get_multi(c.user, 'f1ent')
+
+        for human, score in hss:
+            hlabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (human, c.lang))
+            # import pdb; pdb.set_trace()
+            bd = c.kernal.prolog_query_one('wdpdDateOfBirth(%s, BD).'% human)
+            if hlabel and bd:
+                bdlabel = base.transcribe_date(dateutil.parser.parse(bd), c.lang, 'dativ')
+                if c.lang == 'en':
+                    c.resp(u"%s was born on %s, I think." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd)) 
+                    c.resp(u"I believe %s was born on %s." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd))
+                elif c.lang == 'de':
+                    c.resp(u"%s ist am %s geboren, denke ich." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd)) 
+                    c.resp(u"Ich glaube %s ist am %s geboren." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd))
+                else:
+                    raise Exception ('Sorry, language %s not implemented yet.' % c.lang)
+
+    k.dte.dt('en', [u"(when|in which year) (was|is) {known_humans:W} born?",
+                    u"(when is|on what day is) {known_humans:W}S birthday?",
+                    u"how old is {known_humans:W}?"],
+                   answer_human_born_when, ['known_humans_0_start', 'known_humans_0_end'])
+
+    k.dte.dt('de', [u"(wann|in welchem Jahr) (wurde|ist) (eigentlich|) {known_humans:W} geboren?",
+                    u"(wann hat|an welchem Tag hat) (eigentlich|) {known_humans:W} Geburtstag?",
+                    u"wie alt ist {known_humans:W}?"],
+                   answer_human_born_when, ['known_humans_0_start', 'known_humans_0_end'])
+
+    k.dte.dt('en', u"(and|) (when|in which year) (was|is) (he|she) born (again|)?",
+                   answer_human_born_when, [-1, -1])
+    k.dte.dt('de', u"(und|) (wann|in welchem Jahr) (wurde|ist) (eigentlich|) (sie|er) (nochmal|) geboren?",
+                   answer_human_born_when, [-1, -1])
  
+    k.dte.ts('en', 't0006', [(u"When was Angela Merkel born?", u"I believe Angela Merkel was born on July 17, 1954.", []),
+                               (u"What were we talking about?", u"Didn't we talk about angela merkel?", []),
+                               (u"And when was she born?", u"I believe Angela Merkel was born on July 17, 1954.", []),
+                               (u"And where was she born again?", u"I believe Angela Merkel was born in Barmbek-Nord", [])])
+    k.dte.ts('de', 't0007', [(u"Wann wurde Angela Merkel geboren?", u"Ich glaube Angela Merkel ist am siebzehnten Juli 1954 geboren.", []),
+                               (u"Welches Thema hatten wir?", u"Sprachen wir nicht über Angela Merkel?", []),
+                               (u"Und wann wurde sie nochmal geboren?", u"Ich glaube Angela Merkel ist am siebzehnten Juli 1954 geboren.", []),
+                               (u"Und wo wurde sie nochmal geboren?", u"Angela Merkel ist in Barmbek-Nord geboren, denke ich", [])])
+
+    def answer_human_born_where(c, ts, te):
+
+        def act(c, args):
+            human, residence = args
+            c.kernal.mem_push(c.user, 'f1ent', human)
+            c.kernal.mem_push(c.user, 'f1loc', residence)
+
+        if ts>=0:
+            hss = c.ner(c.lang, 'human', ts, te)
+        else:
+            # import pdb; pdb.set_trace()
+            hss = c.kernal.mem_get_multi(c.user, 'f1ent')
+
+        for human, score in hss:
+            hlabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (human, c.lang))
+            residence = c.kernal.prolog_query_one("wdpdResidence(%s, RESIDENCE)." % human)
+            if hlabel and residence:
+                residencelabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (residence, c.lang))
+                if c.lang == 'en':
+                    c.resp(u"%s lives %s, I think." % (hlabel, residencelabel), score=score, action=act, action_arg=(human, residence)) 
+                    c.resp(u"I believe %s lives in %s." % (hlabel, residencelabel), score=score, action=act, action_arg=(human, residence))
+                elif c.lang == 'de':
+                    c.resp(u"%s lebt in %s, glaube ich." % (hlabel, residencelabel), score=score, action=act, action_arg=(human, residence)) 
+                    c.resp(u"Ich denke %s lebt in %s." % (hlabel, residencelabel), score=score, action=act, action_arg=(human, residence))
+                else:
+                    raise Exception ('Sorry, language %s not implemented yet.' % c.lang)
+
+    k.dte.dt('en', u"(and|) (where|in which town|in which city|in which place) (does|did) {known_humans:W} (reside|live) (again|)?",
+                   answer_human_born_where, ['known_humans_0_start', 'known_humans_0_end'])
+    k.dte.dt('de', u"(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) {known_humans:W} (eigentlich|) (nochmal|)?",
+                   answer_human_born_where, ['known_humans_0_start', 'known_humans_0_end'])
+    k.dte.dt('en', u"(and|) (where|in which town|in which city|in which place) (does|did) (he|she) (reside|live) (again|)?",
+                   answer_human_born_where, [-1, -1])
+    k.dte.dt('de', u"(und|) (wo|in welcher Stadt|an welchem Ort) (lebte|lebt|wohnt) (sie|er) (eigentlich|) (nochmal|)?",
+                   answer_human_born_where, [-1, -1])
+ 
+    k.dte.ts('en', 't0008', [(u"Where does Stephen King live?", u"I believe Stephen King lives in Bangor.", []),
+                               (u"And where does he live again?", u"I believe Stephen King lives in Bangor.", [])])
+    k.dte.ts('de', 't0009', [(u"Wo wohnt Stephen King?", u"Ich denke Stephen King lebt in Bangor.", []),
+                               (u"Und wo wohnt er nochmal?", u"Ich denke Stephen King lebt in Bangor.", [])])
 
     k.dte.dt('en', [u"do you know (turing|von neumann|einstein|Marianne Rosenberg|pele|goethe|shakespeare|beethoven)?",
                     u"do you know (captain kirk|alex|elvira|homer|marvin)?"],

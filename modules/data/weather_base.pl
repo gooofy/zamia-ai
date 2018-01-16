@@ -79,3 +79,8 @@ owmCityId(wdeTallinn, 588409).
 % URI: http://www.wikidata.org/entity/Q61
 
 owmCityId(wdeWashingtonDC, 4140963).
+
+% URI: http://www.wikidata.org/entity/Q61658
+
+owmCityId(wdeDitzingen, 2936705).
+

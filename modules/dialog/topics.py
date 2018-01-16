@@ -41,32 +41,25 @@ def get_data(k):
 
         # did we talk about some entity?
 
-        for score, entity in c.mem_get_multi(c.user, 'f1ent'):
+        for entity, score in c.kernal.mem_get_multi(c.user, 'f1ent'):
 
-            xsb_make_vars(1)
-            rcode = xsb_query_string("rdfsLabel(%s, %s, L)." % (entity, c.lang))
+            for res in c.kernal.prolog_query("rdfsLabel(%s, %s, L)." % (entity, c.lang)):
 
-            if not rcode:
+                s2 = res[0]
 
-                while not rcode:
+                # import pdb; pdb.set_trace()
 
-                    s2 = xsb_var_string(1)
+                if c.lang == 'en':
+                    c.resp(u"We have been talking about %s, I think." % s2, score=score*100.0)
+                    c.resp(u"Our topic was %s, I believe." % s2, score=score*100.0)
+                    c.resp(u"Didn't we talk about %s?" % s2, score=score*100.0)
+                elif c.lang == 'de':
+                    c.resp(u"Wir hatten über %s gesprochen, glaube ich." % s2, score=score*100.0)
+                    c.resp(u"Ich denke unser Thema war %s." % s2, score=score*100.0)
+                    c.resp(u"Sprachen wir nicht über %s ?" % s2, score=score*100.0)
+                else:
+                    raise Exception ("Sorry, language %s not implemented yet." % c.lang)
 
-                    # import pdb; pdb.set_trace()
-
-                    if c.lang == 'en':
-                        c.resp(u"We have been talking about %s, I think." % s2, score=score*100.0)
-                        c.resp(u"Our topic was %s, I believe." % s2, score=score*100.0)
-                        c.resp(u"Didn't we talk about %s?" % s2, score=score*100.0)
-                    elif c.lang == 'de':
-                        c.resp(u"Wir hatten über %s gesprochen, glaube ich." % s2, score=score*100.0)
-                        c.resp(u"Ich denke unser Thema war %s." % s2, score=score*100.0)
-                        c.resp(u"Sprachen wir nicht über %s ?" % s2, score=score*100.0)
-                    else:
-                        raise Exception ("Sorry, language %s not implemented yet." % c.lang)
-
-                    rcode = xsb_next()
-    
 
         # dodge question (low score)
 
@@ -88,7 +81,7 @@ def get_data(k):
     k.dte.ts('de', 'topics0001', [(u"worüber haben wir gesprochen?", u"Wir hatten schon viele Themen.", [])])
 
     def prep_topic(c):
-        c.mem_push(c.user, 'f1ent', 'wdeStuttgart')
+        c.kernal.mem_push(c.user, 'f1ent', 'wdeStuttgart')
 
     k.dte.ts('en', 'topics0002', [(u"what did we talk about", u"our topic was stuttgart i believe", [])], prep=prep_topic)
     k.dte.ts('de', 'topics0003', [(u"worüber haben wir gesprochen?", u"Sprachen wir nicht über Stuttgart?", [])], prep=prep_topic)

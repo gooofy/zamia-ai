@@ -11,7 +11,7 @@ def get_data(k):
         ts = base.transcribe_time (c.current_dt, c.lang)
 
         def set_ent(c):
-            c.mem_push(c.user, 'f1ent', 'wdeTime')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeTime')
 
         if c.lang == 'en':
             c.resp(u"It is %s" % ts, score=100.0, action=set_ent)
@@ -95,7 +95,7 @@ def get_data(k):
         import base
 
         def set_ent(c):
-            c.mem_push(c.user, 'f1ent', 'wdeCalendarDate')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeCalendarDate')
 
         ts  = base.transcribe_date(c.current_dt, c.lang, 'dativ') 
         wds = base.transcribe_wday_ts(c.current_dt, c.lang)

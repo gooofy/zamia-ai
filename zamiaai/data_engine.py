@@ -39,24 +39,14 @@ import inspect
 
 from copy                import copy, deepcopy
 from io                  import StringIO
-from sqlalchemy          import create_engine
-from sqlalchemy.orm      import sessionmaker
 
 from nltools.tokenizer   import tokenize
 from zamiaai             import model
 
 class DataEngine(object):
 
-    def __init__(self, db_url):
-
-        #
-        # database connection
-        #
-
-        self.engine  = create_engine(db_url, echo=False)
-        self.Session = sessionmaker(bind=self.engine)
-        self.session = self.Session()
-        model.Base.metadata.create_all(self.engine)
+    def __init__(self, session):
+        self.session           = session
 
         self.prefixes          = []
         self.data_module_name  = None
@@ -294,7 +284,7 @@ class DataEngine(object):
                     #     import pdb; pdb.set_trace()
 
                     if args:
-                        d_args = map(lambda x: mpos[x], args)
+                        d_args = map(lambda x: mpos[x] if isinstance(x, basestring) else x, args)
                     else:
                         d_args = None
 

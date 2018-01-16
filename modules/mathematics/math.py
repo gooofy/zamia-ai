@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from xsbprolog import xsb_make_vars, xsb_query_string, xsb_var_string, xsb_next
-
 def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
@@ -28,32 +26,24 @@ def get_data(k):
     # numbers NER
     #
 
-    xsb_make_vars(3)
-    rcode = xsb_query_string("wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL), rdfsLabel(NUMBER, de, DE_LABEL).")
+    for res in k.prolog_query("wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL), rdfsLabel(NUMBER, de, DE_LABEL)."):
 
-    if not rcode:
-
-        while not rcode:
-
-            s_number    = xsb_var_string(1)
-            s_label_en  = xsb_var_string(2)
-            s_label_de  = xsb_var_string(3)
-            # import pdb; pdb.set_trace()
-            k.dte.ner('en', 'natnum', s_number, s_label_en)
-            k.dte.ner('de', 'natnum', s_number, s_label_de)
-            k.dte.macro('en', 'natnum', {'W': s_label_en})
-            k.dte.macro('de', 'natnum', {'W': s_label_de})
-            k.dte.macro('en', 'natnum2', {'W': s_label_en})
-            k.dte.macro('de', 'natnum2', {'W': s_label_de})
-
-            rcode = xsb_next()
-
+        s_number    = res[0]
+        s_label_en  = res[1]
+        s_label_de  = res[2]
+        # import pdb; pdb.set_trace()
+        k.dte.ner('en', 'natnum', s_number, s_label_en)
+        k.dte.ner('de', 'natnum', s_number, s_label_de)
+        k.dte.macro('en', 'natnum', {'W': s_label_en})
+        k.dte.macro('de', 'natnum', {'W': s_label_de})
+        k.dte.macro('en', 'natnum2', {'W': s_label_en})
+        k.dte.macro('de', 'natnum2', {'W': s_label_de})
 
     def compute_squared(c, n1_start, n1_end):
         def action_set_ent_math(c):
-            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, score in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
+            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
                 res = n1 * n1
                 c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
@@ -68,12 +58,12 @@ def get_data(k):
 
     def compute_addition(c, n1_start, n1_end, n2_start, n2_end):
         def action_set_ent_math(c):
-            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
+            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in xsb_hl_query('wdpdNumericValue', [n2e, 'N2']):
+                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
                     n2 = row['N2']
                     res = n1 + n2
                     score = s1+s2
@@ -93,12 +83,12 @@ def get_data(k):
 
     def compute_subtraction(c, n1_start, n1_end, n2_start, n2_end):
         def action_set_ent_math(c):
-            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
+            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in xsb_hl_query('wdpdNumericValue', [n2e, 'N2']):
+                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
                     n2 = row['N2']
                     res = n1 - n2
                     score = s1+s2
@@ -119,12 +109,12 @@ def get_data(k):
 
     def compute_multiplication(c, n1_start, n1_end, n2_start, n2_end):
         def action_set_ent_math(c):
-            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
+            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in xsb_hl_query('wdpdNumericValue', [n2e, 'N2']):
+                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
                     n2 = row['N2']
                     res = n1 * n2
                     score = s1+s2
@@ -143,12 +133,12 @@ def get_data(k):
 
     def compute_division(c, n1_start, n1_end, n2_start, n2_end):
         def action_set_ent_math(c):
-            c.mem_push(c.user, 'f1ent', 'wdeMathematics')
+            c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in xsb_hl_query('wdpdNumericValue', [n1e, 'N1']):
+            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
                 n1 = row['N1']
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in xsb_hl_query('wdpdNumericValue', [n2e, 'N2']):
+                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
                     n2 = row['N2']
                     res = n1 / n2
                     score = s1+s2

@@ -8,7 +8,7 @@ def get_data(k):
     def answer_greeting_att(c):
 
         def action_attention_on(c):
-            c.mem_set(c.realm, 'attention', 'on')
+            c.kernal.mem_set(c.realm, 'attention', 'on')
 
         if c.lang == 'en':
             c.resp(u"Hello!",     action=action_attention_on)
@@ -27,7 +27,7 @@ def get_data(k):
     k.dte.dt('de', u"ok, {my_forename:W}", answer_greeting_att)
 
     def check_att_on(c):
-        assert c.mem_get(c.realm, 'attention') == 'on'
+        assert c.kernal.mem_get(c.realm, 'attention') == 'on'
 
     k.dte.ts('en', 't0010', [(u"ok, computer", u"hello!", check_att_on)])
     k.dte.ts('de', 't0011', [(u"OK, HAL!", u"Hallo!", check_att_on)])
@@ -74,7 +74,7 @@ def get_data(k):
 
     def answer_bye(c):
         def action_attention_off(c):
-            c.mem_set(c.realm, 'attention', 'off')
+            c.kernal.mem_set(c.realm, 'attention', 'off')
         if c.lang == 'en':
             c.resp(u"Bye",           action=action_attention_off)
             c.resp(u"So long",       action=action_attention_off)
@@ -140,7 +140,7 @@ def get_data(k):
     k.dte.ts('de', 't0003', [(u"computer hallo", u"Hi!", [])])
 
     def check_att_off(c):
-        assert c.mem_get(c.realm, 'attention') == 'off'
+        assert c.kernal.mem_get(c.realm, 'attention') == 'off'
 
     k.dte.ts('en', 't0004', [(u"bye computer",     u"bye",      check_att_off)]) 
     k.dte.ts('de', 't0005', [(u"Tschüss computer", u"Tschüss!", check_att_off)])

@@ -44,7 +44,9 @@ from tzlocal                import get_localzone # $ pip install tzlocal
 from copy                   import deepcopy, copy
 from six                    import text_type
 from scipy.spatial.distance import cosine
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string, xsb_query_string, xsb_make_vars, xsb_var_string, xsb_next
+from sqlalchemy             import create_engine
+from sqlalchemy.orm         import sessionmaker
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string, xsb_query_string, xsb_make_vars, xsb_var_string, xsb_next, xsb_hl_query_string
 
 from nltools                import misc
 from nltools.tokenizer      import tokenize
@@ -75,7 +77,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self, user, session, lang, realm):
+    def __init__(self, user, session, lang, realm, kernal):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
@@ -86,6 +88,7 @@ class AIContext(object):
         self.session      = session
         self.lang         = lang
         self.current_dt   = datetime.datetime.now()
+        self.kernal       = kernal
 
     def set_inp(self, inp):
         self.inp = inp
@@ -227,49 +230,19 @@ class AIContext(object):
 
         return res
 
-    def mem_clear(self, realm):
-        self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()
-
-    def mem_set(self, realm, k, v):
-        self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).delete()
-        m = model.Mem(realm=realm, k=k, v=json.dumps(v))
-        self.session.add(m)
-
-    def mem_get(self, realm, k):
-        m = self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).first()
-        if not m:
-            return None
-        return json.loads(m.v)
-
-    def mem_get_multi (self, realm, k):
-
-        m = self.mem_get(realm, k)
-        if not m:
-            return []
-        if not isinstance (m, list):
-            return [1.0, m]
-
-        s = 1.0
-        res = []
-        for m2 in m:
-            res.append((s, m2))
-            s = s / 2
-
-        return res
-    
-    def mem_push (self, realm, k, v):
-        oldv = self.mem_get(realm, k)
-        if not oldv:
-            newv = [v]
-        elif isinstance (oldv, list):
-            newv = [v] + oldv
-        else:
-            newv = [v, oldv]
-        self.mem_set(realm, k, newv)
 
 class AIKernal(object):
 
     def __init__(self, db_url, xsb_root, all_modules=[], load_all_modules=False):
+
+        #
+        # database connection
+        #
+
+        self.engine  = create_engine(db_url, echo=False)
+        self.Session = sessionmaker(bind=self.engine)
+        self.session = self.Session()
+        model.Base.metadata.create_all(self.engine)
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -293,7 +266,7 @@ class AIKernal(object):
         #
 
         xsb_hl_init([xsb_root])
-        self.dte = DataEngine(db_url)
+        self.dte = DataEngine(self.session)
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -560,7 +533,7 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER, self.dte.session, lang, TEST_REALM)
+            ctx        = AIContext(TEST_USER, self.session, lang, TEST_REALM, self)
             round_num  = 0
             num_tests += 1
 
@@ -575,8 +548,8 @@ class AIKernal(object):
 
             for test_inp, test_out, test_action in rounds:
                
-                logging.info("nlp_test: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
-                logging.info("nlp_test: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
+                logging.info("test_module: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
+                logging.info("test_module: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
 
                 # look up code in data engine
 
@@ -597,23 +570,24 @@ class AIKernal(object):
                     try:
                         exec (ecode, globals(), locals())
                     except:
-                        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+                        logging.error('test_module: %s round %d EXCEPTION CAUGHT %s' % (t_name, round_num, traceback.format_exc()))
+                        logging.error(ecode)
 
                     resps = ctx.get_resps()
 
                     for i, resp in enumerate(resps):
                         actual_out, score, actual_action, actual_action_arg = resp
-                        # logging.info("nlp_test: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                        # logging.info("test_module: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                         if len(test_out) > 0:
                             if len(actual_out)>0:
                                 actual_out = u' '.join(tokenize(actual_out, lang))
-                            logging.info("nlp_test: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
+                            logging.info("test_module: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
                             if actual_out != test_out:
-                                logging.info("nlp_test: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
+                                logging.info("test_module: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
                                 continue # no match
 
-                        logging.info("nlp_test: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
+                        logging.info("test_module: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
                         matching_resp = True
                         ctx.commit_resp(i)
 
@@ -639,7 +613,7 @@ class AIKernal(object):
                     break
 
                 if not matching_resp:
-                    logging.error (u'nlp_test: %s round %d no matching response found.' % (t_name, round_num))
+                    logging.error (u'test_module: %s round %d no matching response found.' % (t_name, round_num))
                     num_fails += 1
                     break
 
@@ -1003,4 +977,63 @@ class AIKernal(object):
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
         return res
+
+    def mem_clear(self, realm):
+        self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()
+
+    def mem_set(self, realm, k, v):
+        self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).delete()
+        m = model.Mem(realm=realm, k=k, v=json.dumps(v))
+        self.session.add(m)
+
+    def mem_get(self, realm, k):
+        m = self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).first()
+        if not m:
+            return None
+        return json.loads(m.v)
+
+    def mem_get_multi (self, realm, k):
+
+        m = self.mem_get(realm, k)
+        if not m:
+            return []
+        if not isinstance (m, list):
+            return [m, 1.0]
+
+        s = 1.0
+        res = []
+        for m2 in m:
+            res.append((m2, s))
+            s = s / 2
+
+        return res
+    
+    def mem_push (self, realm, k, v):
+        oldv = self.mem_get(realm, k)
+        if not oldv:
+            newv = [v]
+        elif isinstance (oldv, list):
+            newv = [v] + oldv
+        else:
+            newv = [v, oldv]
+
+        newv = newv[:MAX_MEM_ENTRIES]
+
+        self.mem_set(realm, k, newv)
+
+    def prolog_query(self, query):
+        return xsb_hl_query_string(query)
+
+    def prolog_check(self, query):
+        res = xsb_hl_query_string(query)
+        return len(res)>0
+
+    def prolog_query_one(self, query, idx=0):
+        solutions = xsb_hl_query_string(query)
+        if not solutions:
+            return None
+        return solutions[0][idx]
+
+    def prolog_hl_query(self, fname, args):
+        return xsb_hl_query(fname, args)
 

@@ -19,21 +19,8 @@
 #
 
 import humans
-from xsbprolog import xsb_hl_query_string
 
 DEPENDS    = [ 'base', 'dialog' ]
-
-def get_place_of_birth(e):
-    solutions = xsb_hl_query_string("wdpdPlaceOfBirth(%s, BP)." % e)
-    if not solutions:
-        return None
-    return solutions[0][0]
-
-def get_country_of_birth(e):
-    solutions = xsb_hl_query_string("wdpdPlaceOfBirth(%s, BP), wdpdCountry(BP, COUNTRY)." % e)
-    if not solutions:
-        return None
-    return solutions[0][1]
 
 def get_data(k):
 

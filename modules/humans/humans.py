@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from xsbprolog import xsb_make_vars, xsb_query_string, xsb_var_string, xsb_next, xsb_hl_query_string
-
 def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
@@ -27,7 +25,7 @@ def get_data(k):
     # NER, macros
 
     for lang in ['en', 'de']:
-        for res in xsb_hl_query_string("wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, %s, LABEL)." % lang):
+        for res in k.prolog_query("wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, %s, LABEL)." % lang):
             s_human = res[0] 
             s_label = res[1] 
             k.dte.ner(lang, 'human', s_human, s_label)
@@ -36,14 +34,12 @@ def get_data(k):
     def answer_info_human(c, ts, te):
 
         def act(c, entity):
-            c.mem_push(c.user, 'f1ent', entity)
-
-        import base
+            c.kernal.mem_push(c.user, 'f1ent', entity)
 
         # import pdb; pdb.set_trace()
 
         for entity, score in c.ner(c.lang, 'human', ts, te):
-            if base.is_male(entity):
+            if c.kernal.prolog_check('wdpdSexOrGender(%s, wdeMale),!.' % entity):
                 if c.lang=='en':
                     c.resp(u"His name sounds familiar.", score=score, action=act, action_arg=entity)
                     c.resp(u"Would you like to know more about him?", score=score, action=act, action_arg=entity)
@@ -90,22 +86,24 @@ def get_data(k):
                    [u"Tut mir leid, mehr Informationen habe ich nicht.",
                     u"Es gibt hier nicht mehr Informationen."])
 
-    def answer_human_born_where_tokens(c, ts, te):
+    def answer_human_born_where(c, ts, te):
 
         def act(c, args):
             human, bp = args
-            c.mem_push(c.user, 'f1ent', human)
-            c.mem_push(c.user, 'f1loc', bp)
+            c.kernal.mem_push(c.user, 'f1ent', human)
+            c.kernal.mem_push(c.user, 'f1loc', bp)
 
-        import base
-        import humans
-
-        for human, score in c.ner(c.lang, 'human', ts, te):
-            hlabel = base.get_label(human, c.lang)
+        if ts>=0:
+            hss = c.ner(c.lang, 'human', ts, te)
+        else:
             # import pdb; pdb.set_trace()
-            bp = humans.get_place_of_birth(human)
+            hss = c.kernal.mem_get_multi(c.user, 'f1ent')
+
+        for human, score in hss:
+            hlabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (human, c.lang))
+            bp = c.kernal.prolog_query_one("wdpdPlaceOfBirth(%s, BP)." % human)
             if hlabel and bp:
-                bplabel = base.get_label(bp, c.lang)
+                bplabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (bp, c.lang))
                 if c.lang == 'en':
                     c.resp(u"%s was born in %s, I think." % (hlabel, bplabel), score=score, action=act, action_arg=(human, bp)) 
                     c.resp(u"I believe %s was born in %s." % (hlabel, bplabel), score=score, action=act, action_arg=(human, bp))
@@ -117,40 +115,17 @@ def get_data(k):
 
     k.dte.dt('en', [u"(where|in which town|in which city) (was|is) {known_humans:W} born?",
                     u"which (was|is) (the birthplace|place of birth) of {known_humans:W}?"],
-                   answer_human_born_where_tokens, ['known_humans_0_start', 'known_humans_0_end'])
+                   answer_human_born_where, ['known_humans_0_start', 'known_humans_0_end'])
     k.dte.dt('de', [u"(wo|in welcher stadt) (wurde|ist) (eigentlich|) {known_humans:W} geboren?",
                     u"(was|welches) (war|ist) (eigentlich|) (der Geburtsort|die Geburtsstadt) von {known_humans:W}?"],
-                   answer_human_born_where_tokens, ['known_humans_0_start', 'known_humans_0_end'])
-
-    def answer_human_born_where_context(c):
-
-        def act(c, bp):
-            c.mem_push(c.user, 'f1loc', bp)
-
-        import base
-        import humans
-
-        for score, human in c.mem_get_multi(c.user, 'f1ent'):
-            hlabel = base.get_label(human, c.lang)
-            # import pdb; pdb.set_trace()
-            bp = humans.get_place_of_birth(human)
-            if hlabel and bp:
-                bplabel = base.get_label(bp, c.lang)
-                if c.lang == 'en':
-                    c.resp(u"%s was born in %s, I think." % (hlabel, bplabel), score=score, action=act, action_arg=bp) 
-                    c.resp(u"I believe %s was born in %s." % (hlabel, bplabel), score=score, action=act, action_arg=bp)
-                elif c.lang == 'de':
-                    c.resp(u"%s ist in %s geboren, denke ich." % (hlabel, bplabel), score=score, action=act, action_arg=bp) 
-                    c.resp(u"Ich glaube %s ist in %s geboren." % (hlabel, bplabel), score=score, action=act, action_arg=bp)
-                else:
-                    raise Exception ('Sorry, language %s not implemented yet.' % c.lang)
+                   answer_human_born_where, ['known_humans_0_start', 'known_humans_0_end'])
 
     k.dte.dt('en', [u"(and|) (where|in which town|in which city) (was|is) (she|he) born (again|)?",
                     u"(and|) which is (the birthplace|place of birth) of (him|her) (again|)?"],
-                   answer_human_born_where_context)
+                   answer_human_born_where, [-1, -1])
     k.dte.dt('de', [u"(und|) (wo|in welcher stadt) (wurde|ist) (eigentlich|) (er|sie) (nochmal|) geboren?",
                     u"(und|) welches ist (eigentlich|nochmal|) (der Geburtsort|die Geburtsstadt) von (ihm|ihr)?"],
-                   answer_human_born_where_context)
+                   answer_human_born_where, [-1, -1])
  
     k.dte.ts('en', 't0004', [(u"Where was Angela Merkel born?", u"Angela Merkel was born in Barmbek-Nord, I think.", []),
                                (u"What were we talking about?", u"Didn't we talk about angela merkel?", []),
@@ -159,22 +134,24 @@ def get_data(k):
                                (u"Welches Thema hatten wir?", u"Sprachen wir nicht über Angela Merkel?", []),
                                (u"Und wo wurde sie nochmal geboren?", u"Angela Merkel ist in Barmbek-Nord geboren, denke ich", [])])
 
-    def answer_human_born_country_tokens(c, ts, te):
+    def answer_human_born_country(c, ts, te):
 
         def act(c, args):
             human, cp = args
-            c.mem_push(c.user, 'f1ent', human)
-            c.mem_push(c.user, 'f1loc', cp)
+            c.kernal.mem_push(c.user, 'f1ent', human)
+            c.kernal.mem_push(c.user, 'f1loc', cp)
 
-        import base
-        import humans
+        if ts>=0:
+            hss = c.ner(c.lang, 'human', ts, te)
+        else:
+            hss = c.kernal.mem_get_multi(c.user, 'f1ent')
 
-        for human, score in c.ner(c.lang, 'human', ts, te):
-            hlabel = base.get_label(human, c.lang)
+        for human, score in hss:
+            hlabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (human, c.lang))
             # import pdb; pdb.set_trace()
-            cp = humans.get_country_of_birth(human)
+            cp = c.kernal.prolog_query_one('wdpdPlaceOfBirth(%s, BP), wdpdCountry(BP, COUNTRY).'% human, idx=1)
             if hlabel and cp:
-                cplabel = base.get_label(cp, c.lang)
+                cplabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (cp, c.lang))
                 if c.lang == 'en':
                     c.resp(u"%s was born in %s, I think." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp)) 
                     c.resp(u"I believe %s was born in %s." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp))
@@ -186,40 +163,17 @@ def get_data(k):
 
     k.dte.dt('en', [u"in which country (was|is) {known_humans:W} born?",
                     u"which (was|is) the land of birth of {known_humans:W}?"],
-                   answer_human_born_country_tokens, ['known_humans_0_start', 'known_humans_0_end'])
+                   answer_human_born_country, ['known_humans_0_start', 'known_humans_0_end'])
     k.dte.dt('de', [u"in welchem land (wurde|ist) (eigentlich|) {known_humans:W} geboren?",
                     u"(was|welches) (war|ist) (eigentlich|) das Geburtsland von {known_humans:W}?"],
-                   answer_human_born_country_tokens, ['known_humans_0_start', 'known_humans_0_end'])
-
-    def answer_human_born_country_context(c):
-
-        def act(c, bp):
-            c.mem_push(c.user, 'f1loc', bp)
-
-        import base
-        import humans
-
-        for score, human in c.mem_get_multi(c.user, 'f1ent'):
-            hlabel = base.get_label(human, c.lang)
-            # import pdb; pdb.set_trace()
-            cp = humans.get_country_of_birth(human)
-            if hlabel and cp:
-                cplabel = base.get_label(cp, c.lang)
-                if c.lang == 'en':
-                    c.resp(u"%s was born in %s, I think." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp)) 
-                    c.resp(u"I believe %s was born in %s." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp))
-                elif c.lang == 'de':
-                    c.resp(u"%s ist in %s geboren, denke ich." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp)) 
-                    c.resp(u"Ich glaube %s ist in %s geboren." % (hlabel, cplabel), score=score, action=act, action_arg=(human, cp))
-                else:
-                    raise Exception ('Sorry, language %s not implemented yet.' % c.lang)
+                   answer_human_born_country, ['known_humans_0_start', 'known_humans_0_end'])
 
     k.dte.dt('en', [u"(and|) in which country (was|is) (she|he) born (again|)?",
                     u"(and|) which (was|is) the country of birth of (him|her) (again|)?"],
-                   answer_human_born_country_context)
+                   answer_human_born_country, [-1, -1])
     k.dte.dt('de', [u"(und|) in welchem land (wurde|ist) (eigentlich|) (er|sie) (nochmal|) geboren?",
                     u"(und|) welches (war|ist) (eigentlich|nochmal|) das Geburtsland von (ihm|ihr)?"],
-                   answer_human_born_country_context)
+                   answer_human_born_country, [-1, -1])
 
     k.dte.ts('en', 't0104', [(u"In which country was Angela Merkel born?", u"Angela Merkel was born in Germany, I think.", []),
                                (u"What were we talking about?", u"Didn't we talk about angela merkel?", []),

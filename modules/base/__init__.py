@@ -25,7 +25,7 @@ from zamiaprolog.logic import StringLiteral
 
 DEPENDS    = [ 'config' ]
 
-PL_SOURCES = ['time.pl', 'utils.pl']
+PL_SOURCES = ['utils.pl']
 
 # wikidata utils in python
 
@@ -69,6 +69,46 @@ def transcribe_time(dt, lang):
         return u"eine halbe Stunde nach %d" % h12
 
     return u"%d Minuten nach %d" % (dt.minute, h12)
+
+def get_time_span (cdt, ts):
+    if ts == 'today':
+        return cdt.replace(hour= 0, minute= 0, second= 0, microsecond=0), \
+               cdt.replace(hour=23, minute=59, second=59, microsecond=0)
+
+    if ts == 'tomorrow':
+        return cdt.replace(day=cdt.day+1, hour= 0, minute= 0, second= 0, microsecond=0), \
+               cdt.replace(day=cdt.day+1, hour=23, minute=59, second=59, microsecond=0)
+
+    if ts == 'dayAfterTomorrow':
+        return cdt.replace(day=cdt.day+2, hour= 0, minute= 0, second= 0, microsecond=0), \
+               cdt.replace(day=cdt.day+2, hour=23, minute=59, second=59, microsecond=0)
+
+    if ts == 'nextThreeDays':
+        return cdt.replace(day=cdt.day, hour= 0, minute= 0, second= 0, microsecond=0), \
+               cdt.replace(day=cdt.day+3, hour=23, minute=59, second=59, microsecond=0)
+
+def get_time_label(c, ts):
+
+    if c.lang == 'de':
+        if ts == 'today':
+            return u"today"
+        elif ts == 'tomorrow':
+            return u"tomorrow"
+        elif ts == 'dayAfterTomorrow':
+            return u"day after tomorrow"
+        elif ts == 'nextThreeDays':
+            return u"in the next three days"
+
+    if ts == 'today':
+        return u"heute"
+    elif ts == 'tomorrow':
+        return u"morgen"
+    elif ts == 'dayAfterTomorrow':
+        return u"übermorgen"
+    elif ts == 'nextThreeDays':
+        return u"in den nächsten drei Tagen"
+
+    raise Exception ('unknown timespec %s' % repr(ts))
 
 month_label_en = { 1 : 'january',
                    2 : 'february',
@@ -144,4 +184,16 @@ def transcribe_date(dt, lang, flx):
             return u'%s %s %s' % (ds, ms, dt.year)
         else:
             raise Exception ('FIXME: not implemented yet.')
+
+def get_data(k):
+
+    k.dte.macro('en', 'timespec', {'TIME' : 'today'           , 'LABEL' : u'today'})
+    k.dte.macro('en', 'timespec', {'TIME' : 'tomorrow'        , 'LABEL' : u'tomorrow'})
+    k.dte.macro('en', 'timespec', {'TIME' : 'dayAfterTomorrow', 'LABEL' : u'the day after tomorrow'})
+    k.dte.macro('en', 'timespec', {'TIME' : 'nextThreeDays'   , 'LABEL' : u'the next three days'})
+    
+    k.dte.macro('de', 'timespec', {'TIME' : 'today'           , 'LABEL' : u'heute'})
+    k.dte.macro('de', 'timespec', {'TIME' : 'tomorrow'        , 'LABEL' : u'morgen'})
+    k.dte.macro('de', 'timespec', {'TIME' : 'dayAfterTomorrow', 'LABEL' : u'übermorgen'})
+    k.dte.macro('de', 'timespec', {'TIME' : 'nextThreeDays'   , 'LABEL' : u'die nächsten drei Tage'})
 

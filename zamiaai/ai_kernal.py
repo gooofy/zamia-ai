@@ -77,7 +77,7 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIContext(object):
 
-    def __init__(self, user, session, lang, realm, kernal):
+    def __init__(self, user, session, lang, realm, kernal, test_mode = False):
         self.dlg_log      = []
         self.staged_resps = []
         self.high_score   = 0.0
@@ -87,8 +87,11 @@ class AIContext(object):
         self.ner_dict     = {} # DB cache
         self.session      = session
         self.lang         = lang
-        self.current_dt   = datetime.datetime.now()
         self.kernal       = kernal
+        self.test_mode    = test_mode
+
+        tz = get_localzone()
+        self.current_dt   = tz.localize(datetime.datetime.now())
 
     def set_inp(self, inp):
         self.inp = inp
@@ -533,7 +536,7 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER, self.session, lang, TEST_REALM, self)
+            ctx        = AIContext(TEST_USER, self.session, lang, TEST_REALM, self, test_mode=True)
             round_num  = 0
             num_tests += 1
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch
+# Copyright 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,137 +19,121 @@
 #
 
 import logging
-import dateutil.parser
+import urllib2
+import pytz
+import json
 
-from zamiaprolog.errors import PrologRuntimeError
-from zamiaprolog.logic  import StringLiteral, NumberLiteral
-from kb_weather         import fetch_weather_forecast
+from datetime             import datetime, timedelta
+from nltools              import misc
+
+import weather
+import base
 
 DEPENDS = [ 'base', 'config', 'dialog' ]
+KELVIN  = 273.15
 
-AIP_SOURCES = [
-               'weather_test.aip', 'weather.aip',
-              ]
+def get_time_span (cdt, ts):
+    if ts == 'weatherNearFuture':
+        if cdt.hour < 18:
+            return base.get_time_span(cdt, 'today')
+        return base.get_time_span(cdt, 'tomorrow')
+    return base.get_time_span(cdt, ts)
 
-CRONJOBS   = [
-              ( 'fetch_forecast', 4 * 60 * 60, fetch_weather_forecast),
-             ]
-
-# % all weather events that affect a given timespan
-# wev_timespan (C, TIMESPAN, WEV) :-
-# 
-#     time_span (C:time, TIMESPAN, TSTART, TEND),
-# 
-#     aiDtStart(WEV, WEV_TSTART),
-#     aiDtEnd(WEV, WEV_END),
-# 
-#     or ( and ( >= (WEV_TSTART, TSTART), =< (WEV_TEND, TEND)),
-#          and ( >= (WEV_TSTART, TSTART), 
-# 
-# weather_data (C, PLACE, TIMESPAN, CODE, PREC, TEMP_MIN, TEMP_MAX, CLOUDS) :-
-# 
-# 
-#     findall (WEV, and ( >=(TSTART, aiDtStart (WEV, WEV_TSTART)
-# 
-#     aiDtStart(aiUnlabeledFcFreudental20161206000000, "2016-12-06T00:00:00+00:00").
-#     aiTempMin(aiUnlabeledFcFreudental20161206000000, -7.344).
-#     aiIcon(aiUnlabeledFcFreudental20161206000000, "01n").
-#     aiDtEnd(aiUnlabeledFcFreudental20161206000000, "2016-12-06T03:00:00+00:00").
-#     aiPrecipitation(aiUnlabeledFcFreudental20161206000000, 0.0).
-#     aiTempMax(aiUnlabeledFcFreudental20161206000000, -7.27).
-#     aiLocation(aiUnlabeledFcFreudental20161206000000, wdeFreudental).
-#     aiDescription(aiUnlabeledFcFreudental20161206000000, "clear sky").
-#     aiClouds(aiUnlabeledFcFreudental20161206000000, 0.0).
+def get_time_label(c, cdt, ts):
+    if ts == 'weatherNearFuture':
+        if cdt.hour < 18:
+            if c.lang == 'de':
+                return 'heute'
+            return 'today'
+        if c.lang == 'de':
+            return 'morgen'
+        return 'tomorrow'
+    return base.get_time_label(c, ts)
 
 
-def builtin_weather_data (g, pe):
+#     def time_label(CT, de, weatherNearFuture, "heute"):
+#         before_evening(CT)
+#     def time_label(CT, en, weatherNearFuture, "tomorrow"):
+#         after_evening(CT)
+#     def time_label(CT, de, weatherNearFuture, "morgen"):
+#         after_evening(CT)
 
-    """ weather_data (PLACE, TSTART, TEND, CODE, PREC, TEMP_MIN, TEMP_MAX, CLOUDS) """
+def get_api_key():
 
-    pe._trace ('CALLED BUILTIN weather_data', g)
+    config = misc.load_config('.airc')
+    return config.get('weather', 'api_key')
 
-    # import pdb; pdb.set_trace()
 
-    pred = g.terms[g.inx]
-    args = pred.args
-    if len(args) != 8:
-        raise PrologRuntimeError('weather_data: expected 8 args, %d args found.' % len(args), g.location)
+def fetch_weather_data (c, cdt, loc, ts):
 
-    arg_Place     = pe.prolog_eval         (args[0], g.env, g.location)
-    arg_TStart    = pe.prolog_get_string   (args[1], g.env, g.location)
-    arg_TEnd      = pe.prolog_get_string   (args[2], g.env, g.location)
+    if c.test_mode:
+        # fixed mock data for our tests
+        return {'code': 500, 
+                'clouds': 30.0, 
+                'description': u'light rain', 
+                'temp_max': 2.6200000000000045, 
+                'temp_min': 0.7150000000000318, 
+                'precipitation': 0.7031249999999999, 
+                'icon': u'10n'}
 
-    tstart = dateutil.parser.parse(arg_TStart)
-    tend   = dateutil.parser.parse(arg_TEnd)
+    ts, te = get_time_span(cdt, ts)
 
-    arg_code      = pe.prolog_get_variable (args[3], g.env, g.location)
-    arg_prec      = pe.prolog_get_variable (args[4], g.env, g.location)
-    arg_temp_min  = pe.prolog_get_variable (args[5], g.env, g.location)
-    arg_temp_max  = pe.prolog_get_variable (args[6], g.env, g.location)
-    arg_clouds    = pe.prolog_get_variable (args[7], g.env, g.location)
+    api_key = get_api_key()
 
-    wevs = pe.search_predicate('weather_events', [arg_Place, '_1', '_2', '_3', '_4', '_5', '_6', '_7'])
+    city_id = c.kernal.prolog_query_one('owmCityId(%s, CITY_ID).' % loc)
+    if not city_id:
+        return None
 
-    cnt      = 0
-    code     = ''
-    prec     = 0.0
-    temp_min = 10000.0
-    temp_max = -10000.0
-    clouds   = 0.0
+    url = 'http://api.openweathermap.org/data/2.5/forecast?id=%s&APPID=%s' % (city_id, api_key)
 
-    for wev in wevs:
+    data = json.load(urllib2.urlopen(url))
 
-        logging.debug(repr(wev))
+    if not 'list' in data:
+        logging.error ('failed to fetch weather data for %s, got: %s' % (location, repr(data)))
+        return None
 
-        unbound_values = False
-        for k in ['_1', '_2', '_3', '_4', '_5', '_6', '_7']:
-            if not k in wev:
-                unbound_values = True
-                break
-        if unbound_values:
-            logging.debug ("skipping: unbound values found.")
+    res = {
+           'temp_min'      :  100000.0,
+           'temp_max'      : -100000.0,
+           'code'          : '',
+           'precipitation' : 0.0,
+           'icon'          : '',
+           'description'   : '',
+           'clouds'        : ''
+          }
+
+    cnt = 0.0
+
+    for fc in data['list']:
+
+        dt_to   = datetime.strptime (fc['dt_txt'], '%Y-%m-%d %H:%M:%S')
+        dt_to   = dt_to.replace(tzinfo=pytz.utc)
+
+        dt_from = dt_to - timedelta(hours=3)
+
+        if (dt_from > te) or (dt_to < ts):
             continue
 
-        wev_tstart     = dateutil.parser.parse(wev['_1'].s)
-        wev_tend       = dateutil.parser.parse(wev['_2'].s)
+        temp_min      = fc['main']['temp_min']-KELVIN
+        if temp_min < res['temp_min']:
+            res['temp_min'] = temp_min
+        temp_max      = fc['main']['temp_max']-KELVIN
+        if temp_max > res['temp_max']:
+            res['temp_max'] = temp_max
+        res['precipitation'] += float(fc['rain']['3h']) if 'rain' in fc and '3h' in fc['rain'] else 0.0
+        res['code']          = fc['weather'][0]['id']
+        res['icon']          = fc['weather'][0]['icon']
+        res['description']   = fc['weather'][0]['description']
+        res['clouds']        = float(fc['clouds']['all'])
 
-        if (wev_tstart > tend) or (wev_tend < tstart):
-            # logging.info ('ignoring wev %s' % repr(wev))
-            # import pdb; pdb.set_trace()
-            continue
+        cnt += 1.0
+    
+    if cnt:
+        res['precipitation'] /= cnt
 
-        wev_code       = wev['_3'].s[:2]
-        wev_prec       = wev['_4'].f
-        wev_temp_min   = wev['_5'].f 
-        wev_temp_max   = wev['_6'].f 
-        wev_clouds     = wev['_7'].f 
-        
-        if wev_temp_min < temp_min:
-            temp_min = wev_temp_min
-        if wev_temp_max > temp_max:
-            temp_max = wev_temp_max
-        if wev_code > code:
-            code = wev_code
-        prec += wev_prec
-        clouds += wev_clouds
+    return res
 
-        cnt += 1
+def get_data(k):
 
-    if cnt == 0:
-        raise PrologRuntimeError('weather_data: no data found.', g.location)
-
-    prec   /= float(cnt)
-    clouds /= float(cnt)
-
-    g.env[arg_code]     = StringLiteral(code)
-    g.env[arg_prec]     = NumberLiteral(prec)
-    g.env[arg_temp_min] = NumberLiteral(temp_min)
-    g.env[arg_temp_max] = NumberLiteral(temp_max)
-    g.env[arg_clouds]   = NumberLiteral(clouds)
-
-    return True
-
-def init_module(kernal):
-
-    kernal.rt.register_builtin ('weather_data', builtin_weather_data) # weather_data (+C, +Str)
+    weather.get_data(k)
 

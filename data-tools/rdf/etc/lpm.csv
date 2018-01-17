@@ -487,6 +487,7 @@ wdpFirstPerformance,http://www.wikidata.org/prop/P1191
 wdpFishBaseSpeciesID,http://www.wikidata.org/prop/P938
 wdpFlag,http://www.wikidata.org/prop/P163
 wdpFlagImage,http://www.wikidata.org/prop/P41
+wdpFlagsOfTheWorldID,http://www.wikidata.org/prop/P3089
 wdpFlickrUserID,http://www.wikidata.org/prop/P3267
 wdpFloorsAboveGround,http://www.wikidata.org/prop/P1101
 wdpFlorentineMuseaInventario1890ID,http://www.wikidata.org/prop/P1726
@@ -735,6 +736,7 @@ wdpLanguageUsed,http://www.wikidata.org/prop/P2936
 wdpLanguagesSpokenWrittenOrSigned,http://www.wikidata.org/prop/P1412
 wdpLastFmMusicID,http://www.wikidata.org/prop/P3192
 wdpLastLine,http://www.wikidata.org/prop/P3132
+wdpLastWords,http://www.wikidata.org/prop/P3909
 wdpLdiFID,http://www.wikidata.org/prop/P3107
 wdpLeMondeDiplomatiqueSubjectID,http://www.wikidata.org/prop/P3612
 wdpLegalEntityID,http://www.wikidata.org/prop/P1278
@@ -1803,6 +1805,7 @@ wdpdFirstPerformance,http://www.wikidata.org/prop/direct/P1191
 wdpdFishBaseSpeciesID,http://www.wikidata.org/prop/direct/P938
 wdpdFlag,http://www.wikidata.org/prop/direct/P163
 wdpdFlagImage,http://www.wikidata.org/prop/direct/P41
+wdpdFlagsOfTheWorldID,http://www.wikidata.org/prop/direct/P3089
 wdpdFlickrUserID,http://www.wikidata.org/prop/direct/P3267
 wdpdFloorsAboveGround,http://www.wikidata.org/prop/direct/P1101
 wdpdFlorentineMuseaInventario1890ID,http://www.wikidata.org/prop/direct/P1726
@@ -2050,6 +2053,7 @@ wdpdLanguageUsed,http://www.wikidata.org/prop/direct/P2936
 wdpdLanguagesSpokenWrittenOrSigned,http://www.wikidata.org/prop/direct/P1412
 wdpdLastFmMusicID,http://www.wikidata.org/prop/direct/P3192
 wdpdLastLine,http://www.wikidata.org/prop/direct/P3132
+wdpdLastWords,http://www.wikidata.org/prop/direct/P3909
 wdpdLdiFID,http://www.wikidata.org/prop/direct/P3107
 wdpdLeMondeDiplomatiqueSubjectID,http://www.wikidata.org/prop/direct/P3612
 wdpdLegalEntityID,http://www.wikidata.org/prop/direct/P1278

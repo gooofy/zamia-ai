@@ -2191,6 +2191,7 @@ wdeAppointedBy,http://www.wikidata.org/entity/P748
 wdeArabIsraeliConflict,http://www.wikidata.org/entity/Q8669
 wdeArabic,http://www.wikidata.org/entity/Q13955
 wdeArchPackage,http://www.wikidata.org/entity/P3454
+wdeArchaeology,http://www.wikidata.org/entity/Q23498
 wdeArchbishopricOfBremen,http://www.wikidata.org/entity/Q496180
 wdeArchbishopricOfMagdeburg,http://www.wikidata.org/entity/Q636389
 wdeArchimedes,http://www.wikidata.org/entity/Q8739
@@ -2350,6 +2351,7 @@ wdeBelleGrove,http://www.wikidata.org/entity/Q4883635
 wdeBenHur,http://www.wikidata.org/entity/Q180098
 wdeBenHurATaleOfTheChrist,http://www.wikidata.org/entity/Q816528
 wdeBenedict,http://www.wikidata.org/entity/Q16275020
+wdeBenelux,http://www.wikidata.org/entity/Q13116
 wdeBenezitID,http://www.wikidata.org/entity/P2843
 wdeBenjamin,http://www.wikidata.org/entity/Q4926472
 wdeBenjaminASmithII,http://www.wikidata.org/entity/Q817374
@@ -2436,6 +2438,7 @@ wdeBridgemanArtistID,http://www.wikidata.org/entity/P3965
 wdeBritishAmerica,http://www.wikidata.org/entity/Q258532
 wdeBritishCouncilArtistID,http://www.wikidata.org/entity/P2399
 wdeBritishHistoryOnlineVCHID,http://www.wikidata.org/entity/P3628
+wdeBritishIsles,http://www.wikidata.org/entity/Q38272
 wdeBritishMuseumPersonInstitution,http://www.wikidata.org/entity/P1711
 wdeBritishNorthAmerica,http://www.wikidata.org/entity/Q248452
 wdeBrookinsCampbell,http://www.wikidata.org/entity/Q929115
@@ -2974,6 +2977,7 @@ wdeDistrictCapital,http://www.wikidata.org/entity/Q134626
 wdeDistrictOfAustria,http://www.wikidata.org/entity/Q871419
 wdeDistrictOfTheCzechRepublic,http://www.wikidata.org/entity/Q548611
 wdeDistroWatchID,http://www.wikidata.org/entity/P3112
+wdeDitzingen,http://www.wikidata.org/entity/Q61658
 wdeDiversity,http://www.wikidata.org/entity/Q1230584
 wdeDivorce,http://www.wikidata.org/entity/Q93190
 wdeDizionarioBiograficoDegliItaliani,http://www.wikidata.org/entity/P1986
@@ -2985,6 +2989,7 @@ wdeDoctoralStudent,http://www.wikidata.org/entity/P185
 wdeDoctoralThesis,http://www.wikidata.org/entity/P1026
 wdeDocudrama,http://www.wikidata.org/entity/Q622370
 wdeDocument,http://www.wikidata.org/entity/Q49848
+wdeDocumentaryFilm,http://www.wikidata.org/entity/Q93204
 wdeDodecagonalNumber,http://www.wikidata.org/entity/Q1081248
 wdeDodecahedralNumber,http://www.wikidata.org/entity/Q13825533
 wdeDogDayAfternoon,http://www.wikidata.org/entity/Q458656
@@ -3070,6 +3075,7 @@ wdeEducatedAt,http://www.wikidata.org/entity/P69
 wdeEducator,http://www.wikidata.org/entity/Q1231865
 wdeEdward,http://www.wikidata.org/entity/Q278835
 wdeEdwardDouglassWhite,http://www.wikidata.org/entity/Q706463
+wdeEdwardFollansbeeNoyes,http://www.wikidata.org/entity/Q881591
 wdeEdwardLivingston,http://www.wikidata.org/entity/Q544396
 wdeEinheitsgemeindeOfGermany,http://www.wikidata.org/entity/Q15974307
 wdeEinstein,http://www.wikidata.org/entity/Q16834800
@@ -3286,6 +3292,7 @@ wdeFirstWarOfScottishIndependence,http://www.wikidata.org/entity/Q3242848
 wdeFishBaseSpeciesID,http://www.wikidata.org/entity/P938
 wdeFlag,http://www.wikidata.org/entity/P163
 wdeFlagImage,http://www.wikidata.org/entity/P41
+wdeFlagsOfTheWorldID,http://www.wikidata.org/entity/P3089
 wdeFlanders,http://www.wikidata.org/entity/Q234
 wdeFlashbackFilm,http://www.wikidata.org/entity/Q21401869
 wdeFlemishCommunity,http://www.wikidata.org/entity/Q9331
@@ -3863,6 +3870,7 @@ wdeJack,http://www.wikidata.org/entity/Q1159009
 wdeJackRyan,http://www.wikidata.org/entity/Q1068314
 wdeJackson,http://www.wikidata.org/entity/Q2732758
 wdeJacobBurnet,http://www.wikidata.org/entity/Q1677447
+wdeJacobDolsonCox,http://www.wikidata.org/entity/Q177350
 wdeJake,http://www.wikidata.org/entity/Q16277266
 wdeJakeFeatherston,http://www.wikidata.org/entity/Q6124670
 wdeJamaicaHospital,http://www.wikidata.org/entity/Q23497866
@@ -3915,6 +3923,7 @@ wdeJoachimGauck,http://www.wikidata.org/entity/Q2538
 wdeJoanna,http://www.wikidata.org/entity/Q4248351
 wdeJoanne,http://www.wikidata.org/entity/Q14968419
 wdeJocondeID,http://www.wikidata.org/entity/P347
+wdeJoePurcell,http://www.wikidata.org/entity/Q889195
 wdeJoelCoen,http://www.wikidata.org/entity/Q13595311
 wdeJohannes,http://www.wikidata.org/entity/Q2117521
 wdeJohannesRau,http://www.wikidata.org/entity/Q2551
@@ -4078,6 +4087,7 @@ wdeLUMIEREFilmID,http://www.wikidata.org/entity/P4282
 wdeLaHaine,http://www.wikidata.org/entity/Q466101
 wdeLaJetée,http://www.wikidata.org/entity/Q451434
 wdeLaLaLand,http://www.wikidata.org/entity/Q20856802
+wdeLaRueCounty,http://www.wikidata.org/entity/Q498128
 wdeLabelInSignLanguage,http://www.wikidata.org/entity/P2919
 wdeLadyWithAnErmine,http://www.wikidata.org/entity/Q474338
 wdeLagaan,http://www.wikidata.org/entity/Q843949
@@ -4099,6 +4109,7 @@ wdeLanguagesWithOfficialStatusInIndia,http://www.wikidata.org/entity/Q272756
 wdeLasseHallström,http://www.wikidata.org/entity/Q316051
 wdeLastFmMusicID,http://www.wikidata.org/entity/P3192
 wdeLastLine,http://www.wikidata.org/entity/P3132
+wdeLastWords,http://www.wikidata.org/entity/P3909
 wdeLatinAmerica,http://www.wikidata.org/entity/Q12585
 wdeLatveriMs,http://www.wikidata.org/entity/Q2415171
 wdeLawrenceOfArabia,http://www.wikidata.org/entity/Q228186
@@ -5706,6 +5717,7 @@ wdeThomasDickensArnold,http://www.wikidata.org/entity/Q1641461
 wdeThomasJefferson,http://www.wikidata.org/entity/Q11812
 wdeThomasKuchel,http://www.wikidata.org/entity/Q344538
 wdeThomasLHarris,http://www.wikidata.org/entity/Q2781217
+wdeThomasLYoung,http://www.wikidata.org/entity/Q370109
 wdeThomasPatrickMoore,http://www.wikidata.org/entity/Q2426452
 wdeThomasPosey,http://www.wikidata.org/entity/Q885976
 wdeThomasRMarshall,http://www.wikidata.org/entity/Q299001
@@ -6005,6 +6017,7 @@ wdeWilliSuth,http://www.wikidata.org/entity/Q2577546
 wdeWilliam,http://www.wikidata.org/entity/Q12344159
 wdeWilliamABlakley,http://www.wikidata.org/entity/Q4088427
 wdeWilliamAMoseley,http://www.wikidata.org/entity/Q8004011
+wdeWilliamAllen,http://www.wikidata.org/entity/Q880659
 wdeWilliamBranchGiles,http://www.wikidata.org/entity/Q881122
 wdeWilliamCCClaiborne,http://www.wikidata.org/entity/Q878789
 wdeWilliamCabellRives,http://www.wikidata.org/entity/Q3568477

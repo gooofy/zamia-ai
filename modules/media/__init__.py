@@ -3,7 +3,13 @@
 
 DEPENDS    = [ 'base', 'config', 'dialog' ]
 
-AIP_SOURCES = [
-               'slots.aip', 'media.aip',
-              ]
+PL_SOURCES = [
+               'slots.pl',
+             ]
+
+import media
+
+def get_data(k):
+    media.get_data(k)
+
 

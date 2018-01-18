@@ -552,7 +552,7 @@ class AIKernal(object):
                 except:
                     logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
-            for test_inp, test_out, test_action in rounds:
+            for test_inp, test_out, test_action, test_action_arg in rounds:
                
                 logging.info("test_module: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
                 logging.info("test_module: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
@@ -603,9 +603,8 @@ class AIKernal(object):
                         if test_action:
                             afn, acode = self.dte.lookup_code(test_action)
                             ecode = '%s\n%s(ctx' % (acode, afn)
-                            if args:
-                                for arg in args:
-                                    ecode += ',%s' % repr(arg)
+                            if test_action_arg:
+                                ecode += ',%s' % repr(test_action_arg)
                             ecode += ')\n'
                             exec (ecode, globals(), locals())
 

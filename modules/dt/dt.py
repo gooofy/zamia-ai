@@ -59,18 +59,18 @@ def get_data(k):
         import dateutil.parser
         c.current_dt = dateutil.parser.parse('2017-02-08T13:15:00+01:00')
 
-    k.dte.ts('en', 'time1', [(u"what time is it", u"It is half past 7.", [])], prep=prep_time_a)
-    k.dte.ts('en', 'time2', [(u"what time is it", u"It is a quarter past 1.", [])], prep=prep_time_b)
+    k.dte.ts('en', 'time1', [(u"what time is it", u"It is half past 7.")], prep=prep_time_a)
+    k.dte.ts('en', 'time2', [(u"what time is it", u"It is a quarter past 1.")], prep=prep_time_b)
 
-    k.dte.ts('en', 'time3', [(u"what time is it", u"It is a quarter past 1.", [])], prep=prep_time_b)
-    k.dte.ts('en', 'time3', [(u"what time is it", u"It is a quarter past 1.", []),
-                               (u"what was our topic?", u"Our topic was time, I believe.", [])], prep=prep_time_b)
+    k.dte.ts('en', 'time3', [(u"what time is it", u"It is a quarter past 1.")], prep=prep_time_b)
+    k.dte.ts('en', 'time3', [(u"what time is it", u"It is a quarter past 1."),
+                               (u"what was our topic?", u"Our topic was time, I believe.")], prep=prep_time_b)
 
-    k.dte.ts('de', 'time4', [(u"wie spät ist es", u"Es ist eine halbe Stunde nach 7.", [])], prep=prep_time_a)
-    k.dte.ts('de', 'time5', [(u"wie spät ist es", u"Es ist viertel nach 1.", [])], prep=prep_time_b)
+    k.dte.ts('de', 'time4', [(u"wie spät ist es", u"Es ist eine halbe Stunde nach 7.")], prep=prep_time_a)
+    k.dte.ts('de', 'time5', [(u"wie spät ist es", u"Es ist viertel nach 1.")], prep=prep_time_b)
 
-    k.dte.ts('de', 'time6', [(u"wie spät ist es", u"Es ist viertel nach 1.", []),
-                             (u"worüber haben wir gesprochen?", u"Ich denke, unser Thema war Zeit.", [])], prep=prep_time_b)
+    k.dte.ts('de', 'time6', [(u"wie spät ist es", u"Es ist viertel nach 1."),
+                             (u"worüber haben wir gesprochen?", u"Ich denke, unser Thema war Zeit.")], prep=prep_time_b)
 
     k.dte.dt('en', [u"30 minutes",
                     u"about a minute",
@@ -126,19 +126,19 @@ def get_data(k):
                     u"welcher wochentag ist heute"],
                    answer_date)
 
-    k.dte.ts('en', 'date1', [(u"what date is it", u"The date is Monday June 12, 2017.", [])], prep=prep_time_a)
-    k.dte.ts('en', 'date2', [(u"what date is it", u"The date is Wednesday February 8, 2017", [])], prep=prep_time_b)
+    k.dte.ts('en', 'date1', [(u"what date is it", u"The date is Monday June 12, 2017.")], prep=prep_time_a)
+    k.dte.ts('en', 'date2', [(u"what date is it", u"The date is Wednesday February 8, 2017")], prep=prep_time_b)
 
-    k.dte.ts('en', 'date3', [(u"what date is it", u"The date is Wednesday February 8, 2017", [])], prep=prep_time_b)
-    k.dte.ts('en', 'date4', [(u"what date is it", u"The date is Wednesday February 8, 2017", []),
-                               (u"what was our topic?", u"We have been talking about calendar date, I think.", [])], prep=prep_time_b)
+    k.dte.ts('en', 'date3', [(u"what date is it", u"The date is Wednesday February 8, 2017")], prep=prep_time_b)
+    k.dte.ts('en', 'date4', [(u"what date is it", u"The date is Wednesday February 8, 2017"),
+                               (u"what was our topic?", u"We have been talking about calendar date, I think.")], prep=prep_time_b)
 
-    k.dte.ts('de', 'date5', [(u"Welchen Tag haben wir heute?", u"Wir haben Montag den zwölften Juni 2017", [])], prep=prep_time_a)
-    k.dte.ts('de', 'date6', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017", [])], prep=prep_time_b)
+    k.dte.ts('de', 'date5', [(u"Welchen Tag haben wir heute?", u"Wir haben Montag den zwölften Juni 2017")], prep=prep_time_a)
+    k.dte.ts('de', 'date6', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017")], prep=prep_time_b)
 
-    k.dte.ts('de', 'date7', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017", [])], prep=prep_time_b)
-    k.dte.ts('de', 'date8', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017", []),
-                               (u"worüber haben wir gesprochen?", u"Sprachen wir nicht über Kalenderdatum?", [])], prep=prep_time_b)
+    k.dte.ts('de', 'date7', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017")], prep=prep_time_b)
+    k.dte.ts('de', 'date8', [(u"Welchen Tag haben wir heute?", u"Wir haben Mittwoch den achten Februar 2017"),
+                               (u"worüber haben wir gesprochen?", u"Sprachen wir nicht über Kalenderdatum?")], prep=prep_time_b)
 
     k.dte.dt('en', u"what was last friday?", u"which friday?")
     k.dte.dt('de', u"was war am vergangenen freitag", u"welcher freitag?")

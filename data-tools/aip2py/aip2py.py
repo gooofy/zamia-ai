@@ -90,7 +90,10 @@ def convert_test(clause):
             idx += 1
                     
 
-        outf.write(u'(u"%s", u"%s", %s)' % (inp, resp, repr(actions)) )
+        if actions:
+            outf.write(u'(u"%s", u"%s", %s)' % (inp, resp, repr(actions)) )
+        else:
+            outf.write(u'(u"%s", u"%s")' % (inp, resp) )
 
     outf.write(u"]")
     if prep:

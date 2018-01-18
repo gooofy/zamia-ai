@@ -381,23 +381,27 @@ class DataEngine(object):
         rs = []
         for r in rounds:
 
-            code     = r[2]
-            md5s     = None
-            if code:
-                code_src = inspect.getsource(code)
-                code_src = self._unindent(code_src)
-                code_ast = ast.parse(code_src)
+            md5s = None
+            arg  = None
+            if len(r)>2:
+                code     = r[2]
+                if code:
+                    code_src = inspect.getsource(code)
+                    code_src = self._unindent(code_src)
+                    code_ast = ast.parse(code_src)
 
-                for node in ast.walk(code_ast):
-                    if isinstance(node, ast.FunctionDef):
-                        code_fn  = node.name
-                        code_src = codegen.to_source(node)
-                        md5s = self.store_code(code_src, code_fn)
-                        break
+                    for node in ast.walk(code_ast):
+                        if isinstance(node, ast.FunctionDef):
+                            code_fn  = node.name
+                            code_src = codegen.to_source(node)
+                            md5s = self.store_code(code_src, code_fn)
+                            break
+                if len(r)>3:
+                    arg = r[3]
 
             rs.append((u' '.join(tokenize(r[0], lang=lang)),
                        u' '.join(tokenize(r[1], lang=lang)),
-                       md5s))
+                       md5s, arg))
 
         # extract prep code, if any
 

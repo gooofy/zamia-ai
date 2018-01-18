@@ -163,14 +163,18 @@ def get_data(k):
                     u"(what is the likelihood of|how likely is) rain ?"], 
                    answer_weather, ['prec_cloud', -1, -1, None, False])
 
-    k.dte.ts('en', 't0000', [(u"Computer, will it rain?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
-    k.dte.ts('en', 't0003', [(u"how likely is rain?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
- 
-    k.dte.ts('en', 't0005', [(u"Computer, how likely is it that it will rain ?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
-    k.dte.ts('en', 't0009', [(u"computer, will there be sunshine?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
+    def prep_time_a(c):
+        import dateutil.parser
+        c.current_dt = dateutil.parser.parse('2017-06-12T07:30:00+01:00')
 
-    k.dte.ts('en', 't0011', [(u"Will it rain?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
-    k.dte.ts('en', 't0013', [(u"Computer, is rain coming?", u"today it will be mostly sunny in stuttgart with little precipitation", [])])
+    k.dte.ts('en', 't0000', [(u"Computer, will it rain?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0003', [(u"how likely is rain?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+ 
+    k.dte.ts('en', 't0005', [(u"Computer, how likely is it that it will rain ?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0009', [(u"computer, will there be sunshine?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+
+    k.dte.ts('en', 't0011', [(u"Will it rain?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0013', [(u"Computer, is rain coming?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
 
     k.dte.dt('en', [u"what (will the weather|is the weather gonna|is the weather going to) be like ?", 
                     u"how (cold|warm) (is it going to|will it) (be|become) ?", 
@@ -180,11 +184,11 @@ def get_data(k):
                     u"(and|) what is the weather like (there|then|)?"], 
                    answer_weather, ['full', -1, -1, None, False])
 
-    k.dte.ts('en', 't0007', [(u"Computer, what will the weather be like?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('en', 't0015', [(u"Computer, how warm will it be ?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0007', [(u"Computer, what will the weather be like?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('en', 't0015', [(u"Computer, how warm will it be ?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0017', [(u"computer, what will the weather be like?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('en', 't0021', [(u"Computer, what does the weather forecast say?", u"today will be mostly clear skies in Stuttgart with temperatures between -8 and 4 degrees.", [])], )
+    k.dte.ts('en', 't0017', [(u"computer, what will the weather be like?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('en', 't0021', [(u"Computer, what does the weather forecast say?", u"today will be mostly clear skies in Stuttgart with temperatures between -8 and 4 degrees.")], prep=prep_time_a)
  
     k.dte.dt('de', [u"wird es (regnen|Regen geben) ?", 
                     u"(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen ?", 
@@ -194,14 +198,14 @@ def get_data(k):
                     u"kommt noch Regen ?"],
                    answer_weather, ['prec_cloud', -1, -1, None, False])
 
-    k.dte.ts('de', 't0002', [(u"Computer, wird es regnen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0004', [(u"wie groß ist die Wahrscheinlichkeit für Regen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0002', [(u"Computer, wird es regnen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0004', [(u"wie groß ist die Wahrscheinlichkeit für Regen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0006', [(u"Computer, wie wahrscheinlich ist es, dass es regnen wird?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0010', [(u"computer, scheint die Sonne?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0006', [(u"Computer, wie wahrscheinlich ist es, dass es regnen wird?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0010', [(u"computer, scheint die Sonne?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0012', [(u"Regnet es?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0014', [(u"Computer, kommt noch Regen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0012', [(u"Regnet es?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0014', [(u"Computer, kommt noch Regen?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
     k.dte.dt('de', [u"wie (ist|ist denn|wird) das Wetter (werden|)?", 
                     u"wie (kalt|warm) wird es (werden|) ?", 
@@ -209,11 +213,11 @@ def get_data(k):
                     u"(und|) wie (ist das Wetter|sieht das Wetter aus|wie wird das wetter) (dort|dann|)?"],
                    answer_weather, ['full', -1, -1, None, False])
 
-    k.dte.ts('de', 't0008', [(u"Computer, wie wird das Wetter werden?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0016', [(u"Computer, wie warm wird es?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0008', [(u"Computer, wie wird das Wetter werden?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0016', [(u"Computer, wie warm wird es?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0018', [(u"computer, wie wird das Wetter?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0022', [(u"Computer, was sagt der Wetterbericht?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0018', [(u"computer, wie wird das Wetter?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0022', [(u"Computer, was sagt der Wetterbericht?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
     k.dte.dt('en', [u"(what is the likelihood of | how likely is) rain {timespec:LABEL} ?", 
                     u"How likely is it that it will rain {timespec:LABEL}?", 
@@ -222,14 +226,14 @@ def get_data(k):
                     u"(will rain come|is rain coming) {timespec:LABEL}?"],
                    answer_weather, ['prec_cloud', -1, -1, 'timespec_0_time', False])
 
-    k.dte.ts('en', 't0100', [(u"Computer, will it rain tomorrow?", u"tomorrow it will be mostly sunny in stuttgart with little precipitation", [])], )
-    k.dte.ts('en', 't0102', [(u"how likely is rain the day after tomorrow?", u"day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.", [])], )
+    k.dte.ts('en', 't0100', [(u"Computer, will it rain tomorrow?", u"tomorrow it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0102', [(u"how likely is rain the day after tomorrow?", u"day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0104', [(u"Computer, how likely is it that it will rain today?", u"today it will be mostly sunny in stuttgart with little precipitation", [])], )
-    k.dte.ts('en', 't0108', [(u"computer, will there be sunshine the day after tomorrow?", u"day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.", [])], )
+    k.dte.ts('en', 't0104', [(u"Computer, how likely is it that it will rain today?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0108', [(u"computer, will there be sunshine the day after tomorrow?", u"day after tomorrow it will be mostly sunny in Stuttgart with little precipitation.")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0110', [(u"Will it rain today?", u"today it will be mostly sunny in stuttgart with little precipitation", [])], )
-    k.dte.ts('en', 't0112', [(u"Computer, is rain coming tomorrow?", u"tomorrow it will be mostly sunny in stuttgart with little precipitation", [])], )
+    k.dte.ts('en', 't0110', [(u"Will it rain today?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0112', [(u"Computer, is rain coming tomorrow?", u"tomorrow it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
  
     k.dte.dt('en', [u"what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?", 
                     u"how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?", 
@@ -237,13 +241,13 @@ def get_data(k):
                     u"How is the weather {timespec:LABEL} ?"],
                    answer_weather, ['full', -1, -1, 'timespec_0_time', False])
 
-    k.dte.ts('en', 't0106', [(u"Computer, what will the weather be like tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('en', 't0114', [(u"Computer, how warm will it be the day after tomorrow?", u"day after tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0106', [(u"Computer, what will the weather be like tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('en', 't0114', [(u"Computer, how warm will it be the day after tomorrow?", u"day after tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0116', [(u"computer, what will the weather be like today?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('en', 't0118', [(u"what is the weather gonna be like tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0116', [(u"computer, what will the weather be like today?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('en', 't0118', [(u"what is the weather gonna be like tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0120', [(u"Computer, what does the weather forecast say for today?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0120', [(u"Computer, what does the weather forecast say for today?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
     k.dte.dt('de', [u"wird es {timespec:LABEL} (regnen|Regen geben)?", 
                     u"(was ist die Wahrscheinlichkeit für|wie groß ist die Wahrscheinlichkeit für|wie wahrscheinlich ist) Regen {timespec:LABEL} ?", 
@@ -259,22 +263,22 @@ def get_data(k):
                     u"(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} ?"],
                    answer_weather, ['full', -1, -1, 'timespec_0_time', False])
 
-    k.dte.ts('de', 't0101', [(u"Computer, wird es morgen regnen?", u"morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0101', [(u"Computer, wird es morgen regnen?", u"morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0103', [(u"wie groß ist die Wahrscheinlichkeit für Regen übermorgen?", u"übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0105', [(u"Computer, wie wahrscheinlich ist es, dass es heute regnen wird?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0103', [(u"wie groß ist die Wahrscheinlichkeit für Regen übermorgen?", u"übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0105', [(u"Computer, wie wahrscheinlich ist es, dass es heute regnen wird?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0107', [(u"Computer, wie wird morgen das Wetter?", u"morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0109', [(u"computer, scheint übermorgen die Sonne?", u"übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0107', [(u"Computer, wie wird morgen das Wetter?", u"morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0109', [(u"computer, scheint übermorgen die Sonne?", u"übermorgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0111', [(u"Regnet es heute?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0113', [(u"Computer, kommt morgen noch Regen?", u"morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0111', [(u"Regnet es heute?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0113', [(u"Computer, kommt morgen noch Regen?", u"morgen scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0115', [(u"Computer, wie warm wird es übermorgen?", u"übermorgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0117', [(u"computer, wie wird das Wetter heute?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0115', [(u"Computer, wie warm wird es übermorgen?", u"übermorgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0117', [(u"computer, wie wird das Wetter heute?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0119', [(u"wie wird das Wetter morgen?", u"morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0121', [(u"Computer, was sagt der Wetterbericht für heute?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0119', [(u"wie wird das Wetter morgen?", u"morgen wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0121', [(u"Computer, was sagt der Wetterbericht für heute?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
     k.dte.dt('en', [u"(what is the likelihood of | how likely is) rain in {weather_location:LABEL} ?", 
                     u"how likely is it that it will rain in {weather_location:LABEL} ?", 
@@ -284,16 +288,16 @@ def get_data(k):
                     u"how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL}?"],
                    answer_weather, ['prec_cloud', 'weather_location_0_start', 'weather_location_0_end', None, False])
 
-    k.dte.ts('en', 't0200', [(u"Computer, will it rain in Freudental?", u"today it will be mostly sunny in freudental with little precipitation", [])], )
-    k.dte.ts('en', 't0202', [(u"how likely is rain in Stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation", [])], )
+    k.dte.ts('en', 't0200', [(u"Computer, will it rain in Freudental?", u"today it will be mostly sunny in freudental with little precipitation")], prep=prep_time_a)
+    k.dte.ts('en', 't0202', [(u"how likely is rain in Stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0204', [(u"Computer, how likely is it that it will rain in Freudental?", u"today it will be mostly sunny in Freudental with little precipitation.", [])], )
-    k.dte.ts('en', 't0208', [(u"computer, will there be sunshine in stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation", [])], )
+    k.dte.ts('en', 't0204', [(u"Computer, how likely is it that it will rain in Freudental?", u"today it will be mostly sunny in Freudental with little precipitation.")], prep=prep_time_a)
+    k.dte.ts('en', 't0208', [(u"computer, will there be sunshine in stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0210', [(u"Will it rain in Freudental?", u"today it will be mostly sunny in Freudental with little precipitation.", [])], )
-    k.dte.ts('en', 't0212', [(u"Computer, is rain coming in Tallinn?", u"today it will be mostly sunny in tallinn with little precipitation", [])], )
+    k.dte.ts('en', 't0210', [(u"Will it rain in Freudental?", u"today it will be mostly sunny in Freudental with little precipitation.")], prep=prep_time_a)
+    k.dte.ts('en', 't0212', [(u"Computer, is rain coming in Tallinn?", u"today it will be mostly sunny in tallinn with little precipitation")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0214', [(u"Computer, how warm will it be in Stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation", [])], )
+    k.dte.ts('en', 't0214', [(u"Computer, how warm will it be in Stuttgart?", u"today it will be mostly sunny in stuttgart with little precipitation")], prep=prep_time_a)
     
     k.dte.dt('en', [u"what ( will the weather | is the weather gonna | is the weather going to ) be (like|) in {weather_location:LABEL} ?", 
                     u"how (cold|warm) (is it going to|will it) (be|become) in {weather_location:LABEL} ?", 
@@ -301,12 +305,12 @@ def get_data(k):
                     u"How is the weather in {weather_location:LABEL} ?"],
                    answer_weather, ['full', 'weather_location_0_start', 'weather_location_0_end', None, False])
 
-    k.dte.ts('en', 't0206', [(u"Computer, what will the weather be like in Tallinn?", u"today will be mostly clear skies in tallinn with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0206', [(u"Computer, what will the weather be like in Tallinn?", u"today will be mostly clear skies in tallinn with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0216', [(u"computer, what will the weather be like in Tallinn?", u"today will be mostly clear skies in tallinn with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('en', 't0218', [(u"what is the weather gonna be like in stuttgart?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0216', [(u"computer, what will the weather be like in Tallinn?", u"today will be mostly clear skies in tallinn with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('en', 't0218', [(u"what is the weather gonna be like in stuttgart?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
-    k.dte.ts('en', 't0220', [(u"Computer, what does the weather forecast say for stuttgart?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
+    k.dte.ts('en', 't0220', [(u"Computer, what does the weather forecast say for stuttgart?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
 
     k.dte.dt('de', [u"wird es in {weather_location:LABEL} (regnen | Regen geben) ?", 
                     u"( was ist die Wahrscheinlichkeit für | wie groß ist die Wahrscheinlichkeit für | wie wahrscheinlich ist ) Regen in {weather_location:LABEL} ?", 
@@ -317,27 +321,27 @@ def get_data(k):
                     u"wie (kalt|warm) wird es in {weather_location:LABEL} (werden|)?"],
                    answer_weather, ['prec_cloud', 'weather_location_0_start', 'weather_location_0_end', None, False])
 
-    k.dte.ts('de', 't0201', [(u"Computer, wird es in Freudental regnen?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0201', [(u"Computer, wird es in Freudental regnen?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0203', [(u"wie groß ist die Wahrscheinlichkeit für Regen in Stuttgart?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0205', [(u"Computer, wie wahrscheinlich ist es, dass es in Freudental regnen wird?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0203', [(u"wie groß ist die Wahrscheinlichkeit für Regen in Stuttgart?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0205', [(u"Computer, wie wahrscheinlich ist es, dass es in Freudental regnen wird?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0209', [(u"computer, scheint in Stuttgart die Sonne?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0211', [(u"Regnet es in Freudental?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0209', [(u"computer, scheint in Stuttgart die Sonne?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0211', [(u"Regnet es in Freudental?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0213', [(u"Computer, kommt noch Regen in Tallinn?", u"heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben", [])], )
-    k.dte.ts('de', 't0215', [(u"Computer, wie warm wird es in Stuttgart?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben", [])], )
+    k.dte.ts('de', 't0213', [(u"Computer, kommt noch Regen in Tallinn?", u"heute scheint in tallinn überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
+    k.dte.ts('de', 't0215', [(u"Computer, wie warm wird es in Stuttgart?", u"heute scheint in stuttgart überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
 
     k.dte.dt('de', [u"wie (ist|ist denn|wird) in {weather_location:LABEL} das Wetter?", 
                     u"wie (ist|ist denn|wird) das Wetter in {weather_location:LABEL}?", 
                     u"(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {weather_location:LABEL}?"],
                    answer_weather, ['full', 'weather_location_0_start', 'weather_location_0_end', None, False])
 
-    k.dte.ts('de', 't0207', [(u"Computer, wie wird in Tallinn das Wetter?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0217', [(u"computer, wie wird das Wetter in Tallinn?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0207', [(u"Computer, wie wird in Tallinn das Wetter?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0217', [(u"computer, wie wird das Wetter in Tallinn?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
-    k.dte.ts('de', 't0219', [(u"wie wird das Wetter in Stuttgart?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
-    k.dte.ts('de', 't0221', [(u"Computer, was sagt der Wetterbericht für Stuttgart?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('de', 't0219', [(u"wie wird das Wetter in Stuttgart?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
+    k.dte.ts('de', 't0221', [(u"Computer, was sagt der Wetterbericht für Stuttgart?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
     k.dte.dt('en', [u"will it rain in {weather_location:LABEL} {timespec:LABEL} ?", 
                     u"(what is the likelihood of | how likely is | rain in ) {weather_location:LABEL} {timespec:LABEL} ?", 
@@ -369,8 +373,8 @@ def get_data(k):
                     u"(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} für {weather_location:LABEL}?"],
                    answer_weather, ['full', 'weather_location_0_start', 'weather_location_0_end', 'timespec_0_time', False])
 
-    k.dte.ts('en', 't0300', [(u"Computer, what does the weather forecast say for stuttgart tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees", [])], )
-    k.dte.ts('de', 't0301', [(u"Computer, was sagt der Wetterbericht für heute für Tallinn?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm", [])], )
+    k.dte.ts('en', 't0300', [(u"Computer, what does the weather forecast say for stuttgart tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
+    k.dte.ts('de', 't0301', [(u"Computer, was sagt der Wetterbericht für heute für Tallinn?", u"heute wird es wenige wolken geben in tallinn und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
 
     k.dte.dt('en', u"(and|) {timespec:LABEL}", answer_weather, ['full', -1, -1, 'timespec_0_time', True])
     k.dte.dt('de', u"(und|) {timespec:LABEL}", answer_weather, ['full', -1, -1, 'timespec_0_time', True])

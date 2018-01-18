@@ -133,11 +133,11 @@ def get_data(k):
                     u"sind wir fertig"],
                    answer_bye)
 
-    k.dte.ts('en', 't0000', [(u"hi", u"hello!", [])])
-    k.dte.ts('de', 't0001', [(u"hi", u"Hallo!", [])])
+    k.dte.ts('en', 't0000', [(u"hi", u"hello!")])
+    k.dte.ts('de', 't0001', [(u"hi", u"Hallo!")])
 
-    k.dte.ts('en', 't0002', [(u"computer hello", u"Hi!", [])])
-    k.dte.ts('de', 't0003', [(u"computer hallo", u"Hi!", [])])
+    k.dte.ts('en', 't0002', [(u"computer hello", u"Hi!")])
+    k.dte.ts('de', 't0003', [(u"computer hallo", u"Hi!")])
 
     def check_att_off(c):
         assert c.kernal.mem_get(c.realm, 'action') == 'attention_off'

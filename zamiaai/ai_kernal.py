@@ -565,6 +565,7 @@ class AIKernal(object):
                 for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
 
                     ctx.set_inp(test_inp)
+                    self.mem_set (ctx.realm, 'action', None)
 
                     afn, acode = self.dte.lookup_code(md5s)
                     ecode = '%s\n%s(ctx' % (acode, afn)

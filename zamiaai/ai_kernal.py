@@ -97,6 +97,8 @@ class AIContext(object):
         self.inp = inp
 
     def resp(self, resp, score=0.0, action=None, action_arg=None):
+        if score < self.high_score:
+            return
         if score > self.high_score:
             self.high_score   = score
             self.staged_resps = []
@@ -118,6 +120,7 @@ class AIContext(object):
                 action(self)
 
         self.staged_resps = []
+        self.high_score = 0.0
        
     def _ner_learn(self, lang, cls):
 
@@ -567,7 +570,7 @@ class AIKernal(object):
                     ecode = '%s\n%s(ctx' % (acode, afn)
                     if args:
                         for arg in args:
-                            ecode += ',%s' % str(arg)
+                            ecode += ',%s' % repr(arg)
                     ecode += ')\n'
                     # import pdb; pdb.set_trace()
                     try:
@@ -601,7 +604,7 @@ class AIKernal(object):
                             ecode = '%s\n%s(ctx' % (acode, afn)
                             if args:
                                 for arg in args:
-                                    ecode += ',%s' % str(arg)
+                                    ecode += ',%s' % repr(arg)
                             ecode += ')\n'
                             exec (ecode, globals(), locals())
 

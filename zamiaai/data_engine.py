@@ -282,9 +282,10 @@ class DataEngine(object):
                     d_inps = u' '.join(d)
                     # if d_inps == u'subtract five from eleven':
                     #     import pdb; pdb.set_trace()
+                    # logging.info(repr(mpos))
 
                     if args:
-                        d_args = map(lambda x: mpos[x] if isinstance(x, basestring) else x, args)
+                        d_args = map(lambda x: mpos[x] if x in mpos else x, args)
                     else:
                         d_args = None
 

@@ -70,11 +70,11 @@ def fetch_weather_data (c, cdt, loc, ts):
         # fixed mock data for our tests
         return {'code': 500, 
                 'clouds': 30.0, 
-                'description': u'light rain', 
-                'temp_max': 2.6200000000000045, 
-                'temp_min': 0.7150000000000318, 
+                'description': u'mostly clear skies', 
+                'temp_max': 4.0, 
+                'temp_min': -8.0, 
                 'precipitation': 0.7031249999999999, 
-                'icon': u'10n'}
+                'icon': u'02n'}
 
     ts, te = get_time_span(cdt, ts)
 

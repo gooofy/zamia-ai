@@ -91,22 +91,22 @@ def get_time_label(c, ts):
 
     if c.lang == 'de':
         if ts == 'today':
-            return u"today"
+            return u"heute"
         elif ts == 'tomorrow':
-            return u"tomorrow"
+            return u"morgen"
         elif ts == 'dayAfterTomorrow':
-            return u"day after tomorrow"
+            return u"übermorgen"
         elif ts == 'nextThreeDays':
-            return u"in the next three days"
+            return u"in den nächsten drei Tagen"
 
     if ts == 'today':
-        return u"heute"
+        return u"today"
     elif ts == 'tomorrow':
-        return u"morgen"
+        return u"tomorrow"
     elif ts == 'dayAfterTomorrow':
-        return u"übermorgen"
+        return u"day after tomorrow"
     elif ts == 'nextThreeDays':
-        return u"in den nächsten drei Tagen"
+        return u"in the next three days"
 
     raise Exception ('unknown timespec %s' % repr(ts))
 

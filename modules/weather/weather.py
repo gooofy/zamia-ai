@@ -44,7 +44,10 @@ def get_data(k):
         import weather
 
         if check_topic:
-            topic = c.kernal.mem_get(c.user, 'f1ent')
+            topic = c.kernal.mem_get_multi(c.user, 'f1ent')
+            if not topic:
+                return
+            topic = topic[0][0]
             if topic != 'wdeWeatherForecast':
                 return
 

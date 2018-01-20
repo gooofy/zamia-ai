@@ -104,6 +104,9 @@ class AIContext(object):
             self.staged_resps = []
         self.staged_resps.append( (resp, score, action, action_arg) )
 
+        #print ("resp: score=%f staged_resps=%s" % (score, repr(self.staged_resps)))
+
+
     def get_resps(self):
         return self.staged_resps
 
@@ -562,10 +565,10 @@ class AIKernal(object):
                 matching_resp = False
                 acode         = None
 
-                for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
+                ctx.set_inp(test_inp)
+                self.mem_set (ctx.realm, 'action', None)
 
-                    ctx.set_inp(test_inp)
-                    self.mem_set (ctx.realm, 'action', None)
+                for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
 
                     afn, acode = self.dte.lookup_code(md5s)
                     ecode = '%s\n%s(ctx' % (acode, afn)
@@ -580,42 +583,39 @@ class AIKernal(object):
                         logging.error('test_module: %s round %d EXCEPTION CAUGHT %s' % (t_name, round_num, traceback.format_exc()))
                         logging.error(ecode)
 
-                    resps = ctx.get_resps()
-
-                    for i, resp in enumerate(resps):
-                        actual_out, score, actual_action, actual_action_arg = resp
-                        # logging.info("test_module: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
-
-                        if len(test_out) > 0:
-                            if len(actual_out)>0:
-                                actual_out = u' '.join(tokenize(actual_out, lang))
-                            logging.info("test_module: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
-                            if actual_out != test_out:
-                                logging.info("test_module: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
-                                continue # no match
-
-                        logging.info("test_module: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
-                        matching_resp = True
-                        ctx.commit_resp(i)
-
-                        # check action
-
-                        if test_action:
-                            afn, acode = self.dte.lookup_code(test_action)
-                            ecode = '%s\n%s(ctx' % (acode, afn)
-                            if test_action_arg:
-                                ecode += ',%s' % repr(test_action_arg)
-                            ecode += ')\n'
-                            exec (ecode, globals(), locals())
-
-                        break
-
-                    if matching_resp:
-                        break
-
                 if acode is None:
                     logging.error (u'Error: %s: no training data for test_in "%s" found in DB!' % (t_name, test_inp))
                     num_fails += 1
+                    break
+
+                resps = ctx.get_resps()
+
+                for i, resp in enumerate(resps):
+                    actual_out, score, actual_action, actual_action_arg = resp
+                    # logging.info("test_module: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+
+                    if len(test_out) > 0:
+                        if len(actual_out)>0:
+                            actual_out = u' '.join(tokenize(actual_out, lang))
+                        logging.info("test_module: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
+                        if actual_out != test_out:
+                            logging.info("test_module: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
+                            continue # no match
+
+                    logging.info("test_module: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
+                    matching_resp = True
+                    ctx.commit_resp(i)
+
+                    # check action
+
+                    if test_action:
+                        afn, acode = self.dte.lookup_code(test_action)
+                        ecode = '%s\n%s(ctx' % (acode, afn)
+                        if test_action_arg:
+                            ecode += ',%s' % repr(test_action_arg)
+                        ecode += ')\n'
+                        exec (ecode, globals(), locals())
+
                     break
 
                 if not matching_resp:

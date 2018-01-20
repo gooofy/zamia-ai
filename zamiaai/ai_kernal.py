@@ -1028,18 +1028,22 @@ class AIKernal(object):
         self.mem_set(realm, k, newv)
 
     def prolog_query(self, query):
+        logging.debug ('prolog_query: %s' % query)
         return xsb_hl_query_string(query)
 
     def prolog_check(self, query):
+        logging.debug ('prolog_check: %s' % query)
         res = xsb_hl_query_string(query)
         return len(res)>0
 
     def prolog_query_one(self, query, idx=0):
+        logging.debug ('prolog_query_one: %s' % query)
         solutions = xsb_hl_query_string(query)
         if not solutions:
             return None
         return solutions[0][idx]
 
     def prolog_hl_query(self, fname, args):
+        logging.debug ('prolog_hl_query: %s %s' % (fname, repr(args)))
         return xsb_hl_query(fname, args)
 

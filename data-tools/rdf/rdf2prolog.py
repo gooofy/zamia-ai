@@ -63,7 +63,7 @@ def mangle_prolog(n, start_uppercase=False):
             res += u"U%d" % ord(c)
     return res
 
-def mangle_url(s):
+def mangle_url(s, do_exc=True):
     prefix = None
     for p, url in RDF_PREFIXES.items():
         if not s.startswith(url):
@@ -73,7 +73,9 @@ def mangle_url(s):
         break
 
     if not prefix:
-        raise Exception ('no prefix for %s found' % s)
+        if do_exc:
+            raise Exception ('no prefix for %s found' % s)
+        return None
 
     return prefix + mangle_prolog(n, start_uppercase=True)
 
@@ -424,7 +426,10 @@ for elu in lem:
             if o in elm:
                 ol = elm[o]
             else:
-                ol = u"'" + unicode(o) + "'"
+                # ol = u"'" + unicode(o) + "'"
+                ol = mangle_url(str(o), do_exc=False)
+            if not ol:
+                continue
 
             prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
             predicate_set.add(u'%s/2' % pl)

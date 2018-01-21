@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch
+# Copyright 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +20,16 @@
 
 DEPENDS    = [ 'base', 'data', 'dialog' ]
 
-AIP_SOURCES = [
-               'cities.aip', 'countries.aip', 'states.aip', 'misc.aip',
-               # 'states.aip',
-              ]
+import cities
+import countries
+# import states
+import misc
+
+def get_data(k):
+
+    cities.get_data(k)
+    countries.get_data(k)
+#     states.get_data(k)
+    misc.get_data(k)
+
 

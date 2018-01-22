@@ -22,14 +22,14 @@ DEPENDS    = [ 'base', 'data', 'dialog' ]
 
 import cities
 import countries
-# import states
+import states
 import misc
 
 def get_data(k):
 
     cities.get_data(k)
     countries.get_data(k)
-#     states.get_data(k)
+    states.get_data(k)
     misc.get_data(k)
 
 

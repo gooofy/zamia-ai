@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016, 2017 Guenter Bartsch
+# Copyright 2016, 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -20,9 +20,13 @@
 
 DEPENDS    = [ 'base', 'dialog' ]
 
-AIP_SOURCES = [
-               'psychology.aip',
-               'positive.aip',
-               'negative.aip'
-              ]
+import psychology
+import positive
+import negative
+
+def get_data(k):
+
+    psychology.get_data(k)
+    positive.get_data(k)
+    negative.get_data(k)
 

@@ -20,7 +20,9 @@
 
 DEPENDS    = [ 'base', 'dialog' ]
 
-AIP_SOURCES = [
-               'culture.aip',
-              ]
+import culture
+
+def get_data(k):
+    culture.get_data(k)
+
 

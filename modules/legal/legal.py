@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 #
 # Copyright 2016, 2017, 2018 Guenter Bartsch
@@ -18,10 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEPENDS    = [ 'base', 'dialog' ]
-
-import legal
-
 def get_data(k):
-    legal.get_data(k)
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
+    k.dte.dt('en', u"Constitution.", u"Very important.")
+    k.dte.dt('de', u"(Die Verfassung|Das Grundgesetz).", u"Sehr wichtig.")
+
+    k.dte.dt('en', u"Do you know a lawyer?", u"You think I need one?")
+    k.dte.dt('de', u"Kennst du einen Anwalt?", u"Denkst Du, ich brauche einen?")
 

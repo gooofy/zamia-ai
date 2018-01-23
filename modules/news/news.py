@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 #
 # Copyright 2016, 2017, 2018 Guenter Bartsch
@@ -18,10 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEPENDS    = [ 'base', 'dialog' ]
-
-import news
-
 def get_data(k):
-    news.get_data(k)
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
+    k.dte.dt('en', [u"what is happening today",
+                    u"what's going on"],
+                   u"Sorry, my news module is not implemented yet.")
+    k.dte.dt('de', [u"was ist heute los",
+                    u"was gibt es"],
+                   u"Tut mir leid, mein Nachrichtenmodul ist noch nicht implementiert.")
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 #
 # Copyright 2016, 2017, 2018 Guenter Bartsch
@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEPENDS    = [ 'base', 'dialog' ]
-
-import history
-
 def get_data(k):
-    history.get_data(k)
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
+    k.dte.dt('en', u"who instigated the first world war?", u"I think that remains a debated and controversial question.")
+    k.dte.dt('de', u"wer hat den ersten weltkrieg angezettelt", u"Ich denke, das bleibt eine umstrittene und kontroverse Frage.")
 

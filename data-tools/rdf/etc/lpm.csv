@@ -2693,6 +2693,7 @@ wdpdČSFDPersonID,http://www.wikidata.org/prop/direct/P2605
 wdpqEndTime,http://www.wikidata.org/prop/qualifier/value/P582
 wdpqReplacedBy,http://www.wikidata.org/prop/qualifier/P1366
 wdpqReplaces,http://www.wikidata.org/prop/qualifier/P1365
+wdpqStartTime,http://www.wikidata.org/prop/qualifier/value/P580
 wdpsPositionHeld,http://www.wikidata.org/prop/statement/P39
 wdpČSFDFilmID,http://www.wikidata.org/prop/P2529
 wdpČSFDPersonID,http://www.wikidata.org/prop/P2605

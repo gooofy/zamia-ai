@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch, Heiko Schaefer
+# Copyright 2017, 2018 Guenter Bartsch, Heiko Schaefer
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by

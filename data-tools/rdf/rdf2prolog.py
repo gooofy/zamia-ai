@@ -257,33 +257,12 @@ for t in triples:
         label_base = unicode(o2)
         break
 
-    if not label_base:
-        continue
+    if label_base:
+        el = entity_label (s, label_base)
+    else:
+        el = mangle_url(unicode(s))
 
-    # # 2: take any literal we can find if we do not have an rdfsLabel
-
-    # if not label_base:
-    #     for s, p, o in g.triples((s, None, None)):
-    #         if not isinstance(o, rdflib.Literal) or o.language != 'en':
-    #             continue
-    #         label_base = unicode(o)
-    #         break
-
-    # # 3: take last segment of url
-
-    # if not label_base:
-
-    #     url_parts = unicode(s).split('/')
-    #     last_part = url_parts[len(url_parts)-1]
-
-    #     if not last_part[0].isalpha():
-    #         last_part = 'u' + last_part
-
-    #     label_base = 'unlabeled_'+last_part
-
-    el = entity_label (s, label_base)
-
-    # unique label
+    # ensure label is unique
 
     elu = el
 
@@ -367,6 +346,7 @@ for elu in lem:
 
         pl = property_label(p)
         if not pl:
+            logging.debug (u'Skipping1: %s(%s, %s).\n' % (unicode(p), el, unicode(o)))
             continue
 
         if isinstance(o, rdflib.term.Literal):
@@ -429,6 +409,7 @@ for elu in lem:
                 # ol = u"'" + unicode(o) + "'"
                 ol = mangle_url(str(o), do_exc=False)
             if not ol:
+                logging.debug (u'Skipping2: %s(%s, %s).\n' % (pl, el, unicode(o)))
                 continue
 
             prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))

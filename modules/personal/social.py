@@ -1,8 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#
+# Copyright 2016, 2017, 2018 Guenter Bartsch
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:L} '])
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
     k.dte.dt('en', u"do you want (his|her) (address|postal address|icq number|email address|phone number|credit card number)", u"the credit card number is what I am usually after.")
     k.dte.dt('de', u"willst du (seine|ihre) (icq nummer|adresse|telefonnummer|email adresse|kreditkartennummer)", u"Die Kreditkartennummer würde mich am meisten interessieren.")
 

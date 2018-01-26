@@ -1,39 +1,93 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#
+# Copyright 2016, 2017, 2018 Guenter Bartsch
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:L} '])
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
     k.dte.dt('en', u"what do you know about me", u"everything you told me")
     k.dte.dt('de', u"was weißt du über mich", u"alles, was Du mir über Dich gesagt hast!")
 
     k.dte.dt('en', u"what do you want to know about me?", u"What would you like to tell me?")
     k.dte.dt('de', u"was willst du denn über mich wissen", u"Was würdest Du mir gerne erzählen?")
 
-    def macro(en, firstname, NAME, LABEL):
-        and(wdpdInstanceOf(NAME, wdeMaleGivenName), rdfsLabel(NAME, en, LABEL))
-    def macro(en, firstname, NAME, LABEL):
-        and(wdpdInstanceOf(NAME, wdeFemaleGivenName), rdfsLabel(NAME, en, LABEL))
-    def macro(de, firstname, NAME, LABEL):
-        and(wdpdInstanceOf(NAME, wdeMaleGivenName), rdfsLabel(NAME, de, LABEL))
-    def macro(de, firstname, NAME, LABEL):
-        and(wdpdInstanceOf(NAME, wdeFemaleGivenName), rdfsLabel(NAME, de, LABEL))
-    def name_told_tokens(en, TS, TE):
-        and(is(C:user:name, list_join(" ", list_slice(TS, TE, C:tokens))), or("Nice to meet you, my name is {self:rdfsLabel|en, s}", "Cool, my name is {self:rdfsLabel|en, s}"))
-    k.dte.dt('en', u"(I am|my name is|I am called|Call me) {firstname:LABEL}",
-                   % inline(name_told_tokens(en, tstart(firstname), tend(firstname))))
-    def name_told_tokens(de, TS, TE):
-        and(is(C:user:name, list_join(" ", list_slice(TS, TE, C:tokens))), or("Freut mich, ich heiße übrigens {self:rdfsLabel|de, s}", "Cool, mein Name ist {self:rdfsLabel|de, s}"))
-    k.dte.dt('de', u"(ich heiße|ich bin der|mein name ist) {firstname:LABEL}",
-                   % inline(name_told_tokens(de, tstart(firstname), tend(firstname))))
+    # NER, macros
 
-#    train(en) :- and("(do you remember my name|what was my name|what is my name|do you know my name|do you remember me|what's my name|how do you call me)?", or(and(nonvar(C:user:name), "Your name is {C:user:name, s}"), and(not(nonvar(C:user:name)), or("I don't think you ever told me your name?", "Did you ever tell me your name?")))).
-#    train(de) :- and("(erinnerst Du Dich an meinen Namen|wie war mein name|wie heiße ich|weisst Du meinen Namen|weißt du noch wie ich heiße|erinnerst du dich an mich|wie ist mein name|gefällt dir mein name|wie nennst du mich)?", or(and(nonvar(C:user:name), "Dein Name ist {C:user:name, s}"), and(not(nonvar(C:user:name)), or("Ich glaube nicht, dass Du mir Deinen Namen verraten hast?", "Hast Du mir je Deinen Namen gesagt?")))).
-    k.dte.ts('en', 't0000', [(u"Do you remember my name?", u"Did you ever tell me your name?"),
-                               (u"My name is Peter", u"Cool, my name is HAL 9000"),
-                               (u"do you remember my name?", u"Your name is Peter.")])
-    k.dte.ts('de', 't0001', [(u"ich bin der Peter", u"Cool, mein Name ist HAL 9000"),
-                               (u"erinnerst du dich an meinen namen?", u"Dein Name ist Peter."),
-                               (u"wie war mein name?", u"Dein Name ist Peter.")])
+    for lang in ['en', 'de']:
+        for res in k.prolog_query("wdpdInstanceOf(NAME, wdeMaleGivenName), rdfsLabel(NAME, %s, LABEL)." % lang):
+            s_name  = res[0] 
+            s_label = res[1] 
+            k.dte.macro(lang, 'firstname', {'LABEL': s_label})
+        for res in k.prolog_query("wdpdInstanceOf(NAME, wdeFemalGivenName), rdfsLabel(NAME, %s, LABEL)." % lang):
+            s_name  = res[0] 
+            s_label = res[1] 
+            k.dte.macro(lang, 'firstname', {'LABEL': s_label})
+
+    def name_told_tokens(c, ts, te):
+
+        def act(c, user_name):
+            c.kernal.mem_set(c.user, 'name', user_name)
+
+        self_label = c.kernal.prolog_query_one('rdfsLabel(self, %s, L).' % c.lang)
+
+        user_name = u" ".join(tokenize(c.inp, lang=c.lang)[ts:te])
+
+        if c.lang == 'de':
+            c.resp("Freut mich, ich heiße übrigens %s" % self_label, score=100.0, action=act, action_arg=user_name)
+            c.resp("Cool, mein Name ist %s" % self_label, score=100.0, action=act, action_arg=user_name)
+        else:
+            c.resp("Nice to meet you, my name is %s" % self_label, score=100.0, action=act, action_arg=user_name)
+            c.resp("Cool, my name is %s" % self_label, score=100.0, action=act, action_arg=user_name)
+
+    k.dte.dt('en', u"(I am|my name is|I am called|Call me) {firstname:LABEL}",
+                   name_told_tokens, ['firstname_0_start', 'firstname_0_end'])
+    k.dte.dt('de', u"(ich heiße|ich bin der|mein name ist) {firstname:LABEL}",
+                   name_told_tokens, ['firstname_0_start', 'firstname_0_end'])
+
+    def name_asked(c):
+        user_name = c.kernal.mem_get(c.user, 'name')
+
+        if user_name:
+            if c.lang=='de':
+                c.resp("Dein Name ist %s." % user_name)
+            else:
+                c.resp("Your name is %s." % user_name)
+        else:
+            if c.lang=='de':
+                c.resp("Ich glaube nicht, dass Du mir Deinen Namen verraten hast?")
+                c.resp("Hast Du mir je Deinen Namen gesagt?")
+            else:
+                c.resp("I don't think you ever told me your name?")
+                c.resp("Did you ever tell me your name?")
+
+    k.dte.dt('en', u"(do you remember my name|what was my name|what is my name|do you know my name|do you remember me|what's my name|how do you call me)?", 
+                   name_asked)
+    k.dte.dt('de', u"(erinnerst Du Dich an meinen Namen|wie war mein name|wie heiße ich|weisst Du meinen Namen|weißt du noch wie ich heiße|erinnerst du dich an mich|wie ist mein name|gefällt dir mein name|wie nennst du mich)?",
+                   name_asked)
+
+    k.dte.ts('en', 'name00', [(u"Do you remember my name?", u"Did you ever tell me your name?"),
+                              (u"My name is Peter", u"Cool, my name is HAL 9000"),
+                              (u"do you remember my name?", u"Your name is Peter.")])
+    k.dte.ts('de', 'name01', [(u"ich bin der Peter", u"Cool, mein Name ist HAL 9000"),
+                              (u"erinnerst du dich an meinen namen?", u"Dein Name ist Peter."),
+                              (u"wie war mein name?", u"Dein Name ist Peter.")])
 
     k.dte.dt('en', u"where am I", u"Where would you like to be?")
     k.dte.dt('de', u"wo bin ich", u"Wo möchtest Du denn gerne sein?")

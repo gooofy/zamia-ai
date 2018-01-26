@@ -21,13 +21,13 @@
 DEPENDS     = [ 'config', 'data', 'base', 'dialog', 'tech' ]
 
 import culture
-# import food
-# import humor
-# import lang
-# import mythology
+import humor
+import lang
+import mythology
 # import name
-# import opinion
-# import personal
+import opinion
+import personal
+import food
 # import private
 # import rec
 # import social
@@ -35,13 +35,13 @@ import culture
 
 def get_data(k):
     culture.get_data(k)
-#     food.get_data(k)
-#     humor.get_data(k)
-#     lang.get_data(k)
-#     mythology.get_data(k)
+    humor.get_data(k)
+    lang.get_data(k)
+    mythology.get_data(k)
 #     name.get_data(k)
-#     opinion.get_data(k)
-#     personal.get_data(k)
+    opinion.get_data(k)
+    personal.get_data(k)
+    food.get_data(k)
 #     private.get_data(k)
 #     rec.get_data(k)
 #     social.get_data(k)

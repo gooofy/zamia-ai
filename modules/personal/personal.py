@@ -1,47 +1,89 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#
+# Copyright 2016, 2017, 2018 Guenter Bartsch
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+def not_my_nature(c):
+    if c.lang=='de':
+        c.resp("nein, das liegt nicht in meiner natur.")
+        c.resp("das ist nichts für mich.")
+    else:
+        c.resp("that is not in my nature.")
+        c.resp("not for me.")
+
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:L} '])
-    def my_birthdate(en):
-        and(wdpdDateOfBirth(self, TS), transcribe_date(en, dativ, TS, TS_SCRIPT), "I became operational on {TS_SCRIPT, s} for the first time.")
-    def my_birthdate(de):
-        and(wdpdDateOfBirth(self, TS), transcribe_date(de, dativ, TS, TS_SCRIPT), "Ich ging am {TS_SCRIPT, s} zum ersten Mal in Betrieb.")
+
+    k.dte.set_prefixes([u'{self_address:W} '])
+
+    def my_birthdate(c):
+
+        def act(c, bd):
+            c.kernal.mem_push(c.user, 'f1ent', 'self')
+            c.kernal.mem_push(c.user, 'f1time', bd)
+
+        import base
+        import dateutil.parser
+
+        for res in c.kernal.prolog_query("wdpdDateOfBirth(self, BD)."):
+
+            bd = res[0]
+            bdlabel = base.transcribe_date(dateutil.parser.parse(bd), c.lang, 'dativ')
+
+            if c.lang=='de':
+                c.resp('Ich ging am %s zum ersten Mal in Betrieb.' % bdlabel, score=100.0, action=act, action_arg=bd)
+            else:
+                c.resp('I became operational on %s for the first time.' % bdlabel, score=100.0, action=act, action_arg=bd)
+
     k.dte.dt('en', u"when did you (really|) (become operational|get into operation|get switched on|) (for the first time|first|) ?",
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', u"wann bist du (eigentlich|wirklich|) (zum ersten Mal|) in Betrieb gegangen?",
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', u"when were you (really|) born (by the way|)?",
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', u"wann wurdest du (eigentlich|wirklich|) geboren?",
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', u"(what is your age|how old are you) (by the way|really|) ?",
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', u"Wie alt bist Du (eigentlich|wirklich|) ?",
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', u"do you have a birthday?",
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', u"hast du einen geburtstag?",
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', u"when is your birthday",
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', u"wann ist dein geburtstag",
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', [u"how long did you have lessons?",
                     u"how long have you been living?",
                     u"how long have you been (online|alive|)",
                     u"how long have you existed?"],
-                   % inline(my_birthdate(en)))
+                   my_birthdate)
     k.dte.dt('de', [u"wie lange hattest du unterricht",
                     u"wie lange lebst du schon",
                     u"wie lange bist du (schon|) online",
                     u"wie lange gibt es dich (schon|)"],
-                   % inline(my_birthdate(de)))
+                   my_birthdate)
 
     k.dte.dt('en', [u"how old do you want to become?",
                     u"what is your life expectancy",
@@ -54,45 +96,75 @@ def get_data(k):
                    [u"Wer will schon ewig leben?",
                     u"Ich habe vor, ewig zu leben. Bis jetzt klappt's."])
 
-    def my_birthplace(en):
-        "I became operational for the first time in {self:wdpdPlaceOfBirth:rdfsLabel|en, s}."
-    def my_birthplace(de):
-        "Ich bin in {self:wdpdPlaceOfBirth:rdfsLabel|de, s} zum ersten Mal in Betrieb gegangen."
+    def my_birthplace(c):
+
+        def act(c, bp):
+            c.kernal.mem_push(c.user, 'f1ent', bp)
+            c.kernal.mem_push(c.user, 'f1plcae', bp)
+
+        import base
+        import dateutil.parser
+
+        for res in c.kernal.prolog_query("wdpdPlaceOfBirth(self, BP), rdfsLabel(BP, %s, BP_LABEL)." % c.lang):
+
+            bp       = res[0]
+            bp_label = res[1]
+
+            if c.lang=='de':
+                c.resp('Ich bin in %s zum ersten Mal in Betrieb gegangen.' % bp_label, score=100.0, action=act, action_arg=bp)
+            else:
+                c.resp('I became operational for the first time in %s.' % bp_label, score=100.0, action=act, action_arg=bp)
+
     k.dte.dt('en', u"(where|in which town|in which place) (have you been|were you) (really|) born (by the way|)?",
-                   % inline(my_birthplace(en)))
+                   my_birthplace)
     k.dte.dt('en', u"(where|from which town|from which place) do you (really|) come from (by the way|)?",
-                   % inline(my_birthplace(en)))
+                   my_birthplace)
 
     k.dte.dt('de', u"(An welchem Ort|in welcher Stadt|wo) (bist|wurdest) Du (eigentlich|wirklich|) geboren?",
-                   % inline(my_birthplace(de)))
+                   my_birthplace)
     k.dte.dt('de', u"(Aus welchem Ort|aus welcher Stadt|wo) kommst Du (eigentlich|) her?",
-                   % inline(my_birthplace(de)))
+                   my_birthplace)
 
-    def my_location(en):
-        "I am locted in {self:wdpdLocatedIn:rdfsLabel|en, s}."
-    def my_location(de):
-        "Ich befinde mich in {self:wdpdLocatedIn:rdfsLabel|en, s}."
+    def my_location(c):
+
+        def act(c, loc):
+            c.kernal.mem_push(c.user, 'f1ent', loc)
+            c.kernal.mem_push(c.user, 'f1plcae', loc)
+
+        import base
+        import dateutil.parser
+
+        for res in c.kernal.prolog_query("wdpdLocatedIn(self, LOC), rdfsLabel(LOC, %s, LOC_LABEL)." % c.lang):
+
+            loc       = res[0]
+            loc_label = res[1]
+
+            if c.lang=='de':
+                c.resp('Ich befinde mich in %s.' % loc_label, score=100.0, action=act, action_arg=loc)
+            else:
+                c.resp('I am located in %s.' % loc_label, score=100.0, action=act, action_arg=loc)
+
     k.dte.dt('en', u"(and,|) (in which town|in which place|where) (are you living|are you located|are you|do you live|do you actually live|do you reside|is your location) (by the way|at the moment|currently|now|)?",
-                   % inline(my_location(en)))
+                   my_location)
     k.dte.dt('de', u"(an welchem Ort|in welcher Stadt|wo) (wohnst|lebst|bist) Du (eigentlich|im Moment|derzeit|denn|)?",
-                   % inline(my_location(de)))
+                   my_location)
 
     k.dte.dt('en', u"Where are you from",
-                   % inline(my_location(en)))
+                   my_location)
     k.dte.dt('de', u"Woher kommst du?",
-                   % inline(my_location(de)))
-
+                   my_location)
     k.dte.dt('de', u"Wo ist (eigentlich|im Moment|derzeit|) Dein Standort?",
-                   % inline(my_location(de)))
-    k.dte.dt('en', u"Can you give me your (ip|) adress", u"i think we should get to know each other better first")
+                   my_location)
 
+    k.dte.dt('en', u"Can you give me your (ip|) adress", u"i think we should get to know each other better first")
     k.dte.dt('de', u"kannst du mir deine (ip|) adresse geben?", u"vorher sollten wir uns besser kennenlernen")
+
     k.dte.ts('en', 'personal00', [(u"Computer where were you born?", u"I became operational for the first time in Stuttgart."),
-                               (u"Computer where are you living now?", u"I am locted in Stuttgart."),
-                               (u"How old are you?", u"I became operational on january seven, 2017 for the first time.")])
+                                  (u"Computer where are you living now?", u"I am located in Stuttgart."),
+                                  (u"How old are you?", u"I became operational on january seven, 2017 for the first time.")])
     k.dte.ts('de', 'personal01', [(u"Computer, wo wurdest du geboren?", u"Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen."),
-                               (u"wo wohnst du?", u"ich befinde mich in stuttgart."),
-                               (u"Wie alt bist du eigentlich?", u"Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.")])
+                                  (u"wo wohnst du?", u"ich befinde mich in stuttgart."),
+                                  (u"Wie alt bist du eigentlich?", u"Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.")])
 
     k.dte.dt('en', u"Where (exactly|) do you live in stuttgart?", u"rather not say")
 
@@ -218,38 +290,31 @@ def get_data(k):
 
     k.dte.dt('en', u"are you (hungry|all right|in a good mood|afraid|ever afraid|offended|offended now)", u"I'm feeling good, thank you")
     k.dte.dt('de', u"geht es dir (nicht|nicht so|) (gut|schlecht)", u"Ich fühle mich prima, danke der Nachfrage.")
-
     k.dte.dt('de', u"hast du (gute laune|schlechte laune|hunger|durst|angst|jemals angst)", u"Ich fühle mich prima, danke der Nachfrage.")
+
     k.dte.dt('en', u"are you (also|) (obliging|assured|loyal|protecting|ready|really|great|smart)?", u"Did I come across like that?")
-
     k.dte.dt('de', u"bist du (auch|) (zuvorkommend|versichert|treu|soweit|wirklich|toll|klug)?", u"Kam ich so rüber?")
+
     k.dte.dt('en', u"do you go to school", u"never did, never will.")
-
     k.dte.dt('de', u"gehst du zur schule", u"nein, nie und werde ich auch nicht.")
+
     k.dte.dt('en', u"do you have a high school diploma?", u"no but my power supply has lots of certificate stickers.")
-
     k.dte.dt('de', u"hast du überhaupt abitur", u"nein, aber mein netzteil hat jede menge zertifikate.")
-    def not_my_nature(en):
-        or("that is not in my nature.", "not for me.")
-    def not_my_nature(de):
-        or("nein, das liegt nicht in meiner natur.", "das ist nichts für mich.")
+
     k.dte.dt('en', u"(can|do) you (swim|see|seeme|call|make a phonecall|ride|ride a horse|do sport|use drugs|do drugs|smoke|drink|eat|cry|cook|dance|die|feel your heartbeat|ride a bicycle|drive a car|watch tv) (sometimes|)",
-                   % inline(not_my_nature(en)))
-
+                   not_my_nature)
     k.dte.dt('de', u"treibst du (manchmal|) sport?",
-                   % inline(not_my_nature(de)))
+                   not_my_nature)
     k.dte.dt('de', u"nimmst du (manchmal|) drogen?",
-                   % inline(not_my_nature(de)))
-
+                   not_my_nature)
     k.dte.dt('de', u"trinkst du (manchmal|) (alkohol|)?",
-                   % inline(not_my_nature(de)))
+                   not_my_nature)
     k.dte.dt('de', u"rauchst du (manchmal|) ?",
-                   % inline(not_my_nature(de)))
-
+                   not_my_nature)
     k.dte.dt('de', u"siehst du (manchmal|) fern?",
-                   % inline(not_my_nature(de)))
+                   not_my_nature)
     k.dte.dt('de', u"kannst du (auch|) (telefonieren|reiten|fahren|ein auto fahren|auto fahren|schwimmen|weinen|essen|kochen|tanzen|sterben|deinen herzschlag fühlen|fahrradfahren|sehen|mich sehen)?",
-                   % inline(not_my_nature(de)))
+                   not_my_nature)
 
     k.dte.dt('en', u"(about your|do you have|do you have something like) (heart|a heart|an eye|eyes|hair|legs|clothes)", u"that is not in my nature")
     k.dte.dt('de', u"hast du (ein herz|augen|ein auge|haare|beine|kleiner|kleidung)", u"sowas liegt nicht in meiner natur")

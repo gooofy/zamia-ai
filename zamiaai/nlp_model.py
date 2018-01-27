@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016, 2017 Guenter Bartsch
+# Copyright 2016, 2017, 2018 Guenter Bartsch
 #
 # some parts based on code and ideas from Suriyadeepan Ramamoorthy, Jaehong Park
 # https://github.com/suriyadeepan/easy_seq2seq
@@ -47,6 +47,7 @@ import tensorflow as tf
 from time              import time
 from random            import randint
 from sqlalchemy.orm    import sessionmaker
+from copy              import deepcopy
 
 import model
 
@@ -55,7 +56,6 @@ from nltools.misc      import mkdirs
 from seq2seq_model     import Seq2SeqModel, GO_ID, EOS_ID, UNK_ID, _GO, _EOS, _UNK
 
 OR_SYMBOL = '__OR__'
-MAX_NUM_RESP = 3
 
 STEPS_PER_STAT             = 100
 
@@ -111,13 +111,15 @@ class NLPModel(object):
             # if inp_len == 8 and 'tallinn' in inp:
             #     print "2d diagram: %d -> %d %s %s" % (inp_len, resp_len, inp, resp)
 
-            if inp_len > len(longest_inp):
-                longest_inp = inp
-            if resp_len > len(longest_resp):
-                longest_resp = resp
+            if not longest_inp or (inp_len > len(longest_inp[0])):
+                longest_inp = (deepcopy(inp), deepcopy(resp))
+            if not longest_resp or (resp_len > len(longest_resp[1])):
+                longest_resp = (deepcopy(inp), deepcopy(resp))
 
-        logging.info('longest input: %s' % repr(longest_inp))
-        logging.info('longest resp : %s' % repr(longest_resp))
+        logging.info('longest input: %s' % repr(longest_inp[0]))
+        logging.info('               %s' % repr(longest_inp[1]))
+        logging.info('longest resp : %s' % repr(longest_resp[0]))
+        logging.info('               %s' % repr(longest_resp[1]))
 
         return dia
 
@@ -381,28 +383,30 @@ class NLPModel(object):
         logging.info('load discourses from db...')
 
         drs      = {} 
-        drs_prio = {}
 
         for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang):
 
             if not dr.inp in drs:
                 drs[dr.inp] = set()
 
-            if not dr.inp in drs_prio:
-                drs_prio[dr.inp] = dr.prio
-            
-            if dr.prio > drs_prio[dr.inp]:
-                # discard lower-prio responses
-                logging.info ('DRS discarding: %s -> %s' % (dr.inp, repr(drs[dr.inp])))
+            resp = [dr.md5s]
 
-                drs[dr.inp]      = set()
-                drs_prio[dr.inp] = dr.prio
-            else:
-                if dr.prio < drs_prio[dr.inp]:
-                    logging.info ('DRS skipping: %s -> %s' % (dr.inp, repr(dr.resp)))
-                    continue
+            args = json.loads(dr.args)
+            if args:
+                for arg in args:
+                    resp.append(json.dumps(arg))
 
-            drs[dr.inp].add(dr.resp)
+            drs[dr.inp].add(tuple(resp))
+
+            # if drs[dr.inp]:
+            #     drs[dr.inp].append(OR_SYMBOL)
+            # drs[dr.inp].append(dr.md5s)
+
+            # args = json.loads(dr.args)
+            # if args:
+            #     for arg in args:
+            #         drs[dr.inp].append(json.dumps(arg))
+    
             if DEBUG_LIMIT>0 and len(drs)>=DEBUG_LIMIT:
                 logging.warn('  stopped loading discourses because DEBUG_LIMIT of %d was reached.' % DEBUG_LIMIT)
                 break
@@ -413,19 +417,12 @@ class NLPModel(object):
 
         for inp in drs:
 
-            td_inp = list(map (lambda a: unicode(a), json.loads(inp)))
-
-            td_resp  = []
-            num_resp = 0
-            for r in drs[inp]:
-                td_r = list(map (lambda a: unicode(a), json.loads(r)))
-                if len(td_resp)>0:
+            td_inp  = tokenize(inp, lang=self.lang)
+            td_resp = []
+            for resp in drs[inp]:
+                if td_resp:
                     td_resp.append(OR_SYMBOL)
-                td_resp.extend(td_r)
-                if len(td_r)>0:
-                    num_resp += 1
-                if num_resp > MAX_NUM_RESP:
-                    break
+                td_resp.extend(resp)
 
             self.training_data.append((td_inp, td_resp))
 

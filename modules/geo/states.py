@@ -273,7 +273,7 @@ def get_data(k):
                 c.resp(u"Sure, %s." % clabel, score=score, action=act, action_arg=federated_state)
 
     k.dte.dt('en', u"in {federated_states:LABEL} (maybe|)",
-                   answer_federated_state_sure, ['countries_0_start', 'countries_0_end', False])
+                   answer_federated_state_sure, ['federated_states_0_start', 'federated_states_0_end', False])
     k.dte.dt('de', u"in {federated_states:LABEL} (vielleicht|)",
-                   answer_federated_state_sure, ['countries_0_start', 'countries_0_end', False])
+                   answer_federated_state_sure, ['federated_states_0_start', 'federated_states_0_end', False])
 

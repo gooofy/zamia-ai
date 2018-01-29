@@ -49,13 +49,15 @@ def get_data(k):
             hss = c.ner(c.lang, 'home_location', ts, te)
         else:
             hss = c.kernal.mem_get_multi(c.user, 'f1loc')
+            if not hss:
+                hss = [('aiHLLivingRoom', 100.0)]
 
         for loc, score in hss:
             c.resp(u"", score=score, action=act, action_arg=(laction, loc) )
 
-    k.dte.dt('en', u"(please|) (switch|turn|dim) {light_actions:LABEL} the lights {home_locations:PL} {home_locations:LABEL}",
+    k.dte.dt('en', u"(please|) (switch|turn|dim) {light_actions:LABEL} the lights {home_locations:PL} {home_locations:LABEL} (please|)",
                    turn_lights, ['home_locations_0_start', 'home_locations_0_end', 'light_actions_0_action'])
-    k.dte.dt('de', u"(bitte|) (schalte|mach) (bitte|) (mal|) das Licht {home_locations:PL} {home_locations:LABEL} {light_actions:LABEL}",
+    k.dte.dt('de', u"(bitte|) (schalte|mach) (bitte|) (mal|) das Licht {home_locations:PL} {home_locations:LABEL} {light_actions:LABEL} (bitte|)",
                    turn_lights, ['home_locations_0_start', 'home_locations_0_end', 'light_actions_0_action'])
 
     def check_light (c, args):
@@ -83,9 +85,9 @@ def get_data(k):
     k.dte.dt('de', u"(bitte|) Licht {light_actions:LABEL} (bitte|)",
                    turn_lights, [-1, -1, 'light_actions_0_action'])
 
-    k.dte.dt('en', u"(please|) (switch|turn|dim) {light_actions:LABEL} the lights",
+    k.dte.dt('en', u"(please|) (switch|turn|dim) {light_actions:LABEL} the lights (please|)",
                    turn_lights, [-1, -1, 'light_actions_0_action'])
-    k.dte.dt('de', u"(bitte|) (schalte|mach) (bitte|) (mal|) das Licht {light_actions:LABEL}",
+    k.dte.dt('de', u"(bitte|) (schalte|mach) (bitte|) (mal|) das Licht {light_actions:LABEL} (bitte|)",
                    turn_lights, [-1, -1, 'light_actions_0_action'])
 
     k.dte.ts('en', 't0006', [(u"computer lights on in the living room", u"", check_light, ['light_on', 'aiHLLivingRoom']),

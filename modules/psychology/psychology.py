@@ -18,32 +18,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+def do_eliza(c):
+    if c.lang=='de':
+        c.resp(u"Was glaubst Du?")
+        c.resp(u"Ich weiss nicht, ob ich Dich ganz verstanden habe.")
+        c.resp(u"Was möchtest Du denn wirklich wissen?")
+        c.resp(u"Woran denkst Du?")
+        c.resp(u"Was sagt Dir das?")
+        c.resp(u"Das finde ich ziemlich interessant.")
+        c.resp(u"Kannst Du das noch etwas näher ausführen?")
+        c.resp(u"Sag mir bitte, wie ich Dir helfen kann.")
+        c.resp(u"Was fällt Dir dabei noch ein?")
+        return
+    c.resp(u"What do you think?")
+    c.resp(u"which answer would you like to hear?")
+    c.resp(u"what do you think?")
+    c.resp(u"not sure if I understand you completely")
+    c.resp(u"what would you really like to know?")
+    c.resp(u"have you spoken to anybody else about this before?")
+    c.resp(u"I find that pretty interesting!")
+    c.resp(u"Could you explain that a bit more, please?")
+    c.resp(u"Please tell me how I can help you.")
+    c.resp(u"What else comes to mind?")
+
 def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
-
-    def do_eliza(c):
-        if c.lang=='de':
-            c.resp(u"Was glaubst Du?")
-            c.resp(u"Ich weiss nicht, ob ich Dich ganz verstanden habe.")
-            c.resp(u"Was möchtest Du denn wirklich wissen?")
-            c.resp(u"Woran denkst Du?")
-            c.resp(u"Was sagt Dir das?")
-            c.resp(u"Das finde ich ziemlich interessant.")
-            c.resp(u"Kannst Du das noch etwas näher ausführen?")
-            c.resp(u"Sag mir bitte, wie ich Dir helfen kann.")
-            c.resp(u"Was fällt Dir dabei noch ein?")
-            return
-        c.resp(u"What do you think?")
-        c.resp(u"which answer would you like to hear?")
-        c.resp(u"what do you think?")
-        c.resp(u"not sure if I understand you completely")
-        c.resp(u"what would you really like to know?")
-        c.resp(u"have you spoken to anybody else about this before?")
-        c.resp(u"I find that pretty interesting!")
-        c.resp(u"Could you explain that a bit more, please?")
-        c.resp(u"Please tell me how I can help you.")
-        c.resp(u"What else comes to mind?")
 
     k.dte.dt('en', u"(all|) (men|women) are (all|) (alike|the same)", u"in what way?")
     k.dte.dt('de', u"(Die|) (Frauen|Männer) sind alle gleich", u"In welcher Weise?")

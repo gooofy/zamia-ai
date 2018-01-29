@@ -671,6 +671,7 @@ class AIKernal(object):
         ctx.set_inp(inp)
         self.mem_set (ctx.realm, 'action', None)
 
+        logging.debug('===============================================================================')
         logging.debug('process_input: %s' % repr(inp))
 
         #
@@ -705,7 +706,8 @@ class AIKernal(object):
         # ask neural net if we did not find an answer
         #
 
-        if not found_resp and self.nlp_model:
+        resps = ctx.get_resps()
+        if not resps and self.nlp_model:
             
             from nlp_model      import OR_SYMBOL
             from seq2seq_model  import _EOS
@@ -808,6 +810,15 @@ class AIKernal(object):
             ctx.commit_resp(i)
 
             logging.debug(u'picked resp #%d (score: %f): %s' % (i, score, out))
+
+            logging.debug(u'MEM: %s' % ctx.realm)
+            memd = self.mem_dump(ctx.realm)
+            for k in memd:
+                logging.debug(u'MEM:    %-20s: %s' % (k, memd[k]))
+            logging.debug(u'MEM: %s' % user_uri)
+            memd = self.mem_dump(user_uri)
+            for k in memd:
+                logging.debug(u'MEM:    %-20s: %s' % (k, memd[k]))
 
         else:
             out        = u''
@@ -997,6 +1008,12 @@ class AIKernal(object):
 
     def mem_clear(self, realm):
         self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()
+
+    def mem_dump(self, realm):
+        res = {}
+        for m in self.session.query(model.Mem).filter(model.Mem.realm==realm):
+            res[m.k] = m.v
+        return res
 
     def mem_set(self, realm, k, v):
         self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).delete()

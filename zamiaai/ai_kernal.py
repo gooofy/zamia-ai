@@ -325,33 +325,12 @@ class AIKernal(object):
                 self.tf_model.restore(self.tf_session, self.nlp_model.model_fn)
 
 
-    # def clean (self, module_names, clean_all, clean_logic, clean_discourses, 
-    #                                clean_cronjobs):
+    def clean (self, module_names):
 
-    #     for module_name in module_names:
+        for module_name in module_names:
+            self.dte.clean(module_name)
 
-    #         if clean_logic or clean_all:
-    #             logging.info('cleaning logic for %s...' % module_name)
-    #             if module_name == 'all':
-    #                 self.db.clear_all_modules()
-    #             else:
-    #                 self.db.clear_module(module_name)
-
-    #         if clean_discourses or clean_all:
-    #             logging.info('cleaning discourses for %s...' % module_name)
-    #             if module_name == 'all':
-    #                 self.session.query(model.DiscourseRound).delete()
-    #             else:
-    #                 self.session.query(model.DiscourseRound).filter(model.DiscourseRound.module==module_name).delete()
-
-    #         if clean_cronjobs or clean_all:
-    #             logging.info('cleaning cronjobs for %s...' % module_name)
-    #             if module_name == 'all':
-    #                 self.session.query(model.Cronjob).delete()
-    #             else:
-    #                 self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name).delete()
-
-    #     self.session.commit()
+        self.session.commit()
 
     def load_module (self, module_name):
 
@@ -458,34 +437,6 @@ class AIKernal(object):
             sys.exit(1)
 
         return m
-
-    # def init_module (self, module_name, run_trace=False):
-
-    #     if module_name in self.initialized_modules:
-    #         return
-
-    #     logging.debug("initializing module '%s'" % module_name)
-
-    #     self.initialized_modules.add(module_name)
-
-    #     m = self.load_module(module_name)
-
-    #     if not m:
-    #         raise Exception ('init_module: module "%s" not found.' % module_name)
-
-    #     for m2 in getattr (m, 'DEPENDS'):
-    #         self.init_module(m2)
-
-    #     prolog_s = u'init(\'%s\')' % (module_name)
-    #     c = self.aip_parser.parse_line_clause_body(prolog_s)
-
-    #     self.rt.set_trace(run_trace)
-
-    #     solutions = self.rt.search(c)
-
-    #     if hasattr(m, 'init_module'):
-    #         initializer = getattr(m, 'init_module')
-    #         initializer(self)
 
     def compile_module (self, module_name):
 

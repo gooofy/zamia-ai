@@ -62,7 +62,7 @@ class DataEngine(object):
         raise Exception ("%s: error in line %d: %s" % (self.source_location[0], self.source_location[1], s))
 
     def prepare_compilation (self, module_name):
-        self.clear(module_name)
+        self.clean(module_name)
         self.data_module_name = module_name
 
     def compute_named_macros(self):
@@ -76,7 +76,7 @@ class DataEngine(object):
                         self.named_macros[lang][n] = []
                     self.named_macros[lang][n].extend(self.named_macros_mod[module][lang][n])
 
-    def clear (self, module_name):
+    def clean (self, module_name):
 
         logging.debug("Clearing %s ..." % module_name)
         self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()

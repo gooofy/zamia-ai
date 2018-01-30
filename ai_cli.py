@@ -19,7 +19,7 @@
 #
 
 #
-# consolidated shell for all prolog/ai/kb related operations
+# consolidated shell for Zamia AI
 #
 
 import os
@@ -57,38 +57,31 @@ class AICli(cmdln.Cmdln):
 
         self.kernal = AIKernal(db_url, xsb_root, all_modules=all_modules)
 
-    # @cmdln.option("-l", "--clean-logic", dest="clean_logic", action="store_true",
-    #        help="clean predicates from logicdb")
-    # @cmdln.option("-d", "--clean-discourses", dest="clean_discourses", action="store_true",
-    #        help="clean discourses")
-    # @cmdln.option("-c", "--clean-cronjobs", dest="clean_cronjobs", action="store_true",
-    #        help="clean cronjob db entries")
-    # @cmdln.option("-a", "--clean-all", dest="clean_all", action="store_true",
-    #        help="clean everything (logicdb, kb graph and discourses)")
-    # @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-    #        help="verbose logging")
-    # def do_clean(self, subcmd, opts, *paths):
-    #     """${cmd_name}: clean module related data
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_clean(self, subcmd, opts, *module_names):
+        """${cmd_name}: clean module related data
 
-    #     ${cmd_usage}
-    #     ${cmd_option_list}
-    #     """
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
 
-    #     if len(paths)==0:
-    #         logging.error ('specify at least one module name or "all" to clean all modules')
-    #         return
+        if len(module_names)==0:
+            logging.error ('specify at least one module name or "all" to clean all modules')
+            return
 
-    #     if opts.verbose:
-    #         logging.getLogger().setLevel(logging.DEBUG)
-    #         logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    #     else:
-    #         logging.getLogger().setLevel(logging.INFO)
+        if len(module_names)==1 and module_names[0] == 'all':
+            module_names = self.kernal.all_modules
 
-    #     self.kernal.clean(paths, opts.clean_all, opts.clean_logic, opts.clean_discourses, 
-    #                              opts.clean_cronjobs)
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+            logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
 
+        self.kernal.clean(module_names)
 
-    #     logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable tracing when running tests")

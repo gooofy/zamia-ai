@@ -1,15 +1,9 @@
 SHELL := /bin/bash
 
-all:	prolog 
-
-kb:
-	./ai_cli.py kb_import all
-
-cron:
-	./ai_cli.py cron all
+all:	doc
 
 prolog:
-	./ai_cli.py compile common_sense weather smalltalk radio knowledge
+	./ai_cli.py compile all
 
 train:
 	./ai_cli.py train -n 50000

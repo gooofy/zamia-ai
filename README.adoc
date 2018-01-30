@@ -29,7 +29,9 @@ Requirements
 
 * Python 2.7 with nltk, numpy, ...
 * tensorflow
-* from my other repositories: py-nltools, zamia-prolog
+* XSB Prolog
+* SQLite
+* from my other repositories: py-nltools, py-xsb-prolog
 
 Setup Notes
 -----------
@@ -47,6 +49,8 @@ url                 = sqlite:///ai.db
 modules             = data, config, base, dialog, mathematics, dt, humans, weather, media, movies, television, literature, tech, geo, astro, culture, social, economy, physics, games, miscellaneous, music, mythology, transport, health, humor, psychology, politics, language, sports, food, news, history, legal, personal, home
 server_host         = dagobert
 server_port         = 8302
+
+xsb_root            = /opt/xsb-3.8.0
 
 [weather]
 api_key             = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -71,46 +75,39 @@ alternatively, you can download a pre-built model here: http://goofy.zamia.org/z
 
 chat with the model:
 ```bash
-[guenter@dagobert zamia-ai]$ ./ai_cli.py chat models/en_3_512.ini 
-[...]
-INFO:root:models/en_3_512/in_dict.csv read, 3128 entries, output_max_len=21.
-INFO:root:models/en_3_512/out_dict.csv read, 1811 entries, output_max_len=128.
-INFO:root:creating decode seq2seq model: 3 layer(s) of 512 units.
-INFO:root:building model..
-INFO:root:building encoder..
-INFO:root:building decoder and attention..
-INFO:root:use beamsearch decoding..
-INFO:root:building beamsearch decoder..
-INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
-INFO:tensorflow:Restoring parameters from models/en_3_512/latest.ckpt
+[guenter@dagobert zamia-ai]$ ./ai_cli.py chat -m models/en_3_512.ini 
+[xsb_configuration loaded]
+
+...
+
 INFO:root:model restored from models/en_3_512/latest.ckpt
 ai> hello computer
-INFO:root:RESP: [00000] hello ! 
+INFO:root:RESP: [   0.0] Hi! 
 ai> how are you?
-INFO:root:RESP: [00000] thanks for asking , i am doing fine . how about you ? 
+INFO:root:RESP: [   0.0] Great, thanks. How do you feel today? 
 ai> I am well
-INFO:root:RESP: [00000] glad to hear that . 
+INFO:root:RESP: [   0.0] Excellent! 
 ai> what is 2 times 2
-INFO:root:RESP: [00100] 4 
+INFO:root:RESP: [ 104.0] 4 
 ai> correct
-INFO:root:RESP: [00000] good . 
+INFO:root:RESP: [   0.0] Good. 
 ai> where do you live?
-INFO:root:RESP: [00000] i am locted in Stuttgart . 
+INFO:root:RESP: [ 100.0] I am located in Stuttgart. 
 ai> what is your favorite movie?
-INFO:root:RESP: [00000] 2001: A Space Odyssey by Stanley Kubrick 
+INFO:root:RESP: [ 100.0] 2001: A Space Odyssey by Stanley Kubrick 
 ai> How about the weather?
-INFO:root:RESP: [00000] always a good topic . 
-ai> I thought so too.
-INFO:root:RESP: [00000] so we are in agreement ? 
+INFO:root:RESP: [   2.0] today there will be some clouds in Stuttgart with temperatures between 1 and 7 degrees. 
 ai> Tell me something about yourself
-INFO:root:RESP: [00000] my clock ticks more than a billion times a second . 
+INFO:root:RESP: [   0.0] Please tell me how I can help you. 
+ai> Where was Stephen King born?
+INFO:root:RESP: [   4.0] Stephen King was born in Portland, I think. 
 ```
 
 Architecture
 ------------
 
-Right now the rough idea is to use a custom prolog system (AI-Prolog) at the core for knowledge storage, processing and
-reasoning plus a seq2seq model to map natural language to prolog.
+Right now the rough idea is to use XSB Prolog at the core for knowledge storage, processing and
+reasoning plus a seq2seq model to map natural language to python code which queries the Prolog engine.
 
 ifndef::env-github[]
 [ditaa,"flow"]
@@ -126,25 +123,25 @@ ifndef::env-github[]
   +-------------------+
             |
             v
-         tokens 
+    /---------------\
+    |    tokens     |
+    \---------------/
             |
             v
   +-------------------+
   |   seq2seq model   | 
   +-------------------+
             |
+            |
             v
-       prolog code 
+    /---------------\         +-------------------+
+    |  Python code  | <------>| XSB-Prolog engine | 
+    \---------------/         +-------------------+
+            | 
             |
             v
   +-------------------+
-  | AI-Prolog engine  | 
-  +-------------------+
-            |
-            |
-            v
-  +-------------------+
-  |     response      |
+  |     responses     |
   |                {d}|
   +-------------------+
 
@@ -165,29 +162,30 @@ ifndef::env-github[]
 +------------------------------------------------------------------------------------------------+
          ^                                      ^                                       |
          |                                      |                                       v
-         |                            utterances/intents                           utterances
+         |                                response/actions                       input/utterance
          |                                      ^                                       |
          |                                      |                                       v
          |            +--------------------------------------------------------------------------+
-         |            |                         |  Zamia AI                             |        |
-         |            |  +---------------+    +------------------+                      |        |
-         |            |  |  Data-Tools   |    |     AI Prolog    |                      v        |
-         |            |  |               |    |                  |                 +---------+   |
-         |            |  | - LDF mirror  |    |      runtime     |<- prolog code --| seq2seq |   |
-         |            |  | - AIML import |    |                  |<- inference -+  |  model  |   |
-         |            |  | - chat import |    |                  |              |  +---------+   |
-         |            |  +---------------+    |                  |              |       ^        |
-         |            |         |             |                  |              |       |        |
-         |            |         v             |                  |              |     train      |
-         |            |  +---------------+    |                  |              |       ^        |
-         |            |  |   Modules     |    |                  |              |       |        |
-         |            |  |               |    |                  |              |  /----------\  |
-         |            |  | - wikidata    |    |                  |              +->|          |  |
-         |            |  | - base        |--->|     compiler     |--- clauses    ->| database |  |
-         |            |  | - smalltalk   |    |    macro engine  |--- utterances ->|          |  |
-         |            |  | - personality |    |                  |                 \----------/  |
-         |            |  | - weather     |    +------------------+                               |
-         |            |  |   ...         |                                                       |
+         |            |                         |        Zamia AI                       |        |
+         |            |  +---------------+      |                                       |        |
+         |            |  |  Data-Tools   |      |                                       v        |
+         |            |  |               |      |          /-------------\         +---------+   |
+         |            |  | - LDF mirror  |      +----------| Python code |<--------| seq2seq |   |
+         |            |  | - RDF2Prolog  |                 \-------------/         |  model  |   |
+         |            |  | - AIML import |                        ^                +---------+   |
+         |            |  | - chat import |                        |                     ^        |
+         |            |  +---------------+                        v                     |        |
+         |            |         |                +-----------------------+                       |
+         |            |         v                |      XSB Prolog       |            train      |
+         |            |  +---------------+       +-----------------------+                       |
+         |            |  |   Modules     |              ^                               |        |
+         |            |  |               |              |                               |        |
+         |            |  | - data        |    +------------------+                 /----------\  |
+         |            |  | - base        |    |                  |                 |          |  |
+         |            |  | - dialog      |--->|     compiler     |--- Python     ->| database |  |
+         |            |  | - personality |    |    macro engine  |--- utterances ->|          |  |
+         |            |  | - weather     |    |                  |                 \----------/  |
+         |            |  |   ...         |    +------------------+                               |
          |            |  +---------------+                                                       |
          |            |                                                                          |
          |            +--------------------------------------------------------------------------+
@@ -222,7 +220,7 @@ One of the key features of the current setup is the way training data is stored/
 I am using a modularized approach here (see the modules/ directory for humble beginnings of this)
 where I store snippets of natural language which uses a macro system for somewhat rule-based
 generation of language examples (optionally incorporating data from the prolog knowledge base) 
-and prolog code to execute it.
+and python code to execute it.
 
 Knowledge Base Notes
 --------------------
@@ -232,42 +230,38 @@ probably be more or less outdated.
 
 // For documentation on ZamiaAI semantic processing, see <<doc/semantics#,semantics>>.
 
-=== Context Provided by Framework
+=== Context Provided by the Framework
 
-Implicit argument `C` which is initialized to a unique prolog constant representing the
-current round (i.e. interaction step). 
+Implicit argument `c` of type `AIContext` gives access to the dialog environment, kernal and response generation:
 
-e.g. `C = context42`
-
-assertions made by framework:
-
-```prolog
-user    (context42, userDefault).
-lang    (context42, en).
-tokens  (context42, ['hi', 'there']).
-time    (context42, "2004-06-14T23:34:30").
-prev    (context42, context41).
+```python
+c.kernal      # Kernal
+c.inp         # current input string
+c.user        # current user
+c.realm       # current realm
+c.lang        # current language (e.g. 'en', 'de')
+c.test_mode   # True when running tests, False otherwise
+c.current_dt  # datetime.datetime.now()
 ```
 
-any assertions of the form
+=== Memory
 
-```prolog
-context (context41, key, value).
-mem     (context41, key, value).
+Besides making prolog `assertz` calls, a simple memory mechanism is provided for persistent data storage:
+
+```python
+c.kernal.mem_set(c.user, 'f1ent', film)
+film = c.kernal.mem_get(c.user, 'f1ent')
+
+c.kernal.mem_push(c.user, 'f1ent', film)
+film = c.kernal.mem_get_multi(c.user, 'f1ent')
 ```
-
-made on the previous context will be made again (i.e.: persist) on the current context,
-context assertions will also serve as additional inputs to subsequent neural net runs
-
 
 === Response
 
-The response generated by prolog processing is comprised of assertions such as:
+To generate responses, call
 
-```prolog
-c_say    (C, token).
-c_action (C, [args]).
-c_score  (C, score).
+```python
+c.resp(resp, score, action, action_arg) # Response generation
 ```
 
 === data-tools
@@ -299,35 +293,6 @@ popd
 data-tools/chat/chat2aip.py -l en -o modules/chat/en.aip data-tools/aiml/bots_en/alice_new.chat data-tools/aiml/bots_en/square_bear.chat data-tools/aiml/bots_en/dobby.chat data-tools/aiml/bots_en/emmie.chat data-tools/aiml/bots_en/proalias.chat data-tools/aiml/bots_en/rosie.chat data-tools/aiml/bots_en/runabot.chat tmp/chat_corpus/movie_subtitles_en.txt 
 data-tools/chat/chat2aip.py -t -l de -o modules/chat/de.aip data-tools/aiml/bots_de/alice.chat
 ```
-
-module initialization / test setup
-----------------------------------
-
-when a aiprolog module is loaded for processing, a special target
-
-```prolog
-    init("module_name")
-```
-
-is searched for and actions produced from this search are executed. this mechanism can
-be used to initialize the module through prolog code in general and setup default 
-context values in particular, as 
-
-```
-    ai:curin  ai:user aiu:default
-```
-
-is set during execution.
-
-Additionally, before running each test, a special target
-```prolog
-    test_setup("module_name")
-```
-is searched. 
-```
-    ai_curin  ai:user aiu:test
-```
-is set during execution
 
 Links
 -----

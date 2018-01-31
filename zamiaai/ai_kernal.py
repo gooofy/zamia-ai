@@ -277,6 +277,9 @@ class AIKernal(object):
         xsb_hl_init([xsb_root])
         self.dte = DataEngine(self.session)
 
+        xsb_command_string('import default_sys_error_handler/1 from error_handler.')
+        xsb_command_string('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
+
         #
         # alignment / word2vec (on-demand model loading)
         #

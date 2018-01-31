@@ -158,32 +158,6 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
-    @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
-           help="enable prolog tracing")
-    @cmdln.option("-f", "--force", dest="force", action="store_true",
-           help="force cronjob to run even if it is not due to")
-    def do_cron(self, subcmd, opts, *paths):
-        """${cmd_name}: run module(s) cronjobs
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if len(paths)==0:
-            logging.error ('specify at least one module name (or "all" to run all module cronjobs)')
-            return
-
-        if opts.verbose:
-            logging.getLogger().setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
-
-        self.kernal.run_cronjobs_multi(paths, opts.force, run_trace=opts.run_trace)
-
-        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
-
     @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
            help="incremental training (load previously saved variables)")
     @cmdln.option("-n", "--num-steps", dest="num_steps", type = "int", default=100000,

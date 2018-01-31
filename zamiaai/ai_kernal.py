@@ -354,45 +354,6 @@ class AIKernal(object):
 
             self.modules[module_name] = m
 
-            # print m
-            # print getattr(m, '__all__', None)
-
-            # for name in dir(m):
-            #     print name
-
-            # for m2 in getattr (m, 'DEPENDS'):
-            #     self.load_module(m2)
-
-            # self.dte.load(module_name)
-
-            # if hasattr(m, 'CRONJOBS'):
-
-            #     # update cronjobs in db
-
-            #     old_cronjobs = set()
-            #     for cronjob in self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name):
-            #         old_cronjobs.add(cronjob.name)
-
-            #     new_cronjobs = set()
-            #     for name, interval, f in getattr (m, 'CRONJOBS'):
-
-            #         logging.debug ('registering cronjob %s' %name)
-
-            #         cj = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
-            #         if not cj:
-            #             cj = model.Cronjob(module=module_name, name=name, last_run=0)
-            #             self.session.add(cj)
-
-            #         cj.interval = interval
-            #         new_cronjobs.add(cj.name)
-
-            #     for cjn in old_cronjobs:
-            #         if cjn in new_cronjobs:
-            #             continue
-            #         self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==cjn).delete()
-
-            #     self.session.commit()
-
         except:
             logging.error('failed to load module "%s"' % module_name)
             logging.error(traceback.format_exc())
@@ -782,47 +743,6 @@ class AIKernal(object):
             logging.debug(u'No response found.')
 
         return out, score, action, action_arg 
-
-    def run_cronjobs (self, module_name, force=False, run_trace=False):
-
-        m = self.modules[module_name]
-        if not hasattr(m, 'CRONJOBS'):
-            return
-
-        self.rt.set_trace(run_trace)
-
-        for name, interval, f in getattr (m, 'CRONJOBS'):
-
-            cronjob = self.session.query(model.Cronjob).filter(model.Cronjob.module==module_name, model.Cronjob.name==name).first()
-
-            t = time.time()
-
-            next_run = cronjob.last_run + interval
-
-            if force or t > next_run:
-
-                logging.debug ('running cronjob %s' % name)
-                f (self)
-
-                cronjob.last_run = t
-
-    def run_cronjobs_multi (self, module_names, force, run_trace=False):
-
-        for module_name in module_names:
-
-            if module_name == 'all':
-
-                for mn2 in self.all_modules:
-                    self.load_module (mn2)
-                    self.init_module (mn2)
-                    self.run_cronjobs (mn2, force=force, run_trace=run_trace)
-
-            else:
-                self.load_module (module_name)
-                self.init_module (module_name)
-                self.run_cronjobs (module_name, force=force, run_trace=run_trace)
-
-        self.session.commit()
 
     def train (self, ini_fn, num_steps, incremental):
 

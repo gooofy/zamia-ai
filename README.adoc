@@ -46,7 +46,7 @@ create a file called `~/.airc`:
 url                 = sqlite:///ai.db
 
 [semantics]
-modules             = data, config, base, dialog, mathematics, dt, humans, weather, media, movies, television, literature, tech, geo, astro, culture, social, economy, physics, games, miscellaneous, music, mythology, transport, health, humor, psychology, politics, language, sports, food, news, history, legal, personal, home
+toplevel            = chatbot
 server_host         = dagobert
 server_port         = 8302
 
@@ -75,7 +75,7 @@ alternatively, you can download a pre-built model here: http://goofy.zamia.org/z
 
 chat with the model:
 ```bash
-[guenter@dagobert zamia-ai]$ ./ai_cli.py chat -m models/en_3_512.ini 
+[guenter@dagobert zamia-ai]$ ./ai_cli.py chat -m models/en_3_512.ini chatbot
 [xsb_configuration loaded]
 
 ...

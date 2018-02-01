@@ -51,11 +51,11 @@ class AICli(cmdln.Cmdln):
         cmdln.Cmdln.__init__(self)
 
         self.config = misc.load_config('.airc')
-        all_modules = list(map (lambda m: m.strip(), self.config.get('semantics', 'modules').split(',')))
+        toplevel    = self.config.get('semantics', 'toplevel')
         xsb_root    = self.config.get('semantics', 'xsb_root')
         db_url      = self.config.get('db', 'url')
 
-        self.kernal = AIKernal(db_url, xsb_root, all_modules=all_modules)
+        self.kernal = AIKernal(db_url, xsb_root, toplevel)
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")

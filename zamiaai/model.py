@@ -62,7 +62,8 @@ class TrainingData(Base):
     loc_fn            = Column(String(255))
     loc_line          = Column(Integer)
 
-    __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), )
+    __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), 
+                         Index('idx_td_mod_lang', "module", "lang"))
 
 class Code(Base):
     __tablename__ = "code"

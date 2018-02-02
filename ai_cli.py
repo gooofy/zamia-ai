@@ -35,7 +35,7 @@ import atexit
 
 from six.moves            import input
 
-from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX
+from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES
 from nltools              import misc
 from xsbprolog            import xsb_hl_query_string
 
@@ -278,18 +278,18 @@ class AICli(cmdln.Cmdln):
         self.kernal.align_utterances(opts.lang, utterances)
 
 
-    def do_prolog(self, subcmd, opts, *paths):
+    def do_prolog(self, subcmd, opts, *module_names):
         """${cmd_name}: open prolog shell for debugging
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(paths) == 0:
+        if len(module_names) == 0:
             for mn2 in self.kernal.all_modules:
                 self.kernal.consult_module (mn2)
         else:
-            self.kernal.consult_module (paths[0])
+            self.kernal.consult_module (module_names[0])
 
         histfile = os.path.join(os.path.expanduser("~"), ".xsb_hist")
         try:
@@ -313,6 +313,46 @@ class AICli(cmdln.Cmdln):
 
             except Exception as e:
                 logging.error(traceback.format_exc())
+
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_stats(self, subcmd, opts):
+        """${cmd_name}: print DB statistics
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+            logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        stats = self.kernal.stats()
+
+        totals = {}
+        for m in stats:
+            for lang in stats[m]:
+                if not lang in totals:
+                    totals[lang] = 0
+                totals[lang] += stats[m][lang]
+
+        stats2 = []
+
+        for m in stats:
+
+            s = '%-20s' % m
+
+            for lang in LANGUAGES:
+                s += '%3s:%9d (%5.1f%%)' % (lang, stats[m][lang], stats[m][lang]*100.0/totals[lang])
+    
+            stats2.append((s, stats[m]['en']))
+
+        for t in sorted(stats2, key=lambda tup: tup[1]):
+            logging.info(t[0])
+
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
 #
 # init terminal

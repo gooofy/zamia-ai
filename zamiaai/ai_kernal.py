@@ -60,6 +60,7 @@ TEST_USER          = USER_PREFIX + u'Test'
 TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
 TEST_REALM         = '__test__'
 MAX_MEM_ENTRIES    = 5
+LANGUAGES          = ['en', 'de']
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -713,6 +714,19 @@ class AIKernal(object):
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
         return res
+
+    def stats (self):
+
+        stats = {}
+
+        for module_name in self.all_modules:    
+            stats[module_name] = {}
+            for lang in LANGUAGES:
+                cnt = self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name,
+                                                                    model.TrainingData.lang==lang).count()
+                stats[module_name][lang] = cnt
+
+        return stats
 
     def mem_clear(self, realm):
         self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()

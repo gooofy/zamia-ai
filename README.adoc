@@ -113,7 +113,7 @@ ifndef::env-github[]
 [ditaa,"flow"]
 ....
   +-------------------+
-  |  matural language |
+  |  natural language |
   |                {d}|
   +-------------------+
             |

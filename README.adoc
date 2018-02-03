@@ -268,9 +268,9 @@ c.resp(resp, score, action, action_arg) # Response generation
 
 ==== RDF
 
-RDF data can be mirrored and converted to AI-Prolog using the scripts found in `data-tools/rdf`.
+RDF data can be mirrored and converted to Prolog using the scripts found in `data-tools/rdf`.
 
-Example: mirror the wikidata subset and generate AI-Prolog from it:
+Example: mirror the wikidata subset and generate Prolog from it:
 
 ```bash
 cd data-tools/rdf

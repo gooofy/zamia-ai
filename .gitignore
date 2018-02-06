@@ -17,12 +17,12 @@ mestats
 doc/.asciidoctor
 doc/*.html
 *.html
-data-tools/aiml/german-alice-alignment.txt
-data-tools/aiml/bots_en/
-data-tools/aiml/bots_de/
 recordings
 ai.db
 ai.db-journal
 models-dist
 *.xwam
 *.json
+data-tools/aiml/all_bots.csv
+data-tools/aiml/bots/
+modules/bots/

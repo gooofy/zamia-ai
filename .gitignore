@@ -25,4 +25,5 @@ models-dist
 *.json
 data-tools/aiml/all_bots.csv
 data-tools/aiml/bots/
+data-tools/csv/model/
 modules/bots/

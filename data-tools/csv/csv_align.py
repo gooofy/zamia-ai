@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch
+# Copyright 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,7 +19,7 @@
 #
 
 #
-# align CSV discourse rounds to existing training data sort and export as AI-Prolog
+# align CSV input to existing training data sort and export in python format
 #
 
 import os
@@ -40,6 +40,7 @@ from scipy.spatial.distance import cosine
 
 DEFAULT_LOGLEVEL   = logging.DEBUG
 DEFAULT_OUTPUT     = 'foo.aip'
+DEBUG_LIMIT        = 1000
 
 def avg_feature_vector(words, model, num_features, index2word_set):
         #function to average all words vectors in a given paragraph
@@ -95,10 +96,10 @@ WORD2VEC_MODEL = '/home/bofh/projects/ai/data/word2vec/GoogleNews-vectors-negati
 
 logging.info('loading %s...' % WORD2VEC_MODEL)
 
-word2vec_model = word2vec.Word2Vec.load_word2vec_format(WORD2VEC_MODEL, binary=True)
-
-#list containing names of words in the vocabulary
-index2word_set = set(word2vec_model.index2word)
+# word2vec_model = word2vec.Word2Vec.load_word2vec_format(WORD2VEC_MODEL, binary=True)
+# 
+# #list containing names of words in the vocabulary
+# index2word_set = set(word2vec_model.index2word)
 
 logging.info('loading %s... done. took %fs' % (WORD2VEC_MODEL, time.time()-time_start))
 
@@ -111,27 +112,30 @@ cnt = 0
 
 logging.info ('precomputing training data word vectors...')
 
-td_vectors = []
 td_covered = set()
+td_vectors = []
 
-for td in session.query(model.TrainingData).filter(model.TrainingData.lang=='en', model.TrainingData.prio>=0):
+for td in session.query(model.TrainingData).filter(model.TrainingData.lang=='en'):
 
-    td_covered.add(td.utterance)
+    import pdb; pdb.set_trace()
+
+    if td.inp in td_covered:
+        continue
+    td_covered.add(td.inp)
 
     try:
 
         sentence_2 = tokenizer.tokenize(td.inp, lang='en')
         sentence_2_avg_vector = avg_feature_vector(sentence_2, model=word2vec_model, num_features=300, index2word_set=index2word_set)
 
-        key = td.module + ':' + td.loc_fn
-        td_vectors.append((key, sentence_2_avg_vector))
+        td_vectors.append((td.module, sentence_2_avg_vector))
 
         # logging.debug ('%6d: vector for %s is %s' % (cnt, repr(sentence_2), repr(sentence_2_avg_vector)))
 
         cnt += 1
 
-        # if cnt > 1000:
-        #     break
+        if DEBUG_LIMIT and cnt>DEBUG_LIMIT:
+            break
 
         if cnt % 1000 == 0:
             logging.info ('   %6d vectors computed in %fs.' % (cnt, time.time()-time_start))
@@ -140,6 +144,8 @@ for td in session.query(model.TrainingData).filter(model.TrainingData.lang=='en'
         logging.error(traceback.format_exc())
 
 logging.info ('precomputing training data word vectors...done. %d vectors computed in %fs.' % (cnt, time.time()-time_start))
+
+sys.exit(0)
 
 #
 # parse CSV input file, map uncovered questions to module:sourcefile keys

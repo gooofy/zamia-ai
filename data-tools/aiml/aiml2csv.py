@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2017 Guenter Bartsch
+# Copyright 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -48,7 +48,7 @@ DEFAULT_LANG       = 'de'
 
 misc.init_app('aim2csv')
 
-parser = OptionParser("usage: %prog [options] foo.aiml")
+parser = OptionParser("usage: %prog [options] foo.aiml [bar.aiml ...]")
 
 parser.add_option ("-l", "--lang", dest="lang", type = "string", default=DEFAULT_LANG,
                    help="language, default: %s" % DEFAULT_LANG)
@@ -178,7 +178,7 @@ for aimlfn in args:
 
                 # print '   ', t
 
-                skip_pattern=False
+                # skip_pattern=False
 
                 if not skip_pattern:
                     pt = pt.lower()
@@ -206,39 +206,61 @@ for aimlfn in args:
 
 translator = Translator()
 
+print 'translating...',
 
 with codecs.open(outputfn, 'w', 'utf8') as outputf:
 
+    cnt = 0
+
+    delay = 0.1
+
     for pt in sorted(res):
 
-        t = res[pt]
+        try:
 
-        if options.lang == 'en':
-            ques_en = pt
-            resp_en = t
+            t = res[pt]
 
-            t2 = translator.translate(pt, src=u'en', dest=u'de')
-            ques_de = t2.text
-            t2 = translator.translate(t, src=u'en', dest=u'de')
-            resp_de = t2.text
+            if options.lang == 'en':
+                ques_en = pt
+                resp_en = t
 
-        elif options.lang == 'de':
- 
-            ques_de = pt
-            resp_de = t
+                t2 = translator.translate(pt, src=u'en', dest=u'de')
+                ques_de = t2.text
+                t2 = translator.translate(t, src=u'en', dest=u'de')
+                resp_de = t2.text
 
-            t2 = translator.translate(pt, src=u'de', dest=u'en')
-            ques_en = t2.text
-            t2 = translator.translate(t, src=u'de', dest=u'en')
-            resp_en = t2.text
+            elif options.lang == 'de':
+     
+                ques_de = pt
+                resp_de = t
 
-        line = u"%s;%s;%s;%s" % (ques_en, resp_en, ques_de, resp_de)
+                t2 = translator.translate(pt, src=u'de', dest=u'en')
+                ques_en = t2.text
+                t2 = translator.translate(t, src=u'de', dest=u'en')
+                resp_en = t2.text
 
-        outputf.write(u"%s\n" % line)
-        logging.debug(line)
+            ques_en = ques_en.replace(';',' ').replace('\n',' ')
+            resp_en = resp_en.replace(';',' ').replace('\n',' ')
+            ques_de = ques_de.replace(';',' ').replace('\n',' ')
+            resp_de = resp_de.replace(';',' ').replace('\n',' ')
 
-        time.sleep(1)
+            line = u"%s;%s;%s;%s" % (ques_en, resp_en, ques_de, resp_de)
 
+            outputf.write(u"%s\n" % line)
+            logging.debug(line)
+
+            time.sleep(delay)
+        
+            cnt += 1
+            print '\rtranslating: %d of %d (%5.1f%%)' % (cnt, len(res), cnt*100.0/len(res)),
+
+            if cnt % 100 == 0:
+                translator = Translator()
+
+        except:
+            logging.error(traceback.format_exc())
+            print u"error translating %s" % t
+            translator = Translator()
 
 logging.info ('%s written, %d samples total.' % (outputfn, cnt))
 

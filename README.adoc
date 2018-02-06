@@ -282,16 +282,16 @@ cd ../..
 ./ai_cli.py compile data
 ```
 
-==== AIML / Chat data
+==== AIML data
 
-Data from AIML sources can be converted to `chat` format which can then be turned into AI-Prolog training scripts:
+AIML sources can be converted into CSV which can then be aligned with existing modules to 
+produce additional training scripts:
 
 ```bash
 pushd data-tools/aiml
-./chatterbots2chat.sh
+./chatterbots2csv.sh
 popd
-data-tools/chat/chat2aip.py -l en -o modules/chat/en.aip data-tools/aiml/bots_en/alice_new.chat data-tools/aiml/bots_en/square_bear.chat data-tools/aiml/bots_en/dobby.chat data-tools/aiml/bots_en/emmie.chat data-tools/aiml/bots_en/proalias.chat data-tools/aiml/bots_en/rosie.chat data-tools/aiml/bots_en/runabot.chat tmp/chat_corpus/movie_subtitles_en.txt 
-data-tools/chat/chat2aip.py -t -l de -o modules/chat/de.aip data-tools/aiml/bots_de/alice.chat
+data-tools/csv/csv2py.py -o modules/bots/bots.py data-tools/aiml/all_bots.csv 
 ```
 
 Links

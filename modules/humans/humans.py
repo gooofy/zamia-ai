@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+MACRO_LIMIT = 128
+
 def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
@@ -25,11 +27,14 @@ def get_data(k):
     # NER, macros
 
     for lang in ['en', 'de']:
+        cnt = 0
         for res in k.prolog_query("wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, %s, LABEL)." % lang):
             s_human = res[0] 
             s_label = res[1] 
             k.dte.ner(lang, 'human', s_human, s_label)
-            k.dte.macro(lang, 'known_humans', {'W': s_label})
+            if cnt < MACRO_LIMIT:
+                k.dte.macro(lang, 'known_humans', {'W': s_label})
+            cnt += 1
 
     def answer_info_human(c, ts, te):
 

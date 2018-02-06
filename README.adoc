@@ -112,33 +112,25 @@ reasoning plus a seq2seq model to map natural language to python code which quer
 ifndef::env-github[]
 [ditaa,"flow"]
 ....
-  +-------------------+
-  |  natural language |
-  |                {d}|
-  +-------------------+
-            |
-            v
-  +-------------------+
-  |     tokenizer     |
-  +-------------------+
-            |
-            v
-    /---------------\
-    |    tokens     |
-    \---------------/
-            |
-            v
-  +-------------------+
-  |   seq2seq model   | 
-  +-------------------+
-            |
-            |
-            v
-    /---------------\         +-------------------+
-    |  Python code  | <------>| XSB-Prolog engine | 
-    \---------------/         +-------------------+
-            | 
-            |
+  +-------------------+        +-------------------+
+  |  Natural language |        |  Structured Data  |  
+  |                {d}|        |  (RDF/LDF, AIML)  |
+  +-------------------+        |                {d}|
+            |                  +-------------------+
+            |                          |    |
+            v                          |    |
+ +---------------------+               |    |
+ | Deep Neural Network |<-- training --+    |
+ |       seq2seq       |                    |
+ +---------------------+                    |
+            |                               |
+            |                               v
+            v                 +------------------+
+    /---------------\         |    XSB Prolog    |
+    |  Python code  | <------>|     Reasoner     |     
+    \---------------/         |  Knowledge Base  |
+            |                 +------------------+
+            |                 
             v
   +-------------------+
   |     responses     |

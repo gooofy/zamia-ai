@@ -22,6 +22,10 @@ Possible applications range from rather simple fun or educational toys up to
 serious systems for command and control in industrial or automotive contexts
 or assistive technology and healthcare solutions.
 
+For more information about the Zamia AI project check out our homepage at:
+
+http://zamia-ai.org
+
 Requirements
 ------------
 

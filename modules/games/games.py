@@ -22,11 +22,13 @@ def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
 
-    k.dte.dt('en', [u"do you play (go|chess)",
+    k.dte.dt('en', [u"(can|do) you play (go|chess)",
+                    u"do you know (go|chess)",
                     u"do you want to play (go|chess) with me"],
                    [u"sorry my games modules is still in its infancy",
                     u"sorry, I do not play games yet."])
-    k.dte.dt('de', [u"spielst du (go|schach)",
+    k.dte.dt('de', [u"(kennst|spielst) du (go|schach)",
+                    u"kannst du (go|schach) spielen?",
                     u"willst du mit mir (go|schach) spielen"],
                    [u"Tut mir leid, mein Spielmodul ist noch sehr unausgereift.",
                     u"Tut mir leid, ich spiele noch keine Spiele."])

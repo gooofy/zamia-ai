@@ -81,10 +81,11 @@ def get_data(k):
 
                 score = lscore + tscore
                 wd = weather.fetch_weather_data (c, c.current_dt, loc, ts)
+                prec = wd['precipitation']
 
                 if mode == 'prec_cloud':
 
-                    if wd['precipitation'] < 1.0:
+                    if prec < 1.0:
                         if wd['clouds'] < 50.0:
                             if c.lang == 'de':
                                 c.resp(u"%s scheint in %s überwiegend die Sonne und es wird kaum Niederschlag geben." % (tlabel, llabel), score=score, action=act, action_arg=(ts, loc))
@@ -96,12 +97,12 @@ def get_data(k):
                     else:
                         if wd['clouds'] < 50.0:
                             if c.lang == 'de':
-                                c.resp(u"%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag." % (tlabel, llabel, res['precipitation']), score=score, action=act, action_arg=(ts, loc))
-                            c.resp(u"%s the sun will shine quite often in %s but there might be some precipitation of %d millimeters." % (tlabel, llabel, res['precipitation']), score=score, action=act, action_arg=(ts, loc))
+                                c.resp(u"%s scheint in %s oft die Sonne, aber es gibt auch %d Millimeter Niederschlag." % (tlabel, llabel, prec), score=score, action=act, action_arg=(ts, loc))
+                            c.resp(u"%s the sun will shine quite often in %s but there might be some precipitation of %d millimeters." % (tlabel, llabel, prec), score=score, action=act, action_arg=(ts, loc))
                         else:
                             if c.lang == 'de':
-                                c.resp(u"%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag." % (tlabel, llabel, res['precipitation']), score=score, action=act, action_arg=(ts, loc))
-                            c.resp(u"%s it will be mostly cloudy in %s with %d millimeters of precipitation." % (tlabel, llabel, res['precipitation']), score=score, action=act, action_arg=(ts, loc))
+                                c.resp(u"%s ist es in %s überwiegend bewölkt, und es gibt %d Millimeter Niederschlag." % (tlabel, llabel, prec), score=score, action=act, action_arg=(ts, loc))
+                            c.resp(u"%s it will be mostly cloudy in %s with %d millimeters of precipitation." % (tlabel, llabel, prec), score=score, action=act, action_arg=(ts, loc))
 
                 elif mode == 'full':
 
@@ -121,14 +122,17 @@ def get_data(k):
                         elif icon == u'09':
                             c.resp(u"%s wird es %d Millimeter Schauer geben in %s und es wird zwischen %d und %d Grad warm." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                         elif icon == u'10':
-                            if wd['precipitation'] >= 1.0:
+                            if prec >= 1.0:
                                 c.resp(u"%s regnet es %d Millimeter in %s und es wird zwischen %d und %d Grad warm." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                             else:
                                 c.resp(u"%s kann es etwas Niederschlag geben in %s und es wird zwischen %d und %d Grad warm." % (tlabel, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                         elif icon == u'11':
                             c.resp(u"%s wird es Gewitter geben mit %d Millimeter Niederschlag in %s und es wird zwischen %d und %d Grad warm." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                         elif icon == u'13':
-                            c.resp(u"%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
+                            if prec >= 1.0:
+                                c.resp(u"%s schneit es %d Millimeter in %s und es wird zwischen %d und %d Grad kalt." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
+                            else:
+                                c.resp(u"%s schneit es ein wenig in %s und es wird zwischen %d und %d Grad kalt." % (tlabel, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                         elif icon == u'50':
                             c.resp(u"%s wird es neblich in %s und es wird zwischen %d und %d Grad geben." % (tlabel, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
 
@@ -145,7 +149,7 @@ def get_data(k):
                         elif icon == u'09':
                             c.resp(u"%s there will be rain showers of %d millimeters in %s with temperatures between %d and %d degrees." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                         elif icon == u'10':
-                            if wd['precipitation'] >= 1.0:
+                            if prec >= 1.0:
                                 c.resp(u"%s it will rain %d millimeters in %s with temperatures between %d and %d degrees." % (tlabel, prec, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))
                             else:
                                 c.resp(u"%s there might be a little rain in %s with temperatures between %d and %d degrees." % (tlabel, llabel, tmin, tmax), score=score, action=act, action_arg=(ts, loc))

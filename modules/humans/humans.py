@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-MACRO_LIMIT = 128
+MACRO_LIMIT = 64
 
 def get_data(k):
 

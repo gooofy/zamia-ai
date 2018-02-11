@@ -2187,6 +2187,24 @@ RDF_ALIASES = {
                 u'wde:19'                               : u'http://www.wikidata.org/entity/Q39850',
                 u'wde:20'                               : u'http://www.wikidata.org/entity/Q40292',
 
+                # biology
+
+                u'wde:Lion'                             : u'http://www.wikidata.org/entity/Q140',
+                u'wde:Donkey'                           : u'http://www.wikidata.org/entity/Q3537778',
+                u'wde:Zebra'                            : u'http://www.wikidata.org/entity/Q32789',
+                u'wde:Dog'                              : u'http://www.wikidata.org/entity/Q144',
+                u'wde:Cat'                              : u'http://www.wikidata.org/entity/Q146',
+                u'wde:MusMusculus'                      : u'http://www.wikidata.org/entity/Q83310',
+                u'wde:Elephant'                         : u'http://www.wikidata.org/entity/Q7378',
+                u'wde:Fish'                             : u'http://www.wikidata.org/entity/Q152',
+                u'wde:Horse'                            : u'http://www.wikidata.org/entity/Q726',
+                u'wde:Duck'                             : u'http://www.wikidata.org/entity/Q3736439',
+                u'wde:Moose'                            : u'http://www.wikidata.org/entity/Q35517',
+                u'wde:Rabbit'                           : u'http://www.wikidata.org/entity/Q9394',
+                u'wde:Bear'                             : u'http://www.wikidata.org/entity/Q30090244',
+                u'wde:Bird'                             : u'http://www.wikidata.org/entity/Q5113',
+                u'wde:Zebra'                            : u'http://www.wikidata.org/entity/Q32789',
+
               }
 
 # wikidata properties

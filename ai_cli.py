@@ -224,9 +224,12 @@ class AICli(cmdln.Cmdln):
             if line == 'quit' or line == 'exit':
                 break
 
-            out, score, action, action_arg = self.kernal.process_input(ctx, line, lang, user_uri, run_trace=opts.run_trace)
+            out, score, action = self.kernal.process_input(ctx, line, lang, user_uri, run_trace=opts.run_trace)
 
-            logging.info(u'RESP: [%6.1f] %s ' % (score, out))
+            if action:
+                logging.info(u'RESP: [%6.1f] %s | action: %s' % (score, out, unicode(action)))
+            else:
+                logging.info(u'RESP: [%6.1f] %s ' % (score, out))
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

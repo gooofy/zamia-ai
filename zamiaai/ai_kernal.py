@@ -573,11 +573,10 @@ class AIKernal(object):
         else:
             out        = u''
             score      = 0.0
-            action     = None
-            action_arg = None
             logging.debug(u'No response found.')
 
-        return out, score, action, action_arg 
+        action = self.mem_get (ctx.realm, 'action')
+        return out, score, action
 
     def train (self, ini_fn, num_steps, incremental):
 

@@ -943,3 +943,6 @@ def get_data(k):
     k.dte.dt('en', u"Do you tell something?", u"OK.")
     k.dte.dt('de', u"Erzähl doch du etwas.", u"OK.")
 
+    k.dte.dt('en', u"I meant (for|because of) me?", u"So we are talking about you?")
+    k.dte.dt('de', u"Ich meinte wegen mir.", u"Wir reden also über Dich?")
+

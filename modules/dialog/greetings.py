@@ -93,9 +93,9 @@ def get_data(k):
     k.dte.dt('en', u"{self_address:W} (goodbye | bye | ciao | so long | bye for now | see ya | see you later | till next time)",
                    answer_bye)
 
-    k.dte.dt('de', u"(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal) {self_address:W}",
+    k.dte.dt('de', u"(auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal|schluss) {self_address:W}",
                    answer_bye)
-    k.dte.dt('de', u"{self_address:W} (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal)",
+    k.dte.dt('de', u"{self_address:W} (auf wiedersehen | tschüss | ciao | ade | bye | cu | bis bald | bis zum nächsten mal|schluss)",
                    answer_bye)
 
     k.dte.dt('en', [u"cu later",

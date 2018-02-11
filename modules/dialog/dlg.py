@@ -682,8 +682,8 @@ def get_data(k):
     k.dte.dt('en', u"look at all the consequences", u"Sure.")
     k.dte.dt('de', u"schau dir alle folgen an", u"Klar.")
 
-    k.dte.dt('en', u"make a suggestion", u"Don't worry, be happy.")
-    k.dte.dt('de', u"mach einen vorschlag", u"Sorge Dich nicht, sei fröhlich.")
+    k.dte.dt('en', u"make a suggestion (for once|)", u"Don't worry, be happy.")
+    k.dte.dt('de', u"mach (mal|) einen vorschlag", u"Sorge Dich nicht, sei fröhlich.")
 
     k.dte.dt('en', u"may be", u"how likely do you think?")
     k.dte.dt('de', u"kann sein", u"wie wahrscheinlich, glaubst du?")

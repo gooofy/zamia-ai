@@ -880,8 +880,11 @@ def get_data(k):
                    [u"huhn",
                     u"ei"])
 
-    k.dte.dt('en', u"what a pity", u"do you feel sad now?")
-    k.dte.dt('de', u"wie schade", u"bist du jetzt traurig?")
+    k.dte.dt('en', u"(what|) a (pity|shame)", u"do you feel sad now?")
+    k.dte.dt('de', u"(wie|) schade", u"bist du jetzt traurig?")
+
+    k.dte.dt('en', u"oops", u"what's up?")
+    k.dte.dt('de', u"huch", u"was ist los?")
 
     k.dte.dt('en', [u"why did you say this",
                     u"why did you wait for me?",

@@ -44,9 +44,12 @@ INPUT_MAX_LEN      = 30
 
 # model / keras
 EMB_DIM            = 32
-DENSE1_DIM         = 32
-DENSE2_DIM         = 32
-EPOCHS             = 100
+DENSE1_DIM         = 16
+DENSE2_DIM         = 16
+# EMB_DIM            = 32
+# DENSE1_DIM         = 32
+# DENSE2_DIM         = 32
+EPOCHS             = 30
 BATCH_SIZE         = 512
 VALIDATION_SPLIT   = 0.1
 
@@ -169,15 +172,19 @@ class AlignModel(object):
             cur_loss = h.history['val_loss'][0]
 
             if cur_loss < best_loss:
-                logging.info("*** BEST LOSS SO FAR IN THIS RUN")
 
                 best_loss  = cur_loss
                 best_epoch = epoch
+
+                logging.info("%3d/%3d *** BEST LOSS SO FAR IN THIS TUN: %f FROM THIS EPOCH" % (epoch+1, EPOCHS, best_loss))
 
                 # save the result
 
                 self.keras_model.save_weights(self.keras_weights_fn, overwrite=True)
                 logging.info ('%s written.' % self.keras_weights_fn)
+            else:
+                logging.info("%3d/%3d --- BEST LOSS SO FAR IN THIS TUN: %f FROM EPOCH %d" % (epoch+1, EPOCHS, best_loss, best_epoch))
+
 
     def load(self):
 

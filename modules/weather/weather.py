@@ -189,7 +189,8 @@ def get_data(k):
                     u"what (is the weather outlook | does the weather forecast look like | is the weather forecast | does the weather forecast say) ?", 
                     u"(and|) how is the weather (there|then|)?", 
                     u"(and|) what is the weather like (there|then|)?",
-                    u"(how|what|) about the weather"],
+                    u"(how|what|) about the weather",
+                    u"do you known what the weather (will be like|is going to be)?"],
                    answer_weather, ['full', -1, -1, None, False])
 
     k.dte.ts('en', 't0007', [(u"Computer, what will the weather be like?", u"today will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
@@ -219,7 +220,8 @@ def get_data(k):
                     u"wie (kalt|warm) wird es (werden|) ?", 
                     u"(wie sind die Wetteraussichten | was sagt die Wettervorhersage | was sagt der Wetterbericht ) ?", 
                     u"(und|) wie (ist das Wetter|sieht das Wetter aus|wie wird das wetter) (dort|dann|)?",
-                    u"(was ist mit dem|über das) wetter?"],
+                    u"(was ist mit dem|über das) wetter?",
+                    u"Weißt Du, wie das Wetter (werden|) wird?"],
                    answer_weather, ['full', -1, -1, None, False])
 
     k.dte.ts('de', 't0008', [(u"Computer, wie wird das Wetter werden?", u"heute wird es wenige wolken geben in stuttgart und es wird zwischen minus acht und vier grad warm")], prep=prep_time_a)
@@ -247,7 +249,10 @@ def get_data(k):
     k.dte.dt('en', [u"what (will the weather|is the weather gonna|is the weather going to) be like {timespec:LABEL} ?", 
                     u"how (cold|warm) (is it going to|will it) (be|become) {timespec:LABEL}?", 
                     u"what (is the weather outlook|does the weather forecast look like|is the weather forecast|does the weather forecast say) for {timespec:LABEL} ?", 
-                    u"How is the weather {timespec:LABEL} ?"],
+                    u"(and|) how is the weather {timespec:LABEL} ?",
+                    u"(and|) what is the weather like (there|then|) {timespec:LABEL} ?",
+                    u"(how|what|) about the weather {timespec:LABEL} ",
+                    u"do you known what the weather (will be like|is going to be) {timespec:LABEL} ?"],
                    answer_weather, ['full', -1, -1, 'timespec_0_time', False])
 
     k.dte.ts('en', 't0106', [(u"Computer, what will the weather be like tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)
@@ -329,7 +334,8 @@ def get_data(k):
                     u"regnet es in {weather_location:LABEL} ?", 
                     u"kommt noch Regen in {weather_location:LABEL} ?", 
                     u"wie (kalt|warm) wird es in {weather_location:LABEL} (werden|)?",
-                    u"was ist mit dem Wetter in {weather_location:LABEL}?"],
+                    u"was ist mit dem Wetter in {weather_location:LABEL}?",
+                    u"Weißt Du, wie das Wetter (werden|) wird in {weather_location:LABEL}?"],
                    answer_weather, ['prec_cloud', 'weather_location_0_start', 'weather_location_0_end', None, False])
 
     k.dte.ts('de', 't0201', [(u"Computer, wird es in Freudental regnen?", u"heute scheint in freudental überwiegend die sonne und es wird kaum niederschlag geben")], prep=prep_time_a)
@@ -383,7 +389,8 @@ def get_data(k):
                     u"wie (ist|ist denn|wird) {timespec:LABEL} das Wetter in {weather_location:LABEL}?", 
                     u"wie wird das Wetter {timespec:LABEL} in {weather_location:LABEL}?", 
                     u"(wie sind die Wetteraussichten|was sagt die Wettervorhersage|was sagt der Wetterbericht) für {timespec:LABEL} (in|für) {weather_location:LABEL}?",
-                    u"Was ist mit dem Wetter für {timespec:LABEL} (in|für) {weather_location:LABEL}?"],
+                    u"(Was ist mit dem|über das) Wetter für {timespec:LABEL} (in|für) {weather_location:LABEL}?",
+                    u"Weißt Du, wie das Wetter für {timespec:LABEL} (in|für) {weather_location:LABEL} (werden|) wird?"],
                    answer_weather, ['full', 'weather_location_0_start', 'weather_location_0_end', 'timespec_0_time', False])
 
     k.dte.ts('en', 't0300', [(u"Computer, what does the weather forecast say for stuttgart tomorrow?", u"tomorrow will be mostly clear skies in stuttgart with temperatures between minus eight and four degrees")], prep=prep_time_a)

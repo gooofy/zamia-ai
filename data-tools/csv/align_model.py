@@ -28,6 +28,7 @@ import codecs
 import logging
 import numpy as np
 
+from random     import shuffle
 from tensorflow import keras
 
 from zamiaai                import model
@@ -44,11 +45,8 @@ INPUT_MAX_LEN      = 30
 
 # model / keras
 EMB_DIM            = 32
-DENSE1_DIM         = 16
-DENSE2_DIM         = 16
-# EMB_DIM            = 32
-# DENSE1_DIM         = 32
-# DENSE2_DIM         = 32
+DENSE1_DIM         = 32
+DENSE2_DIM         = 32
 EPOCHS             = 30
 BATCH_SIZE         = 512
 VALIDATION_SPLIT   = 0.1
@@ -97,6 +95,8 @@ class AlignModel(object):
 
             if DEBUG_LIMIT and len(tds)>DEBUG_LIMIT:
                 break
+
+        shuffle (self.training_data)
 
         #
         # set up model dir

@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+MACRO_LIMIT=32
+
 def get_data(k):
 
     k.dte.set_prefixes([u'{self_address:W} '])
@@ -30,11 +32,14 @@ def get_data(k):
     # NER, macros
 
     for lang in ['en', 'de']:
+        cnt = 0
         for res in k.prolog_query("wdpdInstanceOf(BOOK, wdeBook), rdfsLabel(BOOK, %s, LABEL)." % lang):
             s_book  = res[0] 
             s_label = res[1] 
             k.dte.ner(lang, 'book', s_book, s_label)
-            k.dte.macro(lang, 'literature', {'LABEL': s_label})
+            if cnt < MACRO_LIMIT:
+                k.dte.macro(lang, 'literature', {'LABEL': s_label})
+            cnt += 1
 
     def answer_book_author(c, ts, te, check_topic):
 

@@ -81,7 +81,6 @@ session = Session()
 #
 
 time_start = time.time()
-cnt = 0
 
 logging.info ('computing training data set...')
 
@@ -91,7 +90,7 @@ for td in session.query(model.TrainingData).filter(model.TrainingData.lang=='en'
 
     td_covered.add(td.inp)
 
-logging.info ('computing training data set...done. %d vectors computed in %fs.' % (cnt, time.time()-time_start))
+logging.info ('computing training data set... %d rows done in %fs.' % (len(td_covered), time.time()-time_start))
 
 #
 # parse CSV input file, map uncovered inputs

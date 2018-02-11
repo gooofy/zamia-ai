@@ -53,10 +53,6 @@ def get_data(k):
     k.dte.macro('en', 'animals', {'S': u"spider",   'P': u"spiders"})
     k.dte.macro('en', 'animals', {'S': u"turtle",   'P': u"turtles"})
     k.dte.macro('en', 'animals', {'S': u"armadillo",'P': u"armadillos"})
-    k.dte.macro('en', 'animals', {'S': u"",  'P': u""})
-    k.dte.macro('en', 'animals', {'S': u"",  'P': u""})
-    k.dte.macro('en', 'animals', {'S': u"",  'P': u""})
-    k.dte.macro('en', 'animals', {'S': u"",  'P': u""})
     
     
     k.dte.macro('de', 'animals', {'S': u"ameise",   'P': u"ameisen"})
@@ -89,9 +85,9 @@ def get_data(k):
     k.dte.macro('de', 'animals', {'S': u"Spinne",   'P': u"Spinnen"})
     k.dte.macro('de', 'animals', {'S': u"Schildkröte",'P': u"Schildkröten"})
     k.dte.macro('de', 'animals', {'S': u"Gürteltier",'P': u"Gürteltiere"})
-    k.dte.macro('de', 'animals', {'S': u"",   'P': u""})
-    k.dte.macro('de', 'animals', {'S': u"",   'P': u""})
-    k.dte.macro('de', 'animals', {'S': u"",   'P': u""})
+
+    k.dte.dt('en', u"What do you (prefer|like better), dogs or cats?", u"I like all of nature's creatures.")
+    k.dte.dt('de', u"(Was|) magst du lieber Hunde oder Katzen?", u"Ich mag alle Geschöpfe der Natur.")
 
     k.dte.dt('en', u"lion", u"The king?")
     k.dte.dt('de', u"löwe", u"Der König?")

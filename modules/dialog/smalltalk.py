@@ -34,16 +34,15 @@ def get_data(k):
                     u"wie war dein tag"],
                    answer_howdy_de)
 
-    k.dte.dt('en', [u"i'm doing fine too",
+    k.dte.dt('en', [u"I am (also|) (doing|feeling|) (fine|good|very good|excellent|super) (too|)",
                     u"good thank you",
                     u"i am well"],
-                   [u"Excellent!",
-                    u"Glad to hear that."])
-    k.dte.dt('de', [u"mir geht es auch gut",
-                    u"danke gut",
-                    u"mir geht es gut"],
-                   [u"Prima!",
-                    u"Freut mich zu hören."])
+                   [u"Excellent! What would you like to talk about?",
+                    u"Glad to hear that. What would you like to talk about?"])
+    k.dte.dt('de', [u"mir geht es (auch|) (sehr|) (super|gut|super gut) (danke|danke der nachfrage|)",
+                    u"danke (auch|) (gut|sehr gut|super|super gut)"],
+                   [u"Prima! Worüber möchtest Du mit mir sprechen?",
+                    u"Freut mich zu hören. Worüber möchtest Du mit mir sprechen?"])
 
     k.dte.dt('en', u"many thanks", u"What else can I do for you?")
     k.dte.dt('de', u"vielen dank", u"Was kann ich sonst noch für Dich tun?")

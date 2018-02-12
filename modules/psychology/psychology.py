@@ -883,6 +883,9 @@ def get_data(k):
     k.dte.dt('en', u"(what|) a (pity|shame)", u"do you feel sad now?")
     k.dte.dt('de', u"(wie|) schade", u"bist du jetzt traurig?")
 
+    k.dte.dt('en', u"oh dear", u"what happened?")
+    k.dte.dt('de', u"(oh je|ohje)", u"was ist passiert?")
+
     k.dte.dt('en', u"oops", u"what's up?")
     k.dte.dt('de', u"huch", u"was ist los?")
 

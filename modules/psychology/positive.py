@@ -103,3 +103,6 @@ def get_data(k):
                    [u"das ist lieb von dir",
                     u"dankeschön"])
 
+    k.dte.dt('en', u"I am (also|) (doing|feeling|) (fine|good|very good|excellent|super) (too|)", u"Excellent. What would you like to talk about?")
+    k.dte.dt('de', u"mir geht es (auch|) (sehr|) (super|gut|super gut) (danke|danke der nachfrage|)", u"Wunderbar. Worüber möchtest Du mit mir sprechen?")
+

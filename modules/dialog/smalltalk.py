@@ -18,9 +18,9 @@ def get_data(k):
         c.resp(u"Super, wie immer!")
         c.resp(u"Gut, danke der Nachfrage. Wie geht es Dir?")
 
-    k.dte.dt('en', u"(how are you|howdy|how do you do|how are you feeling) (today|)?",
+    k.dte.dt('en', u"(hi|hello|) (how are you|how are you doing|howdy|how do you do|how are you feeling|how are ya|how are ya doing) (today|)?",
                    answer_howdy_en)
-    k.dte.dt('de', u"(wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
+    k.dte.dt('de', u"(hi|hallo|) (wie geht es dir|wie gehts|was geht|wie fühlst du dich) (heute|)?",
                    answer_howdy_de)
 
     k.dte.dt('en', [u"how are you this evening",

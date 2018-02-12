@@ -97,14 +97,14 @@ def get_data(k):
     k.dte.dt('en', [u"can you tell a joke",
                     u"can you tell me a joke",
                     u"do you know a joke",
-                    u"tell me a joke please"],
+                    u"tell me a joke (please|)"],
                    [u"It takes a lot of balls to golf like me.",
                     u"I was wondering why the ball was getting bigger, then it hit me."])
 
     k.dte.dt('de', [u"kannst du einen witz erzählen",
                     u"kannst du mir einen witz erzählen",
                     u"kennst du einen witz",
-                    u"erzähl mir einen witz bitte"],
+                    u"erzähl mir einen witz (bitte|)"],
                    [u"Ein Beamter zum anderen: 'Was haben die Leute nur, wir tun doch nichts.'",
                     u"Kürzester Witz aller Zeiten: Brennholzverleih."])
     k.dte.dt('en', u"do you know that one", u"here it comes.")

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2016, 2017 Guenter Bartsch
+# Copyright 2016, 2017, 2018 Guenter Bartsch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -33,10 +33,7 @@ import struct
 import codecs
  
 from optparse               import OptionParser
-from zamiaprolog.builtins   import ASSERT_OVERLAY_VAR_NAME
-from zamiaprolog.logicdb    import LogicDB
-from aiprolog.runtime       import USER_PREFIX
-from zamiaai.ai_kernal      import AIKernal
+from zamiaai.ai_kernal      import AIKernal, AIContext, USER_PREFIX, LANGUAGES
 from nltools                import misc
 from nltools.vad            import VAD, BUFFER_DURATION
 from nltools.pulserecorder  import PulseRecorder
@@ -46,9 +43,9 @@ from nltools.asr            import ASR, ASR_ENGINE_NNET3
 from nltools.tts            import TTS
 
 PROC_TITLE        = 'ai_demo'
-AI_USER           = 'demo'
-AI_MODULE         = '__demo__'
-USER_URI          = USER_PREFIX + AI_USER
+DEMO_USER         = 'demo'
+DEMO_REALM        = '__demo__'
+USER_URI          = USER_PREFIX + DEMO_USER
 SAMPLE_RATE       = 16000
 FRAMES_PER_BUFFER = SAMPLE_RATE * BUFFER_DURATION / 1000
 LOG_FILE          = 'tmp/demo.log'
@@ -104,7 +101,8 @@ kaldi_model                    = config.get      ('server', 'kaldi_model')
 kaldi_acoustic_scale           = config.getfloat ('server', 'kaldi_acoustic_scale') 
 kaldi_beam                     = config.getfloat ('server', 'kaldi_beam') 
 kaldi_frame_subsampling_factor = config.getint   ('server', 'kaldi_frame_subsampling_factor') 
-all_modules                    = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
+toplevel                       = config.get      ('semantics', 'toplevel')
+xsb_root                       = config.get      ('semantics', 'xsb_root')
 db_url                         = config.get      ('db', 'url')
 
 loc                            = config.get      ('vad',    'loc')
@@ -112,13 +110,13 @@ source                         = config.get      ('vad',    'source')
 volume                         = config.getint   ('vad',    'volume')
 aggressiveness                 = config.getint   ('vad',    'aggressiveness')
 
-tts_host                       = config.get   ('tts',    'tts_host')
-tts_port                       = config.getint('tts',    'tts_port')
-tts_locale                     = config.get   ('tts',    'tts_locale')
-tts_voice                      = config.get   ('tts',    'tts_voice')
-tts_engine                     = config.get   ('tts',    'tts_engine')
-tts_speed                      = config.getint('tts',    'tts_speed')
-tts_pitch                      = config.getint('tts',    'tts_pitch')
+tts_host                       = config.get      ('tts',    'tts_host')
+tts_port                       = config.getint   ('tts',    'tts_port')
+tts_locale                     = config.get      ('tts',    'tts_locale')
+tts_voice                      = config.get      ('tts',    'tts_voice')
+tts_engine                     = config.get      ('tts',    'tts_engine')
+tts_speed                      = config.getint   ('tts',    'tts_speed')
+tts_pitch                      = config.getint   ('tts',    'tts_pitch')
 
 #
 # pulseaudio recorder
@@ -145,11 +143,12 @@ logging.debug ('VAD initialized.')
 # setup AI DB, Kernal and Context
 #
 
-db     = LogicDB(db_url)
-kernal = AIKernal(db=db, all_modules=all_modules, load_all_modules=True)
-kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
-# current_ctx = kernal.find_prev_context(USER_URI)
-current_ctx = None
+kernal = AIKernal(db_url, xsb_root, toplevel)
+for mn2 in kernal.all_modules:
+    kernal.consult_module (mn2)
+kernal.setup_tf_model('decode', True, ai_model)
+lang = kernal.nlp_model.lang
+ctx  = AIContext(USER_URI, kernal.session, lang, DEMO_REALM, kernal, test_mode=False)
 logging.debug ('AI kernal initialized.')
 
 #
@@ -209,48 +208,20 @@ while True:
     print
 
     # import pdb; pdb.set_trace()
-    score, resps, actions, solutions, current_ctx = kernal.process_input(user_utt, kernal.nlp_model.lang, USER_URI, prev_ctx=current_ctx)
+    ai_utt, score, action = kernal.process_input(ctx, user_utt, kernal.nlp_model.lang, USER_URI)
 
-    for idx in range (len(resps)):
-        logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
+    print('AI : %s' % ai_utt)
+    logging.info ("conv_ai   : %s" % ai_utt)
 
-    # if we have multiple responses, pick one at random
+    if action:
+        print('     %s' % repr(action))
+        logging.info ("conv_action: %s" % repr(action))
 
-    if len(resps)>0:
-
-        idx = random.randint(0, len(resps)-1)
-
-        # apply DB overlay, if any
-        ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-        if ovl:
-            ovl.do_apply(AI_MODULE, kernal.db, commit=True)
-
-        resp = resps[idx]
-        ai_utt = u' '.join(resps[idx])
-        print('AI : %s' % ai_utt)
-
-        logging.info ("conv_ai   : %s" % ai_utt)
-
-        for act in actions[idx]:
-            print('     %s' % repr(act))
-            logging.info ("conv_action: %s" % repr(act))
-
-        if current_ctx:
-            s1s = kernal.rt.search_predicate ('context', [current_ctx, '_1', '_2'], env={})
-            if s1s:
-                print '     context:',
-                for s1 in s1s:
-                     print '%s is %s' % (s1['_1'], s1['_2']),
-                print
-
-        if ai_utt:
-            tts.say(ai_utt)
+    if ai_utt:
+        tts.say(ai_utt)
 
     print
     
-    # FIXME: contexts are incomplete, disable them for now
-    current_ctx = None
-
     #
     # save audio recording, if requested
     #

@@ -952,3 +952,6 @@ def get_data(k):
     k.dte.dt('en', u"I meant (for|because of) me?", u"So we are talking about you?")
     k.dte.dt('de', u"Ich meinte wegen mir.", u"Wir reden also über Dich?")
 
+    k.dte.dt('en', u"(yes|yeah|) those where the times", u"Do you find yourself reminiscing often?")
+    k.dte.dt('de', u"(ja|) das waren (noch|) zeiten", u"Schwelgst Du oft in Erinnerungen?")
+

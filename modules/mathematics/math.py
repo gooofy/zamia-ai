@@ -18,11 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-MACRO_LIMIT=8
+# MACRO_LIMIT=8
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    # k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     #
     # numbers NER
@@ -37,11 +38,11 @@ def get_data(k):
         # import pdb; pdb.set_trace()
         k.dte.ner('en', 'natnum', s_number, s_label_en)
         k.dte.ner('de', 'natnum', s_number, s_label_de)
-        if cnt<MACRO_LIMIT:
-            k.dte.macro('en', 'natnum', {'W': s_label_en})
-            k.dte.macro('de', 'natnum', {'W': s_label_de})
-            k.dte.macro('en', 'natnum2', {'W': s_label_en})
-            k.dte.macro('de', 'natnum2', {'W': s_label_de})
+        # if cnt<MACRO_LIMIT:
+        k.dte.macro('en', 'natnum', {'W': s_label_en})
+        k.dte.macro('de', 'natnum', {'W': s_label_de})
+        k.dte.macro('en', 'natnum2', {'W': s_label_en})
+        k.dte.macro('de', 'natnum2', {'W': s_label_de})
         cnt += 1
 
     def compute_squared(c, n1_start, n1_end):

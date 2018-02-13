@@ -8,8 +8,9 @@ prolog:
 train:
 	./ai_cli.py train -n 50000
 
-doc:	README.adoc
+doc:	README.adoc INSTALL.adoc 
 	asciidoctor -r asciidoctor-diagram README.adoc
+	asciidoctor -r asciidoctor-diagram INSTALL.adoc
 
 clean:
 	./ai_cli.py clean -a all

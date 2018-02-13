@@ -26,15 +26,15 @@ We assume the following packages are installed on your OS:
 * tensorflow
 * SQLite, python-sqlite 
 * libatlas, zlib, libpulse 
-* pkg-config, git, gcc, automake, autoconf, libtoolize, subversion 
-* XSB dependencies: `libcurl, libpcre, makedepend, dos2unix`
+* pkg-config, git, gcc, automake, autoconf, libtoolize, subversion, eSpeak NG 
+* XSB dependencies: libcurl, libpcre, makedepend, dos2unix
 
 If you want to install all on these on Debian, run (as root):
 
 [source,bash]
 ----
 pip install tensorflow
-apt-get install cython swig python-sqlite libatlas-dev libatlas3-base pkg-config git zlib1g-dev automake autoconf libtool subversion libpulse-dev libcurl4-openssl-dev libpcre3-dev xutils-dev dos2unix
+apt-get install cython swig python-sqlite libatlas-dev libatlas3-base pkg-config git zlib1g-dev automake autoconf libtool subversion libpulse-dev libcurl4-openssl-dev libpcre3-dev xutils-dev dos2unix espeak-ng
 ----
 
 XSB Prolog with Python Bindings
@@ -52,7 +52,7 @@ cd XSB/build
 ./makexsb 
 ----
 
-in order to build `libxsb.so`, execute this command:
+in order to build `libxsb.so`, execute these commands:
 
 [source,bash]
 ----

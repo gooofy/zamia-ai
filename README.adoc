@@ -12,7 +12,7 @@ For more information about the Zamia AI project check out our homepage at:
 
 For installation instructions, please check this document:
 
-* link:INSTALL.html[Installation and First Steps]
+* <<INSTALL#,Installation and First Steps>>
 
 For other technical documentation, check out
 

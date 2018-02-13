@@ -24,7 +24,6 @@
 DEPENDS     = [ 'astro',
                 'base',
                 'bio',
-                'chat',
                 'config',
                 'culture',
                 'data',

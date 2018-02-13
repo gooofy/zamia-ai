@@ -8,7 +8,7 @@ systems.
 
 For more information about the Zamia AI project check out our homepage at:
 
-http://zamia-ai.org
+* http://zamia-ai.org
 
 For installation instructions, please check this document:
 
@@ -17,7 +17,7 @@ For installation instructions, please check this document:
 For other technical documentation, check out
 
 * http://zamia-ai.org/architecture.html
-* link:doc/guide.html[Module Author's Guide]
+* <<doc/guide#,Module Author's Guide>>
 
 License
 -------

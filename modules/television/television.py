@@ -21,7 +21,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', [u"do you know star trek at all?",
                     u"do you know star trek?",

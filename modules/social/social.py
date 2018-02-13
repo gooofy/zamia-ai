@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(somebody|he|she|my colleague|my boss|my mother|my father|my brother|my sister|my neighbour|my friend|my boyfriend|my girlfriend) told me about you", u"only good things, I hope")
     k.dte.dt('de', u"(jemand|er|sie|mein Kollege|mein Chef|meine Mutter|mein Vater|mein Bruder|meine Schwester|mein Nachbar|mein Freund|meine Freundin) hat mir von dir erzählt", u"nur gutes, hoffe ich?")

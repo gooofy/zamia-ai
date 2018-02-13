@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(I feel|I guess I will be|I think I will be|I am getting|I am) (ill|sick) (maybe|)",
                    [u"how bad is it?",

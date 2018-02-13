@@ -22,7 +22,7 @@ import personal
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"do you (fancy|want) (a|an|) (food|fast food|a drink|kebab|burger|doner)",
                    personal.not_my_nature)

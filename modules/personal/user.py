@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"what do you know about me", u"everything you told me")
     k.dte.dt('de', u"was weißt du über mich", u"alles, was Du mir über Dich gesagt hast!")

@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"who is electra", u"The daughter of King Agamemnon and Queen Clytemnestra.")
     k.dte.dt('de', u"wer ist electra", u"Die Tochter des Königs Agamemnon und der Klytaimnestra.")

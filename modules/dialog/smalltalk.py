@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
     def answer_howdy_en(c):
         c.resp(u"Great, thanks. How do you feel today?")
         c.resp(u"Very well - and you?")

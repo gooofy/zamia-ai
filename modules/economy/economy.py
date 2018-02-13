@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"Can you handle money?", u"Money often costs too much.")
     k.dte.dt('de', u"kannst du mit geld umgehen?", u"Geld kostet einfach zu viel.")

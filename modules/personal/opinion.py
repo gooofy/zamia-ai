@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"do you (love|like) (mozart|beethoven|music|classical music)?", u"yes, I love music!")
     k.dte.dt('de', u"(liebst|magst) du (beethoven|mozart|musik|klassische musik)?", u"ja, ich liebe die musik!")

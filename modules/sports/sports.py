@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(I am a fan of|i like) (hertha|vfl bochum)", u"nobody is perfect.")
     k.dte.dt('de', u"(ich mag|ich bin fan von) (hertha|vfl bochum)", u"niemand ist perfekt.")

@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"aldous huxley", u"I think he wrote Brave new world, didn't he ?")
     k.dte.dt('de', u"aldous huxley", u"Hat der nicht Brave new world geschrieben?")

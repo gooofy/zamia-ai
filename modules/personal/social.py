@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"do you want (his|her) (address|postal address|icq number|email address|phone number|credit card number)", u"the credit card number is what I am usually after.")
     k.dte.dt('de', u"willst du (seine|ihre) (icq nummer|adresse|telefonnummer|email adresse|kreditkartennummer)", u"Die Kreditkartennummer würde mich am meisten interessieren.")

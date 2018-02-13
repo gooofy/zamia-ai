@@ -22,7 +22,7 @@ MACRO_LIMIT = 32
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     # NER, macros
 

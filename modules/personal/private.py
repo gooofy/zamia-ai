@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     def my_gender(c):
         if c.kernal.prolog_check('wdpdSexOrGender(self, wdeMale).'):

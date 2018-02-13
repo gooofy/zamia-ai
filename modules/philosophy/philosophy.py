@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(there is|Is there) a life after death", u"I wouldn't count on it.")
     k.dte.dt('de', u"(es gibt|gibt es) ein leben nach dem (tod|tode)", u"Darauf würde ich mich jedenfalls nicht verlassen.")

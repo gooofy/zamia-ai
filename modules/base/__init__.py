@@ -21,7 +21,6 @@
 import logging
 
 from num2words         import num2words
-from zamiaprolog.logic import StringLiteral
 
 DEPENDS    = [ 'config' ]
 

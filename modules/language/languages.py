@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(isn't that a wonderful|wonderful|a very nice|terrible) language",
                    [u"do you speak any foreign languages?",

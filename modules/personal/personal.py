@@ -28,7 +28,7 @@ def not_my_nature(c):
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     def my_birthdate(c):
 

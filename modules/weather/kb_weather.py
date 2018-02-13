@@ -38,8 +38,6 @@ from urllib2              import HTTPError
 from datetime             import datetime, timedelta
 from tzlocal              import get_localzone
 from nltools              import misc
-from zamiaprolog.builtins import do_assertz, do_retract
-from zamiaprolog.logic    import build_predicate, Clause, SourceLocation, StringLiteral
 
 WEATHER_DATA_MODULE = 'weather_data'
 KELVIN              = 273.15

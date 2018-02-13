@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"do you have humor (by the way|)", u"Often times people find my responses funny which is intentional some of the time.")
     k.dte.dt('de', u"besitzt du (eigentlich|wirklich|) humor", u"Ich bin manchmal lustig - manchmal sogar freiwillig!")

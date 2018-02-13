@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     def answer_time(c):
 

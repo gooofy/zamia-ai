@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.macro('en', 'animals', {'S': u"ant",      'P': u"ants"})
     k.dte.macro('en', 'animals', {'S': u"lion",     'P': u"lions"})

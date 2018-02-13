@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(like|) (on|) the moon", u"ah, the moon. fascinating.")
     k.dte.dt('de', u"(wie|als|) auf (den|dem) mond", u"ah, der mond. faszinierend.")

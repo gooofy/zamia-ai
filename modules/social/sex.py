@@ -19,7 +19,7 @@
 #
 
 def get_data(k):
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
     k.dte.dt('en', u"(let us|I want to|do we want to|can you) fuck?", u"excuse me?")
     k.dte.dt('de', u"(lass uns|ich will|wollen wir|kannst du) ficken", u"Entschuldigung?!")
 

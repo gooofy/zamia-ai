@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(oh dear| i was driving my | i am worried about my | i need a new | cool, a) (new|) (vehicle|car|truck|sportscar) ", u"What brand?")
     k.dte.dt('de', u"(ohje, mein | ich fuhr mit dem | ich mache mir sorgen um mein | ich brauche ein neues | cool, ein) (Auto|Wagen|Kraftfahrzeug|Sportwagen)", u"Welche Marke?")

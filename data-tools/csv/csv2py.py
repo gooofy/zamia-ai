@@ -158,7 +158,8 @@ with codecs.open(options.outputfn, 'w', 'utf8') as outf:
     outf.write('\n')
     outf.write('def get_data(k):\n')
     outf.write('\n')
-    outf.write('    k.dte.set_prefixes([u\'{self_address:W} \'])\n')
+    # outf.write('    k.dte.set_prefixes([u\'{self_address:W} \'])\n')
+    outf.write('    k.dte.set_prefixes([u\'\'])\n')
     outf.write('\n')
 
     for ques_en_l in sorted(map_dict):

@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"what is wine", u"An alcoholic drink made from fermented grape juice.")
     k.dte.dt('de', u"was ist wein", u"Ein alkoholisches Getränk aus fermentiertem Traubensaft.")

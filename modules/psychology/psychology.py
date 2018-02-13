@@ -43,7 +43,7 @@ def do_eliza(c):
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"(all|) (men|women) are (all|) (alike|the same)", u"in what way?")
     k.dte.dt('de', u"(Die|) (Frauen|Männer) sind alle gleich", u"In welcher Weise?")

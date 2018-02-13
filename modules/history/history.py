@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"who instigated the first world war?", u"I think that remains a debated and controversial question.")
     k.dte.dt('de', u"wer hat den ersten weltkrieg angezettelt", u"Ich denke, das bleibt eine umstrittene und kontroverse Frage.")

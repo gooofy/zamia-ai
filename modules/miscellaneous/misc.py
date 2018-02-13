@@ -20,7 +20,7 @@
 
 def get_data(k):
 
-    k.dte.set_prefixes([u'{self_address:W} '])
+    k.dte.set_prefixes([u''])
 
     k.dte.dt('en', u"do you have Internet", u"all I want")
     k.dte.dt('de', u"hast du internet", u"soviel ich will")

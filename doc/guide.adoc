@@ -1,0 +1,87 @@
+ifndef::imagesdir[:imagesdir: doc]
+Module Author's Guide
+---------------------
+
+NOTE: at the time of this writing this piece of documentation is still under construction
+
+// For documentation on ZamiaAI semantic processing, see <<doc/semantics#,semantics>>.
+
+=== Context Provided by the Framework
+
+Implicit argument `c` of type `AIContext` gives access to the dialog environment, kernal and response generation:
+
+```python
+c.kernal      # Kernal
+c.inp         # current input string
+c.user        # current user
+c.realm       # current realm
+c.lang        # current language (e.g. 'en', 'de')
+c.test_mode   # True when running tests, False otherwise
+c.current_dt  # datetime.datetime.now()
+```
+
+=== Memory
+
+Besides making prolog `assertz` calls, a simple memory mechanism is provided for persistent data storage:
+
+```python
+c.kernal.mem_set(c.user, 'f1ent', film)
+film = c.kernal.mem_get(c.user, 'f1ent')
+
+c.kernal.mem_push(c.user, 'f1ent', film)
+film = c.kernal.mem_get_multi(c.user, 'f1ent')
+```
+
+=== Response
+
+To generate responses, call
+
+```python
+c.resp(resp, score, action, action_arg) # Response generation
+```
+
+=== data-tools
+
+==== RDF
+
+RDF data can be mirrored and converted to Prolog using the scripts found in `data-tools/rdf`.
+
+Example: mirror the wikidata subset and generate Prolog from it:
+
+```bash
+cd data-tools/rdf
+edit config.py as needed
+
+./ldfmirror.py -o rdf/wd_sub.n3
+./rdf2prolog.py -o ../../modules/data/wd_sub.pl rdf/wd_sub.n3
+cd ../..
+./ai_cli.py compile data
+```
+
+==== AIML data
+
+AIML sources can be converted into CSV which can then be aligned with existing modules to 
+produce additional training scripts:
+
+```bash
+pushd data-tools/aiml
+./chatterbots2csv.sh
+popd
+data-tools/csv/csv2py.py -o modules/bots/bots.py data-tools/aiml/all_bots.csv 
+```
+
+Language Model
+--------------
+
+dump sentences from training data for LM generation:
+
+```bash
+./ai_cli.py utterances 
+```
+
+or to dump out a set of 20 random utterances which contain words not covered by the dictionary:
+
+```bash
+./ai_cli.py utterances -d ../speech/data/src/speech/de/dict.ipa -n 20
+```
+

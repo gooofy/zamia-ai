@@ -73,7 +73,7 @@ pip install --user py-xsb-prolog
 Kaldi ASR with Python Bindings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Clone the latest Kaldi ASR sources from gibthub, follow the regular build instructions:
+Clone the latest Kaldi ASR sources from github, follow the regular build instructions:
 [source,bash]
 ----
 cd ~/zamia-ai/

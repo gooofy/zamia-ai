@@ -41,6 +41,9 @@ from config   import RDF_PREFIXES, LDF_ENDPOINTS, RDF_ALIASES, RES_PATHS
 DEBUG_LIMIT = 0
 # DEBUG_LIMIT = 23
 
+CACHE_PATH    = 'cache'
+CACHE_MAX_AGE = 7 * 24 * 60 * 60 # 7 days
+
 class LDFMirror(object):
     """
     Helper class for mirroring triples from LDF endpoints
@@ -108,19 +111,25 @@ class LDFMirror(object):
 
         triples = []
 
-        params = {}
+        params   = {}
         endpoint = None
+        label    = None
         if s:
             params['subject']   = s
             endpoint = self._find_endpoint(s)
+            label=unicode(s)
         if p:
             params['predicate'] = p
             if not endpoint:
                 endpoint = self._find_endpoint(p)
+            if not label:
+                label=unicode(p)
         if o:
             params['object']    = o
             if not endpoint:
                 endpoint = self._find_endpoint(o)
+            if not label:
+                label=unicode(o)
 
         if not endpoint:
             return triples
@@ -128,59 +137,99 @@ class LDFMirror(object):
         # logging.info ("LDF: *** fetching from endpoint %s" % endpoint)
 
         url = endpoint + '?' + urllib.urlencode(params)
-        label = '<unknown>'
-        while True:
 
-            response = requests.get(
-              url,
-              headers = {"accept": 'text/turtle'},
-            )
+        if not label:
+            label = '<unknown>'
 
-            # logging.debug ('%s response: %d' % (url, response.status_code))
+        cache_fn = '%s/%s.n3' % (CACHE_PATH, url.replace('/', '_'))
 
-            # for h in response.headers:
-            #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
+        use_cache = os.path.exists(cache_fn)
+        if use_cache:
+            st  = os.stat(cache_fn)
+            age = time.time() - st.st_mtime
+            if age > CACHE_MAX_AGE:
+                use_cache = False
 
-            if response.status_code != 200:
-                break
+        if use_cache:
 
-            # extract triples
+            with codecs.open(cache_fn, 'r', 'utf8') as cache_f:
+                memg = rdflib.Graph()
+                memg.parse(source=cache_f, format='n3')
+                for s2,p2,o2 in memg.triples((rdflib.URIRef(s) if s else None, 
+                                              rdflib.URIRef(p) if p else None, 
+                                              rdflib.URIRef(o) if o else None )):
 
-            # logging.debug('parsing to memory...')
+                    # print english labels as we come across them to make mirroring log less boring
+                    if isinstance(o2, rdflib.term.Literal) \
+                        and unicode(p2) == u'http://www.w3.org/2000/01/rdf-schema#label' \
+                        and o2.language == u'en':
+                        # logging.info (u'LDF:   fetched LABEL(en)=%s' % o2)
+                        label = o2
 
-            # logging.debug (response.text)
+                    # logging.debug ('quad: %s %s %s' % (s2,p2,o2))
+                    triples.append((s2,p2,o2))
 
-            memg = rdflib.Graph()
-            memg.parse(data=response.text, format='turtle')
-          
-            for s2,p2,o2 in memg.triples((rdflib.URIRef(s) if s else None, 
-                                          rdflib.URIRef(p) if p else None, 
-                                          rdflib.URIRef(o) if o else None )):
+        else:
 
-                # print english labels as we come across them to make mirroring log less boring
-                if isinstance(o2, rdflib.term.Literal) \
-                    and unicode(p2) == u'http://www.w3.org/2000/01/rdf-schema#label' \
-                    and o2.language == u'en':
-                    # logging.info (u'LDF:   fetched LABEL(en)=%s' % o2)
-                    label = o2
+            while True:
 
-                # logging.debug ('quad: %s %s %s' % (s2,p2,o2))
-                triples.append((s2,p2,o2))
+                response = requests.get(
+                  url,
+                  headers = {"accept": 'text/turtle'},
+                )
 
-            # paged resource?
-            url = None
-            for s2,p2,o2 in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
-                url = str(o2)
-                # logging.debug ('got next page url: %s, %d triples so far' % (url, len(triples)))
-            for s2,p2,o2 in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
-                # logging.debug ('got next page ref: %s' % repr(o))
-                url = str(o2)
-                # logging.debug ('got next page url: %s, %d triples so far' % (url, len(triples)))
+                # logging.debug ('%s response: %d' % (url, response.status_code))
+                # for h in response.headers:
+                #     logging.debug ('   header %s: %s' % (h, response.headers[h]))
 
-            if not url:
-                break
+                if response.status_code != 200:
+                    break
 
-        logging.info (u'LDF:                       FETCH %5d triples %s' % (len(triples), label[:40]))
+                # extract triples
+
+                memg = rdflib.Graph()
+                memg.parse(data=response.text, format='turtle')
+              
+                for s2,p2,o2 in memg.triples((rdflib.URIRef(s) if s else None, 
+                                              rdflib.URIRef(p) if p else None, 
+                                              rdflib.URIRef(o) if o else None )):
+
+                    # print english labels as we come across them to make mirroring log less boring
+                    if isinstance(o2, rdflib.term.Literal) \
+                        and unicode(p2) == u'http://www.w3.org/2000/01/rdf-schema#label' \
+                        and o2.language == u'en':
+                        # logging.info (u'LDF:   fetched LABEL(en)=%s' % o2)
+                        label = o2
+
+                    # logging.debug ('quad: %s %s %s' % (s2,p2,o2))
+                    triples.append((s2,p2,o2))
+
+                # paged resource?
+                url = None
+                for s2,p2,o2 in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#nextPage'), None )):
+                    url = str(o2)
+                    # logging.debug ('got next page url: %s, %d triples so far' % (url, len(triples)))
+                for s2,p2,o2 in memg.triples((None, rdflib.URIRef('http://www.w3.org/ns/hydra/core#next'), None )):
+                    # logging.debug ('got next page ref: %s' % repr(o))
+                    url = str(o2)
+                    # logging.debug ('got next page url: %s, %d triples so far' % (url, len(triples)))
+
+                if not url:
+                    break
+
+            with codecs.open(cache_fn, 'w', 'utf8') as cache_f:
+                memg = rdflib.Graph()
+                for t in triples:
+                    memg.add(t)
+
+                cache_f.write(memg.serialize(format='n3'))
+
+        if use_cache:
+            cache_str = 'CACHED'
+        else:
+            cache_str = 'FETCH '
+
+        logging.info (u'LDF: %8.1fs %5d:%5d %s %s' % (time.time() - self.start_time, len(self.done), len(self.todo), cache_str, label[:40]))
         return triples
 
     def mirror (self, res_paths):
@@ -211,8 +260,10 @@ class LDFMirror(object):
         """
 
 
-        todo = []
-        done = set()
+        self.start_time = time.time()
+
+        self.todo = []
+        self.done = set()
 
         for res_path in res_paths:
 
@@ -237,29 +288,25 @@ class LDFMirror(object):
                         # import pdb; pdb.set_trace()
 
                         logging.debug ('adding task: %s %s' % (r, repr(resolved_path)))
-                        todo.append((rdflib.URIRef(r), resolved_path))
+                        self.todo.append((rdflib.URIRef(r), resolved_path))
                
-        start_time = time.time()
+        while len(self.todo)>0:
 
-        while len(todo)>0:
-
-            resource, path = todo.pop()
-
+            resource, path = self.todo.pop()
 
             todo_new = set()
 
             # fetch resources from LDF only once
 
-            if resource in done:
+            if resource in self.done:
                 triples = list(self.graph.triples((resource, None, None)))
                 # logging.debug (u'LDF:                       DONE, %d triples' % len(triples))
                 do_add = False
 
             else:
 
-                logging.info ('LDF: %8.1fs %5d:%5d %s %s' % (time.time() - start_time, len(todo), len(done), resource, repr(path)))
                 triples = self._fetch_ldf (s=resource)
-                done.add(resource)
+                self.done.add(resource)
                 do_add = True
 
             # transformations
@@ -318,7 +365,7 @@ class LDFMirror(object):
                         task = (o, new_path)
 
                         # logging.debug ('LDF   adding new task: %s' % repr(task))
-                        todo.append(task)
+                        self.todo.append(task)
 
 
 

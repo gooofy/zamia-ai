@@ -27,4 +27,5 @@ data-tools/aiml/all_bots.csv
 data-tools/aiml/bots/
 data-tools/csv/model/
 data-tools/csv/out
+data-tools/rdf/cache
 modules/bots/

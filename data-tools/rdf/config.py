@@ -2204,7 +2204,6 @@ RDF_ALIASES = {
                 u'wde:Bear'                             : u'http://www.wikidata.org/entity/Q30090244',
                 u'wde:Bird'                             : u'http://www.wikidata.org/entity/Q5113',
                 u'wde:Zebra'                            : u'http://www.wikidata.org/entity/Q32789',
-
               }
 
 # wikidata properties
@@ -2227,11 +2226,14 @@ for prefix, iri in [('wdpd',    'http://www.wikidata.org/prop/direct/'),
                               (u'Author'                                     , u'P50'),
                               (u'Director'                                   , u'P57'),
                               (u'ScreenWriter'                               , u'P58'),
+                              (u'TaxonRank'                                  , u'P105'),
                               (u'Occupation'                                 , u'P106'),
                               (u'LocatedIn'                                  , u'P131'),
                               (u'Genre'                                      , u'P136'),
                               (u'BasedOn'                                    , u'P144'),
                               (u'CastMember'                                 , u'P161'),
+                              (u'ParentTaxon'                                , u'P171'),
+                              (u'TaxonName'                                  , u'P225'),
                               (u'SubclassOf'                                 , u'P279'),
                               (u'PartOf'                                     , u'P361'),
                               (u'Residence'                                  , u'P551'),
@@ -2653,6 +2655,33 @@ RES_PATHS = [
                 [
                   ['wdpd:Manufacturer'], 
                   ['wdpd:CPU'], 
+                  ['wdpd:InstanceOf'], 
+                ]
+              ),
+
+              # biology
+              (
+                [ 
+                  u'wde:Lion',
+                  u'wde:Donkey',
+                  u'wde:Zebra',
+                  u'wde:Dog',
+                  u'wde:Cat',
+                  u'wde:MusMusculus',
+                  u'wde:Elephant',
+                  u'wde:Fish',
+                  u'wde:Horse',
+                  u'wde:Duck',
+                  u'wde:Moose',
+                  u'wde:Rabbit',
+                  u'wde:Bear',
+                  u'wde:Bird',
+                  u'wde:Zebra',
+                ],
+                [
+                  ['wdpd:TaxonRank'], 
+                  ['wdpd:ParentTaxon'], 
+                  ['wdpd:TaxonName'], 
                   ['wdpd:InstanceOf'], 
                 ]
               ),

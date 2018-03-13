@@ -486,6 +486,7 @@ mirror = LDFMirrorP2E (g, LDF_ENDPOINTS, RDF_ALIASES, RDF_PREFIXES, p2e_mapper )
 
 mirror.mirror (RES_PATHS)
 
+logging.info ('writing %s...' % outputfn)
 with codecs.open(outputfn, 'w', 'utf8') as outputf:
     outputf.write(g.serialize(format='n3'))
 

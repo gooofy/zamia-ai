@@ -58,8 +58,8 @@ def get_data(k):
     k.dte.dt('de', u"bist du (eigentlich|wirklich|) (weiblich|männlich)",
                    my_gender)
 
-    k.dte.ts('en', 'gender0', [(u"Computer, are you male?", u"I think I am a male.")])
-    k.dte.ts('de', 'gender1', [(u"Computer, bist Du männlich?", u"Ich glaube ich bin ein Mann.")])
+    k.dte.ts('en', 'gender0', [(u"are you male?", u"I think I am a male.")])
+    k.dte.ts('de', 'gender1', [(u"bist Du männlich?", u"Ich glaube ich bin ein Mann.")])
 
     def avoid_answer(c):
         if c.lang == 'de':
@@ -136,7 +136,7 @@ def get_data(k):
                     u"ich möchte mit dir schlafen"],
                    avoid_answer)
 
-    k.dte.ts('en', 't0018', [(u"Computer are you really a male?", u"My config setting is male - doesn't my voice reflect that?"),
+    k.dte.ts('en', 't0018', [(u"are you really a male?", u"My config setting is male - doesn't my voice reflect that?"),
                                (u"Are you really gay?", u"Does that question bother you?")])
     k.dte.ts('de', 't0019', [(u"Bist Du ein Mann?", u"Ich glaube ich bin ein Mann."),
                                (u"Bist Du eigentlich schwul?", u"Warum fragst Du das?")])

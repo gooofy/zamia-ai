@@ -108,8 +108,8 @@ def get_data(k):
     k.dte.dt('en', u"You do not know which language you speak", u"Really?")
 
     k.dte.dt('de', u"Du weisst nicht in welcher sprache du sprichst", u"Echt jetzt?")
-    k.dte.ts('en', 't0020', [(u"Computer do you speak german?", u"My system supports german and english but this instance is configured for english")])
-    k.dte.ts('de', 't0021', [(u"Computer sprichst Du auch englisch?", u"Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben")])
+    k.dte.ts('en', 't0020', [(u"do you speak german?", u"My system supports german and english but this instance is configured for english")])
+    k.dte.ts('de', 't0021', [(u"sprichst Du auch englisch?", u"Dies hier scheint meine deutsche Version zu sein, man kann mich aber auch auf Englisch betreiben")])
 
     k.dte.dt('en', u"can you speak", u"can you hear me now?")
 

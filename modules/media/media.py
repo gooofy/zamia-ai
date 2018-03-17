@@ -76,19 +76,19 @@ def get_data(k):
             s1, score = c.kernal.mem_get_multi(c.user, 'station')[0] 
             assert s1 == station
         
-    k.dte.ts('en', 't0002', [(u"computer, please switch on the radio", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
-    k.dte.ts('de', 't0003', [(u"computer, schalte bitte das Radio ein", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
+    k.dte.ts('en', 't0002', [(u"please switch on the radio", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
+    k.dte.ts('de', 't0003', [(u"schalte bitte das Radio ein", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
 
-    k.dte.ts('en', 't0004', [(u"computer please tune into new rock", u"",  check_media, ['media_on', 'aiNewRock'])])
-    k.dte.ts('de', 't0005', [(u"computer schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock'])])
+    k.dte.ts('en', 't0004', [(u"please tune into new rock", u"",  check_media, ['media_on', 'aiNewRock'])])
+    k.dte.ts('de', 't0005', [(u"schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock'])])
 
     k.dte.ts('en', 't0006', [(u"turn off the radio", u"", check_media, ['media_off', None])])
     k.dte.ts('de', 't0007', [(u"mach das radio aus", u"", check_media, ['media_off', None])])
 
-    k.dte.ts('en', 't0008', [(u"computer please switch on new rock", u"", check_media, ['media_on', 'aiNewRock']),
+    k.dte.ts('en', 't0008', [(u"please switch on new rock", u"", check_media, ['media_on', 'aiNewRock']),
                              (u"switch off the radio", u"", check_media, ['media_off', None]),
                              (u"please turn on the radio", u"", check_media, ['media_on', 'aiNewRock'])])
-    k.dte.ts('de', 't0009', [(u"computer schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock']),
+    k.dte.ts('de', 't0009', [(u"schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock']),
                              (u"mach das radio aus", u"", check_media, ['media_off', None]),
                              (u"schalte bitte das radio ein", u"", check_media, ['media_on', 'aiNewRock'])])
 

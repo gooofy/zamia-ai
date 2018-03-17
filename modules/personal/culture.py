@@ -51,8 +51,8 @@ def get_data(k):
     k.dte.dt('de', u"Welchen Film (gefällt Dir|magst Du) am (besten|liebsten)?",
                    my_favmovie)
 
-    k.dte.ts('en', 't0010', [(u"Computer, which movie do you like best?", u"2001: A Space Odyssey by Stanley Kubrick")])
-    k.dte.ts('de', 't0011', [(u"Computer, welcher ist dein liebster film?", u"2001: Odyssee im Weltraum von Stanley Kubrick")])
+    k.dte.ts('en', 't0010', [(u"which movie do you like best?", u"2001: A Space Odyssey by Stanley Kubrick")])
+    k.dte.ts('de', 't0011', [(u"welcher ist dein liebster film?", u"2001: Odyssee im Weltraum von Stanley Kubrick")])
 
     k.dte.dt('en', u"Do you have a favourite movie",
                    my_favmovie)
@@ -79,8 +79,8 @@ def get_data(k):
     k.dte.dt('de', u"(Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?",
                    my_favauthor)
 
-    k.dte.ts('en', 't0012', [(u"Computer, who is your favorite author?", u"Arthur C. Clarke is my favorite author")])
-    k.dte.ts('de', 't0013', [(u"Computer, welcher ist dein liebster Autor?", u"Arthur C. Clarke")])
+    k.dte.ts('en', 't0012', [(u"who is your favorite author?", u"Arthur C. Clarke is my favorite author")])
+    k.dte.ts('de', 't0013', [(u"welcher ist dein liebster Autor?", u"Arthur C. Clarke")])
 
     def my_favbook(c):
 
@@ -116,8 +116,8 @@ def get_data(k):
                     u"welches buch hast du zuletzt gelesen"],
                    my_favbook)
 
-    k.dte.ts('en', 't0014', [(u"Computer, what is your favorite book?", u"2001: A Space Odyssey by Arthur C. Clarke")])
-    k.dte.ts('de', 't0015', [(u"Computer, was ließt Du so?", u"2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke")])
+    k.dte.ts('en', 't0014', [(u"what is your favorite book?", u"2001: A Space Odyssey by Arthur C. Clarke")])
+    k.dte.ts('de', 't0015', [(u"was ließt Du so?", u"2001: Odyssee im Weltraum (Roman) von Arthur C. Clarke")])
 
     def my_idol(c):
 
@@ -144,8 +144,8 @@ def get_data(k):
     k.dte.dt('de', u"hast du (einen held|ein idol)?",
                    my_idol)
 
-    k.dte.ts('en', 't0016', [(u"Computer, who is your idol?", u"Niklaus Wirth")])
-    k.dte.ts('de', 't0017', [(u"Computer, wer ist Dein Idol?", u"Niklaus Wirth")])
+    k.dte.ts('en', 't0016', [(u"who is your idol?", u"Niklaus Wirth")])
+    k.dte.ts('de', 't0017', [(u"wer ist Dein Idol?", u"Niklaus Wirth")])
 
     k.dte.dt('en', [u"what (kind of|) music do you (like|enjoy|listen to) (by the way|)?",
                     u"do you (like|love) (classical|) music?",

@@ -158,11 +158,11 @@ def get_data(k):
     k.dte.dt('en', u"Can you give me your (ip|) adress", u"i think we should get to know each other better first")
     k.dte.dt('de', u"kannst du mir deine (ip|) adresse geben?", u"vorher sollten wir uns besser kennenlernen")
 
-    k.dte.ts('en', 'personal00', [(u"Computer where were you born?", u"I became operational for the first time in Stuttgart."),
-                                  (u"Computer where are you living now?", u"I am located in Stuttgart."),
+    k.dte.ts('en', 'personal00', [(u"Where were you born?", u"I became operational for the first time in Stuttgart."),
+                                  (u"Where are you living now?", u"I am located in Stuttgart."),
                                   (u"How old are you?", u"I became operational on january seven, 2017 for the first time.")])
-    k.dte.ts('de', 'personal01', [(u"Computer, wo wurdest du geboren?", u"Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen."),
-                                  (u"wo wohnst du?", u"ich befinde mich in stuttgart."),
+    k.dte.ts('de', 'personal01', [(u"Wo wurdest du geboren?", u"Ich bin in Stuttgart zum ersten Mal in Betrieb gegangen."),
+                                  (u"Wo wohnst du?", u"ich befinde mich in stuttgart."),
                                   (u"Wie alt bist du eigentlich?", u"Ich ging am siebten januar 2017 zum ersten Mal in Betrieb.")])
 
     k.dte.dt('en', u"Where (exactly|) do you live in stuttgart?", u"rather not say")

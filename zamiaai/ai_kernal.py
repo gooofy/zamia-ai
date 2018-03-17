@@ -19,7 +19,7 @@
 #
 # ai kernal, central hub for all the other components to hook into
 #
-# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> Python/SWI-Prolog -> response
+# natural language -> [ tokenizer ] -> tokens -> [ seq2seq model ] -> Python/Prolog -> response
 #
 
 from __future__ import print_function
@@ -562,12 +562,12 @@ class AIKernal(object):
 
             logging.debug(u'MEM: %s' % ctx.realm)
             memd = self.mem_dump(ctx.realm)
-            for k in memd:
-                logging.debug(u'MEM:    %-20s: %s' % (k, memd[k]))
+            for k, v, score in memd:
+                logging.debug(u'MEM:    %-20s: %s (%f)' % (k, v, score))
             logging.debug(u'MEM: %s' % user_uri)
             memd = self.mem_dump(user_uri)
-            for k in memd:
-                logging.debug(u'MEM:    %-20s: %s' % (k, memd[k]))
+            for k, v, score in memd:
+                logging.debug(u'MEM:    %-20s: %s (%f)' % (k, v, score))
 
         else:
             out        = u''
@@ -727,53 +727,119 @@ class AIKernal(object):
         return stats
 
     def mem_clear(self, realm):
-        self.session.query(model.Mem).filter(model.Mem.realm==realm).delete()
+        if not isinstance(realm, basestring):
+            raise Exception ("mem_set: realm must be string-typed.")
+        q = 'retractall(mem("%s", _, _, _))' % realm
+        # logging.debug (q)
+        self.prolog_query(q)
 
     def mem_dump(self, realm):
-        res = {}
-        for m in self.session.query(model.Mem).filter(model.Mem.realm==realm):
-            res[m.k] = m.v
-        return res
+        if not isinstance(realm, basestring):
+            raise Exception ("mem_set: realm must be string-typed.")
+
+        entries = []
+
+        q = 'mem("%s", K, V, S).' % realm
+        # logging.debug (q)
+        res = self.prolog_query(q)
+        if res:
+            for r in res:
+                k     = r[0]
+                v     = r[1]
+                score = r[2]
+                entries.append((k, v, score))
+
+        # import pdb; pdb.set_trace()
+
+        return entries
 
     def mem_set(self, realm, k, v):
-        self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).delete()
-        m = model.Mem(realm=realm, k=k, v=json.dumps(v))
-        self.session.add(m)
+
+        if not isinstance(realm, basestring) or not isinstance(k, basestring):
+            raise Exception ("mem_set: realm and key must be string-typed.")
+
+        q = 'retractall(mem("%s", "%s", _, _))' % (realm, k)
+        if isinstance(v, basestring):
+            q += ', assertz(mem("%s", "%s", "%s", 1.0)).' % (realm, k, v)
+        elif v is None:
+            q += '.' 
+        else:
+            raise Exception ("mem_set: value type not supported.")
+        # logging.debug (q)
+
+        self.prolog_query(q)
 
     def mem_get(self, realm, k):
-        m = self.session.query(model.Mem).filter(model.Mem.realm==realm).filter(model.Mem.k==k).first()
-        if not m:
+        if not isinstance(realm, basestring) or not isinstance(k, basestring):
+            raise Exception ("mem_set: realm and key must be string-typed.")
+
+        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        # logging.debug (q)
+        res = self.prolog_query(q)
+        if not res:
             return None
-        return json.loads(m.v)
+
+        score = 0.0
+        v = None
+        for r in res:
+            if not v or r[1] > score:
+                score = r[1]
+                v     = r[0]
+
+        return v
 
     def mem_get_multi (self, realm, k):
+        if not isinstance(realm, basestring) or not isinstance(k, basestring):
+            raise Exception ("mem_set: realm and key must be string-typed.")
 
-        m = self.mem_get(realm, k)
-        if not m:
-            return []
-        if not isinstance (m, list):
-            return [m, 1.0]
+        entries = []
 
-        s = 1.0
-        res = []
-        for m2 in m:
-            res.append((m2, s))
-            s = s / 2
+        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        # logging.debug (q)
+        res = self.prolog_query(q)
+        if res:
+            for r in res:
+                score = r[1]
+                v     = r[0]
+                entries.append((v, score))
 
-        return res
+        # import pdb; pdb.set_trace()
+
+        return entries
     
     def mem_push (self, realm, k, v):
-        oldv = self.mem_get(realm, k)
-        if not oldv:
-            newv = [v]
-        elif isinstance (oldv, list):
-            newv = [v] + oldv
-        else:
-            newv = [v, oldv]
+        if not isinstance(realm, basestring) or not isinstance(k, basestring):
+            raise Exception ("mem_set: realm and key must be string-typed.")
 
-        newv = newv[:MAX_MEM_ENTRIES]
+        entries = [(1.0, v)]
 
-        self.mem_set(realm, k, newv)
+        # re-score existing entries
+
+        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        # logging.debug (q)
+        res = self.prolog_query(q)
+        if res:
+            for r in res:
+                score = r[1]
+                v     = r[0]
+                if score < 0.125:
+                    continue
+                entries.append((score/2, v))
+
+        # put all entries into the KB
+        q = 'retractall(mem("%s", "%s", _, _))' % (realm, k)
+        for score, v in entries:
+            if isinstance(v, basestring):
+                q += ', assertz(mem("%s", "%s", "%s", %f))' % (realm, k, v, score)
+            elif v is None:
+                pass
+            else:
+                raise Exception ("mem_set: value type not supported.")
+        q += '.'
+        # logging.debug (q)
+
+        self.prolog_query(q)
+
 
     def prolog_query(self, query):
         logging.debug ('prolog_query: %s' % query)

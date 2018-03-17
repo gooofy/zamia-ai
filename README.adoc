@@ -22,7 +22,7 @@ For other technical documentation, check out
 License
 -------
 
-My own scripts as well as the data I create is LGPLv3 licensed unless otherwise
+My own scripts as well as the data I create is Apache-2.0 licensed unless otherwise
 noted in the script's copyright headers.
 
 Some scripts and files are based on works of others, in those cases it is my

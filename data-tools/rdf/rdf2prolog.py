@@ -348,73 +348,77 @@ for elu in lem:
             logging.debug (u'Skipping1: %s(%s, %s).\n' % (unicode(p), el, unicode(o)))
             continue
 
-        if isinstance(o, rdflib.term.Literal):
-            if o.datatype:
+        try:
 
-                datatype = str(o.datatype)
+            if isinstance(o, rdflib.term.Literal):
+                if o.datatype:
 
-                if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
-                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
-                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
-                    prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
-                    dt = dateutil.parser.parse(unicode(o))
-                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
-                    dt = dateutil.parser.parse(unicode(o))
-                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
-                    # FIXME
-                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, unicode(o)))
-                    predicate_set.add(u'%s/2' % pl)
-                    continue
-                elif datatype == 'http://www.w3.org/1998/Math/MathML':
-                    # FIXME
-                    continue
-                 
+                    datatype = str(o.datatype)
+
+                    if datatype == 'http://www.w3.org/2001/XMLSchema#decimal':
+                        prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#float':
+                        prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#integer':
+                        prolog_code.append(u"%s(%s, %s).\n" % (pl, el, unicode(o)))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
+                        dt = dateutil.parser.parse(unicode(o))
+                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
+                        dt = dateutil.parser.parse(unicode(o))
+                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
+                        # FIXME
+                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, unicode(o)))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    elif datatype == 'http://www.w3.org/1998/Math/MathML':
+                        # FIXME
+                        continue
+                     
+                    else:
+                        raise Exception('unknown literal datatype %s (value: %s) .' % (datatype, unicode(o)))
                 else:
-                    raise Exception('unknown literal datatype %s (value: %s) .' % (datatype, unicode(o)))
-            else:
-                if o.value is None:
-                    prolog_code.append(u"%s(%s, []).\n" % (pl, el))
+                    if o.value is None:
+                        prolog_code.append(u"%s(%s, []).\n" % (pl, el))
+                        predicate_set.add(u'%s/2' % pl)
+                        continue
+                    if o.language:
+                        if o.language in LANGUAGES:
+                            prolog_code.append(u"%s(%s, %s, '%s').\n" % (pl, el, o.language, prolog_string_escape(o)))
+                            predicate_set.add(u'%s/3' % pl)
+                        continue
+
+                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, prolog_string_escape(o)))
                     predicate_set.add(u'%s/2' % pl)
                     continue
-                if o.language:
-                    if o.language in LANGUAGES:
-                        prolog_code.append(u"%s(%s, %s, '%s').\n" % (pl, el, o.language, prolog_string_escape(o)))
-                        predicate_set.add(u'%s/3' % pl)
+
+            elif isinstance (o, rdflib.term.URIRef):
+                if o in elm:
+                    ol = elm[o]
+                else:
+                    # ol = u"'" + unicode(o) + "'"
+                    ol = mangle_url(str(o), do_exc=False)
+                if not ol:
+                    logging.debug (u'Skipping2: %s(%s, %s).\n' % (pl, el, unicode(o)))
                     continue
 
-                prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, prolog_string_escape(o)))
+                prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
                 predicate_set.add(u'%s/2' % pl)
-                continue
-
-        elif isinstance (o, rdflib.term.URIRef):
-            if o in elm:
-                ol = elm[o]
             else:
-                # ol = u"'" + unicode(o) + "'"
-                ol = mangle_url(str(o), do_exc=False)
-            if not ol:
-                logging.debug (u'Skipping2: %s(%s, %s).\n' % (pl, el, unicode(o)))
-                continue
-
-            prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
-            predicate_set.add(u'%s/2' % pl)
-        else:
-            raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
+                raise Exception ('unknown term: %s (%s %s)' % (unicode(o), type(o), o.__class__))
+        except:
+            logging.error(u'Failed to convert %s: %s' % (unicode(o), traceback.format_exc()))
 
 with codecs.open(outputfn, 'w', 'utf8') as f:
 

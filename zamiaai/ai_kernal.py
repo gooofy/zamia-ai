@@ -117,6 +117,30 @@ class AIKernal(object):
         xsb_command_string('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
 
         #
+        # restore memory
+        #
+
+        q = ''
+        for m in self.session.query(model.Mem):
+
+            v = json.loads(m.v)
+
+            if isinstance(v, basestring):
+                if q:
+                    q += ', '
+                q += 'assertz(memory("%s", "%s", "%s", %f))' % (m.realm, m.k, v, m.score)
+            elif v is None:
+                continue
+            else:
+                raise Exception ("mem_set: value type not supported.")
+        if not q:
+            q = 'assertz(memory(self, "self", "self", 1.0))'
+        q += '.'
+        xsb_command_string(q)
+
+        # import pdb; pdb.set_trace()
+
+        #
         # alignment / word2vec (on-demand model loading)
         #
         self.w2v_model          = None
@@ -294,6 +318,9 @@ class AIKernal(object):
             ctx        = AIContext(TEST_USER, self.session, lang, TEST_REALM, self, test_mode=True)
             round_num  = 0
             num_tests += 1
+
+            self.mem_clear(TEST_REALM)
+            self.mem_clear(TEST_USER)
 
             # prep
 
@@ -729,7 +756,7 @@ class AIKernal(object):
     def mem_clear(self, realm):
         if not isinstance(realm, basestring):
             raise Exception ("mem_set: realm must be string-typed.")
-        q = 'retractall(mem("%s", _, _, _))' % realm
+        q = 'retractall(memory("%s", _, _, _)).' % realm
         # logging.debug (q)
         self.prolog_query(q)
 
@@ -739,7 +766,7 @@ class AIKernal(object):
 
         entries = []
 
-        q = 'mem("%s", K, V, S).' % realm
+        q = 'memory("%s", K, V, S).' % realm
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
@@ -758,9 +785,9 @@ class AIKernal(object):
         if not isinstance(realm, basestring) or not isinstance(k, basestring):
             raise Exception ("mem_set: realm and key must be string-typed.")
 
-        q = 'retractall(mem("%s", "%s", _, _))' % (realm, k)
+        q = 'retractall(memory("%s", "%s", _, _))' % (realm, k)
         if isinstance(v, basestring):
-            q += ', assertz(mem("%s", "%s", "%s", 1.0)).' % (realm, k, v)
+            q += ', assertz(memory("%s", "%s", "%s", 1.0)).' % (realm, k, v)
         elif v is None:
             q += '.' 
         else:
@@ -773,7 +800,7 @@ class AIKernal(object):
         if not isinstance(realm, basestring) or not isinstance(k, basestring):
             raise Exception ("mem_set: realm and key must be string-typed.")
 
-        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        q = 'memory("%s", "%s", V, S).' % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if not res:
@@ -794,7 +821,7 @@ class AIKernal(object):
 
         entries = []
 
-        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        q = 'memory("%s", "%s", V, S).' % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
@@ -802,8 +829,6 @@ class AIKernal(object):
                 score = r[1]
                 v     = r[0]
                 entries.append((v, score))
-
-        # import pdb; pdb.set_trace()
 
         return entries
     
@@ -815,7 +840,7 @@ class AIKernal(object):
 
         # re-score existing entries
 
-        q = 'mem("%s", "%s", V, S).' % (realm, k)
+        q = 'memory("%s", "%s", V, S).' % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
@@ -827,10 +852,10 @@ class AIKernal(object):
                 entries.append((score/2, v))
 
         # put all entries into the KB
-        q = 'retractall(mem("%s", "%s", _, _))' % (realm, k)
+        q = 'retractall(memory("%s", "%s", _, _))' % (realm, k)
         for score, v in entries:
             if isinstance(v, basestring):
-                q += ', assertz(mem("%s", "%s", "%s", %f))' % (realm, k, v, score)
+                q += ', assertz(memory("%s", "%s", "%s", %f))' % (realm, k, v, score)
             elif v is None:
                 pass
             else:
@@ -839,7 +864,6 @@ class AIKernal(object):
         # logging.debug (q)
 
         self.prolog_query(q)
-
 
     def prolog_query(self, query):
         logging.debug ('prolog_query: %s' % query)
@@ -860,4 +884,29 @@ class AIKernal(object):
     def prolog_hl_query(self, fname, args):
         logging.debug ('prolog_hl_query: %s %s' % (fname, repr(args)))
         return xsb_hl_query(fname, args)
+
+    def prolog_persist(self):
+        """ persist all currently asserted dynamic memory predicates from the prolog KB """
+
+        # q = 'predicate_property(Head, (dynamic)), clause(Head,Bod).'
+        # for r in self.prolog_query(q):
+        #     logging.info(repr(r))
+        #     # print "%s" % repr(r)
+
+        self.session.query(model.Mem).delete()
+
+        q = 'memory(REALM, K, V, S).'
+        for r in self.prolog_query(q):
+            # logging.info(repr(r))
+
+            realm = r[0]
+            k     = r[1]
+            v     = json.dumps(r[2])
+            score = r[3]
+
+            m = model.Mem(realm=realm, k=k, v=v, score=score)
+            self.session.add(m)
+
+        # import pdb; pdb.set_trace()
+        self.session.commit()
 

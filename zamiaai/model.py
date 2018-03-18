@@ -20,7 +20,7 @@
 import sys
 
 from sqlalchemy                 import create_engine
-from sqlalchemy                 import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey, Index
+from sqlalchemy                 import Column, Integer, String, Text, Unicode, UnicodeText, Enum, DateTime, ForeignKey, Index, Float
 from sqlalchemy.orm             import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -130,6 +130,7 @@ class Mem(Base):
     realm             = Column(String(255), index=True)
     k                 = Column(String(255), index=True)
     v                 = Column(Text)
+    score             = Column(Float)
 
     __table_args__    = (Index('idx_mem_realm_k', "realm", "k"), )
 

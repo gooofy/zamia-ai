@@ -88,6 +88,8 @@ class AIContext(object):
 
         self.staged_resps = []
         self.high_score = 0.0
+
+        self.kernal.prolog_persist()
        
     def _ner_learn(self, lang, cls):
 

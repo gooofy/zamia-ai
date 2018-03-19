@@ -36,7 +36,7 @@ from six.moves            import input
 
 from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES
 from nltools              import misc
-from xsbprolog            import xsb_hl_query_string
+from xsbprolog            import xsb_hl_query
 
 DEFAULT_LOGLEVEL   = logging.INFO
 CLI_REALM          = '__cli__'
@@ -310,7 +310,7 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                for res in xsb_hl_query_string(line):
+                for res in xsb_hl_query(line):
                     logging.info('  %s' % repr(res))
 
             except Exception as e:

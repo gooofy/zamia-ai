@@ -45,7 +45,7 @@ from six                    import text_type
 from scipy.spatial.distance import cosine
 from sqlalchemy             import create_engine
 from sqlalchemy.orm         import sessionmaker
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_command_string, xsb_query_string, xsb_make_vars, xsb_var_string, xsb_next, xsb_hl_query_string
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_to_json, json_to_xsb
 
 from nltools                import misc
 from nltools.tokenizer      import tokenize
@@ -113,30 +113,26 @@ class AIKernal(object):
         xsb_hl_init([xsb_root])
         self.dte = DataEngine(self.session)
 
-        xsb_command_string('import default_sys_error_handler/1 from error_handler.')
-        xsb_command_string('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
+        xsb_hl_command('import default_sys_error_handler/1 from error_handler.')
+        xsb_hl_command('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
 
         #
         # restore memory
         #
 
-        q = ''
+        q = u''
         for m in self.session.query(model.Mem):
 
-            v = json.loads(m.v)
+            v = json_to_xsb(m.v)
 
-            if isinstance(v, basestring):
-                if q:
-                    q += ', '
-                q += 'assertz(memory("%s", "%s", "%s", %f))' % (m.realm, m.k, v, m.score)
-            elif v is None:
-                continue
-            else:
-                raise Exception ("mem_set: value type not supported.")
+            if q:
+                q += ', '
+            q += u'assertz(memory("%s", "%s", %s, %f))' % (m.realm, m.k, unicode(v), m.score)
+
         if not q:
-            q = 'assertz(memory(self, "self", "self", 1.0))'
-        q += '.'
-        xsb_command_string(q)
+            q = u'assertz(memory("self", "self", "self", 1.0))'
+        q += u'.'
+        xsb_hl_command(q)
 
         # import pdb; pdb.set_trace()
 
@@ -251,7 +247,7 @@ class AIKernal(object):
 
                     pl_path = "modules/%s/%s" % (module_name, inputfn)
 
-                    xsb_hl_command('consult', [pl_path])
+                    xsb_hl_command("consult('%s')."% pl_path)
 
         except:
             logging.error('failed to load module "%s"' % module_name)
@@ -297,9 +293,9 @@ class AIKernal(object):
     def test_module (self, module_name, run_trace=False, test_name=None):
 
         if run_trace:
-            xsb_command_string("trace.")
+            xsb_hl_command("trace.")
         else:
-            xsb_command_string("notrace.")
+            xsb_hl_command("notrace.")
 
         m = self.modules[module_name]
 
@@ -432,9 +428,9 @@ class AIKernal(object):
         """ process user input, return score, responses, actions, solutions, context """
 
         if run_trace:
-            xsb_command_string("trace.")
+            xsb_hl_command("trace.")
         else:
-            xsb_command_string("notrace.")
+            xsb_hl_command("notrace.")
 
         tokens_raw  = tokenize(inp_raw, inp_lang)
         tokens = []
@@ -561,7 +557,7 @@ class AIKernal(object):
             #     solutions = self._process_input_nnet(inp, res)          
 
 
-        xsb_command_string("notrace.")
+        xsb_hl_command("notrace.")
 
         #
         # extract highest-scoring responses
@@ -771,8 +767,8 @@ class AIKernal(object):
         res = self.prolog_query(q)
         if res:
             for r in res:
-                k     = r[0]
-                v     = r[1]
+                k     = r[0].value
+                v     = r[1].value
                 score = r[2]
                 entries.append((k, v, score))
 
@@ -811,7 +807,7 @@ class AIKernal(object):
         for r in res:
             if not v or r[1] > score:
                 score = r[1]
-                v     = r[0]
+                v     = r[0].value
 
         return v
 
@@ -827,7 +823,7 @@ class AIKernal(object):
         if res:
             for r in res:
                 score = r[1]
-                v     = r[0]
+                v     = r[0].value
                 entries.append((v, score))
 
         return entries
@@ -846,7 +842,7 @@ class AIKernal(object):
         if res:
             for r in res:
                 score = r[1]
-                v     = r[0]
+                v     = r[0].value
                 if score < 0.125:
                     continue
                 entries.append((score/2, v))
@@ -867,23 +863,19 @@ class AIKernal(object):
 
     def prolog_query(self, query):
         logging.debug ('prolog_query: %s' % query)
-        return xsb_hl_query_string(query)
+        return xsb_hl_query(query)
 
     def prolog_check(self, query):
         logging.debug ('prolog_check: %s' % query)
-        res = xsb_hl_query_string(query)
+        res = xsb_hl_query(query)
         return len(res)>0
 
     def prolog_query_one(self, query, idx=0):
         logging.debug ('prolog_query_one: %s' % query)
-        solutions = xsb_hl_query_string(query)
+        solutions = xsb_hl_query(query)
         if not solutions:
             return None
         return solutions[0][idx]
-
-    def prolog_hl_query(self, fname, args):
-        logging.debug ('prolog_hl_query: %s %s' % (fname, repr(args)))
-        return xsb_hl_query(fname, args)
 
     def prolog_persist(self):
         """ persist all currently asserted dynamic memory predicates from the prolog KB """
@@ -899,9 +891,9 @@ class AIKernal(object):
         for r in self.prolog_query(q):
             # logging.info(repr(r))
 
-            realm = r[0]
-            k     = r[1]
-            v     = json.dumps(r[2])
+            realm = r[0].value
+            k     = r[1].value
+            v     = xsb_to_json(r[2])
             score = r[3]
 
             m = model.Mem(realm=realm, k=k, v=v, score=score)

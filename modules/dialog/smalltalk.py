@@ -66,6 +66,6 @@ def get_data(k):
     k.dte.dt('en', u"ping", u"pong")
     k.dte.dt('de', u"ping", u"pong")
 
-    k.dte.ts('en', 'smalltalk00', [(u"Computer, how are you?", u"very well and you?", [])])
-    k.dte.ts('de', 'smalltalk01', [(u"Computer, wie geht es dir?", u"Super, wie immer!", [])])
+    k.dte.ts('en', 'smalltalk00', [(u"how are you?", u"very well and you?", [])])
+    k.dte.ts('de', 'smalltalk01', [(u"wie geht es dir?", u"Super, wie immer!", [])])
 

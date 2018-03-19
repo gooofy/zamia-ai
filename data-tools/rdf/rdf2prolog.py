@@ -310,7 +310,8 @@ if os.path.isfile(LPM_FN):
 def prolog_string_escape (o):
 
     s = unicode(o)
-    s = s.replace('\\',' ').replace ("'", "\\'")
+    # s = s.replace('\\',' ').replace ("'", "\\'")
+    s = s.replace('\\',' ').replace ('"', '\\"')
 
     return s
 
@@ -343,6 +344,11 @@ for elu in lem:
             continue
         el = elm[s]
 
+        try:
+            el.decode('ascii')
+        except UnicodeDecodeError:
+            el = u"'" + el + u"'"
+
         pl = property_label(p)
         if not pl:
             logging.debug (u'Skipping1: %s(%s, %s).\n' % (unicode(p), el, unicode(o)))
@@ -369,17 +375,17 @@ for elu in lem:
                         continue
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#dateTime':
                         dt = dateutil.parser.parse(unicode(o))
-                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                        prolog_code.append(u'%s(%s, "%s").\n' % (pl, el, dt.isoformat()))
                         predicate_set.add(u'%s/2' % pl)
                         continue
                     elif datatype == 'http://www.w3.org/2001/XMLSchema#date':
                         dt = dateutil.parser.parse(unicode(o))
-                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, dt.isoformat()))
+                        prolog_code.append(u'%s(%s, "%s").\n' % (pl, el, dt.isoformat()))
                         predicate_set.add(u'%s/2' % pl)
                         continue
                     elif datatype == 'http://www.opengis.net/ont/geosparql#wktLiteral':
                         # FIXME
-                        prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, unicode(o)))
+                        prolog_code.append(u'%s(%s, "%s").\n' % (pl, el, unicode(o)))
                         predicate_set.add(u'%s/2' % pl)
                         continue
                     elif datatype == 'http://www.w3.org/1998/Math/MathML':
@@ -395,11 +401,11 @@ for elu in lem:
                         continue
                     if o.language:
                         if o.language in LANGUAGES:
-                            prolog_code.append(u"%s(%s, %s, '%s').\n" % (pl, el, o.language, prolog_string_escape(o)))
+                            prolog_code.append(u'%s(%s, %s, "%s").\n' % (pl, el, o.language, prolog_string_escape(o)))
                             predicate_set.add(u'%s/3' % pl)
                         continue
 
-                    prolog_code.append(u"%s(%s, '%s').\n" % (pl, el, prolog_string_escape(o)))
+                    prolog_code.append(u'%s(%s, "%s").\n' % (pl, el, prolog_string_escape(o)))
                     predicate_set.add(u'%s/2' % pl)
                     continue
 

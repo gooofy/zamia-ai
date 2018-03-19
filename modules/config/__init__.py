@@ -29,19 +29,10 @@ def get_data(kernal):
     # name / self address utils
     #
     
-    # macro(en, my_forename, W) :- forename (self, en, W).
-    # macro(de, my_forename, W) :- forename (self, de, W).
-  
-    for soln in kernal.prolog_hl_query('forename', ['self', 'L', 'W']):
-        kernal.dte.macro(soln['L'], 'my_forename', soln)
+    for soln in kernal.prolog_query('forename(self, L, W).'):
+        kernal.dte.macro(soln[0].name, 'my_forename',  {'W': soln[1].value})
+        kernal.dte.macro(soln[0].name, 'self_address', {'W': soln[1].value + ', '})
  
-    # macro(en, self_address, L) :- forename (self, en, L), str_append(L, ', ').
-    # macro(en, self_address, L) :- L is "".
-    # macro(de, self_address, L) :- forename (self, de, L), str_append(L, ', ').
-    # macro(de, self_address, L) :- L is "".
-    
-    for soln in kernal.prolog_hl_query('forename', ['self', 'L', 'W']):
-        kernal.dte.macro(soln['L'], 'self_address', {'W': soln['W'] + ', '})
     kernal.dte.macro('en', 'self_address', {'W': ''})
     kernal.dte.macro('de', 'self_address', {'W': ''})
 

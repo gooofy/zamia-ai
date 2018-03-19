@@ -22,7 +22,7 @@ c.current_dt  # datetime.datetime.now()
 
 === Memory
 
-Besides making prolog `assertz` calls, a simple memory mechanism is provided for persistent data storage:
+A simple memory mechanism is provided for persistent data storage:
 
 ```python
 c.kernal.mem_set(c.user, 'f1ent', film)
@@ -32,6 +32,21 @@ c.kernal.mem_push(c.user, 'f1ent', film)
 film = c.kernal.mem_get_multi(c.user, 'f1ent')
 ```
 
+the actual storage takes place in the XSB Prolog engine using assertz calls, i.e.
+
+```python
+c.kernal.mem_set(c.user, 'f1ent', film)
+```
+
+gets translated into
+
+```prolog
+assertz(memory(c.user, "f1ent", film, 1.0))
+```
+
+the last memory argument represents a score value which is divided by two
+for older values, once a new value is pushed into the same memory slot.
+
 === Response
 
 To generate responses, call
@@ -39,6 +54,16 @@ To generate responses, call
 ```python
 c.resp(resp, score, action, action_arg) # Response generation
 ```
+
+=== Actions
+
+A special memory slot called 'action' is used to store action(s):
+
+```python
+c.kernal.mem_set(c.realm, 'action', 'media_on')
+```
+
+this slot is automatically cleared for each interaction step.
 
 === data-tools
 

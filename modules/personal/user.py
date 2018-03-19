@@ -31,12 +31,12 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("wdpdInstanceOf(NAME, wdeMaleGivenName), rdfsLabel(NAME, %s, LABEL)." % lang):
-            s_name  = res[0] 
-            s_label = res[1] 
+            s_name  = res[0].name
+            s_label = res[1].value
             k.dte.macro(lang, 'firstname', {'LABEL': s_label})
         for res in k.prolog_query("wdpdInstanceOf(NAME, wdeFemalGivenName), rdfsLabel(NAME, %s, LABEL)." % lang):
-            s_name  = res[0] 
-            s_label = res[1] 
+            s_name  = res[0].name
+            s_label = res[1].value
             k.dte.macro(lang, 'firstname', {'LABEL': s_label})
 
     def name_told_tokens(c, ts, te):

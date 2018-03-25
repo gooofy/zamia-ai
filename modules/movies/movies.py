@@ -17,21 +17,62 @@
 # limitations under the License.
 #
 
-MACRO_LIMIT = 32
-
 def get_data(k):
 
     k.dte.set_prefixes([u''])
 
     # NER, macros
 
+    macro_movies = set(['wdeTheThirdMan', 
+                        'wde2001ASpaceOdyssey', 
+                        'wdeTheMatrix', 
+                        'wdeAmericanBeauty',
+                        'wde12Monkeys',
+                        'wdeAlien',
+                        'wdeApocalypseNow',
+                        'wdeBackToTheFuture',
+                        'wdeDieHard',
+                        'wdeFightClub',
+                        'wdeJurassicPark',
+                        'wdeMetropolis',
+                        'wdePsycho',
+                        'wdeTheSilenceOfTheLambs' 
+                        'wdeTheTerminator',
+                        'wdeTheTrumanShow',
+                        'wdeTheUsualSuspects',
+                        'wdeTheWolfOfWallStreet',
+                        'wdeTrainspotting',
+                        'wdeVertigo',
+                        'wdeABeautifulMind',
+                        'wdeAClockworkOrange',
+                        'wdeAliens',
+                        'wdeAmadeus',
+                        'wdeAmericanHistoryX',
+                        'wdeBatmanBegins',
+                        'wdeBenHur',
+                        'wdeBladeRunner',
+                        'wdeBraveheart',
+                        'wdeDialMForMurder',
+                        'wdeFargo',
+                        'wdeForrestGump',
+                        'wdeFullMetalJacket',
+                        'wdeGladiator',
+                        'wdeGroundhogDay',
+                        'wdeMontyPythonSLifeOfBrian',
+                        'wdePulpFiction',
+                        'wdeRocky',
+                        'wdeSavingPrivateRyan',
+                        'wdeSchindlerSList',
+                        'wdeSeven',
+                        'wdeSinCity'])
+
     for lang in ['en', 'de']:
         cnt = 0
         for res in k.prolog_query("wdpdInstanceOf(FILM, wdeFilm), rdfsLabel(FILM, %s, LABEL)." % lang):
-            s_film = res[0] 
-            s_label = res[1] 
+            s_film = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'film', s_film, s_label)
-            if cnt < MACRO_LIMIT:
+            if s_film in macro_movies:
                 k.dte.macro(lang, 'movies', {'LABEL': s_label})
             cnt += 1
 
@@ -145,7 +186,7 @@ def get_data(k):
             pd       = c.kernal.prolog_query_one("wdpdPublicationDate(%s, PD)." % film)
             if flabel and pd:
 
-                pd = dateutil.parser.parse(pd)
+                pd = dateutil.parser.parse(pd.value)
 
                 if c.lang=='de':
                     c.resp(u"Ich denke %s ist aus %d." % (flabel, pd.year), score=score, action=act, action_arg=film)

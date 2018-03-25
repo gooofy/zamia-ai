@@ -419,6 +419,11 @@ for elu in lem:
                     logging.debug (u'Skipping2: %s(%s, %s).\n' % (pl, el, unicode(o)))
                     continue
 
+                try:
+                    ol.decode('ascii')
+                except UnicodeDecodeError:
+                    ol = u"'" + ol + u"'"
+
                 prolog_code.append(u"%s(%s, %s).\n" % (pl, el, ol))
                 predicate_set.add(u'%s/2' % pl)
             else:

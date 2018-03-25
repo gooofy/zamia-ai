@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-MACRO_LIMIT=32
-
 def get_data(k):
 
     k.dte.set_prefixes([u''])
@@ -30,13 +28,24 @@ def get_data(k):
 
     # NER, macros
 
+    macro_books = set(['wde2001ASpaceOdyssey',
+                       'wdeNeuromancer',
+                       'wdeTheStand',
+                       'wdeIshmael',
+                       'wdeInferno',
+                       'wdeIRobot',
+                       'wdeABriefHistoryOfTime',
+                       'wdeTheDaVinciCode',
+                       'wdeTheShining',
+                       'wdeHarryPotterAndTheChamberOfSecrets' ])
+
     for lang in ['en', 'de']:
         cnt = 0
         for res in k.prolog_query("wdpdInstanceOf(BOOK, wdeBook), rdfsLabel(BOOK, %s, LABEL)." % lang):
-            s_book  = res[0] 
-            s_label = res[1] 
+            s_book  = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'book', s_book, s_label)
-            if cnt < MACRO_LIMIT:
+            if s_book in macro_books:
                 k.dte.macro(lang, 'literature', {'LABEL': s_label})
             cnt += 1
 
@@ -125,7 +134,7 @@ def get_data(k):
             book, pd = args
             c.kernal.mem_push(c.user, 'f1ent', book)
             c.kernal.mem_push(c.user, 'f1pat', book)
-            c.kernal.mem_push(c.user, 'f1time', pd.isoformat())
+            c.kernal.mem_push(c.user, 'f1time', XSBString(pd.isoformat()))
 
         if check_topic:
             f1ent = c.kernal.mem_get_multi(c.user, 'f1ent')
@@ -148,7 +157,7 @@ def get_data(k):
             pd       = c.kernal.prolog_query_one("wdpdPublicationDate(%s, PD)." % book)
             if blabel and pd:
 
-                pd = dateutil.parser.parse(pd)
+                pd = dateutil.parser.parse(pd.value)
 
                 if c.lang=='de':
                     c.resp(u"Ich denke %s wurde %d geschrieben." % (blabel, pd.year), score=score, action=act, action_arg=(book, pd))

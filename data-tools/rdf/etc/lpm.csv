@@ -117,6 +117,7 @@ wdpAustralianStatisticalGeography2011ID,http://www.wikidata.org/prop/P4014
 wdpAustralianStatisticalGeography2016ID,http://www.wikidata.org/prop/P4093
 wdpAustrianMunicipalityKey,http://www.wikidata.org/prop/P964
 wdpAuthor,http://www.wikidata.org/prop/P50
+wdpAuthorOfForeword,http://www.wikidata.org/prop/P2679
 wdpAuthority,http://www.wikidata.org/prop/P797
 wdpAutonomousSystemNumber,http://www.wikidata.org/prop/P3797
 wdpAuñamendiID,http://www.wikidata.org/prop/P3218
@@ -148,6 +149,8 @@ wdpBaitLaZemerHaIvriArtistID,http://www.wikidata.org/prop/P3997
 wdpBallotpediaID,http://www.wikidata.org/prop/P2390
 wdpBallotsCast,http://www.wikidata.org/prop/P1868
 wdpBandcampArtistID,http://www.wikidata.org/prop/P3283
+wdpBanglapediaBengaliVersionID,http://www.wikidata.org/prop/P4254
+wdpBanglapediaEnglishVersionID,http://www.wikidata.org/prop/P4255
 wdpBasedOn,http://www.wikidata.org/prop/P144
 wdpBashkirEncyclopediaBashkirVersionID,http://www.wikidata.org/prop/P4210
 wdpBashkirEncyclopediaRussianVersionID,http://www.wikidata.org/prop/P4211
@@ -391,6 +394,7 @@ wdpDizionarioBiograficoDegliItaliani,http://www.wikidata.org/prop/P1986
 wdpDoctoralAdvisor,http://www.wikidata.org/prop/P184
 wdpDoctoralStudent,http://www.wikidata.org/prop/P185
 wdpDoctoralThesis,http://www.wikidata.org/prop/P1026
+wdpDonatedBy,http://www.wikidata.org/prop/P1028
 wdpDoubanMovieID,http://www.wikidata.org/prop/P4529
 wdpDrivingSide,http://www.wikidata.org/prop/P1622
 wdpDrugUsedForTreatment,http://www.wikidata.org/prop/P2176
@@ -531,6 +535,7 @@ wdpFromFictionalUniverse,http://www.wikidata.org/prop/P1080
 wdpFullWorkAvailableAt,http://www.wikidata.org/prop/P953
 wdpFussballdatenDeID,http://www.wikidata.org/prop/P3538
 wdpGACSID,http://www.wikidata.org/prop/P4427
+wdpGARDRareDiseaseID,http://www.wikidata.org/prop/P4317
 wdpGCDSeriesID,http://www.wikidata.org/prop/P3589
 wdpGDPPPP,http://www.wikidata.org/prop/P4010
 wdpGHSSignalWord,http://www.wikidata.org/prop/P1033
@@ -547,6 +552,7 @@ wdpGUIToolkitOrFramework,http://www.wikidata.org/prop/P1414
 wdpGait,http://www.wikidata.org/prop/P2839
 wdpGamingHistoryIdentifier,http://www.wikidata.org/prop/P4806
 wdpGedbasGenealogyPersonID,http://www.wikidata.org/prop/P4108
+wdpGeneOntologyID,http://www.wikidata.org/prop/P686
 wdpGeneReviewsID,http://www.wikidata.org/prop/P668
 wdpGenealogicalGazetteerGOVID,http://www.wikidata.org/prop/P2503
 wdpGenealogicsOrgPersonID,http://www.wikidata.org/prop/P1819
@@ -624,6 +630,7 @@ wdpHistoryOfParliamentID,http://www.wikidata.org/prop/P1614
 wdpHistoryOfTopic,http://www.wikidata.org/prop/P2184
 wdpHonorificPrefix,http://www.wikidata.org/prop/P511
 wdpHumanDevelopmentIndex,http://www.wikidata.org/prop/P1081
+wdpHumanPhenotypeOntologyID,http://www.wikidata.org/prop/P3841
 wdpIATAAirportCode,http://www.wikidata.org/prop/P238
 wdpICAARating,http://www.wikidata.org/prop/P3306
 wdpICD10,http://www.wikidata.org/prop/P494
@@ -710,6 +717,7 @@ wdpInternetArchiveID,http://www.wikidata.org/prop/P724
 wdpInternetBroadwayDatabasePersonID,http://www.wikidata.org/prop/P1220
 wdpInternetBroadwayDatabaseShowID,http://www.wikidata.org/prop/P1219
 wdpInternetOffBroadwayDatabaseID,http://www.wikidata.org/prop/P4456
+wdpInvaluableComArtistID,http://www.wikidata.org/prop/P4927
 wdpInventoryNumber,http://www.wikidata.org/prop/P217
 wdpIsAListOf,http://www.wikidata.org/prop/P360
 wdpIshimID,http://www.wikidata.org/prop/P3906
@@ -782,6 +790,8 @@ wdpLesArchivesDuSpectacleID,http://www.wikidata.org/prop/P1977
 wdpLibReviewsID,http://www.wikidata.org/prop/P3308
 wdpLibraryOfCongressAuthorityIdentifier,http://www.wikidata.org/prop/P244
 wdpLibraryOfCongressClassification,http://www.wikidata.org/prop/P1149
+wdpLibraryOfCongressDemographicGroupTermsID,http://www.wikidata.org/prop/P4946
+wdpLibraryOfCongressGenreFormTermsID,http://www.wikidata.org/prop/P4953
 wdpLibraryOfCongressJukeBoxID,http://www.wikidata.org/prop/P2089
 wdpLibraryThingWorkID,http://www.wikidata.org/prop/P1085
 wdpLibriVoxAuthorID,http://www.wikidata.org/prop/P1899
@@ -990,6 +1000,7 @@ wdpNumberOfParticipants,http://www.wikidata.org/prop/P1132
 wdpNumberOfPartsOfAWorkOfArt,http://www.wikidata.org/prop/P2635
 wdpNumberOfRepresentativesInAnOrganizationLegislature,http://www.wikidata.org/prop/P1410
 wdpNumberOfSeasons,http://www.wikidata.org/prop/P2437
+wdpNumberOfSeats,http://www.wikidata.org/prop/P1342
 wdpNumberOfSpeakers,http://www.wikidata.org/prop/P1098
 wdpNumericValue,http://www.wikidata.org/prop/P1181
 wdpOCLCControlNumber,http://www.wikidata.org/prop/P243
@@ -1158,6 +1169,7 @@ wdpRedditUserName,http://www.wikidata.org/prop/P4265
 wdpRefractiveIndex,http://www.wikidata.org/prop/P1109
 wdpRegensburgClassification,http://www.wikidata.org/prop/P1150
 wdpRelative,http://www.wikidata.org/prop/P1038
+wdpRelevantQualification,http://www.wikidata.org/prop/P4968
 wdpReliefLocationMap,http://www.wikidata.org/prop/P1944
 wdpReligion,http://www.wikidata.org/prop/P140
 wdpReplacedBy,http://www.wikidata.org/prop/P1366
@@ -1173,6 +1185,7 @@ wdpRockHallOfFameID,http://www.wikidata.org/prop/P3162
 wdpRodovidID,http://www.wikidata.org/prop/P1185
 wdpRollingStoneArtistID,http://www.wikidata.org/prop/P3017
 wdpRottenTomatoesID,http://www.wikidata.org/prop/P1258
+wdpRoutardComPlaceID,http://www.wikidata.org/prop/P4986
 wdpRouteMap,http://www.wikidata.org/prop/P15
 wdpRouteOfAdministration,http://www.wikidata.org/prop/P636
 wdpRoyalAcademyNewIdentifier,http://www.wikidata.org/prop/P4808
@@ -1189,6 +1202,7 @@ wdpSHARECatalogueAuthorID,http://www.wikidata.org/prop/P3987
 wdpSIMCPlaceID,http://www.wikidata.org/prop/P4046
 wdpSIRENNumber,http://www.wikidata.org/prop/P1616
 wdpSOCCode2010,http://www.wikidata.org/prop/P919
+wdpSPLASH,http://www.wikidata.org/prop/P4964
 wdpSTWThesaurusForEconomicsID,http://www.wikidata.org/prop/P3911
 wdpSUDOCAuthorities,http://www.wikidata.org/prop/P269
 wdpSUDOCEditions,http://www.wikidata.org/prop/P1025
@@ -1207,6 +1221,7 @@ wdpSealDescription,http://www.wikidata.org/prop/P418
 wdpSealImage,http://www.wikidata.org/prop/P158
 wdpSecretaryGeneral,http://www.wikidata.org/prop/P3975
 wdpSeeAlso,http://www.wikidata.org/prop/P1659
+wdpSemanticScholarAuthorID,http://www.wikidata.org/prop/P4012
 wdpSeparatedFrom,http://www.wikidata.org/prop/P807
 wdpSeries,http://www.wikidata.org/prop/P179
 wdpSeriesOrdinal,http://www.wikidata.org/prop/P1545
@@ -1255,6 +1270,7 @@ wdpStandardGeographicalClassificationCode,http://www.wikidata.org/prop/P3012
 wdpStandardsBody,http://www.wikidata.org/prop/P1462
 wdpStanfordEncyclopediaOfPhilosophyID,http://www.wikidata.org/prop/P3123
 wdpStartTime,http://www.wikidata.org/prop/P580
+wdpStatisticsCanadaGeographicCode,http://www.wikidata.org/prop/P4990
 wdpStatoidsID,http://www.wikidata.org/prop/P3175
 wdpStepparent,http://www.wikidata.org/prop/P3448
 wdpStockExchange,http://www.wikidata.org/prop/P414
@@ -1277,12 +1293,15 @@ wdpSuperhumanFeatureOrAbility,http://www.wikidata.org/prop/P2563
 wdpSwedishFilmDatabaseFilmID,http://www.wikidata.org/prop/P2334
 wdpSwedishPortraitArchive,http://www.wikidata.org/prop/P4819
 wdpSwissMunicipalityCode,http://www.wikidata.org/prop/P771
+wdpSymptoms,http://www.wikidata.org/prop/P780
 wdpTAXREFID,http://www.wikidata.org/prop/P3186
 wdpTEDSpeakerID,http://www.wikidata.org/prop/P2611
 wdpTEDTopicID,http://www.wikidata.org/prop/P2612
 wdpTERYTMunicipalityCode,http://www.wikidata.org/prop/P1653
 wdpTGNID,http://www.wikidata.org/prop/P1667
 wdpTLGAuthorID,http://www.wikidata.org/prop/P3576
+wdpTMDbMovieID,http://www.wikidata.org/prop/P4947
+wdpTMDbPersonId,http://www.wikidata.org/prop/P4985
 wdpTOID,http://www.wikidata.org/prop/P3120
 wdpTVComID,http://www.wikidata.org/prop/P2638
 wdpTVGuidePersonID,http://www.wikidata.org/prop/P3845
@@ -1303,6 +1322,7 @@ wdpTheBlackBookID,http://www.wikidata.org/prop/P4248
 wdpTheNumbersMovieID,http://www.wikidata.org/prop/P3808
 wdpTheNumbersPersonID,http://www.wikidata.org/prop/P4657
 wdpThePeeragePersonID,http://www.wikidata.org/prop/P4638
+wdpTheTVDBComID,http://www.wikidata.org/prop/P4835
 wdpTheTimesOfIndiaTopicID,http://www.wikidata.org/prop/P4204
 wdpTheatricaliaPersonID,http://www.wikidata.org/prop/P2469
 wdpTheatricaliaPlayID,http://www.wikidata.org/prop/P1242
@@ -1414,6 +1434,7 @@ wdpWikidataSPARQLQueryEquivalent,http://www.wikidata.org/prop/P3921
 wdpWikidataTimePrecision,http://www.wikidata.org/prop/P2803
 wdpWikidataUsageInstructions,http://www.wikidata.org/prop/P2559
 wdpWikimediaLanguageCode,http://www.wikidata.org/prop/P424
+wdpWikitribuneCategory,http://www.wikidata.org/prop/P4973
 wdpWikivoyageBanner,http://www.wikidata.org/prop/P948
 wdpWinner,http://www.wikidata.org/prop/P1346
 wdpWoRMSID,http://www.wikidata.org/prop/P850
@@ -1503,6 +1524,7 @@ wdpdAustralianStatisticalGeography2011ID,http://www.wikidata.org/prop/direct/P40
 wdpdAustralianStatisticalGeography2016ID,http://www.wikidata.org/prop/direct/P4093
 wdpdAustrianMunicipalityKey,http://www.wikidata.org/prop/direct/P964
 wdpdAuthor,http://www.wikidata.org/prop/direct/P50
+wdpdAuthorOfForeword,http://www.wikidata.org/prop/direct/P2679
 wdpdAuthority,http://www.wikidata.org/prop/direct/P797
 wdpdAutonomousSystemNumber,http://www.wikidata.org/prop/direct/P3797
 wdpdAuñamendiID,http://www.wikidata.org/prop/direct/P3218
@@ -1534,6 +1556,8 @@ wdpdBaitLaZemerHaIvriArtistID,http://www.wikidata.org/prop/direct/P3997
 wdpdBallotpediaID,http://www.wikidata.org/prop/direct/P2390
 wdpdBallotsCast,http://www.wikidata.org/prop/direct/P1868
 wdpdBandcampArtistID,http://www.wikidata.org/prop/direct/P3283
+wdpdBanglapediaBengaliVersionID,http://www.wikidata.org/prop/direct/P4254
+wdpdBanglapediaEnglishVersionID,http://www.wikidata.org/prop/direct/P4255
 wdpdBasedOn,http://www.wikidata.org/prop/direct/P144
 wdpdBashkirEncyclopediaBashkirVersionID,http://www.wikidata.org/prop/direct/P4210
 wdpdBashkirEncyclopediaRussianVersionID,http://www.wikidata.org/prop/direct/P4211
@@ -1776,6 +1800,7 @@ wdpdDizionarioBiograficoDegliItaliani,http://www.wikidata.org/prop/direct/P1986
 wdpdDoctoralAdvisor,http://www.wikidata.org/prop/direct/P184
 wdpdDoctoralStudent,http://www.wikidata.org/prop/direct/P185
 wdpdDoctoralThesis,http://www.wikidata.org/prop/direct/P1026
+wdpdDonatedBy,http://www.wikidata.org/prop/direct/P1028
 wdpdDoubanMovieID,http://www.wikidata.org/prop/direct/P4529
 wdpdDrivingSide,http://www.wikidata.org/prop/direct/P1622
 wdpdDrugUsedForTreatment,http://www.wikidata.org/prop/direct/P2176
@@ -1915,6 +1940,7 @@ wdpdFromFictionalUniverse,http://www.wikidata.org/prop/direct/P1080
 wdpdFullWorkAvailableAt,http://www.wikidata.org/prop/direct/P953
 wdpdFussballdatenDeID,http://www.wikidata.org/prop/direct/P3538
 wdpdGACSID,http://www.wikidata.org/prop/direct/P4427
+wdpdGARDRareDiseaseID,http://www.wikidata.org/prop/direct/P4317
 wdpdGCDSeriesID,http://www.wikidata.org/prop/direct/P3589
 wdpdGDPPPP,http://www.wikidata.org/prop/direct/P4010
 wdpdGHSSignalWord,http://www.wikidata.org/prop/direct/P1033
@@ -1931,6 +1957,7 @@ wdpdGUIToolkitOrFramework,http://www.wikidata.org/prop/direct/P1414
 wdpdGait,http://www.wikidata.org/prop/direct/P2839
 wdpdGamingHistoryIdentifier,http://www.wikidata.org/prop/direct/P4806
 wdpdGedbasGenealogyPersonID,http://www.wikidata.org/prop/direct/P4108
+wdpdGeneOntologyID,http://www.wikidata.org/prop/direct/P686
 wdpdGeneReviewsID,http://www.wikidata.org/prop/direct/P668
 wdpdGenealogicalGazetteerGOVID,http://www.wikidata.org/prop/direct/P2503
 wdpdGenealogicsOrgPersonID,http://www.wikidata.org/prop/direct/P1819
@@ -2008,6 +2035,7 @@ wdpdHistoryOfParliamentID,http://www.wikidata.org/prop/direct/P1614
 wdpdHistoryOfTopic,http://www.wikidata.org/prop/direct/P2184
 wdpdHonorificPrefix,http://www.wikidata.org/prop/direct/P511
 wdpdHumanDevelopmentIndex,http://www.wikidata.org/prop/direct/P1081
+wdpdHumanPhenotypeOntologyID,http://www.wikidata.org/prop/direct/P3841
 wdpdIATAAirportCode,http://www.wikidata.org/prop/direct/P238
 wdpdICAARating,http://www.wikidata.org/prop/direct/P3306
 wdpdICD10,http://www.wikidata.org/prop/direct/P494
@@ -2094,6 +2122,7 @@ wdpdInternetArchiveID,http://www.wikidata.org/prop/direct/P724
 wdpdInternetBroadwayDatabasePersonID,http://www.wikidata.org/prop/direct/P1220
 wdpdInternetBroadwayDatabaseShowID,http://www.wikidata.org/prop/direct/P1219
 wdpdInternetOffBroadwayDatabaseID,http://www.wikidata.org/prop/direct/P4456
+wdpdInvaluableComArtistID,http://www.wikidata.org/prop/direct/P4927
 wdpdInventoryNumber,http://www.wikidata.org/prop/direct/P217
 wdpdIsAListOf,http://www.wikidata.org/prop/direct/P360
 wdpdIshimID,http://www.wikidata.org/prop/direct/P3906
@@ -2166,6 +2195,8 @@ wdpdLesArchivesDuSpectacleID,http://www.wikidata.org/prop/direct/P1977
 wdpdLibReviewsID,http://www.wikidata.org/prop/direct/P3308
 wdpdLibraryOfCongressAuthorityIdentifier,http://www.wikidata.org/prop/direct/P244
 wdpdLibraryOfCongressClassification,http://www.wikidata.org/prop/direct/P1149
+wdpdLibraryOfCongressDemographicGroupTermsID,http://www.wikidata.org/prop/direct/P4946
+wdpdLibraryOfCongressGenreFormTermsID,http://www.wikidata.org/prop/direct/P4953
 wdpdLibraryOfCongressJukeBoxID,http://www.wikidata.org/prop/direct/P2089
 wdpdLibraryThingWorkID,http://www.wikidata.org/prop/direct/P1085
 wdpdLibriVoxAuthorID,http://www.wikidata.org/prop/direct/P1899
@@ -2374,6 +2405,7 @@ wdpdNumberOfParticipants,http://www.wikidata.org/prop/direct/P1132
 wdpdNumberOfPartsOfAWorkOfArt,http://www.wikidata.org/prop/direct/P2635
 wdpdNumberOfRepresentativesInAnOrganizationLegislature,http://www.wikidata.org/prop/direct/P1410
 wdpdNumberOfSeasons,http://www.wikidata.org/prop/direct/P2437
+wdpdNumberOfSeats,http://www.wikidata.org/prop/direct/P1342
 wdpdNumberOfSpeakers,http://www.wikidata.org/prop/direct/P1098
 wdpdNumericValue,http://www.wikidata.org/prop/direct/P1181
 wdpdOCLCControlNumber,http://www.wikidata.org/prop/direct/P243
@@ -2542,6 +2574,7 @@ wdpdRedditUserName,http://www.wikidata.org/prop/direct/P4265
 wdpdRefractiveIndex,http://www.wikidata.org/prop/direct/P1109
 wdpdRegensburgClassification,http://www.wikidata.org/prop/direct/P1150
 wdpdRelative,http://www.wikidata.org/prop/direct/P1038
+wdpdRelevantQualification,http://www.wikidata.org/prop/direct/P4968
 wdpdReliefLocationMap,http://www.wikidata.org/prop/direct/P1944
 wdpdReligion,http://www.wikidata.org/prop/direct/P140
 wdpdReplacedBy,http://www.wikidata.org/prop/direct/P1366
@@ -2557,6 +2590,7 @@ wdpdRockHallOfFameID,http://www.wikidata.org/prop/direct/P3162
 wdpdRodovidID,http://www.wikidata.org/prop/direct/P1185
 wdpdRollingStoneArtistID,http://www.wikidata.org/prop/direct/P3017
 wdpdRottenTomatoesID,http://www.wikidata.org/prop/direct/P1258
+wdpdRoutardComPlaceID,http://www.wikidata.org/prop/direct/P4986
 wdpdRouteMap,http://www.wikidata.org/prop/direct/P15
 wdpdRouteOfAdministration,http://www.wikidata.org/prop/direct/P636
 wdpdRoyalAcademyNewIdentifier,http://www.wikidata.org/prop/direct/P4808
@@ -2573,6 +2607,7 @@ wdpdSHARECatalogueAuthorID,http://www.wikidata.org/prop/direct/P3987
 wdpdSIMCPlaceID,http://www.wikidata.org/prop/direct/P4046
 wdpdSIRENNumber,http://www.wikidata.org/prop/direct/P1616
 wdpdSOCCode2010,http://www.wikidata.org/prop/direct/P919
+wdpdSPLASH,http://www.wikidata.org/prop/direct/P4964
 wdpdSTWThesaurusForEconomicsID,http://www.wikidata.org/prop/direct/P3911
 wdpdSUDOCAuthorities,http://www.wikidata.org/prop/direct/P269
 wdpdSUDOCEditions,http://www.wikidata.org/prop/direct/P1025
@@ -2591,6 +2626,7 @@ wdpdSealDescription,http://www.wikidata.org/prop/direct/P418
 wdpdSealImage,http://www.wikidata.org/prop/direct/P158
 wdpdSecretaryGeneral,http://www.wikidata.org/prop/direct/P3975
 wdpdSeeAlso,http://www.wikidata.org/prop/direct/P1659
+wdpdSemanticScholarAuthorID,http://www.wikidata.org/prop/direct/P4012
 wdpdSeparatedFrom,http://www.wikidata.org/prop/direct/P807
 wdpdSeries,http://www.wikidata.org/prop/direct/P179
 wdpdSeriesOrdinal,http://www.wikidata.org/prop/direct/P1545
@@ -2639,6 +2675,7 @@ wdpdStandardGeographicalClassificationCode,http://www.wikidata.org/prop/direct/P
 wdpdStandardsBody,http://www.wikidata.org/prop/direct/P1462
 wdpdStanfordEncyclopediaOfPhilosophyID,http://www.wikidata.org/prop/direct/P3123
 wdpdStartTime,http://www.wikidata.org/prop/direct/P580
+wdpdStatisticsCanadaGeographicCode,http://www.wikidata.org/prop/direct/P4990
 wdpdStatoidsID,http://www.wikidata.org/prop/direct/P3175
 wdpdStepparent,http://www.wikidata.org/prop/direct/P3448
 wdpdStockExchange,http://www.wikidata.org/prop/direct/P414
@@ -2661,12 +2698,15 @@ wdpdSuperhumanFeatureOrAbility,http://www.wikidata.org/prop/direct/P2563
 wdpdSwedishFilmDatabaseFilmID,http://www.wikidata.org/prop/direct/P2334
 wdpdSwedishPortraitArchive,http://www.wikidata.org/prop/direct/P4819
 wdpdSwissMunicipalityCode,http://www.wikidata.org/prop/direct/P771
+wdpdSymptoms,http://www.wikidata.org/prop/direct/P780
 wdpdTAXREFID,http://www.wikidata.org/prop/direct/P3186
 wdpdTEDSpeakerID,http://www.wikidata.org/prop/direct/P2611
 wdpdTEDTopicID,http://www.wikidata.org/prop/direct/P2612
 wdpdTERYTMunicipalityCode,http://www.wikidata.org/prop/direct/P1653
 wdpdTGNID,http://www.wikidata.org/prop/direct/P1667
 wdpdTLGAuthorID,http://www.wikidata.org/prop/direct/P3576
+wdpdTMDbMovieID,http://www.wikidata.org/prop/direct/P4947
+wdpdTMDbPersonId,http://www.wikidata.org/prop/direct/P4985
 wdpdTOID,http://www.wikidata.org/prop/direct/P3120
 wdpdTVComID,http://www.wikidata.org/prop/direct/P2638
 wdpdTVGuidePersonID,http://www.wikidata.org/prop/direct/P3845
@@ -2687,6 +2727,7 @@ wdpdTheBlackBookID,http://www.wikidata.org/prop/direct/P4248
 wdpdTheNumbersMovieID,http://www.wikidata.org/prop/direct/P3808
 wdpdTheNumbersPersonID,http://www.wikidata.org/prop/direct/P4657
 wdpdThePeeragePersonID,http://www.wikidata.org/prop/direct/P4638
+wdpdTheTVDBComID,http://www.wikidata.org/prop/direct/P4835
 wdpdTheTimesOfIndiaTopicID,http://www.wikidata.org/prop/direct/P4204
 wdpdTheatricaliaPersonID,http://www.wikidata.org/prop/direct/P2469
 wdpdTheatricaliaPlayID,http://www.wikidata.org/prop/direct/P1242
@@ -2798,6 +2839,7 @@ wdpdWikidataSPARQLQueryEquivalent,http://www.wikidata.org/prop/direct/P3921
 wdpdWikidataTimePrecision,http://www.wikidata.org/prop/direct/P2803
 wdpdWikidataUsageInstructions,http://www.wikidata.org/prop/direct/P2559
 wdpdWikimediaLanguageCode,http://www.wikidata.org/prop/direct/P424
+wdpdWikitribuneCategory,http://www.wikidata.org/prop/direct/P4973
 wdpdWikivoyageBanner,http://www.wikidata.org/prop/direct/P948
 wdpdWinner,http://www.wikidata.org/prop/direct/P1346
 wdpdWoRMSID,http://www.wikidata.org/prop/direct/P850

@@ -45,7 +45,7 @@ from six                    import text_type
 from scipy.spatial.distance import cosine
 from sqlalchemy             import create_engine
 from sqlalchemy.orm         import sessionmaker
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_to_json, json_to_xsb
+from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_to_json, json_to_xsb, XSBString, XSBFunctor
 
 from nltools                import misc
 from nltools.tokenizer      import tokenize

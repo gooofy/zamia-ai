@@ -31,9 +31,9 @@ def get_data(k):
     cnt = 0
     for res in k.prolog_query("wdpdInstanceOf(NUMBER, wdeNaturalNumber), rdfsLabel(NUMBER, en, LABEL), rdfsLabel(NUMBER, de, DE_LABEL)."):
 
-        s_number    = res[0]
-        s_label_en  = res[1]
-        s_label_de  = res[2]
+        s_number    = res[0].name
+        s_label_en  = res[1].value
+        s_label_de  = res[2].value
         # import pdb; pdb.set_trace()
         k.dte.ner('en', 'natnum', s_number, s_label_en)
         k.dte.ner('de', 'natnum', s_number, s_label_de)
@@ -48,8 +48,8 @@ def get_data(k):
         def action_set_ent_math(c):
             c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, score in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
-                n1 = row['N1']
+            for row in c.kernal.prolog_query('wdpdNumericValue(%s, N1).' % unicode(n1e)):
+                n1 = row[0]
                 res = n1 * n1
                 c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
 
@@ -65,11 +65,11 @@ def get_data(k):
         def action_set_ent_math(c):
             c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
-                n1 = row['N1']
+            for row in c.kernal.prolog_query('wdpdNumericValue(%s, N1).' % unicode(n1e)):
+                n1 = row[0]
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
-                    n2 = row['N2']
+                for row in c.kernal.prolog_query('wdpdNumericValue(%s, N2).' % unicode(n2e)):
+                    n2 = row[0]
                     res = n1 + n2
                     score = s1+s2
                     c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
@@ -90,11 +90,11 @@ def get_data(k):
         def action_set_ent_math(c):
             c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
-                n1 = row['N1']
+            for row in c.kernal.prolog_query('wdpdNumericValue(%s, N1).' % unicode(n1e)):
+                n1 = row[0]
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
-                    n2 = row['N2']
+                for row in c.kernal.prolog_query('wdpdNumericValue(%s, N2).' % unicode(n2e)):
+                    n2 = row[0]
                     res = n1 - n2
                     score = s1+s2
                     c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
@@ -116,11 +116,11 @@ def get_data(k):
         def action_set_ent_math(c):
             c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
-                n1 = row['N1']
+            for row in c.kernal.prolog_query('wdpdNumericValue(%s, N1).' % unicode(n1e)):
+                n1 = row[0]
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
-                    n2 = row['N2']
+                for row in c.kernal.prolog_query('wdpdNumericValue(%s, N2).' % unicode(n2e)):
+                    n2 = row[0]
                     res = n1 * n2
                     score = s1+s2
                     c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)
@@ -140,11 +140,11 @@ def get_data(k):
         def action_set_ent_math(c):
             c.kernal.mem_push(c.user, 'f1ent', 'wdeMathematics')
         for n1e, s1 in c.ner(c.lang, 'natnum', n1_start, n1_end):
-            for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n1e, 'N1']):
-                n1 = row['N1']
+            for row in c.kernal.prolog_query('wdpdNumericValue(%s, N1).' % unicode(n1e)):
+                n1 = row[0]
             for n2e, s2 in c.ner(c.lang, 'natnum', n2_start, n2_end):
-                for row in c.kernal.prolog_hl_query('wdpdNumericValue', [n2e, 'N2']):
-                    n2 = row['N2']
+                for row in c.kernal.prolog_query('wdpdNumericValue(%s, N2).' % unicode(n2e)):
+                    n2 = row[0]
                     res = n1 / n2
                     score = s1+s2
                     c.resp(u"%d" % res, score=score+100.0, action=action_set_ent_math)

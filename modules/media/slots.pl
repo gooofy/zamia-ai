@@ -2,25 +2,25 @@
 
 :- multifile rdfsLabel/3.
 
-rdfsLabel(aiDance, de, 'Dance').
-rdfsLabel(aiDance, en, 'Dance').
-rdfsLabel(aiMusic, de, 'Musik').
-rdfsLabel(aiMusic, en, 'Music').
-rdfsLabel(aiNewRock, de, 'New Rock').
-rdfsLabel(aiNewRock, en, 'New Rock').
-rdfsLabel(aiNews, de, 'Aktuelles').
-rdfsLabel(aiNews, en, 'News').
-rdfsLabel(aiNewstalk, de, 'Newstalk').
-rdfsLabel(aiNewstalk, en, 'Newstalk').
-rdfsLabel(aiPop, de, 'Pop').
-rdfsLabel(aiPop, en, 'Pop').
-rdfsLabel(aiRock, de, 'Rock').
-rdfsLabel(aiRock, en, 'Rock').
-rdfsLabel(aiTechNews, de, 'Tech News').
-rdfsLabel(aiTechNews, en, 'Tech News').
-rdfsLabel(aiWorkout, de, 'Workout').
-rdfsLabel(aiWorkout, en, 'Workout').
-rdfsLabel(wde1046RTL, de, 'RTL').
+rdfsLabel(aiDance, de, "Dance").
+rdfsLabel(aiDance, en, "Dance").
+rdfsLabel(aiMusic, de, "Musik").
+rdfsLabel(aiMusic, en, "Music").
+rdfsLabel(aiNewRock, de, "New Rock").
+rdfsLabel(aiNewRock, en, "New Rock").
+rdfsLabel(aiNews, de, "Aktuelles").
+rdfsLabel(aiNews, en, "News").
+rdfsLabel(aiNewstalk, de, "Newstalk").
+rdfsLabel(aiNewstalk, en, "Newstalk").
+rdfsLabel(aiPop, de, "Pop").
+rdfsLabel(aiPop, en, "Pop").
+rdfsLabel(aiRock, de, "Rock").
+rdfsLabel(aiRock, en, "Rock").
+rdfsLabel(aiTechNews, de, "Tech News").
+rdfsLabel(aiTechNews, en, "Tech News").
+rdfsLabel(aiWorkout, de, "Workout").
+rdfsLabel(aiWorkout, en, "Workout").
+rdfsLabel(wde1046RTL, de, "RTL").
 
 aiMediaSlot(aiDance, 6).
 aiMediaSlot(aiMusic, 3).

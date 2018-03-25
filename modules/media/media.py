@@ -25,15 +25,15 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("aiMediaSlot(STATION, SLOT), rdfsLabel(STATION, %s, LABEL)." % lang):
-            s_station = res[0] 
-            s_label   = res[2] 
+            s_station = res[0].name 
+            s_label   = res[2].value
             k.dte.ner(lang, 'media_station', s_station, s_label)
             k.dte.macro(lang, 'media_stations', {'LABEL': s_label})
 
     def change_media_station(c, ts, te):
 
         def act(c, station):
-            c.kernal.mem_set(c.realm, 'action', 'media_on')
+            c.kernal.mem_set(c.realm, 'action', XSBString('media_on'))
             c.kernal.mem_push(c.user, 'f1ent', station)
             c.kernal.mem_push(c.user, 'station', station)
 
@@ -60,7 +60,7 @@ def get_data(k):
 
     def media_station_off(c):
         def act(c):
-            c.kernal.mem_set(c.realm, 'action', 'media_off')
+            c.kernal.mem_set(c.realm, 'action', XSBString('media_off'))
         c.resp(u"", score=1.0, action=act)
 
     k.dte.dt('en', u"(please|) (switch|turn|tune) off (the radio|the music|media|the media player)",
@@ -70,11 +70,11 @@ def get_data(k):
 
     def check_media (c, args):
         action, station = args
-        assert c.kernal.mem_get(c.realm, 'action') == action
+        assert c.kernal.mem_get(c.realm, 'action').value == action
         if station:
             # import pdb; pdb.set_trace()
             s1, score = c.kernal.mem_get_multi(c.user, 'station')[0] 
-            assert s1 == station
+            assert s1.name == station
         
     k.dte.ts('en', 't0002', [(u"please switch on the radio", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
     k.dte.ts('de', 't0003', [(u"schalte bitte das Radio ein", u"", check_media, ['media_on', 'wdeB5Aktuell'])])

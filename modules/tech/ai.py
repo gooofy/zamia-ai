@@ -406,9 +406,9 @@ def get_data(k):
     k.dte.dt('en', u"are you (running on|) a {home_computer:LABEL}?", u"No, I am running on current hardware, but I love home computers.")
     k.dte.dt('de', u"(bist du ein|läufst du auf einem) {home_computer:LABEL}?", u"Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!")
 
-    k.dte.ts('en', 't0008', [(u"computer are you a commodore 64?", u"No, I am running on current hardware, but I love home computers."),
+    k.dte.ts('en', 't0008', [(u"are you a commodore 64?", u"No, I am running on current hardware, but I love home computers."),
                                (u"are you able to learn?", u"Yes I can learn things")])
-    k.dte.ts('de', 't0009', [(u"computer, bist du ein commodore 64?", u"Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!"),
+    k.dte.ts('de', 't0009', [(u"bist du ein commodore 64?", u"Nein, ich laufe auf aktueller Hardware, aber ich mag Homecomputer sehr!"),
                                (u"kannst du lernen?", u"Ja, ich kann lernen.")])
 
     k.dte.dt('en', u"are you running under linux too?", u"sure, that is my favourite operating system!")

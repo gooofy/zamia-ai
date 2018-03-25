@@ -24,29 +24,29 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("instances_of(wdeOperatingSystem, OS), rdfsLabel(OS, %s, LABEL)." % lang):
-            s_os    = res[0] 
-            s_label = res[1] 
+            s_os    = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'operating_system', s_os, s_label)
             k.dte.macro(lang, 'operating_system', {'LABEL': s_label})
             # print s_os, s_label
 
         for res in k.prolog_query("instances_of(wdeProgrammingLanguage1, L), rdfsLabel(L, %s, LABEL)." % lang):
-            s_l     = res[0] 
-            s_label = res[1] 
+            s_l     = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'programming_language', s_l, s_label)
             k.dte.macro(lang, 'programming_language', {'LABEL': s_label})
             # print s_l, s_label
 
         for res in k.prolog_query("wdpdSubclassOf(HC, wdeHomeComputer), rdfsLabel(HC, %s, LABEL)." % lang):
-            s_hc    = res[0] 
-            s_label = res[1] 
+            s_hc    = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'home_computer', s_hc, s_label)
             k.dte.macro(lang, 'home_computer', {'LABEL': s_label})
             # print s_hc, s_label
 
         for res in k.prolog_query("wdpdInstanceOf(HC, wdeHomeComputer), rdfsLabel(HC, %s, LABEL)." % lang):
-            s_hc    = res[0] 
-            s_label = res[1] 
+            s_hc    = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'home_computer', s_hc, s_label)
             k.dte.macro(lang, 'home_computer', {'LABEL': s_label})
             # print s_hc, s_label

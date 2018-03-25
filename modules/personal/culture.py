@@ -32,9 +32,9 @@ def get_data(k):
         for res in c.kernal.prolog_query("favMovie(self, MOVIE), rdfsLabel(MOVIE, %s, MOVIE_LABEL), wdpdDirector(MOVIE, DIRECTOR), rdfsLabel(DIRECTOR, %s, DIRECTOR_LABEL)." % (c.lang, c.lang)):
 
             s_movie          = res[0]
-            s_movie_label    = res[1]
+            s_movie_label    = res[1].value
             s_director       = res[2]
-            s_director_label = res[3]
+            s_director_label = res[3].value
 
             if c.lang=='de':
                 c.resp('%s von %s' % (s_movie_label, s_director_label), score=100.0, action=act, action_arg=(s_movie, s_director))
@@ -67,7 +67,7 @@ def get_data(k):
         for res in c.kernal.prolog_query("favAuthor(self, AUTHOR), rdfsLabel(AUTHOR, %s, AUTHOR_LABEL)." % c.lang):
 
             s_author       = res[0]
-            s_author_label = res[1]
+            s_author_label = res[1].value
 
             if c.lang=='de':
                 c.resp('%s.' % s_author_label, score=100.0, action=act, action_arg=s_author)
@@ -93,9 +93,9 @@ def get_data(k):
         for res in c.kernal.prolog_query("favBook(self, BOOK), rdfsLabel(BOOK, %s, BOOK_LABEL), wdpdAuthor(BOOK, AUTHOR), rdfsLabel(AUTHOR, %s, AUTHOR_LABEL)." % (c.lang, c.lang)):
 
             s_book         = res[0]
-            s_book_label   = res[1]
+            s_book_label   = res[1].value
             s_author       = res[2]
-            s_author_label = res[3]
+            s_author_label = res[3].value
 
             if c.lang=='de':
                 c.resp('%s von %s.' % (s_book_label, s_author_label), score=100.0, action=act, action_arg=(s_book, s_author))
@@ -127,7 +127,7 @@ def get_data(k):
         for res in c.kernal.prolog_query("idol(self, IDOL), rdfsLabel(IDOL, %s, IDOL_LABEL)." % c.lang):
 
             s_idol       = res[0]
-            s_idol_label = res[1]
+            s_idol_label = res[1].value
 
             if c.lang=='de':
                 c.resp('%s.' % s_idol_label, score=100.0, action=act, action_arg=s_idol)

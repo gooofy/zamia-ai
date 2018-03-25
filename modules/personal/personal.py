@@ -41,7 +41,7 @@ def get_data(k):
         for res in c.kernal.prolog_query("wdpdDateOfBirth(self, BD)."):
 
             bd = res[0]
-            bdlabel = base.transcribe_date(dateutil.parser.parse(bd), c.lang, 'dativ')
+            bdlabel = base.transcribe_date(dateutil.parser.parse(bd.value), c.lang, 'dativ')
 
             if c.lang=='de':
                 c.resp('Ich ging am %s zum ersten Mal in Betrieb.' % bdlabel, score=100.0, action=act, action_arg=bd)

@@ -25,8 +25,8 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("instances_of(wdeFederatedState, STATE), rdfsLabel(STATE, %s, LABEL)." % lang):
-            s_state = res[0] 
-            s_label = res[1] 
+            s_state = res[0].name
+            s_label = res[1].value
             k.dte.ner(lang, 'federated_state', s_state, s_label)
             k.dte.macro(lang, 'federated_states', {'LABEL': s_label})
 

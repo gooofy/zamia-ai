@@ -17,21 +17,22 @@
 # limitations under the License.
 #
 
-MACRO_LIMIT = 12
-
 def get_data(k):
 
     k.dte.set_prefixes([u''])
 
     # NER, macros
 
+    # limit the amount of training samples generated
+    macro_cities = set([ 'wdeTallinn', 'wdeBerlin', 'wdeHannover', 'wdeAustin', 'wdeStuttgart', 'wdeParis', 'wdeLondon' ])
+
     for lang in ['en', 'de']:
         cnt = 0
         for res in k.prolog_query("instances_of(wdeCity, CITY), rdfsLabel(CITY, %s, LABEL)." % lang):
-            s_city  = res[0] 
-            s_label = res[1] 
+            s_city  = res[0].name 
+            s_label = res[1].value
             k.dte.ner(lang, 'city', s_city, s_label)
-            if cnt < MACRO_LIMIT:
+            if s_city in macro_cities:
                 k.dte.macro(lang, 'cities', {'LABEL': s_label})
             cnt += 1
 
@@ -56,15 +57,15 @@ def get_data(k):
         # import pdb; pdb.set_trace()
 
         for city, score in fss:
-            clabel  = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (city, c.lang))
-            country = c.kernal.prolog_query_one("wdpdCountry(%s, COUNTRY)." % city)
+            clabel  = c.kernal.prolog_query_one(u'rdfsLabel(%s, %s, L).' % (city, c.lang))
+            country = c.kernal.prolog_query_one(u"wdpdCountry(%s, COUNTRY)." % city)
             if clabel and country:
-                cylabel = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (country, c.lang))
+                cylabel = c.kernal.prolog_query_one(u'rdfsLabel(%s, %s, L).' % (country, c.lang))
 
                 if c.lang=='de':
-                    c.resp(u"%s ist eine Stadt in %s." % (clabel, cylabel), score=score, action=act, action_arg=city)
+                    c.resp(u"%s ist eine Stadt in %s." % (clabel.value, cylabel.value), score=score, action=act, action_arg=city)
                 else:
-                    c.resp(u"%s is a city in %s." % (clabel, cylabel), score=score, action=act, action_arg=city)
+                    c.resp(u"%s is a city in %s." % (clabel.value, cylabel.value), score=score, action=act, action_arg=city)
 
     k.dte.dt('en', u"(what is|what about|what do you know about|where is|in what country is|in|do you know|do you know the city|over|) {cities:LABEL} (and you|) (again|then|do you know it|do you know that|)?",
                    city_location, ['cities_0_start', 'cities_0_end', False])
@@ -176,19 +177,19 @@ def get_data(k):
     k.dte.ts('en', 'c0004', [(u"What about Berlin?", u"Berlin is a city in Germany."),
                                (u"Which city?", u"Berlin is a city in Germany."),
                                (u"What was our topic?", u"We have been talking about Berlin, I think."),
-                               (u"How many people live there?", u"The population of Berlin is 3469849"),
+                               (u"How many people live there?", u"The population of Berlin is 3490105"),
                                (u"And where is it again?", u"Berlin is a city in Germany"),
                                (u"And what is the size of it?", u"The area of Berlin is 891 square kilometers.")])
     k.dte.ts('de', 'c0005', [(u"Was ist mit Berlin?", u"Berlin ist eine Stadt in Deutschland"),
                                (u"Welche Stadt?", u"Berlin ist eine Stadt in Deutschland."),
                                (u"Was war unser Thema?", u"Wir hatten über Berlin gesprochen, glaube ich."),
-                               (u"Wie viele Menschen leben dort?", u"Berlin hat 3469849 Einwohner."),
+                               (u"Wie viele Menschen leben dort?", u"Berlin hat 3490105 Einwohner."),
                                (u"Und wo ist es nochmal?", u"Berlin ist eine Stadt in Deutschland"),
                                (u"Und wie groß ist die Fläche?", u"Die Fläche von Berlin ist 891 Quadratkilometer.")])
 
     k.dte.dt('en', u"(what are the coordinates of|coordinates of) {cities:LABEL} (please|) ?", u"sorry, I do not have geo coordinates in my database yet.")
     k.dte.dt('de', u"(wie sind die koordinaten von|was sind die koordinaten von|koordinaten von) {cities:LABEL} (bitte|)?", u"tut mir leid, ich habe keine geo koordinaten in meiner datenbank")
 
-    k.dte.dt('en', u"the expo takes place in Hanover", u"Have you been there?")
+    k.dte.dt('en', u"the expo takes place in Hannover", u"Have you been there?")
     k.dte.dt('de', u"in hannover findet die expo statt", u"Warst Du da schon mal?")
 

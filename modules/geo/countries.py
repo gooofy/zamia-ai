@@ -25,14 +25,15 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("instances_of(wdeCountry, COUNTRY), rdfsLabel(COUNTRY, %s, LABEL)." % lang):
-            s_country = res[0] 
-            s_label   = res[1] 
+            s_country = res[0].name 
+            s_label   = res[1].value
             k.dte.ner(lang, 'country', s_country, s_label)
             k.dte.macro(lang, 'countries', {'LABEL': s_label})
 
     def country_location(c, ts, te, check_topic):
 
         def act(c, country):
+            # import pdb; pdb.set_trace()
             c.kernal.mem_push(c.user, 'f1ent', country)
 
         if check_topic:
@@ -40,7 +41,7 @@ def get_data(k):
             if not f1ent:
                 return
             f1ent = f1ent[0][0]
-            if not c.kernal.prolog_check('instances_of(%s, %s).' % ('wdeCountry', f1ent)):
+            if not c.kernal.prolog_check(u'instances_of(%s, %s).' % ('wdeCountry', f1ent)):
                 return
 
         if ts>=0:
@@ -51,7 +52,7 @@ def get_data(k):
         # import pdb; pdb.set_trace()
 
         for country, score in fss:
-            clabel  = c.kernal.prolog_query_one('rdfsLabel(%s, %s, L).' % (country, c.lang))
+            clabel  = c.kernal.prolog_query_one(u'rdfsLabel(%s, %s, L).' % (country, c.lang))
             if clabel:
                 if c.lang=='de':
                     c.resp(u"%s ist ein Staat auf dem Planeten Erde." % clabel, score=score, action=act, action_arg=country)

@@ -127,10 +127,10 @@ class AIKernal(object):
 
             if q:
                 q += ', '
-            q += u'assertz(memory("%s", "%s", %s, %f))' % (m.realm, m.k, unicode(v), m.score)
+            q += u"assertz(memory('%s', '%s', %s, %f))" % (m.realm, m.k, unicode(v), m.score)
 
         if not q:
-            q = u'assertz(memory("self", "self", "self", 1.0))'
+            q = u'assertz(memory(self, self, self, 1.0))'
         q += u'.'
         xsb_hl_command(q)
 
@@ -752,7 +752,7 @@ class AIKernal(object):
     def mem_clear(self, realm):
         if not isinstance(realm, basestring):
             raise Exception ("mem_set: realm must be string-typed.")
-        q = 'retractall(memory("%s", _, _, _)).' % realm
+        q = u"retractall(memory('%s', _, _, _))." % realm
         # logging.debug (q)
         self.prolog_query(q)
 
@@ -762,13 +762,13 @@ class AIKernal(object):
 
         entries = []
 
-        q = 'memory("%s", K, V, S).' % realm
+        q = u"memory('%s', K, V, S)." % realm
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
             for r in res:
-                k     = r[0].value
-                v     = r[1].value
+                k     = r[0]
+                v     = r[1]
                 score = r[2]
                 entries.append((k, v, score))
 
@@ -781,13 +781,11 @@ class AIKernal(object):
         if not isinstance(realm, basestring) or not isinstance(k, basestring):
             raise Exception ("mem_set: realm and key must be string-typed.")
 
-        q = 'retractall(memory("%s", "%s", _, _))' % (realm, k)
-        if isinstance(v, basestring):
-            q += ', assertz(memory("%s", "%s", "%s", 1.0)).' % (realm, k, v)
-        elif v is None:
-            q += '.' 
+        q = u"retractall(memory('%s', '%s', _, _))" % (realm, k)
+        if v:
+            q += u", assertz(memory('%s', '%s', %s, 1.0))." % (realm, k, unicode(v))
         else:
-            raise Exception ("mem_set: value type not supported.")
+            q += '.' 
         # logging.debug (q)
 
         self.prolog_query(q)
@@ -796,7 +794,7 @@ class AIKernal(object):
         if not isinstance(realm, basestring) or not isinstance(k, basestring):
             raise Exception ("mem_set: realm and key must be string-typed.")
 
-        q = 'memory("%s", "%s", V, S).' % (realm, k)
+        q = u"memory('%s', '%s', V, S)." % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if not res:
@@ -807,7 +805,7 @@ class AIKernal(object):
         for r in res:
             if not v or r[1] > score:
                 score = r[1]
-                v     = r[0].value
+                v     = r[0]
 
         return v
 
@@ -817,13 +815,13 @@ class AIKernal(object):
 
         entries = []
 
-        q = 'memory("%s", "%s", V, S).' % (realm, k)
+        q = u"memory('%s', '%s', V, S)." % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
             for r in res:
                 score = r[1]
-                v     = r[0].value
+                v     = r[0]
                 entries.append((v, score))
 
         return entries
@@ -836,27 +834,23 @@ class AIKernal(object):
 
         # re-score existing entries
 
-        q = 'memory("%s", "%s", V, S).' % (realm, k)
+        q = u"memory('%s', '%s', V, S)." % (realm, k)
         # logging.debug (q)
         res = self.prolog_query(q)
         if res:
             for r in res:
                 score = r[1]
-                v     = r[0].value
+                v     = r[0]
                 if score < 0.125:
                     continue
                 entries.append((score/2, v))
 
         # put all entries into the KB
-        q = 'retractall(memory("%s", "%s", _, _))' % (realm, k)
+        q = u"retractall(memory('%s', '%s', _, _))" % (realm, k)
         for score, v in entries:
-            if isinstance(v, basestring):
-                q += ', assertz(memory("%s", "%s", "%s", %f))' % (realm, k, v, score)
-            elif v is None:
-                pass
-            else:
-                raise Exception ("mem_set: value type not supported.")
-        q += '.'
+            if v:
+                q += u", assertz(memory('%s', '%s', %s, %f))" % (realm, k, unicode(v), score)
+        q += u'.'
         # logging.debug (q)
 
         self.prolog_query(q)
@@ -887,12 +881,12 @@ class AIKernal(object):
 
         self.session.query(model.Mem).delete()
 
-        q = 'memory(REALM, K, V, S).'
+        q = u'memory(REALM, K, V, S).'
         for r in self.prolog_query(q):
             # logging.info(repr(r))
 
-            realm = r[0].value
-            k     = r[1].value
+            realm = r[0].name
+            k     = r[1].name
             v     = xsb_to_json(r[2])
             score = r[3]
 

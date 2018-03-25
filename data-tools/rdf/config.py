@@ -2098,19 +2098,25 @@ RDF_ALIASES = {
 
                 # literature
 
-                u'wde:Novel2001ASpaceOdyssey'     : u'http://www.wikidata.org/entity/Q835341',
-                u'wde:NovelNeuromancer'           : u'http://www.wikidata.org/entity/Q662029',
-                u'wde:NovelTheStand'              : u'http://www.wikidata.org/entity/Q149552',
-                u'wde:NovelIshmael'               : u'http://www.wikidata.org/entity/Q206503',
+                u'wde:2001ASpaceOdyssey'                   : u'http://www.wikidata.org/entity/Q835341',
+                u'wde:Neuromancer'                         : u'http://www.wikidata.org/entity/Q662029',
+                u'wde:TheStand'                            : u'http://www.wikidata.org/entity/Q149552',
+                u'wde:Ishmael'                             : u'http://www.wikidata.org/entity/Q206503',
+                u'wde:Inferno'                             : u'http://www.wikidata.org/entity/Q4845793',
+                u'wde:IRobot'                              : u'http://www.wikidata.org/entity/Q393018',
+                u'wde:ABriefHistoryOfTime'                 : u'http://www.wikidata.org/entity/Q471726',
+                u'wde:TheDaVinciCode'                      : u'http://www.wikidata.org/entity/Q81689',
+                u'wde:TheShining'                          : u'http://www.wikidata.org/entity/Q470937',
+                u'wde:HarryPotterAndTheChamberOfSecrets'   : u'http://www.wikidata.org/entity/Q47209',
 
                 # media
 
-                u'wde:B5aktuell'             : u'http://www.wikidata.org/entity/Q795291',
-                u'wde:Deutschlandfunk'       : u'http://www.wikidata.org/entity/Q695328',
-                u'wde:SWRAktuell'            : u'http://www.wikidata.org/entity/Q2208796',
-                u'wde:SWR3'                  : u'http://www.wikidata.org/entity/Q2208789',
-                u'wde:PowerHitRadio'         : u'http://www.wikidata.org/entity/Q12372710',
-                u'wde:104.6RTL'              : u'http://www.wikidata.org/entity/Q166266',
+                u'wde:B5aktuell'                           : u'http://www.wikidata.org/entity/Q795291',
+                u'wde:Deutschlandfunk'                     : u'http://www.wikidata.org/entity/Q695328',
+                u'wde:SWRAktuell'                          : u'http://www.wikidata.org/entity/Q2208796',
+                u'wde:SWR3'                                : u'http://www.wikidata.org/entity/Q2208789',
+                u'wde:PowerHitRadio'                       : u'http://www.wikidata.org/entity/Q12372710',
+                u'wde:104.6RTL'                            : u'http://www.wikidata.org/entity/Q166266',
 
                 # operating systems
 
@@ -2555,10 +2561,16 @@ RES_PATHS = [
 
               (
                 [
-                  u'wde:Novel2001ASpaceOdyssey',
-                  u'wde:NovelNeuromancer',
-                  u'wde:NovelTheStand',
-                  u'wde:NovelIshmael',
+                  u'wde:2001ASpaceOdyssey',
+                  u'wde:Neuromancer',
+                  u'wde:TheStand',
+                  u'wde:Ishmael',
+                  u'wde:Inferno',
+                  u'wde:IRobot',
+                  u'wde:ABriefHistoryOfTime',
+                  u'wde:TheDaVinciCode',
+                  u'wde:TheShining',
+                  u'wde:HarryPotterAndTheChamberOfSecrets'
                 ],
                 [
                   [u'wdpd:Genre'],

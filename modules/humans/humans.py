@@ -41,7 +41,12 @@ def get_data(k):
                          'wdeIsaacNewton',
                          'wdeCharlesDarwin',
                          'wdeNikolaTesla',
-                         'wdeMaxPlanck'])
+                         'wdeMaxPlanck',
+                         'wdeHelmutKohl',
+                         'wdeFrankWalterSteinmeier',
+                         'wdeJoachimGauck',
+                         'wdeDonaldTrump',
+                         'wdeRonaldReagan' ])
 
     for lang in ['en', 'de']:
         cnt = 0

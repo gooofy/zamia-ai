@@ -25,16 +25,16 @@ def get_data(k):
 
     for lang in ['en', 'de']:
         for res in k.prolog_query("wdpdPositionHeld(PERSON, wdePresidentOfTheUnitedStatesOfAmerica), rdfsLabel(PERSON, %s, LABEL)." % lang):
-            s_person = res[0] 
-            s_label  = res[1] 
+            s_person = res[0].name
+            s_label  = res[1].value
             k.dte.macro(lang, 'known_politicians', {'LABEL': s_label})
         for res in k.prolog_query("wdpdPositionHeld(PERSON, wdePresidentOfGermany), rdfsLabel(PERSON, %s, LABEL)." % lang):
-            s_person = res[0] 
-            s_label  = res[1] 
+            s_person = res[0].name
+            s_label  = res[1].value
             k.dte.macro(lang, 'known_politicians', {'LABEL': s_label})
         for res in k.prolog_query("wdpdPositionHeld(PERSON, wdeFederalChancellorOfGermany), rdfsLabel(PERSON, %s, LABEL)." % lang):
-            s_person = res[0] 
-            s_label  = res[1] 
+            s_person = res[0].name
+            s_label  = res[1].value
             k.dte.macro(lang, 'known_politicians', {'LABEL': s_label})
 
     k.dte.dt('en', u"do you know politics?", u"a little")
@@ -134,11 +134,11 @@ def get_data(k):
                     u"(wer ist|wer ist denn| durch| wer war | wer war eigentlich | wer war denn| wer ist eigentlich|was ist mit|was ist eigentlich mit|was weisst du über|was weisst du eigentlich über| was hältst du von|kennst du|) {known_humans:W}"],
                    answer_info_human, ['known_humans_0_start', 'known_humans_0_end'])
 
-    k.dte.ts('en', 't0000', [(u"Computer, do you know Donald Trump?", u"Isn't he the current US President")])
-    k.dte.ts('de', 't0001', [(u"Computer, kennst du eigentlich Donald Trump?", u"Ist der nicht der US Präsident?")])
+    k.dte.ts('en', 't0000', [(u"do you know Donald Trump?", u"Isn't he the current US President")])
+    k.dte.ts('de', 't0001', [(u"kennst du eigentlich Donald Trump?", u"Ist der nicht der US Präsident?")])
 
-    k.dte.ts('en', 't0002', [(u"Computer, who is Ronald Reagan?", u"Isn't he a former US President?")])
-    k.dte.ts('de', 't0003', [(u"Computer, wer ist Ronald Reagan?", u"War der nicht mal US Präsident?")])
+    k.dte.ts('en', 't0002', [(u"who is Ronald Reagan?", u"Isn't he a former US President?")])
+    k.dte.ts('de', 't0003', [(u"wer ist Ronald Reagan?", u"War der nicht mal US Präsident?")])
 
     def answer_current_position_holder(c, position):
 
@@ -152,9 +152,9 @@ def get_data(k):
 
         for res in c.kernal.prolog_query('wdpPositionHeld(ENTITY, OFFICE_STMT), wdpsPositionHeld(OFFICE_STMT, %s), not(wdpqEndTime(OFFICE_STMT, _)), rdfsLabel(%s, %s, POSITION_LABEL), rdfsLabel(ENTITY, %s, ENTITY_LABEL), wdpqStartTime(OFFICE_STMT, STV), wboTimeValue(STV, START_TIME).' % (position, position, c.lang, c.lang)):
             q_entity       = res[0] 
-            q_pos_label    = res[3] 
-            q_entity_label = res[4] 
-            q_start_time   = res[6]
+            q_pos_label    = res[3].value
+            q_entity_label = res[4].value
+            q_start_time   = res[6].value
 
             # logging.info ('answer_current_position_holder: %s' % repr(res))
 
@@ -201,11 +201,11 @@ def get_data(k):
                    [u"Er war der zweiundvierzigste Präsident der USA.",
                     u"Das ist der mit der Definition..."])
 
-    k.dte.ts('en', 't0004', [(u"Computer, do you know Angela Merkel?", u"Isn't she the current German Chancellor?")])
-    k.dte.ts('de', 't0005', [(u"Computer, kennst du eigentlich Angela Merkel?", u"Ist sie nicht die Bundeskanzlerin?")])
+    k.dte.ts('en', 't0004', [(u"do you know Angela Merkel?", u"Isn't she the current German Chancellor?")])
+    k.dte.ts('de', 't0005', [(u"kennst du eigentlich Angela Merkel?", u"Ist sie nicht die Bundeskanzlerin?")])
 
-    k.dte.ts('en', 't0006', [(u"Computer, who is Helmut Kohl?", u"Isn't he a former German Chancellor?")])
-    k.dte.ts('de', 't0007', [(u"Computer, wer ist Helmut Kohl?", u"War der nicht mal Bundeskanzler?")])
+    k.dte.ts('en', 't0006', [(u"who is Helmut Kohl?", u"Isn't he a former German Chancellor?")])
+    k.dte.ts('de', 't0007', [(u"wer ist Helmut Kohl?", u"War der nicht mal Bundeskanzler?")])
 
     k.dte.dt('en', u"(Who is|What is the name of) the (german|) Chancellor?",
                    answer_current_position_holder, ['wdeFederalChancellorOfGermany'])
@@ -215,11 +215,11 @@ def get_data(k):
     k.dte.ts('en', 'chancellor00', [(u"Who is the Chancellor?", u"Federal chancellor of Germany is Angela Merkel.")])
     k.dte.ts('de', 'chancellor01', [(u"Wer ist die Bundeskanzlerin", u"Bundeskanzler ist Angela Merkel.")])
 
-    k.dte.ts('en', 't0008', [(u"Computer, do you know Frank-Walter Steinmeier?", u"Isn't he the current German President?")])
-    k.dte.ts('de', 't0009', [(u"Computer, kennst du eigentlich Frank-Walter Steinmeier?", u"Ist der nicht der Bundespräsident?")])
+    k.dte.ts('en', 't0008', [(u"do you know Frank-Walter Steinmeier?", u"Isn't he the current German President?")])
+    k.dte.ts('de', 't0009', [(u"kennst du eigentlich Frank-Walter Steinmeier?", u"Ist der nicht der Bundespräsident?")])
 
-    k.dte.ts('en', 't0010', [(u"Computer, who is Joachim Gauck?", u"Isn't he a former German President?")])
-    k.dte.ts('de', 't0011', [(u"Computer, wer ist Joachim Gauck?", u"War der nicht mal Bundespräsident?")])
+    k.dte.ts('en', 't0010', [(u"who is Joachim Gauck?", u"Isn't he a former German President?")])
+    k.dte.ts('de', 't0011', [(u"wer ist Joachim Gauck?", u"War der nicht mal Bundespräsident?")])
 
     k.dte.dt('en', u"(Who is|What is the name of) the German president?",
                    answer_current_position_holder, ['wdePresidentOfGermany'])

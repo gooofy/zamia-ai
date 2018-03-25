@@ -17,21 +17,39 @@
 # limitations under the License.
 #
 
-MACRO_LIMIT = 64
-
 def get_data(k):
 
     k.dte.set_prefixes([u''])
 
     # NER, macros
 
+    # limit the amount of training samples generated
+    macro_humans = set([ 'wdeAngelaMerkel', 
+                         'wdeStephenKing', 
+                         'wdeBarackObama', 
+                         'wdeArthurCClarke', 
+                         'wdeNiklausWirth', 
+                         'wdeDouglasAdams', 
+                         'wdeJRRTolkien', 
+                         'wdeDanBrown', 
+                         'wdeAlfredHitchcock', 
+                         'wdeLudwigWittgenstein', 
+                         'wdeLinusTorvalds', 
+                         'wdeAlbertEinstein',
+                         'wdeLudwigVanBeethoven',
+                         'wdeEricClapton',
+                         'wdeIsaacNewton',
+                         'wdeCharlesDarwin',
+                         'wdeNikolaTesla',
+                         'wdeMaxPlanck'])
+
     for lang in ['en', 'de']:
         cnt = 0
         for res in k.prolog_query("wdpdInstanceOf(HUMAN, wdeHuman), rdfsLabel(HUMAN, %s, LABEL)." % lang):
-            s_human = res[0] 
-            s_label = res[1] 
+            s_human = res[0].name 
+            s_label = res[1].value
             k.dte.ner(lang, 'human', s_human, s_label)
-            if cnt < MACRO_LIMIT:
+            if s_human in macro_humans:
                 k.dte.macro(lang, 'known_humans', {'W': s_label})
             cnt += 1
 
@@ -206,7 +224,7 @@ def get_data(k):
             # import pdb; pdb.set_trace()
             bd = c.kernal.prolog_query_one('wdpdDateOfBirth(%s, BD).'% human)
             if hlabel and bd:
-                bdlabel = base.transcribe_date(dateutil.parser.parse(bd), c.lang, 'dativ')
+                bdlabel = base.transcribe_date(dateutil.parser.parse(bd.value), c.lang, 'dativ')
                 if c.lang == 'en':
                     c.resp(u"%s was born on %s, I think." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd)) 
                     c.resp(u"I believe %s was born on %s." % (hlabel, bdlabel), score=score, action=act, action_arg=(human, bd))

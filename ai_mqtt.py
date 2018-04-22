@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Copyright 2015, 2016, 2017 Guenter Bartsch
+# Copyright 2015, 2016, 2017, 2018 Guenter Bartsch
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import json
 import random
 import time
 import datetime
-import dateutil
+import dateutil.parser
 import wave
 import struct
 
@@ -63,16 +63,14 @@ from optparse             import OptionParser
 from threading            import RLock, Lock, Condition
 
 from zamiaai              import model
-from zamiaprolog.builtins import ASSERT_OVERLAY_VAR_NAME
-from zamiaai.ai_kernal    import AIKernal
-from aiprolog.runtime     import USER_PREFIX
-from zamiaprolog.logicdb  import LogicDB
+from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES
+from xsbprolog            import XSBString, XSBFunctor
 from nltools              import misc
 from nltools.tts          import TTS
 from nltools.asr          import ASR, ASR_ENGINE_NNET3
 
 PROC_TITLE        = 'ai_mqtt'
-AI_SERVER_MODULE  = '__server__'
+DEFAULT_REALM     = '__mqtt__'
 
 AI_USER           = 'server' # FIXME: some sort of presence information maybe?
 SAMPLE_RATE       = 16000
@@ -313,6 +311,8 @@ def on_message(client, userdata, message):
 
             publish_state(client)
 
+    except KeyboardInterrupt:
+        raise
     except:
         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
@@ -331,10 +331,10 @@ misc.init_app(PROC_TITLE)
 
 config = misc.load_config('.airc', defaults = DEFAULTS)
 
-broker_host                    = config.get   ('mqtt', 'broker_host')
-broker_port                    = config.getint('mqtt', 'broker_port')
-broker_user                    = config.get   ('mqtt', 'broker_user')
-broker_pw                      = config.get   ('mqtt', 'broker_pw')
+broker_host                    = config.get      ('mqtt',   'broker_host')
+broker_port                    = config.getint   ('mqtt',   'broker_port')
+broker_user                    = config.get      ('mqtt',   'broker_user')
+broker_pw                      = config.get      ('mqtt',   'broker_pw')
 
 ai_model                       = config.get      ('server', 'model')
 lang                           = config.get      ('server', 'lang')
@@ -345,17 +345,18 @@ kaldi_model                    = config.get      ('server', 'kaldi_model')
 kaldi_acoustic_scale           = config.getfloat ('server', 'kaldi_acoustic_scale') 
 kaldi_beam                     = config.getfloat ('server', 'kaldi_beam') 
 kaldi_frame_subsampling_factor = config.getint   ('server', 'kaldi_frame_subsampling_factor') 
+toplevel                       = config.get      ('semantics', 'toplevel')
+xsb_root                       = config.get      ('semantics', 'xsb_root')
+db_url                         = config.get      ('db',     'url')
 
-tts_host                       = config.get   ('tts',    'tts_host')
-tts_port                       = config.getint('tts',    'tts_port')
-tts_locale                     = config.get   ('tts',    'tts_locale')
-tts_voice                      = config.get   ('tts',    'tts_voice')
-tts_engine                     = config.get   ('tts',    'tts_engine')
-tts_speed                      = config.getint('tts',    'tts_speed')
-tts_pitch                      = config.getint('tts',    'tts_pitch')
+tts_host                       = config.get      ('tts',    'tts_host')
+tts_port                       = config.getint   ('tts',    'tts_port')
+tts_locale                     = config.get      ('tts',    'tts_locale')
+tts_voice                      = config.get      ('tts',    'tts_voice')
+tts_engine                     = config.get      ('tts',    'tts_engine')
+tts_speed                      = config.getint   ('tts',    'tts_speed')
+tts_pitch                      = config.getint   ('tts',    'tts_pitch')
 
-all_modules                    = list(map (lambda m: m.strip(), config.get('semantics', 'modules').split(',')))
-db_url                         = config.get('db', 'url')
 
 #
 # commandline
@@ -380,37 +381,45 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 #
-# setup DB, AI Kernal, context
+# setup AI DB, Kernal and Context
 #
 
-db     = LogicDB(db_url)
-kernal = AIKernal(db=db, all_modules=all_modules, load_all_modules=True)
-kernal.setup_tf_model (mode='decode', load_model=True, ini_fn=ai_model)
-
-user_uri = USER_PREFIX + AI_USER
-current_ctx = kernal.find_prev_context (user_uri)
-
-if current_ctx:
-    logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
-else:
-    logging.warn ('no current_ctx found for user %s ' % user_uri)
-
+logging.debug ('AI kernal init...')
+kernal = AIKernal(db_url, xsb_root, toplevel)
+for mn2 in kernal.all_modules:
+    kernal.consult_module (mn2)
+kernal.setup_tf_model('decode', True, ini_fn=ai_model)
+lang = kernal.nlp_model.lang
+logging.debug ('AI kernal init done.')
 
 #
 # TTS
 #
 
-tts = TTS (host_tts = tts_host, port_tts = tts_port, locale=tts_locale, voice=tts_voice, engine=tts_engine, speed=tts_speed, pitch=tts_pitch)
+logging.debug ('TTS init...')
+tts = TTS (host_tts = tts_host, 
+           port_tts = tts_port, 
+           locale   = tts_locale, 
+           voice    = tts_voice, 
+           engine   = tts_engine, 
+           speed    = tts_speed, 
+           pitch    = tts_pitch)
 ignore_audio_before = datetime.datetime.now()
 tts_lock = Lock()
+logging.debug ('TTS init done.')
 
 #
 # ASR
 #
 
-asr = ASR(engine = ASR_ENGINE_NNET3, model_dir = kaldi_model_dir, model_name = kaldi_model,
-          kaldi_beam = kaldi_beam, kaldi_acoustic_scale = kaldi_acoustic_scale,
+logging.debug ('ASR init...')
+asr = ASR(engine                         = ASR_ENGINE_NNET3, 
+          model_dir                      = kaldi_model_dir, 
+          model_name                     = kaldi_model,
+          kaldi_beam                     = kaldi_beam, 
+          kaldi_acoustic_scale           = kaldi_acoustic_scale,
           kaldi_frame_subsampling_factor = kaldi_frame_subsampling_factor)
+logging.debug ('ASR init done')
 
 #
 # multithreading: queue, state lock
@@ -438,6 +447,8 @@ while not connected:
 
         connected = True
 
+    except KeyboardInterrupt:
+        raise
     except:
         logging.error('connection to %s:%d failed. retry in %d seconds...' % (broker_host, broker_port, RETRY_DELAY))
         time.sleep(RETRY_DELAY)
@@ -493,6 +504,7 @@ while True:
                         data['lang'] = lang
                         data['utt']  = hstr
                         data['user'] = AI_USER
+                        data['loc']  = loc
                      
                         client.publish(TOPIC_INPUT_TEXT, json.dumps(data))
                         listening = False
@@ -506,29 +518,21 @@ while True:
                 utt      = data['utt']
                 lang     = data['lang']
                 user_uri = USER_PREFIX + data['user']
+                realm    = data['loc'] if 'loc' in data else DEFAULT_REALM
 
                 if kernal.nlp_model.lang != lang:
                     logging.warn('incorrect language for model: %s' % lang)
                 else:
 
-                    score, resps, actions, solutions, current_ctx = kernal.process_input(utt, kernal.nlp_model.lang, user_uri, prev_ctx=current_ctx)
-                    logging.debug ('current_ctx: %s, user: %s' % (current_ctx.name, user_uri))
+                    ctx = AIContext(user_uri, kernal.session, lang, realm, kernal, test_mode=False)
+                    ai_utt, score, actions = kernal.process_input(ctx, utt)
 
-                    # for idx in range (len(resps)):
-                    #     logging.debug('[%05d] %s ' % (score, u' '.join(resps[idx])))
-
-                    # if we have multiple responses, pick one at random
+                    logging.debug (u"ai_utt : %s (score: %f, action: %s)" % (ai_utt, score, repr(actions)))
 
                     do_publish = attention>0
 
-                    if len(resps)>0:
-
-                        idx = random.randint(0, len(resps)-1)
-
-                        # apply DB overlay, if any
-                        ovl = solutions[idx].get(ASSERT_OVERLAY_VAR_NAME)
-                        if ovl:
-                            ovl.do_apply(AI_SERVER_MODULE, kernal.db, commit=True)
+                    acts = []
+                    if ai_utt or actions:
 
                         msg_cond.acquire()
                         try:
@@ -537,32 +541,40 @@ while True:
                             if attention>0:
                                 attention = ATTENTION_SPAN
 
-                            acts = actions[idx]
-                            for action in acts:
-                                logging.debug("ACTION %s" % repr(action))
-                                if len(action) == 2 and action[0] == u'attention':
-                                    if action[1] == u'on':
-                                        attention = ATTENTION_SPAN
-                                    else:
+                            if actions and not isinstance(actions, list):
+                                actions = [ actions ]
+
+                            if isinstance(actions, list):
+                                for a in actions:
+
+                                    if not isinstance (a, XSBFunctor):
+                                        logging.warn("ignoring non-functor action: %s" % repr(a))
+
+                                    al = [a.name]
+                                    for arg in a.args:
+                                        al.append(unicode(arg))
+                                    acts.append(al)
+
+                                    if a.name == 'attention':
+                                        if a.args[0].name == 'on':
+                                            attention  = ATTENTION_SPAN
+                                        elif a.args[0].name == 'off':
+                                            attention = 1
+
+                                        do_publish = True
+                                    elif a.name == 'media':
                                         attention = 1
-                                    do_publish = True
-                                if attention>0 and len(action) == 3 and action[0] == u'media':
-                                    attention = 1
-                                    do_publish = True
+                                        do_publish = True
 
                         finally:
                             msg_cond.release()
 
-                        resp = resps[idx]
-                        logging.debug('RESP: [%05d] %s' % (score, u' '.join(resps[idx])))
-
-                        msg = {'utt': u' '.join(resp), 'score': score, 'lang': lang}
+                        msg = {'utt': ai_utt, 'score': score, 'lang': lang}
 
                     else:
                         logging.error(u'no solution found for input %s' % utt)
 
                         msg = {'utt': u'', 'score': 0.0, 'lang': lang}
-                        acts = []
 
                     if do_publish:
                         (rc, mid) = client.publish(TOPIC_RESPONSE, json.dumps(msg))
@@ -601,5 +613,7 @@ while True:
                 msg_cond.release()
             att_ts = time.time()
 
+    except KeyboardInterrupt:
+        raise
     except:
         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())

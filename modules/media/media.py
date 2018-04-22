@@ -33,7 +33,7 @@ def get_data(k):
     def change_media_station(c, ts, te):
 
         def act(c, station):
-            c.kernal.mem_set(c.realm, 'action', XSBString('media_on'))
+            c.kernal.mem_set(c.realm, 'action', XSBFunctor('media', [XSBAtom('tune'), station]))
             c.kernal.mem_push(c.user, 'f1ent', station)
             c.kernal.mem_push(c.user, 'station', station)
 
@@ -60,7 +60,7 @@ def get_data(k):
 
     def media_station_off(c):
         def act(c):
-            c.kernal.mem_set(c.realm, 'action', XSBString('media_off'))
+            c.kernal.mem_set(c.realm, 'action', XSBFunctor('media', [XSBAtom('off')]))
         c.resp(u"", score=1.0, action=act)
 
     k.dte.dt('en', u"(please|) (switch|turn|tune) off (the radio|the music|media|the media player)",
@@ -70,27 +70,27 @@ def get_data(k):
 
     def check_media (c, args):
         action, station = args
-        assert c.kernal.mem_get(c.realm, 'action').value == action
+        assert c.kernal.mem_get(c.realm, 'action').name == action
         if station:
             # import pdb; pdb.set_trace()
             s1, score = c.kernal.mem_get_multi(c.user, 'station')[0] 
             assert s1.name == station
         
-    k.dte.ts('en', 't0002', [(u"please switch on the radio", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
-    k.dte.ts('de', 't0003', [(u"schalte bitte das Radio ein", u"", check_media, ['media_on', 'wdeB5Aktuell'])])
+    k.dte.ts('en', 't0002', [(u"please switch on the radio", u"", check_media, ['media', 'wdeB5Aktuell'])])
+    k.dte.ts('de', 't0003', [(u"schalte bitte das Radio ein", u"", check_media, ['media', 'wdeB5Aktuell'])])
 
-    k.dte.ts('en', 't0004', [(u"please tune into new rock", u"",  check_media, ['media_on', 'aiNewRock'])])
-    k.dte.ts('de', 't0005', [(u"schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock'])])
+    k.dte.ts('en', 't0004', [(u"please tune into new rock", u"",  check_media, ['media', 'aiNewRock'])])
+    k.dte.ts('de', 't0005', [(u"schalte bitte new rock ein", u"", check_media, ['media', 'aiNewRock'])])
 
-    k.dte.ts('en', 't0006', [(u"turn off the radio", u"", check_media, ['media_off', None])])
-    k.dte.ts('de', 't0007', [(u"mach das radio aus", u"", check_media, ['media_off', None])])
+    k.dte.ts('en', 't0006', [(u"turn off the radio", u"", check_media, ['media', None])])
+    k.dte.ts('de', 't0007', [(u"mach das radio aus", u"", check_media, ['media', None])])
 
-    k.dte.ts('en', 't0008', [(u"please switch on new rock", u"", check_media, ['media_on', 'aiNewRock']),
-                             (u"switch off the radio", u"", check_media, ['media_off', None]),
-                             (u"please turn on the radio", u"", check_media, ['media_on', 'aiNewRock'])])
-    k.dte.ts('de', 't0009', [(u"schalte bitte new rock ein", u"", check_media, ['media_on', 'aiNewRock']),
-                             (u"mach das radio aus", u"", check_media, ['media_off', None]),
-                             (u"schalte bitte das radio ein", u"", check_media, ['media_on', 'aiNewRock'])])
+    k.dte.ts('en', 't0008', [(u"please switch on new rock", u"", check_media, ['media', 'aiNewRock']),
+                             (u"switch off the radio", u"", check_media, ['media', None]),
+                             (u"please turn on the radio", u"", check_media, ['media', 'aiNewRock'])])
+    k.dte.ts('de', 't0009', [(u"schalte bitte new rock ein", u"", check_media, ['media', 'aiNewRock']),
+                             (u"mach das radio aus", u"", check_media, ['media', None]),
+                             (u"schalte bitte das radio ein", u"", check_media, ['media', 'aiNewRock'])])
 
     k.dte.dt('en', [u"My radio is on",
                     u"I am listening to the radio"],

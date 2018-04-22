@@ -207,7 +207,7 @@ while True:
     print
 
     # import pdb; pdb.set_trace()
-    ai_utt, score, action = kernal.process_input(ctx, user_utt, kernal.nlp_model.lang, USER_URI)
+    ai_utt, score, action = kernal.process_input(ctx, user_utt)
 
     print('AI : %s' % ai_utt)
     logging.info ("conv_ai   : %s" % ai_utt)

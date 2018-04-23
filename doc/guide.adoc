@@ -60,7 +60,7 @@ c.resp(resp, score, action, action_arg) # Response generation
 A special memory slot called 'action' is used to store action(s):
 
 ```python
-c.kernal.mem_set(c.realm, 'action', 'media_on')
+c.kernal.mem_set(c.realm, 'action', XSBFunctor('media', [XSBAtom('tune'), station]))
 ```
 
 this slot is automatically cleared for each interaction step.

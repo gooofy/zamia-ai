@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-from xsbprolog import XSBString
+from pyxsb import XSBString
 
 def get_data(k):
 

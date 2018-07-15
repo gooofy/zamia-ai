@@ -27,34 +27,49 @@ import traceback
 import codecs
 import logging
 import cmdln
-import random
 import time
 import readline
 import atexit
+import ConfigParser
 
 from six.moves            import input
 
-from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES
-from nltools              import misc
-from xsbprolog            import xsb_hl_query
+from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES, DEFAULT_DB_URL, DEFAULT_XSB_ARCH_DIR, \
+                                 DEFAULT_TOPLEVEL, DEFAULT_MPATHS
 
+from nltools              import misc
+from pyxsb                import pyxsb_query
+
+DEFAULT_CONFIG     = "zamiaai.ini"
+DEFAULTS           = {'db_url'      : DEFAULT_DB_URL,
+                      'xsb_arch_dir': DEFAULT_XSB_ARCH_DIR,
+                      'toplevel'    : DEFAULT_TOPLEVEL,
+                      'mpaths'      : DEFAULT_MPATHS  }
 DEFAULT_LOGLEVEL   = logging.INFO
 CLI_REALM          = '__cli__'
 
 class AICli(cmdln.Cmdln):
 
-    name = "ai_cli"
+    name = "zaicli"
 
-    def __init__(self):
+    def __init__(self, configfn = DEFAULT_CONFIG, defaults=DEFAULTS):
        
         cmdln.Cmdln.__init__(self)
 
-        self.config = misc.load_config('.airc')
-        toplevel    = self.config.get('semantics', 'toplevel')
-        xsb_root    = self.config.get('semantics', 'xsb_root')
-        db_url      = self.config.get('db', 'url')
+        self.config = ConfigParser.ConfigParser()
+        self.config.add_section('ai')
+        for k,v in defaults.items():
+            self.config.set('ai', k, v)
 
-        self.kernal = AIKernal(db_url, xsb_root, toplevel)
+        if os.path.exists(configfn):
+            self.config.read(configfn)
+
+        toplevel     = self.config.get('ai', 'toplevel')
+        xsb_arch_dir = self.config.get('ai', 'xsb_arch_dir')
+        db_url       = self.config.get('ai', 'db_url')
+        mpaths       = self.config.get('ai', 'mpaths')
+
+        self.kernal = AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, mpaths=mpaths)
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
@@ -310,7 +325,7 @@ class AICli(cmdln.Cmdln):
                 break
 
             try:
-                for res in xsb_hl_query(line):
+                for res in pyxsb_query(line):
                     logging.info('  %s' % repr(res))
 
             except Exception as e:

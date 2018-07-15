@@ -11,7 +11,7 @@ for m in os.listdir('modules'):
 
 setup(
     name                 = 'zamia-ai',
-    version              = '0.1.0',
+    version              = '0.1.1',
     description          = 'Free and open source A.I. system based on Python, TensorFlow and Prolog.',
     long_description     = open('README.md').read(),
     author               = 'Guenter Bartsch',

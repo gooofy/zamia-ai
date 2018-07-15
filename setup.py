@@ -21,7 +21,7 @@ setup(
     url                  = 'https://github.com/gooofy/zamia-ai',
     packages             = ['zamiaai'],
     install_requires     = [
-                            'py-nltools', 'pyxsb'
+                            'py-nltools', 'pyxsb', 'cmdln'
                            ],
     scripts              = [ 'zaicli' ],
     classifiers          = [

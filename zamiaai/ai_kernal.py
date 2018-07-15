@@ -45,7 +45,7 @@ from six                    import text_type
 from scipy.spatial.distance import cosine
 from sqlalchemy             import create_engine
 from sqlalchemy.orm         import sessionmaker
-from xsbprolog              import xsb_hl_init, xsb_hl_command, xsb_hl_query, xsb_close, xsb_to_json, json_to_xsb, XSBString, XSBFunctor, XSBAtom
+from pyxsb                  import pyxsb_start_session, pyxsb_command, pyxsb_query, xsb_to_json, json_to_xsb, XSBString, XSBFunctor, XSBAtom
 
 from nltools                import misc
 from nltools.tokenizer      import tokenize
@@ -53,13 +53,18 @@ from zamiaai.data_engine    import DataEngine
 from zamiaai.ai_context     import AIContext
 from zamiaai                import model
 
-USER_PREFIX        = u'user'
-DEFAULT_USER       = USER_PREFIX + u'Default'
-TEST_USER          = USER_PREFIX + u'Test'
-TEST_TIME          = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
-TEST_REALM         = '__test__'
-MAX_MEM_ENTRIES    = 5
-LANGUAGES          = ['en', 'de']
+USER_PREFIX          = u'user'
+DEFAULT_USER         = USER_PREFIX + u'Default'
+TEST_USER            = USER_PREFIX + u'Test'
+TEST_TIME            = datetime.datetime(2016,12,6,13,28,6,tzinfo=get_localzone()).isoformat()
+TEST_REALM           = '__test__'
+MAX_MEM_ENTRIES      = 5
+LANGUAGES            = ['en', 'de']
+
+DEFAULT_DB_URL       = 'sqlite:///zamiaai.db'
+DEFAULT_XSB_ARCH_DIR = None
+DEFAULT_TOPLEVEL     = 'toplevel'
+DEFAULT_MPATHS       = None
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -77,16 +82,15 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db_url, xsb_root, toplevel):
+    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS):
 
         #
         # database connection
         #
 
-        self.engine  = create_engine(db_url, echo=False)
+        self.engine  = model.data_engine_setup(db_url, echo=False)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
-        model.Base.metadata.create_all(self.engine)
 
         #
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
@@ -99,22 +103,47 @@ class AIKernal(object):
         # module management, setup
         #
 
-        self.modules             = {}
+        self.modules             = {}   # module_name -> module obj
+        self.module_paths        = {}   # module_name -> pathname
         self.consulted_modules   = set()
         self.toplevel            = toplevel
         self.all_modules         = []
-        sys.path.append('modules')
+        
+        # import pdb; pdb.set_trace()
+
+        if mpaths:
+            for mp in mpaths[::-1]:
+                sys.path.insert(0,mp)
+        else:
+            # auto-config
+
+            # FIXME: locate modules located in sitelib
+
+            # __file__ -> ../../modules
+            mp = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/modules'
+            sys.path.insert(0, mp)
+
+            # ./modules
+            cwd = os.getcwd()
+            sys.path.insert(0, cwd + '/modules')
+
+            # .
+            sys.path.insert(0, cwd)
+
+        for mp in sys.path:
+            logging.debug ("Module search path: %s" % mp)
+
         self.load_module(toplevel)
 
         #
         # Prolog engine, data engine
         #
 
-        xsb_hl_init([xsb_root])
+        pyxsb_start_session(xsb_arch_dir)
         self.dte = DataEngine(self.session)
 
-        xsb_hl_command('import default_sys_error_handler/1 from error_handler.')
-        xsb_hl_command('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
+        pyxsb_command('import default_sys_error_handler/1 from error_handler.')
+        pyxsb_command('assertz((default_user_error_handler(Ball):-default_sys_error_handler(Ball))).')
 
         #
         # restore memory
@@ -132,9 +161,7 @@ class AIKernal(object):
         if not q:
             q = u'assertz(memory(self, self, self, 1.0))'
         q += u'.'
-        xsb_hl_command(q)
-
-        # import pdb; pdb.set_trace()
+        pyxsb_command(q)
 
         #
         # alignment / word2vec (on-demand model loading)
@@ -200,13 +227,14 @@ class AIKernal(object):
         try:
             m = imp.load_module(module_name, fp, pathname, description)
 
-            self.modules[module_name] = m
+            self.modules[module_name]      = m
+            self.module_paths[module_name] = pathname
 
             for m2 in getattr (m, 'DEPENDS'):
                 self.load_module(m2)
 
         except:
-            logging.error('failed to load module "%s"' % module_name)
+            logging.error('failed to load module "%s" (%s)' % (module_name, pathname))
             logging.error(traceback.format_exc())
             sys.exit(1)
 
@@ -229,6 +257,7 @@ class AIKernal(object):
 
         m = self.load_module(module_name)
         self.consulted_modules.add(module_name)
+        module_dir = self.module_paths[module_name]
 
         try:
 
@@ -245,9 +274,9 @@ class AIKernal(object):
 
                 for inputfn in m.PL_SOURCES:
 
-                    pl_path = "modules/%s/%s" % (module_name, inputfn)
+                    pl_path = "%s/%s" % (module_dir, inputfn)
 
-                    xsb_hl_command("consult('%s')."% pl_path)
+                    pyxsb_command("consult('%s')."% pl_path)
 
         except:
             logging.error('failed to load module "%s"' % module_name)
@@ -293,9 +322,9 @@ class AIKernal(object):
     def test_module (self, module_name, run_trace=False, test_name=None):
 
         if run_trace:
-            xsb_hl_command("trace.")
+            pyxsb_command("trace.")
         else:
-            xsb_hl_command("notrace.")
+            pyxsb_command("notrace.")
 
         m = self.modules[module_name]
 
@@ -428,9 +457,9 @@ class AIKernal(object):
         """ process user input, return score, responses, actions, solutions, context """
 
         if run_trace:
-            xsb_hl_command("trace.")
+            pyxsb_command("trace.")
         else:
-            xsb_hl_command("notrace.")
+            pyxsb_command("notrace.")
 
         tokens_raw  = tokenize(inp_raw, ctx.lang)
         tokens = []
@@ -547,7 +576,7 @@ class AIKernal(object):
                 # probably ok (prolog code generated by neural network might not always work)
                 logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
-        xsb_hl_command("notrace.")
+        pyxsb_command("notrace.")
 
         #
         # extract highest-scoring responses
@@ -847,16 +876,16 @@ class AIKernal(object):
 
     def prolog_query(self, query):
         logging.debug ('prolog_query: %s' % query)
-        return xsb_hl_query(query)
+        return pyxsb_query(query)
 
     def prolog_check(self, query):
         logging.debug ('prolog_check: %s' % query)
-        res = xsb_hl_query(query)
+        res = pyxsb_query(query)
         return len(res)>0
 
     def prolog_query_one(self, query, idx=0):
         logging.debug ('prolog_query_one: %s' % query)
-        solutions = xsb_hl_query(query)
+        solutions = pyxsb_query(query)
         if not solutions:
             return None
         return solutions[0][idx]

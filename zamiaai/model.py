@@ -24,25 +24,6 @@ from sqlalchemy                 import Column, Integer, String, Text, Unicode, U
 from sqlalchemy.orm             import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-from nltools                    import misc
-
-config = misc.load_config('.airc')
-
-# db_server = config.get("semantics", "dbserver")
-# db_name   = config.get("semantics", "dbname")
-# db_user   = config.get("semantics", "dbuser")
-# db_pass   = config.get("semantics", "dbpass")
-# 
-# # We connect with the help of the PostgreSQL URL
-# # postgresql://federer:grandestslam@localhost:5432/tennis
-# url = 'postgresql://{}:{}@{}:{}/{}'
-# url = url.format(db_user, db_pass, db_server, 5432, db_name)
-
-url = config.get("db", "url")
-
-#engine = create_engine(url, echo=True)
-engine = create_engine(url)
-
 Base = declarative_base()
 
 class TrainingData(Base):
@@ -134,5 +115,9 @@ class Mem(Base):
 
     __table_args__    = (Index('idx_mem_realm_k', "realm", "k"), )
 
-Base.metadata.create_all(engine)
+
+def data_engine_setup(db_url, echo=False):
+    engine = create_engine(db_url, echo=echo)
+    Base.metadata.create_all(engine)
+    return engine
 

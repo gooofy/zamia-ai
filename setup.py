@@ -5,7 +5,7 @@ df = []
 for m in os.listdir('modules'):
     for f in os.listdir('modules/%s' % m):
         if f.endswith('.py') or f.endswith('.pl'):
-            df.append(('modules/%s' % m, ['modules/%s/%s' % (m, f)]))
+            df.append(('share/zamia-ai/modules/%s' % m, ['modules/%s/%s' % (m, f)]))
  
 # print repr(df)
 
@@ -23,6 +23,7 @@ setup(
     install_requires     = [
                             'py-nltools', 'pyxsb'
                            ],
+    scripts              = [ 'zaicli' ],
     classifiers          = [
                                'Operating System :: POSIX :: Linux',
                                'License :: OSI Approved :: Apache Software License',

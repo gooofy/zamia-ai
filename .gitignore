@@ -18,8 +18,6 @@ doc/.asciidoctor
 doc/*.html
 *.html
 recordings
-ai.db
-ai.db-journal
 models-dist
 *.xwam
 *.json
@@ -29,3 +27,8 @@ data-tools/csv/model/
 data-tools/csv/out
 data-tools/rdf/cache
 modules/bots/
+README.md
+README.xml
+build/
+dist/
+zamia_ai.egg-info/

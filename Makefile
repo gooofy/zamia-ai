@@ -1,16 +1,22 @@
 SHELL := /bin/bash
 
-all:	doc
+all:	README.html README.md dist
 
-prolog:
-	./ai_cli.py compile all
+%.html: %.adoc
+	asciidoctor -r asciidoctor-diagram -a toc $<
 
-train:
-	./ai_cli.py train -n 50000
+README.md: README.adoc
+	asciidoc -b docbook README.adoc
+	iconv -t utf-8 README.xml | pandoc -f docbook -t markdown_strict | iconv -f utf-8 > README.md
 
-doc:	README.adoc INSTALL.adoc 
-	asciidoctor -r asciidoctor-diagram README.adoc
-	asciidoctor -r asciidoctor-diagram INSTALL.adoc
+dist:	README.md
+	python setup.py sdist
+	python setup.py bdist_wheel --universal
+
+upload:
+	twine upload dist/*
 
 clean:
-	./ai_cli.py clean -a all
+	rm -f *.html 
+	rm -rf dist build  zamia_ai.egg-info  README.md  README.xml 
+

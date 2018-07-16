@@ -21,7 +21,7 @@ setup(
     url                  = 'https://github.com/gooofy/zamia-ai',
     packages             = ['zamiaai'],
     install_requires     = [
-                            'py-nltools', 'pyxsb', 'cmdln', 'pytz', 'tzlocal', 'six', 'sqlalchemy'
+                            'py-nltools', 'pyxsb', 'cmdln', 'pytz', 'tzlocal', 'six', 'sqlalchemy', 'scipy', 'codegen'
                            ],
     scripts              = [ 'zaicli' ],
     classifiers          = [

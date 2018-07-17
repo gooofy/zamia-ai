@@ -1,11 +1,11 @@
 from setuptools import setup
 import os
 
-df = []
-for m in os.listdir('modules'):
-    for f in os.listdir('modules/%s' % m):
-        if f.endswith('.py') or f.endswith('.pl'):
-            df.append(('share/zamia-ai/modules/%s' % m, ['modules/%s/%s' % (m, f)]))
+# df = []
+# for m in os.listdir('modules'):
+#     for f in os.listdir('modules/%s' % m):
+#         if f.endswith('.py') or f.endswith('.pl'):
+#             df.append(('share/zamia-ai/modules/%s' % m, ['modules/%s/%s' % (m, f)]))
  
 # print repr(df)
 
@@ -40,6 +40,8 @@ setup(
                            ],
     license              = 'Apache',
     keywords             = 'natural language processing tokenizer nlp tts asr speech synthesis recognition tensorflow artificial-intelligence natural-language-processing prolog knowledgebase semantic-web',
-    data_files           = df
+    # data_files           = df
+    package_data         = {'zamiaai': ['skills/*/*.py', 'skills/*/*.pl', 'skills/*/*.xwam']},
+    include_package_data = True
     )
 

@@ -1,0 +1,20 @@
+%prolog
+
+is_entity(ENTITY) :- rdfsLabel(ENTITY, en, _),!. % anything we have a label for
+
+% utils for transitive ontological information from wikidata
+
+is_subclass_of(CLS, CLS).
+is_subclass_of(SCLS, CLS) :- wdpdSubclassOf(SCLS, UCLS), is_subclass_of(UCLS, CLS).
+
+instances_of(CLS, ENT) :- is_subclass_of(SCLS, CLS), wdpdInstanceOf(ENT, SCLS).
+
+% humans / persons
+  
+is_human(ENTITY) :- wdpdInstanceOf(ENTITY, wdeHuman),!.
+is_male(HUMAN) :- wdpdSexOrGender(HUMAN, wdeMale),!.
+is_female(HUMAN) :- wdpdSexOrGender(HUMAN, wdeFemale),!.
+ 
+human_gender(HUMAN, GENDER) :- is_male(HUMAN), GENDER = wdeMale.
+human_gender(HUMAN, GENDER) :- is_female(HUMAN), GENDER = wdeFemale.
+

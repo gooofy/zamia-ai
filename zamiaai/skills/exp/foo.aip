@@ -1,0 +1,171 @@
+%prolog
+
+train_priority(0).
+
+%
+% chained pseudo-vars test
+%
+
+% answer_exp_foo1(C, en) :-
+%     C:mem|f1ent := wdeStuttgart,
+%     "bar1".
+% 
+% train(en) :-
+%      "exp foo1",
+%      inline answer_exp_foo1(C, en).
+%  
+% train(en) :-
+%      "exp foo2",
+%      "{C:mem|f1ent:rdfsLabel|en, s}".
+%  
+% test(en, exp0) :-
+%      "exp foo1",
+%      "bar1",
+%      "exp foo2",
+%      "Stuttgart".
+
+
+%
+% topic handling
+%
+
+% exp_listen_foo12(en) :-
+%     or ("exp foo1", "exp foo2").
+% 
+% exp_answer_foo1(C, en) :-
+%     C:context|topic := exp,
+%     or ("bar1", "bar2").
+% 
+% train(en) :-
+%     or (true, context(topic, exp)),
+%     inline exp_listen_foo12(en),
+%     inline exp_answer_foo1(C, en).
+% 
+% get_topic_label(C, en, "programming languages") :- mem(C, topic, wdeProgrammingLanguage), r_score(C, 10).
+% 
+% get_topic_label(C, en, L) :-
+%     mem(C, f1ent, ENT),
+%     rdfsLabel(ENT, en, L),
+%     r_score(C, 20).
+% 
+% train(en) :-
+%     "exp what was our topic",
+% 
+%     get_topic_label(C, en, L),
+% 
+%     "we were talking about {L,s}".
+% 
+% 
+% test(en, exp0) :-
+%     "exp foo1",
+%     "bar1",
+%     "exp what was our topic?",
+%     "we were talking about Prolog".
+
+%
+% context handling 
+%
+
+% train(en) :-
+%     "exp foo1",
+%     C:context|topic is wdeProgrammingLanguage,
+%     "bar1".
+% 
+% train(en) :-
+%     context(topic, wdeProgrammingLanguage),
+%     "exp foo2",
+%     "programming language".
+% 
+% train(en) :-
+%     context(topic, wdeHuman),
+%     "exp foo2",
+%     "bar3".
+% 
+% test(en, exp0) :-
+%     "exp foo1",
+%     "bar1",
+%     "exp foo2",
+%     "programming language".
+
+%
+% say again
+%
+
+% train(en) :-
+%     "exp say again",
+% 
+%     prev(C, PC),
+%     list_findall(X, say(PC, X), L),
+% 
+%     list_str_join(" ", L, S),
+% 
+%     "I said {S, s}".
+% 
+% train(en) :-
+%     "exp foo1",
+%     "bar1 bar2 bar3".
+% 
+% test(en, exp0) :-
+%     "exp foo1",
+%     "bar1 bar2 bar3",
+%     "exp say again",
+%     "I said bar1 bar2 bar3".
+
+
+% firstname(self, 'HAL').
+% firstname(self, 'Computer').
+
+% train_prefix('{self_address:L} ').
+
+% train_prefix('').
+% train_prefix(P) :- firstname(self, P), str_append(P, ', ').
+
+% name(self, en, 'HAL 9000').
+
+% wdpdInstanceOf(aiNameHelmut, wdeMaleGivenName).
+% rdfsLabel(aiNameHelmut, "Helmut", en).
+% rdfsLabel(aiNameHelmut, "Helmut", de).
+% wdpdInstanceOf(aiNamePeter, wdeMaleGivenName).
+% rdfsLabel(aiNamePeter, "Peter", en).
+% rdfsLabel(aiNamePeter, "Peter", de).
+
+% macro (en, firstname, NAME, LABEL) :-
+%     wdpdInstanceOf(NAME, wdeMaleGivenName),
+%     rdfsLabel(NAME, LABEL, en).
+
+% name_told(en, TS, TE) :- 
+% 
+%     C:user:name is list_join(' ', list_slice(TS, TE, C:tokens)),
+% 
+%     r_action (C, [attention, on]),
+%     r_score  (C, 100.0),
+%     or ("Nice to meet you, my name is {self:rdfsLabel|en, s}",
+%         "Cool, my name is {self:rdfsLabel|en, s}").
+% 
+% train(en) :-
+%     "(I am|my name is|I am called|Call me) {firstname:LABEL}",
+%     inline name_told(en, tstart(firstname), tend(firstname)) .
+% 
+% train(en) :-
+%     "Do you remember my name?",
+%     % trace(on),
+%     if nonvar(C:user:name) then
+%         "Sure, your name is {C:user:name, s}"
+%     else
+%         or ("I don't think you ever told me your name?",
+%             "Did you ever tell me your name?")
+%     endif.
+%     % trace(off).
+% 
+% test(en, nametold1) :-
+%     % my_preparation(foo, bar),
+%     %my_preparation2(foo, bar),
+%     "Do you remember my name?",
+%     "Did you ever tell me your name?",
+%     "My name is Peter.",
+%     "Cool, my name is HAL 9000.",
+%     action(attention, on),
+%     "Do you remember my name?",
+%     "Sure, your name is Peter.".
+%     % action(attention, on).
+

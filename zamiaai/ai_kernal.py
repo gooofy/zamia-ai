@@ -117,15 +117,13 @@ class AIKernal(object):
         else:
             # auto-config
 
-            # FIXME: locate modules located in sitelib
-
-            # __file__ -> ../../modules
-            mp = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/modules'
+            # __file__ -> ../skills
+            mp = os.path.dirname(os.path.abspath(__file__)) + '/skills'
             sys.path.insert(0, mp)
 
-            # ./modules
+            # ./skills
             cwd = os.getcwd()
-            sys.path.insert(0, cwd + '/modules')
+            sys.path.insert(0, cwd + '/skills')
 
             # .
             sys.path.insert(0, cwd)

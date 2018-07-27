@@ -174,26 +174,25 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
            help="incremental training (load previously saved variables)")
+    @cmdln.option("-m", "--model-ini", dest="ini_file", type = "str", default="model.ini",
+           help="model hyperparameter ini file, default: model.ini")
     @cmdln.option("-n", "--num-steps", dest="num_steps", type = "int", default=100000,
            help="number of steps to train for, default: 100000")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
-    def do_train(self, subcmd, opts, *ini_file):
+    def do_train(self, subcmd, opts):
         """${cmd_name}: train tensorflow model
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(ini_file) != 1:
-            raise Exception ("You need to specify exactly one model ini file")
-
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.train (ini_file[0], opts.num_steps, opts.incremental)
+        self.kernal.train (opts.ini_file, opts.num_steps, opts.incremental)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 

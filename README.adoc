@@ -11,13 +11,13 @@ For more information about the Zamia AI project check out our homepage at:
 * http://zamia-ai.org
 
 For installation instructions, please check this document:
-
-* <<INSTALL#,Installation and First Steps>>
+* <<INSTALL#,Installation and First Steps>> 
+*NOTE*: These instructions are outdated at the moment.
 
 For other technical documentation, check out
 
 * http://zamia-ai.org/architecture.html
-* <<doc/guide#,Module Author's Guide>>
+* <<doc/guide#,Skill Author's Guide>>
 
 License
 -------

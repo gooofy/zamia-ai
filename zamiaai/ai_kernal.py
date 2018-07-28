@@ -61,10 +61,13 @@ TEST_REALM           = '__test__'
 MAX_MEM_ENTRIES      = 5
 LANGUAGES            = ['en', 'de']
 
+DEFAULT_LANG         = 'en'
 DEFAULT_DB_URL       = 'sqlite:///zamiaai.db'
 DEFAULT_XSB_ARCH_DIR = None
 DEFAULT_TOPLEVEL     = 'toplevel'
 DEFAULT_MPATHS       = None
+DEFAULT_MODEL_INI    = 'model.ini'
+DEFAULT_REALM        = '__realm__'
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -82,7 +85,9 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS):
+    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS, lang=DEFAULT_LANG):
+
+        self.lang = lang
 
         #
         # database connection
@@ -165,11 +170,10 @@ class AIKernal(object):
         # alignment / word2vec (on-demand model loading)
         #
         self.w2v_model          = None
-        self.w2v_lang           = None
         self.w2v_all_utterances = []
 
     # FIXME: this will work only on the first call
-    def setup_tf_model (self, mode, load_model, ini_fn, global_step=0):
+    def setup_tf_model (self, mode='decode', load_model=True, ini_fn=DEFAULT_MODEL_INI, global_step=0):
 
         if not self.tf_session:
 
@@ -317,6 +321,9 @@ class AIKernal(object):
             else:
                 self.compile_module (module_name)
 
+    def create_context (self, user=DEFAULT_USER, realm=DEFAULT_REALM, test_mode=False):
+        return AIContext(user, self.session, self.lang, realm, self, test_mode=test_mode)
+
     def test_module (self, module_name, run_trace=False, test_name=None):
 
         if run_trace:
@@ -331,14 +338,14 @@ class AIKernal(object):
         num_tests = 0
         num_fails = 0
         for tc in self.dte.lookup_tests(module_name):
-            t_name, lang, prep_code, prep_fn, rounds, src_fn, self.src_line = tc
+            t_name, self.lang, prep_code, prep_fn, rounds, src_fn, self.src_line = tc
 
             if test_name:
                 if t_name != test_name:
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(TEST_USER, self.session, lang, TEST_REALM, self, test_mode=True)
+            ctx        = AIContext(user=TEST_USER, realm=TEST_REALM, test_mode=True)
             round_num  = 0
             num_tests += 1
 
@@ -367,7 +374,7 @@ class AIKernal(object):
                 ctx.set_inp(test_inp)
                 self.mem_set (ctx.realm, 'action', None)
 
-                for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, lang):
+                for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (test_inp, self.lang):
 
                     afn, acode = self.dte.lookup_code(md5s)
                     ecode = '%s\n%s(ctx' % (acode, afn)
@@ -395,7 +402,7 @@ class AIKernal(object):
 
                     if len(test_out) > 0:
                         if len(actual_out)>0:
-                            actual_out = u' '.join(tokenize(actual_out, lang))
+                            actual_out = u' '.join(tokenize(actual_out, self.lang))
                         logging.info("test_module: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
                         if actual_out != test_out:
                             logging.info("test_module: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
@@ -685,38 +692,37 @@ class AIKernal(object):
         for utt in sorted(list(utts)):
             print (utt)
 
-    def setup_align_utterances (self, lang):
-        if self.w2v_model and self.w2v_lang == lang:
+    def setup_align_utterances (self):
+        if self.w2v_model:
             return
 
         logging.debug('loading all utterances from db...')
 
         self.w2v_all_utterances = []
-        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
+        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang)
         for dr in req:
             self.w2v_all_utterances.append((dr.utterance, dr.module, dr.loc_fn, dr.loc_line))
 
         if not self.w2v_model:
             from gensim.models import word2vec
 
-        model_fn  = self.config.get('semantics', 'word2vec_model_%s' % lang)
+        model_fn  = self.config.get('semantics', 'word2vec_model_%s' % self.lang)
         logging.debug ('loading word2vec model %s ...' % model_fn)
         logging.getLogger('gensim.models.word2vec').setLevel(logging.WARNING)
         self.w2v_model = word2vec.Word2Vec.load_word2vec_format(model_fn, binary=True)
-        self.w2v_lang = lang
         #list containing names of words in the vocabulary
         self.w2v_index2word_set = set(self.w2v_model.index2word)
         logging.debug ('loading word2vec model %s ... done' % model_fn)
 
-    def align_utterances (self, lang, utterances):
+    def align_utterances (self, utterances):
 
-        self.setup_align_utterances(lang)
+        self.setup_align_utterances()
 
         res = {}
 
         for utt1 in utterances:
             try:
-                utt1t = tokenize(utt1, lang=lang)
+                utt1t = tokenize(utt1, lang=self.lang)
                 av1 = avg_feature_vector(utt1t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
 
                 sims = {} # location -> score
@@ -724,7 +730,7 @@ class AIKernal(object):
 
                 for utt2, module, loc_fn, loc_line in self.w2v_all_utterances:
                     try:
-                        utt2t = tokenize(utt2, lang=lang)
+                        utt2t = tokenize(utt2, lang=self.lang)
 
                         av2 = avg_feature_vector(utt2t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
 

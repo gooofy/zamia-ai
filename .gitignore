@@ -5,13 +5,9 @@ syntax: glob
 *.pyc
 tmp
 old
-models
 *.log
 TODO
 NOTES
-run_training.sh
-modules/exp
-modules/chat
 mestats
 .asciidoctor
 doc/.asciidoctor
@@ -26,9 +22,11 @@ data-tools/aiml/bots/
 data-tools/csv/model/
 data-tools/csv/out
 data-tools/rdf/cache
-modules/bots/
 README.md
 README.xml
 build/
 dist/
 zamia_ai.egg-info/
+examples/*/model
+examples/*/utts.txt
+examples/*/zamiaai.db

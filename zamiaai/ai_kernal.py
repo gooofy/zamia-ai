@@ -66,8 +66,10 @@ DEFAULT_DB_URL       = 'sqlite:///zamiaai.db'
 DEFAULT_XSB_ARCH_DIR = None
 DEFAULT_TOPLEVEL     = 'toplevel'
 DEFAULT_MPATHS       = None
-DEFAULT_MODEL_INI    = 'model.ini'
 DEFAULT_REALM        = '__realm__'
+DEFAULT_MODEL_DIR    = 'model'
+DEFAULT_NUM_EPOCHS   = 100
+DEFAULT_MAX_INP_LEN  = 20 # tokens
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -85,9 +87,10 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS, lang=DEFAULT_LANG):
+    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS, lang=DEFAULT_LANG, max_inp_len=DEFAULT_MAX_INP_LEN):
 
-        self.lang = lang
+        self.lang        = lang
+        self.max_inp_len = max_inp_len
 
         #
         # database connection
@@ -172,37 +175,18 @@ class AIKernal(object):
         self.w2v_model          = None
         self.w2v_all_utterances = []
 
-    # FIXME: this will work only on the first call
-    def setup_tf_model (self, mode='decode', load_model=True, ini_fn=DEFAULT_MODEL_INI, global_step=0):
+    # # FIXME: this will work only on the first call
+    def setup_tf_model (self, model_dir=DEFAULT_MODEL_DIR, restore=True):
 
-        if not self.tf_session:
+        if self.nlp_model:
+            raise Exception ('Tensorflow model can be set up only once.')
 
-            import tensorflow as tf
+        from nlp_model import NLPModel
 
-            # setup config to use BFC allocator
-            config = tf.ConfigProto()  
-            # config.gpu_options.allocator_type = 'BFC'
+        self.nlp_model = NLPModel(model_dir=model_dir, lang=self.lang, session=self.session, max_inp_len=self.max_inp_len)
 
-            self.tf_session = tf.Session(config=config)
-
-        if not self.nlp_model:
-
-            from nlp_model import NLPModel
-
-            self.nlp_model = NLPModel(self.session, ini_fn, global_step = global_step)
-
-            if load_model:
-
-                self.nlp_model.load_dicts()
-
-                # we need the inverse dict to reconstruct the output from tensor
-
-                self.inv_output_dict = {v: k for k, v in viewitems(self.nlp_model.output_dict)}
-
-                self.tf_model = self.nlp_model.create_tf_model(self.tf_session, mode = mode) 
-                self.tf_model.batch_size = 1
-
-                self.tf_model.restore(self.tf_session, self.nlp_model.model_fn)
+        if restore:
+            self.nlp_model.restore()
 
 
     def clean (self, module_names):
@@ -485,25 +469,28 @@ class AIKernal(object):
         #
 
         found_resp = False
-        for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (inp, ctx.lang):
+        # for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (inp, ctx.lang):
 
-            afn, acode = self.dte.lookup_code(md5s)
-            ecode = '%s\n%s(ctx' % (acode, afn)
-            if args:
-                for arg in args:
-                    ecode += ',%s' % repr(arg)
-            ecode += ')\n'
+        #     afn, acode = self.dte.lookup_code(md5s)
+        #     ecode = '%s\n%s(ctx' % (acode, afn)
+        #     if args:
+        #         for arg in args:
+        #             ecode += ',%s' % repr(arg)
+        #     ecode += ')\n'
 
-            logging.debug ('exact training data match found: %s:%s' % (src_fn, src_line))
-            logging.debug (ecode)
+        #     logging.debug ('exact training data match found: %s:%s' % (src_fn, src_line))
+        #     logging.debug (ecode)
 
-            # import pdb; pdb.set_trace()
-            try:
-                exec (ecode, globals(), locals())
-                found_resp = True
-            except:
-                logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
-                logging.error(ecode)
+        #     # import pdb; pdb.set_trace()
+        #     try:
+        #         exec (ecode, globals(), locals())
+        #         found_resp = True
+        #     except:
+        #         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+        #         logging.error(ecode)
+
+        # # FIXME: remove (debug only)
+        # found_resp=False
 
         if not found_resp:
             logging.debug('no exact training data match for this input found.')
@@ -515,8 +502,7 @@ class AIKernal(object):
         resps = ctx.get_resps()
         if not resps and self.nlp_model:
             
-            from nlp_model      import OR_SYMBOL
-            from seq2seq_model  import _EOS
+            from nlp_model import _START, _STOP, _OR
 
             logging.debug('trying neural net on: %s' % repr(inp))
 
@@ -524,37 +510,42 @@ class AIKernal(object):
                 # ok, exact matching has not yielded any results -> use neural network to
                 # generate response(s)
 
-                x = self.nlp_model.compute_x(inp)
+                # import pdb; pdb.set_trace()
 
-                # logging.debug("x: %s -> %s" % (utterance, x))
+                predicted_ids = self.nlp_model.predict(inp)
 
-                source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+                # x = self.nlp_model.compute_x(inp)
 
-                # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
-                # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
-                predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
-                                                      encoder_inputs_length=source_len)
+                # # logging.debug("x: %s -> %s" % (utterance, x))
 
-                # for seq_batch in predicted_ids:
-                #     for k in range(5):
-                #         logging.debug('--------- k: %d ----------' % k)
-                #         seq = seq_batch[:,k]
-                #         for p in seq:
-                #             if p == -1:
-                #                 break
-                #             decoded = self.inv_output_dict[p]
-                #             logging.debug (u'%s: %s' %(p, decoded))
+                # source, source_len, dest, dest_len = self.nlp_model._prepare_batch ([[x, []]], offset=0)
+
+                # # predicted_ids: GreedyDecoder; [batch_size, max_time_step, 1]
+                # # BeamSearchDecoder; [batch_size, max_time_step, beam_width]
+                # predicted_ids = self.tf_model.predict(self.tf_session, encoder_inputs=source, 
+                #                                       encoder_inputs_length=source_len)
+
+                # # for seq_batch in predicted_ids:
+                # #     for k in range(5):
+                # #         logging.debug('--------- k: %d ----------' % k)
+                # #         seq = seq_batch[:,k]
+                # #         for p in seq:
+                # #             if p == -1:
+                # #                 break
+                # #             decoded = self.inv_output_dict[p]
+                # #             logging.debug (u'%s: %s' %(p, decoded))
 
                 # extract best codes, run them all to see which ones yield the highest scoring responses
 
                 cmd = []
-                for p in predicted_ids[0][:,0]:
-                    if p in self.inv_output_dict:
-                        decoded = self.inv_output_dict[p]
-                    else:
-                        decoded = p
+                # for p in predicted_ids[0][:,0]:
+                for decoded in predicted_ids:
+                    # if p in self.inv_output_dict:
+                    #     decoded = self.inv_output_dict[p]
+                    # else:
+                    #     decoded = p
 
-                    if decoded == _EOS or decoded == -1 or decoded == OR_SYMBOL:
+                    if decoded == _STOP or decoded == _OR:
 
                         try:
                             logging.debug('trying cmd: %s' % repr(cmd))
@@ -572,7 +563,7 @@ class AIKernal(object):
                             logging.debug('EXCEPTION CAUGHT %s' % traceback.format_exc())
 
                         cmd = []
-                        if decoded == _EOS or decoded == -1:
+                        if decoded == _STOP:
                             break
                     else:
                         cmd.append(decoded)
@@ -624,11 +615,10 @@ class AIKernal(object):
         action = self.mem_get (ctx.realm, 'action')
         return out, score, action
 
-    def train (self, ini_fn, num_steps, incremental):
+    def train (self, model_dir=DEFAULT_MODEL_DIR, num_epochs=DEFAULT_NUM_EPOCHS, incremental=False):
 
-        self.setup_tf_model ('train', False, ini_fn)
-        self.nlp_model.train(num_steps, incremental)
-
+        self.setup_tf_model (model_dir=model_dir, restore=incremental)
+        self.nlp_model.train(num_epochs, incremental)
 
     def dump_utterances (self, num_utterances, dictfn, lang, module):
 
@@ -794,8 +784,6 @@ class AIKernal(object):
                 v     = r[1]
                 score = r[2]
                 entries.append((k, v, score))
-
-        # import pdb; pdb.set_trace()
 
         return entries
 

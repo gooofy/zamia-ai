@@ -36,7 +36,6 @@ from nltools                import misc
 from nltools.tokenizer      import tokenize
 
 PROC_TITLE        = 'chatbot'
-DEFAULT_CONFIG    = 'chatbot.ini'
 
 #
 # init 

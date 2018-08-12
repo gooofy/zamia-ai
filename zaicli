@@ -64,7 +64,7 @@ class AICli(cmdln.Cmdln):
             self.config.set('main', k, v)
         self.config.add_section('nlpmodel')
         for k,v in default_nlp_model_args.items():
-            self.config.set('nlpmodel', k, v)
+            self.config.set('nlpmodel', k, str(v))
 
         if os.path.exists(configfn):
             self.config.read(configfn)

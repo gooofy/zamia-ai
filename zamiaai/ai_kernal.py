@@ -71,9 +71,9 @@ DEFAULT_NUM_EPOCHS   = 100
 
 DEFAULT_NLP_MODEL_ARGS = {
                           'model_dir'       : 'model',
-                          'lstm_latent_dim' : '256',
-                          'batch_size'      : '64',
-                          'max_input_len'   : '20', # tokens
+                          'lstm_latent_dim' : 256,
+                          'batch_size'      : 64,
+                          'max_input_len'   : 20, # tokens
                          }
 
 def avg_feature_vector(words, model, num_features, index2word_set):

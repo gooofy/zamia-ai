@@ -35,8 +35,8 @@ import ConfigParser
 from six.moves            import input
 
 from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES, DEFAULT_DB_URL, DEFAULT_XSB_ARCH_DIR, \
-                                 DEFAULT_TOPLEVEL, DEFAULT_MPATHS, DEFAULT_MODEL_DIR, DEFAULT_NUM_EPOCHS, DEFAULT_LANG, \
-                                 DEFAULT_MAX_INP_LEN
+                                 DEFAULT_TOPLEVEL, DEFAULT_SKILL_PATHS, DEFAULT_NUM_EPOCHS, DEFAULT_LANG, \
+                                 DEFAULT_NLP_MODEL_ARGS
 
 from nltools              import misc
 from pyxsb                import pyxsb_query
@@ -45,9 +45,8 @@ DEFAULT_CONFIG     = "zamiaai.ini"
 DEFAULTS           = {'db_url'      : DEFAULT_DB_URL,
                       'xsb_arch_dir': DEFAULT_XSB_ARCH_DIR,
                       'toplevel'    : DEFAULT_TOPLEVEL,
-                      'mpaths'      : DEFAULT_MPATHS,
-                      'lang'        : DEFAULT_LANG,
-                      'max_inp_len' : str(DEFAULT_MAX_INP_LEN) }
+                      'skill_paths' : DEFAULT_SKILL_PATHS,
+                      'lang'        : DEFAULT_LANG }
 DEFAULT_LOGLEVEL   = logging.INFO
 CLI_REALM          = '__cli__'
 
@@ -55,27 +54,36 @@ class AICli(cmdln.Cmdln):
 
     name = "zaicli"
 
-    def __init__(self, configfn = DEFAULT_CONFIG, defaults=DEFAULTS):
+    def __init__(self, configfn=DEFAULT_CONFIG, defaults=DEFAULTS, default_nlp_model_args=DEFAULT_NLP_MODEL_ARGS):
        
         cmdln.Cmdln.__init__(self)
 
         self.config = ConfigParser.ConfigParser()
-        self.config.add_section('ai')
+        self.config.add_section('main')
         for k,v in defaults.items():
-            self.config.set('ai', k, v)
+            self.config.set('main', k, v)
+        self.config.add_section('nlpmodel')
+        for k,v in default_nlp_model_args.items():
+            self.config.set('nlpmodel', k, v)
 
         if os.path.exists(configfn):
             self.config.read(configfn)
 
-        toplevel     = self.config.get('ai', 'toplevel')
-        xsb_arch_dir = self.config.get('ai', 'xsb_arch_dir')
-        db_url       = self.config.get('ai', 'db_url')
-        mpaths       = self.config.get('ai', 'mpaths')
-        lang         = self.config.get('ai', 'lang')
-        max_inp_len  = self.config.getint('ai', 'max_inp_len')
+        toplevel     = self.config.get('main', 'toplevel')
+        xsb_arch_dir = self.config.get('main', 'xsb_arch_dir')
+        db_url       = self.config.get('main', 'db_url')
+        skill_paths  = self.config.get('main', 'skill_paths')
+        lang         = self.config.get('main', 'lang')
 
-        self.kernal = AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, mpaths=mpaths, lang=lang,
-                               max_inp_len = max_inp_len)
+        nlp_model_args = {
+                          'model_dir'       : self.config.get('nlpmodel', 'model_dir'),
+                          'lstm_latent_dim' : self.config.getint('nlpmodel', 'lstm_latent_dim'),
+                          'batch_size'      : self.config.getint('nlpmodel', 'batch_size'),
+                          'max_input_len'   : self.config.getint('nlpmodel', 'max_input_len'),
+                         }
+
+        self.kernal = AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, skill_paths=skill_paths, lang=lang,
+                               nlp_model_args = nlp_model_args)
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
@@ -180,8 +188,6 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
            help="incremental training (load previously saved variables)")
-    @cmdln.option("-m", "--model-dir", dest="model_dir", type = "str", default=DEFAULT_MODEL_DIR,
-           help="model directory, default: %s" % DEFAULT_MODEL_DIR)
     @cmdln.option("-n", "--num-epochs", dest="num_epochs", type = "int", default=DEFAULT_NUM_EPOCHS,
            help="number of epochs to train for, default: %d" % DEFAULT_NUM_EPOCHS)
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -198,16 +204,13 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.train (model_dir   = opts.model_dir, 
-                           num_epochs  = opts.num_epochs, 
+        self.kernal.train (num_epochs  = opts.num_epochs, 
                            incremental = opts.incremental)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable prolog tracing")
-    @cmdln.option("-m", "--model-dir", dest="model_dir", type = "str", default=DEFAULT_MODEL_DIR,
-           help="model directory, default: %s" % DEFAULT_MODEL_DIR)
     @cmdln.option("-u", "--user", dest="username", type = "str", default="chat",
            help="username, default: chat")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
@@ -226,7 +229,7 @@ class AICli(cmdln.Cmdln):
 
         for mn2 in self.kernal.all_modules:
             self.kernal.consult_module (mn2)
-        self.kernal.setup_tf_model(model_dir=opts.model_dir)
+        self.kernal.setup_tf_model()
 
         user_uri = USER_PREFIX + opts.username
         ctx      = self.kernal.create_context(user=user_uri, realm=CLI_REALM)
@@ -249,10 +252,8 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option ("-d", "--dict", dest="dictfn", type = "str", default=None,
            help="dictionary to use to detect unknown words, default: none")
-    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
-           help="language, default: en")
-    @cmdln.option ("-m", "--module", dest="module", type = "str", default='all',
-           help="extract utterances from specific module only, default: all modules")
+    @cmdln.option ("-s", "--skill", dest="skill", type = "str", default='all',
+           help="extract utterances from specific skill only, default: all skills")
     @cmdln.option ("-n", "--num-utterances", dest="num_utterances", type = "int", default=0,
            help="number of utterances to extract, default: 0 (all)")
     def do_utterances(self, subcmd, opts):
@@ -262,11 +263,9 @@ class AICli(cmdln.Cmdln):
         ${cmd_option_list}
         """
 
-        self.kernal.dump_utterances(opts.num_utterances, opts.dictfn, opts.lang, opts.module)
+        self.kernal.dump_utterances(opts.num_utterances, opts.dictfn, opts.skill)
 
 
-    @cmdln.option ("-l", "--lang", dest="lang", type = "str", default='en',
-           help="language, default: en")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_align(self, subcmd, opts, *paths):
@@ -292,7 +291,7 @@ class AICli(cmdln.Cmdln):
                 for line in uttf:
                     utterances.append(line.strip())
 
-        self.kernal.align_utterances(opts.lang, utterances)
+        self.kernal.align_utterances(self.lang, utterances)
 
 
     def do_prolog(self, subcmd, opts, *module_names):

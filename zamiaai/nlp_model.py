@@ -60,24 +60,20 @@ START_ID = 0
 STOP_ID  = 1
 OR_ID    = 2
 
-# STEPS_PER_STAT             = 100
-
 DEBUG_LIMIT                = 0
 # DEBUG_LIMIT                = 1000
 
-# NUM_EVAL_STEPS             = 20
-
-LSTM_LATENT_DIM            = 256
-BATCH_SIZE                 = 64
-
 class NLPModel(object):
 
-    def __init__(self, model_dir, lang, session, max_inp_len ):
+    def __init__(self, lang, session, model_args ):
 
-        self.model_dir   = model_dir
-        self.lang        = lang
-        self.session     = session
-        self.max_inp_len = max_inp_len
+        self.model_dir       = model_args['model_dir']
+        self.lang            = lang
+        self.session         = session
+        self.max_inp_len     = model_args['max_input_len']
+        self.lstm_latent_dim = model_args['lstm_latent_dim']
+        self.batch_size      = model_args['batch_size']
+
 
         # if global_step>0:
         #     self.model_fn    = '%s/latest.ckpt-%d' % (self.model_dir, global_step)
@@ -280,7 +276,7 @@ class NLPModel(object):
 
         # Define an input sequence and process it.
         encoder_inputs = keras.layers.Input(shape=(None, num_encoder_tokens))
-        encoder        = keras.layers.LSTM(LSTM_LATENT_DIM, return_state=True)
+        encoder        = keras.layers.LSTM(self.lstm_latent_dim, return_state=True)
         encoder_outputs, state_h, state_c = encoder(encoder_inputs)
         # We discard `encoder_outputs` and only keep the states.
         encoder_states = [state_h, state_c]
@@ -290,7 +286,7 @@ class NLPModel(object):
         # We set up our decoder to return full output sequences,
         # and to return internal states as well. We don't use the 
         # return states in the training model, but we will use them in inference.
-        decoder_lstm = keras.layers.LSTM(LSTM_LATENT_DIM, return_sequences=True, return_state=True)
+        decoder_lstm = keras.layers.LSTM(self.lstm_latent_dim, return_sequences=True, return_state=True)
         decoder_outputs, _, _ = decoder_lstm(decoder_inputs,
                                              initial_state=encoder_states)
         decoder_dense = keras.layers.Dense(num_decoder_tokens, activation='softmax')
@@ -308,8 +304,8 @@ class NLPModel(object):
 
         self.keras_model_encoder = keras.Model(encoder_inputs, encoder_states)
 
-        decoder_state_input_h = keras.layers.Input(shape=(LSTM_LATENT_DIM,))
-        decoder_state_input_c = keras.layers.Input(shape=(LSTM_LATENT_DIM,))
+        decoder_state_input_h = keras.layers.Input(shape=(self.lstm_latent_dim,))
+        decoder_state_input_c = keras.layers.Input(shape=(self.lstm_latent_dim,))
         decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
         decoder_outputs, state_h, state_c = decoder_lstm(decoder_inputs, initial_state=decoder_states_inputs)
         decoder_states  = [state_h, state_c]
@@ -460,7 +456,7 @@ class NLPModel(object):
         self._create_keras_model()
 
         self.keras_model_train.fit([encoder_input_data, decoder_input_data], decoder_target_data,
-                             batch_size=BATCH_SIZE,
+                             batch_size=self.batch_size,
                              epochs=num_epochs,
                              validation_split=0.2)
 

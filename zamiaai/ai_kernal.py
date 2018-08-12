@@ -65,11 +65,16 @@ DEFAULT_LANG         = 'en'
 DEFAULT_DB_URL       = 'sqlite:///zamiaai.db'
 DEFAULT_XSB_ARCH_DIR = None
 DEFAULT_TOPLEVEL     = 'toplevel'
-DEFAULT_MPATHS       = None
+DEFAULT_SKILL_PATHS  = None
 DEFAULT_REALM        = '__realm__'
-DEFAULT_MODEL_DIR    = 'model'
 DEFAULT_NUM_EPOCHS   = 100
-DEFAULT_MAX_INP_LEN  = 20 # tokens
+
+DEFAULT_NLP_MODEL_ARGS = {
+                          'model_dir'       : 'model',
+                          'lstm_latent_dim' : '256',
+                          'batch_size'      : '64',
+                          'max_input_len'   : '20', # tokens
+                         }
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -87,10 +92,16 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
-    def __init__(self, db_url=DEFAULT_DB_URL, xsb_arch_dir=DEFAULT_XSB_ARCH_DIR, toplevel=DEFAULT_TOPLEVEL, mpaths=DEFAULT_MPATHS, lang=DEFAULT_LANG, max_inp_len=DEFAULT_MAX_INP_LEN):
+    def __init__(self, 
+                 db_url         = DEFAULT_DB_URL, 
+                 xsb_arch_dir   = DEFAULT_XSB_ARCH_DIR, 
+                 toplevel       = DEFAULT_TOPLEVEL, 
+                 skill_paths    = DEFAULT_SKILL_PATHS, 
+                 lang           = DEFAULT_LANG, 
+                 nlp_model_args = DEFAULT_NLP_MODEL_ARGS):
 
-        self.lang        = lang
-        self.max_inp_len = max_inp_len
+        self.lang           = lang
+        self.nlp_model_args = nlp_model_args
 
         #
         # database connection
@@ -119,9 +130,9 @@ class AIKernal(object):
         
         # import pdb; pdb.set_trace()
 
-        if mpaths:
-            for mp in mpaths[::-1]:
-                sys.path.insert(0,mp)
+        if skill_paths:
+            for sp in skill_paths[::-1]:
+                sys.path.insert(0,sp)
         else:
             # auto-config
 
@@ -176,14 +187,14 @@ class AIKernal(object):
         self.w2v_all_utterances = []
 
     # # FIXME: this will work only on the first call
-    def setup_tf_model (self, model_dir=DEFAULT_MODEL_DIR, restore=True):
+    def setup_tf_model (self, restore=True):
 
         if self.nlp_model:
             raise Exception ('Tensorflow model can be set up only once.')
 
         from nlp_model import NLPModel
 
-        self.nlp_model = NLPModel(model_dir=model_dir, lang=self.lang, session=self.session, max_inp_len=self.max_inp_len)
+        self.nlp_model = NLPModel(lang=self.lang, session=self.session, model_args=self.nlp_model_args)
 
         if restore:
             self.nlp_model.restore()
@@ -615,12 +626,12 @@ class AIKernal(object):
         action = self.mem_get (ctx.realm, 'action')
         return out, score, action
 
-    def train (self, model_dir=DEFAULT_MODEL_DIR, num_epochs=DEFAULT_NUM_EPOCHS, incremental=False):
+    def train (self, num_epochs=DEFAULT_NUM_EPOCHS, incremental=False):
 
-        self.setup_tf_model (model_dir=model_dir, restore=incremental)
+        self.setup_tf_model (restore=incremental)
         self.nlp_model.train(num_epochs, incremental)
 
-    def dump_utterances (self, num_utterances, dictfn, lang, module):
+    def dump_utterances (self, num_utterances, dictfn, skill):
 
         dic = None
         if dictfn:
@@ -632,10 +643,10 @@ class AIKernal(object):
                         continue
                     dic.add(parts[0])
 
-        req = self.dte.session.query(model.TrainingData).filter(model.TrainingData.lang==lang)
+        req = self.dte.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang)
 
-        if module and module != 'all':
-            req = req.filter(model.TrainingData.module==module)
+        if skill and skill != 'all':
+            req = req.filter(model.TrainingData.module==skill)
 
         req_utts = []
         for dr in req:

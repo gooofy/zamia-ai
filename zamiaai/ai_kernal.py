@@ -480,28 +480,25 @@ class AIKernal(object):
         #
 
         found_resp = False
-        # for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (inp, ctx.lang):
+        for lang, d, md5s, args, src_fn, src_line in self.dte.lookup_data_train (inp, ctx.lang):
 
-        #     afn, acode = self.dte.lookup_code(md5s)
-        #     ecode = '%s\n%s(ctx' % (acode, afn)
-        #     if args:
-        #         for arg in args:
-        #             ecode += ',%s' % repr(arg)
-        #     ecode += ')\n'
+            afn, acode = self.dte.lookup_code(md5s)
+            ecode = '%s\n%s(ctx' % (acode, afn)
+            if args:
+                for arg in args:
+                    ecode += ',%s' % repr(arg)
+            ecode += ')\n'
 
-        #     logging.debug ('exact training data match found: %s:%s' % (src_fn, src_line))
-        #     logging.debug (ecode)
+            logging.debug ('exact training data match found: %s:%s' % (src_fn, src_line))
+            logging.debug (ecode)
 
-        #     # import pdb; pdb.set_trace()
-        #     try:
-        #         exec (ecode, globals(), locals())
-        #         found_resp = True
-        #     except:
-        #         logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
-        #         logging.error(ecode)
-
-        # # FIXME: remove (debug only)
-        # found_resp=False
+            # import pdb; pdb.set_trace()
+            try:
+                exec (ecode, globals(), locals())
+                found_resp = True
+            except:
+                logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
+                logging.error(ecode)
 
         if not found_resp:
             logging.debug('no exact training data match for this input found.')

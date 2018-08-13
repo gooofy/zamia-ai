@@ -101,7 +101,7 @@ def get_data(k):
                     u"Was glaubst Du?"])
 
     k.dte.dt('en', u"a fact", u"I love facts.")
-    k.dte.dt('de', u"ein faktum", u"I liebe Fakten.")
+    k.dte.dt('de', u"ein faktum", u"Ich liebe Fakten.")
 
     k.dte.dt('en', u"that's a fact", u"I love facts.")
     k.dte.dt('de', u"das ist eine tatsache", u"I liebe Fakten.")

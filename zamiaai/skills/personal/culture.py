@@ -43,7 +43,7 @@ def get_data(k):
 
     k.dte.dt('en', u"(Which|What) is your (favorite|fave) (film|movie)?",
                    my_favmovie)
-    k.dte.dt('de', u"(Was|Welcher|Welches) ist Dein (liebster Film|Lieblingsfilm)?",
+    k.dte.dt('de', u"(Was ist|Welcher ist|Welches ist|Wie heißt) Dein (liebster Film|Lieblingsfilm)?",
                    my_favmovie)
 
     k.dte.dt('en', u"(What|Which) (movie|film) do you (enjoy|like) (best|most)?",
@@ -76,7 +76,7 @@ def get_data(k):
 
     k.dte.dt('en', u"Who is your favorite (book|science fiction|scifi|best selling|) author?",
                    my_favauthor)
-    k.dte.dt('de', u"(Welcher|Wer) ist Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?",
+    k.dte.dt('de', u"(Welcher ist|Wer ist|Wie heißt) Dein liebster (Buch|Science Fiction|Krimi|Bestseller|) Autor?",
                    my_favauthor)
 
     k.dte.ts('en', 't0012', [(u"who is your favorite author?", u"Arthur C. Clarke is my favorite author")])
@@ -104,7 +104,7 @@ def get_data(k):
 
     k.dte.dt('en', u"(Which|What) is your favorite book?",
                    my_favbook)
-    k.dte.dt('de', u"(Welches|Was) ist Dein (liebstes Buch|Lieblingsbuch)?",
+    k.dte.dt('de', u"(Welches ist|Was ist|Wie heißt) Dein (liebstes Buch|Lieblingsbuch)?",
                    my_favbook)
 
     k.dte.dt('en', [u"(Which|What) do you read (by the way|)?",

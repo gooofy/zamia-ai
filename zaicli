@@ -87,19 +87,19 @@ class AICli(cmdln.Cmdln):
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
-    def do_clean(self, subcmd, opts, *module_names):
-        """${cmd_name}: clean module related data
+    def do_clean(self, subcmd, opts, *skills):
+        """${cmd_name}: clean skill related data
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(module_names)==0:
-            logging.error ('specify at least one module name or "all" to clean all modules')
+        if len(skills)==0:
+            logging.error ('specify at least one skill or "all" to clean all skills')
             return
 
-        if len(module_names)==1 and module_names[0] == 'all':
-            module_names = self.kernal.all_modules
+        if len(skills)==1 and skills[0] == 'all':
+            skills = self.kernal.all_modules
 
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
@@ -107,7 +107,7 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        self.kernal.clean(module_names)
+        self.kernal.clean(skills)
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
@@ -119,15 +119,15 @@ class AICli(cmdln.Cmdln):
            help="run specific test only, default: all tests are run")
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="enable verbose logging")
-    def do_compile(self, subcmd, opts, *module_names):
-        """${cmd_name}: compile module(s)
+    def do_compile(self, subcmd, opts, *skills):
+        """${cmd_name}: compile skill(s)
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(module_names)==0:
-            logging.error ('specify at least one module name')
+        if len(skills)==0:
+            logging.error ('specify at least one skill')
             return
 
         if opts.verbose:
@@ -136,10 +136,10 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (module_names)
+            self.kernal.compile_module_multi (skills)
 
             if opts.run_tests:
-                num_tests, num_fails = self.kernal.run_tests_multi (module_names, run_trace=opts.run_trace, test_name=opts.test_name)
+                num_tests, num_fails = self.kernal.run_tests_multi (skills, run_trace=opts.run_trace, test_name=opts.test_name)
 
                 if num_fails:
                     logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
@@ -157,15 +157,15 @@ class AICli(cmdln.Cmdln):
            help="verbose logging")
     @cmdln.option("-N", "--test-name", dest="test_name", type="str",
            help="run specific test only, default: all tests are run")
-    def do_test(self, subcmd, opts, *module_names):
-        """${cmd_name}: run tests from module(s)
+    def do_test(self, subcmd, opts, *skills):
+        """${cmd_name}: run tests from skill(s)
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(module_names)==0:
-            logging.error ('specify at least one module name (or all to run tests from all modules)')
+        if len(skills)==0:
+            logging.error ('specify at least one skill (or all to run tests from all skills)')
             return
 
         if opts.verbose:
@@ -175,7 +175,7 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            num_tests, num_fails = self.kernal.run_tests_multi (module_names, run_trace=opts.run_trace, test_name=opts.test_name)
+            num_tests, num_fails = self.kernal.run_tests_multi (skills, run_trace=opts.run_trace, test_name=opts.test_name)
             if num_fails:
                 logging.error('%d test(s) failed out of %d test(s) run.' % (num_fails, num_tests))
             else:
@@ -269,7 +269,7 @@ class AICli(cmdln.Cmdln):
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
     def do_align(self, subcmd, opts, *paths):
-        """${cmd_name}: align utterance(s) to db modules
+        """${cmd_name}: align utterance(s) to db skills
 
         ${cmd_usage}
         ${cmd_option_list}
@@ -294,18 +294,18 @@ class AICli(cmdln.Cmdln):
         self.kernal.align_utterances(self.lang, utterances)
 
 
-    def do_prolog(self, subcmd, opts, *module_names):
+    def do_prolog(self, subcmd, opts, *skills):
         """${cmd_name}: open prolog shell for debugging
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(module_names) == 0:
+        if len(skills) == 0:
             for mn2 in self.kernal.all_modules:
                 self.kernal.consult_module (mn2)
         else:
-            self.kernal.consult_module (module_names[0])
+            self.kernal.consult_module (skills[0])
 
         histfile = os.path.join(os.path.expanduser("~"), ".xsb_hist")
         try:

@@ -57,12 +57,6 @@ def get_time_label(c, cdt, ts):
 #     def time_label(CT, de, weatherNearFuture, "morgen"):
 #         after_evening(CT)
 
-def get_api_key():
-
-    config = misc.load_config('.airc')
-    return config.get('weather', 'api_key')
-
-
 def fetch_weather_data (c, cdt, loc, ts):
 
     if c.test_mode:
@@ -77,7 +71,7 @@ def fetch_weather_data (c, cdt, loc, ts):
 
     ts, te = get_time_span(cdt, ts)
 
-    api_key = get_api_key()
+    api_key = c.kernal.skill_args['weather_api_key']
 
     city_id = c.kernal.prolog_query_one('owmCityId(%s, CITY_ID).' % loc)
     if not city_id:

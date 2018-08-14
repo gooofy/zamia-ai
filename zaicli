@@ -30,7 +30,6 @@ import cmdln
 import time
 import readline
 import atexit
-import ConfigParser
 
 from six.moves            import input
 
@@ -41,12 +40,6 @@ from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES, DE
 from nltools              import misc
 from pyxsb                import pyxsb_query
 
-DEFAULT_CONFIG     = "zamiaai.ini"
-DEFAULTS           = {'db_url'      : DEFAULT_DB_URL,
-                      'xsb_arch_dir': DEFAULT_XSB_ARCH_DIR,
-                      'toplevel'    : DEFAULT_TOPLEVEL,
-                      'skill_paths' : DEFAULT_SKILL_PATHS,
-                      'lang'        : DEFAULT_LANG }
 DEFAULT_LOGLEVEL   = logging.INFO
 CLI_REALM          = '__cli__'
 
@@ -54,36 +47,11 @@ class AICli(cmdln.Cmdln):
 
     name = "zaicli"
 
-    def __init__(self, configfn=DEFAULT_CONFIG, defaults=DEFAULTS, default_nlp_model_args=DEFAULT_NLP_MODEL_ARGS):
+    def __init__(self):
        
         cmdln.Cmdln.__init__(self)
 
-        self.config = ConfigParser.ConfigParser()
-        self.config.add_section('main')
-        for k,v in defaults.items():
-            self.config.set('main', k, v)
-        self.config.add_section('nlpmodel')
-        for k,v in default_nlp_model_args.items():
-            self.config.set('nlpmodel', k, str(v))
-
-        if os.path.exists(configfn):
-            self.config.read(configfn)
-
-        toplevel     = self.config.get('main', 'toplevel')
-        xsb_arch_dir = self.config.get('main', 'xsb_arch_dir')
-        db_url       = self.config.get('main', 'db_url')
-        skill_paths  = self.config.get('main', 'skill_paths')
-        lang         = self.config.get('main', 'lang')
-
-        nlp_model_args = {
-                          'model_dir'       : self.config.get('nlpmodel', 'model_dir'),
-                          'lstm_latent_dim' : self.config.getint('nlpmodel', 'lstm_latent_dim'),
-                          'batch_size'      : self.config.getint('nlpmodel', 'batch_size'),
-                          'max_input_len'   : self.config.getint('nlpmodel', 'max_input_len'),
-                         }
-
-        self.kernal = AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, skill_paths=skill_paths, lang=lang,
-                               nlp_model_args = nlp_model_args)
+        self.kernal = AIKernal.from_ini_file()
 
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")

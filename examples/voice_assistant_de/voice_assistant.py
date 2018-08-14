@@ -97,7 +97,7 @@ logging.debug ('VAD initialized.')
 # setup AI DB, Kernal and Context
 #
 
-kernal = AIKernal(lang=LANG)
+kernal = AIKernal()
 for mn2 in kernal.all_modules:
     kernal.consult_module (mn2)
 kernal.setup_tf_model()
@@ -115,7 +115,7 @@ logging.debug ('ASR initialized.')
 # TTS
 #
 
-tts = TTS(engine="espeak", voice=LANG)
+tts = TTS(engine="espeak", voice=kernal.lang)
 
 #
 # main loop

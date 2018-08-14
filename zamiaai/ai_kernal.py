@@ -35,6 +35,7 @@ import codecs
 import datetime
 import pytz
 import json
+import ConfigParser
 
 import numpy as np
 
@@ -69,12 +70,20 @@ DEFAULT_SKILL_PATHS  = None
 DEFAULT_REALM        = '__realm__'
 DEFAULT_NUM_EPOCHS   = 100
 
+DEFAULTS             = {'db_url'      : DEFAULT_DB_URL,
+                        'xsb_arch_dir': DEFAULT_XSB_ARCH_DIR,
+                        'toplevel'    : DEFAULT_TOPLEVEL,
+                        'skill_paths' : DEFAULT_SKILL_PATHS,
+                        'lang'        : DEFAULT_LANG }
 DEFAULT_NLP_MODEL_ARGS = {
                           'model_dir'       : 'model',
                           'lstm_latent_dim' : 256,
                           'batch_size'      : 64,
                           'max_input_len'   : 20, # tokens
                          }
+
+DEFAULT_SKILL_ARGS   = {}
+DEFAULT_INI_FILENAME = 'zamiaai.ini'
 
 def avg_feature_vector(words, model, num_features, index2word_set):
     #function to average all words vectors in a given paragraph
@@ -92,16 +101,59 @@ def avg_feature_vector(words, model, num_features, index2word_set):
 
 class AIKernal(object):
 
+    @classmethod
+    def from_ini_file(cls, 
+                      inifn                  = DEFAULT_INI_FILENAME, 
+                      defaults               = DEFAULTS, 
+                      default_nlp_model_args = DEFAULT_NLP_MODEL_ARGS,
+                      default_skill_args     = DEFAULT_SKILL_ARGS):
+
+        config = ConfigParser.ConfigParser()
+        config.add_section('main')
+        for k,v in defaults.items():
+            config.set('main', k, v)
+        config.add_section('nlpmodel')
+        for k,v in default_nlp_model_args.items():
+            config.set('nlpmodel', k, str(v))
+        config.add_section('skills')
+        for k,v in default_skill_args.items():
+            config.set('skills', k, str(v))
+
+        if os.path.exists(inifn):
+            config.read(inifn)
+
+        toplevel     = config.get('main', 'toplevel')
+        xsb_arch_dir = config.get('main', 'xsb_arch_dir')
+        db_url       = config.get('main', 'db_url')
+        skill_paths  = config.get('main', 'skill_paths')
+        lang         = config.get('main', 'lang')
+
+        nlp_model_args = {
+                          'model_dir'       : config.get('nlpmodel', 'model_dir'),
+                          'lstm_latent_dim' : config.getint('nlpmodel', 'lstm_latent_dim'),
+                          'batch_size'      : config.getint('nlpmodel', 'batch_size'),
+                          'max_input_len'   : config.getint('nlpmodel', 'max_input_len'),
+                         }
+
+        skill_args = {}
+        for k,v in config.items('skills'):
+            skill_args[k] = v
+
+        return AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, skill_paths=skill_paths, lang=lang,
+                        nlp_model_args=nlp_model_args, skill_args=skill_args)
+
     def __init__(self, 
                  db_url         = DEFAULT_DB_URL, 
                  xsb_arch_dir   = DEFAULT_XSB_ARCH_DIR, 
                  toplevel       = DEFAULT_TOPLEVEL, 
                  skill_paths    = DEFAULT_SKILL_PATHS, 
                  lang           = DEFAULT_LANG, 
-                 nlp_model_args = DEFAULT_NLP_MODEL_ARGS):
+                 nlp_model_args = DEFAULT_NLP_MODEL_ARGS,
+                 skill_args     = DEFAULT_SKILL_ARGS):
 
         self.lang           = lang
         self.nlp_model_args = nlp_model_args
+        self.skill_args     = skill_args
 
         #
         # database connection

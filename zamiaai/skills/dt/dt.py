@@ -40,31 +40,19 @@ def get_data(k):
             c.resp(u"Wir haben es %s" % ts, score=100.0, action=set_ent)
             c.resp(u"Die Uhrzeit ist %s" % ts, score=100.0, action=set_ent)
 
-    k.dte.dt('en', u"do you know what time it is (now|)",
-                   answer_time)
-    k.dte.dt('en', u"what time is it (now|)",
+
+    k.dte.dt('en', [u"(do you know|tell me|now|can you tell me|) (what time is it|what's the time|how late it is|how late is it) (now|) (here|in Germany|in Europe|)",
+                    u"is it so late already?",
+                    u"it has gotten late",
+                    u"uh so late (already|)?"],
                    answer_time)
 
-    k.dte.dt('en', u"what's the time (now|)?",
-                   answer_time)
-    k.dte.dt('de', u"weißt du wie spät es ist",
-                   answer_time)
-
-    k.dte.dt('de', u"wieviel uhr ist es",
-                   answer_time)
-    k.dte.dt('de', u"wieviel uhr haben wir",
-                   answer_time)
-
-    k.dte.dt('de', u"wie spät ist es",
-                   answer_time)
-    k.dte.dt('en', [u"can you tell me how late it is?",
-                    u"what time is",
-                    u"What time is it in Germany"],
-                   answer_time)
-
-    k.dte.dt('de', [u"kannst du mir sagen wie spät es ist",
-                    u"was ist für zeit",
-                    u"wie spät ist es in deutschland"],
+    k.dte.dt('de', [u"kannst du mir sagen (wieviel uhr es ist|wie spät es ist|wieviel uhr wir haben) (jetzt|) (in deutschland|hier|)",
+                    u"was ist es für eine (uhrzeit|zeit)",
+                    u"(sag mal|) wie spät ist es (jetzt|) (in deutschland|)",
+                    u"weißt du wie spät es (jetzt|) (in deutschland|hier|) ist",
+                    u"wieviel uhr (haben wir|ist es|haben wir es) (jetzt|) (in deutschland|hier|)",
+                    u"(oh|oha|) (ist es|) (jetzt|) schon (so|) spät"],
                    answer_time)
 
     def prep_time_a(c):

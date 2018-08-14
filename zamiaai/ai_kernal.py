@@ -340,7 +340,7 @@ class AIKernal(object):
                     logging.info ('skipping test %s' % t_name)
                     continue
 
-            ctx        = AIContext(user=TEST_USER, realm=TEST_REALM, test_mode=True)
+            ctx        = self.create_context(user=TEST_USER, realm=TEST_REALM, test_mode=True)
             round_num  = 0
             num_tests += 1
 

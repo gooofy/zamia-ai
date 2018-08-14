@@ -69,7 +69,7 @@ else:
 # setup AI DB, Kernal and Context
 #
 
-kernal = AIKernal()
+kernal = AIKernal.from_ini_file()
 for mn2 in kernal.all_modules:
     kernal.consult_module (mn2)
 kernal.setup_tf_model()

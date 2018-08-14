@@ -33,7 +33,7 @@ class TrainingData(Base):
     id                = Column(Integer, primary_key=True)
 
     lang              = Column(String(2), index=True)
-    module            = Column(String(255), index=True)
+    skill             = Column(String(255), index=True)
 
     inp               = Column(UnicodeText, index=True)
     md5s              = Column(String(32))
@@ -43,14 +43,14 @@ class TrainingData(Base):
     loc_line          = Column(Integer)
 
     __table_args__    = (Index('idx_td_inp_lang', "inp", "lang"), 
-                         Index('idx_td_mod_lang', "module", "lang"))
+                         Index('idx_td_mod_lang', "skill", "lang"))
 
 class Code(Base):
     __tablename__ = "code"
 
     md5s              = Column(String(32), primary_key=True)
 
-    module            = Column(String(255), index=True)
+    skill             = Column(String(255), index=True)
 
     code              = Column(Text)
     fn                = Column(String(255))
@@ -62,7 +62,7 @@ class TestCase(Base):
     id                = Column(Integer, primary_key=True)
 
     lang              = Column(String(2), index=True)
-    module            = Column(String(255), index=True)
+    skill             = Column(String(255), index=True)
 
     name              = Column(String(255), index=True)
 
@@ -83,7 +83,7 @@ class NERData(Base):
     id                = Column(Integer, primary_key=True)
 
     lang              = Column(String(2), index=True)
-    module            = Column(String(255), index=True)
+    skill             = Column(String(255), index=True)
 
     cls               = Column(String(255))
     entity            = Column(Unicode(255))
@@ -96,7 +96,7 @@ class NamedMacro(Base):
     id                = Column(Integer, primary_key=True)
 
     lang              = Column(String(2), index=True)
-    module            = Column(String(255), index=True)
+    skill             = Column(String(255), index=True)
 
     name              = Column(String(255), index=True)
 

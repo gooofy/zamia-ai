@@ -85,20 +85,6 @@ DEFAULT_NLP_MODEL_ARGS = {
 DEFAULT_SKILL_ARGS   = {}
 DEFAULT_INI_FILENAME = 'zamiaai.ini'
 
-def avg_feature_vector(words, model, num_features, index2word_set):
-    #function to average all words vectors in a given paragraph
-    featureVec = np.zeros((num_features,), dtype="float32")
-    nwords = 0
-
-    for word in words:
-        if word in index2word_set:
-            nwords = nwords+1
-            featureVec = np.add(featureVec, model[word])
-
-    if nwords > 0:
-        featureVec = np.divide(featureVec, nwords)
-    return featureVec
-
 class AIKernal(object):
 
     @classmethod
@@ -171,14 +157,14 @@ class AIKernal(object):
         self.nlp_model  = None
 
         #
-        # module management, setup
+        # skill management, setup
         #
 
-        self.modules             = {}   # module_name -> module obj
-        self.module_paths        = {}   # module_name -> pathname
-        self.consulted_modules   = set()
-        self.toplevel            = toplevel
-        self.all_modules         = []
+        self.skills             = {}   # skill_name -> module obj
+        self.skill_paths        = {}   # skill_name -> pathname
+        self.consulted_skills   = set()
+        self.toplevel           = toplevel
+        self.all_skills         = []
         
         # import pdb; pdb.set_trace()
 
@@ -202,7 +188,7 @@ class AIKernal(object):
         for mp in sys.path:
             logging.debug ("Module search path: %s" % mp)
 
-        self.load_module(toplevel)
+        self.load_skill(toplevel)
 
         #
         # Prolog engine, data engine
@@ -232,13 +218,7 @@ class AIKernal(object):
         q += u'.'
         pyxsb_command(q)
 
-        #
-        # alignment / word2vec (on-demand model loading)
-        #
-        self.w2v_model          = None
-        self.w2v_all_utterances = []
-
-    # # FIXME: this will work only on the first call
+    # FIXME: this will work only on the first call
     def setup_tf_model (self, restore=True):
 
         if self.nlp_model:
@@ -252,38 +232,38 @@ class AIKernal(object):
             self.nlp_model.restore()
 
 
-    def clean (self, module_names):
+    def clean (self, skill_names):
 
-        for module_name in module_names:
-            self.dte.clean(module_name)
+        for skill_name in skill_names:
+            self.dte.clean(skill_name)
 
         self.session.commit()
 
-    def load_module (self, module_name):
+    def load_skill (self, skill_name):
 
-        if module_name in self.modules:
-            return self.modules[module_name]
+        if skill_name in self.skills:
+            return self.skills[skill_name]
 
-        logging.debug("loading module '%s'" % module_name)
+        logging.debug("loading skill '%s'" % skill_name)
 
-        # fp, pathname, description = imp.find_module(module_name, ['modules'])
-        fp, pathname, description = imp.find_module(module_name)
+        # fp, pathname, description = imp.find_module(skill_name, ['skills'])
+        fp, pathname, description = imp.find_module(skill_name)
 
         # print fp, pathname, description
 
         m = None
 
         try:
-            m = imp.load_module(module_name, fp, pathname, description)
+            m = imp.load_module(skill_name, fp, pathname, description)
 
-            self.modules[module_name]      = m
-            self.module_paths[module_name] = pathname
+            self.skills[skill_name]      = m
+            self.skill_paths[skill_name] = pathname
 
             for m2 in getattr (m, 'DEPENDS'):
-                self.load_module(m2)
+                self.load_skill(m2)
 
         except:
-            logging.error('failed to load module "%s" (%s)' % (module_name, pathname))
+            logging.error('failed to load skill "%s" (%s)' % (skill_name, pathname))
             logging.error(traceback.format_exc())
             sys.exit(1)
 
@@ -292,21 +272,21 @@ class AIKernal(object):
             if fp:
                 fp.close()
 
-        if not module_name in self.all_modules:
-            self.all_modules.append(module_name)
+        if not skill_name in self.all_skills:
+            self.all_skills.append(skill_name)
 
         return m
 
-    def consult_module (self, module_name):
+    def consult_skill (self, skill_name):
 
-        if module_name in self.consulted_modules:
+        if skill_name in self.consulted_skills:
             return
 
-        logging.debug("consulting module '%s'" % module_name)
+        logging.debug("consulting skill '%s'" % skill_name)
 
-        m = self.load_module(module_name)
-        self.consulted_modules.add(module_name)
-        module_dir = self.module_paths[module_name]
+        m = self.load_skill(skill_name)
+        self.consulted_skills.add(skill_name)
+        skill_dir = self.skill_paths[skill_name]
 
         try:
 
@@ -317,38 +297,38 @@ class AIKernal(object):
             #     print name
 
             for m2 in getattr (m, 'DEPENDS'):
-                self.consult_module(m2)
+                self.consult_skill(m2)
 
             if hasattr(m, 'PL_SOURCES'):
 
                 for inputfn in m.PL_SOURCES:
 
-                    pl_path = "%s/%s" % (module_dir, inputfn)
+                    pl_path = "%s/%s" % (skill_dir, inputfn)
 
                     pyxsb_command("consult('%s')."% pl_path)
 
         except:
-            logging.error('failed to load module "%s"' % module_name)
+            logging.error('failed to load skill "%s"' % skill_name)
             logging.error(traceback.format_exc())
             sys.exit(1)
 
         return m
 
-    def compile_module (self, module_name):
+    def compile_skill (self, skill_name):
 
-        m = self.load_module(module_name)
+        m = self.load_skill(skill_name)
 
         # tell prolog engine to consult all prolog files plus their dependencies
 
-        self.consult_module(module_name)
+        self.consult_skill(skill_name)
 
-        # prepare data engine for module compilation
+        # prepare data engine for skill compilation
 
-        self.dte.prepare_compilation(module_name)
+        self.dte.prepare_compilation(skill_name)
 
         if hasattr(m, 'get_data'):
 
-            logging.info ('module %s data extraction...' % module_name)
+            logging.info ('skill %s data extraction...' % skill_name)
 
             get_data = getattr(m, 'get_data')
             get_data(self)
@@ -356,35 +336,35 @@ class AIKernal(object):
         self.dte.commit()
 
         cnt_dt, cnt_ts = self.dte.get_stats()
-        logging.info ('module %s data extraction done. %d training samples, %d tests' % (module_name, cnt_dt, cnt_ts))
+        logging.info ('skill %s data extraction done. %d training samples, %d tests' % (skill_name, cnt_dt, cnt_ts))
 
-    def compile_module_multi (self, module_names):
+    def compile_skill_multi (self, skill_names):
 
-        for module_name in module_names:
-            if module_name == 'all':
-                for mn2 in self.all_modules:
-                    self.compile_module (mn2)
+        for skill_name in skill_names:
+            if skill_name == 'all':
+                for mn2 in self.all_skills:
+                    self.compile_skill (mn2)
 
             else:
-                self.compile_module (module_name)
+                self.compile_skill (skill_name)
 
     def create_context (self, user=DEFAULT_USER, realm=DEFAULT_REALM, test_mode=False):
         return AIContext(user, self.session, self.lang, realm, self, test_mode=test_mode)
 
-    def test_module (self, module_name, run_trace=False, test_name=None):
+    def test_skill (self, skill_name, run_trace=False, test_name=None):
 
         if run_trace:
             pyxsb_command("trace.")
         else:
             pyxsb_command("notrace.")
 
-        m = self.modules[module_name]
+        m = self.skills[skill_name]
 
-        logging.info('running tests of module %s ...' % (module_name))
+        logging.info('running tests of skill %s ...' % (skill_name))
 
         num_tests = 0
         num_fails = 0
-        for tc in self.dte.lookup_tests(module_name):
+        for tc in self.dte.lookup_tests(skill_name):
             t_name, self.lang, prep_code, prep_fn, rounds, src_fn, self.src_line = tc
 
             if test_name:
@@ -410,8 +390,8 @@ class AIKernal(object):
 
             for test_inp, test_out, test_action, test_action_arg in rounds:
                
-                logging.info("test_module: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
-                logging.info("test_module: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
+                logging.info("test_skill: %s round %d test_inp    : %s" % (t_name, round_num, repr(test_inp)) )
+                logging.info("test_skill: %s round %d test_out    : %s" % (t_name, round_num, repr(test_out)) )
 
                 # look up code in data engine
 
@@ -433,7 +413,7 @@ class AIKernal(object):
                     try:
                         exec (ecode, globals(), locals())
                     except:
-                        logging.error('test_module: %s round %d EXCEPTION CAUGHT %s' % (t_name, round_num, traceback.format_exc()))
+                        logging.error('test_skill: %s round %d EXCEPTION CAUGHT %s' % (t_name, round_num, traceback.format_exc()))
                         logging.error(ecode)
 
                 if acode is None:
@@ -445,17 +425,17 @@ class AIKernal(object):
 
                 for i, resp in enumerate(resps):
                     actual_out, score, actual_action, actual_action_arg = resp
-                    # logging.info("test_module: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
+                    # logging.info("test_skill: %s round %d %s" % (clause.location, round_num, repr(abuf)) )
 
                     if len(test_out) > 0:
                         if len(actual_out)>0:
                             actual_out = u' '.join(tokenize(actual_out, self.lang))
-                        logging.info("test_module: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
+                        logging.info("test_skill: %s round %d actual_out  : %s (score: %f)" % (t_name, round_num, actual_out, score) )
                         if actual_out != test_out:
-                            logging.info("test_module: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
+                            logging.info("test_skill: %s round %d UTTERANCE MISMATCH." % (t_name, round_num))
                             continue # no match
 
-                    logging.info("test_module: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
+                    logging.info("test_skill: %s round %d UTTERANCE MATCHED!" % (t_name, round_num))
                     matching_resp = True
                     ctx.commit_resp(i)
 
@@ -472,7 +452,7 @@ class AIKernal(object):
                     break
 
                 if not matching_resp:
-                    logging.error (u'test_module: %s round %d no matching response found.' % (t_name, round_num))
+                    logging.error (u'test_skill: %s round %d no matching response found.' % (t_name, round_num))
                     num_fails += 1
                     break
 
@@ -480,24 +460,24 @@ class AIKernal(object):
 
         return num_tests, num_fails
 
-    def run_tests_multi (self, module_names, run_trace=False, test_name=None):
+    def run_tests_multi (self, skill_names, run_trace=False, test_name=None):
 
         num_tests = 0
         num_fails = 0
 
-        for module_name in module_names:
+        for skill_name in skill_names:
 
-            if module_name == 'all':
+            if skill_name == 'all':
 
-                for mn2 in self.all_modules:
-                    self.consult_module (mn2)
-                    n, f = self.test_module (mn2, run_trace=run_trace, test_name=test_name)
+                for mn2 in self.all_skills:
+                    self.consult_skill (mn2)
+                    n, f = self.test_skill (mn2, run_trace=run_trace, test_name=test_name)
                     num_tests += n
                     num_fails += f
 
             else:
-                self.consult_module (module_name)
-                n, f = self.test_module (module_name, run_trace=run_trace, test_name=test_name)
+                self.consult_skill (skill_name)
+                n, f = self.test_skill (skill_name, run_trace=run_trace, test_name=test_name)
                 num_tests += n
                 num_fails += f
 
@@ -695,7 +675,7 @@ class AIKernal(object):
         req = self.dte.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang)
 
         if skill and skill != 'all':
-            req = req.filter(model.TrainingData.module==skill)
+            req = req.filter(model.TrainingData.skill==skill)
 
         req_utts = []
         for dr in req:
@@ -742,83 +722,16 @@ class AIKernal(object):
         for utt in sorted(list(utts)):
             print (utt)
 
-    def setup_align_utterances (self):
-        if self.w2v_model:
-            return
-
-        logging.debug('loading all utterances from db...')
-
-        self.w2v_all_utterances = []
-        req = self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang)
-        for dr in req:
-            self.w2v_all_utterances.append((dr.utterance, dr.module, dr.loc_fn, dr.loc_line))
-
-        if not self.w2v_model:
-            from gensim.models import word2vec
-
-        model_fn  = self.config.get('semantics', 'word2vec_model_%s' % self.lang)
-        logging.debug ('loading word2vec model %s ...' % model_fn)
-        logging.getLogger('gensim.models.word2vec').setLevel(logging.WARNING)
-        self.w2v_model = word2vec.Word2Vec.load_word2vec_format(model_fn, binary=True)
-        #list containing names of words in the vocabulary
-        self.w2v_index2word_set = set(self.w2v_model.index2word)
-        logging.debug ('loading word2vec model %s ... done' % model_fn)
-
-    def align_utterances (self, utterances):
-
-        self.setup_align_utterances()
-
-        res = {}
-
-        for utt1 in utterances:
-            try:
-                utt1t = tokenize(utt1, lang=self.lang)
-                av1 = avg_feature_vector(utt1t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
-
-                sims = {} # location -> score
-                utts = {} # location -> utterance
-
-                for utt2, module, loc_fn, loc_line in self.w2v_all_utterances:
-                    try:
-                        utt2t = tokenize(utt2, lang=self.lang)
-
-                        av2 = avg_feature_vector(utt2t, model=self.w2v_model, num_features=300, index2word_set=self.w2v_index2word_set)
-
-                        sim = 1 - cosine(av1, av2)
-
-                        location = '%s:%s:%d' % (module, loc_fn, loc_line)
-                        sims[location] = sim
-                        utts[location] = utt2
-                        # logging.debug('%10.8f %s' % (sim, location))
-                    except:
-                        logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
-                logging.info('sims for %s' % repr(utt1))
-                cnt = 0
-                res[utt1] = []
-                for sim, location in sorted( ((v,k) for k,v in sims.iteritems()), reverse=True):
-                    logging.info('%10.8f %s' % (sim, location))
-                    logging.info('    %s' % (utts[location]))
-
-                    res[utt1].append((sim, location, utts[location]))
-
-                    cnt += 1
-                    if cnt>5:
-                        break
-            except:
-                logging.error('EXCEPTION CAUGHT %s' % traceback.format_exc())
-
-        return res
-
     def stats (self):
 
         stats = {}
 
-        for module_name in self.all_modules:    
-            stats[module_name] = {}
+        for skill_name in self.all_skills:    
+            stats[skill_name] = {}
             for lang in LANGUAGES:
-                cnt = self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name,
+                cnt = self.session.query(model.TrainingData).filter(model.TrainingData.skill==skill_name,
                                                                     model.TrainingData.lang==lang).count()
-                stats[module_name][lang] = cnt
+                stats[skill_name][lang] = cnt
 
         return stats
 

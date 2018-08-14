@@ -18,7 +18,7 @@
 #
 # data engine
 #
-# controller sitting between zamia ai modules and the database
+# controller sitting between zamia ai skills and the database
 #
 # maintains dict of named macros for various languages
 # contains utility functions that expand macros to produce
@@ -48,7 +48,7 @@ class DataEngine(object):
         self.session           = session
 
         self.prefixes          = []
-        self.data_module_name  = None
+        self.data_skill_name  = None
         self.source_location   = ('unknown', 0)
 
         self.cnt_dt            = 0
@@ -60,30 +60,30 @@ class DataEngine(object):
     def report_error(self, s):
         raise Exception ("%s: error in line %d: %s" % (self.source_location[0], self.source_location[1], s))
 
-    def prepare_compilation (self, module_name):
-        self.clean(module_name)
-        self.data_module_name = module_name
+    def prepare_compilation (self, skill_name):
+        self.clean(skill_name)
+        self.data_skill_name = skill_name
 
     def compute_named_macros(self):
         self.named_macros = {}
-        for module in self.named_macros_mod:
-            for lang in self.named_macros_mod[module]:
+        for skill in self.named_macros_mod:
+            for lang in self.named_macros_mod[skill]:
                 if not lang in self.named_macros:
                     self.named_macros[lang] = {}
-                for n in self.named_macros_mod[module][lang]:
+                for n in self.named_macros_mod[skill][lang]:
                     if not n in self.named_macros[lang]:
                         self.named_macros[lang][n] = []
-                    self.named_macros[lang][n].extend(self.named_macros_mod[module][lang][n])
+                    self.named_macros[lang][n].extend(self.named_macros_mod[skill][lang][n])
 
-    def clean (self, module_name):
+    def clean (self, skill_name):
 
-        logging.debug("Clearing %s ..." % module_name)
-        self.session.query(model.TrainingData).filter(model.TrainingData.module==module_name).delete()
-        self.session.query(model.Code).filter(model.Code.module==module_name).delete()
-        self.session.query(model.TestCase).filter(model.TestCase.module==module_name).delete()
-        self.session.query(model.NERData).filter(model.NERData.module==module_name).delete()
-        self.session.query(model.NamedMacro).filter(model.NamedMacro.module==module_name).delete()
-        logging.debug("Clearing %s ... done." % module_name)
+        logging.debug("Clearing %s ..." % skill_name)
+        self.session.query(model.TrainingData).filter(model.TrainingData.skill==skill_name).delete()
+        self.session.query(model.Code).filter(model.Code.skill==skill_name).delete()
+        self.session.query(model.TestCase).filter(model.TestCase.skill==skill_name).delete()
+        self.session.query(model.NERData).filter(model.NERData.skill==skill_name).delete()
+        self.session.query(model.NamedMacro).filter(model.NamedMacro.skill==skill_name).delete()
+        logging.debug("Clearing %s ... done." % skill_name)
 
         self.cnt_dt = 0
         self.cnt_ts = 0
@@ -97,7 +97,7 @@ class DataEngine(object):
         md5s = md5.hexdigest()
 
         if not self.session.query(model.Code).filter(model.Code.md5s==md5s).first():
-            cd = model.Code(md5s=md5s, module=self.data_module_name, code=code_src, fn=code_fn)
+            cd = model.Code(md5s=md5s, skill=self.data_skill_name, code=code_src, fn=code_fn)
             self.session.add(cd)
         return md5s
 
@@ -120,7 +120,7 @@ class DataEngine(object):
         # import pdb; pdb.set_trace()
 
         nm = model.NamedMacro(lang   = lang,
-                              module = self.data_module_name,
+                              skill = self.data_skill_name,
                               name   = name,
                               soln   = json.dumps(soln))
         self.session.add(nm)
@@ -289,7 +289,7 @@ class DataEngine(object):
                         d_args = None
 
                     td = model.TrainingData(lang     = lang, 
-                                            module   = self.data_module_name, 
+                                            skill   = self.data_skill_name, 
                                             inp      = d_inps, 
                                             md5s     = md5s,
                                             args     = json.dumps(d_args),
@@ -427,7 +427,7 @@ class DataEngine(object):
             prep_fn   = None
 
         tc = model.TestCase(lang      = lang,
-                            module    = self.data_module_name,
+                            skill     = self.data_skill_name,
                             name      = test_name,
                             prep_code = prep_code,
                             prep_fn   = prep_fn,
@@ -438,11 +438,11 @@ class DataEngine(object):
 
         self.cnt_ts += 1
 
-    def lookup_tests (self, module_name):
+    def lookup_tests (self, skill_name):
 
         data_ts = []
         
-        for ts in self.session.query(model.TestCase).filter(model.TestCase.module==module_name).order_by(model.TestCase.name).all():
+        for ts in self.session.query(model.TestCase).filter(model.TestCase.skill==skill_name).order_by(model.TestCase.name).all():
 
             data_ts.append( (ts.name, ts.lang, ts.prep_code, ts.prep_fn, json.loads(ts.rounds), ts.loc_fn, ts.loc_line) )
 
@@ -453,7 +453,7 @@ class DataEngine(object):
         l_tok = u' '.join(tokenize(label, lang=lang))
 
         nd = model.NERData(lang   = lang,
-                           module = self.data_module_name,
+                           skill  = self.data_skill_name,
                            cls    = cls,
                            entity = entity,
                            label  = l_tok)

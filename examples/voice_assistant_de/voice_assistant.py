@@ -98,8 +98,8 @@ logging.debug ('VAD initialized.')
 #
 
 kernal = AIKernal.from_ini_file()
-for mn2 in kernal.all_modules:
-    kernal.consult_module (mn2)
+for skill in kernal.all_skills:
+    kernal.consult_skill (skill)
 kernal.setup_tf_model()
 ctx  = kernal.create_context()
 logging.debug ('AI kernal initialized.')

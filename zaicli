@@ -67,7 +67,7 @@ class AICli(cmdln.Cmdln):
             return
 
         if len(skills)==1 and skills[0] == 'all':
-            skills = self.kernal.all_modules
+            skills = self.kernal.all_skills
 
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
@@ -104,7 +104,7 @@ class AICli(cmdln.Cmdln):
             logging.getLogger().setLevel(logging.INFO)
 
         try:
-            self.kernal.compile_module_multi (skills)
+            self.kernal.compile_skill_multi (skills)
 
             if opts.run_tests:
                 num_tests, num_fails = self.kernal.run_tests_multi (skills, run_trace=opts.run_trace, test_name=opts.test_name)
@@ -195,8 +195,8 @@ class AICli(cmdln.Cmdln):
         else:
             logging.getLogger().setLevel(logging.INFO)
 
-        for mn2 in self.kernal.all_modules:
-            self.kernal.consult_module (mn2)
+        for mn2 in self.kernal.all_skills:
+            self.kernal.consult_skill (mn2)
         self.kernal.setup_tf_model()
 
         user_uri = USER_PREFIX + opts.username
@@ -270,10 +270,10 @@ class AICli(cmdln.Cmdln):
         """
 
         if len(skills) == 0:
-            for mn2 in self.kernal.all_modules:
-                self.kernal.consult_module (mn2)
+            for mn2 in self.kernal.all_skills:
+                self.kernal.consult_skill (mn2)
         else:
-            self.kernal.consult_module (skills[0])
+            self.kernal.consult_skill (skills[0])
 
         histfile = os.path.join(os.path.expanduser("~"), ".xsb_hist")
         try:

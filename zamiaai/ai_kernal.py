@@ -81,6 +81,15 @@ DEFAULT_NLP_MODEL_ARGS = {
                           'batch_size'      : 64,
                           'max_input_len'   : 20, # tokens
                          }
+DEFAULT_ALIGN_MODEL_ARGS = {
+                            'model_dir'       : 'model',
+                            'lstm_latent_dim' : 256,
+                            'dense_dim'       : 256,
+                            'batch_size'      : 64,
+                            'max_input_len'   : 20, # tokens
+                            'optimizer'       : 'adam',
+                            'dropout'         : 0.5,
+                           }
 
 DEFAULT_SKILL_ARGS   = {}
 DEFAULT_INI_FILENAME = 'zamiaai.ini'
@@ -89,10 +98,11 @@ class AIKernal(object):
 
     @classmethod
     def from_ini_file(cls, 
-                      inifn                  = DEFAULT_INI_FILENAME, 
-                      defaults               = DEFAULTS, 
-                      default_nlp_model_args = DEFAULT_NLP_MODEL_ARGS,
-                      default_skill_args     = DEFAULT_SKILL_ARGS):
+                      inifn                    = DEFAULT_INI_FILENAME, 
+                      defaults                 = DEFAULTS, 
+                      default_nlp_model_args   = DEFAULT_NLP_MODEL_ARGS,
+                      default_skill_args       = DEFAULT_SKILL_ARGS,
+                      default_align_model_args = DEFAULT_ALIGN_MODEL_ARGS):
 
         config = ConfigParser.ConfigParser()
         config.add_section('main')
@@ -104,6 +114,9 @@ class AIKernal(object):
         config.add_section('skills')
         for k,v in default_skill_args.items():
             config.set('skills', k, str(v))
+        config.add_section('alignmodel')
+        for k,v in default_align_model_args.items():
+            config.set('alignmodel', k, str(v))
 
         if os.path.exists(inifn):
             config.read(inifn)
@@ -125,21 +138,33 @@ class AIKernal(object):
         for k,v in config.items('skills'):
             skill_args[k] = v
 
+        align_model_args = {
+                            'model_dir'       : config.get('alignmodel', 'model_dir'),
+                            'lstm_latent_dim' : config.getint('alignmodel', 'lstm_latent_dim'),
+                            'dense_dim'       : config.getint('alignmodel', 'dense_dim'),
+                            'batch_size'      : config.getint('alignmodel', 'batch_size'),
+                            'max_input_len'   : config.getint('alignmodel', 'max_input_len'),
+                            'optimizer'       : config.get('alignmodel', 'optimizer'),
+                            'dropout'         : config.getfloat('alignmodel', 'dropout'),
+                           }
+
         return AIKernal(db_url=db_url, xsb_arch_dir=xsb_arch_dir, toplevel=toplevel, skill_paths=skill_paths, lang=lang,
-                        nlp_model_args=nlp_model_args, skill_args=skill_args)
+                        nlp_model_args=nlp_model_args, skill_args=skill_args, align_model_args=align_model_args)
 
     def __init__(self, 
-                 db_url         = DEFAULT_DB_URL, 
-                 xsb_arch_dir   = DEFAULT_XSB_ARCH_DIR, 
-                 toplevel       = DEFAULT_TOPLEVEL, 
-                 skill_paths    = DEFAULT_SKILL_PATHS, 
-                 lang           = DEFAULT_LANG, 
-                 nlp_model_args = DEFAULT_NLP_MODEL_ARGS,
-                 skill_args     = DEFAULT_SKILL_ARGS):
+                 db_url           = DEFAULT_DB_URL, 
+                 xsb_arch_dir     = DEFAULT_XSB_ARCH_DIR, 
+                 toplevel         = DEFAULT_TOPLEVEL, 
+                 skill_paths      = DEFAULT_SKILL_PATHS, 
+                 lang             = DEFAULT_LANG, 
+                 nlp_model_args   = DEFAULT_NLP_MODEL_ARGS,
+                 skill_args       = DEFAULT_SKILL_ARGS,
+                 align_model_args = DEFAULT_ALIGN_MODEL_ARGS):
 
-        self.lang           = lang
-        self.nlp_model_args = nlp_model_args
-        self.skill_args     = skill_args
+        self.lang             = lang
+        self.nlp_model_args   = nlp_model_args
+        self.skill_args       = skill_args
+        self.align_model_args = align_model_args
 
         #
         # database connection
@@ -153,8 +178,9 @@ class AIKernal(object):
         # TensorFlow (deferred, as tf can take quite a bit of time to set up)
         #
 
-        self.tf_session = None
-        self.nlp_model  = None
+        self.tf_session  = None
+        self.nlp_model   = None
+        self.align_model = None
 
         #
         # skill management, setup
@@ -219,7 +245,7 @@ class AIKernal(object):
         pyxsb_command(q)
 
     # FIXME: this will work only on the first call
-    def setup_tf_model (self, restore=True):
+    def setup_nlp_model (self, restore=True):
 
         if self.nlp_model:
             raise Exception ('Tensorflow model can be set up only once.')
@@ -657,7 +683,7 @@ class AIKernal(object):
 
     def train (self, num_epochs=DEFAULT_NUM_EPOCHS, incremental=False):
 
-        self.setup_tf_model (restore=incremental)
+        self.setup_nlp_model (restore=incremental)
         self.nlp_model.train(num_epochs, incremental)
 
     def dump_utterances (self, num_utterances, dictfn, skill):
@@ -879,4 +905,22 @@ class AIKernal(object):
 
         # import pdb; pdb.set_trace()
         self.session.commit()
+
+    # FIXME: this will work only on the first call
+    def setup_align_model (self, restore=True):
+
+        if self.nlp_model:
+            raise Exception ('Tensorflow model can be set up only once.')
+
+        from align_model import AlignModel
+
+        self.align_model = AlignModel(lang=self.lang, session=self.session, model_args=self.align_model_args)
+
+        if restore:
+            self.align_model.restore()
+
+    def align_train (self, num_epochs=DEFAULT_NUM_EPOCHS, incremental=False):
+
+        self.setup_align_model (restore=incremental)
+        self.align_model.train (num_epochs, incremental)
 

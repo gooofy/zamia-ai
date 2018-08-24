@@ -259,8 +259,28 @@ class AICli(cmdln.Cmdln):
                 for line in uttf:
                     utterances.append(line.strip())
 
-        self.kernal.align_utterances(self.lang, utterances)
+        self.kernal.align_utterances(utterances)
 
+    @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
+           help="incremental training (load previously saved variables)")
+    @cmdln.option("-n", "--num-epochs", dest="num_epochs", type = "int", default=DEFAULT_NUM_EPOCHS,
+           help="number of epochs to train for, default: %d" % DEFAULT_NUM_EPOCHS)
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_align_train(self, subcmd, opts, *paths):
+        """${cmd_name}: train utt-to-skill alignment model
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        self.kernal.align_train(num_epochs  = opts.num_epochs, 
+                                incremental = opts.incremental)
 
     def do_prolog(self, subcmd, opts, *skills):
         """${cmd_name}: open prolog shell for debugging

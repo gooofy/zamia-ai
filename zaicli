@@ -35,7 +35,7 @@ from six.moves            import input
 
 from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES, DEFAULT_DB_URL, DEFAULT_XSB_ARCH_DIR, \
                                  DEFAULT_TOPLEVEL, DEFAULT_SKILL_PATHS, DEFAULT_NUM_EPOCHS, DEFAULT_LANG, \
-                                 DEFAULT_NLP_MODEL_ARGS
+                                 DEFAULT_NUM_EPOCHS_UTTCLASS
 
 from nltools              import misc
 from pyxsb                import pyxsb_query
@@ -234,17 +234,38 @@ class AICli(cmdln.Cmdln):
         self.kernal.dump_utterances(opts.num_utterances, opts.dictfn, opts.skill)
 
 
+    @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
+           help="incremental training (load previously saved variables)")
+    @cmdln.option("-n", "--num-epochs", dest="num_epochs", type = "int", default=DEFAULT_NUM_EPOCHS_UTTCLASS,
+           help="number of epochs to train for, default: %d" % DEFAULT_NUM_EPOCHS_UTTCLASS)
     @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
            help="verbose logging")
-    def do_align(self, subcmd, opts, *paths):
-        """${cmd_name}: align utterance(s) to db skills
+    def do_utt_class_train(self, subcmd, opts, *paths):
+        """${cmd_name}: train utt-to-skill classification model
 
         ${cmd_usage}
         ${cmd_option_list}
         """
 
-        if len(paths) != 1:
-            raise Exception ("one argument (utterance or file name) expected")
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        self.kernal.uttclass_train(num_epochs  = opts.num_epochs, 
+                                   incremental = opts.incremental)
+
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_utt_class(self, subcmd, opts, *paths):
+        """${cmd_name}: utt-to-skill classify utterance(s)
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if len(paths) < 1:
+            raise Exception ("at least one argument (utterance or file name) expected")
 
         if opts.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
@@ -255,32 +276,14 @@ class AICli(cmdln.Cmdln):
 
         utterances = []
         for uttfn in paths:
-            with codecs.open(uttfn, 'r', 'utf8') as uttf:
-                for line in uttf:
-                    utterances.append(line.strip())
+            if os.path.exists(uttfn):
+                with codecs.open(uttfn, 'r', 'utf8') as uttf:
+                    for line in uttf:
+                        utterances.append(line.strip())
+            else:
+                utterances.append(uttfn)
 
-        self.kernal.align_utterances(utterances)
-
-    @cmdln.option("-i", "--incremental", dest="incremental", action="store_true",
-           help="incremental training (load previously saved variables)")
-    @cmdln.option("-n", "--num-epochs", dest="num_epochs", type = "int", default=DEFAULT_NUM_EPOCHS,
-           help="number of epochs to train for, default: %d" % DEFAULT_NUM_EPOCHS)
-    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
-           help="verbose logging")
-    def do_align_train(self, subcmd, opts, *paths):
-        """${cmd_name}: train utt-to-skill alignment model
-
-        ${cmd_usage}
-        ${cmd_option_list}
-        """
-
-        if opts.verbose:
-            logging.getLogger().setLevel(logging.DEBUG)
-        else:
-            logging.getLogger().setLevel(logging.INFO)
-
-        self.kernal.align_train(num_epochs  = opts.num_epochs, 
-                                incremental = opts.incremental)
+        self.kernal.uttclass_predict(utterances)
 
     def do_prolog(self, subcmd, opts, *skills):
         """${cmd_name}: open prolog shell for debugging

@@ -44,7 +44,7 @@ import tensorflow as tf
 
 from tensorflow        import keras
 from time              import time
-from random            import randint
+from random            import randint, shuffle
 from copy              import deepcopy
 
 import model
@@ -55,7 +55,7 @@ from nltools.misc      import mkdirs
 DEBUG_LIMIT                = 0
 # DEBUG_LIMIT                = 1000
 
-class AlignModel(object):
+class UttClassModel(object):
 
     def __init__(self, lang, session, model_args ):
 
@@ -63,13 +63,13 @@ class AlignModel(object):
         self.lang            = lang
         self.session         = session
         self.max_inp_len     = model_args['max_input_len']
-        self.lstm_latent_dim = model_args['lstm_latent_dim']
+        self.conv_filters    = model_args['conv_filters']
         self.dense_dim       = model_args['dense_dim']
         self.batch_size      = model_args['batch_size']
         self.optimizer       = model_args['optimizer']
         self.dropout         = model_args['dropout']
 
-        self.weights_fn      = '%s/align_weights.h5' % (self.model_dir)
+        self.weights_fn      = '%s/utt_class_weights.h5' % (self.model_dir)
         self.skills_dict_fn  = '%s/skills.csv' % (self.model_dir)
 
     def _load_word_embeddings(self):
@@ -105,7 +105,7 @@ class AlignModel(object):
 
         logging.info ('skills dict done: %d entries.' % len(self.skills_dict))
 
-        # self.reverse_skills_dict = dict( (i, token) for token, i in self.skills_dict.items() )
+        self.reverse_skills_dict = dict( (i, token) for token, i in self.skills_dict.items() )
 
     def _save_skills_dict(self):
 
@@ -134,7 +134,7 @@ class AlignModel(object):
 
         logging.info ('%s read, %d entries.' % (self.skills_dict_fn, len(self.skills_dict)))
 
-        # self.reverse_skills_dict = dict( (i, token) for token, i in self.skills_dict.items() )
+        self.reverse_skills_dict = dict( (i, token) for token, i in self.skills_dict.items() )
 
     def restore(self):
         self._load_word_embeddings()
@@ -142,74 +142,76 @@ class AlignModel(object):
         self._create_keras_model()
         self.keras_model_train.load_weights(self.weights_fn)
 
-
-#     def predict (self, inp):
-# 
-#         td_inp  = tokenize(inp, lang=self.lang)
-#         num_decoder_tokens = len (self.skills_dict)
-# 
-#         encoder_input_data  = np.zeros( (1, self.max_inp_len, self.embed_dim), dtype='float32')
-# 
-#         for j, token in enumerate(td_inp):
-#             if unicode(token) in self.embedding_dict:
-#                 encoder_input_data[0, j] = self.embedding_dict[unicode(token)]
-# 
-#         logging.debug('encoder_input_data[0]: %s' % str(encoder_input_data[0])) 
-# 
-#         # import pdb; pdb.set_trace()
-# 
-#         # Encode the input as state vectors.
-#         states_value = self.keras_model_encoder.predict(encoder_input_data)
-# 
-#         # Generate empty target sequence of length 1.
-#         target_seq = np.zeros((1, 1, num_decoder_tokens))
-#         # Populate the first token of target sequence with the start token.
-#         target_seq[0, 0, self.skills_dict[_START]] = 1.
-# 
-#         # Sampling loop for a batch of sequences
-#         # (to simplify, here we assume a batch of size 1).
-#         stop_condition = False
-#         decoded_sequence = []
-#         while not stop_condition:
-#             output_tokens, h, c = self.keras_model_decoder.predict([target_seq] + states_value)
-# 
-#             # Sample a token
-#             sampled_token_index = np.argmax(output_tokens[0, -1, :])
-#             sampled_token = self.reverse_skills_dict[sampled_token_index]
-#             decoded_sequence.append(sampled_token)
-# 
-#             logging.debug('sampled_token_index=%d, sampled_token=%s' % (sampled_token_index, sampled_token)) 
-# 
-#             # Exit condition: either hit max length
-#             # or find stop token.
-#             if (sampled_token == _STOP or len(decoded_sequence) > self.max_resp_len):
-#                 stop_condition = True
-# 
-#             # Update the target sequence (of length 1).
-#             target_seq = np.zeros((1, 1, num_decoder_tokens))
-#             target_seq[0, 0, sampled_token_index] = 1.
-# 
-#             # Update states
-#             states_value = [h, c]
-# 
-#         return decoded_sequence
-
     def _create_keras_model(self):
 
-        num_encoder_tokens = self.embed_dim
         num_skills = len(self.skills_dict)
  
-        input_layer  = keras.layers.Input(shape=(None, num_encoder_tokens))
-        layer        = keras.layers.LSTM(self.lstm_latent_dim)(input_layer)
-        layer        = keras.layers.Dense(self.dense_dim, name='dense1', activation='relu')(layer)
-        layer        = keras.layers.Dropout(self.dropout, name='dropout1')(layer)
-        output_layer = keras.layers.Dense(num_skills, name='out_layer', activation='softmax')(layer)
+        input_layer  = keras.layers.Input(shape=(self.max_inp_len, self.embed_dim))
 
-        self.keras_model_train = keras.Model([input_layer], output_layer)
+        # layer        = keras.layers.LSTM(self.lstm_latent_dim)(input_layer)
+        # layer        = keras.layers.Dense(self.dense_dim, name='dense1', activation='relu')(layer)
+        # layer        = keras.layers.Dropout(self.dropout, name='dropout1')(layer)
+
+        layer = keras.layers.Conv1D(self.conv_filters, 5, activation='relu', name='conv1')(input_layer)
+        layer = keras.layers.MaxPooling1D(5, name='pool1')(layer)
+        # layer = keras.layers.Conv1D(128, 2, activation='relu', name='conv2')(layer)
+        # layer = keras.layers.MaxPooling1D(2, name='pool2')(layer)
+        # layer = keras.layers.Conv1D(128, 5, activation='relu', name='conv3')(layer)
+        # layer = keras.layers.MaxPooling1D(35, name='pool3')(layer)  # global max pooling
+        layer = keras.layers.Flatten(name='flatten1')(layer)
+        layer = keras.layers.Dense(self.dense_dim, activation='relu', name='dense1')(layer)
+
+        output_layer = keras.layers.Dense(num_skills, name='out_layer', activation='softmax')(layer)
         
+        self.keras_model_train = keras.Model([input_layer], output_layer)
         self.keras_model_train.compile(optimizer=self.optimizer, loss='categorical_crossentropy')
         self.keras_model_train.summary()
 
+    def predict (self, utterances):
+
+        #
+        # compute datasets
+        #
+
+        logging.info("computing datasets...")
+
+        num_decoder_tokens = len (self.skills_dict)
+
+        num_inputs = DEBUG_LIMIT if DEBUG_LIMIT else len(utterances)
+
+        input_data = np.zeros( (num_inputs, self.max_inp_len,  self.embed_dim), dtype='float32')
+
+        for i, utt in enumerate(utterances):
+            for j, token in enumerate(tokenize(utt, lang=self.lang)):
+                if unicode(token) in self.embedding_dict:
+                    input_data[i, j] = self.embedding_dict[unicode(token)]
+
+            if DEBUG_LIMIT and i>=(DEBUG_LIMIT-1):
+                logging.warn("debug limit of %d utterances reached." % DEBUG_LIMIT)
+                break
+
+
+        # import pdb; pdb.set_trace()
+
+        logging.info("computing dataset done. input_data.shape=%s" % repr(input_data.shape))
+
+        predictions = self.keras_model_train.predict([input_data])
+
+        logging.info("predictions done: %s" % repr(predictions.shape))
+
+        result = []
+        for i, utt in enumerate(utterances):
+            skill_idx = np.argmax(predictions[i])
+            skill = self.reverse_skills_dict.get(skill_idx, '?')
+
+            logging.info("%2d %-10s %s" % (skill_idx, skill, utt))
+            result.append(skill)
+
+            if DEBUG_LIMIT and i>=(DEBUG_LIMIT-1):
+                break
+
+        return result
+        
 
     def train(self, num_epochs, incremental):
 
@@ -227,6 +229,8 @@ class AlignModel(object):
             if DEBUG_LIMIT>0 and len(self.drs)>=DEBUG_LIMIT:
                 logging.warn('  stopped loading discourses because DEBUG_LIMIT of %d was reached.' % DEBUG_LIMIT)
                 break
+
+        shuffle(self.training_data)
  
         #
         # set up model dir
@@ -267,16 +271,19 @@ class AlignModel(object):
         decoder_target_data = np.zeros( (len(self.training_data), len(self.skills_dict)),
                                         dtype='float32')
 
-
         for i, (inp, skill) in enumerate(self.training_data):
 
             for j, token in enumerate(inp):
                 if unicode(token) in self.embedding_dict:
                     encoder_input_data[i, j] = self.embedding_dict[unicode(token)]
 
-            decoder_target_data[i, self.skills_dict[skill]] = 1.
+            skill_idx = self.skills_dict[skill]
 
-        # import pdb; pdb.set_trace()
+            decoder_target_data[i, skill_idx] = 1.
+
+            # logging.debug ("%-10s %2d %s" % (skill, skill_idx, repr(inp)))
+
+            # import pdb; pdb.set_trace()
 
         logging.info("computing datasets done. encoder_input_data.shape=%s, decoder_target_data.shape=%s" % (repr(encoder_input_data.shape), repr(decoder_target_data.shape)))
 

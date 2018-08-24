@@ -30,3 +30,11 @@ zamia_ai.egg-info/
 examples/*/model
 examples/*/utts.txt
 examples/*/zamiaai.db
+examples/*/corpus.txt
+examples/*/corpus5.txt
+examples/*/kaldi-de-tdnn_sp-adapt
+examples/*/lm.arpa
+examples/*/sentences-de.txt
+examples/*/sentences-en.txt
+examples/*/vocab.txt
+examples/*/work

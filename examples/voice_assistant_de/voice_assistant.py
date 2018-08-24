@@ -34,10 +34,9 @@ from nltools.asr            import ASR
 from nltools.tts            import TTS
 
 PROC_TITLE          = 'voice_assistant'
-LANG                = 'de'
 
 DEFAULT_MIC_VOLUME  = 150
-DEFAULT_ASR_MODEL   = '/opt/kaldi/model/kaldi-generic-%s-tdnn_sp' % LANG
+DEFAULT_ASR_MODEL   = 'kaldi-de-tdnn_sp-adapt'
 
 #
 # init 

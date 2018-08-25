@@ -38,3 +38,5 @@ examples/*/sentences-de.txt
 examples/*/sentences-en.txt
 examples/*/vocab.txt
 examples/*/work
+examples/*/kaldi-en-tdnn_sp-adapt/
+zamiaai_dist.sh

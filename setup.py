@@ -11,7 +11,7 @@ import os
 
 setup(
     name                 = 'zamia-ai',
-    version              = '0.2.3',
+    version              = '0.2.4',
     description          = 'Free and open source A.I. system based on Python, TensorFlow and Prolog.',
     long_description     = open('README.md').read(),
     author               = 'Guenter Bartsch',
@@ -21,7 +21,7 @@ setup(
     url                  = 'https://github.com/gooofy/zamia-ai',
     packages             = ['zamiaai'],
     install_requires     = [
-                            'py-nltools', 'pyxsb', 'cmdln', 'pytz', 'tzlocal', 'six', 'sqlalchemy', 'scipy', 'codegen'
+                            'py-nltools', 'pyxsb', 'cmdln', 'pytz', 'tzlocal', 'six', 'sqlalchemy', 'scipy', 'codegen', 'dateutil'
                            ],
     scripts              = [ 'zaicli' ],
     classifiers          = [

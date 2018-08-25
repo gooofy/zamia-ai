@@ -100,7 +100,7 @@ logging.debug ('VAD initialized.')
 kernal = AIKernal.from_ini_file()
 for skill in kernal.all_skills:
     kernal.consult_skill (skill)
-kernal.setup_tf_model()
+kernal.setup_nlp_model()
 ctx  = kernal.create_context()
 logging.debug ('AI kernal initialized.')
 

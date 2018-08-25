@@ -197,7 +197,7 @@ class AICli(cmdln.Cmdln):
 
         for mn2 in self.kernal.all_skills:
             self.kernal.consult_skill (mn2)
-        self.kernal.setup_tf_model()
+        self.kernal.setup_nlp_model()
 
         user_uri = USER_PREFIX + opts.username
         ctx      = self.kernal.create_context(user=user_uri, realm=CLI_REALM)

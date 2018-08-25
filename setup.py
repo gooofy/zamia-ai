@@ -11,7 +11,7 @@ import os
 
 setup(
     name                 = 'zamia-ai',
-    version              = '0.2.1',
+    version              = '0.2.2',
     description          = 'Free and open source A.I. system based on Python, TensorFlow and Prolog.',
     long_description     = open('README.md').read(),
     author               = 'Guenter Bartsch',

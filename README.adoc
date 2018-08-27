@@ -3,16 +3,172 @@ Zamia AI
 ========
 
 The Zamia AI project is a framework that provides a set of components needed to
-build free, open source end-to-end speech and natural language processing A.I.
-systems.
+build completely free, open source end-to-end speech and natural language 
+processing A.I.  systems.
 
 For more information about the Zamia AI project check out our homepage at:
 
 * http://zamia-ai.org
 
-For installation instructions, please check this document:
-* <<INSTALL#,Installation and First Steps>> 
-*NOTE*: These instructions are outdated at the moment.
+Getting Started
+---------------
+
+Installation
+~~~~~~~~~~~~
+
+CentOS 7 (amd64)
+^^^^^^^^^^^^^^^^
+
+Setup yum repo and install packages:
+
+```bash
+# execute with root permissions (sudo -i):
+
+cd /etc/yum.repos.d
+wget http://goofy.zamia.org/zamia-speech/misc/zamia-ai-centos.repo
+yum install zamia-ai kaldi-chain-zamia-speech-de kaldi-chain-zamia-speech-en python-kaldiasr python-nltools pulseaudio-utils pulseaudio fastText
+```
+
+alternatively you can download RPMs manually here:
+
+* x86_64: http://goofy.zamia.org/repo-ai/centos/7/x86_64/
+* SRPMS: http://goofy.zamia.org/repo-ai/centos/7/SRPMS/
+
+Try Our Example Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The easiest way to see Zamia AI in action is to download one of our precompiled examples:
+
+http://goofy.zamia.org/zamia-ai/
+
+Chatbot
+^^^^^^^
+
+This is a simple text chat bot built on top of Zamia AI's knowledge base. You can chat with the model by
+running the command:
+
+```
+zaicli chat
+```
+
+Here is a sample session giving you some ideas to get your conversation started:
+
+```
+[bofh@centos7 chatbot]$ zaicli chat
+[...]
+ai> okay computer
+INFO:root:RESP: [   0.5] Greetings! | action: attention(on)
+ai> what is your name
+INFO:root:RESP: [   0.5] My name is "HAL 9000" 
+ai> who was the predecessor of barack obama
+INFO:root:RESP: [   0.2] The predecessor of "Barack Obama" as "President of the United States of America" was "George W. Bush". 
+ai> what time is it
+INFO:root:RESP: [   0.1] It is 6 minutes past 0 
+ai> are you a computer
+INFO:root:RESP: [   0.1] Yes, I am a Computer. Are you knowledgeable about Computers? 
+ai> what is your favorite movie
+INFO:root:RESP: [   1.0] 2001: A Space Odyssey by Stanley Kubrick 
+ai> 
+```
+
+You can also run the chatbot application itself which shoud also give you a starting point on how
+to embed Zamia AI into you own applications:
+
+```
+./chatbot.py
+```
+
+Voice Assistant
+^^^^^^^^^^^^^^^
+
+This example show how Zamia AI can be combined with Zamia Speech Kaldi ASR Models and eSpeak NG
+to create a completely free, offline capable voice assistant.
+
+Compiling Zamia AI Models
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This tutorial uses the chatbot example that comes with Zamia AI. You can also find it online here:
+
+https://github.com/gooofy/zamia-ai/tree/master/examples/chatbot
+
+to try it, create a directory and put all the source files there. 
+
+Now, the first step is to compile the skills that are used in this examples - i.e. Zamia AI will
+will compute all sample utterances plus their corresponding responses from the skills our `toplevel.py`
+skill depends on into an SQLite DB. To do this, we run the command
+
+```
+zaicli compile all
+```
+
+you can check out the number of utterances extracted from each skill using the command
+
+```
+zaicli stats
+```
+
+also, you can check the utterances extracted from all or specific skills using the command
+
+```
+zaicli utterances [-s skill]
+```
+
+Train word vectors using fastText:
+
+```
+wget 'http://goofy.zamia.org/zamia-speech/misc/sentences-en.txt.xz'
+unxz sentences-en.txt.xz
+
+zaicli utterances >utts.txt
+
+cat utts.txt sentences-en.txt > corpus.txt
+mkdir model
+fasttext skipgram -input corpus.txt -output model/word_embeddings
+```
+
+Once we are satisfied it is time to train our NLP model which will allow Zamia AI to handle utterances
+that have no exact match in our DB:
+
+```
+zaicli train
+```
+
+Utterance Classification
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Utterance classification is used to predict which of the existing skills a new utterance fits best. Can also be 
+used on a text file containing one utterance per line.
+
+Train the classifier:
+```
+zaicli utt_class_train
+```
+
+Run the prediction:
+```
+zaicli utt_class "Who is the current US President?"
+```
+
+Adapt the Kaldi Speech Recognition Model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NOTE: This is only needed for application that use voice input.
+
+```
+cat utts.txt utts.txt utts.txt utts.txt utts.txt sentences-en.txt >corpus5.txt
+
+MODEL="/opt/kaldi/model/kaldi-generic-en-tdnn_sp"
+
+cut -f 1 -d ' ' ${MODEL}/data/local/dict/lexicon.txt >vocab.txt
+lmplz -o 4 --prune 0 1 2 3 --limit_vocab_file vocab.txt --interpolate_unigrams 0 <corpus5.txt >lm.arpa
+
+rm -rf work
+kaldi-adapt-lm ${MODEL} lm.arpa en-tdnn_sp
+tar xfJ work/kaldi-en-tdnn_sp-adapt.tar.xz
+```
+
+Further Documentation
+~~~~~~~~~~~~~~~~~~~~~
 
 For other technical documentation, check out
 

@@ -55,7 +55,7 @@ Here is a sample session giving you some ideas to get your conversation started:
 
 ```
 [bofh@centos7 chatbot]$ zaicli chat
-[...]
+...
 ai> okay computer
 INFO:root:RESP: [   0.5] Greetings! | action: attention(on)
 ai> what is your name

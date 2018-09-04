@@ -42,7 +42,7 @@ import tensorflow as tf
 
 from tensorflow        import keras
 from time              import time
-from random            import randint
+from random            import randint, random
 from copy              import deepcopy
 
 import model

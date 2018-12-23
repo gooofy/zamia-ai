@@ -99,7 +99,7 @@ def get_data(k):
 
         def act(c, bp):
             c.kernal.mem_push(c.user, 'f1ent', bp)
-            c.kernal.mem_push(c.user, 'f1plcae', bp)
+            c.kernal.mem_push(c.user, 'f1place', bp)
 
         import base
         import dateutil.parser
@@ -128,7 +128,7 @@ def get_data(k):
 
         def act(c, loc):
             c.kernal.mem_push(c.user, 'f1ent', loc)
-            c.kernal.mem_push(c.user, 'f1plcae', loc)
+            c.kernal.mem_push(c.user, 'f1place', loc)
 
         import base
         import dateutil.parser

@@ -33,6 +33,9 @@ def get_data(k):
     k.dte.dt('en', u"by car", u"can't you use public transport?")
     k.dte.dt('de', u"mit dem auto", u"kannst Du nicht die öffentlichen Verkehrsmittel nutzen?")
 
+    k.dte.dt('en', u"I sold my (car|vehicle)", u"Excellent!")
+    k.dte.dt('de', u"Ich habe mein (Auto|Fahrzeug) verkauft.", u"Prima!")
+
     k.dte.dt('en', u"by bus", u"cool.")
     k.dte.dt('de', u"mit dem bus", u"cool.")
 

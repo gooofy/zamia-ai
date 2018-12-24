@@ -47,6 +47,7 @@ from scipy.spatial.distance import cosine
 from sqlalchemy             import create_engine
 from sqlalchemy.orm         import sessionmaker
 from pyxsb                  import pyxsb_start_session, pyxsb_command, pyxsb_query, xsb_to_json, json_to_xsb, XSBString, XSBFunctor, XSBAtom
+from types                  import ModuleType
 
 from nltools                import misc
 from nltools.tokenizer      import tokenize
@@ -266,10 +267,36 @@ class AIKernal(object):
 
         self.session.commit()
 
-    def load_skill (self, skill_name):
+    def rreload(self, module):
+        """Recursively reload modules. 
+           https://stackoverflow.com/questions/15506971/recursive-version-of-reload/17194836#17194836"""
+
+        todo = [module]
+        done = set()
+
+        while todo:
+            module = todo.pop()
+            if module in done:
+                continue
+
+            logging.info('reloading module %s' % module)
+
+            reload(module)
+            done.add(module)
+
+            for attribute_name in dir(module):
+                attribute = getattr(module, attribute_name)
+                if type(attribute) is ModuleType:
+                    if not (attribute in done):
+                        todo.append(attribute)
+
+    def load_skill (self, skill_name, do_reload=False):
 
         if skill_name in self.skills:
-            return self.skills[skill_name]
+            m = self.skills[skill_name]
+            if do_reload:
+                self.rreload(m)
+            return m
 
         logging.debug("loading skill '%s'" % skill_name)
 
@@ -343,7 +370,7 @@ class AIKernal(object):
 
     def compile_skill (self, skill_name):
 
-        m = self.load_skill(skill_name)
+        m = self.load_skill(skill_name, do_reload=True)
 
         # tell prolog engine to consult all prolog files plus their dependencies
 

@@ -37,6 +37,8 @@ from zamiaai.ai_kernal    import AIKernal, AIContext, USER_PREFIX, LANGUAGES, DE
                                  DEFAULT_TOPLEVEL, DEFAULT_SKILL_PATHS, DEFAULT_NUM_EPOCHS, DEFAULT_LANG, \
                                  DEFAULT_NUM_EPOCHS_UTTCLASS
 
+from zamiaai.ai_dbg       import AIDbg
+
 from nltools              import misc
 from pyxsb                import pyxsb_query
 
@@ -217,6 +219,25 @@ class AICli(cmdln.Cmdln):
                 logging.info(u'RESP: [%6.1f] %s ' % (score, out))
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+
+    @cmdln.option("-u", "--user", dest="username", type = "str", default="chat",
+           help="username, default: chat")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_dbg(self, subcmd, opts, *models):
+        """${cmd_name}: enter interactive debugging session
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        for mn2 in self.kernal.all_skills:
+            self.kernal.consult_skill (mn2)
+        self.kernal.setup_nlp_model()
+
+        dbg = AIDbg (self.kernal, USER_PREFIX + opts.username, CLI_REALM, opts.verbose)
+
+        dbg.run()
 
     @cmdln.option ("-d", "--dict", dest="dictfn", type = "str", default=None,
            help="dictionary to use to detect unknown words, default: none")

@@ -281,7 +281,12 @@ class AIKernal(object):
 
             logging.info('reloading module %s' % module)
 
-            reload(module)
+            try:
+                reload(module)
+            except:
+                logging.warn('failed to reload skill "%s"' % module)
+                logging.warn(traceback.format_exc())
+
             done.add(module)
 
             for attribute_name in dir(module):

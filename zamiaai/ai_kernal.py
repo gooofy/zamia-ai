@@ -781,6 +781,55 @@ class AIKernal(object):
         for utt in sorted(list(utts)):
             print (utt)
 
+    def export_gpt2 (self, offset=0, debug_limit=0):
+
+        for mn2 in self.all_skills:
+            self.consult_skill (mn2)
+        self.setup_nlp_model()
+
+        logging.info('load discourses from db...')
+
+        inps = set() 
+        for dr in self.session.query(model.TrainingData).filter(model.TrainingData.lang==self.lang):
+            if not dr.inp in inps:
+                inps.add(dr.inp)
+
+
+        user_uri = USER_PREFIX + 'gpt2'
+        ctx      = self.create_context(user=user_uri, realm='__gpt2__')
+
+        cnt = 0
+
+        misc.mkdirs('zamiaai-gpt2')
+
+        for inp in sorted(inps):
+
+            if cnt < offset:
+                cnt += 1
+                continue
+
+            try:
+
+                logging.info(u'%07d/%07d QUES : %s' % (cnt, len(inps), inp))
+
+                out, score, action = self.process_input(ctx, inp, run_trace=False)
+
+                logging.info(u'%07d/%07d RESP: [%6.1f] %s ' % (cnt, len(inps), score, out))
+
+                data = {"info": "",
+                        "dlg": [{'q': inp, 'a': out}]}
+
+                datafn = 'zamiaai-gpt2/%07d.json' % cnt
+                with codecs.open(datafn, 'w', 'utf8') as dataf:
+                    dataf.write(json.dumps(data))
+
+                # logging.info('%s written.' % datafn)
+
+                cnt += 1
+            except:
+                logging.error('EXCEPTION')
+
+
     def stats (self):
 
         stats = {}

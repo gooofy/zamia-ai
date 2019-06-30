@@ -179,6 +179,26 @@ class AICli(cmdln.Cmdln):
 
         logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
 
+    @cmdln.option("-O", "--offset", dest="offset", type = "int", default=0,
+           help="offset for incremental dump, default: 0")
+    @cmdln.option("-v", "--verbose", dest="verbose", action="store_true",
+           help="verbose logging")
+    def do_gpt2(self, subcmd, opts):
+        """${cmd_name}: export gpt-2 training data
+
+        ${cmd_usage}
+        ${cmd_option_list}
+        """
+
+        if opts.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+
+        self.kernal.export_gpt2 (offset=opts.offset)
+
+        logging.getLogger().setLevel(DEFAULT_LOGLEVEL)
+
     @cmdln.option("-g", "--trace", dest="run_trace", action="store_true",
            help="enable prolog tracing")
     @cmdln.option("-u", "--user", dest="username", type = "str", default="chat",

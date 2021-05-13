@@ -13,27 +13,6 @@ For more information about the Zamia AI project check out our homepage at:
 Getting Started
 ---------------
 
-Installation
-~~~~~~~~~~~~
-
-CentOS 7 (amd64)
-^^^^^^^^^^^^^^^^
-
-Setup yum repo and install packages:
-
-```bash
-# execute with root permissions (sudo -i):
-
-cd /etc/yum.repos.d
-wget http://goofy.zamia.org/zamia-speech/misc/zamia-ai-centos.repo
-yum install zamia-ai kaldi-chain-zamia-speech-de kaldi-chain-zamia-speech-en python-kaldiasr python-nltools pulseaudio-utils pulseaudio fastText
-```
-
-alternatively you can download RPMs manually here:
-
-* x86_64: http://goofy.zamia.org/repo-ai/centos/7/x86_64/
-* SRPMS: http://goofy.zamia.org/repo-ai/centos/7/SRPMS/
-
 Try Our Example Applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
